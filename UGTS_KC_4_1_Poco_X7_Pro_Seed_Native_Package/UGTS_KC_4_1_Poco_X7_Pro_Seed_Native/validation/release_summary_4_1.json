@@ -1,0 +1,35 @@
+{
+  "schema": "ugts-kc-release-summary-4.1",
+  "version": "4.1.0",
+  "target": "POCO X7 Pro 12 GB arm64-v8a",
+  "source_status": "complete source handoff",
+  "android_sdk_ndk_build_performed": false,
+  "apk_produced": false,
+  "physical_device_tested": false,
+  "validation": {
+    "host_core": "23/23",
+    "android_mock_syntax": "9/9",
+    "source_contract": "43/43",
+    "kseed_integrity": {
+      "header_crc_ok": true,
+      "chunk_crc_ok": true,
+      "chain_ok": true,
+      "complete": true,
+      "sha256": "b70010f3435608f6e1baa7dc4bd04edb151385413383130b45f529275bfe008c"
+    }
+  },
+  "demo_fixture": {
+    "frames_seen": 300,
+    "keyframes_stored": 63,
+    "events_committed": 592,
+    "raw_bytes": 17280000,
+    "kseed_bytes": 79053,
+    "ratio": 218.59,
+    "scope": "synthetic deterministic host fixture; not a phone benchmark"
+  },
+  "base_hashes": {
+    "ugts_kc_4_0_zip": "7ce064e5e4e2bb6b43d86f191db21111aab823771cbc1461413377a3c675d6d8",
+    "ugts_kc_4_0_pdf": "fe4a7dfbedb0163d90d22b4e6c5aef7e042f7342199a64eb3db3d76da1bdb1b4",
+    "ugts_kc_3_9_2_zip": "bd7f8aa7e5829f27020a859d9e16a8b2917017c171045fd75a1814a0cb6d4486"
+  }
+}

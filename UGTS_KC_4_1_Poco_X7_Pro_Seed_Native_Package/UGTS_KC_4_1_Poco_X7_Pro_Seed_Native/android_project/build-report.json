@@ -1,0 +1,28 @@
+{
+  "schema": "ugts-kc-android-source-build-report-4.1",
+  "version": "4.1.0",
+  "active_project": "UGTS-KC POCO Spatial Seed Native",
+  "base_substrate": "UGTS-KC 4.0 Spatial Evidence Ledger",
+  "native_reference": "UGTS-KC K-Kij-T / Grove 3.9.2",
+  "toolchain": {
+    "android_gradle_plugin": "8.13.2",
+    "gradle": "8.13",
+    "compile_sdk": 36,
+    "target_sdk": 36,
+    "min_sdk": 26,
+    "ndk": "29.0.14206865",
+    "cmake": "3.22.1",
+    "cpp": "C++20"
+  },
+  "validation": {
+    "portable_host_tests_passed": 23,
+    "portable_host_tests_total": 23,
+    "android_mock_syntax_passed": 9,
+    "android_mock_syntax_total": 9,
+    "independent_kseed_integrity": true,
+    "android_sdk_ndk_build_performed": false,
+    "apk_produced": false,
+    "physical_poco_x7_pro_tested": false
+  },
+  "handoff": "Use docs/CODEX_BUILD_AND_DEPLOY.md. Replace debug signing and debuggable release before external distribution."
+}

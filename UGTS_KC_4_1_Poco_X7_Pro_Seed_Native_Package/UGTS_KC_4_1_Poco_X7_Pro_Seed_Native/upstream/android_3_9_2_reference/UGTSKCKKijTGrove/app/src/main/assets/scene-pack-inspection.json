@@ -1,0 +1,765 @@
+{
+  "author": "Tom Klootwijk",
+  "byte_length": 21735,
+  "format_version": 1,
+  "material_count": 8,
+  "materials": [
+    "goal",
+    "grid",
+    "hazard",
+    "obsidian",
+    "signature_cyan",
+    "signature_gold",
+    "signature_magenta",
+    "violet"
+  ],
+  "mesh_count": 4,
+  "meshes": [
+    {
+      "id": "cube",
+      "index_count": 36,
+      "vertex_count": 24
+    },
+    {
+      "id": "floor",
+      "index_count": 6,
+      "vertex_count": 4
+    },
+    {
+      "id": "pyramid",
+      "index_count": 18,
+      "vertex_count": 5
+    },
+    {
+      "id": "sphere",
+      "index_count": 1320,
+      "vertex_count": 273
+    }
+  ],
+  "node_count": 66,
+  "nodes": [
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "arena_floor",
+      "material_index": 1,
+      "mesh_index": 1,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 1,
+      "dynamic": true,
+      "id": "player",
+      "material_index": 4,
+      "mesh_index": 3,
+      "sensor": false,
+      "tag_mask": 1
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "signature_monolith",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "tower_0",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "tower_1",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "tower_2",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "tower_3",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_00",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_01",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_02",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_03",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_04",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_05",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_06",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_07",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_08",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_09",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_10",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_11",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_12",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_13",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_14",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_15",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_16",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_17",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_18",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_19",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_20",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_21",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_22",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_23",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_24",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_25",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_26",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_27",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_28",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_29",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_30",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_31",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_32",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_33",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_34",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_35",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_36",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_37",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_38",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "helix_39",
+      "material_index": 7,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_00",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_01",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_02",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_03",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_04",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_05",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_06",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_07",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_08",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_09",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_10",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "crystal_11",
+      "material_index": 5,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 2
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "hazard_0",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": true,
+      "tag_mask": 16
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "hazard_1",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": true,
+      "tag_mask": 16
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "hazard_2",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": true,
+      "tag_mask": 16
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "hazard_3",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": true,
+      "tag_mask": 16
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "hazard_4",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": true,
+      "tag_mask": 16
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "hazard_5",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": true,
+      "tag_mask": 16
+    },
+    {
+      "collider_type": 1,
+      "dynamic": false,
+      "id": "goal_portal",
+      "material_index": 0,
+      "mesh_index": 3,
+      "sensor": true,
+      "tag_mask": 4
+    }
+  ],
+  "project_hash": "e86bebe946cb6a4f7e418143869191c4900bed22d2773054e0b1bf0a6493c244",
+  "project_id": "tom_klootwijk_signature_arena_3d",
+  "qualities": [
+    {
+      "id": "signature_ultra",
+      "max_visible_nodes": 1024,
+      "render_scale": 1.0,
+      "target_fps": 120
+    },
+    {
+      "id": "high",
+      "max_visible_nodes": 720,
+      "render_scale": 0.9200000166893005,
+      "target_fps": 90
+    },
+    {
+      "id": "balanced",
+      "max_visible_nodes": 480,
+      "render_scale": 0.8199999928474426,
+      "target_fps": 60
+    },
+    {
+      "id": "safe",
+      "max_visible_nodes": 280,
+      "render_scale": 0.6800000071525574,
+      "target_fps": 60
+    },
+    {
+      "id": "thermal",
+      "max_visible_nodes": 160,
+      "render_scale": 0.550000011920929,
+      "target_fps": 45
+    }
+  ],
+  "quality_count": 5,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.1",
+  "sha256": "485bb8a5ed7d4632577195dc0a889b4e6d3ea13ebc55482c5ea40761729ba437",
+  "start_quality": "signature_ultra",
+  "target_count": 4,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "signature_ultra",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB Signature Target",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    },
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "high",
+      "device_hints": [],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [],
+      "id": "android_high",
+      "label": "High-end Android",
+      "memory_floor_mb": 7168,
+      "min_sdk": 26,
+      "target_refresh_hz": 90,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    },
+    {
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "balanced",
+      "device_hints": [],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [],
+      "id": "android_balanced",
+      "label": "Mainstream Android",
+      "memory_floor_mb": 3584,
+      "min_sdk": 26,
+      "target_refresh_hz": 60,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    },
+    {
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "safe",
+      "device_hints": [],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [],
+      "id": "android_compat",
+      "label": "Compatibility Android",
+      "memory_floor_mb": 2048,
+      "min_sdk": 26,
+      "target_refresh_hz": 60,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Tom Klootwijk Signature Arena 3D"
+}

@@ -1,0 +1,19 @@
+--- main.cpp
+PASS: main.cpp
+--- engine.cpp
+PASS: engine.cpp
+--- camera_ndk.cpp
+PASS: camera_ndk.cpp
+--- imu_ndk.cpp
+PASS: imu_ndk.cpp
+--- permissions.cpp
+PASS: permissions.cpp
+--- thermal_policy.cpp
+PASS: thermal_policy.cpp
+--- device_profile.cpp
+PASS: device_profile.cpp
+--- renderer_bayer.cpp
+PASS: renderer_bayer.cpp
+--- storage_android.cpp
+PASS: storage_android.cpp
+TOTAL PASS: 9/9

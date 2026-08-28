@@ -1,0 +1,7 @@
+#include "engine.hpp"
+#include <android/log.h>
+#include <algorithm>
+#include <chrono>
+#include <thread>
+namespace {void command(android_app*app,int32_t cmd){auto*e=static_cast<ugts41::android::Engine*>(app->userData);if(!e)return;switch(cmd){case APP_CMD_INIT_WINDOW:e->initialize_window();break;case APP_CMD_TERM_WINDOW:e->terminate_window();break;case APP_CMD_GAINED_FOCUS:e->set_focused(true);break;case APP_CMD_LOST_FOCUS:e->set_focused(false);break;default:break;}}int32_t input(android_app*app,AInputEvent*event){auto*e=static_cast<ugts41::android::Engine*>(app->userData);return e?e->handle_input(event):0;}}
+extern "C" void android_main(android_app*app){app_dummy();ugts41::android::Engine engine(app);app->userData=&engine;app->onAppCmd=command;app->onInputEvent=input;auto last=std::chrono::steady_clock::now();while(!app->destroyRequested){int events=0;android_poll_source*source=nullptr;int timeout=engine.ready()&&engine.focused()?0:-1;while(ALooper_pollAll(timeout,nullptr,&events,reinterpret_cast<void**>(&source))>=0){if(source)source->process(app,source);if(app->destroyRequested)break;timeout=0;}if(app->destroyRequested)break;if(engine.ready()&&engine.focused()){auto now=std::chrono::steady_clock::now();float dt=std::chrono::duration<float>(now-last).count();last=now;engine.frame(std::clamp(dt,0.0f,0.1f));}else{last=std::chrono::steady_clock::now();std::this_thread::sleep_for(std::chrono::milliseconds(8));}}engine.shutdown();}

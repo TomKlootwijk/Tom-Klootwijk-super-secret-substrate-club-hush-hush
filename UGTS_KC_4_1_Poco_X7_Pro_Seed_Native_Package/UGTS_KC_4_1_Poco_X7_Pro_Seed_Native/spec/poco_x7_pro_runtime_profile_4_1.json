@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema": "ugts-kc-poco-runtime-profile-4.1",
+  "id": "poco_x7_pro_12gb_seed",
+  "selector": {
+    "model_hints": ["POCO X7 Pro", "2412DPC0"],
+    "device_hints": ["rodin"],
+    "gpu_hints": ["Mali-G720"],
+    "minimum_reported_ram_mb": 10000
+  },
+  "android": {
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "abi": ["arm64-v8a"],
+    "native_activity": true
+  },
+  "capture": {
+    "format": "YUV_420_888",
+    "requested_size": [1280, 720],
+    "requested_fps": 30,
+    "buffer_policy": "latest_only"
+  },
+  "analysis": {
+    "size": [160, 90],
+    "feature_budget": 128,
+    "keyframe_minimum_interval_ms": 150,
+    "keyframe_maximum_interval_ms": 1000,
+    "seed_generator": "splitmix64"
+  },
+  "storage": {
+    "container": "KSEED41",
+    "chunk_target_bytes": 131072,
+    "raw_frames": false,
+    "thumbnails": false,
+    "compression": "conditional_zlib_best_speed",
+    "integrity": ["header_crc32", "stored_crc32", "decoded_crc32", "sha256_chain"]
+  },
+  "presentation": {
+    "requested_refresh_hz": 120,
+    "backend": "OpenGL ES 3.0",
+    "display": "160x90 R8 Bayer 8x8 ordered dither",
+    "ray_tracing": false
+  },
+  "authority": {
+    "camera_and_model_outputs": "proposal_only",
+    "mutation_boundary": "ProposalVerifier -> SpatialLedger.commit"
+  }
+}

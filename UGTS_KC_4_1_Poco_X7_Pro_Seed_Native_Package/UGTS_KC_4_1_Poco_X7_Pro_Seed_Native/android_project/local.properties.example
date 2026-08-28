@@ -1,0 +1,2 @@
+# Copy to local.properties and edit for the build machine.
+sdk.dir=/home/USER/Android/Sdk

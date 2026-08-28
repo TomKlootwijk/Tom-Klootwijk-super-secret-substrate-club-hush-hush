@@ -1,0 +1,106 @@
+{
+  "path": "examples/demo_session.kseed",
+  "file_bytes": 79053,
+  "header": {
+    "version": [
+      4,
+      1
+    ],
+    "session_seed": "0x4b43534545443431",
+    "start_time_ns": 1700000000000000000,
+    "analysis": [
+      160,
+      90
+    ],
+    "fps_x100": 3000,
+    "feature_budget": 96,
+    "header_crc_ok": true
+  },
+  "chunks": [
+    {
+      "sequence": 1,
+      "type": 2,
+      "records": 219,
+      "compressed": true,
+      "raw_bytes": 32850,
+      "stored_bytes": 17063,
+      "stored_crc_ok": true,
+      "raw_crc_ok": true,
+      "chain_ok": true
+    },
+    {
+      "sequence": 2,
+      "type": 2,
+      "records": 219,
+      "compressed": true,
+      "raw_bytes": 32850,
+      "stored_bytes": 16929,
+      "stored_crc_ok": true,
+      "raw_crc_ok": true,
+      "chain_ok": true
+    },
+    {
+      "sequence": 3,
+      "type": 1,
+      "records": 59,
+      "compressed": true,
+      "raw_bytes": 33016,
+      "stored_bytes": 30464,
+      "stored_crc_ok": true,
+      "raw_crc_ok": true,
+      "chain_ok": true
+    },
+    {
+      "sequence": 4,
+      "type": 1,
+      "records": 4,
+      "compressed": true,
+      "raw_bytes": 2238,
+      "stored_bytes": 2175,
+      "stored_crc_ok": true,
+      "raw_crc_ok": true,
+      "chain_ok": true
+    },
+    {
+      "sequence": 5,
+      "type": 2,
+      "records": 154,
+      "compressed": true,
+      "raw_bytes": 23100,
+      "stored_bytes": 11850,
+      "stored_crc_ok": true,
+      "raw_crc_ok": true,
+      "chain_ok": true
+    },
+    {
+      "sequence": 6,
+      "type": 4,
+      "records": 1,
+      "compressed": false,
+      "raw_bytes": 60,
+      "stored_bytes": 60,
+      "stored_crc_ok": true,
+      "raw_crc_ok": true,
+      "chain_ok": true,
+      "summary": {
+        "session_seed": "0x4b43534545443431",
+        "start_time_ns": 1700000000000000000,
+        "end_time_ns": 1700000010100000000,
+        "frames_seen": 300,
+        "keyframes_stored": 63,
+        "proposals_seen": 567,
+        "events_committed": 592,
+        "rejected_proposals": 0,
+        "raw_input_bytes": 17280000,
+        "stored_bytes": 79053
+      }
+    }
+  ],
+  "integrity": {
+    "header_crc_ok": true,
+    "chunk_crc_ok": true,
+    "chain_ok": true,
+    "complete": true,
+    "sha256": "b70010f3435608f6e1baa7dc4bd04edb151385413383130b45f529275bfe008c"
+  }
+}

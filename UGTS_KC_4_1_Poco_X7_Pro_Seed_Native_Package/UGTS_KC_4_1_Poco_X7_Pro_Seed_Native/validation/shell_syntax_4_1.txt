@@ -1,0 +1,7 @@
+PASS: shell syntax
+android_project/gradlew
+tools/build_android.sh
+tools/deploy_poco_x7_pro.sh
+tools/pull_latest_session.sh
+tools/run_android_mock_syntax.sh
+tools/run_host_validation.sh

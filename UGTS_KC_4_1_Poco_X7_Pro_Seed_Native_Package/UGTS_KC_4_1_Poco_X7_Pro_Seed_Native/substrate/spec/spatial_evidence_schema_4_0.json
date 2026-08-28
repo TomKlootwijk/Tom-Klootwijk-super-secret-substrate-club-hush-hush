@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ugts-kc-spatial-evidence-project-4.0",
+  "title": "UGTS-KC 4.0 Spatial Evidence Project",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "metadata",
+    "capture_profiles",
+    "supports",
+    "compatibility_policies",
+    "verification_policy",
+    "route_policies",
+    "voxel_profile",
+    "ray_profile",
+    "initial_map",
+    "android_implementation_status"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "ugts-kc-spatial-evidence-project-4.0"},
+    "metadata": {"$ref": "#/$defs/metadata"},
+    "capture_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/captureProfile"}
+    },
+    "supports": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/support"}
+    },
+    "compatibility_policies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/compatibilityPolicy"}
+    },
+    "verification_policy": {"type": "object"},
+    "route_policies": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "voxel_profile": {"type": "object"},
+    "ray_profile": {"type": "object"},
+    "initial_map": {"$ref": "#/$defs/mapState"},
+    "android_implementation_status": {"enum": ["deferred", "reference_only"]}
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "quat": {
+      "type": "array",
+      "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}, {"type": "number"}],
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "title", "author", "release"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "author": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "release": {"type": "string"},
+        "requester_attribution": {"type": "object"},
+        "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "captureProfile": {
+      "type": "object",
+      "required": ["id", "device_family", "camera_model", "calibration_hash", "scale_mode", "units_per_meter", "coordinate_frame", "timestamp_unit", "model_versions", "privacy_policy"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "device_family": {"type": "string", "minLength": 1},
+        "camera_model": {"type": "string", "minLength": 1},
+        "calibration_hash": {"type": "string"},
+        "scale_mode": {"enum": ["metric_calibrated", "anchored", "relative", "unknown"]},
+        "units_per_meter": {"type": "number", "exclusiveMinimum": 0},
+        "coordinate_frame": {"type": "string"},
+        "timestamp_unit": {"type": "string"},
+        "model_versions": {"type": "object", "additionalProperties": {"type": "string"}},
+        "privacy_policy": {"enum": ["local_only", "redacted_export", "consented_sync", "unrestricted"]},
+        "scale_anchor_id": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "support": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["id", "type", "center", "radius"],
+          "properties": {
+            "id": {"type": "string"},
+            "type": {"const": "sphere"},
+            "center": {"$ref": "#/$defs/vec3"},
+            "radius": {"type": "number", "exclusiveMinimum": 0}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["id", "type", "minimum", "maximum"],
+          "properties": {
+            "id": {"type": "string"},
+            "type": {"const": "aabb"},
+            "minimum": {"$ref": "#/$defs/vec3"},
+            "maximum": {"$ref": "#/$defs/vec3"}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["id", "type", "apex", "axis", "near", "far", "cos_half_angle"],
+          "properties": {
+            "id": {"type": "string"},
+            "type": {"const": "cone_frustum"},
+            "apex": {"$ref": "#/$defs/vec3"},
+            "axis": {"$ref": "#/$defs/vec3"},
+            "near": {"type": "number", "minimum": 0},
+            "far": {"type": "number", "exclusiveMinimum": 0},
+            "cos_half_angle": {"type": "number", "minimum": -1, "maximum": 1}
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "compatibilityPolicy": {
+      "type": "object",
+      "required": ["id", "required_tags", "forbidden_tags", "allowed_kinds", "allowed_dynamic_states", "semantic_equals"],
+      "properties": {
+        "id": {"type": "string"},
+        "required_tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "forbidden_tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "allowed_kinds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "allowed_dynamic_states": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "floor_id": {"type": ["string", "null"]},
+        "semantic_equals": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "pose": {
+      "type": "object",
+      "required": ["position", "orientation"],
+      "properties": {
+        "position": {"$ref": "#/$defs/vec3"},
+        "orientation": {"$ref": "#/$defs/quat"}
+      },
+      "additionalProperties": false
+    },
+    "uncertainty": {
+      "type": "object",
+      "required": ["sigma", "confidence_level", "max_error", "position_bound"],
+      "properties": {
+        "sigma": {"$ref": "#/$defs/vec3"},
+        "confidence_level": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "max_error": {"type": ["number", "null"], "minimum": 0},
+        "position_bound": {"type": "number", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "mapNode": {
+      "type": "object",
+      "required": ["id", "kind", "pose", "uncertainty", "semantic", "state", "evidence_ids", "lineage", "revision"],
+      "properties": {
+        "id": {"type": "string"},
+        "kind": {"type": "string"},
+        "pose": {"$ref": "#/$defs/pose"},
+        "uncertainty": {"$ref": "#/$defs/uncertainty"},
+        "semantic": {"type": "object"},
+        "state": {"type": "object"},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "lineage": {"type": "array", "items": {"type": "string"}},
+        "revision": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "mapEdge": {
+      "type": "object",
+      "required": ["id", "source", "target", "kind", "directed", "state", "metrics", "evidence_ids", "lineage", "revision"],
+      "properties": {
+        "id": {"type": "string"},
+        "source": {"type": "string"},
+        "target": {"type": "string"},
+        "kind": {"type": "string"},
+        "directed": {"type": "boolean"},
+        "state": {"type": "object"},
+        "metrics": {"type": "object", "additionalProperties": {"type": "number"}},
+        "evidence_ids": {"type": "array", "items": {"type": "string"}},
+        "lineage": {"type": "array", "items": {"type": "string"}},
+        "revision": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "mapState": {
+      "type": "object",
+      "required": ["schema", "metadata", "nodes", "edges"],
+      "properties": {
+        "schema": {"const": "ugts-kc-spatial-map-state-4.0"},
+        "metadata": {"type": "object"},
+        "nodes": {"type": "array", "items": {"$ref": "#/$defs/mapNode"}},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/mapEdge"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

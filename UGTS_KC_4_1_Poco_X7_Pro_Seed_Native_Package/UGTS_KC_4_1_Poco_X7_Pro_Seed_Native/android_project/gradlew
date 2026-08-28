@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+VERSION=8.13
+DIST="gradle-${VERSION}-bin.zip"
+URL="https://services.gradle.org/distributions/${DIST}"
+# Official Gradle 8.13 binary distribution SHA-256.
+SHA256="20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78"
+CACHE="${GRADLE_USER_HOME:-$HOME/.gradle}/wrapper/dists/ugts41-gradle-${VERSION}"
+ZIP="$CACHE/$DIST"
+HOME_DIR="$CACHE/gradle-${VERSION}"
+mkdir -p "$CACHE"
+if [[ ! -x "$HOME_DIR/bin/gradle" ]]; then
+  command -v curl >/dev/null || { echo "curl is required" >&2; exit 1; }
+  curl -fL --retry 3 "$URL" -o "$ZIP"
+  ACTUAL="$(sha256sum "$ZIP" | awk '{print $1}')"
+  if [[ "$ACTUAL" != "$SHA256" ]]; then
+    echo "Gradle distribution SHA mismatch: $ACTUAL" >&2
+    echo "Verify the current official checksum before editing this pin." >&2
+    exit 2
+  fi
+  rm -rf "$HOME_DIR"
+  unzip -q "$ZIP" -d "$CACHE"
+fi
+exec "$HOME_DIR/bin/gradle" -p "$ROOT" "$@"

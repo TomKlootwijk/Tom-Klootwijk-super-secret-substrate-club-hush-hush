@@ -1,0 +1,13 @@
+#include "device_profile.hpp"
+#include "android_log.hpp"
+#include <dlfcn.h>
+#include <sys/system_properties.h>
+#include <algorithm>
+#include <cctype>
+#include <fstream>
+#include <thread>
+namespace ugts41::android {namespace {std::string prop(const char*n){char v[PROP_VALUE_MAX]{};__system_property_get(n,v);return v;}std::string low(std::string s){std::transform(s.begin(),s.end(),s.begin(),[](unsigned char c){return char(std::tolower(c));});return s;}bool has(const std::string&a,const std::string&b){return low(a).find(low(b))!=std::string::npos;}std::uint32_t ram(){std::ifstream f("/proc/meminfo");std::string k,u;std::uint64_t kb=0;if(f>>k>>kb>>u)return kb/1024;return 4096;}}
+DeviceInfo detect_device_info(std::string gpu){DeviceInfo i;i.manufacturer=prop("ro.product.manufacturer");i.model=prop("ro.product.model");i.device=prop("ro.product.device");i.gpu=std::move(gpu);i.ram_mb=ram();i.cpu_cores=std::max(1U,std::thread::hardware_concurrency());auto t=i.manufacturer+" "+i.model+" "+i.device;i.display_refresh_hz=(has(t,"poco x7 pro")||has(t,"2412dpc0")||has(t,"rodin"))?120:60;return i;}
+RuntimeProfile select_runtime_profile(const DeviceInfo&i,std::string requested){auto all=i.manufacturer+" "+i.model+" "+i.device+" "+i.gpu;bool poco=has(all,"poco x7 pro")||has(all,"2412dpc0")||has(all,"rodin"),g720=has(all,"mali-g720");RuntimeProfile p;p.features={160,90,16,9,80,15};if((requested=="poco_x7_pro_12gb"||requested=="auto")&&poco&&g720&&i.ram_mb>=10000){p.id="poco_x7_pro_12gb_seed";p.camera_width=1280;p.camera_height=720;p.camera_fps=30;p.presentation_fps=120;p.features.feature_budget=128;p.features.gradient_floor=12;p.chunk_bytes=128U*1024U;p.poco_optimized=true;}else if((requested=="poco_x7_pro"||requested=="auto")&&poco){p.id="poco_x7_pro_seed";p.camera_width=960;p.camera_height=540;p.camera_fps=30;p.presentation_fps=120;p.features.feature_budget=96;p.chunk_bytes=96U*1024U;p.poco_optimized=true;}else if(i.ram_mb>=6000){p.id="android_high_seed";p.camera_width=960;p.camera_height=540;p.presentation_fps=90;p.features.feature_budget=96;p.chunk_bytes=96U*1024U;}else{p.id="android_balanced_seed";p.camera_width=640;p.camera_height=480;p.camera_fps=24;p.presentation_fps=60;p.features.feature_budget=64;}UGTS_LOGI("profile=%s model=%s device=%s gpu=%s ram=%uMB",p.id.c_str(),i.model.c_str(),i.device.c_str(),i.gpu.c_str(),i.ram_mb);return p;}
+void request_window_frame_rate(ANativeWindow*w,float fps){if(!w||fps<=0)return;using Fn=int(*)(ANativeWindow*,float,std::int8_t);void*lib=dlopen("libandroid.so",RTLD_NOW);if(!lib)return;auto fn=reinterpret_cast<Fn>(dlsym(lib,"ANativeWindow_setFrameRate"));if(fn)fn(w,fps,0);dlclose(lib);}
+}

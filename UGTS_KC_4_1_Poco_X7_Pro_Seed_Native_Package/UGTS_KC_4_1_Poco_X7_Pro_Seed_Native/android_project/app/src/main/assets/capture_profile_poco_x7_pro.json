@@ -1,0 +1,12 @@
+{
+  "schema": "ugts-kc-native-capture-profile-4.1",
+  "id": "poco_x7_pro_12gb_seed",
+  "device_family": "POCO X7 Pro",
+  "expected_soc": "MediaTek Dimensity 8400-Ultra",
+  "expected_gpu": "Mali-G720",
+  "camera": {"format": "YUV_420_888", "requested_width": 1280, "requested_height": 720, "fps": 30},
+  "analysis": {"width": 160, "height": 90, "feature_budget": 128, "seeded_sampling": "splitmix64"},
+  "storage": {"format": "KSEED41", "raw_frame_retention": false, "chunk_compression": "varint_delta_plus_conditional_zlib", "integrity": "CRC32_plus_SHA256_chain"},
+  "presentation": {"backend": "OpenGL_ES_3_0", "ordered_dither": "Bayer_8x8", "ray_tracing": false},
+  "authority": "model_and_camera_outputs_are_proposals; only verified ledger commits mutate authoritative state"
+}

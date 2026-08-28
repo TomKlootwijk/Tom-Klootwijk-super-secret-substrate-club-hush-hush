@@ -1,0 +1,302 @@
+[
+  {
+    "id": "M510",
+    "name": "NativeActivity spatial evidence shell",
+    "definition": "Android lifecycle delegates to a C++20 evidence engine."
+  },
+  {
+    "id": "M511",
+    "name": "POCO arm64 product flavor",
+    "definition": "A named arm64-only flavor targets owner-device deployment."
+  },
+  {
+    "id": "M512",
+    "name": "Universal Android fallback",
+    "definition": "A multi-ABI flavor preserves portable testing."
+  },
+  {
+    "id": "M513",
+    "name": "Camera runtime permission gate",
+    "definition": "Camera startup is blocked until Android permission is granted."
+  },
+  {
+    "id": "M514",
+    "name": "Rear-camera capability selection",
+    "definition": "The NDK camera selector chooses a rear YUV stream nearest the requested size."
+  },
+  {
+    "id": "M515",
+    "name": "YUV luma-only acquisition",
+    "definition": "The default pipeline copies only the measured Y plane."
+  },
+  {
+    "id": "M516",
+    "name": "Latest-frame bounded buffer",
+    "definition": "Camera callback replacement prevents unbounded frame queues."
+  },
+  {
+    "id": "M517",
+    "name": "Capture calibration descriptor hash",
+    "definition": "Camera ID, stream, focal and sensor metadata produce a session hash."
+  },
+  {
+    "id": "M518",
+    "name": "NDK accelerometer intake",
+    "definition": "Latest acceleration is timestamped with frame observations."
+  },
+  {
+    "id": "M519",
+    "name": "NDK gyroscope intake",
+    "definition": "Latest angular velocity is timestamped with frame observations."
+  },
+  {
+    "id": "M520",
+    "name": "NDK rotation-vector intake",
+    "definition": "Orientation quaternion is normalized before storage."
+  },
+  {
+    "id": "M521",
+    "name": "Seeded analysis tie-breaking",
+    "definition": "SplitMix64 deterministically resolves sparse candidate ordering."
+  },
+  {
+    "id": "M522",
+    "name": "Fixed 160x90 analysis surface",
+    "definition": "A bounded low-resolution luma field drives extraction and display."
+  },
+  {
+    "id": "M523",
+    "name": "Grid-distributed feature budget",
+    "definition": "Candidates are distributed across spatial cells before global trimming."
+  },
+  {
+    "id": "M524",
+    "name": "Gradient evidence floor",
+    "definition": "Low-texture candidates are excluded before proposal creation."
+  },
+  {
+    "id": "M525",
+    "name": "Luma signature keyframe gate",
+    "definition": "A 64-bit block signature detects visual change."
+  },
+  {
+    "id": "M526",
+    "name": "Orientation keyframe gate",
+    "definition": "Quaternion angle change can promote a keyframe."
+  },
+  {
+    "id": "M527",
+    "name": "Minimum keyframe interval",
+    "definition": "Fast duplicates are rejected to bound storage."
+  },
+  {
+    "id": "M528",
+    "name": "Maximum keyframe interval",
+    "definition": "Long gaps force periodic evidence capture."
+  },
+  {
+    "id": "M529",
+    "name": "Exact voxel key 64-bit profile",
+    "definition": "Level4 and signed XYZ20 fields pack into one key."
+  },
+  {
+    "id": "M530",
+    "name": "Exact ray key 64-bit profile",
+    "definition": "Log-depth20, azimuth18, elevation14 and time12 form a ray key."
+  },
+  {
+    "id": "M531",
+    "name": "Stable seeded identifier namespaces",
+    "definition": "Session seed, namespace and address form repeatable stable IDs."
+  },
+  {
+    "id": "M532",
+    "name": "Typed native event proposal",
+    "definition": "Kind, confidence, error, uncertainty, metrics and tags are explicit."
+  },
+  {
+    "id": "M533",
+    "name": "Ordered support gate",
+    "definition": "A proposal outside declared support is rejected."
+  },
+  {
+    "id": "M534",
+    "name": "Ordered compatibility gate",
+    "definition": "Semantic/topological incompatibility is reason coded."
+  },
+  {
+    "id": "M535",
+    "name": "Ordered guard gate",
+    "definition": "Only allowed guard classes continue to commit."
+  },
+  {
+    "id": "M536",
+    "name": "Ordered confidence gate",
+    "definition": "Non-finite or low-confidence candidates are rejected."
+  },
+  {
+    "id": "M537",
+    "name": "Ordered numeric-error gate",
+    "definition": "Event error must remain under policy margin."
+  },
+  {
+    "id": "M538",
+    "name": "Ordered uncertainty gate",
+    "definition": "Unbounded or excessive uncertainty is rejected."
+  },
+  {
+    "id": "M539",
+    "name": "Metric availability gate",
+    "definition": "Metric-required events fail when no metric source is ready."
+  },
+  {
+    "id": "M540",
+    "name": "Single ledger mutation boundary",
+    "definition": "Only verified commit applies authoritative state changes."
+  },
+  {
+    "id": "M541",
+    "name": "Event pre-state hash",
+    "definition": "Every event records the previous canonical state digest."
+  },
+  {
+    "id": "M542",
+    "name": "Event post-state hash",
+    "definition": "Every accepted event produces the next canonical state digest."
+  },
+  {
+    "id": "M543",
+    "name": "Stable map-node evidence accumulation",
+    "definition": "Evidence updates stable identity without coordinate-only merging."
+  },
+  {
+    "id": "M544",
+    "name": "Stable route-node record",
+    "definition": "Route positions and uncertainty remain distinct from identifiers."
+  },
+  {
+    "id": "M545",
+    "name": "Stable route-edge record",
+    "definition": "Passability, clearance, slope and confidence are typed."
+  },
+  {
+    "id": "M546",
+    "name": "Seed-generated deterministic route fixture",
+    "definition": "Offline testing reconstructs a fixed route graph from one seed."
+  },
+  {
+    "id": "M547",
+    "name": "Synthetic evidence tag",
+    "definition": "Fallback/demo proposals carry a dedicated high tag bit."
+  },
+  {
+    "id": "M548",
+    "name": "KSEED fixed session header",
+    "definition": "Capture/storage policy is declared in a 128-byte header."
+  },
+  {
+    "id": "M549",
+    "name": "KSEED fixed chunk header",
+    "definition": "Sequence, sizes, CRCs and chain hash use a 64-byte header."
+  },
+  {
+    "id": "M550",
+    "name": "Frame timestamp delta encoding",
+    "definition": "Keyframe time is stored relative to the previous retained frame."
+  },
+  {
+    "id": "M551",
+    "name": "Frame index delta encoding",
+    "definition": "Frame indices use unsigned varint deltas."
+  },
+  {
+    "id": "M552",
+    "name": "Quantized inertial summaries",
+    "definition": "Quaternion, acceleration and gyro values use bounded int16 fields."
+  },
+  {
+    "id": "M553",
+    "name": "Morton feature ordering",
+    "definition": "2D feature addresses are sorted for small deltas."
+  },
+  {
+    "id": "M554",
+    "name": "Varint feature deltas",
+    "definition": "Morton, score and record lengths use base-128 varints."
+  },
+  {
+    "id": "M555",
+    "name": "Conditional zlib chunk compression",
+    "definition": "Compression is accepted only when it beats raw payload plus margin."
+  },
+  {
+    "id": "M556",
+    "name": "Header CRC32",
+    "definition": "The session header has an independent integrity check."
+  },
+  {
+    "id": "M557",
+    "name": "Stored-payload CRC32",
+    "definition": "Compressed/transmitted bytes are checked before decode."
+  },
+  {
+    "id": "M558",
+    "name": "Decoded-payload CRC32",
+    "definition": "The reconstructed raw chunk is checked after decompression."
+  },
+  {
+    "id": "M559",
+    "name": "SHA-256 chunk chain",
+    "definition": "Each chunk authenticates order and predecessor bytes at file level."
+  },
+  {
+    "id": "M560",
+    "name": "Exact summary byte count",
+    "definition": "The final summary predicts and records complete file size."
+  },
+  {
+    "id": "M561",
+    "name": "App-private session storage",
+    "definition": "Native files are written under package-private files/sessions."
+  },
+  {
+    "id": "M562",
+    "name": "No raw-frame default",
+    "definition": "POCO seed profile disables raw image retention."
+  },
+  {
+    "id": "M563",
+    "name": "No network permission default",
+    "definition": "The package has no declared internet permission."
+  },
+  {
+    "id": "M564",
+    "name": "Bayer 8x8 display projection",
+    "definition": "Ordered dither presents luma and state with one R8 texture."
+  },
+  {
+    "id": "M565",
+    "name": "Renderer non-authority rule",
+    "definition": "Display output cannot mutate ledger state."
+  },
+  {
+    "id": "M566",
+    "name": "High-refresh presentation request",
+    "definition": "ANativeWindow frame-rate request targets 120 Hz when supported."
+  },
+  {
+    "id": "M567",
+    "name": "Thermal feature-budget reduction",
+    "definition": "Thermal tiers reduce frame rate and feature count."
+  },
+  {
+    "id": "M568",
+    "name": "Thermal capture pause",
+    "definition": "Severe status pauses authoritative capture instead of producing degraded claims."
+  },
+  {
+    "id": "M569",
+    "name": "Codex owner-device handoff",
+    "definition": "Build, install, log, pull and validation scripts define the deployment gate."
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "schema": "ugts-kc-demo-summary-4.1",
+  "session_seed": "0x4b43534545443431",
+  "frames_seen": 300,
+  "keyframes_stored": 63,
+  "events_committed": 592,
+  "raw_luma_bytes": 17280000,
+  "kseed_bytes": 79053,
+  "raw_to_kseed_ratio": 218.59,
+  "integrity_verified": true,
+  "state_hash": "a397814f1d77d2363fea8f87983435a2631af2eeb145529ee3fc3af07fdc6990",
+  "scope": "synthetic deterministic host fixture, not a phone benchmark"
+}

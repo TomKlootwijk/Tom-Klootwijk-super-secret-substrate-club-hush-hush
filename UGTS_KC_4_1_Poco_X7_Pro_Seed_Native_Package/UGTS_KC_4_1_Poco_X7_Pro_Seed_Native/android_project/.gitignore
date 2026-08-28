@@ -1,0 +1,7 @@
+.gradle/
+.gradle-bootstrap/
+local.properties
+**/build/
+**/.cxx/
+*.iml
+.idea/

@@ -1,0 +1,61 @@
+id,name,definition
+M510,NativeActivity spatial evidence shell,Android lifecycle delegates to a C++20 evidence engine.
+M511,POCO arm64 product flavor,A named arm64-only flavor targets owner-device deployment.
+M512,Universal Android fallback,A multi-ABI flavor preserves portable testing.
+M513,Camera runtime permission gate,Camera startup is blocked until Android permission is granted.
+M514,Rear-camera capability selection,The NDK camera selector chooses a rear YUV stream nearest the requested size.
+M515,YUV luma-only acquisition,The default pipeline copies only the measured Y plane.
+M516,Latest-frame bounded buffer,Camera callback replacement prevents unbounded frame queues.
+M517,Capture calibration descriptor hash,"Camera ID, stream, focal and sensor metadata produce a session hash."
+M518,NDK accelerometer intake,Latest acceleration is timestamped with frame observations.
+M519,NDK gyroscope intake,Latest angular velocity is timestamped with frame observations.
+M520,NDK rotation-vector intake,Orientation quaternion is normalized before storage.
+M521,Seeded analysis tie-breaking,SplitMix64 deterministically resolves sparse candidate ordering.
+M522,Fixed 160x90 analysis surface,A bounded low-resolution luma field drives extraction and display.
+M523,Grid-distributed feature budget,Candidates are distributed across spatial cells before global trimming.
+M524,Gradient evidence floor,Low-texture candidates are excluded before proposal creation.
+M525,Luma signature keyframe gate,A 64-bit block signature detects visual change.
+M526,Orientation keyframe gate,Quaternion angle change can promote a keyframe.
+M527,Minimum keyframe interval,Fast duplicates are rejected to bound storage.
+M528,Maximum keyframe interval,Long gaps force periodic evidence capture.
+M529,Exact voxel key 64-bit profile,Level4 and signed XYZ20 fields pack into one key.
+M530,Exact ray key 64-bit profile,"Log-depth20, azimuth18, elevation14 and time12 form a ray key."
+M531,Stable seeded identifier namespaces,"Session seed, namespace and address form repeatable stable IDs."
+M532,Typed native event proposal,"Kind, confidence, error, uncertainty, metrics and tags are explicit."
+M533,Ordered support gate,A proposal outside declared support is rejected.
+M534,Ordered compatibility gate,Semantic/topological incompatibility is reason coded.
+M535,Ordered guard gate,Only allowed guard classes continue to commit.
+M536,Ordered confidence gate,Non-finite or low-confidence candidates are rejected.
+M537,Ordered numeric-error gate,Event error must remain under policy margin.
+M538,Ordered uncertainty gate,Unbounded or excessive uncertainty is rejected.
+M539,Metric availability gate,Metric-required events fail when no metric source is ready.
+M540,Single ledger mutation boundary,Only verified commit applies authoritative state changes.
+M541,Event pre-state hash,Every event records the previous canonical state digest.
+M542,Event post-state hash,Every accepted event produces the next canonical state digest.
+M543,Stable map-node evidence accumulation,Evidence updates stable identity without coordinate-only merging.
+M544,Stable route-node record,Route positions and uncertainty remain distinct from identifiers.
+M545,Stable route-edge record,"Passability, clearance, slope and confidence are typed."
+M546,Seed-generated deterministic route fixture,Offline testing reconstructs a fixed route graph from one seed.
+M547,Synthetic evidence tag,Fallback/demo proposals carry a dedicated high tag bit.
+M548,KSEED fixed session header,Capture/storage policy is declared in a 128-byte header.
+M549,KSEED fixed chunk header,"Sequence, sizes, CRCs and chain hash use a 64-byte header."
+M550,Frame timestamp delta encoding,Keyframe time is stored relative to the previous retained frame.
+M551,Frame index delta encoding,Frame indices use unsigned varint deltas.
+M552,Quantized inertial summaries,"Quaternion, acceleration and gyro values use bounded int16 fields."
+M553,Morton feature ordering,2D feature addresses are sorted for small deltas.
+M554,Varint feature deltas,"Morton, score and record lengths use base-128 varints."
+M555,Conditional zlib chunk compression,Compression is accepted only when it beats raw payload plus margin.
+M556,Header CRC32,The session header has an independent integrity check.
+M557,Stored-payload CRC32,Compressed/transmitted bytes are checked before decode.
+M558,Decoded-payload CRC32,The reconstructed raw chunk is checked after decompression.
+M559,SHA-256 chunk chain,Each chunk authenticates order and predecessor bytes at file level.
+M560,Exact summary byte count,The final summary predicts and records complete file size.
+M561,App-private session storage,Native files are written under package-private files/sessions.
+M562,No raw-frame default,POCO seed profile disables raw image retention.
+M563,No network permission default,The package has no declared internet permission.
+M564,Bayer 8x8 display projection,Ordered dither presents luma and state with one R8 texture.
+M565,Renderer non-authority rule,Display output cannot mutate ledger state.
+M566,High-refresh presentation request,ANativeWindow frame-rate request targets 120 Hz when supported.
+M567,Thermal feature-budget reduction,Thermal tiers reduce frame rate and feature count.
+M568,Thermal capture pause,Severe status pauses authoritative capture instead of producing degraded claims.
+M569,Codex owner-device handoff,"Build, install, log, pull and validation scripts define the deployment gate."

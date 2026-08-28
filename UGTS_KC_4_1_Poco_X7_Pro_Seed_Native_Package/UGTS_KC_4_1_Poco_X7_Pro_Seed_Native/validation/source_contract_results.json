@@ -1,0 +1,224 @@
+{
+  "schema": "ugts-kc-source-contract-results-4.1",
+  "root": "UGTS_KC_4_1_Poco_X7_Pro_Seed_Native",
+  "passed": 43,
+  "total": 43,
+  "all_passed": true,
+  "checks": [
+    {
+      "name": "version_file",
+      "passed": true,
+      "detail": "4.1.0"
+    },
+    {
+      "name": "required_files",
+      "passed": true,
+      "detail": "11"
+    },
+    {
+      "name": "agp_pin",
+      "passed": true,
+      "detail": "AGP 8.13.2"
+    },
+    {
+      "name": "compile_target_sdk",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "ndk_cmake_pin",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "poco_flavor_arm64",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "owner_handoff_debuggable",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "native_activity",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "camera_permission",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "no_internet_permission",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "gles3_required",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "native_libraries",
+      "passed": true,
+      "detail": "camera2ndk/mediandk/GLESv3/z"
+    },
+    {
+      "name": "cpp20",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "camera_yuv",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "camera_latest_bounded",
+      "passed": true,
+      "detail": "single latest frame state"
+    },
+    {
+      "name": "imu_sensors",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "proposal_then_commit",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "synthetic_tag",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "thermal_event",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "app_private_sessions",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "verifier_gates",
+      "passed": true,
+      "detail": "support_ok,compatibility_ok,GuardStatus,confidence,numeric_error,uncertainty,metric_required"
+    },
+    {
+      "name": "ledger_pre_post_hash",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "spatial_key_profiles",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "seeded_identifiers",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "kseed_magic",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "kseed_integrity",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "kseed_conditional_zlib",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "kseed_final_size",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "profile_no_raw_frames",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "profile_no_ray_tracing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "profile_authority",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "bayer_8x8_shader",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "host_tests_23",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "android_mock_syntax_9",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "independent_kseed_integrity",
+      "passed": true,
+      "detail": "79053"
+    },
+    {
+      "name": "demo_exact_size",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "demo_scope_boundary",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "demo_expected_counts",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "mechanisms_contiguous",
+      "passed": true,
+      "detail": "60 rows"
+    },
+    {
+      "name": "upstream_source_manifest",
+      "passed": true,
+      "detail": "34 files"
+    },
+    {
+      "name": "upstream_source_tree_hash",
+      "passed": true,
+      "detail": "e0305f31f5c78d262961f684e11113028bba6c838db93dc2bcdfa1c052482376"
+    },
+    {
+      "name": "no_stale_build_caches",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "honest_release_boundaries",
+      "passed": true,
+      "detail": ""
+    }
+  ]
+}
