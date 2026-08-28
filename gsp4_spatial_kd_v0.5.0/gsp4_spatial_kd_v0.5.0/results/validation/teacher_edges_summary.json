@@ -1,0 +1,19 @@
+{
+  "output": "examples/teacher_edges_smoke.ugte",
+  "summary": {
+    "edges": 40,
+    "format": "UGTE1",
+    "metadata": {
+      "graph_schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+      "teacher": "deterministic package smoke labeler"
+    },
+    "positive_mean": 0.8199999928474426,
+    "relations": {
+      "compatible_with": 1,
+      "has_property": 5,
+      "instance_of": 9,
+      "near": 19,
+      "observes": 6
+    }
+  }
+}

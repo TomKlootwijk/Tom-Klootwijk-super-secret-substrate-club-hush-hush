@@ -1,0 +1,15 @@
+UGTS GPU-native validation device
+EGL: 1.5 | Google Inc. (Google) | 1.5 (ANGLE 2.1 git hash: unknown hash)
+GL vendor: Google Inc. (Google)
+GL renderer: ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)
+GL version: OpenGL ES 3.1 (ANGLE 2.1 git hash: unknown hash)
+GLSL: OpenGL ES GLSL ES 3.10 (ANGLE 2.1 git hash: unknown hash)
+Max work-group invocations: 256
+Max work-group count: 65535,65535,65535
+Max work-group size: 256,256,64
+Max shared memory bytes: 32768
+Max compute shader storage blocks: 22
+Max SSBO bindings: 64
+Max SSBO block bytes: 1073741824
+Timing method: host wall clock around dispatch + memory barrier + glFinish.
+Interpretation: API-native compile/dispatch validation on a software Vulkan device; not a physical-GPU performance claim.

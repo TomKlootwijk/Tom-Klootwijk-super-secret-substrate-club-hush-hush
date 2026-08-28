@@ -1,0 +1,37 @@
+Format                      : KSGP1 v1
+Predictor                   : full Vallado/CSSI SGP4 + SDP4 deep-space
+Reference epoch             : 2026-08-16T05:33:12.693024Z
+Reference frame             : TEME; GMST TEME->PEF query conversion
+Gravity constants           : WGS-72
+Source label                : CelesTrak OMM CSV / full SGP4
+Source bytes                : 8454
+Source FNV-1a64             : 0x53aa339f14059949
+Container bytes             : 9581
+Compact mean-element seeds  : 58 x 128 bytes
+Compiled coefficient state  : 82592 bytes (load-time, not stored)
+Hash-linked timeline nodes  : 7
+Timeline duration           : 604800.000000 s
+Timeline step               : 60.000000 s
+Timeline state samples      : 10081
+Equivalent dense float4     : 9355168 bytes
+Equivalent dense pos+vel    : 28065504 bytes
+Ratio vs dense float4       : 976.429183x
+Ratio vs dense pos+vel      : 2929.287548x
+Near-Earth records          : 11
+Deep-space non-resonant     : 36
+Synchronous resonance       : 11
+Half-day resonance          : 0
+Default DUT1                : 0.000000 s
+Default elevation mask      : 10.000000 degrees
+Terminal chain hash         : 0x5e02bf1d1e3943f8
+Payload hash                : 0x1f83c1f352da40c3
+
+Seed preview:
+  [0] NORAD 19548, PRN 0, route 5, branch deep/irez=1, e=0.003721, n=1.002765 rev/day, TDRS 3
+  [1] NORAD 20580, PRN 0, route 2, branch near/irez=0, e=0.000169, n=15.311924 rev/day, HST
+  [2] NORAD 21639, PRN 0, route 5, branch deep/irez=1, e=0.000768, n=1.002803 rev/day, TDRS 5
+  [3] NORAD 22314, PRN 0, route 5, branch deep/irez=1, e=0.000901, n=1.002746 rev/day, TDRS 6
+  [4] NORAD 23613, PRN 0, route 5, branch deep/irez=1, e=0.001085, n=1.002702 rev/day, TDRS 7
+  [5] NORAD 25544, PRN 0, route 1, branch near/irez=0, e=0.000705, n=15.492397 rev/day, ISS (ZARYA)
+  [6] NORAD 25994, PRN 0, route 4, branch near/irez=0, e=0.000371, n=14.611335 rev/day, TERRA
+  [7] NORAD 26388, PRN 0, route 0, branch deep/irez=1, e=0.000318, n=1.002697 rev/day, TDRS 8

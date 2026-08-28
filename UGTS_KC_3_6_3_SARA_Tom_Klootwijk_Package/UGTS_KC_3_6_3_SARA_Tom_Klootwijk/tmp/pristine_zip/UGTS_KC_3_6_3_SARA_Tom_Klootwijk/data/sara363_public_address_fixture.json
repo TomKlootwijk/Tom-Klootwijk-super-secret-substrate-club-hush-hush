@@ -1,0 +1,13 @@
+{
+  "address": "bc1q7ydrtdn8z62xhslqyqtyt38mm4e2c4h3mxjkug",
+  "hrp": "bc",
+  "checksum_family": "bech32",
+  "checksum_valid": true,
+  "witness_version": 0,
+  "witness_program_hex": "f11a35b66716946bc3e0201645c4fbdd72ac56f1",
+  "witness_program_bytes": 20,
+  "script_pubkey_hex": "0014f11a35b66716946bc3e0201645c4fbdd72ac56f1",
+  "address_type": "p2wpkh",
+  "context_label": "user-supplied; ownership not established by package",
+  "allowed_use": "public format/checksum/witness-program/scriptPubKey decode only"
+}

@@ -1,0 +1,30 @@
+{
+  "format": "GSP4-SOURCE-PROVENANCE-1",
+  "generated_date": "2026-08-16",
+  "authorship_provenance": {
+    "name": "Tom Klootwijk",
+    "identifier": "NL200678942",
+    "date": "1990-07-10",
+    "status": "user-supplied; not independently adjudicated"
+  },
+  "inputs": [
+    {
+      "logical_name": "original architecture conversation export",
+      "filename": "Pasted markdown(2).md",
+      "sha256": "52b3308c47c21ad5f06ca93ea429e6d308c210e3b2738c349d9f23c29e7d9d72",
+      "redistributed": false
+    },
+    {
+      "logical_name": "UGTS-GN 1.1 GPU-native addendum",
+      "filename": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum(1).docx",
+      "sha256": "cb95f7e9036e1b89e009c88ae1849ee71cddb3bdb6629c98593e32f3d65254f8",
+      "redistributed": false
+    },
+    {
+      "logical_name": "UGTS-GN source package supplied by user",
+      "filename": "UGTS_GPU_Native_Addendum_Package.zip",
+      "sha256": "185f8cf2e324a9041c38d4c040e062fec1a000292b5a0acfe4173105402a33d9",
+      "redistributed": false
+    }
+  ]
+}

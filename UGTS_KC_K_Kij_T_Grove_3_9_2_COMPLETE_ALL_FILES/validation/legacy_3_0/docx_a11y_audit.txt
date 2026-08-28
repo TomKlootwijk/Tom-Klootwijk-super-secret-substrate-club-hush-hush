@@ -1,0 +1,1 @@
+[a11y] wrote report -> /mnt/data/UGTS_KC_Two_Hands_3_0_Package/validation/docx_a11y_audit.json | high=0 medium=12 low=0

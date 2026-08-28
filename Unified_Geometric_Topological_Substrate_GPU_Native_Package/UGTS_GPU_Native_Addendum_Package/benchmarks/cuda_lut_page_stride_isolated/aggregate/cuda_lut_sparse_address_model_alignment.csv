@@ -1,0 +1,17 @@
+path,hypothetical_128b_residency_mib,member_count,members,hot_glookups_s_median_of_members,hot_rate_min,hot_rate_max,max_to_min_rate_ratio
+global_cg,4.0,6,"target=1,stride=128;target=1,stride=256;target=1,stride=512;target=1,stride=1024;target=1,stride=2048;target=1,stride=4096",42.58790825,42.385917500000005,43.1094455,1.0170700091604716
+global_cg,8.0,6,"target=2,stride=128;target=2,stride=256;target=2,stride=512;target=2,stride=1024;target=2,stride=2048;target=2,stride=4096",42.591117249999996,34.315166,43.111678,1.2563447310731355
+global_cg,12.0,6,"target=3,stride=128;target=3,stride=256;target=3,stride=512;target=3,stride=1024;target=3,stride=2048;target=3,stride=4096",42.59312224999999,21.470073499999998,43.2014685,2.0121714301536975
+global_cg,16.0,6,"target=4,stride=128;target=4,stride=256;target=4,stride=512;target=4,stride=1024;target=4,stride=2048;target=4,stride=4096",42.591517749999994,18.4244395,43.1042825,2.339516624101374
+global_cg,20.0,6,"target=5,stride=128;target=5,stride=256;target=5,stride=512;target=5,stride=1024;target=5,stride=2048;target=5,stride=4096",42.593523000000005,16.972503000000003,43.216331499999995,2.5462556406677312
+global_cg,24.0,6,"target=6,stride=128;target=6,stride=256;target=6,stride=512;target=6,stride=1024;target=6,stride=2048;target=6,stride=4096",42.5967335,16.1068,43.1190795,2.677073006432066
+global_cg,28.0,6,"target=7,stride=128;target=7,stride=256;target=7,stride=512;target=7,stride=1024;target=7,stride=2048;target=7,stride=4096",42.58750725,15.539892,43.0624745,2.771092263704278
+global_cg,32.0,6,"target=8,stride=128;target=8,stride=256;target=8,stride=512;target=8,stride=1024;target=8,stride=2048;target=8,stride=4096",38.4246255,15.1657335,43.111082499999995,2.8426638579663814
+texture_object,4.0,6,"target=1,stride=128;target=1,stride=256;target=1,stride=512;target=1,stride=1024;target=1,stride=2048;target=1,stride=4096",41.785490499999995,41.682844,43.870388500000004,1.052480692056425
+texture_object,8.0,6,"target=2,stride=128;target=2,stride=256;target=2,stride=512;target=2,stride=1024;target=2,stride=2048;target=2,stride=4096",41.783174,34.450587,43.4263315,1.2605396680178484
+texture_object,12.0,6,"target=3,stride=128;target=3,stride=256;target=3,stride=512;target=3,stride=1024;target=3,stride=2048;target=3,stride=4096",41.787807,21.50643,43.418827,2.018876540643891
+texture_object,16.0,6,"target=4,stride=128;target=4,stride=256;target=4,stride=512;target=4,stride=1024;target=4,stride=2048;target=4,stride=4096",41.78664825,18.4617495,43.2155055,2.3408131228299895
+texture_object,20.0,6,"target=5,stride=128;target=5,stride=256;target=5,stride=512;target=5,stride=1024;target=5,stride=2048;target=5,stride=4096",41.78857925,17.004671000000002,43.21550499999999,2.5413902450685453
+texture_object,24.0,6,"target=6,stride=128;target=6,stride=256;target=6,stride=512;target=6,stride=1024;target=6,stride=2048;target=6,stride=4096",39.925732499999995,16.135191,43.21220099999999,2.678133838019023
+texture_object,28.0,6,"target=7,stride=128;target=7,stride=256;target=7,stride=512;target=7,stride=1024;target=7,stride=2048;target=7,stride=4096",28.26534575,15.5402115,43.216331499999995,2.780935864354227
+texture_object,32.0,6,"target=8,stride=128;target=8,stride=256;target=8,stride=512;target=8,stride=1024;target=8,stride=2048;target=8,stride=4096",25.689167249999997,15.139084,43.214679,2.8545108145248417

@@ -1,0 +1,1130 @@
+{
+  "$schema": "ugts-kc-game-project-3.9",
+  "audio": {
+    "cues": [
+      {
+        "detune": 0,
+        "duration": 0.11,
+        "envelope": {
+          "attack": 0.002,
+          "decay": 0.025,
+          "release": 0.09,
+          "sustain": 0.45
+        },
+        "frequency": 1318.5102276514797,
+        "id": "collect",
+        "noise": 0,
+        "sweep_to": 1975.533205024496,
+        "volume": 0.18,
+        "waveform": "triangle"
+      },
+      {
+        "detune": 0,
+        "duration": 0.14,
+        "envelope": {
+          "attack": 0.001,
+          "decay": 0.03,
+          "release": 0.12,
+          "sustain": 0.35
+        },
+        "frequency": 130.8127826502993,
+        "id": "damage",
+        "noise": 0.2,
+        "sweep_to": 87.30705785825097,
+        "volume": 0.12,
+        "waveform": "square"
+      },
+      {
+        "detune": 0,
+        "duration": 0.09,
+        "envelope": {
+          "attack": 0.002,
+          "decay": 0.02,
+          "release": 0.06,
+          "sustain": 0.3
+        },
+        "frequency": 220,
+        "id": "dash",
+        "noise": 0,
+        "sweep_to": 880,
+        "volume": 0.13,
+        "waveform": "sawtooth"
+      },
+      {
+        "detune": 0,
+        "duration": 0.5,
+        "envelope": {
+          "attack": 0.01,
+          "decay": 0.1,
+          "release": 0.35,
+          "sustain": 0.55
+        },
+        "frequency": 146.8323839587038,
+        "id": "game_over",
+        "noise": 0,
+        "sweep_to": 110,
+        "volume": 0.16,
+        "waveform": "sine"
+      },
+      {
+        "detune": 0,
+        "duration": 0.12,
+        "envelope": {
+          "attack": 0.005,
+          "decay": 0.04,
+          "release": 0.1,
+          "sustain": 0.25
+        },
+        "frequency": 523.2511306011972,
+        "id": "music_pluck",
+        "noise": 0,
+        "sweep_to": null,
+        "volume": 0.025,
+        "waveform": "sine"
+      },
+      {
+        "detune": 0,
+        "duration": 0.08,
+        "envelope": {
+          "attack": 0.002,
+          "decay": 0.015,
+          "release": 0.05,
+          "sustain": 0.5
+        },
+        "frequency": 783.9908719634985,
+        "id": "save",
+        "noise": 0,
+        "sweep_to": null,
+        "volume": 0.1,
+        "waveform": "sine"
+      },
+      {
+        "detune": 0,
+        "duration": 0.45,
+        "envelope": {
+          "attack": 0.01,
+          "decay": 0.08,
+          "release": 0.3,
+          "sustain": 0.7
+        },
+        "frequency": 523.2511306011972,
+        "id": "win",
+        "noise": 0,
+        "sweep_to": 1046.5022612023945,
+        "volume": 0.17,
+        "waveform": "triangle"
+      }
+    ],
+    "sequences": [
+      {
+        "bpm": 96,
+        "id": "garden_pulse",
+        "length_beats": 8,
+        "loop": true,
+        "notes": [
+          {
+            "beat": 0,
+            "cue_id": "music_pluck",
+            "gain": 0.55,
+            "pitch_ratio": 1
+          },
+          {
+            "beat": 2,
+            "cue_id": "music_pluck",
+            "gain": 0.42,
+            "pitch_ratio": 1.25
+          },
+          {
+            "beat": 4,
+            "cue_id": "music_pluck",
+            "gain": 0.5,
+            "pitch_ratio": 1.5
+          },
+          {
+            "beat": 6,
+            "cue_id": "music_pluck",
+            "gain": 0.42,
+            "pitch_ratio": 1.25
+          }
+        ]
+      }
+    ]
+  },
+  "build": {
+    "debug": false,
+    "minify": false,
+    "single_file": true
+  },
+  "display": {
+    "antialias": true,
+    "background": "#101427",
+    "fullscreen": false,
+    "height": 540,
+    "orientation": "landscape",
+    "pixel_ratio": "device",
+    "scaling": "fit",
+    "width": 960
+  },
+  "input": {
+    "actions": [
+      {
+        "bindings": [
+          {
+            "code": "Space",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "ShiftLeft",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "0",
+            "device": 0,
+            "kind": "gamepad_button",
+            "scale": 1
+          },
+          {
+            "code": "dash",
+            "device": 0,
+            "kind": "touch_axis",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0,
+        "name": "dash",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "KeyL",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0,
+        "name": "load",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "KeyA",
+            "device": 0,
+            "kind": "key",
+            "scale": -1
+          },
+          {
+            "code": "KeyD",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "ArrowLeft",
+            "device": 0,
+            "kind": "key",
+            "scale": -1
+          },
+          {
+            "code": "ArrowRight",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "0",
+            "device": 0,
+            "kind": "gamepad_axis",
+            "scale": 1
+          },
+          {
+            "code": "move_x",
+            "device": 0,
+            "kind": "touch_axis",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0.12,
+        "name": "move_x",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "KeyW",
+            "device": 0,
+            "kind": "key",
+            "scale": -1
+          },
+          {
+            "code": "KeyS",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "ArrowUp",
+            "device": 0,
+            "kind": "key",
+            "scale": -1
+          },
+          {
+            "code": "ArrowDown",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "1",
+            "device": 0,
+            "kind": "gamepad_axis",
+            "scale": 1
+          },
+          {
+            "code": "move_y",
+            "device": 0,
+            "kind": "touch_axis",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0.12,
+        "name": "move_y",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "KeyM",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0,
+        "name": "mute",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "Escape",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "KeyP",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          },
+          {
+            "code": "9",
+            "device": 0,
+            "kind": "gamepad_button",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0,
+        "name": "pause",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "KeyR",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0,
+        "name": "restart",
+        "threshold": 0.5
+      },
+      {
+        "bindings": [
+          {
+            "code": "KeyK",
+            "device": 0,
+            "kind": "key",
+            "scale": 1
+          }
+        ],
+        "combine": "sum",
+        "deadzone": 0,
+        "name": "save",
+        "threshold": 0.5
+      }
+    ]
+  },
+  "metadata": {
+    "author": "",
+    "codename": "KC Elizabeth",
+    "description": "KC Elizabeth starter game",
+    "id": "game.my-kc-elizabeth-game",
+    "license": "All rights reserved",
+    "runtime_version": "3.9.0",
+    "title": "My KC Elizabeth Game",
+    "version": "0.1.0",
+    "website": null
+  },
+  "scenes": {
+    "main": {
+      "background": "#0a0f25",
+      "entities": [
+        {
+          "active": true,
+          "components": {
+            "body": {
+              "body_type": "dynamic",
+              "damping": 1.4,
+              "fixed_rotation": true,
+              "gravity_scale": 0,
+              "mass": 1
+            },
+            "bounds_constraint": {
+              "bounds": {
+                "maximum": [
+                  925,
+                  505
+                ],
+                "minimum": [
+                  35,
+                  35
+                ],
+                "type": "aabb"
+              },
+              "mode": "clamp"
+            },
+            "collider": {
+              "filter": {
+                "layer": 1,
+                "mask": 6,
+                "sensor": false
+              },
+              "shape": {
+                "radius": 19,
+                "type": "circle"
+              }
+            },
+            "player_controller": {
+              "dash_action": "dash",
+              "speed": 230
+            },
+            "transform": {
+              "position": [
+                480,
+                270
+              ],
+              "rotation": 1.5707963267948966,
+              "scale": [
+                1,
+                1
+              ]
+            },
+            "vector_renderer": {
+              "asset_id": "player_ship",
+              "z_index": 10
+            }
+          },
+          "id": "player",
+          "metadata": {},
+          "tags": [
+            "player"
+          ]
+        },
+        {
+          "active": true,
+          "components": {
+            "collectible": {
+              "points": 1,
+              "sound": "collect"
+            },
+            "collider": {
+              "filter": {
+                "layer": 4,
+                "mask": 1,
+                "sensor": true
+              },
+              "shape": {
+                "radius": 22,
+                "type": "circle"
+              }
+            },
+            "pulse": {
+              "amount": 0.1,
+              "speed": 3
+            },
+            "spin": {
+              "speed": 0.8
+            },
+            "transform": {
+              "position": [
+                720,
+                270
+              ],
+              "rotation": 0,
+              "scale": [
+                0.85,
+                0.85
+              ]
+            },
+            "vector_renderer": {
+              "asset_id": "crystal",
+              "z_index": 5
+            }
+          },
+          "id": "first_collectible",
+          "metadata": {},
+          "tags": [
+            "collectible"
+          ]
+        }
+      ],
+      "id": "main",
+      "initial_state": {
+        "score": 0
+      },
+      "rules": {
+        "collect_sound": "collect",
+        "grid": {
+          "enabled": true,
+          "spacing": 64
+        },
+        "player_id": "player",
+        "score_to_win": 1,
+        "win_sound": "win"
+      },
+      "tilemaps": [],
+      "ui": [
+        {
+          "align": "right",
+          "color": "rgba(225,235,255,.72)",
+          "position": [
+            930,
+            30
+          ],
+          "text": "Edit project.json, then rebuild with: python -m ugts_kc3 build-web project.json dist",
+          "type": "text"
+        }
+      ],
+      "world_size": [
+        960,
+        540
+      ]
+    }
+  },
+  "start_scene": "main",
+  "tilemaps": {},
+  "vector_assets": {
+    "crystal": {
+      "gradients": [
+        {
+          "end": [
+            22,
+            28
+          ],
+          "id": "crystal-main",
+          "start": [
+            -22,
+            -28
+          ],
+          "stops": [
+            {
+              "color": "#fff6a5",
+              "offset": 0
+            },
+            {
+              "color": "#ffd44f",
+              "offset": 0.4
+            },
+            {
+              "color": "#ff8f3d",
+              "offset": 1
+            }
+          ],
+          "type": "linear"
+        },
+        {
+          "center": [
+            0,
+            -2
+          ],
+          "id": "crystal-core",
+          "radius": 16,
+          "stops": [
+            {
+              "color": "#ffffff",
+              "offset": 0
+            },
+            {
+              "color": "#fff9bf",
+              "offset": 0.45
+            },
+            {
+              "color": "#ffb23f",
+              "offset": 1
+            }
+          ],
+          "type": "radial"
+        }
+      ],
+      "id": "crystal",
+      "metadata": {
+        "role": "collectible"
+      },
+      "paths": [
+        {
+          "commands": [
+            [
+              "M",
+              0,
+              -30
+            ],
+            [
+              "L",
+              20,
+              -6
+            ],
+            [
+              "L",
+              13,
+              24
+            ],
+            [
+              "L",
+              0,
+              33
+            ],
+            [
+              "L",
+              -13,
+              24
+            ],
+            [
+              "L",
+              -20,
+              -6
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "body",
+          "metadata": {},
+          "paint": {
+            "fill": "@crystal-main",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 1,
+            "stroke": "#fffbd3",
+            "stroke_width": 2
+          }
+        },
+        {
+          "commands": [
+            [
+              "M",
+              0,
+              -25
+            ],
+            [
+              "L",
+              9,
+              -4
+            ],
+            [
+              "L",
+              0,
+              23
+            ],
+            [
+              "L",
+              -9,
+              -4
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "facet",
+          "metadata": {},
+          "paint": {
+            "fill": "@crystal-core",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 0.82,
+            "stroke": "#ffffff",
+            "stroke_width": 0.8
+          }
+        }
+      ],
+      "pivot": [
+        0,
+        0
+      ],
+      "size": [
+        72,
+        72
+      ]
+    },
+    "obstacle": {
+      "gradients": [
+        {
+          "end": [
+            60,
+            36
+          ],
+          "id": "obstacle-main",
+          "start": [
+            -60,
+            -36
+          ],
+          "stops": [
+            {
+              "color": "#304b8d",
+              "offset": 0
+            },
+            {
+              "color": "#203362",
+              "offset": 0.5
+            },
+            {
+              "color": "#121d43",
+              "offset": 1
+            }
+          ],
+          "type": "linear"
+        }
+      ],
+      "id": "obstacle",
+      "metadata": {
+        "role": "world"
+      },
+      "paths": [
+        {
+          "commands": [
+            [
+              "M",
+              -46,
+              -36
+            ],
+            [
+              "L",
+              46,
+              -36
+            ],
+            [
+              "C",
+              53.73198649763111,
+              -36,
+              60,
+              -29.73198649763111,
+              60,
+              -22
+            ],
+            [
+              "L",
+              60,
+              22
+            ],
+            [
+              "C",
+              60,
+              29.73198649763111,
+              53.73198649763111,
+              36,
+              46,
+              36
+            ],
+            [
+              "L",
+              -46,
+              36
+            ],
+            [
+              "C",
+              -53.73198649763111,
+              36,
+              -60,
+              29.73198649763111,
+              -60,
+              22
+            ],
+            [
+              "L",
+              -60,
+              -22
+            ],
+            [
+              "C",
+              -60,
+              -29.73198649763111,
+              -53.73198649763111,
+              -36,
+              -46,
+              -36
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "body",
+          "metadata": {},
+          "paint": {
+            "fill": "@obstacle-main",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 1,
+            "stroke": "#718ed7",
+            "stroke_width": 2
+          }
+        },
+        {
+          "commands": [
+            [
+              "M",
+              -38,
+              -24
+            ],
+            [
+              "L",
+              38,
+              -24
+            ],
+            [
+              "C",
+              43.52284749830794,
+              -24,
+              48,
+              -19.522847498307936,
+              48,
+              -14
+            ],
+            [
+              "L",
+              48,
+              14
+            ],
+            [
+              "C",
+              48,
+              19.522847498307936,
+              43.52284749830794,
+              24,
+              38,
+              24
+            ],
+            [
+              "L",
+              -38,
+              24
+            ],
+            [
+              "C",
+              -43.52284749830794,
+              24,
+              -48,
+              19.522847498307936,
+              -48,
+              14
+            ],
+            [
+              "L",
+              -48,
+              -14
+            ],
+            [
+              "C",
+              -48,
+              -19.522847498307936,
+              -43.52284749830794,
+              -24,
+              -38,
+              -24
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "inset",
+          "metadata": {},
+          "paint": {
+            "fill": "#172653",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 1,
+            "stroke": "#4667ac",
+            "stroke_width": 2
+          }
+        }
+      ],
+      "pivot": [
+        0,
+        0
+      ],
+      "size": [
+        120,
+        72
+      ]
+    },
+    "player_ship": {
+      "gradients": [
+        {
+          "end": [
+            32,
+            34
+          ],
+          "id": "player-body",
+          "start": [
+            -34,
+            -30
+          ],
+          "stops": [
+            {
+              "color": "#75f6ff",
+              "offset": 0
+            },
+            {
+              "color": "#4aa5ff",
+              "offset": 0.48
+            },
+            {
+              "color": "#8b6cff",
+              "offset": 1
+            }
+          ],
+          "type": "linear"
+        },
+        {
+          "center": [
+            0,
+            0
+          ],
+          "id": "player-core",
+          "radius": 22,
+          "stops": [
+            {
+              "color": "#ffffff",
+              "offset": 0
+            },
+            {
+              "color": "#c4fbff",
+              "offset": 0.32
+            },
+            {
+              "color": "#49d8ff",
+              "offset": 1
+            }
+          ],
+          "type": "radial"
+        }
+      ],
+      "id": "player_ship",
+      "metadata": {
+        "role": "player"
+      },
+      "paths": [
+        {
+          "commands": [
+            [
+              "M",
+              -8,
+              10
+            ],
+            [
+              "L",
+              -31,
+              25
+            ],
+            [
+              "L",
+              -14,
+              2
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "wing-left",
+          "metadata": {},
+          "paint": {
+            "fill": "#3848af",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 1,
+            "stroke": "#88b9ff",
+            "stroke_width": 1.2
+          }
+        },
+        {
+          "commands": [
+            [
+              "M",
+              8,
+              10
+            ],
+            [
+              "L",
+              31,
+              25
+            ],
+            [
+              "L",
+              14,
+              2
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "wing-right",
+          "metadata": {},
+          "paint": {
+            "fill": "#3848af",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 1,
+            "stroke": "#88b9ff",
+            "stroke_width": 1.2
+          }
+        },
+        {
+          "commands": [
+            [
+              "M",
+              0,
+              -34
+            ],
+            [
+              "L",
+              30,
+              19
+            ],
+            [
+              "L",
+              11,
+              14
+            ],
+            [
+              "L",
+              0,
+              31
+            ],
+            [
+              "L",
+              -11,
+              14
+            ],
+            [
+              "L",
+              -30,
+              19
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "body",
+          "metadata": {},
+          "paint": {
+            "fill": "@player-body",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 1,
+            "stroke": "#d9fbff",
+            "stroke_width": 2.2
+          }
+        },
+        {
+          "commands": [
+            [
+              "M",
+              10,
+              0
+            ],
+            [
+              "C",
+              10,
+              5.522847498307936,
+              5.522847498307936,
+              10,
+              0,
+              10
+            ],
+            [
+              "C",
+              -5.522847498307936,
+              10,
+              -10,
+              5.522847498307936,
+              -10,
+              0
+            ],
+            [
+              "C",
+              -10,
+              -5.522847498307936,
+              -5.522847498307936,
+              -10,
+              0,
+              -10
+            ],
+            [
+              "C",
+              5.522847498307936,
+              -10,
+              10,
+              -5.522847498307936,
+              10,
+              0
+            ],
+            [
+              "Z"
+            ]
+          ],
+          "fill_rule": "nonzero",
+          "id": "core",
+          "metadata": {},
+          "paint": {
+            "fill": "@player-core",
+            "line_cap": "round",
+            "line_join": "round",
+            "opacity": 0.95,
+            "stroke": "#ffffff",
+            "stroke_width": 1.2
+          }
+        }
+      ],
+      "pivot": [
+        0,
+        0
+      ],
+      "size": [
+        80,
+        80
+      ]
+    }
+  }
+}

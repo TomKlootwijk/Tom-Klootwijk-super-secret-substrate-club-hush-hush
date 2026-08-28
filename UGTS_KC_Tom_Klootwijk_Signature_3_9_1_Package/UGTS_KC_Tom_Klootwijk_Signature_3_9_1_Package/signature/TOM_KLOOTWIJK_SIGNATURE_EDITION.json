@@ -1,0 +1,17 @@
+{
+  "android_primary_target": "POCO X7 Pro 12 GB (source profile; physical-device execution not claimed)",
+  "baseline_archive_sha256": "952de2d10980a11ceb1beb2d2d7a759c63c57fe630eebc699f717c6580d10bac",
+  "canonical_3d_project_sha256": "e86bebe946cb6a4f7e418143869191c4900bed22d2773054e0b1bf0a6493c244",
+  "cryptographic_personal_signature": false,
+  "edition": "Tom Klootwijk Signature Edition",
+  "four_d_status": "design-only TODO; no 4D runtime",
+  "integrity_algorithm": "SHA-256",
+  "legal_identity_verification": false,
+  "native_scene_pack_format": "KC3D391 / format 1",
+  "native_scene_pack_sha256": "485bb8a5ed7d4632577195dc0a889b4e6d3ea13ebc55482c5ea40761729ba437",
+  "notice": "This record names the requested edition and integrity inputs. It is not a legal or cryptographic personal signature.",
+  "requested_author": "Tom Klootwijk",
+  "requester_supplied_substrate_attribution": "Kees Klootwijk (KC edition)",
+  "schema": "ugts-kc-signature-edition-record-1",
+  "version": "3.9.1"
+}

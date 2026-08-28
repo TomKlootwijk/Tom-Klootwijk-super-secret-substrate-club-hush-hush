@@ -1,0 +1,4 @@
+C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/.cxx/RelWithDebInfo/566k433r/arm64-v8a/CMakeFiles/native_app_glue.dir
+C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/.cxx/RelWithDebInfo/566k433r/arm64-v8a/CMakeFiles/ugts_kc_grove.dir
+C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/.cxx/RelWithDebInfo/566k433r/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/.cxx/RelWithDebInfo/566k433r/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,66 @@
+TARGET .
+OWNER MSI\Tom
+PROTECTED False
+
+IdentityReference                 FileSystemRights AccessControlType IsInherited
+-----------------                 ---------------- ----------------- -----------
+MSI\CodexSandboxUsers  ReadAndExecute, Synchronize             Allow        True
+NT AUTHORITY\SYSTEM                    FullControl             Allow        True
+BUILTIN\Administrators                 FullControl             Allow        True
+MSI\Tom                                FullControl             Allow        True
+
+TARGET .\README.md
+OWNER MSI\Tom
+PROTECTED False
+
+IdentityReference                 FileSystemRights AccessControlType IsInherited
+-----------------                 ---------------- ----------------- -----------
+MSI\CodexSandboxUsers  ReadAndExecute, Synchronize             Allow        True
+NT AUTHORITY\SYSTEM                    FullControl             Allow        True
+BUILTIN\Administrators                 FullControl             Allow        True
+MSI\Tom                                FullControl             Allow        True
+
+TARGET .\SECURITY.md
+OWNER MSI\Tom
+PROTECTED False
+
+IdentityReference                 FileSystemRights AccessControlType IsInherited
+-----------------                 ---------------- ----------------- -----------
+MSI\CodexSandboxUsers  ReadAndExecute, Synchronize             Allow        True
+NT AUTHORITY\SYSTEM                    FullControl             Allow        True
+BUILTIN\Administrators                 FullControl             Allow        True
+MSI\Tom                                FullControl             Allow        True
+
+TARGET .\src\ugts36\sara363.py
+OWNER MSI\Tom
+PROTECTED False
+
+IdentityReference                 FileSystemRights AccessControlType IsInherited
+-----------------                 ---------------- ----------------- -----------
+MSI\CodexSandboxUsers  ReadAndExecute, Synchronize             Allow        True
+NT AUTHORITY\SYSTEM                    FullControl             Allow        True
+BUILTIN\Administrators                 FullControl             Allow        True
+MSI\Tom                                FullControl             Allow        True
+
+TARGET .\data\sara363_reference_certificate.json
+OWNER MSI\Tom
+PROTECTED False
+
+IdentityReference                 FileSystemRights AccessControlType IsInherited
+-----------------                 ---------------- ----------------- -----------
+MSI\CodexSandboxUsers  ReadAndExecute, Synchronize             Allow        True
+NT AUTHORITY\SYSTEM                    FullControl             Allow        True
+BUILTIN\Administrators                 FullControl             Allow        True
+MSI\Tom                                FullControl             Allow        True
+
+TARGET .\.venv-security
+OWNER MSI\Tom
+PROTECTED False
+
+IdentityReference                 FileSystemRights AccessControlType IsInherited
+-----------------                 ---------------- ----------------- -----------
+MSI\CodexSandboxUsers  ReadAndExecute, Synchronize             Allow        True
+NT AUTHORITY\SYSTEM                    FullControl             Allow        True
+BUILTIN\Administrators                 FullControl             Allow        True
+MSI\Tom                                FullControl             Allow        True
+

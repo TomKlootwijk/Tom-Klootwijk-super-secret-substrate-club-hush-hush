@@ -1,0 +1,285 @@
+{
+  "certificate_id": "bea361:certificate:negentien-no-neg-moat-v2",
+  "profile_id": "bea361:synthetic-cell-complex-v2",
+  "source_id": "repr:negentien",
+  "target_id": "repr:no-neg-moat",
+  "source_augmented": {
+    "vertices": 10,
+    "edges": 13,
+    "beta0": 1,
+    "beta1": 4,
+    "chi": -3
+  },
+  "target_augmented": {
+    "vertices": 12,
+    "edges": 15,
+    "beta0": 3,
+    "beta1": 6,
+    "chi": -3
+  },
+  "source_canonical": {
+    "vertices": 10,
+    "edges": 13,
+    "beta0": 1,
+    "beta1": 4,
+    "chi": -3
+  },
+  "target_canonical": {
+    "vertices": 12,
+    "edges": 15,
+    "beta0": 1,
+    "beta1": 4,
+    "chi": -3
+  },
+  "source_trade_count": 0,
+  "target_trade_count": 2,
+  "torus_source": {
+    "complex_id": "complex:repr:negentien:canonical",
+    "torus_dimension": 4,
+    "cycle_edge_ids": [
+      "repr:negentien:cycle:0",
+      "repr:negentien:cycle:1",
+      "repr:negentien:cycle:2",
+      "repr:negentien:cycle:3"
+    ],
+    "homology_matrix": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "homology_rank": 4,
+    "tree_collapsed": true,
+    "valid": true,
+    "scope": "cellular immersion of X/T into coordinate circles of synthetic T^4"
+  },
+  "torus_target": {
+    "complex_id": "complex:repr:no-neg-moat:canonical",
+    "torus_dimension": 4,
+    "cycle_edge_ids": [
+      "repr:no-neg-moat:cycle:0",
+      "repr:no-neg-moat:cycle:1",
+      "repr:no-neg-moat:cycle:2",
+      "repr:no-neg-moat:cycle:3"
+    ],
+    "homology_matrix": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "homology_rank": 4,
+    "tree_collapsed": true,
+    "valid": true,
+    "scope": "cellular immersion of X/T into coordinate circles of synthetic T^4"
+  },
+  "xor": {
+    "source_text": "n3g3nt13n",
+    "target_text": "n0 n3g m04t",
+    "encoding": "ascii",
+    "alignment": "left",
+    "pad_byte": 0,
+    "source_length": 9,
+    "target_length": 11,
+    "aligned_length": 11,
+    "source_hex": "6e3367336e7431336e0000",
+    "target_hex": "6e30206e3367206d303474",
+    "delta_hex": "0003475d5d13115e5e3474",
+    "source_weight": 39,
+    "target_weight": 37,
+    "delta_weight": 38,
+    "source_parity": 1,
+    "target_parity": 1,
+    "delta_is_even": true,
+    "parity_preserved": true,
+    "repeated_row_classes": {
+      "0x5d": [
+        3,
+        4
+      ],
+      "0x5e": [
+        7,
+        8
+      ]
+    },
+    "even_subspace_dimension": 87,
+    "matrix_rows": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ]
+    ],
+    "entropy_scope": "For any random variable X on the fixed-width code space, X -> X xor delta is a bijection, so Shannon entropy H(X xor delta)=H(X). Even delta weight additionally keeps each global-parity coset invariant."
+  },
+  "semantic": {
+    "profile_id": "bea361:semantic-boundary-sdf19-v2",
+    "target_value": 19.0,
+    "values": {
+      "repr:negentien": 19.0,
+      "repr:no-neg-moat": 19.0
+    },
+    "zero_set": [
+      "repr:negentien",
+      "repr:no-neg-moat"
+    ],
+    "metric_scope": "exact metric on semantic quotient and pseudometric on spatial representation domain; not Euclidean glyph distance"
+  },
+  "semantic_source_residual": 0.0,
+  "semantic_target_residual": 0.0,
+  "valid": true,
+  "claim_level": "profile-exact-synthetic-topology-equivalence",
+  "non_claims": [
+    "not a statement about standard font glyph topology",
+    "not a homeomorphism between either string and the full four-torus",
+    "not a dialect, historical, or universal linguistic claim",
+    "not Euclidean screen-space signed distance",
+    "not Hamming-weight conservation",
+    "not physical entropy or energy conservation"
+  ]
+}

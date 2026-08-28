@@ -1,0 +1,67 @@
+\begin{landscape}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.14}
+\begin{longtable}{p{0.19\linewidth} p{0.08\linewidth} p{0.15\linewidth} p{0.37\linewidth} p{0.10\linewidth} p{0.07\linewidth}}
+\caption{Complete 50-operator SCLP 3.6.2 delta catalog.}\label{tab:sclp-ops}\\
+\toprule
+\textbf{Operator ID} & \textbf{Domain} & \textbf{Mechanism} & \textbf{Normalized technical definition} & \textbf{Disposition} & \textbf{Source}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Operator ID} & \textbf{Domain} & \textbf{Mechanism} & \textbf{Normalized technical definition} & \textbf{Disposition} & \textbf{Source}\\
+\midrule
+\endhead
+\texttt{sclp362.profile.packed-swept-cone-v1} & Profile & Packed SCLP profile & Typed finite profile combining a cone relation, log-polar chart, modular time, topology, grammar and two 64-bit key layouts. & ENGINEERING-DERIVED & pp.9-13\\
+\texttt{sclp362.type.symbol-separation-v1} & Typing & Overloaded-symbol separation & T is slant length; t is linear time; X is a modular tick; phi is a hoop angle; delta\_rho and epsilon\_guard are distinct. & CORRECTED & pp.1-8\\
+\texttt{sclp362.type.lowercase-phi-circle-v1} & Typing & Lower-case phi as S1 coordinate & Represent phi as a periodic angle in R/(2pi Z); do not identify it with the golden ratio Phi. & RETAIN & pp.1,3,7-10\\
+\texttt{sclp362.type.delta-family-v1} & Typing & Typed delta family & Separate log-radius increment, time increment, finite-difference step, jitter amplitude and guard margin. & CORRECTED & pp.1-3,7-8\\
+\texttt{sclp362.type.evidence-boundary-v1} & Governance & Source/normalization boundary & Every claim is labeled source-derived, corrected, bounded or rejected and carries a profile scope. & ENGINEERING-DERIVED & all\\
+\texttt{sclp362.geometry.cone-slant-angle-v1} & Geometry & Cone from slant length and half-angle & Given T\textgreater{}0 and alpha in (0,pi/2), derive height h=T cos alpha and base radius R=T sin alpha. & CORRECTED & p.1\\
+\texttt{sclp362.geometry.finite-cone-sdf-v1} & Geometry & Exact finite-cone signed distance & Reduce to signed distance from the meridian point to the filled triangle (-R,h),(R,h),(0,0). & ENGINEERING-DERIVED & pp.1,8,10\\
+\texttt{sclp362.geometry.cone-relation-class-v1} & Geometry & Three-state relation class & Classify a finite-cone residual as interior, guard-zero or exterior with a declared epsilon. & RETAIN & pp.9-10\\
+\texttt{sclp362.geometry.sphere-sdf-v1} & Geometry & Sphere relation & Use ||x-c||-R as an exact local spherical relation. & RETAIN & p.1\\
+\texttt{sclp362.geometry.paired-sphere-support-v1} & Support & Two-sphere support pair & Treat the two-sphered eye motif as two local spherical supports with union/intersection and overlap tags. & TRANSLATE & p.1\\
+\texttt{sclp362.sweep.translation-family-v1} & Sweep & Rigid translational cone family & C(u)=C0+s(u) with fixed orientation and a declared finite interval. & TRANSLATE & pp.1,6-8\\
+\texttt{sclp362.sweep.lipschitz-interval-v1} & Sweep & Certified sweep interval & Uniform samples plus the 1-Lipschitz translation law bound the true sweep infimum in [m-Lh/2,m]. & ENGINEERING-DERIVED & pp.1,6-8\\
+\texttt{sclp362.sweep.zero-tangent-projector-v1} & Kinematics & Zero-surface tangent projection & Project a proposed velocity with P=I-n n\textasciicircum{}T so its first-order field derivative vanishes on a regular zero set. & TRANSLATE & pp.3-4\\
+\texttt{sclp362.logpolar.chart-v1} & Coordinates & Log-polar chart & rho=ln(r/r0), theta=atan2(y,x) with an explicit core radius. & RETAIN & pp.2-3,8-10\\
+\texttt{sclp362.logpolar.core-v1} & Coordinates & Explicit origin core & The logarithmic chart does not remove the r=0 singularity; a core flag and radius are mandatory. & CORRECTED & p.2\\
+\texttt{sclp362.logpolar.metric-v1} & Metric & Conformal metric tensor & In the plane ds\textasciicircum{}2=r\textasciicircum{}2(d rho\textasciicircum{}2+d theta\textasciicircum{}2), so the metric factor is r\textasciicircum{}2=e\textasciicircum{}(2 rho) r0\textasciicircum{}2. & ENGINEERING-DERIVED & pp.2,9-10\\
+\texttt{sclp362.logpolar.exact-radial-step-v1} & Metric & Exact local radial increment & A log step delta\_rho gives delta\_r=r(exp(delta\_rho)-1), approximately r delta\_rho only to first order. & CORRECTED & p.2\\
+\texttt{sclp362.logpolar.jacobian-v1} & Kinematics & Log-polar Jacobian & J=r[[cos theta,-sin theta],[sin theta,cos theta]]. & ENGINEERING-DERIVED & pp.3,8,10\\
+\texttt{sclp362.logpolar.velocity-v1} & Kinematics & Velocity transform & v=r(rho\_dot e\_r+theta\_dot e\_theta). & ENGINEERING-DERIVED & p.3\\
+\texttt{sclp362.logpolar.acceleration-v1} & Kinematics & Change-of-change transform & a=r[(rho\_ddot+rho\_dot\textasciicircum{}2-theta\_dot\textasciicircum{}2)e\_r+(theta\_ddot+2 rho\_dot theta\_dot)e\_theta]. & ENGINEERING-DERIVED & pp.1,3,8,10\\
+\texttt{sclp362.logpolar.gradient-v1} & Metric & Gradient covector transform & Cartesian gradient equals (f\_rho e\_r+f\_theta e\_theta)/r; physical force scaling still requires a model. & CORRECTED & p.10\\
+\texttt{sclp362.jitter.deterministic-bit-v1} & Topology/control & Deterministic one-bit jitter & Hash address, time tick and seed to a reproducible bit used as a bounded signed perturbation or selector. & TRANSLATE & pp.1-6\\
+\texttt{sclp362.jitter.interval-guard-v1} & Event calculus & Jitter interval certificate & Authoritative residual f is enclosed by [f-epsilon\_j,f+epsilon\_j]; epsilon\_j must remain below the event margin. & CORRECTED & pp.1-3\\
+\texttt{sclp362.time.phase-clock-v1} & Time & Linear-time phase clock & Keep linear time and map it to phase plus integer winding; the source timestamp is profile metadata with a declared unit. & CORRECTED & pp.3-5\\
+\texttt{sclp362.time.winding-lineage-v1} & Persistence & Winding lineage & Record winding count and parity separately from periodic phase so repeated coordinates retain history. & TRANSLATE & pp.3-4\\
+\texttt{sclp362.topology.source-half-turn-v0} & Topology & Source half-turn bundle twist & On odd radial wraps apply theta+pi, phi-\textgreater{}-phi and orientation flip; base gluing is not itself a Klein quotient. & RETAIN/BOUND & pp.9-10\\
+\texttt{sclp362.topology.klein-reflection-v1} & Topology & Reflective Klein radial gluing & Use theta-\textgreater{}pi-theta plus phi and orientation reversal on odd radial wraps to obtain an orientation-reversing quotient. & CORRECTED & pp.2-4,9-10\\
+\texttt{sclp362.topology.tangent-chirality-v1} & Topology & Tangent chirality map & The chart transition sends dtheta and dphi to their negatives on odd reflective wraps; it is not a physical impulse. & ENGINEERING-DERIVED & pp.4,6,10\\
+\texttt{sclp362.topology.wrap-event-v1} & Event calculus & Topological wrap event & Crossing rho\_max emits a transition with coordinate map, orientation patch, wrap count and lineage. & TRANSLATE & pp.2-5,9-11\\
+\texttt{sclp362.hinge.state-v1} & Kinematics & Hinge state phi, omega, alpha & Store angle, angular velocity and angular acceleration as separate typed coordinates. & CORRECTED & pp.1,3,8,10\\
+\texttt{sclp362.hinge.torque-model-v1} & Kinematics & Optional physical torque model & Only after declaring inertia, damping and stiffness may torque be computed as I alpha+c omega+k phi. & CORRECTED & pp.1,3,8\\
+\texttt{sclp362.constraint.row-release-v1} & Kinematics & Missing-shackle row deletion & Model the missing shackle as removal of one constraint-Jacobian row. & TRANSLATE & pp.1,3-6,8-10\\
+\texttt{sclp362.constraint.nullity-gain-v1} & Kinematics & Freedom-gain certificate & Compare nullities before and after row deletion; one independent row can add one degree of freedom. & ENGINEERING-DERIVED & pp.1,3,8,10\\
+\texttt{sclp362.branch.binary-guard-v1} & Event calculus & Binary guard branch & A declared guard partitions state into branch 0 or 1 and selects a transition/grammar rule. & TRANSLATE & pp.4-7\\
+\texttt{sclp362.branch.no-chaos-inference-v1} & Audit & No automatic chaos inference & Binary branching is deterministic; chaos requires a defined dynamical map and measured sensitivity/Lyapunov evidence. & CORRECTED & p.5\\
+\texttt{sclp362.grammar.bounded-binary-lsystem-v1} & Grammar & Bounded binary parametric L-system & Each F emits two dyadically scaled branches, a typed turn and jitter token under depth, symbol and stack budgets. & TRANSLATE & pp.6-8\\
+\texttt{sclp362.grammar.chirality-automorphism-v1} & Grammar & Chirality turn automorphism & A topological orientation flip maps positive turns to negative turns and vice versa. & RETAIN & pp.6-7\\
+\texttt{sclp362.packing.quantize-20-18-14-12-v1} & Packing & 20/18/14/12 quantizer & Quantize rho, theta, modular time and phi into exactly 64 field bits with declared ranges and errors. & RETAIN/BOUND & pp.11-13\\
+\texttt{sclp362.packing.contiguous-key-v1} & Packing & Contiguous field key & Pack fields into source table ranges [63:44],[43:26],[25:12],[11:0]. & RETAIN & p.12\\
+\texttt{sclp362.packing.morton-key-v1} & Packing & MSB round-robin Morton key & Interleave rho19,theta17,time13,phi11, then continue round-robin until all 64 bits are consumed. & RETAIN/CLARIFY & pp.10-12\\
+\texttt{sclp362.packing.layout-separation-v1} & Packing & Key-layout separation & The contiguous table and interleaved Morton word are two distinct encodings, never silently treated as the same bit layout. & CORRECTED & pp.10-12\\
+\texttt{sclp362.index.prefix-refinement-v1} & Indexing & Radix prefix refinement & Appending a bit fixes one scheduled coordinate bit and refines a quantized cell; it does not directly divide rho or theta values. & CORRECTED & pp.4-5\\
+\texttt{sclp362.index.radix-trie-v1} & Indexing & Radix-2 trie terminology & Use a radix trie over key prefixes rather than calling the structure a comparison-based binary search tree. & CORRECTED & pp.1-12\\
+\texttt{sclp362.index.one-bit-payload-v1} & Indexing & Narrow one-bit payload & A leaf bit may encode route, occupancy class or predicate result; continuous residual, uncertainty and lineage remain external. & CORRECTED & pp.1-2,9-10\\
+\texttt{sclp362.index.sparse-presence-accounting-v1} & Memory & Sparse presence accounting & Pointerless sparse storage still needs topology/presence bits and rank/select or equivalent navigation metadata. & CORRECTED & pp.11-12\\
+\texttt{sclp362.metrics.cacheline-eight-keys-v1} & Metrics & Eight raw keys per cache line & A 64-byte line stores eight 64-bit keys; this does not imply eight evaluations in one cycle. & CORRECTED & p.13\\
+\texttt{sclp362.metrics.nominal-width-audit-v1} & Metrics & Nominal width audit & Report 3x,32x and 42.666x only as bit-width ratios because the compared records do not preserve equal semantics. & CORRECTED & pp.12-13\\
+\texttt{sclp362.metrics.finite-capacity-v1} & Metrics & Finite 2\textasciicircum{}64 key capacity & The 20+18+14+12 profile has exactly 2\textasciicircum{}64 address combinations, not infinite detail. & CORRECTED & pp.12-13\\
+\texttt{sclp362.query.direct-lookup-bound-v1} & Query & Bounded direct lookup & Fixed-width array/hash lookup may be constant expected RAM access after key construction; traversal, decoding, verification and storage remain costs. & BOUNDED & pp.7-11\\
+\texttt{sclp362.query.ugts-handoff-v1} & Architecture & Canonical UGTS handoff & SCLP outputs feed support, compatibility, guard, verified event, transition and lineage in that order. & ENGINEERING-DERIVED & p.9-11\\
+\bottomrule
+\end{longtable}
+\end{landscape}

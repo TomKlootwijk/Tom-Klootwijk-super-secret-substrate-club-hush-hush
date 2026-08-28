@@ -1,0 +1,26 @@
+# Reference register map
+
+The CSV is normative for this package. Addresses are byte offsets from the device control BAR/MMIO base. It is a portable proposal, not a vendor allocation.
+
+| Offset | Register | Access | Meaning |
+|---|---|---|---|
+| 0x0000 | `CONTROL` | R/W | bit0 enable; bit1 reset; bit2 commit; bit3 clear_counters |
+| 0x0004 | `STATUS` | R | bit0 ready; bit1 busy; bit2 event_fifo_nonempty; bit3 overflow; bit4 calibration_valid |
+| 0x0008 | `PROFILE` | R/W | 0 G64/E32; 1 G32/E16; 2 Q16.16 squared gate |
+| 0x000C | `MODE_BIT` | R/W | compatibility mode bit 0..15 |
+| 0x0010 | `TARGET_TOPOLOGY` | R/W | bits7:0 sheet; bit8 orientation |
+| 0x0014 | `GUARD_CONFIG` | R/W | fixed-point guard or profile-specific epsilon |
+| 0x0018 | `CONFIDENCE_MIN` | R/W | float/fixed threshold or SNR code |
+| 0x001C | `BATCH_COUNT` | R/W | number of candidates in dispatch/stream batch |
+| 0x0020 | `STATE_BASE_LO` | R/W | state buffer/DMA base address low |
+| 0x0024 | `STATE_BASE_HI` | R/W | state buffer/DMA base address high |
+| 0x0028 | `EVENT_BASE_LO` | R/W | event buffer/FIFO DMA base low |
+| 0x002C | `EVENT_BASE_HI` | R/W | event buffer/FIFO DMA base high |
+| 0x0030 | `COUNT_CANDIDATE` | R | processed candidates |
+| 0x0034 | `COUNT_SUPPORTED` | R | support survivors |
+| 0x0038 | `COUNT_COMPATIBLE` | R | support+compatibility survivors |
+| 0x003C | `COUNT_VERIFIED` | R | verified events |
+| 0x0040 | `EVENT_FIFO_LEVEL` | R | queued compact events |
+| 0x0044 | `ERROR_FLAGS` | R/W1C | overflow, invalid profile, numeric saturation, calibration/drift faults |
+| 0x0048 | `TIMESTAMP_LO` | R | device timestamp low |
+| 0x004C | `TIMESTAMP_HI` | R | device timestamp high |

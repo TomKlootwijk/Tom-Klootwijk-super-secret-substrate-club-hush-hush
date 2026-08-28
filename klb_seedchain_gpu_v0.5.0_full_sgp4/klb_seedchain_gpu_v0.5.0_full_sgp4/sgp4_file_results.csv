@@ -1,0 +1,2 @@
+format,objects,intervals,step_seconds,candidates,chunk,file_bytes,dense_double4_bytes,direct_p50_ms,direct_p95_ms,direct_p99_ms,direct_mean_ms,materialize_p50_ms,dense_query_p50_ms,end_to_end_dense_p50_ms,direct_speedup_vs_dense_e2e,supported,compatible,boundary_evaluations,visible_endpoints,aos,los,propagation_errors,event_count
+KSGP1,32,604800,1,19353600,256,5793,619316224,91.974334716796875,92.000020345052093,92.005106608072907,91.976054798473015,88.442657470703125,6.2795688629150392,94.722226333618167,1.02987672186249,19207536,19207536,19207536,5498429,359,358,0,717

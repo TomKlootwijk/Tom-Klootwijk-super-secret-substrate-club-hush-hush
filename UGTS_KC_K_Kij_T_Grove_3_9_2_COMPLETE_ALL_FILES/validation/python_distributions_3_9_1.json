@@ -1,0 +1,13 @@
+{
+  "schema": "ugts-kc-python-distributions-3.9.1",
+  "files": {
+    "ugts_kc_signature-3.9.1-py3-none-any.whl": {
+      "sha256": "03e0e4a0cba0f7e3d1a10d6441bfc8c5ff25cbf80da0eeeb193b5494b5fafc63",
+      "bytes": 149570
+    },
+    "ugts_kc_signature-3.9.1.tar.gz": {
+      "sha256": "df4811f203b12db9cb2a50c938a02f1568095c1d5be34d82ce18cd539d93ee95",
+      "bytes": 668627
+    }
+  }
+}

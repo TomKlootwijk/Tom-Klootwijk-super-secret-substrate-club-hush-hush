@@ -1,0 +1,42 @@
+# UGTS-KC Elizabeth 3.9 wheel installation smoke test
+# ugts_kc is the retained 2.0 compatibility namespace; ugts_kc3 is the current 3.9 runtime namespace.
+
+$ python -m pip install --no-cache-dir --no-deps dist/ugts_kc_elizabeth-3.9.0-py3-none-any.whl
+Processing /mnt/data/UGTS_KC_Elizabeth_3_9_Package/dist/ugts_kc_elizabeth-3.9.0-py3-none-any.whl
+Installing collected packages: ugts-kc-elizabeth
+Successfully installed ugts-kc-elizabeth-3.9.0
+
+$ ugts-kc info
+UGTS-KC 3.9.0
+Edition: 3.9 - KC - Elizabeth
+Capabilities: vector assets, deterministic game world, input, collision/physics, animation, tilemaps/A*, procedural audio, project validation and HTML5 Canvas export
+
+$ ugts-kc new /tmp/kc39_final_scaffold2 --title "Final Smoke Game" --author "Tom Klootwijk" --build
+/tmp/kc39_final_scaffold2/project.json
+/tmp/kc39_final_scaffold2/dist/index.html
+
+$ ugts-kc validate /tmp/kc39_final_scaffold2/project.json --json
+{
+  "issues": [],
+  "metrics": {
+    "action_count": 8,
+    "audio_cue_count": 7,
+    "entity_count": 2,
+    "scene_count": 1,
+    "tilemap_count": 0,
+    "vector_asset_count": 3
+  },
+  "passed": true
+}
+
+$ python import/resource smoke
+{
+  "current_runtime_namespace_version": "3.9.0",
+  "entrypoint_exists": true,
+  "legacy_compatibility_namespace_version": "2.0.0",
+  "project_hash": "0694da06076786e2a9557ab66b99af3135bbec7496f264ce341db75b8777c459",
+  "ugts_kc3_typed": true,
+  "ugts_kc_typed": true
+}
+
+Result: PASS

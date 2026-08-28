@@ -1,0 +1,13 @@
+{
+  "schema": "UGTS-CUDA-VMM-GRANULARITY-1.0",
+  "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "device_ordinal": 0,
+  "cuda_driver_version": 13010,
+  "l2_bytes": 37748736,
+  "virtual_memory_management_supported": true,
+  "generic_compression_supported": true,
+  "allocation_type": "pinned device-local VMM",
+  "minimum_allocation_granularity_bytes": 2097152,
+  "recommended_allocation_granularity_bytes": 2097152,
+  "scope_note": "VMM allocation granularities are driver API properties; they do not declare the translation page size used by cudaMalloc or a TLB capacity."
+}

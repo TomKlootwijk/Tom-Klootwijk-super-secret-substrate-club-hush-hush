@@ -1,0 +1,45 @@
+{
+  "schema": "UGTS-GN-1.1",
+  "profile": "G64_E32",
+  "encoder_variant": "glyph-100100-v1",
+  "query": {
+    "target_sheet": 1,
+    "target_orientation": 0,
+    "mode_bit": 2,
+    "commit": false,
+    "precision": "float32"
+  },
+  "candidates": [
+    {
+      "position": [
+        0.0,
+        0.0,
+        0.99
+      ],
+      "time": 2.5,
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "radius": 1.0,
+      "cone_cos": 0.5,
+      "phase": 0.25,
+      "guard_epsilon": 0.02,
+      "confidence_floor": 0.5,
+      "sheet": 1,
+      "orientation": 0,
+      "compatibility_mask": 4,
+      "lineage_seed": 305419896
+    }
+  ],
+  "metadata": {
+    "custom_encoder": {
+      "variant": "glyph-100100-v1",
+      "bits": "100100",
+      "decimal": 36,
+      "expression": "(1 << 5) | (1 << 2)",
+      "semantic_scope": "source-defined glyph-to-bit encoding"
+    }
+  }
+}

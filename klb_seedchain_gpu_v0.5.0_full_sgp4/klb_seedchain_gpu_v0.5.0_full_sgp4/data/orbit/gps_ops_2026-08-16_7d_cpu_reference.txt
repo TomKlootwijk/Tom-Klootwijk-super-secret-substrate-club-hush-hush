@@ -1,0 +1,1 @@
+epochs=604800 candidates=19353600 support=19214155 compat=19214155 events=717 visible=5498030 sec=5.13986

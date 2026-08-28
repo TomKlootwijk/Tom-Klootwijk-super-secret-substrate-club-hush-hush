@@ -1,0 +1,283 @@
+Collecting jsonschema==4.26.0
+  Using cached jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+Collecting pymupdf==1.28.2
+  Using cached pymupdf-1.28.2-cp310-abi3-win_amd64.whl.metadata (26 kB)
+Collecting coverage==7.15.4
+  Using cached coverage-7.15.4-cp312-cp312-win_amd64.whl.metadata (8.8 kB)
+Collecting bandit==1.9.4
+  Using cached bandit-1.9.4-py3-none-any.whl.metadata (7.1 kB)
+Collecting pip-audit==2.10.1
+  Using cached pip_audit-2.10.1-py3-none-any.whl.metadata (28 kB)
+Collecting attrs>=22.2.0 (from jsonschema==4.26.0)
+  Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema==4.26.0)
+  Using cached jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting referencing>=0.28.4 (from jsonschema==4.26.0)
+  Using cached referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting rpds-py>=0.25.0 (from jsonschema==4.26.0)
+  Using cached rpds_py-2026.6.3-cp312-cp312-win_amd64.whl.metadata (4.2 kB)
+Collecting PyYAML>=5.3.1 (from bandit==1.9.4)
+  Using cached pyyaml-6.0.3-cp312-cp312-win_amd64.whl.metadata (2.4 kB)
+Collecting stevedore>=1.20.0 (from bandit==1.9.4)
+  Using cached stevedore-5.9.0-py3-none-any.whl.metadata (2.3 kB)
+Collecting rich (from bandit==1.9.4)
+  Using cached rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting colorama>=0.3.9 (from bandit==1.9.4)
+  Using cached colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Collecting CacheControl>=0.13.0 (from CacheControl[filecache]>=0.13.0->pip-audit==2.10.1)
+  Using cached cachecontrol-0.14.4-py3-none-any.whl.metadata (3.1 kB)
+Collecting cyclonedx-python-lib<12,>=5 (from pip-audit==2.10.1)
+  Using cached cyclonedx_python_lib-11.12.0-py3-none-any.whl.metadata (6.9 kB)
+Collecting packaging>=23.0.0 (from pip-audit==2.10.1)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pip-api>=0.0.28 (from pip-audit==2.10.1)
+  Using cached pip_api-0.0.34-py3-none-any.whl.metadata (6.6 kB)
+Collecting pip-requirements-parser>=32.0.0 (from pip-audit==2.10.1)
+  Using cached pip_requirements_parser-32.0.1-py3-none-any.whl.metadata (9.3 kB)
+Collecting requests>=2.31.0 (from pip-audit==2.10.1)
+  Using cached requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting tomli>=2.2.1 (from pip-audit==2.10.1)
+  Using cached tomli-2.4.1-cp312-cp312-win_amd64.whl.metadata (10 kB)
+Collecting tomli-w>=1.2.0 (from pip-audit==2.10.1)
+  Using cached tomli_w-1.2.0-py3-none-any.whl.metadata (5.7 kB)
+Collecting platformdirs>=4.2.0 (from pip-audit==2.10.1)
+  Using cached platformdirs-4.11.3-py3-none-any.whl.metadata (5.5 kB)
+Collecting license-expression<31,>=30 (from cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Using cached license_expression-30.4.4-py3-none-any.whl.metadata (11 kB)
+Collecting packageurl-python<2,>=0.11 (from cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Using cached packageurl_python-0.17.6-py3-none-any.whl.metadata (5.1 kB)
+Collecting py-serializable<3.0.0,>=2.1.0 (from cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Using cached py_serializable-2.1.0-py3-none-any.whl.metadata (4.3 kB)
+Collecting sortedcontainers<3.0.0,>=2.4.0 (from cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Using cached sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata (10 kB)
+Collecting typing_extensions<5.0,>=4.6 (from cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting boolean.py>=4.0 (from license-expression<31,>=30->cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Using cached boolean_py-5.0-py3-none-any.whl.metadata (2.3 kB)
+Collecting defusedxml<0.8.0,>=0.7.1 (from py-serializable<3.0.0,>=2.1.0->cyclonedx-python-lib<12,>=5->pip-audit==2.10.1)
+  Using cached defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Collecting msgpack<2.0.0,>=0.5.2 (from CacheControl>=0.13.0->CacheControl[filecache]>=0.13.0->pip-audit==2.10.1)
+  Using cached msgpack-1.2.1-cp312-cp312-win_amd64.whl.metadata (8.5 kB)
+Collecting filelock>=3.8.0 (from CacheControl[filecache]>=0.13.0->pip-audit==2.10.1)
+  Using cached filelock-3.32.3-py3-none-any.whl.metadata (2.0 kB)
+Collecting pip (from pip-api>=0.0.28->pip-audit==2.10.1)
+  Using cached pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+Collecting pyparsing (from pip-requirements-parser>=32.0.0->pip-audit==2.10.1)
+  Using cached pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->pip-audit==2.10.1)
+  Downloading charset_normalizer-3.5.1-cp312-cp312-win_amd64.whl.metadata (46 kB)
+Collecting idna<4,>=2.5 (from requests>=2.31.0->pip-audit==2.10.1)
+  Using cached idna-3.19-py3-none-any.whl.metadata (9.2 kB)
+Collecting urllib3<3,>=1.26 (from requests>=2.31.0->pip-audit==2.10.1)
+  Using cached urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+Collecting certifi>=2023.5.7 (from requests>=2.31.0->pip-audit==2.10.1)
+  Using cached certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Collecting markdown-it-py>=2.2.0 (from rich->bandit==1.9.4)
+  Using cached markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich->bandit==1.9.4)
+  Using cached pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich->bandit==1.9.4)
+  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Using cached jsonschema-4.26.0-py3-none-any.whl (90 kB)
+Using cached pymupdf-1.28.2-cp310-abi3-win_amd64.whl (19.8 MB)
+Using cached coverage-7.15.4-cp312-cp312-win_amd64.whl (225 kB)
+Using cached bandit-1.9.4-py3-none-any.whl (134 kB)
+Using cached pip_audit-2.10.1-py3-none-any.whl (62 kB)
+Using cached cyclonedx_python_lib-11.12.0-py3-none-any.whl (529 kB)
+Using cached license_expression-30.4.4-py3-none-any.whl (120 kB)
+Using cached packageurl_python-0.17.6-py3-none-any.whl (36 kB)
+Using cached py_serializable-2.1.0-py3-none-any.whl (23 kB)
+Using cached defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Using cached sortedcontainers-2.4.0-py2.py3-none-any.whl (29 kB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+Using cached boolean_py-5.0-py3-none-any.whl (26 kB)
+Using cached cachecontrol-0.14.4-py3-none-any.whl (22 kB)
+Using cached msgpack-1.2.1-cp312-cp312-win_amd64.whl (71 kB)
+Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Using cached filelock-3.32.3-py3-none-any.whl (98 kB)
+Using cached jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Using cached pip_api-0.0.34-py3-none-any.whl (120 kB)
+Using cached pip_requirements_parser-32.0.1-py3-none-any.whl (35 kB)
+Using cached platformdirs-4.11.3-py3-none-any.whl (23 kB)
+Using cached pyyaml-6.0.3-cp312-cp312-win_amd64.whl (154 kB)
+Using cached referencing-0.37.0-py3-none-any.whl (26 kB)
+Using cached requests-2.34.2-py3-none-any.whl (73 kB)
+Downloading charset_normalizer-3.5.1-cp312-cp312-win_amd64.whl (200 kB)
+Using cached idna-3.19-py3-none-any.whl (68 kB)
+Using cached urllib3-2.7.0-py3-none-any.whl (131 kB)
+Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
+Using cached rich-15.0.0-py3-none-any.whl (310 kB)
+Using cached pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Using cached markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Using cached rpds_py-2026.6.3-cp312-cp312-win_amd64.whl (220 kB)
+Using cached stevedore-5.9.0-py3-none-any.whl (54 kB)
+Using cached tomli-2.4.1-cp312-cp312-win_amd64.whl (108 kB)
+Using cached tomli_w-1.2.0-py3-none-any.whl (6.7 kB)
+Using cached pip-26.2.1-py3-none-any.whl (1.8 MB)
+Using cached pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Installing collected packages: sortedcontainers, boolean.py, urllib3, typing_extensions, tomli-w, tomli, stevedore, rpds-py, PyYAML, pyparsing, pymupdf, pygments, platformdirs, pip, packaging, packageurl-python, msgpack, mdurl, license-expression, idna, filelock, defusedxml, coverage, colorama, charset_normalizer, certifi, attrs, requests, referencing, py-serializable, pip-requirements-parser, pip-api, markdown-it-py, rich, jsonschema-specifications, cyclonedx-python-lib, CacheControl, jsonschema, bandit, pip-audit
+  Attempting uninstall: sortedcontainers
+    Found existing installation: sortedcontainers 2.4.0
+    Uninstalling sortedcontainers-2.4.0:
+      Successfully uninstalled sortedcontainers-2.4.0
+  Attempting uninstall: boolean.py
+    Found existing installation: boolean.py 5.0
+    Uninstalling boolean.py-5.0:
+      Successfully uninstalled boolean.py-5.0
+  Attempting uninstall: urllib3
+    Found existing installation: urllib3 2.7.0
+    Uninstalling urllib3-2.7.0:
+      Successfully uninstalled urllib3-2.7.0
+  Attempting uninstall: typing_extensions
+    Found existing installation: typing_extensions 4.16.0
+    Not uninstalling typing-extensions at c:\users\tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\lib\site-packages, outside environment C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\.venv-security
+    Can't uninstall 'typing_extensions'. No files were found to uninstall.
+  Attempting uninstall: tomli-w
+    Found existing installation: tomli_w 1.2.0
+    Uninstalling tomli_w-1.2.0:
+      Successfully uninstalled tomli_w-1.2.0
+  Attempting uninstall: tomli
+    Found existing installation: tomli 2.4.1
+    Uninstalling tomli-2.4.1:
+      Successfully uninstalled tomli-2.4.1
+  Attempting uninstall: stevedore
+    Found existing installation: stevedore 5.9.0
+    Uninstalling stevedore-5.9.0:
+      Successfully uninstalled stevedore-5.9.0
+  Attempting uninstall: rpds-py
+    Found existing installation: rpds-py 2026.6.3
+    Uninstalling rpds-py-2026.6.3:
+      Successfully uninstalled rpds-py-2026.6.3
+  Attempting uninstall: PyYAML
+    Found existing installation: PyYAML 6.0.3
+    Uninstalling PyYAML-6.0.3:
+      Successfully uninstalled PyYAML-6.0.3
+  Attempting uninstall: pyparsing
+    Found existing installation: pyparsing 3.3.2
+    Uninstalling pyparsing-3.3.2:
+      Successfully uninstalled pyparsing-3.3.2
+  Attempting uninstall: pymupdf
+    Found existing installation: pymupdf 1.28.2
+    Uninstalling pymupdf-1.28.2:
+      Successfully uninstalled pymupdf-1.28.2
+  Attempting uninstall: pygments
+    Found existing installation: Pygments 2.21.0
+    Uninstalling Pygments-2.21.0:
+      Successfully uninstalled Pygments-2.21.0
+  Attempting uninstall: platformdirs
+    Found existing installation: platformdirs 4.11.3
+    Uninstalling platformdirs-4.11.3:
+      Successfully uninstalled platformdirs-4.11.3
+  Attempting uninstall: pip
+    Found existing installation: pip 26.2.1
+    Uninstalling pip-26.2.1:
+      Successfully uninstalled pip-26.2.1
+  Attempting uninstall: packaging
+    Found existing installation: packaging 26.3
+    Not uninstalling packaging at c:\users\tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\lib\site-packages, outside environment C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\.venv-security
+    Can't uninstall 'packaging'. No files were found to uninstall.
+  Attempting uninstall: packageurl-python
+    Found existing installation: packageurl-python 0.17.6
+    Uninstalling packageurl-python-0.17.6:
+      Successfully uninstalled packageurl-python-0.17.6
+  Attempting uninstall: msgpack
+    Found existing installation: msgpack 1.2.1
+    Uninstalling msgpack-1.2.1:
+      Successfully uninstalled msgpack-1.2.1
+  Attempting uninstall: mdurl
+    Found existing installation: mdurl 0.1.2
+    Uninstalling mdurl-0.1.2:
+      Successfully uninstalled mdurl-0.1.2
+  Attempting uninstall: license-expression
+    Found existing installation: license-expression 30.4.4
+    Uninstalling license-expression-30.4.4:
+      Successfully uninstalled license-expression-30.4.4
+  Attempting uninstall: idna
+    Found existing installation: idna 3.19
+    Uninstalling idna-3.19:
+      Successfully uninstalled idna-3.19
+  Attempting uninstall: filelock
+    Found existing installation: filelock 3.32.3
+    Uninstalling filelock-3.32.3:
+      Successfully uninstalled filelock-3.32.3
+  Attempting uninstall: defusedxml
+    Found existing installation: defusedxml 0.7.1
+    Uninstalling defusedxml-0.7.1:
+      Successfully uninstalled defusedxml-0.7.1
+  Attempting uninstall: coverage
+    Found existing installation: coverage 7.15.4
+    Uninstalling coverage-7.15.4:
+      Successfully uninstalled coverage-7.15.4
+  Attempting uninstall: colorama
+    Found existing installation: colorama 0.4.6
+    Uninstalling colorama-0.4.6:
+      Successfully uninstalled colorama-0.4.6
+  Attempting uninstall: charset_normalizer
+    Found existing installation: charset-normalizer 3.4.9
+    Not uninstalling charset-normalizer at c:\users\tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\lib\site-packages, outside environment C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\.venv-security
+    Can't uninstall 'charset-normalizer'. No files were found to uninstall.
+  Attempting uninstall: certifi
+    Found existing installation: certifi 2026.7.22
+    Uninstalling certifi-2026.7.22:
+      Successfully uninstalled certifi-2026.7.22
+  Attempting uninstall: attrs
+    Found existing installation: attrs 26.1.0
+    Uninstalling attrs-26.1.0:
+      Successfully uninstalled attrs-26.1.0
+  Attempting uninstall: requests
+    Found existing installation: requests 2.34.2
+    Uninstalling requests-2.34.2:
+      Successfully uninstalled requests-2.34.2
+  Attempting uninstall: referencing
+    Found existing installation: referencing 0.37.0
+    Uninstalling referencing-0.37.0:
+      Successfully uninstalled referencing-0.37.0
+  Attempting uninstall: py-serializable
+    Found existing installation: py-serializable 2.1.0
+    Uninstalling py-serializable-2.1.0:
+      Successfully uninstalled py-serializable-2.1.0
+  Attempting uninstall: pip-requirements-parser
+    Found existing installation: pip-requirements-parser 32.0.1
+    Uninstalling pip-requirements-parser-32.0.1:
+      Successfully uninstalled pip-requirements-parser-32.0.1
+  Attempting uninstall: pip-api
+    Found existing installation: pip-api 0.0.34
+    Uninstalling pip-api-0.0.34:
+      Successfully uninstalled pip-api-0.0.34
+  Attempting uninstall: markdown-it-py
+    Found existing installation: markdown-it-py 4.2.0
+    Uninstalling markdown-it-py-4.2.0:
+      Successfully uninstalled markdown-it-py-4.2.0
+  Attempting uninstall: rich
+    Found existing installation: rich 15.0.0
+    Uninstalling rich-15.0.0:
+      Successfully uninstalled rich-15.0.0
+  Attempting uninstall: jsonschema-specifications
+    Found existing installation: jsonschema-specifications 2025.9.1
+    Uninstalling jsonschema-specifications-2025.9.1:
+      Successfully uninstalled jsonschema-specifications-2025.9.1
+  Attempting uninstall: cyclonedx-python-lib
+    Found existing installation: cyclonedx-python-lib 11.12.0
+    Uninstalling cyclonedx-python-lib-11.12.0:
+      Successfully uninstalled cyclonedx-python-lib-11.12.0
+  Attempting uninstall: CacheControl
+    Found existing installation: CacheControl 0.14.4
+    Uninstalling CacheControl-0.14.4:
+      Successfully uninstalled CacheControl-0.14.4
+  Attempting uninstall: jsonschema
+    Found existing installation: jsonschema 4.26.0
+    Uninstalling jsonschema-4.26.0:
+      Successfully uninstalled jsonschema-4.26.0
+  Attempting uninstall: bandit
+    Found existing installation: bandit 1.9.4
+    Uninstalling bandit-1.9.4:
+      Successfully uninstalled bandit-1.9.4
+  Attempting uninstall: pip-audit
+    Found existing installation: pip_audit 2.10.1
+    Uninstalling pip_audit-2.10.1:
+      Successfully uninstalled pip_audit-2.10.1
+
+Successfully installed CacheControl-0.14.4 PyYAML-6.0.3 attrs-26.1.0 bandit-1.9.4 boolean.py-5.0 certifi-2026.7.22 charset_normalizer-3.5.1 colorama-0.4.6 coverage-7.15.4 cyclonedx-python-lib-11.12.0 defusedxml-0.7.1 filelock-3.32.3 idna-3.19 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 license-expression-30.4.4 markdown-it-py-4.2.0 mdurl-0.1.2 msgpack-1.2.1 packageurl-python-0.17.6 packaging-26.3 pip-26.2.1 pip-api-0.0.34 pip-audit-2.10.1 pip-requirements-parser-32.0.1 platformdirs-4.11.3 py-serializable-2.1.0 pygments-2.21.0 pymupdf-1.28.2 pyparsing-3.3.2 referencing-0.37.0 requests-2.34.2 rich-15.0.0 rpds-py-2026.6.3 sortedcontainers-2.4.0 stevedore-5.9.0 tomli-2.4.1 tomli-w-1.2.0 typing_extensions-4.16.0 urllib3-2.7.0

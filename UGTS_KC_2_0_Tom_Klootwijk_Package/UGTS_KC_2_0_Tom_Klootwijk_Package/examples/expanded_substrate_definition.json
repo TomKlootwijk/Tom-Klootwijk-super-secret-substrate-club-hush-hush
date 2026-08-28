@@ -1,0 +1,121 @@
+{
+  "schema_version": "2.0.0",
+  "attribution": {
+    "name": "Tom Klootwijk",
+    "identifier": "NL200678942",
+    "date_of_birth": "1990-07-10",
+    "verification_status": "requester-supplied-not-independently-verified"
+  },
+  "state_profile": {
+    "position_dimension": 3,
+    "orientation_encoding": "quaternion",
+    "fields": [
+      "position",
+      "time",
+      "phase",
+      "sheet",
+      "orientation",
+      "branch",
+      "lineage",
+      "uncertainty"
+    ]
+  },
+  "patterns": [
+    {
+      "id": "route_clothoid",
+      "mechanism_id": "M208",
+      "parameters": {
+        "A": 2.0,
+        "s_max": 6.0
+      },
+      "frame": "world",
+      "compatibility_tags": [
+        "route",
+        "curvature_continuous"
+      ],
+      "validation_contract": {
+        "integration_steps": 512,
+        "max_position_error": 0.0001
+      }
+    },
+    {
+      "id": "guard_gyroid",
+      "mechanism_id": "M225",
+      "parameters": {
+        "threshold": 0.0,
+        "cell_count": [
+          2,
+          2,
+          2
+        ]
+      },
+      "frame": "local_guard",
+      "compatibility_tags": [
+        "field",
+        "periodic"
+      ]
+    },
+    {
+      "id": "actuator_scurve",
+      "mechanism_id": "M248",
+      "parameters": {
+        "distance": 1.0,
+        "duration": 2.5
+      },
+      "frame": "actuator",
+      "compatibility_tags": [
+        "smooth",
+        "jerk_bounded"
+      ]
+    }
+  ],
+  "dynamics": [
+    {
+      "id": "travel_twist",
+      "type": "twist",
+      "parameters": {
+        "omega": [
+          0,
+          0,
+          0.4
+        ],
+        "v": [
+          0.5,
+          0,
+          0
+        ]
+      },
+      "guard_policy": "support+compatibility+finite-band",
+      "error_budget": 1e-06
+    },
+    {
+      "id": "mode_switch",
+      "type": "hybrid",
+      "parameters": {
+        "initial_mode": "APPROACH"
+      },
+      "guard_policy": "priority_then_commutative_merge",
+      "error_budget": 1e-05
+    }
+  ],
+  "queries": [
+    {
+      "type": "state_at",
+      "entity": "traveler",
+      "time": 4.0
+    },
+    {
+      "type": "next_event",
+      "entity": "traveler",
+      "interval": [
+        0.0,
+        10.0
+      ]
+    },
+    {
+      "type": "frame_at",
+      "pattern": "route_clothoid",
+      "arc_length": 3.0
+    }
+  ]
+}

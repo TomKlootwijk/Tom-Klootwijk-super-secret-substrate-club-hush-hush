@@ -1,0 +1,30 @@
+{
+  "schema_version": "3.0.0",
+  "sources": [
+    {
+      "role": "UGTS-0 source architecture",
+      "filename": "Unified_Geometric_Topological_Substrate(1).pdf",
+      "sha256": "c991aba24cc939ba680697b62b9e19545131cf34060793490bf149c6e2ab522e",
+      "redistributed": false
+    },
+    {
+      "role": "UGTS-GN 1.1 GPU-native addendum",
+      "filename": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum(2).pdf",
+      "sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "redistributed": false
+    },
+    {
+      "role": "UGTS-KC 2.0 immediate baseline package",
+      "filename": "UGTS_KC_2_0_Tom_Klootwijk_Package.zip",
+      "sha256": "834997b0139ee43d366dbdddcb25116c7f62081e0ff7799ccf700c1257f12b6d",
+      "redistributed": false
+    },
+    {
+      "role": "UGTS-KC 2.0 companion report",
+      "filename": "UGTS_KC_2_0_Tom_Klootwijk_Expanded_Substrate.pdf",
+      "sha256": "a29dd9959ebd300c32d0e1df8fa2c0d4ee15f428892557b98b5f18cd3e878399",
+      "redistributed": false
+    }
+  ],
+  "privacy": "Raw source PDFs are not copied into the 3.0 ZIP. Requester attribution is explicitly marked as requester-supplied and not independently verified."
+}

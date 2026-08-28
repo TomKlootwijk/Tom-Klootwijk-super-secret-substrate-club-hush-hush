@@ -1,0 +1,220 @@
+{
+  "package": "UGTS-KC 3.6.1 BEA - Course-Corrected Synthetic Cell-Complex Edition",
+  "version": "3.6.1",
+  "revision_status": "superseding-course-correction",
+  "validation_date": "2026-08-17",
+  "status": "PASS",
+  "attribution": {
+    "name": "Tom Klootwijk",
+    "date_of_birth": "10-07-1990",
+    "identifier": "NL200678942",
+    "status": "requester-supplied; not independently verified"
+  },
+  "source": {
+    "descriptive_name": "why does 19 in dutch sound like no neg moat.pdf",
+    "pages": 9,
+    "sha256": "7dc5894928bb3aa815824d35720a4a37a556fcc202c5a0f655dce46804f1f586",
+    "redistributed": false,
+    "admitted_scope": [
+      "four-cycle and token-split motif",
+      "zero-width pathway hinge",
+      "exact ASCII XOR witness",
+      "semantic residual to 19"
+    ],
+    "excluded_context": [
+      "historical escalation",
+      "dialect escalation",
+      "physical entropy/energy claims"
+    ]
+  },
+  "pdf": {
+    "path": "report/UGTS_KC_3_6_1_BEA_Course_Corrected.pdf",
+    "pages": 14,
+    "sha256": "394228d68ff4ef93592c2464aac2b6916c029240e5680035f775fb990e078bf7",
+    "page_sizes_points": [
+      [
+        595.28,
+        841.89
+      ],
+      [
+        841.89,
+        595.28
+      ]
+    ],
+    "render_verified": true,
+    "inspected_pages": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "catalog_landscape_pages": 2,
+    "preflight_openable": true,
+    "overfull_boxes": 0
+  },
+  "schema": {
+    "path": "spec/ugts_kc_3_6_1_bea_synthetic.schema.json",
+    "draft": "https://json-schema.org/draft/2020-12/schema",
+    "errors": 0,
+    "valid": true,
+    "error_messages": []
+  },
+  "literal_substrate": {
+    "path": "examples/ugts_kc_3_6_1_bea_synthetic_example.json",
+    "definitions": 15,
+    "instances": 2,
+    "pipelines": 1,
+    "queries": 2,
+    "resolved_definition_order_length": 15,
+    "resolved_definition_order": [
+      "bea361:profile:synthetic-cell-complex-v2",
+      "bea361:op:normalize-v1",
+      "bea361:op:leet-provenance-v1",
+      "bea361:op:ascii-align-v1",
+      "bea361:op:cell-build-v1",
+      "bea361:op:semantic-evaluator-v1",
+      "bea361:op:semantic-quotient-v1",
+      "bea361:op:semantic-sdf19-v1",
+      "bea361:op:space-hole-trade-v1",
+      "bea361:op:betti-certificate-v1",
+      "bea361:op:torus-immersion-v1",
+      "bea361:op:xor-delta-v1",
+      "bea361:op:even-parity-v1",
+      "bea361:op:certificate-v2",
+      "bea361:schedule:handoff-v1"
+    ],
+    "all_content_hashes_valid": true,
+    "content_hash_results": {
+      "bea361:profile:synthetic-cell-complex-v2": true,
+      "bea361:op:normalize-v1": true,
+      "bea361:op:leet-provenance-v1": true,
+      "bea361:op:cell-build-v1": true,
+      "bea361:op:space-hole-trade-v1": true,
+      "bea361:op:betti-certificate-v1": true,
+      "bea361:op:torus-immersion-v1": true,
+      "bea361:op:ascii-align-v1": true,
+      "bea361:op:xor-delta-v1": true,
+      "bea361:op:even-parity-v1": true,
+      "bea361:op:semantic-evaluator-v1": true,
+      "bea361:op:semantic-quotient-v1": true,
+      "bea361:op:semantic-sdf19-v1": true,
+      "bea361:op:certificate-v2": true,
+      "bea361:schedule:handoff-v1": true
+    }
+  },
+  "formal_results": {
+    "source_augmented": {
+      "vertices": 10,
+      "edges": 13,
+      "beta0": 1,
+      "beta1": 4,
+      "chi": -3
+    },
+    "target_augmented": {
+      "vertices": 12,
+      "edges": 15,
+      "beta0": 3,
+      "beta1": 6,
+      "chi": -3
+    },
+    "source_canonical": {
+      "vertices": 10,
+      "edges": 13,
+      "beta0": 1,
+      "beta1": 4,
+      "chi": -3
+    },
+    "target_canonical": {
+      "vertices": 12,
+      "edges": 15,
+      "beta0": 1,
+      "beta1": 4,
+      "chi": -3
+    },
+    "source_trade_count": 0,
+    "target_trade_count": 2,
+    "space_hole_euler_conserved": true,
+    "source_torus_homology_rank": 4,
+    "target_torus_homology_rank": 4,
+    "torus_homology_matrix": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "xor_aligned_bytes": 11,
+    "xor_delta_hex": "0003475d5d13115e5e3474",
+    "source_target_delta_weights": [
+      39,
+      37,
+      38
+    ],
+    "source_target_parity": [
+      1,
+      1
+    ],
+    "parity_preserved": true,
+    "even_subspace_dimension": 87,
+    "symmetric_subspace_dimension": 71,
+    "repeated_row_classes": {
+      "0x5d": [
+        3,
+        4
+      ],
+      "0x5e": [
+        7,
+        8
+      ]
+    },
+    "semantic_residuals": [
+      0.0,
+      0.0
+    ],
+    "claim_level": "profile-exact-synthetic-topology-equivalence",
+    "certificate_valid": true
+  },
+  "catalogs": {
+    "bea361_delta_operators": 30,
+    "all_operator_ids_in_namespace": true,
+    "space_hole_operator_id": "bea361.hinge.space-hole-trade-v1",
+    "retained_v3_6_operators": 36,
+    "retained_pattern_recipes": 20
+  },
+  "tests": {
+    "executed": 83,
+    "passed": 83,
+    "failed": 0,
+    "baseline_tests": 36,
+    "course_corrected_tests": 47,
+    "output": "test_results_3_6_1_bea_course_corrected.txt"
+  },
+  "evidence_boundary": "The reported equivalence is exact only inside profile bea361:synthetic-cell-complex-v2. It is not standard-font topology, full-T4 homeomorphism, Euclidean glyph SDF, Hamming-weight conservation, or physical entropy/energy conservation."
+}

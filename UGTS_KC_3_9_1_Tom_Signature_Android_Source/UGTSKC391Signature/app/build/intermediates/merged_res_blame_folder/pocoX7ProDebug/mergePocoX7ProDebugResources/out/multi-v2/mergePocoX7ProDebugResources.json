@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "nl.tomklootwijk.ugtskc.signature.app-pocoX7ProDebug-4:/values_values.arsc.flat",
+            "map": [
+                {
+                    "source": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "13",
+                        "endColumns": "12",
+                        "endOffsets": "752"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "125",
+                        "endLines": "14",
+                        "endColumns": "12",
+                        "endOffsets": "822"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "69",
+                        "endOffsets": "120"
+                    }
+                }
+            ]
+        }
+    ]
+}

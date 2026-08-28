@@ -1,0 +1,39 @@
+{
+  "after_render": {
+    "culled_triangles": 0,
+    "path": "/mnt/data/UGTS_KC_Two_Hands_3_0_Package/examples/output/sandbox_after.svg",
+    "triangle_count": 1968,
+    "visible_nodes": 2
+  },
+  "before_render": {
+    "culled_triangles": 0,
+    "path": "/mnt/data/UGTS_KC_Two_Hands_3_0_Package/examples/output/sandbox_before.svg",
+    "triangle_count": 1968,
+    "visible_nodes": 2
+  },
+  "bimanual_result": {
+    "confidence": 1.0,
+    "scale": 1.674136904497359,
+    "status": "ok",
+    "translation": [
+      0.32499999999999996,
+      0.8,
+      0.22499999999999998
+    ],
+    "twist_radians": 0.1978771410796012
+  },
+  "event_count": 1,
+  "outputs": [
+    "sandbox_after.svg",
+    "sandbox_before.svg",
+    "sandbox_diagnostics.json",
+    "sandbox_replay.json",
+    "sandbox_scene.gltf",
+    "sandbox_scene.json",
+    "sandbox_scene.usda",
+    "sandbox_scene_audit.json",
+    "sandbox_summary.json"
+  ],
+  "scene_hash": "e061c325aaacfa32da19743dc5215067cdbd183ceda9bcfbdc80483b904f0b22",
+  "version": "3.0.0"
+}

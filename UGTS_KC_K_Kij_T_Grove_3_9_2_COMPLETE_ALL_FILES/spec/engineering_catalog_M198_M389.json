@@ -1,0 +1,1738 @@
+{
+  "schema_version": "3.9.0",
+  "source_baseline_count": 197,
+  "kc2_additions": 60,
+  "kc3_additions": 72,
+  "kc39_additions": 60,
+  "extended_total": 389,
+  "mechanisms": [
+    {
+      "id": "M198",
+      "domain": "Pattern geometry",
+      "mechanism": "Superellipse (Lame curve)",
+      "definition": "Parametric constant-exponent family |x/a|^n + |y/b|^n = 1 with explicit sign restoration.",
+      "formula": "x=a*sgn(cos t)|cos t|^(2/n); y=b*sgn(sin t)|sin t|^(2/n)",
+      "integration": "Pattern primitive; may define support, route boundary or swept profile.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M199",
+      "domain": "Pattern geometry",
+      "mechanism": "Gielis superformula",
+      "definition": "Bounded radial pattern grammar that generalizes circles, polygons, stars and lobed forms.",
+      "formula": "r=(|cos(m t/4)/a|^n2 + |sin(m t/4)/b|^n3)^(-1/n1)",
+      "integration": "Versioned parameter tuple; denominator floor prevents singular numerical blow-up.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M200",
+      "domain": "Pattern geometry",
+      "mechanism": "Rose curve",
+      "definition": "Polar harmonic petal pattern with integer or rational angular frequency.",
+      "formula": "r=a cos(k t)",
+      "integration": "Periodic support/template; winding and event surfaces remain separately typed.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M201",
+      "domain": "Pattern geometry",
+      "mechanism": "Lissajous curve",
+      "definition": "Two-axis harmonic pattern with declared frequencies and phase offset.",
+      "formula": "x=A sin(a t+delta); y=B sin(b t)",
+      "integration": "Kinematic test path, phase compatibility probe or calibration trajectory.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M202",
+      "domain": "Pattern geometry",
+      "mechanism": "Epitrochoid",
+      "definition": "Point attached to a circle rolling outside another circle.",
+      "formula": "x=(R+r)cos t-d cos((R+r)t/r); y=(R+r)sin t-d sin((R+r)t/r)",
+      "integration": "Closed periodic route when radius ratio is rational; otherwise bounded quasi-periodic sample.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M203",
+      "domain": "Pattern geometry",
+      "mechanism": "Hypotrochoid",
+      "definition": "Point attached to a circle rolling inside another circle.",
+      "formula": "x=(R-r)cos t+d cos((R-r)t/r); y=(R-r)sin t-d sin((R-r)t/r)",
+      "integration": "Pattern route with cusp/self-intersection events classified by derivative and sheet.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M204",
+      "domain": "Pattern geometry",
+      "mechanism": "Cycloid",
+      "definition": "Trace of a point on a circle rolling along a line.",
+      "formula": "x=r(t-sin t); y=r(1-cos t)",
+      "integration": "Exact benchmark trajectory for cusp and contact events.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M205",
+      "domain": "Pattern geometry",
+      "mechanism": "General trochoid",
+      "definition": "Rolling-circle trace with point offset d distinct from radius r.",
+      "formula": "x=r t-d sin t; y=r-d cos t",
+      "integration": "Prolate/curtate transition controlled by d/r and classified at d=r.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M206",
+      "domain": "Pattern geometry",
+      "mechanism": "Circle involute",
+      "definition": "Taut-string unwrapping curve with monotonic arc parameter.",
+      "formula": "x=r(cos t+t sin t); y=r(sin t-t cos t)",
+      "integration": "Gear/contact profile and nonuniform curvature benchmark.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M207",
+      "domain": "Pattern geometry",
+      "mechanism": "Catenary",
+      "definition": "Static hanging-chain profile retained as a bounded mechanical shape, not a generic parabola.",
+      "formula": "y=a cosh((x-x0)/a)+y0",
+      "integration": "Constraint shape or potential-energy equilibrium reference.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M208",
+      "domain": "Pattern geometry",
+      "mechanism": "Clothoid / Euler spiral",
+      "definition": "Curve whose curvature changes linearly with arc length.",
+      "formula": "kappa(s)=s/A^2; x=integral cos(u^2/2A^2)du; y=integral sin(u^2/2A^2)du",
+      "integration": "Curvature-continuous route connector and steering transition.",
+      "validation": "Implemented numerically + tested"
+    },
+    {
+      "id": "M209",
+      "domain": "Pattern geometry",
+      "mechanism": "Fermat spiral",
+      "definition": "Square-root radial spiral with explicit branch sign.",
+      "formula": "r=a sqrt(|t|), branch selects sign/phase",
+      "integration": "Two-arm address pattern and bounded sample schedule.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M210",
+      "domain": "Pattern geometry",
+      "mechanism": "Archimedean spiral",
+      "definition": "Linear radial growth under angular phase.",
+      "formula": "r=a+b t",
+      "integration": "Uniform shell-crossing benchmark and address sweep.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M211",
+      "domain": "Pattern geometry",
+      "mechanism": "Rational quadratic Bezier conic",
+      "definition": "Three control points with middle weight representing exact conic arcs under valid weights.",
+      "formula": "B(t)=[(1-t)^2P0+2w t(1-t)P1+t^2P2]/[(1-t)^2+2w t(1-t)+t^2]",
+      "integration": "Conic-support primitive with denominator guard and schema-bound weight.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M212",
+      "domain": "Pattern geometry",
+      "mechanism": "Cubic Bezier segment",
+      "definition": "Four-point polynomial curve with endpoint tangent control.",
+      "formula": "B(t)=(1-t)^3P0+3(1-t)^2tP1+3(1-t)t^2P2+t^3P3",
+      "integration": "Glyph morph, route segment and local sweep centerline.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M213",
+      "domain": "Pattern geometry",
+      "mechanism": "Open-uniform B-spline",
+      "definition": "Piecewise polynomial curve with local control and declared degree/knot vector.",
+      "formula": "C(t)=sum_i N_i,p(t) P_i",
+      "integration": "Finite grammar output normalized to bounded control points and degree.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M214",
+      "domain": "Pattern geometry",
+      "mechanism": "NURBS curve",
+      "definition": "Rational B-spline with explicit positive weights and knot vector.",
+      "formula": "C(t)=sum_i N_i,p w_i P_i / sum_i N_i,p w_i",
+      "integration": "Exact/approximate CAD-style route with denominator and weight validation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M215",
+      "domain": "Pattern geometry",
+      "mechanism": "Reuleaux constant-width profile",
+      "definition": "Three circular arcs producing a convex constant-width curve.",
+      "formula": "Boundary assembled from radius-w arcs centered at equilateral-triangle vertices.",
+      "integration": "Constant-clearance support profile and rotation benchmark.",
+      "validation": "Implemented sampler + tested"
+    },
+    {
+      "id": "M216",
+      "domain": "Pattern geometry",
+      "mechanism": "Voronoi / power-cell selector",
+      "definition": "Nearest-site partition generalized by additive site weights.",
+      "formula": "argmin_i ||x-s_i||^2-w_i",
+      "integration": "Compatibility/routing partition compiled to local candidate tests.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M217",
+      "domain": "Pattern geometry",
+      "mechanism": "Medial-axis skeletal approximation",
+      "definition": "Centerline candidates derived from equal-distance pairs or sampled boundary normals.",
+      "formula": "d(x,A)=d(x,B) with local maximality condition",
+      "integration": "Compressed shape skeleton; approximation status and sampling density are logged.",
+      "validation": "Implemented sampled helper + tested"
+    },
+    {
+      "id": "M218",
+      "domain": "Field/surface geometry",
+      "mechanism": "Superquadric implicit field",
+      "definition": "Exponent-controlled 3D generalization of ellipsoids and box-like rounded solids.",
+      "formula": "((|x/a|^(2/e2)+|y/b|^(2/e2))^(e2/e1)+|z/c|^(2/e1))-1",
+      "integration": "Implicit event/support field; not automatically an exact Euclidean SDF.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M219",
+      "domain": "Field/surface geometry",
+      "mechanism": "Anisotropic ellipsoid field",
+      "definition": "Quadratic form with positive scales or covariance-like metric.",
+      "formula": "f(x)=x^T A x-1, A positive definite",
+      "integration": "Directional guard/support with explicit metric and conditioning checks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M220",
+      "domain": "Field/surface geometry",
+      "mechanism": "Swept tube field",
+      "definition": "Distance-to-centerline field minus radius using a sampled or analytic curve.",
+      "formula": "f(x)=min_s ||x-c(s)||-r(s)",
+      "integration": "Cable, vessel, wormhole-route visualization or collision support; sampled error is declared.",
+      "validation": "Implemented sampled + tested"
+    },
+    {
+      "id": "M221",
+      "domain": "Field/surface geometry",
+      "mechanism": "Generalized cylinder / profile sweep",
+      "definition": "Cross-section transported along a centerline with an explicit moving frame.",
+      "formula": "X(s,u,v)=c(s)+u e1(s)+v e2(s)",
+      "integration": "Pattern extrusion using Frenet or Bishop frame; frame choice is schema-bound.",
+      "validation": "Implemented helper + example"
+    },
+    {
+      "id": "M222",
+      "domain": "Field/surface geometry",
+      "mechanism": "Ruled surface",
+      "definition": "Surface formed by linearly connecting corresponding points on two curves.",
+      "formula": "X(u,v)=(1-v)c0(u)+v c1(u)",
+      "integration": "Portal sheet, transition membrane or developable approximation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M223",
+      "domain": "Field/surface geometry",
+      "mechanism": "Helicoid",
+      "definition": "Ruled minimal-surface family generated by screw motion.",
+      "formula": "X(u,v)=(v cos u,v sin u,p u)",
+      "integration": "Screw-symmetry route/sheet example; physical minimality is not assumed in discrete realization.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M224",
+      "domain": "Field/surface geometry",
+      "mechanism": "Catenoid",
+      "definition": "Surface of revolution of a catenary.",
+      "formula": "X(u,v)=(a cosh(v/a)cos u,a cosh(v/a)sin u,v)",
+      "integration": "Neck/pinch geometry with finite guard and no singular-energy claim.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M225",
+      "domain": "Field/surface geometry",
+      "mechanism": "Gyroid periodic field",
+      "definition": "Triply periodic implicit pattern used as a bounded field template.",
+      "formula": "sin x cos y + sin y cos z + sin z cos x = c",
+      "integration": "Periodic support/route field; topology depends on threshold and finite domain.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M226",
+      "domain": "Field/surface geometry",
+      "mechanism": "Schwarz-P periodic field",
+      "definition": "Triply periodic cosine field serving as a connected-sheet template.",
+      "formula": "cos x+cos y+cos z=c",
+      "integration": "Field grammar primitive with threshold and cell count explicitly bounded.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M227",
+      "domain": "Field/surface geometry",
+      "mechanism": "Metaball / R-function blend",
+      "definition": "Smooth influence-field combination with explicit compact or inverse-distance kernel.",
+      "formula": "f(x)=sum_i w_i phi(||x-c_i||)-tau",
+      "integration": "Merge/split event benchmark; kernel support and saturation are declared.",
+      "validation": "Implemented compact kernel + tested"
+    },
+    {
+      "id": "M228",
+      "domain": "Field/surface geometry",
+      "mechanism": "Morphological offset / dilation",
+      "definition": "Parallel-set transform expressed as a field offset when the input is distance-like.",
+      "formula": "f_delta(x)=f(x)-delta",
+      "integration": "Guard expansion, tolerance shell and manufacturing clearance; exact only for valid distance fields.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M229",
+      "domain": "Field/surface geometry",
+      "mechanism": "Wavefront / eikonal arrival field",
+      "definition": "Arrival-time field under a declared local propagation speed.",
+      "formula": "|grad T|=1/c(x); constant-c case T=distance/c",
+      "integration": "Event-time support primitive; variable-speed solver is specified separately.",
+      "validation": "Implemented constant-speed + tested"
+    },
+    {
+      "id": "M230",
+      "domain": "Topology",
+      "mechanism": "Winding number / degree tag",
+      "definition": "Integer-valued enclosure/orientation descriptor for closed planar routes.",
+      "formula": "w=(1/2pi) integral d arg(gamma(t)-x)",
+      "integration": "Inside/outside and route class metadata without collapsing geometry to a bit.",
+      "validation": "Implemented polygonal + tested"
+    },
+    {
+      "id": "M231",
+      "domain": "Topology",
+      "mechanism": "Covering-space lift",
+      "definition": "Unwrapped coordinate retains traversal count across periodic quotient boundaries.",
+      "formula": "theta_lift=theta+2pi k",
+      "integration": "Prevents ambiguity at repeated coordinates and supports lineage reconstruction.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M232",
+      "domain": "Topology",
+      "mechanism": "Homotopy-class route label",
+      "definition": "Route label stores obstacle winding/signature rather than only endpoint coordinates.",
+      "formula": "h=(w1,...,wn) for declared obstacle generators",
+      "integration": "Compatibility and branch selection may require matching or allowed classes.",
+      "validation": "Implemented descriptor + tested"
+    },
+    {
+      "id": "M233",
+      "domain": "Topology",
+      "mechanism": "Braid-word transition",
+      "definition": "Ordered crossings represented by generators sigma_i and inverses with local cancellation.",
+      "formula": "... sigma_i sigma_i^-1 ... -> identity",
+      "integration": "Multi-entity route lineage; word length is bounded and reduction policy explicit.",
+      "validation": "Implemented reducer + tested"
+    },
+    {
+      "id": "M234",
+      "domain": "Topology",
+      "mechanism": "Knot/link checksum",
+      "definition": "Optional low-cost invariant or numerical linking estimate for closed route pairs.",
+      "formula": "Gauss linking integral or declared discrete approximation",
+      "integration": "Diagnostic checksum only; not complete knot identity and not used as sole authority.",
+      "validation": "Specified; numerical certification pending"
+    },
+    {
+      "id": "M235",
+      "domain": "Topology",
+      "mechanism": "Cell-complex incidence",
+      "definition": "Vertices, edges, faces and cells connected through oriented incidence maps.",
+      "formula": "boundary_k: C_k -> C_(k-1)",
+      "integration": "Topology storage independent of embedding; supports local gluing and route updates.",
+      "validation": "Implemented boundary matrices + tested"
+    },
+    {
+      "id": "M236",
+      "domain": "Topology",
+      "mechanism": "Boundary/coboundary update",
+      "definition": "Topology transition updates primal incidence and dual cochain state consistently.",
+      "formula": "boundary_(k-1) boundary_k = 0",
+      "integration": "Validation rejects edits violating boundary-of-boundary zero.",
+      "validation": "Implemented invariant check + tested"
+    },
+    {
+      "id": "M237",
+      "domain": "Topology",
+      "mechanism": "Discrete Morse critical event",
+      "definition": "Cell pairing identifies local critical cells where topology/routing may change.",
+      "formula": "Unpaired cells are critical under a declared matching.",
+      "integration": "Event candidate for simplification or handle birth/death; matching is explicit.",
+      "validation": "Implemented descriptor + example"
+    },
+    {
+      "id": "M238",
+      "domain": "Topology",
+      "mechanism": "Persistent-homology summary",
+      "definition": "Birth/death intervals summarize bounded filtration changes.",
+      "formula": "barcode={(birth_i,death_i,dimension_i)}",
+      "integration": "Diagnostic feature vector; does not replace full geometry or lineage.",
+      "validation": "Specified exchange format; solver not bundled"
+    },
+    {
+      "id": "M239",
+      "domain": "Topology",
+      "mechanism": "Atlas transition cocycle",
+      "definition": "Overlapping chart maps are checked for consistent composition.",
+      "formula": "g_ij g_jk = g_ik on triple overlaps",
+      "integration": "Prevents incompatible portal/gluing definitions in multi-chart worlds.",
+      "validation": "Implemented matrix check + tested"
+    },
+    {
+      "id": "M240",
+      "domain": "Kinematic calculus",
+      "mechanism": "SE(2) rigid transform and twist",
+      "definition": "Planar position/orientation update represented by the exponential of a body twist.",
+      "formula": "T(t)=exp(t [v_x,v_y,omega]^)",
+      "integration": "Exact constant-twist state_at(t) and portal patch primitive.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M241",
+      "domain": "Kinematic calculus",
+      "mechanism": "SE(3) twist exponential",
+      "definition": "Spatial rigid motion generated by angular and linear velocity.",
+      "formula": "T=exp([omega,v]^ t) with Rodrigues rotation and V matrix",
+      "integration": "Constant screw motion, frame transport and analytic state query.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M242",
+      "domain": "Kinematic calculus",
+      "mechanism": "Quaternion SLERP",
+      "definition": "Shortest-arc interpolation of unit orientations with antipodal handling.",
+      "formula": "q(t)=sin((1-t)theta)/sin theta q0 + sin(t theta)/sin theta q1",
+      "integration": "Orientation interpolation separate from position and topology.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M243",
+      "domain": "Kinematic calculus",
+      "mechanism": "Screw interpolation (SE(3) geodesic)",
+      "definition": "Interpolate through the relative rigid transform log/exponential rather than independent Euler angles.",
+      "formula": "T(t)=T0 exp(t log(T0^-1 T1))",
+      "integration": "Portal/coupler motion with consistent rotation-translation coupling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M244",
+      "domain": "Kinematic calculus",
+      "mechanism": "Frenet-Serret moving frame",
+      "definition": "Tangent, normal and binormal derived from nondegenerate curve derivatives.",
+      "formula": "T=r'/|r'|; B=(r' x r'')/|r' x r''|; N=B x T",
+      "integration": "Curvature/torsion diagnostics and sweep orientation where curvature is nonzero.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M245",
+      "domain": "Kinematic calculus",
+      "mechanism": "Bishop parallel-transport frame",
+      "definition": "Rotation-minimizing frame transported along a sampled curve.",
+      "formula": "Project previous normal into new tangent plane, then renormalize.",
+      "integration": "Stable sweep frame through near-zero-curvature segments.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M246",
+      "domain": "Kinematic calculus",
+      "mechanism": "Arc-length reparameterization",
+      "definition": "Monotone lookup maps path parameter to cumulative distance and back.",
+      "formula": "s(t)=integral_0^t |r'(u)|du",
+      "integration": "Uniform-speed queries and event bracketing with declared interpolation error.",
+      "validation": "Implemented sampled + tested"
+    },
+    {
+      "id": "M247",
+      "domain": "Kinematic calculus",
+      "mechanism": "Curvature-limited steering",
+      "definition": "Speed and angular rate constrained by path curvature and lateral acceleration.",
+      "formula": "omega=v kappa; v<=sqrt(a_lat_max/max(|kappa|,eps))",
+      "integration": "Feasible trajectory gate before event solving.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M248",
+      "domain": "Kinematic calculus",
+      "mechanism": "Jerk-bounded quintic S-curve",
+      "definition": "Endpoint-rest time law with continuous position, velocity and acceleration.",
+      "formula": "s(u)=10u^3-15u^4+6u^5, u in [0,1]",
+      "integration": "Smooth phase/route actuation; peak derivatives determine duration contract.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M249",
+      "domain": "Kinematic calculus",
+      "mechanism": "Limit-aware time scaling",
+      "definition": "Choose trajectory duration so normalized velocity, acceleration and jerk stay within declared limits.",
+      "formula": "T=max(D*v_peak/vmax, sqrt(D*a_peak/amax), cbrt(D*j_peak/jmax))",
+      "integration": "Bounded schedule; not claimed globally time-optimal for arbitrary paths.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M250",
+      "domain": "Kinematic calculus",
+      "mechanism": "Articulated-chain forward kinematics",
+      "definition": "Compose joint transforms to obtain link and endpoint frames.",
+      "formula": "T_end=product_i T_i(q_i)",
+      "integration": "Finite grammar may emit link chains; state query returns all frames and lineage.",
+      "validation": "Implemented planar chain + tested"
+    },
+    {
+      "id": "M251",
+      "domain": "Kinematic calculus",
+      "mechanism": "Jacobian damped least-squares IK",
+      "definition": "Regularized local inverse step avoids singular matrix blow-up.",
+      "formula": "Delta q=J^T(JJ^T+lambda^2 I)^-1 e",
+      "integration": "Optional solver with residual, iteration budget and failure status.",
+      "validation": "Implemented planar chain + tested"
+    },
+    {
+      "id": "M252",
+      "domain": "Dynamics and events",
+      "mechanism": "Symplectic / semi-implicit integration",
+      "definition": "Velocity is updated before position for improved qualitative energy behavior in separable mechanics.",
+      "formula": "v_(n+1)=v_n+a(x_n)dt; x_(n+1)=x_n+v_(n+1)dt",
+      "integration": "Fallback dynamic state update; timestep and error budget remain explicit.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M253",
+      "domain": "Dynamics and events",
+      "mechanism": "Damped second-order mode",
+      "definition": "Mass-spring-damper evolution with typed mass, stiffness and damping.",
+      "formula": "m x''+c x'+k x=f(t)",
+      "integration": "Actuator, hinge or threshold reset dynamics; energy bookkeeping is measurable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M254",
+      "domain": "Dynamics and events",
+      "mechanism": "Graph-Laplacian diffusion / coupled modes",
+      "definition": "Local state exchange over an explicit adjacency graph.",
+      "formula": "x'=-alpha L x or x''+C x'+Kx=0",
+      "integration": "Phase smoothing, consensus or coupled oscillation without hidden global field.",
+      "validation": "Implemented first-order diffusion + tested"
+    },
+    {
+      "id": "M255",
+      "domain": "Dynamics and events",
+      "mechanism": "Reaction-diffusion pattern dynamics",
+      "definition": "Two-field local reaction plus diffusion update on a bounded grid or graph.",
+      "formula": "Gray-Scott: U_t=D_u Lap U-UV^2+F(1-U); V_t=D_v Lap V+UV^2-(F+k)V",
+      "integration": "Dynamic pattern generator kept downstream of typed field/state schema.",
+      "validation": "Implemented grid step + tested"
+    },
+    {
+      "id": "M256",
+      "domain": "Dynamics and events",
+      "mechanism": "Hybrid automaton continuous/discrete dynamics",
+      "definition": "Each mode has a continuous flow; guard crossings invoke discrete reset and route changes.",
+      "formula": "x'=f_m(x); if g_(m,n)(x)=0 then x^+=R_(m,n)(x)",
+      "integration": "Generalizes threshold cup, parity hinge and event transition into a typed model.",
+      "validation": "Implemented reference class + tested"
+    },
+    {
+      "id": "M257",
+      "domain": "Dynamics and events",
+      "mechanism": "Event degeneracy and simultaneity resolver",
+      "definition": "Classify crossing, tangency and coincidence; resolve equal-time patches by priority or verified commutativity.",
+      "formula": "Use sign history, derivative, residual interval and patch-conflict graph.",
+      "integration": "Prevents chatter, unordered lineage and silent overwrite at multi-guard events.",
+      "validation": "Implemented classifier/resolver + tested"
+    },
+    {
+      "id": "M258",
+      "domain": "Scene and assets",
+      "mechanism": "Stable asset identity",
+      "definition": "Asset identity is a stable schema identifier separate from node identity, coordinates and lineage.",
+      "formula": "asset=(asset_id, content_hash, schema_hash, payload)",
+      "integration": "Allows one immutable asset to be instanced by many scene nodes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M259",
+      "domain": "Scene and assets",
+      "mechanism": "Content-addressed asset hash",
+      "definition": "Canonical mesh/material/source metadata are hashed so derived geometry can be cached and compared.",
+      "formula": "h_asset=SHA256(canonical(asset_payload))",
+      "integration": "Cache key and integrity check; not a legal or cryptographic identity claim.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M260",
+      "domain": "Scene and assets",
+      "mechanism": "Scene-node transform hierarchy",
+      "definition": "Nodes form an explicit parent-child transform graph with local and world transforms.",
+      "formula": "T_world(n)=T_world(parent(n))*T_local(n)",
+      "integration": "Supports conventional scene composition while UGTS events remain authoritative for changes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M261",
+      "domain": "Scene and assets",
+      "mechanism": "Hierarchy cycle rejection",
+      "definition": "Parent edits are accepted only when the scene graph remains acyclic.",
+      "formula": "parent walk must not revisit a node",
+      "integration": "Prevents undefined world transforms and recursive editor corruption.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M262",
+      "domain": "Scene and assets",
+      "mechanism": "Asset-instance separation",
+      "definition": "Mesh/material assets are immutable payloads; nodes carry transform, visibility, tags and lineage.",
+      "formula": "instance=(node_id, asset_id, local_transform, tags, lineage)",
+      "integration": "Allows reuse and streaming without treating render meshes as identity.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M263",
+      "domain": "Scene and assets",
+      "mechanism": "Layered scene opinions",
+      "definition": "Ordered layers may override declared node fields without destructively rewriting the base scene.",
+      "formula": "composed(n)=fold_layers(base(n), opinions(n))",
+      "integration": "Reference form of non-destructive authoring and variant overrides.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M264",
+      "domain": "Scene and assets",
+      "mechanism": "Coordinate-system declaration",
+      "definition": "Every scene declares up axis, handedness and working coordinate convention.",
+      "formula": "coordinate_contract=(up_axis, handedness, units_per_meter)",
+      "integration": "Prevents silent axis flips across engine, glTF, USD and XR adapters.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M265",
+      "domain": "Scene and assets",
+      "mechanism": "Unit and time-base declaration",
+      "definition": "Linear scale, time unit and working color space are schema fields.",
+      "formula": "metadata=(units_per_meter,time_unit,working_color_space)",
+      "integration": "Separates authored values from implicit engine defaults.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M266",
+      "domain": "Scene and assets",
+      "mechanism": "Streaming-region membership",
+      "definition": "World bounds map deterministically to one or more spatial cells.",
+      "formula": "cell(p)=floor(p/cell_size)",
+      "integration": "Supplies world partition and asynchronous loading keys.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M267",
+      "domain": "Scene and assets",
+      "mechanism": "Schema migration record",
+      "definition": "Version changes append an explicit from/to migration entry and description.",
+      "formula": "migration=(from_version,to_version,operation)",
+      "integration": "Makes save-game and asset upgrades inspectable and replay-safe.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M268",
+      "domain": "Geometry compilation",
+      "mechanism": "Adaptive cubic-curve tessellation",
+      "definition": "Cubic Bezier segments subdivide until a declared flatness tolerance or depth limit is reached.",
+      "formula": "flatness=max(dist(P1,line P0P3),dist(P2,line P0P3)) <= epsilon",
+      "integration": "Produces render/collision polylines from authoritative curves.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M269",
+      "domain": "Geometry compilation",
+      "mechanism": "Dual simulation and presentation error contract",
+      "definition": "Derived geometry records independent world, collision, screen-space and normal error budgets.",
+      "formula": "error=(e_world,e_collision,e_pixels,e_normal,topology_status)",
+      "integration": "Prevents visually acceptable meshes from silently redefining event geometry.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M270",
+      "domain": "Geometry compilation",
+      "mechanism": "Even-odd and nonzero fill rules",
+      "definition": "Closed 2D paths use an explicitly selected winding rule for interior classification.",
+      "formula": "inside_evenodd = crossing_count mod 2; inside_nonzero = winding != 0",
+      "integration": "Supports vector fills, guards and hit regions without ambiguous self-intersections.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M271",
+      "domain": "Geometry compilation",
+      "mechanism": "Stroke expansion",
+      "definition": "An open polyline is compiled to a ribbon mesh with explicit width and join policy.",
+      "formula": "v_i^+/- = p_i +/- (width/2)*n_i",
+      "integration": "Reference path-to-triangle conversion for editor and runtime previews.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M272",
+      "domain": "Geometry compilation",
+      "mechanism": "Swept tube mesh",
+      "definition": "A profile ring is swept along a sampled 3D path to form a triangle mesh.",
+      "formula": "v_ij=p_i+r(cos(theta_j)N_i+sin(theta_j)B_i)",
+      "integration": "Makes 2.0 curve families renderable and exportable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M273",
+      "domain": "Geometry compilation",
+      "mechanism": "Parallel-transport sweep frames",
+      "definition": "Rotation-minimizing tangent/normal/binormal frames orient profiles across low-curvature sections.",
+      "formula": "N_i=normalize(N_(i-1)-T_i dot(N_(i-1),T_i)); B_i=T_i x N_i",
+      "integration": "Avoids Frenet flips at near-zero curvature.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M274",
+      "domain": "Geometry compilation",
+      "mechanism": "Implicit-field grid sampling",
+      "definition": "A bounded 3D lattice samples a declared scalar field and iso value.",
+      "formula": "s_ijk=f(x_i,y_j,z_k)-iso",
+      "integration": "Input stage for deterministic field-to-mesh compilation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M275",
+      "domain": "Geometry compilation",
+      "mechanism": "Marching-tetrahedra meshing",
+      "definition": "Each voxel cube is decomposed into tetrahedra and crossing edges are triangulated.",
+      "formula": "p_cross=lerp(p_a,p_b,(iso-f_a)/(f_b-f_a))",
+      "integration": "Reference isosurface compiler with bounded resolution and no hidden raymarch loop.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M276",
+      "domain": "Geometry compilation",
+      "mechanism": "Field-gradient normal generation",
+      "definition": "Analytic gradients are preferred; finite differences supply a bounded fallback.",
+      "formula": "n=normalize(grad f); grad_x approx (f(x+h)-f(x-h))/(2h)",
+      "integration": "Supplies lighting orientation and diagnostic residuals.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M277",
+      "domain": "Geometry compilation",
+      "mechanism": "Sweep UV generation",
+      "definition": "Tube vertices receive angular and cumulative-length coordinates.",
+      "formula": "u=j/sides; v=arc_length_i/total_length",
+      "integration": "Provides stable procedural material coordinates.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M278",
+      "domain": "Geometry compilation",
+      "mechanism": "Collision proxy generation",
+      "definition": "A derived axis-aligned proxy mesh is emitted from authoritative bounds.",
+      "formula": "proxy=AABB(mesh)",
+      "integration": "Allows inexpensive broad-phase and fallback collision.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M279",
+      "domain": "Geometry compilation",
+      "mechanism": "Reference mesh LOD hierarchy",
+      "definition": "Triangle subsets form deterministic lower-detail previews with explicit topology-preservation status.",
+      "formula": "N_lod=round(ratio*N_triangles)",
+      "integration": "Reference only; production simplification must preserve application error contracts.",
+      "validation": "Implemented + tested (reference)"
+    },
+    {
+      "id": "M280",
+      "domain": "Spatial and streaming",
+      "mechanism": "Axis-aligned bounding box contract",
+      "definition": "Each renderable or support volume may expose finite minimum/maximum bounds.",
+      "formula": "AABB=[xmin,xmax]x[ymin,ymax]x[zmin,zmax]",
+      "integration": "Common currency for culling, broad phase and streaming.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M281",
+      "domain": "Spatial and streaming",
+      "mechanism": "Oriented-bound proxy contract",
+      "definition": "An optional local frame and half-extents describe tighter oriented bounds.",
+      "formula": "OBB=(center,axes,half_extents)",
+      "integration": "Specified for production adapters; reference runtime falls back to AABB.",
+      "validation": "Specified; not implemented"
+    },
+    {
+      "id": "M282",
+      "domain": "Spatial and streaming",
+      "mechanism": "Deterministic BVH construction",
+      "definition": "A median split along the longest axis builds an inspectable hierarchy.",
+      "formula": "axis=argmax(extent); split=median(center_axis)",
+      "integration": "Conventional acceleration complements UGTS support predicates.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M283",
+      "domain": "Spatial and streaming",
+      "mechanism": "Support-aware broad phase",
+      "definition": "BVH overlap results pass through local-support predicates before exact relation work.",
+      "formula": "candidates=BVH(query) intersect support_ok",
+      "integration": "Preserves the canonical support -> compatibility -> guard order.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M284",
+      "domain": "Spatial and streaming",
+      "mechanism": "Frustum visibility query",
+      "definition": "AABB positive vertices are tested against declared view planes.",
+      "formula": "visible iff dot(n,p_positive)+d >= 0 for all planes",
+      "integration": "Downstream view selection only; visibility does not change identity.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M285",
+      "domain": "Spatial and streaming",
+      "mechanism": "Ray and picking query",
+      "definition": "Slab intervals return ordered AABB ray candidates.",
+      "formula": "t_axis=(bound-origin)/direction; intersect intervals",
+      "integration": "Editor picking and coarse interaction support.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M286",
+      "domain": "Spatial and streaming",
+      "mechanism": "World streaming cells",
+      "definition": "Object bounds enumerate every intersected regular-grid cell.",
+      "formula": "cells(AABB)=Cartesian range(floor(min/s),floor(max/s))",
+      "integration": "Reference partition key for load/unload policies.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M287",
+      "domain": "Spatial and streaming",
+      "mechanism": "Per-user interest set",
+      "definition": "Spatial overlap and required tags define a player/client interest set.",
+      "formula": "interest={e: bounds(e) intersects query and tags_required subset tags(e)}",
+      "integration": "Supports replication and streaming scope.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M288",
+      "domain": "Spatial and streaming",
+      "mechanism": "Culling reason codes",
+      "definition": "Every rejected item reports frustum, support or compatibility cause.",
+      "formula": "reason in {outside_frustum,outside_support,incompatible,visible}",
+      "integration": "Makes editor and performance diagnostics actionable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M289",
+      "domain": "GPU and rendering",
+      "mechanism": "Pattern-opcode dispatch",
+      "definition": "Versioned numeric opcodes select pattern/field evaluators in coherent shader batches.",
+      "formula": "evaluator=dispatch[opcode]",
+      "integration": "GPU target keeps the 2.0 parameterized operator model.",
+      "validation": "Shader contract supplied"
+    },
+    {
+      "id": "M290",
+      "domain": "GPU and rendering",
+      "mechanism": "Parameter-buffer reference",
+      "definition": "Instances store aligned offsets into a validated parameter buffer rather than inflating every hot record.",
+      "formula": "params=buffer[param_offset:param_offset+param_count]",
+      "integration": "Supports compact instancing and schema hashing.",
+      "validation": "Shader contract supplied"
+    },
+    {
+      "id": "M291",
+      "domain": "GPU and rendering",
+      "mechanism": "Derivative availability flags",
+      "definition": "Bit flags declare analytic position, tangent, curvature, gradient or Hessian support.",
+      "formula": "flags & DERIVATIVE_*",
+      "integration": "Missing derivatives select a declared numerical path.",
+      "validation": "Shader contract supplied"
+    },
+    {
+      "id": "M292",
+      "domain": "GPU and rendering",
+      "mechanism": "Render-graph resource contract",
+      "definition": "Passes declare read/write resources, queue class and dependency edges.",
+      "formula": "render_graph=(passes,resources,barriers)",
+      "integration": "Specified bridge from query results to raster/compute presentation.",
+      "validation": "Specified; not executed"
+    },
+    {
+      "id": "M293",
+      "domain": "GPU and rendering",
+      "mechanism": "GPU-driven draw-list contract",
+      "definition": "Visible instances may be compacted into indirect draw or mesh-dispatch commands.",
+      "formula": "draws=compact(visible and lod_selected)",
+      "integration": "Production target; CPU reference emits ordinary SVG triangles.",
+      "validation": "Specified; not executed"
+    },
+    {
+      "id": "M294",
+      "domain": "GPU and rendering",
+      "mechanism": "GPU event proposal buffer",
+      "definition": "GPU kernels may append bounded event proposals with residual, status and confidence.",
+      "formula": "proposal=(time,entity,guard,error,confidence,source)",
+      "integration": "Gameplay state is not committed by an unchecked shader write.",
+      "validation": "Specified + runtime schema"
+    },
+    {
+      "id": "M295",
+      "domain": "GPU and rendering",
+      "mechanism": "Deterministic authoritative commit boundary",
+      "definition": "Verified proposals are ordered by time, priority, source and proposal ID before state patches.",
+      "formula": "sort_key=(event_time,-priority,source,proposal_id)",
+      "integration": "Separates parallel detection from authoritative lineage change.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M296",
+      "domain": "GPU and rendering",
+      "mechanism": "Vulkan backend profile",
+      "definition": "Native target declares Vulkan 1.4-compatible resource, shader and timestamp contracts.",
+      "formula": "backend=vulkan; physical_gpu_claim requires named device metrics",
+      "integration": "No physical-GPU benchmark is claimed by this package.",
+      "validation": "Specified only"
+    },
+    {
+      "id": "M297",
+      "domain": "GPU and rendering",
+      "mechanism": "WebGPU/WGSL portability profile",
+      "definition": "Portable target expresses compute and presentation kernels in WGSL-compatible layouts.",
+      "formula": "backend=webgpu; shader_language=WGSL",
+      "integration": "Prototype shader supplied; browser/device execution remains target-specific.",
+      "validation": "Prototype supplied"
+    },
+    {
+      "id": "M298",
+      "domain": "GPU and rendering",
+      "mechanism": "CPU SVG reference renderer",
+      "definition": "A deterministic camera, painter-order triangle pass and preview shader emit inspectable SVG.",
+      "formula": "project(p)=focal*(camera_space.xy/camera_space.z)",
+      "integration": "Regression oracle and demonstrator, not a production renderer.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M299",
+      "domain": "Materials and color",
+      "mechanism": "Typed metallic-roughness PBR material",
+      "definition": "Base color, metallic, roughness, emissive and alpha mode have bounded ranges.",
+      "formula": "material=(baseColor,metallic,roughness,emissive,alphaMode)",
+      "integration": "Maps directly to common runtime asset conventions.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M300",
+      "domain": "Materials and color",
+      "mechanism": "Procedural pattern coordinates",
+      "definition": "Material graphs may read phase, curvature, arc length, sheet or pattern coordinates.",
+      "formula": "presentation_value=graph(pattern_context)",
+      "integration": "Allows 2.0 patterns to drive masks and appearance.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M301",
+      "domain": "Materials and color",
+      "mechanism": "Acyclic material graph",
+      "definition": "Small typed nodes evaluate constants, patterns, add, multiply, mix and clamp operations.",
+      "formula": "value(node)=op(value(inputs))",
+      "integration": "Reference graph with explicit cycle rejection.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M302",
+      "domain": "Materials and color",
+      "mechanism": "Material authority boundary",
+      "definition": "Material evaluation is presentation-only and cannot mutate authoritative substrate state.",
+      "formula": "material_output -> pixels; state change -> guard/event only",
+      "integration": "Preserves the core reading rule.",
+      "validation": "Specified + enforced by API shape"
+    },
+    {
+      "id": "M303",
+      "domain": "Materials and color",
+      "mechanism": "Light and shadow contract",
+      "definition": "Lights declare kind, direction/color/intensity and shadow intent.",
+      "formula": "light=(kind,pose,color,intensity,casts_shadow)",
+      "integration": "Reference renderer implements one directional preview light; production shadows remain downstream.",
+      "validation": "Partially implemented"
+    },
+    {
+      "id": "M304",
+      "domain": "Materials and color",
+      "mechanism": "HDR exposure and tone mapping",
+      "definition": "Scene-linear color is exposed and mapped through declared preview operators.",
+      "formula": "c_exposed=2^EV*c; c_out=tone_map(c_exposed)",
+      "integration": "Makes output transforms reproducible.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M305",
+      "domain": "Materials and color",
+      "mechanism": "OCIO and ACES metadata target",
+      "definition": "Color-pipeline records may name an OCIO configuration and ACES profile/view.",
+      "formula": "color_contract=(working_space,display,view,config,profile)",
+      "integration": "Interchange target only; this package does not bundle an OCIO runtime.",
+      "validation": "Metadata specified"
+    },
+    {
+      "id": "M306",
+      "domain": "Materials and color",
+      "mechanism": "Transparency policy",
+      "definition": "Opaque, mask and blend modes are explicit material states.",
+      "formula": "alpha_mode in {OPAQUE,MASK,BLEND}",
+      "integration": "Prevents implicit ordering and collision semantics.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M307",
+      "domain": "Game runtime and animation",
+      "mechanism": "Fixed simulation clock separation",
+      "definition": "Authoritative simulation advances in fixed dt while input and presentation may use separate clocks.",
+      "formula": "t_tick=n*dt_fixed",
+      "integration": "Makes rollback and event ordering explicit.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M308",
+      "domain": "Game runtime and animation",
+      "mechanism": "ECS component mapping",
+      "definition": "Scene, support, relation, motion, interaction and lineage data map to explicit engine components.",
+      "formula": "entity -> {Transform,Asset,Support,Compatibility,Lineage,...}",
+      "integration": "Adapter contract; no engine-specific fork is authoritative.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M309",
+      "domain": "Game runtime and animation",
+      "mechanism": "Skeletal hierarchy contract",
+      "definition": "Joints form an acyclic transform hierarchy with inverse-bind and pose data.",
+      "formula": "p_skinned=sum_i w_i T_joint_i B_i^-1 p_rest",
+      "integration": "Production animation extension; no skinned character is bundled.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M310",
+      "domain": "Game runtime and animation",
+      "mechanism": "Animation state-machine contract",
+      "definition": "Clips, blend states and guarded transitions carry versioned event labels.",
+      "formula": "state_next=transition(state,guard,event)",
+      "integration": "Animation events use the same event authority boundary.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M311",
+      "domain": "Game runtime and animation",
+      "mechanism": "IK and maintained-constraint bridge",
+      "definition": "The 2.0 damped least-squares IK operator is connected to explicit joint-limit/constraint status.",
+      "formula": "delta_q=J^T(JJ^T+lambda^2 I)^-1 e",
+      "integration": "2.0 reference implementation retained; 3D production constraints remain application-specific.",
+      "validation": "Inherited implementation + specified bridge"
+    },
+    {
+      "id": "M312",
+      "domain": "Game runtime and animation",
+      "mechanism": "Conventional rigid-body fallback",
+      "definition": "Unsupported contacts and dense constraints may be delegated to a conventional physics solver.",
+      "formula": "unsupported_relation -> physics_adapter",
+      "integration": "Prevents the event substrate from pretending to replace general contact mechanics.",
+      "validation": "Specified boundary"
+    },
+    {
+      "id": "M313",
+      "domain": "Game runtime and animation",
+      "mechanism": "Impact versus persistent constraint split",
+      "definition": "Crossing/impact produces an event; resting contact, joint and grasp use maintained constraints.",
+      "formula": "impact -> event; contact_interval -> constraint_mode",
+      "integration": "Avoids infinite coincident-event emission.",
+      "validation": "Specified boundary"
+    },
+    {
+      "id": "M314",
+      "domain": "Game runtime and animation",
+      "mechanism": "Character sweep-controller contract",
+      "definition": "Capsule/shape sweeps return travel fraction, normal, support and compatibility status.",
+      "formula": "hit=min valid TOI along displacement",
+      "integration": "Target interface for playable movement.",
+      "validation": "Specified; not implemented"
+    },
+    {
+      "id": "M315",
+      "domain": "Two-hand interaction",
+      "mechanism": "Typed hand state",
+      "definition": "Each hand records side, wrist pose, joints, radii, confidence, tracking state, source and timestamp.",
+      "formula": "HandState=(side,wrist,joints,radii,confidence,status,time)",
+      "integration": "Input adapter boundary for XR, mocap or desktop emulation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M316",
+      "domain": "Two-hand interaction",
+      "mechanism": "Pinch hysteresis",
+      "definition": "Separate enter and exit distances prevent noisy pinch chatter.",
+      "formula": "enter if d<=d_enter; exit if d>=d_exit, d_exit>d_enter",
+      "integration": "Produces guarded interaction state with reason codes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M317",
+      "domain": "Two-hand interaction",
+      "mechanism": "Bimanual midpoint frame",
+      "definition": "The pair midpoint is the translation anchor for cooperative transforms.",
+      "formula": "m=(p_left+p_right)/2",
+      "integration": "Stable pair frame independent of world origin.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M318",
+      "domain": "Two-hand interaction",
+      "mechanism": "Bimanual scale",
+      "definition": "Object scale follows current hand separation relative to anchor separation within clamps.",
+      "formula": "s=clamp(||r-l||/||r0-l0||,s_min,s_max)",
+      "integration": "Supports direct two-hand sizing with a declared degeneracy policy.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M319",
+      "domain": "Two-hand interaction",
+      "mechanism": "Bimanual twist and alignment",
+      "definition": "Shortest-axis alignment combines with averaged wrist twist around the current pair axis.",
+      "formula": "q=q_twist*q_align; q_align maps a0 to a1",
+      "integration": "Provides rotation without Euler-angle discontinuities.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M320",
+      "domain": "Two-hand interaction",
+      "mechanism": "Cooperative grab ownership",
+      "definition": "One- and two-hand ownership transitions are an explicit state machine.",
+      "formula": "none -> one -> two -> one -> none",
+      "integration": "Supports join, release and simultaneous-grab events.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M321",
+      "domain": "Two-hand interaction",
+      "mechanism": "Handover lineage event",
+      "definition": "When one hand releases a two-hand object, ownership persists under the remaining hand with a lineage label.",
+      "formula": "owners={L,R}->{R} emits handover",
+      "integration": "Preserves interaction ancestry instead of silently changing controller.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M322",
+      "domain": "Two-hand interaction",
+      "mechanism": "Tracking confidence and desktop fallback",
+      "definition": "Low-confidence/untracked poses reject transforms; cursor input can emulate the same schema.",
+      "formula": "accepted=tracked and confidence>=floor",
+      "integration": "Makes XR optional and keeps tests reproducible.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M323",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Authoritative event sequence",
+      "definition": "Every committed event receives a monotonic sequence number and pre/post state hashes.",
+      "formula": "sequence_next=sequence+1",
+      "integration": "Replication and editor timelines use the same ordering.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M324",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Checkpoint and rollback",
+      "definition": "Runtime snapshots are hashed and later events can be replayed from the nearest checkpoint.",
+      "formula": "state_k=checkpoint_j + replay(events j+1..k)",
+      "integration": "Reference rollback path for deterministic profiles.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M325",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Deterministic canonical state hash",
+      "definition": "Canonical JSON over schema, scene and runtime counters produces a comparison digest.",
+      "formula": "h_state=SHA256(canonical(state))",
+      "integration": "Divergence detector; digest is not a replacement for full state.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M326",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Schema and asset negotiation",
+      "definition": "Peers exchange schema version, mechanism support and asset hashes before authoritative replay.",
+      "formula": "compatible_peer=schemas_match and required_assets_available",
+      "integration": "Production networking contract.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M327",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Editor diagnostics and inspector records",
+      "definition": "Scene audits, event timelines, culling reasons, lineage edges and runtime metrics are machine-readable.",
+      "formula": "diagnostic=(severity,code,subject,message,metrics)",
+      "integration": "Makes hidden support/guard/lineage state inspectable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M328",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Replay divergence detection",
+      "definition": "Replay stops at the first sequence whose expected and actual state hashes differ.",
+      "formula": "divergence=min{k: h_expected(k)!=h_actual(k)}",
+      "integration": "Prevents silent cross-platform desynchronization.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M329",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Physical-GPU benchmark promotion gate",
+      "definition": "GPU performance claims require a named physical device, driver, workload, precision and equal-error baseline.",
+      "formula": "promote_claim iff physical_gpu and metrics_complete and oracle_match",
+      "integration": "Retains the 1.1/2.0 evidence boundary.",
+      "validation": "Acceptance gate; not claimed"
+    },
+    {
+      "id": "M330",
+      "domain": "Vector art",
+      "mechanism": "Serializable vector asset record",
+      "definition": "A vector asset groups stable identity, logical size, pivot, paths, gradients and metadata in a JSON-compatible record.",
+      "formula": "asset=(id,size,pivot,paths,gradients,metadata)",
+      "integration": "Shared authoring record for Python, SVG and browser Canvas output.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M331",
+      "domain": "Vector art",
+      "mechanism": "Typed path command grammar",
+      "definition": "Path geometry is expressed by move, line, quadratic, cubic and close commands with fixed arity.",
+      "formula": "cmd in {M2,L2,Q4,C6,Z0}",
+      "integration": "Provides a small deterministic interchange grammar.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M332",
+      "domain": "Vector art",
+      "mechanism": "Builder sequencing guard",
+      "definition": "Drawing commands are rejected until a subpath has an explicit move command.",
+      "formula": "draw => has_current_point",
+      "integration": "Prevents malformed path state during procedural authoring.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M333",
+      "domain": "Vector art",
+      "mechanism": "Named gradient resources",
+      "definition": "Paint strings may reference validated linear or radial gradients local to an asset.",
+      "formula": "paint=\"@\"+gradient_id",
+      "integration": "Avoids duplicated color-stop data across paths.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M334",
+      "domain": "Vector art",
+      "mechanism": "Adaptive quadratic flattening",
+      "definition": "Quadratic segments recursively subdivide until midpoint deviation is within tolerance.",
+      "formula": "err(mid, chord)<=epsilon",
+      "integration": "Produces inspection/collision-ready polylines from vector curves.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M335",
+      "domain": "Vector art",
+      "mechanism": "Adaptive cubic flattening",
+      "definition": "Cubic segments recursively subdivide against a caller-selected geometric tolerance.",
+      "formula": "max control deviation<=epsilon",
+      "integration": "Supports deterministic curve approximation without third-party geometry libraries.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M336",
+      "domain": "Vector art",
+      "mechanism": "Parametric primitive factories",
+      "definition": "Rectangles, rounded rectangles, circles, polygons and stars compile to the common path/asset record.",
+      "formula": "primitive(params)->VectorAsset2D",
+      "integration": "Speeds practical game-asset creation and template generation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M337",
+      "domain": "Vector art",
+      "mechanism": "Deterministic SVG materialization",
+      "definition": "An asset is written as stable SVG path/defs records with logical viewBox and optional background.",
+      "formula": "svg=emit(canonical(asset))",
+      "integration": "Provides portable inspection and artwork interchange.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M338",
+      "domain": "Collision and physics",
+      "mechanism": "AABB shape contract",
+      "definition": "An axis-aligned box stores finite minimum/maximum corners and exposes bounds/translation operations.",
+      "formula": "A=[xmin,xmax]x[ymin,ymax]",
+      "integration": "Base collider, camera bound and tile collision primitive.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M339",
+      "domain": "Collision and physics",
+      "mechanism": "Circle shape contract",
+      "definition": "A circle stores finite center and positive radius with exact AABB bounds.",
+      "formula": "||x-c||<=r",
+      "integration": "Compact player, pickup and hazard collider.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M340",
+      "domain": "Collision and physics",
+      "mechanism": "Convex SAT manifold",
+      "definition": "Convex polygons are tested on edge-normal axes and return minimum-overlap normals.",
+      "formula": "overlap=min_axes interval_overlap",
+      "integration": "Provides penetration and direction for convex response.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M341",
+      "domain": "Collision and physics",
+      "mechanism": "Mixed-shape manifold dispatch",
+      "definition": "AABB, circle and convex polygon pairs dispatch to typed narrow-phase routines with normal reversal as needed.",
+      "formula": "manifold=collide(shape_a,shape_b)",
+      "integration": "Keeps gameplay collision code shape-agnostic.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M342",
+      "domain": "Collision and physics",
+      "mechanism": "Layer and mask filtering",
+      "definition": "Two colliders interact only when each layer is accepted by the other mask.",
+      "formula": "(La & Mb)!=0 and (Lb & Ma)!=0",
+      "integration": "Separates players, world, pickups, hazards and custom groups.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M343",
+      "domain": "Collision and physics",
+      "mechanism": "Sensor contact semantics",
+      "definition": "Sensor colliders create lifecycle contacts but skip positional and impulse resolution.",
+      "formula": "sensor => event and not solve",
+      "integration": "Supports pickups, triggers and non-blocking zones.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M344",
+      "domain": "Collision and physics",
+      "mechanism": "Swept AABB time of impact",
+      "definition": "A moving AABB computes slab entry/exit times against a static target over a displacement.",
+      "formula": "t_enter=max(axis entries)",
+      "integration": "Offers a continuous query for fast box motion.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M345",
+      "domain": "Collision and physics",
+      "mechanism": "Spatial-hash broad phase",
+      "definition": "Shape bounds are inserted into deterministic fixed-size cells for query and candidate-pair generation.",
+      "formula": "cell=floor(position/cell_size)",
+      "integration": "Reduces all-pairs collision work for 2D scenes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M346",
+      "domain": "Input",
+      "mechanism": "Action-oriented input map",
+      "definition": "Gameplay reads named scalar actions rather than raw device events.",
+      "formula": "action=sum(binding samples)",
+      "integration": "Decouples game logic from keyboard/gamepad/touch details.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M347",
+      "domain": "Input",
+      "mechanism": "Multi-device binding record",
+      "definition": "Bindings cover keys, pointer buttons/axes, gamepad buttons/axes and touch axes.",
+      "formula": "binding=(kind,code,scale,device)",
+      "integration": "One project supports desktop, controller and mobile controls.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M348",
+      "domain": "Input",
+      "mechanism": "Deadzone and clamp response",
+      "definition": "Resolved action values apply signed deadzone remapping and optional unit-range clamping.",
+      "formula": "v=0 if |v|<d else remap(v)",
+      "integration": "Prevents drift while retaining analog control.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M349",
+      "domain": "Input",
+      "mechanism": "Action edge classification",
+      "definition": "Current and previous values classify down, pressed and released states by action threshold.",
+      "formula": "pressed=|v_t|>=q and |v_t-1|<q",
+      "integration": "Provides deterministic button-edge gameplay.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M350",
+      "domain": "Input",
+      "mechanism": "Normalized movement vector",
+      "definition": "Two scalar actions form a vector whose magnitude is capped at one.",
+      "formula": "u=v/max(1,||v||)",
+      "integration": "Prevents faster diagonal movement.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M351",
+      "domain": "Input",
+      "mechanism": "Input frame recording",
+      "definition": "Resolved frames serialize with values, prior values, thresholds, pointer position and frame index.",
+      "formula": "log=[InputFrame_t]",
+      "integration": "Supports reproducible tests and replay-oriented tooling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M352",
+      "domain": "Animation",
+      "mechanism": "Strict keyframe track ordering",
+      "definition": "Track key times must be finite and strictly increasing.",
+      "formula": "t_i<t_i+1",
+      "integration": "Eliminates ambiguous interpolation intervals.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M353",
+      "domain": "Animation",
+      "mechanism": "Named easing functions",
+      "definition": "Interpolation uses validated linear, smooth, polynomial, sine, back and bounce easing curves.",
+      "formula": "value=lerp(a,b,ease(t))",
+      "integration": "Gives reusable motion profiles without code generation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M354",
+      "domain": "Animation",
+      "mechanism": "Once, loop and ping-pong clocks",
+      "definition": "Clip-local time maps global playback time through declared boundary behavior.",
+      "formula": "tau=map_mode(t,duration)",
+      "integration": "Supports repeated and reversible animation deterministically.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M355",
+      "domain": "Animation",
+      "mechanism": "Sample-map crossfade",
+      "definition": "Two clip samples blend common property paths and preserve one-sided properties.",
+      "formula": "sample=(1-alpha)A+alpha B",
+      "integration": "Allows smooth animation transitions.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M356",
+      "domain": "Animation",
+      "mechanism": "Predicate transition state machine",
+      "definition": "Ordered predicates choose state transitions with optional crossfade durations.",
+      "formula": "state_next=first_true(transitions)",
+      "integration": "Separates gameplay parameters from clip selection.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M357",
+      "domain": "Animation",
+      "mechanism": "Nested property-path application",
+      "definition": "Sample keys address nested mappings through dot-separated paths.",
+      "formula": "set(target,path,value)",
+      "integration": "Connects generic clips to serialized component records.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M358",
+      "domain": "Tilemaps",
+      "mechanism": "Named tile definition registry",
+      "definition": "Tile IDs map to stable name, solidity, movement cost and metadata.",
+      "formula": "tile_id->definition",
+      "integration": "Centralizes gameplay meaning for map cells.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M359",
+      "domain": "Tilemaps",
+      "mechanism": "Layered fixed-grid map",
+      "definition": "Multiple same-sized layers store tile IDs over shared origin and tile size.",
+      "formula": "map=(W,H,s,origin,layers)",
+      "integration": "Supports collision, decoration and gameplay overlays.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M360",
+      "domain": "Tilemaps",
+      "mechanism": "ASCII map import",
+      "definition": "Characters map to tile IDs while rectangularity and unknown symbols are validated.",
+      "formula": "char_grid + legend -> TileLayer",
+      "integration": "Makes small level prototypes easy to author and diff.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M361",
+      "domain": "Tilemaps",
+      "mechanism": "World/grid coordinate conversion",
+      "definition": "Map origin and tile size define reversible cell-center/world transformations.",
+      "formula": "world=origin+(cell+0.5)*size",
+      "integration": "Connects pathfinding and entity placement.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M362",
+      "domain": "Tilemaps",
+      "mechanism": "Cost-aware A-star pathfinding",
+      "definition": "A* searches non-solid cells with optional diagonals and tile movement costs.",
+      "formula": "f(n)=g(n)+h(n)",
+      "integration": "Provides dependency-free navigation for grid games.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M363",
+      "domain": "Tilemaps",
+      "mechanism": "Merged solid collision rectangles",
+      "definition": "Contiguous compatible solid cells merge into maximal axis-aligned rectangles.",
+      "formula": "solid cells -> disjoint AABBs",
+      "integration": "Reduces collider count for tile-based levels.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M364",
+      "domain": "Procedural audio",
+      "mechanism": "Equal-tempered note parser",
+      "definition": "Scientific note names map to frequency relative to configurable A4.",
+      "formula": "f=440*2^((midi-69)/12)",
+      "integration": "Enables musical cue authoring without sampled assets.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M365",
+      "domain": "Procedural audio",
+      "mechanism": "ADSR envelope record",
+      "definition": "Attack, decay, sustain and release values are validated as finite non-negative controls.",
+      "formula": "gain(t)=ADSR(t)",
+      "integration": "Shapes Web Audio oscillator cues.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M366",
+      "domain": "Procedural audio",
+      "mechanism": "Serializable sound cue",
+      "definition": "A cue combines waveform, frequency/sweep, duration, volume, noise and envelope.",
+      "formula": "cue=(osc,f0,f1,T,V,N,env)",
+      "integration": "Creates compact effects with no network assets.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M367",
+      "domain": "Procedural audio",
+      "mechanism": "Beat sequence scheduler",
+      "definition": "Cue references are placed at beats under a declared BPM and sequence length.",
+      "formula": "time=60*beat/BPM",
+      "integration": "Provides lightweight procedural music loops.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M368",
+      "domain": "Procedural audio",
+      "mechanism": "Cross-reference audio bank",
+      "definition": "Cue and sequence IDs are unique and sequence cue references are validated.",
+      "formula": "forall note: cue_id in bank",
+      "integration": "Prevents broken browser audio references.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M369",
+      "domain": "Game world",
+      "mechanism": "Entity/component composition",
+      "definition": "Entities combine stable IDs, tags, active state, metadata and typed or custom components.",
+      "formula": "entity=(id,tags,components,active,meta)",
+      "integration": "Provides data-driven scene/gameplay composition.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M370",
+      "domain": "Game world",
+      "mechanism": "Fixed-step deterministic clock",
+      "definition": "World time advances only by a declared positive fixed delta.",
+      "formula": "tick<-tick+1; time=tick*dt",
+      "integration": "Supports repeatable headless simulation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M371",
+      "domain": "Game world",
+      "mechanism": "Ordered extensible system phases",
+      "definition": "Custom systems register in named phases with priority and stable-name ordering.",
+      "formula": "order=(phase,priority,name)",
+      "integration": "Allows project-specific gameplay without modifying core integration.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M372",
+      "domain": "Game world",
+      "mechanism": "Dynamic, kinematic and static bodies",
+      "definition": "Body type controls inverse mass and integration while retaining common velocity/material records.",
+      "formula": "inv_mass=1/m if dynamic else 0",
+      "integration": "Supports players, moving hazards and level geometry.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M373",
+      "domain": "Game world",
+      "mechanism": "Collision lifecycle events",
+      "definition": "Current and prior contact sets produce enter, stay and exit events with ordered pair IDs.",
+      "formula": "enter=C_t\\C_t-1; exit=C_t-1\\C_t",
+      "integration": "Provides deterministic triggers and gameplay hooks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M374",
+      "domain": "Game world",
+      "mechanism": "Action-driven player controller and dash",
+      "definition": "Movement actions set velocity and an edge-triggered dash applies duration/cooldown state.",
+      "formula": "v=speed*u or dash_speed*d",
+      "integration": "Provides a ready-to-use arcade controller.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M375",
+      "domain": "Game world",
+      "mechanism": "Health, hazard cooldown and knockback",
+      "definition": "Hazards apply bounded damage and directional knockback subject to per-target cooldown.",
+      "formula": "H<-max(0,H-D); v<-v+k*n",
+      "integration": "Implements reusable damage interactions.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M376",
+      "domain": "Game world",
+      "mechanism": "Collectible state transaction",
+      "definition": "Sensor contact increments a declared state key, emits an event and may defer entity destruction.",
+      "formula": "state[k]<-state[k]+points",
+      "integration": "Implements score/items without unsafe mutation during collision iteration.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M377",
+      "domain": "Game world",
+      "mechanism": "Lifetime, bounds and camera services",
+      "definition": "Components provide timed despawn, clamp/bounce/wrap constraints and smoothed bounded following.",
+      "formula": "x_cam<-lerp_exp(x_cam,x_target,dt)",
+      "integration": "Covers common 2D game-loop utilities.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M378",
+      "domain": "Game world",
+      "mechanism": "Canonical snapshot, hash and save/load",
+      "definition": "World state serializes with schema and canonical numeric normalization for stable SHA-256 identity.",
+      "formula": "h=SHA256(canonical(snapshot_without_events))",
+      "integration": "Supports regression tests, persistence and divergence checks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M379",
+      "domain": "Project and export",
+      "mechanism": "Versioned game-project schema",
+      "definition": "Project records declare the `ugts-kc-game-project-3.9` schema and runtime metadata.",
+      "formula": "project=(meta,display,input,assets,audio,maps,scenes,build)",
+      "integration": "Creates one source of truth for tools and runtimes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M380",
+      "domain": "Project and export",
+      "mechanism": "Aggregated cross-reference validation",
+      "definition": "Validation collects independent structural and asset/audio/tilemap reference issues with paths.",
+      "formula": "report=(issues,metrics,passed)",
+      "integration": "Improves actionable authoring feedback.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M381",
+      "domain": "Project and export",
+      "mechanism": "Scene-to-world instantiation",
+      "definition": "A scene deep-copies initial state and reconstructs entity components into a fresh world.",
+      "formula": "instantiate(scene)->GameWorld",
+      "integration": "Connects editable project data to simulation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M382",
+      "domain": "Project and export",
+      "mechanism": "Canonical project content hash",
+      "definition": "Sorted normalized project JSON is hashed for reproducible build identity.",
+      "formula": "h_project=SHA256(canonical(project))",
+      "integration": "Links source project to build reports.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M383",
+      "domain": "Project and export",
+      "mechanism": "Project scaffolding command",
+      "definition": "CLI templates create blank or full game projects with optional immediate browser build.",
+      "formula": "ugts-kc new|demo",
+      "integration": "Reduces setup friction for practical use.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M384",
+      "domain": "Project and export",
+      "mechanism": "Headless simulation command",
+      "definition": "CLI simulation feeds declared action values for a selected step count and reports state hash.",
+      "formula": "ugts-kc simulate project --steps N",
+      "integration": "Supports CI smoke tests without a browser.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M385",
+      "domain": "Project and export",
+      "mechanism": "Batch vector SVG export",
+      "definition": "Every project vector asset can be materialized to an individual SVG file.",
+      "formula": "ugts-kc export-svg",
+      "integration": "Supports art review and external tooling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M386",
+      "domain": "Project and export",
+      "mechanism": "Single-file HTML5 build",
+      "definition": "Project data, CSS and runtime JavaScript can be emitted into one offline-playable HTML file.",
+      "formula": "build(project)->index.html",
+      "integration": "Enables frictionless sharing and static hosting.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M387",
+      "domain": "Project and export",
+      "mechanism": "Split JavaScript bundle build",
+      "definition": "The same exporter may emit runtime JavaScript as a separate file while retaining build hashes.",
+      "formula": "single_file=false -> kc-runtime.js",
+      "integration": "Supports stricter hosting and debugging workflows.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M388",
+      "domain": "Project and export",
+      "mechanism": "Canvas vector presentation runtime",
+      "definition": "Browser paths, gradients, transforms, camera and z-order are rendered directly from project records.",
+      "formula": "frame=Canvas2D(project,world,camera)",
+      "integration": "Turns authored vector assets into live game visuals.",
+      "validation": "Implemented + syntax-validated"
+    },
+    {
+      "id": "M389",
+      "domain": "Project and export",
+      "mechanism": "Browser gameplay shell",
+      "definition": "The generated runtime integrates fixed-step play, keyboard/gamepad/touch, audio, particles, HUD, pause/restart, local saves and diagnostics.",
+      "formula": "HTML5Game=simulation+presentation+I/O",
+      "integration": "Provides an actually playable dependency-free deployment target.",
+      "validation": "Implemented + tested/syntax-validated"
+    }
+  ]
+}

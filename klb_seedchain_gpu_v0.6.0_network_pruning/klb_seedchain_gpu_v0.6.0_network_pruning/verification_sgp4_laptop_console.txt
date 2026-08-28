@@ -1,0 +1,89 @@
+Device                    NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        12.0
+Objects                   32
+Deep-space objects        32
+Initialized record bytes  1488
+Portable seed bytes       4096
+Reference frame           TEME -> PEF by GMST approximation
+CPU/GPU full-SGP4 validation
+  states                 256
+  error mismatches       0
+  method mismatches      0
+  RMS position delta     0.000070649 mm
+  max position delta     0.000383791 mm
+  RMS velocity delta     0.000000010 mm/s
+  max velocity delta     0.000000056 mm/s
+Intervals per object      1048576
+Step seconds              1.000000
+Candidate intervals       33554432
+Chunk size                256
+Direct worker threads     131072
+Stress extension          443776.000000 seconds beyond declared chain horizon
+CPU prefix oracle
+  intervals              65536
+  supported              65536
+  compatible             65536
+  boundary evaluations   65536
+  visible endpoints      18253
+  AOS                    2
+  LOS                    1
+  propagation errors     0
+GPU prefix
+  intervals              65536
+  supported              65536
+  compatible             65536
+  boundary evaluations   65536
+  visible endpoints      18253
+  AOS                    2
+  LOS                    1
+  propagation errors     0
+Direct full-SGP4 counters
+  intervals              33554432
+  supported              33297300
+  compatible             33297300
+  boundary evaluations   33297300
+  visible endpoints      9535362
+  AOS                    621
+  LOS                    620
+  propagation errors     0
+query_seed_sgp4_direct
+  inner repeats          2
+  p50 ms                 161.548828
+  p95 ms                 161.565079
+  p99 ms                 161.568423
+  mean ms                161.533954
+Dense double4 bytes       1073742848
+Free VRAM before dense    9271508992
+materialize_full_sgp4_double4
+  inner repeats          2
+  p50 ms                 155.302795
+  p95 ms                 155.345573
+  p99 ms                 155.352086
+  mean ms                155.307258
+Dense counters
+  intervals              33554432
+  supported              33297300
+  compatible             33297300
+  boundary evaluations   33297300
+  visible endpoints      9535362
+  AOS                    621
+  LOS                    620
+  propagation errors     0
+query_dense_double4
+  inner repeats          23
+  p50 ms                 10.934585
+  p95 ms                 10.934829
+  p99 ms                 10.934859
+  mean ms                10.927702
+Dense end-to-end p50 ms   166.237380
+Direct / dense-e2e ratio  0.971796
+Direct speedup vs e2e     1.029023x
+Direct/dense event comparison
+  events                 1241
+  max guard delta        2.775558e-16
+  max crossing delta s   5.820766e-11
+KSGP1 file bytes          5793
+Dense float4 bytes        536871424
+Dense double4 bytes       1073742848
+Float4 horizon ratio      92675.888831x
+Double4 horizon ratio     185351.777663x

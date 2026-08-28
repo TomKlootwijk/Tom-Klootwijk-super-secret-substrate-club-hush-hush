@@ -1,0 +1,69 @@
+MSBuild version 17.14.23+b0019275e for .NET Framework
+
+  klb_core.vcxproj -> C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_core.lib
+  Compiling CUDA source file ..\src\network_bench.cu...
+  
+  C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\bin\nvcc.exe"  --use-local-env -ccbin "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64" -x cu   -IC:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\include -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\include"     --keep-dir klb_netw.B4352139\x64\Release  -maxrregcount=0    --machine 64 --compile -cudart static -forward-unknown-to-host-compiler -std=c++20 --generate-code=arch=compute_120,code=[sm_120] --generate-code=arch=compute_120,code=[compute_120] --generate-line-info -Xptxas=-v -Xcompiler="/EHsc -Ob2"   -D_WINDOWS -DNDEBUG -D"CMAKE_INTDIR=\"Release\"" -D_MBCS -DWIN32 -D_WINDOWS -DNDEBUG -D"CMAKE_INTDIR=\"Release\"" -Xcompiler "/EHsc /W4 /nologo /O2 /FS   /MD " -Xcompiler "/Fdklb_network_bench.dir\Release\vc143.pdb" -o klb_network_bench.dir\Release\network_bench.obj "C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\src\network_bench.cu" 
+C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/include\klb/core.hpp(56): warning #20012-D: __host__ annotation is ignored on a function("Vec3") that is explicitly defaulted on its first declaration [C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\klb_network_bench.vcxproj]
+        __declspec(__host__) __declspec(__device__) Vec3() = default;
+                   ^
+  
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  
+C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/include\klb/core.hpp(56): warning #20012-D: __device__ annotation is ignored on a function("Vec3") that is explicitly defaulted on its first declaration [C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\klb_network_bench.vcxproj]
+        __declspec(__host__) __declspec(__device__) Vec3() = default;
+                                        ^
+  
+C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/include\klb/core.hpp(56): warning #20012-D: __host__ annotation is ignored on a function("Vec3") that is explicitly defaulted on its first declaration [C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\klb_network_bench.vcxproj]
+        __declspec(__host__) __declspec(__device__) Vec3() = default;
+                   ^
+  
+  Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+  
+C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/include\klb/core.hpp(56): warning #20012-D: __device__ annotation is ignored on a function("Vec3") that is explicitly defaulted on its first declaration [C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\klb_network_bench.vcxproj]
+        __declspec(__host__) __declspec(__device__) Vec3() = default;
+                                        ^
+  
+  ptxas info    : 272 bytes gmem
+  ptxas info    : Compiling entry function '_ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main18dense_query_kernelEPK7double4PKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEjjjydPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy' for 'sm_120'
+  ptxas info    : Function properties for _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main18dense_query_kernelEPK7double4PKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEjjjydPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Used 74 registers, used 0 barriers
+  ptxas info    : Compile time = 0.000 ms
+  ptxas info    : Compiling entry function '_ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main18materialize_kernelEPK8ElsetRecjydddjP7double4' for 'sm_120'
+  ptxas info    : Function properties for _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main18materialize_kernelEPK8ElsetRecjydddjP7double4
+      48 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Used 142 registers, used 0 barriers, 48 bytes cumulative stack size
+  ptxas info    : Compile time = 0.000 ms
+  ptxas info    : Function properties for __internal_accurate_pow
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Function properties for __internal_trig_reduction_slowpathd
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Compiling entry function '_ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main20grouped_query_kernelEPK8ElsetRecPKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEjjjydddjPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy' for 'sm_120'
+  ptxas info    : Function properties for _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main20grouped_query_kernelEPK8ElsetRecPKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEjjjydddjPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy
+      48 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Used 154 registers, used 0 barriers, 48 bytes cumulative stack size
+  ptxas info    : Compile time = 0.000 ms
+  ptxas info    : Function properties for __internal_accurate_pow
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Function properties for __internal_trig_reduction_slowpathd
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Compiling entry function '_ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main17pair_query_kernelEPK8ElsetRecPKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEPKNS_9PairIndexEjydddjPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy' for 'sm_120'
+  ptxas info    : Function properties for _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main17pair_query_kernelEPK8ElsetRecPKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEPKNS_9PairIndexEjydddjPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy
+      48 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Used 152 registers, used 0 barriers, 48 bytes cumulative stack size
+  ptxas info    : Compile time = 0.000 ms
+  ptxas info    : Function properties for __internal_accurate_pow
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  ptxas info    : Function properties for __internal_trig_reduction_slowpathd
+      0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+  network_bench.cu
+  tmpxft_00013dc4_00000000-7_network_bench.cudafe1.cpp
+C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\src\network_bench.cu(566): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const _Ty', possible loss of data [C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\klb_network_bench.vcxproj]
+          with
+          [
+              _Ty=double
+          ]
+     Creating library C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/b128/Release/klb_network_bench.lib and object C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/b128/Release/klb_network_bench.exp
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library [C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\klb_network_bench.vcxproj]
+  klb_network_bench.vcxproj -> C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_network_bench.exe

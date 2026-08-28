@@ -1,0 +1,10 @@
+{
+  "pdf_pages": 23,
+  "pdf_sha256": "a29dd9959ebd300c32d0e1df8fa2c0d4ee15f428892557b98b5f18cd3e878399",
+  "pdf_preflight": "PASS: openable, unencrypted, non-scanned, no XFA",
+  "visual_inspection": "PASS: all 23 rendered pages inspected",
+  "json_schema_validation": "PASS",
+  "python": "3.13.5",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "libreoffice": "LibreOffice 25.2.3.2 520(Build:2)"
+}

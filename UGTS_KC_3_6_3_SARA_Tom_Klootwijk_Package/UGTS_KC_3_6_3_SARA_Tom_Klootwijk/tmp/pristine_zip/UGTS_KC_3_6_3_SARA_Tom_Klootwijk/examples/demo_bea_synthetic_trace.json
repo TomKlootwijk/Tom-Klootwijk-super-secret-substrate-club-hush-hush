@@ -1,0 +1,1383 @@
+[
+  {
+    "step_id": "bea361:op:normalize-v1",
+    "kind": "normalize_pair",
+    "output": {
+      "source": "negentien",
+      "target": "no neg moat",
+      "profile_id": "bea361:synthetic-cell-complex-v2"
+    }
+  },
+  {
+    "step_id": "bea361:op:leet-provenance-v1",
+    "kind": "leet_pair_transduce",
+    "output": {
+      "source": "n3g3nt13n",
+      "target": "n0 n3g m04t",
+      "source_cycle_positions": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "target_cycle_positions": [
+        1,
+        5,
+        8,
+        9
+      ]
+    }
+  },
+  {
+    "step_id": "bea361:op:cell-build-v1",
+    "kind": "build_augmented_cell_pair",
+    "output": {
+      "source": {
+        "complex_id": "complex:repr:negentien:augmented",
+        "representation_id": "repr:negentien",
+        "transduced_text": "n3g3nt13n",
+        "stage": "augmented-space-loops",
+        "betti": {
+          "vertices": 10,
+          "edges": 13,
+          "beta0": 1,
+          "beta1": 4,
+          "chi": -3
+        },
+        "vertices": [
+          "repr:negentien:t0:v0",
+          "repr:negentien:t0:v1",
+          "repr:negentien:t0:v2",
+          "repr:negentien:t0:v3",
+          "repr:negentien:t0:v4",
+          "repr:negentien:t0:v5",
+          "repr:negentien:t0:v6",
+          "repr:negentien:t0:v7",
+          "repr:negentien:t0:v8",
+          "repr:negentien:t0:v9"
+        ],
+        "edges": [
+          {
+            "edge_id": "repr:negentien:symbol:0",
+            "u": "repr:negentien:t0:v0",
+            "v": "repr:negentien:t0:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 0,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:1",
+            "u": "repr:negentien:t0:v1",
+            "v": "repr:negentien:t0:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:2",
+            "u": "repr:negentien:t0:v2",
+            "v": "repr:negentien:t0:v3",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 2,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:3",
+            "u": "repr:negentien:t0:v3",
+            "v": "repr:negentien:t0:v4",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 3,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:4",
+            "u": "repr:negentien:t0:v4",
+            "v": "repr:negentien:t0:v5",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 4,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:5",
+            "u": "repr:negentien:t0:v5",
+            "v": "repr:negentien:t0:v6",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 5,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:6",
+            "u": "repr:negentien:t0:v6",
+            "v": "repr:negentien:t0:v7",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 6,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:7",
+            "u": "repr:negentien:t0:v7",
+            "v": "repr:negentien:t0:v8",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 7,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:8",
+            "u": "repr:negentien:t0:v8",
+            "v": "repr:negentien:t0:v9",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 8,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:cycle:0",
+            "u": "repr:negentien:t0:v1",
+            "v": "repr:negentien:t0:v1",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": 0
+          },
+          {
+            "edge_id": "repr:negentien:cycle:1",
+            "u": "repr:negentien:t0:v2",
+            "v": "repr:negentien:t0:v2",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 2,
+            "target_vertex": null,
+            "cycle_rank_index": 1
+          },
+          {
+            "edge_id": "repr:negentien:cycle:2",
+            "u": "repr:negentien:t0:v3",
+            "v": "repr:negentien:t0:v3",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 3,
+            "target_vertex": null,
+            "cycle_rank_index": 2
+          },
+          {
+            "edge_id": "repr:negentien:cycle:3",
+            "u": "repr:negentien:t0:v7",
+            "v": "repr:negentien:t0:v7",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 7,
+            "target_vertex": null,
+            "cycle_rank_index": 3
+          }
+        ]
+      },
+      "target": {
+        "complex_id": "complex:repr:no-neg-moat:augmented",
+        "representation_id": "repr:no-neg-moat",
+        "transduced_text": "n0 n3g m04t",
+        "stage": "augmented-space-loops",
+        "betti": {
+          "vertices": 12,
+          "edges": 15,
+          "beta0": 3,
+          "beta1": 6,
+          "chi": -3
+        },
+        "vertices": [
+          "repr:no-neg-moat:t0:v0",
+          "repr:no-neg-moat:t0:v1",
+          "repr:no-neg-moat:t0:v2",
+          "repr:no-neg-moat:t1:v0",
+          "repr:no-neg-moat:t1:v1",
+          "repr:no-neg-moat:t1:v2",
+          "repr:no-neg-moat:t1:v3",
+          "repr:no-neg-moat:t2:v0",
+          "repr:no-neg-moat:t2:v1",
+          "repr:no-neg-moat:t2:v2",
+          "repr:no-neg-moat:t2:v3",
+          "repr:no-neg-moat:t2:v4"
+        ],
+        "edges": [
+          {
+            "edge_id": "repr:no-neg-moat:symbol:0",
+            "u": "repr:no-neg-moat:t0:v0",
+            "v": "repr:no-neg-moat:t0:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 0,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:1",
+            "u": "repr:no-neg-moat:t0:v1",
+            "v": "repr:no-neg-moat:t0:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:3",
+            "u": "repr:no-neg-moat:t1:v0",
+            "v": "repr:no-neg-moat:t1:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 3,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:4",
+            "u": "repr:no-neg-moat:t1:v1",
+            "v": "repr:no-neg-moat:t1:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 4,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:5",
+            "u": "repr:no-neg-moat:t1:v2",
+            "v": "repr:no-neg-moat:t1:v3",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 5,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:7",
+            "u": "repr:no-neg-moat:t2:v0",
+            "v": "repr:no-neg-moat:t2:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 7,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:8",
+            "u": "repr:no-neg-moat:t2:v1",
+            "v": "repr:no-neg-moat:t2:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 8,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:9",
+            "u": "repr:no-neg-moat:t2:v2",
+            "v": "repr:no-neg-moat:t2:v3",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 9,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:10",
+            "u": "repr:no-neg-moat:t2:v3",
+            "v": "repr:no-neg-moat:t2:v4",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 10,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:0",
+            "u": "repr:no-neg-moat:t0:v1",
+            "v": "repr:no-neg-moat:t0:v1",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": 0
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:1",
+            "u": "repr:no-neg-moat:t1:v2",
+            "v": "repr:no-neg-moat:t1:v2",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 5,
+            "target_vertex": null,
+            "cycle_rank_index": 1
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:2",
+            "u": "repr:no-neg-moat:t2:v1",
+            "v": "repr:no-neg-moat:t2:v1",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 8,
+            "target_vertex": null,
+            "cycle_rank_index": 2
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:3",
+            "u": "repr:no-neg-moat:t2:v2",
+            "v": "repr:no-neg-moat:t2:v2",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 9,
+            "target_vertex": null,
+            "cycle_rank_index": 3
+          },
+          {
+            "edge_id": "repr:no-neg-moat:space:0",
+            "u": "repr:no-neg-moat:t0:v2",
+            "v": "repr:no-neg-moat:t0:v2",
+            "kind": "space_loop",
+            "metric_weight": 0.0,
+            "source_index": 2,
+            "target_vertex": "repr:no-neg-moat:t1:v0",
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:space:1",
+            "u": "repr:no-neg-moat:t1:v3",
+            "v": "repr:no-neg-moat:t1:v3",
+            "kind": "space_loop",
+            "metric_weight": 0.0,
+            "source_index": 6,
+            "target_vertex": "repr:no-neg-moat:t2:v0",
+            "cycle_rank_index": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "step_id": "bea361:op:space-hole-trade-v1",
+    "kind": "space_hole_trade_pair",
+    "output": {
+      "source": {
+        "complex_id": "complex:repr:negentien:canonical",
+        "representation_id": "repr:negentien",
+        "transduced_text": "n3g3nt13n",
+        "stage": "canonical-zero-width-gluing",
+        "betti": {
+          "vertices": 10,
+          "edges": 13,
+          "beta0": 1,
+          "beta1": 4,
+          "chi": -3
+        },
+        "vertices": [
+          "repr:negentien:t0:v0",
+          "repr:negentien:t0:v1",
+          "repr:negentien:t0:v2",
+          "repr:negentien:t0:v3",
+          "repr:negentien:t0:v4",
+          "repr:negentien:t0:v5",
+          "repr:negentien:t0:v6",
+          "repr:negentien:t0:v7",
+          "repr:negentien:t0:v8",
+          "repr:negentien:t0:v9"
+        ],
+        "edges": [
+          {
+            "edge_id": "repr:negentien:symbol:0",
+            "u": "repr:negentien:t0:v0",
+            "v": "repr:negentien:t0:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 0,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:1",
+            "u": "repr:negentien:t0:v1",
+            "v": "repr:negentien:t0:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:2",
+            "u": "repr:negentien:t0:v2",
+            "v": "repr:negentien:t0:v3",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 2,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:3",
+            "u": "repr:negentien:t0:v3",
+            "v": "repr:negentien:t0:v4",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 3,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:4",
+            "u": "repr:negentien:t0:v4",
+            "v": "repr:negentien:t0:v5",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 4,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:5",
+            "u": "repr:negentien:t0:v5",
+            "v": "repr:negentien:t0:v6",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 5,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:6",
+            "u": "repr:negentien:t0:v6",
+            "v": "repr:negentien:t0:v7",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 6,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:7",
+            "u": "repr:negentien:t0:v7",
+            "v": "repr:negentien:t0:v8",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 7,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:symbol:8",
+            "u": "repr:negentien:t0:v8",
+            "v": "repr:negentien:t0:v9",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 8,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:negentien:cycle:0",
+            "u": "repr:negentien:t0:v1",
+            "v": "repr:negentien:t0:v1",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": 0
+          },
+          {
+            "edge_id": "repr:negentien:cycle:1",
+            "u": "repr:negentien:t0:v2",
+            "v": "repr:negentien:t0:v2",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 2,
+            "target_vertex": null,
+            "cycle_rank_index": 1
+          },
+          {
+            "edge_id": "repr:negentien:cycle:2",
+            "u": "repr:negentien:t0:v3",
+            "v": "repr:negentien:t0:v3",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 3,
+            "target_vertex": null,
+            "cycle_rank_index": 2
+          },
+          {
+            "edge_id": "repr:negentien:cycle:3",
+            "u": "repr:negentien:t0:v7",
+            "v": "repr:negentien:t0:v7",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 7,
+            "target_vertex": null,
+            "cycle_rank_index": 3
+          }
+        ]
+      },
+      "target": {
+        "complex_id": "complex:repr:no-neg-moat:canonical",
+        "representation_id": "repr:no-neg-moat",
+        "transduced_text": "n0 n3g m04t",
+        "stage": "canonical-zero-width-gluing",
+        "betti": {
+          "vertices": 12,
+          "edges": 15,
+          "beta0": 1,
+          "beta1": 4,
+          "chi": -3
+        },
+        "vertices": [
+          "repr:no-neg-moat:t0:v0",
+          "repr:no-neg-moat:t0:v1",
+          "repr:no-neg-moat:t0:v2",
+          "repr:no-neg-moat:t1:v0",
+          "repr:no-neg-moat:t1:v1",
+          "repr:no-neg-moat:t1:v2",
+          "repr:no-neg-moat:t1:v3",
+          "repr:no-neg-moat:t2:v0",
+          "repr:no-neg-moat:t2:v1",
+          "repr:no-neg-moat:t2:v2",
+          "repr:no-neg-moat:t2:v3",
+          "repr:no-neg-moat:t2:v4"
+        ],
+        "edges": [
+          {
+            "edge_id": "repr:no-neg-moat:symbol:0",
+            "u": "repr:no-neg-moat:t0:v0",
+            "v": "repr:no-neg-moat:t0:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 0,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:1",
+            "u": "repr:no-neg-moat:t0:v1",
+            "v": "repr:no-neg-moat:t0:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:3",
+            "u": "repr:no-neg-moat:t1:v0",
+            "v": "repr:no-neg-moat:t1:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 3,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:4",
+            "u": "repr:no-neg-moat:t1:v1",
+            "v": "repr:no-neg-moat:t1:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 4,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:5",
+            "u": "repr:no-neg-moat:t1:v2",
+            "v": "repr:no-neg-moat:t1:v3",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 5,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:7",
+            "u": "repr:no-neg-moat:t2:v0",
+            "v": "repr:no-neg-moat:t2:v1",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 7,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:8",
+            "u": "repr:no-neg-moat:t2:v1",
+            "v": "repr:no-neg-moat:t2:v2",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 8,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:9",
+            "u": "repr:no-neg-moat:t2:v2",
+            "v": "repr:no-neg-moat:t2:v3",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 9,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:symbol:10",
+            "u": "repr:no-neg-moat:t2:v3",
+            "v": "repr:no-neg-moat:t2:v4",
+            "kind": "symbol_backbone",
+            "metric_weight": 1.0,
+            "source_index": 10,
+            "target_vertex": null,
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:0",
+            "u": "repr:no-neg-moat:t0:v1",
+            "v": "repr:no-neg-moat:t0:v1",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 1,
+            "target_vertex": null,
+            "cycle_rank_index": 0
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:1",
+            "u": "repr:no-neg-moat:t1:v2",
+            "v": "repr:no-neg-moat:t1:v2",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 5,
+            "target_vertex": null,
+            "cycle_rank_index": 1
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:2",
+            "u": "repr:no-neg-moat:t2:v1",
+            "v": "repr:no-neg-moat:t2:v1",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 8,
+            "target_vertex": null,
+            "cycle_rank_index": 2
+          },
+          {
+            "edge_id": "repr:no-neg-moat:cycle:3",
+            "u": "repr:no-neg-moat:t2:v2",
+            "v": "repr:no-neg-moat:t2:v2",
+            "kind": "intrinsic_cycle",
+            "metric_weight": 1.0,
+            "source_index": 9,
+            "target_vertex": null,
+            "cycle_rank_index": 3
+          },
+          {
+            "edge_id": "repr:no-neg-moat:space:0",
+            "u": "repr:no-neg-moat:t0:v2",
+            "v": "repr:no-neg-moat:t1:v0",
+            "kind": "zero_metric_bridge",
+            "metric_weight": 0.0,
+            "source_index": 2,
+            "target_vertex": "repr:no-neg-moat:t1:v0",
+            "cycle_rank_index": null
+          },
+          {
+            "edge_id": "repr:no-neg-moat:space:1",
+            "u": "repr:no-neg-moat:t1:v3",
+            "v": "repr:no-neg-moat:t2:v0",
+            "kind": "zero_metric_bridge",
+            "metric_weight": 0.0,
+            "source_index": 6,
+            "target_vertex": "repr:no-neg-moat:t2:v0",
+            "cycle_rank_index": null
+          }
+        ]
+      },
+      "source_trade_records": [],
+      "target_trade_records": [
+        {
+          "edge_id": "repr:no-neg-moat:space:0",
+          "source_vertex": "repr:no-neg-moat:t0:v2",
+          "target_vertex": "repr:no-neg-moat:t1:v0",
+          "before_beta0": 3,
+          "before_beta1": 6,
+          "after_beta0": 2,
+          "after_beta1": 5,
+          "chi_before": -3,
+          "chi_after": -3,
+          "valid": true
+        },
+        {
+          "edge_id": "repr:no-neg-moat:space:1",
+          "source_vertex": "repr:no-neg-moat:t1:v3",
+          "target_vertex": "repr:no-neg-moat:t2:v0",
+          "before_beta0": 2,
+          "before_beta1": 5,
+          "after_beta0": 1,
+          "after_beta1": 4,
+          "chi_before": -3,
+          "chi_after": -3,
+          "valid": true
+        }
+      ]
+    }
+  },
+  {
+    "step_id": "bea361:op:betti-certificate-v1",
+    "kind": "betti_pair_certificate",
+    "output": {
+      "source_augmented": {
+        "vertices": 10,
+        "edges": 13,
+        "beta0": 1,
+        "beta1": 4,
+        "chi": -3
+      },
+      "target_augmented": {
+        "vertices": 12,
+        "edges": 15,
+        "beta0": 3,
+        "beta1": 6,
+        "chi": -3
+      },
+      "source_canonical": {
+        "vertices": 10,
+        "edges": 13,
+        "beta0": 1,
+        "beta1": 4,
+        "chi": -3
+      },
+      "target_canonical": {
+        "vertices": 12,
+        "edges": 15,
+        "beta0": 1,
+        "beta1": 4,
+        "chi": -3
+      },
+      "chi_conserved": true
+    }
+  },
+  {
+    "step_id": "bea361:op:torus-immersion-v1",
+    "kind": "torus_pair_immersion",
+    "output": {
+      "source": {
+        "complex_id": "complex:repr:negentien:canonical",
+        "torus_dimension": 4,
+        "cycle_edge_ids": [
+          "repr:negentien:cycle:0",
+          "repr:negentien:cycle:1",
+          "repr:negentien:cycle:2",
+          "repr:negentien:cycle:3"
+        ],
+        "homology_matrix": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "homology_rank": 4,
+        "tree_collapsed": true,
+        "valid": true,
+        "scope": "cellular immersion of X/T into coordinate circles of synthetic T^4"
+      },
+      "target": {
+        "complex_id": "complex:repr:no-neg-moat:canonical",
+        "torus_dimension": 4,
+        "cycle_edge_ids": [
+          "repr:no-neg-moat:cycle:0",
+          "repr:no-neg-moat:cycle:1",
+          "repr:no-neg-moat:cycle:2",
+          "repr:no-neg-moat:cycle:3"
+        ],
+        "homology_matrix": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "homology_rank": 4,
+        "tree_collapsed": true,
+        "valid": true,
+        "scope": "cellular immersion of X/T into coordinate circles of synthetic T^4"
+      }
+    }
+  },
+  {
+    "step_id": "bea361:op:ascii-align-v1",
+    "kind": "ascii_left_nul_align",
+    "output": {
+      "source_hex": "6e3367336e7431336e0000",
+      "target_hex": "6e30206e3367206d303474",
+      "aligned_length": 11
+    }
+  },
+  {
+    "step_id": "bea361:op:xor-delta-v1",
+    "kind": "xor_delta_matrix",
+    "output": {
+      "source_text": "n3g3nt13n",
+      "target_text": "n0 n3g m04t",
+      "encoding": "ascii",
+      "alignment": "left",
+      "pad_byte": 0,
+      "source_length": 9,
+      "target_length": 11,
+      "aligned_length": 11,
+      "source_hex": "6e3367336e7431336e0000",
+      "target_hex": "6e30206e3367206d303474",
+      "delta_hex": "0003475d5d13115e5e3474",
+      "source_weight": 39,
+      "target_weight": 37,
+      "delta_weight": 38,
+      "source_parity": 1,
+      "target_parity": 1,
+      "delta_is_even": true,
+      "parity_preserved": true,
+      "repeated_row_classes": {
+        "0x5d": [
+          3,
+          4
+        ],
+        "0x5e": [
+          7,
+          8
+        ]
+      },
+      "even_subspace_dimension": 87,
+      "matrix_rows": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0
+        ]
+      ],
+      "entropy_scope": "For any random variable X on the fixed-width code space, X -> X xor delta is a bijection, so Shannon entropy H(X xor delta)=H(X). Even delta weight additionally keeps each global-parity coset invariant."
+    }
+  },
+  {
+    "step_id": "bea361:op:even-parity-v1",
+    "kind": "even_parity_entropy_certificate",
+    "output": {
+      "delta_weight": 38,
+      "delta_is_even": true,
+      "source_parity": 1,
+      "target_parity": 1,
+      "parity_preserved": true,
+      "symmetric_pairs": [
+        [
+          3,
+          4
+        ],
+        [
+          7,
+          8
+        ]
+      ],
+      "symmetric_pairs_hold": true,
+      "symmetric_subspace_dimension": 71,
+      "entropy_scope": "For any random variable X on the fixed-width code space, X -> X xor delta is a bijection, so Shannon entropy H(X xor delta)=H(X). Even delta weight additionally keeps each global-parity coset invariant."
+    }
+  },
+  {
+    "step_id": "bea361:op:semantic-evaluator-v1",
+    "kind": "semantic_pair_evaluate",
+    "output": {
+      "source_value": 19.0,
+      "target_value": 19.0,
+      "equivalent": true
+    }
+  },
+  {
+    "step_id": "bea361:op:semantic-quotient-v1",
+    "kind": "semantic_fiber_quotient",
+    "output": {
+      "profile_id": "bea361:semantic-boundary-sdf19-v2",
+      "target_value": 19.0,
+      "values": {
+        "repr:negentien": 19.0,
+        "repr:no-neg-moat": 19.0
+      },
+      "zero_set": [
+        "repr:negentien",
+        "repr:no-neg-moat"
+      ],
+      "metric_scope": "exact metric on semantic quotient and pseudometric on spatial representation domain; not Euclidean glyph distance"
+    }
+  },
+  {
+    "step_id": "bea361:op:semantic-sdf19-v1",
+    "kind": "semantic_boundary_sdf",
+    "output": {
+      "source_residual": 0.0,
+      "target_residual": 0.0,
+      "source_sdf_identity": true,
+      "target_sdf_identity": true
+    }
+  },
+  {
+    "step_id": "bea361:op:certificate-v2",
+    "kind": "integrated_bea_certificate",
+    "output": {
+      "certificate_id": "bea361:certificate:negentien-no-neg-moat-v2",
+      "profile_id": "bea361:synthetic-cell-complex-v2",
+      "source_id": "repr:negentien",
+      "target_id": "repr:no-neg-moat",
+      "source_augmented": {
+        "vertices": 10,
+        "edges": 13,
+        "beta0": 1,
+        "beta1": 4,
+        "chi": -3
+      },
+      "target_augmented": {
+        "vertices": 12,
+        "edges": 15,
+        "beta0": 3,
+        "beta1": 6,
+        "chi": -3
+      },
+      "source_canonical": {
+        "vertices": 10,
+        "edges": 13,
+        "beta0": 1,
+        "beta1": 4,
+        "chi": -3
+      },
+      "target_canonical": {
+        "vertices": 12,
+        "edges": 15,
+        "beta0": 1,
+        "beta1": 4,
+        "chi": -3
+      },
+      "source_trade_count": 0,
+      "target_trade_count": 2,
+      "torus_source": {
+        "complex_id": "complex:repr:negentien:canonical",
+        "torus_dimension": 4,
+        "cycle_edge_ids": [
+          "repr:negentien:cycle:0",
+          "repr:negentien:cycle:1",
+          "repr:negentien:cycle:2",
+          "repr:negentien:cycle:3"
+        ],
+        "homology_matrix": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "homology_rank": 4,
+        "tree_collapsed": true,
+        "valid": true,
+        "scope": "cellular immersion of X/T into coordinate circles of synthetic T^4"
+      },
+      "torus_target": {
+        "complex_id": "complex:repr:no-neg-moat:canonical",
+        "torus_dimension": 4,
+        "cycle_edge_ids": [
+          "repr:no-neg-moat:cycle:0",
+          "repr:no-neg-moat:cycle:1",
+          "repr:no-neg-moat:cycle:2",
+          "repr:no-neg-moat:cycle:3"
+        ],
+        "homology_matrix": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "homology_rank": 4,
+        "tree_collapsed": true,
+        "valid": true,
+        "scope": "cellular immersion of X/T into coordinate circles of synthetic T^4"
+      },
+      "xor": {
+        "source_text": "n3g3nt13n",
+        "target_text": "n0 n3g m04t",
+        "encoding": "ascii",
+        "alignment": "left",
+        "pad_byte": 0,
+        "source_length": 9,
+        "target_length": 11,
+        "aligned_length": 11,
+        "source_hex": "6e3367336e7431336e0000",
+        "target_hex": "6e30206e3367206d303474",
+        "delta_hex": "0003475d5d13115e5e3474",
+        "source_weight": 39,
+        "target_weight": 37,
+        "delta_weight": 38,
+        "source_parity": 1,
+        "target_parity": 1,
+        "delta_is_even": true,
+        "parity_preserved": true,
+        "repeated_row_classes": {
+          "0x5d": [
+            3,
+            4
+          ],
+          "0x5e": [
+            7,
+            8
+          ]
+        },
+        "even_subspace_dimension": 87,
+        "matrix_rows": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ]
+        ],
+        "entropy_scope": "For any random variable X on the fixed-width code space, X -> X xor delta is a bijection, so Shannon entropy H(X xor delta)=H(X). Even delta weight additionally keeps each global-parity coset invariant."
+      },
+      "semantic": {
+        "profile_id": "bea361:semantic-boundary-sdf19-v2",
+        "target_value": 19.0,
+        "values": {
+          "repr:negentien": 19.0,
+          "repr:no-neg-moat": 19.0
+        },
+        "zero_set": [
+          "repr:negentien",
+          "repr:no-neg-moat"
+        ],
+        "metric_scope": "exact metric on semantic quotient and pseudometric on spatial representation domain; not Euclidean glyph distance"
+      },
+      "semantic_source_residual": 0.0,
+      "semantic_target_residual": 0.0,
+      "valid": true,
+      "claim_level": "profile-exact-synthetic-topology-equivalence",
+      "non_claims": [
+        "not a statement about standard font glyph topology",
+        "not a homeomorphism between either string and the full four-torus",
+        "not a dialect, historical, or universal linguistic claim",
+        "not Euclidean screen-space signed distance",
+        "not Hamming-weight conservation",
+        "not physical entropy or energy conservation"
+      ]
+    }
+  },
+  {
+    "step_id": "bea361:schedule:handoff-v1",
+    "kind": "evaluation_schedule",
+    "output": {
+      "after_bea": [
+        "support",
+        "compatibility",
+        "guard",
+        "verified_event",
+        "transition",
+        "lineage"
+      ]
+    }
+  }
+]

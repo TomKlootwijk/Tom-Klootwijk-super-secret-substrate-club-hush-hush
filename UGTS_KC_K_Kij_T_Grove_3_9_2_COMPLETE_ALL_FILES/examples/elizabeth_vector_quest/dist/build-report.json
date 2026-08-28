@@ -1,0 +1,39 @@
+{
+  "codename": "KC Elizabeth",
+  "files": [
+    {
+      "bytes": 474,
+      "name": "README.txt",
+      "sha256": "b42e291e636d0e26c6f6291733a447568b3d52378ba2c262dbebb12fb99fbc45"
+    },
+    {
+      "bytes": 72161,
+      "name": "index.html",
+      "sha256": "417ca9cd80d28c83605025bea22792017ee7b457be202e2d663e880fbd73e6bc"
+    },
+    {
+      "bytes": 67265,
+      "name": "project.json",
+      "sha256": "b61cff0e70c70fe293d0923811fe05c6edf7c9fd68af29a1f749fc8d4c1310f8"
+    }
+  ],
+  "project_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+  "project_id": "kc.elizabeth.vector-quest",
+  "project_version": "1.0.0",
+  "runtime_version": "3.9.0",
+  "schema": "ugts-kc-html5-build-3.9",
+  "single_file": true,
+  "validation": {
+    "issues": [],
+    "metrics": {
+      "action_count": 8,
+      "audio_cue_count": 7,
+      "entity_count": 26,
+      "scene_count": 1,
+      "tilemap_count": 0,
+      "vector_asset_count": 5
+    },
+    "passed": true
+  },
+  "warnings": []
+}

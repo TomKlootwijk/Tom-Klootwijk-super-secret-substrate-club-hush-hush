@@ -1,0 +1,244 @@
+{
+  "format": "UGTS-SPARSE-TEMPORAL-GRAPH-1",
+  "counts": {
+    "nodes": 510,
+    "edges": 1827,
+    "events": 1013,
+    "examples": 720
+  },
+  "feature_dim": 32,
+  "teacher_dim": 64,
+  "metadata": {
+    "generator": "ugts_spatial.demo_data.build_demo_graph",
+    "generator_version": "0.1.0",
+    "synthetic": true,
+    "seed": 200678942,
+    "geographic_scope": "Flevoland-like synthetic pilot around six named municipal anchors",
+    "spatial_split": {
+      "0": [
+        "Almere",
+        "Lelystad",
+        "Dronten"
+      ],
+      "1": [
+        "Emmeloord"
+      ],
+      "2": [
+        "Urk",
+        "Zeewolde"
+      ]
+    },
+    "event_types": [
+      "observation_update",
+      "sensor_online",
+      "sensor_offline",
+      "threshold_cross",
+      "external_novelty",
+      "ontology_reclassification",
+      "route_change",
+      "calibration"
+    ],
+    "max_time_hours": 168.0,
+    "ontology_schema": "UGTS-SPATIAL-ONTOLOGY-1",
+    "catalog_schema": "UGTS-KNOWLEDGE-CATALOG-1.1",
+    "catalog_count": 211,
+    "teacher_kind": "deterministic_hash_fallback",
+    "teacher_dim": 64,
+    "spatial_index_preferred": "H3",
+    "spatial_index_runtime_backend": "morton-grid",
+    "no_frame_padding": true,
+    "identity_contract": "stable source address + lineage seed; coordinates are attributes, not identity"
+  },
+  "files": {
+    "node_ids.npy": {
+      "sha256": "26f9f7c597e90413086e5e6c512895fe15523586f49e148003b561087afbf9ca",
+      "shape": [
+        510
+      ],
+      "dtype": "uint64"
+    },
+    "node_types.npy": {
+      "sha256": "93051fd373aa48916abe029e5bb8d7b6636db13c1629292b57a3711f955a8bcd",
+      "shape": [
+        510
+      ],
+      "dtype": "int16"
+    },
+    "node_coords.npy": {
+      "sha256": "3d47da83bc442b9577a16c7d8d98c4919c48370464d2e71536181ec19ff1bb81",
+      "shape": [
+        510,
+        3
+      ],
+      "dtype": "float64"
+    },
+    "node_features.npy": {
+      "sha256": "e035c20547719737233f33873eca5d9b12eb48516018ef494234f962f52bf95e",
+      "shape": [
+        510,
+        32
+      ],
+      "dtype": "float32"
+    },
+    "lineage_seed.npy": {
+      "sha256": "a62fa651eea70540283b85d0a8ffbf3c60124baaefded3e790a0e9c215063b54",
+      "shape": [
+        510
+      ],
+      "dtype": "uint32"
+    },
+    "edge_src.npy": {
+      "sha256": "fa4431308a55d91254e2154b091dd4b8092b83540139ad390683bc8d71b0c5eb",
+      "shape": [
+        1827
+      ],
+      "dtype": "int64"
+    },
+    "edge_dst.npy": {
+      "sha256": "636ba94e2fc8b52520c07a1bdafeb8b08cfcb34edd33e159ad6133ea56ec439d",
+      "shape": [
+        1827
+      ],
+      "dtype": "int64"
+    },
+    "edge_type.npy": {
+      "sha256": "b7f74a02f12a2d4a6776cdb45fffc4104cc7d9fb602f65d3e29b44e1a56212d4",
+      "shape": [
+        1827
+      ],
+      "dtype": "int16"
+    },
+    "edge_time.npy": {
+      "sha256": "348f76cda97db6938369c5bda8c889826b46a90678cdaa0c96878416d9a23734",
+      "shape": [
+        1827
+      ],
+      "dtype": "float64"
+    },
+    "edge_weight.npy": {
+      "sha256": "ce2a8ccc0a2ea635612db20a8ae4c17086c02f41641d63f33effcf5f0d5fd159",
+      "shape": [
+        1827
+      ],
+      "dtype": "float32"
+    },
+    "edge_flags.npy": {
+      "sha256": "f8de97f0891e85628b56c83fe586eeb71b70fcf3412c13bd8e349cd292f5fbef",
+      "shape": [
+        1827
+      ],
+      "dtype": "uint16"
+    },
+    "event_entity.npy": {
+      "sha256": "851905bc5fb5f564c73b4d93f95fd8a337732154ae0593d91107d18251d7c0cb",
+      "shape": [
+        1013
+      ],
+      "dtype": "int64"
+    },
+    "event_time.npy": {
+      "sha256": "5a35c7048cf8e3343613fbb0335542b5d08aa5458b4f49ef7d08a811e70b910a",
+      "shape": [
+        1013
+      ],
+      "dtype": "float64"
+    },
+    "event_type.npy": {
+      "sha256": "d13526103f1aa89015c205832e8e449e2da4645588dda9bcb6d239b36494c7d4",
+      "shape": [
+        1013
+      ],
+      "dtype": "int16"
+    },
+    "event_value.npy": {
+      "sha256": "468dea907616391e440fc54370ceee18f62b396cd4174b382a288e7852c8cb00",
+      "shape": [
+        1013,
+        4
+      ],
+      "dtype": "float32"
+    },
+    "event_flags.npy": {
+      "sha256": "98e4331137c7239fa083d7dea3f63bd422d7cca94762a313405daef539d16b34",
+      "shape": [
+        1013
+      ],
+      "dtype": "uint16"
+    },
+    "ex_src.npy": {
+      "sha256": "3ebb537d545660537e7b67f549631661f915c772022961820b7ef4daa9fae7d0",
+      "shape": [
+        720
+      ],
+      "dtype": "int64"
+    },
+    "ex_dst.npy": {
+      "sha256": "ce5b03de55a9e715545dabf6cd79606f41cbc8053774e67cac7710215b7d7ce5",
+      "shape": [
+        720
+      ],
+      "dtype": "int64"
+    },
+    "ex_relation.npy": {
+      "sha256": "fffc9d7d68742e18a9167f43b609e6d24b75e2bf3b59e620d9601a4b8f444f5c",
+      "shape": [
+        720
+      ],
+      "dtype": "int16"
+    },
+    "ex_label.npy": {
+      "sha256": "460760748d2d214e73678070216f9922c9f9deed6e81958d9b5caf78a74ef65c",
+      "shape": [
+        720
+      ],
+      "dtype": "float32"
+    },
+    "ex_teacher_prob.npy": {
+      "sha256": "093f66c8a3d589e50339758b5aec64fe85c44e5d16170da6b964a40f3978b74b",
+      "shape": [
+        720
+      ],
+      "dtype": "float32"
+    },
+    "ex_time.npy": {
+      "sha256": "209465c9fc36222ef71e319c46847cce1cf06124ccdb794e33a045663512ebe0",
+      "shape": [
+        720
+      ],
+      "dtype": "float64"
+    },
+    "ex_distance_m.npy": {
+      "sha256": "e17a494f91401ad2baf6327d57e42be3c949d75ce4e3c523030b38c7a275e89b",
+      "shape": [
+        720
+      ],
+      "dtype": "float32"
+    },
+    "ex_split.npy": {
+      "sha256": "f9e0ede3bdd61de64224c23eb47d1667f9d737d59e2183ee421b2a03d29b1e14",
+      "shape": [
+        720
+      ],
+      "dtype": "uint8"
+    },
+    "teacher_embeddings.npy": {
+      "sha256": "788db63800f779e344d59756beaf7b0496d0c4617870382fc73bf0de9a1ec9e0",
+      "shape": [
+        510,
+        64
+      ],
+      "dtype": "float16"
+    },
+    "teacher_mask.npy": {
+      "sha256": "82fbff11cebb87c71efa466b402dc2b31c7ce38a9943e930145f7c5cca3a276c",
+      "shape": [
+        510
+      ],
+      "dtype": "bool"
+    },
+    "texts.jsonl": {
+      "sha256": "6dc8e9872496d715dbb53ef854821eaeb853a59a43737b26d8ab53952d70c921",
+      "records": 510
+    }
+  }
+}

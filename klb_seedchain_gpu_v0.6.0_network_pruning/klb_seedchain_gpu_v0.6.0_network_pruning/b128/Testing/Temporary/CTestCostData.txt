@@ -1,0 +1,5 @@
+klb_cpu_tests 1 0.129617
+klb_orbit_tests 1 0.0483477
+klb_sgp4_tests 1 0.0413846
+klb_network_tests 1 0.0619024
+---

@@ -1,0 +1,273 @@
+===== UNIT TESTS =====
+test_catalog_count_and_ids (test_catalog_integrity.CatalogIntegrityTests.test_catalog_count_and_ids) ... ok
+test_catalog_json_matches (test_catalog_integrity.CatalogIntegrityTests.test_catalog_json_matches) ... ok
+test_layer_counts (test_catalog_integrity.CatalogIntegrityTests.test_layer_counts) ... ok
+test_v3_count (test_catalog_integrity.CatalogIntegrityTests.test_v3_count) ... ok
+test_atomic_commit (test_events_topology.EventTests.test_atomic_commit) ... ok
+test_atomic_rollback (test_events_topology.EventTests.test_atomic_rollback) ... ok
+test_crossing_direction (test_events_topology.EventTests.test_crossing_direction) ... ok
+test_dwell_hysteresis (test_events_topology.EventTests.test_dwell_hysteresis) ... ok
+test_event_interval (test_events_topology.EventTests.test_event_interval) ... ok
+test_grazing (test_events_topology.EventTests.test_grazing) ... ok
+test_group_simultaneous (test_events_topology.EventTests.test_group_simultaneous) ... ok
+test_hybrid_automaton (test_events_topology.EventTests.test_hybrid_automaton) ... ok
+test_interval_newton (test_events_topology.EventTests.test_interval_newton) ... ok
+test_interval_newton_no_root (test_events_topology.EventTests.test_interval_newton_no_root) ... ok
+test_lipschitz (test_events_topology.EventTests.test_lipschitz) ... ok
+test_no_zeno (test_events_topology.EventTests.test_no_zeno) ... ok
+test_sturm_count (test_events_topology.EventTests.test_sturm_count) ... ok
+test_tangency (test_events_topology.EventTests.test_tangency) ... ok
+test_tie_break (test_events_topology.EventTests.test_tie_break) ... ok
+test_topological_order (test_events_topology.EventTests.test_topological_order) ... ok
+test_topological_order_cycle (test_events_topology.EventTests.test_topological_order_cycle) ... ok
+test_zeno (test_events_topology.EventTests.test_zeno) ... ok
+test_betti_filled_triangle (test_events_topology.TopologyTests.test_betti_filled_triangle) ... ok
+test_betti_triangle_boundary (test_events_topology.TopologyTests.test_betti_triangle_boundary) ... ok
+test_boundary_matrix (test_events_topology.TopologyTests.test_boundary_matrix) ... ok
+test_boundary_squared_zero (test_events_topology.TopologyTests.test_boundary_squared_zero) ... ok
+test_complex_closure (test_events_topology.TopologyTests.test_complex_closure) ... ok
+test_cubical_order (test_events_topology.TopologyTests.test_cubical_order) ... ok
+test_euler (test_events_topology.TopologyTests.test_euler) ... ok
+test_greedy_diagram_distance (test_events_topology.TopologyTests.test_greedy_diagram_distance) ... ok
+test_group_presentation (test_events_topology.TopologyTests.test_group_presentation) ... ok
+test_hodge_laplacian (test_events_topology.TopologyTests.test_hodge_laplacian) ... ok
+test_lift_periodic (test_events_topology.TopologyTests.test_lift_periodic) ... ok
+test_linking_finite (test_events_topology.TopologyTests.test_linking_finite) ... ok
+test_monodromy (test_events_topology.TopologyTests.test_monodromy) ... ok
+test_oriented_boundary (test_events_topology.TopologyTests.test_oriented_boundary) ... ok
+test_persistence_events (test_events_topology.TopologyTests.test_persistence_events) ... ok
+test_persistence_h0 (test_events_topology.TopologyTests.test_persistence_h0) ... ok
+test_rank_mod2 (test_events_topology.TopologyTests.test_rank_mod2) ... ok
+test_reduce_word (test_events_topology.TopologyTests.test_reduce_word) ... ok
+test_rips (test_events_topology.TopologyTests.test_rips) ... ok
+test_union_find (test_events_topology.TopologyTests.test_union_find) ... ok
+test_winding (test_events_topology.TopologyTests.test_winding) ... ok
+test_baumgarte (test_kinematics_constraints.ConstraintTests.test_baumgarte) ... ok
+test_complementarity (test_kinematics_constraints.ConstraintTests.test_complementarity) ... ok
+test_friction_cone (test_kinematics_constraints.ConstraintTests.test_friction_cone) ... ok
+test_friction_pyramid (test_kinematics_constraints.ConstraintTests.test_friction_pyramid) ... ok
+test_gap_plane (test_kinematics_constraints.ConstraintTests.test_gap_plane) ... ok
+test_holonomic (test_kinematics_constraints.ConstraintTests.test_holonomic) ... ok
+test_multiplier (test_kinematics_constraints.ConstraintTests.test_multiplier) ... ok
+test_normal_impulse (test_kinematics_constraints.ConstraintTests.test_normal_impulse) ... ok
+test_nullspace (test_kinematics_constraints.ConstraintTests.test_nullspace) ... ok
+test_numeric_jacobian (test_kinematics_constraints.ConstraintTests.test_numeric_jacobian) ... ok
+test_rattle_tangent (test_kinematics_constraints.ConstraintTests.test_rattle_tangent) ... ok
+test_reduce_contacts (test_kinematics_constraints.ConstraintTests.test_reduce_contacts) ... ok
+test_restitution (test_kinematics_constraints.ConstraintTests.test_restitution) ... ok
+test_shake_circle (test_kinematics_constraints.ConstraintTests.test_shake_circle) ... ok
+test_warm_start (test_kinematics_constraints.ConstraintTests.test_warm_start) ... ok
+test_adjoint_shape (test_kinematics_constraints.KinematicsTests.test_adjoint_shape) ... ok
+test_arc_length_line (test_kinematics_constraints.KinematicsTests.test_arc_length_line) ... ok
+test_bishop_holonomy_planar (test_kinematics_constraints.KinematicsTests.test_bishop_holonomy_planar) ... ok
+test_bishop_transport (test_kinematics_constraints.KinematicsTests.test_bishop_transport) ... ok
+test_curvature_circle (test_kinematics_constraints.KinematicsTests.test_curvature_circle) ... ok
+test_curvature_speed_limit (test_kinematics_constraints.KinematicsTests.test_curvature_speed_limit) ... ok
+test_dual_quaternion_blend (test_kinematics_constraints.KinematicsTests.test_dual_quaternion_blend) ... ok
+test_dual_quaternion_transform (test_kinematics_constraints.KinematicsTests.test_dual_quaternion_transform) ... ok
+test_dual_quaternion_translation (test_kinematics_constraints.KinematicsTests.test_dual_quaternion_translation) ... ok
+test_forward_kinematics (test_kinematics_constraints.KinematicsTests.test_forward_kinematics) ... ok
+test_frenet (test_kinematics_constraints.KinematicsTests.test_frenet) ... ok
+test_jet_taylor (test_kinematics_constraints.KinematicsTests.test_jet_taylor) ... ok
+test_lie_bracket (test_kinematics_constraints.KinematicsTests.test_lie_bracket) ... ok
+test_limit_aware_time (test_kinematics_constraints.KinematicsTests.test_limit_aware_time) ... ok
+test_material_derivative (test_kinematics_constraints.KinematicsTests.test_material_derivative) ... ok
+test_quaternion_integration (test_kinematics_constraints.KinematicsTests.test_quaternion_integration) ... ok
+test_quintic_endpoints (test_kinematics_constraints.KinematicsTests.test_quintic_endpoints) ... ok
+test_rigid_geodesic (test_kinematics_constraints.KinematicsTests.test_rigid_geodesic) ... ok
+test_screw_interpolate (test_kinematics_constraints.KinematicsTests.test_screw_interpolate) ... ok
+test_se2_translation (test_kinematics_constraints.KinematicsTests.test_se2_translation) ... ok
+test_se3_exp_translation (test_kinematics_constraints.KinematicsTests.test_se3_exp_translation) ... ok
+test_se3_log_roundtrip_small (test_kinematics_constraints.KinematicsTests.test_se3_log_roundtrip_small) ... ok
+test_so3_jacobian_zero (test_kinematics_constraints.KinematicsTests.test_so3_jacobian_zero) ... ok
+test_unicycle_flatness (test_kinematics_constraints.KinematicsTests.test_unicycle_flatness) ... ok
+test_allen_cahn_fixed_points (test_multiscale_dynamics.DynamicsTests.test_allen_cahn_fixed_points) ... ok
+test_cahn_hilliard_mass (test_multiscale_dynamics.DynamicsTests.test_cahn_hilliard_mass) ... ok
+test_damped_oscillator_initial (test_multiscale_dynamics.DynamicsTests.test_damped_oscillator_initial) ... ok
+test_eikonal (test_multiscale_dynamics.DynamicsTests.test_eikonal) ... ok
+test_graph_diffusion_conserves_sum (test_multiscale_dynamics.DynamicsTests.test_graph_diffusion_conserves_sum) ... ok
+test_gray_scott_constant (test_multiscale_dynamics.DynamicsTests.test_gray_scott_constant) ... ok
+test_gray_scott_split (test_multiscale_dynamics.DynamicsTests.test_gray_scott_split) ... ok
+test_hamiltonian (test_multiscale_dynamics.DynamicsTests.test_hamiltonian) ... ok
+test_implicit_diffusion (test_multiscale_dynamics.DynamicsTests.test_implicit_diffusion) ... ok
+test_implicit_midpoint_decay (test_multiscale_dynamics.DynamicsTests.test_implicit_midpoint_decay) ... ok
+test_lie_group_step_normalized (test_multiscale_dynamics.DynamicsTests.test_lie_group_step_normalized) ... ok
+test_projected_symplectic_circle (test_multiscale_dynamics.DynamicsTests.test_projected_symplectic_circle) ... ok
+test_semi_lagrangian_shift (test_multiscale_dynamics.DynamicsTests.test_semi_lagrangian_shift) ... ok
+test_stormer_verlet (test_multiscale_dynamics.DynamicsTests.test_stormer_verlet) ... ok
+test_symplectic_euler (test_multiscale_dynamics.DynamicsTests.test_symplectic_euler) ... ok
+test_variational_oscillator (test_multiscale_dynamics.DynamicsTests.test_variational_oscillator) ... ok
+test_velocity_verlet_constant (test_multiscale_dynamics.DynamicsTests.test_velocity_verlet_constant) ... ok
+test_wave_zero (test_multiscale_dynamics.DynamicsTests.test_wave_zero) ... ok
+test_alpha_complex (test_multiscale_dynamics.MultiscaleTests.test_alpha_complex) ... ok
+test_ammann_counts (test_multiscale_dynamics.MultiscaleTests.test_ammann_counts) ... ok
+test_blue_noise_diagnostics (test_multiscale_dynamics.MultiscaleTests.test_blue_noise_diagnostics) ... ok
+test_cut_and_project (test_multiscale_dynamics.MultiscaleTests.test_cut_and_project) ... ok
+test_delaunay_square (test_multiscale_dynamics.MultiscaleTests.test_delaunay_square) ... ok
+test_frieze (test_multiscale_dynamics.MultiscaleTests.test_frieze) ... ok
+test_haar_roundtrip (test_multiscale_dynamics.MultiscaleTests.test_haar_roundtrip) ... ok
+test_hilbert_unique (test_multiscale_dynamics.MultiscaleTests.test_hilbert_unique) ... ok
+test_jacobi (test_multiscale_dynamics.MultiscaleTests.test_jacobi) ... ok
+test_laplacian_pyramid_roundtrip (test_multiscale_dynamics.MultiscaleTests.test_laplacian_pyramid_roundtrip) ... ok
+test_lloyd (test_multiscale_dynamics.MultiscaleTests.test_lloyd) ... ok
+test_morton (test_multiscale_dynamics.MultiscaleTests.test_morton) ... ok
+test_penrose_counts (test_multiscale_dynamics.MultiscaleTests.test_penrose_counts) ... ok
+test_poisson_disk (test_multiscale_dynamics.MultiscaleTests.test_poisson_disk) ... ok
+test_voronoi (test_multiscale_dynamics.MultiscaleTests.test_voronoi) ... ok
+test_wallpaper (test_multiscale_dynamics.MultiscaleTests.test_wallpaper) ... ok
+test_box_sdf (test_patterns_fields.FieldTests.test_box_sdf) ... ok
+test_capsule_sdf (test_patterns_fields.FieldTests.test_capsule_sdf) ... ok
+test_csg (test_patterns_fields.FieldTests.test_csg) ... ok
+test_gradient_sphere (test_patterns_fields.FieldTests.test_gradient_sphere) ... ok
+test_gyroid_origin (test_patterns_fields.FieldTests.test_gyroid_origin) ... ok
+test_metaball (test_patterns_fields.FieldTests.test_metaball) ... ok
+test_offset (test_patterns_fields.FieldTests.test_offset) ... ok
+test_point_segment_distance (test_patterns_fields.FieldTests.test_point_segment_distance) ... ok
+test_polyline_tube (test_patterns_fields.FieldTests.test_polyline_tube) ... ok
+test_schwarz_p_origin (test_patterns_fields.FieldTests.test_schwarz_p_origin) ... ok
+test_smooth_union_value (test_patterns_fields.FieldTests.test_smooth_union_value) ... ok
+test_sphere_sdf (test_patterns_fields.FieldTests.test_sphere_sdf) ... ok
+test_superquadric_sign (test_patterns_fields.FieldTests.test_superquadric_sign) ... ok
+test_torus_sdf (test_patterns_fields.FieldTests.test_torus_sdf) ... ok
+test_archimedean_spiral (test_patterns_fields.PatternTests.test_archimedean_spiral) ... ok
+test_catenoid_radius (test_patterns_fields.PatternTests.test_catenoid_radius) ... ok
+test_catmull_rom_interpolates (test_patterns_fields.PatternTests.test_catmull_rom_interpolates) ... ok
+test_clothoid_origin (test_patterns_fields.PatternTests.test_clothoid_origin) ... ok
+test_clothoid_small_arc (test_patterns_fields.PatternTests.test_clothoid_small_arc) ... ok
+test_cubic_bezier_endpoints (test_patterns_fields.PatternTests.test_cubic_bezier_endpoints) ... ok
+test_cycloid_start (test_patterns_fields.PatternTests.test_cycloid_start) ... ok
+test_epitrochoid_start (test_patterns_fields.PatternTests.test_epitrochoid_start) ... ok
+test_fermat_spiral (test_patterns_fields.PatternTests.test_fermat_spiral) ... ok
+test_helicoid (test_patterns_fields.PatternTests.test_helicoid) ... ok
+test_hypotrochoid_start (test_patterns_fields.PatternTests.test_hypotrochoid_start) ... ok
+test_involute_start (test_patterns_fields.PatternTests.test_involute_start) ... ok
+test_lissajous (test_patterns_fields.PatternTests.test_lissajous) ... ok
+test_logarithmic_spiral_ratio (test_patterns_fields.PatternTests.test_logarithmic_spiral_ratio) ... ok
+test_loxodrome_on_sphere (test_patterns_fields.PatternTests.test_loxodrome_on_sphere) ... ok
+test_nurbs_linear (test_patterns_fields.PatternTests.test_nurbs_linear) ... ok
+test_quadratic_bezier_endpoints (test_patterns_fields.PatternTests.test_quadratic_bezier_endpoints) ... ok
+test_reuleaux_periodic (test_patterns_fields.PatternTests.test_reuleaux_periodic) ... ok
+test_rose (test_patterns_fields.PatternTests.test_rose) ... ok
+test_superellipse_cardinal (test_patterns_fields.PatternTests.test_superellipse_cardinal) ... ok
+test_superformula_finite (test_patterns_fields.PatternTests.test_superformula_finite) ... ok
+test_uniform_bspline_line (test_patterns_fields.PatternTests.test_uniform_bspline_line) ... ok
+test_viviani_on_sphere (test_patterns_fields.PatternTests.test_viviani_on_sphere) ... ok
+test_capability_manifest (test_uncertainty_io_world.IOTests.test_capability_manifest) ... ok
+test_json_roundtrip (test_uncertainty_io_world.IOTests.test_json_roundtrip) ... ok
+test_minimal_validation (test_uncertainty_io_world.IOTests.test_minimal_validation) ... ok
+test_validation_errors (test_uncertainty_io_world.IOTests.test_validation_errors) ... ok
+test_affine_interval (test_uncertainty_io_world.IntervalTests.test_affine_interval) ... ok
+test_affine_multiply (test_uncertainty_io_world.IntervalTests.test_affine_multiply) ... ok
+test_canonical_hash_nonfinite (test_uncertainty_io_world.IntervalTests.test_canonical_hash_nonfinite) ... ok
+test_canonical_hash_order (test_uncertainty_io_world.IntervalTests.test_canonical_hash_order) ... ok
+test_checkpoint (test_uncertainty_io_world.IntervalTests.test_checkpoint) ... ok
+test_covariance (test_uncertainty_io_world.IntervalTests.test_covariance) ... ok
+test_deterministic_samples (test_uncertainty_io_world.IntervalTests.test_deterministic_samples) ... ok
+test_error_budget (test_uncertainty_io_world.IntervalTests.test_error_budget) ... ok
+test_interval_add (test_uncertainty_io_world.IntervalTests.test_interval_add) ... ok
+test_interval_basic (test_uncertainty_io_world.IntervalTests.test_interval_basic) ... ok
+test_interval_div (test_uncertainty_io_world.IntervalTests.test_interval_div) ... ok
+test_interval_div_zero (test_uncertainty_io_world.IntervalTests.test_interval_div_zero) ... ok
+test_interval_mul (test_uncertainty_io_world.IntervalTests.test_interval_mul) ... ok
+test_interval_norm (test_uncertainty_io_world.IntervalTests.test_interval_norm) ... ok
+test_interval_square (test_uncertainty_io_world.IntervalTests.test_interval_square) ... ok
+test_merkle_chain (test_uncertainty_io_world.IntervalTests.test_merkle_chain) ... ok
+test_pairwise_sum (test_uncertainty_io_world.IntervalTests.test_pairwise_sum) ... ok
+test_tolerance (test_uncertainty_io_world.IntervalTests.test_tolerance) ... ok
+test_unscented_linear (test_uncertainty_io_world.IntervalTests.test_unscented_linear) ... ok
+test_compatibility_reasons (test_uncertainty_io_world.WorldTests.test_compatibility_reasons) ... ok
+test_double_vacuum (test_uncertainty_io_world.WorldTests.test_double_vacuum) ... ok
+test_next_event (test_uncertainty_io_world.WorldTests.test_next_event) ... ok
+test_process_event (test_uncertainty_io_world.WorldTests.test_process_event) ... ok
+test_state_at (test_uncertainty_io_world.WorldTests.test_state_at) ... ok
+test_support_cone (test_uncertainty_io_world.WorldTests.test_support_cone) ... ok
+
+----------------------------------------------------------------------
+Ran 182 tests in 0.023s
+
+OK
+
+===== SCHEMA =====
+Draft 2020-12 schema: valid
+Example world: valid
+
+===== EXAMPLES =====
+===== query_first_contact_portal.py =====
+state_at_1.25 (-0.75, 0.0)
+next_event (Relation(id='x_zero_portal', guard=<function <lambda> at 0x7f83ef9bb1a0>, support=RadialAngularSupport(origin=(0.0, 0.0), radius=3.0, axis=None, cone_cos=-1.0), compatibility=CompatibilityRule(allowed_sheets=(0,), orientation=1, phase_center=0.0, phase_tolerance=0.2, required_tags=('player',)), patch={'sheet': 1, 'orientation': -1, 'branch': 'B'}, priority=0), EventInterval(t_lo=1.9999999999417923, t_hi=2.0, residual=2.9103830456733704e-11, direction='indeterminate', status='enclosed'), ())
+processed EventRecord(entity_id='traveler', relation_id='x_zero_portal', time=EventInterval(t_lo=1.9999999999417923, t_hi=2.0, residual=2.9103830456733704e-11, direction='indeterminate', status='enclosed'), pre_hash='fe110c56bacee9287fd74d79d867247e7778f996c73cb18b86aa45b84076dc1d', post_hash='bf5c3f57990e747153946690fa12118ffee4fd78e16cdfd67f7f92ba13d4f6e4', reasons=(), lineage=('seed:traveler', 'x_zero_portal'))
+post_state StateRecord(id='traveler', jet=JetState(position=(-2.9103830456733704e-11, 0.0), velocity=(1.0, 0.0), acceleration=(0.0, 0.0), jerk=(0.0, 0.0), snap=(0.0, 0.0), time=1.9999999999708962, frame='world', length_unit='unit', time_unit='unit'), phase=0.0, sheet=1, orientation=-1, branch='B', lineage=('seed:traveler', 'x_zero_portal'), uncertainty=0.0, tags=('player',))
+
+===== persistence_demo.py =====
+PersistenceInterval(birth=0.0, death=0.3, dimension=0, representative='1', confidence=1.0)
+PersistenceInterval(birth=0.0, death=None, dimension=0, representative='0', confidence=1.0)
+PersistenceInterval(birth=0.1, death=0.5, dimension=0, representative='2', confidence=1.0)
+PersistenceInterval(birth=0.2, death=0.9, dimension=0, representative='3', confidence=1.0)
+events [{'type': 'persistence_threshold', 'dimension': 0, 'birth': 0.1, 'death': 0.5, 'lifetime': 0.4, 'representative': '2', 'confidence': 1.0}, {'type': 'persistence_threshold', 'dimension': 0, 'birth': 0.2, 'death': 0.9, 'lifetime': 0.7, 'representative': '3', 'confidence': 1.0}]
+
+===== contact_demo.py =====
+normal_impulse 1.875
+friction_impulse (0.8385254915624211, -0.41926274578121053)
+
+===== field_dynamics_demo.py =====
+gray_scott_u_center [0.850338, 0.652245, 0.546986, 0.546986, 0.652245, 0.850338]
+gray_scott_v_center [0.050089, 0.196292, 0.2473, 0.2473, 0.196292, 0.050089]
+arrival_center_row [3.0, 2.0, 1.0, 0.0, 1.0, 2.0, 3.0]
+
+===== uncertainty_replay_demo.py =====
+position Interval(lo=0.99, hi=1.01)
+velocity Interval(lo=-0.02, hi=0.02)
+worst_case 0.0012100000000000001
+rss 0.0010198529305738156
+chain ['4bc2fb4202afaf1b663a492693a299d68f60119bc71dca91e6e286e20f3c4e6c', '1d3c14e1875142d22c73c3bd2c84578eca0e9c66a14b14f780ff6acd12dc7772']
+
+
+===== BENCHMARK =====
+{
+  "boundary": "Reference Python CPU benchmark only; not a GPU, hardware or universal performance claim.",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "processor": "",
+  "results": [
+    {
+      "name": "superformula",
+      "iterations": 200000,
+      "seconds": 0.10097532800000408,
+      "operations_per_second": 1980681.8552745073,
+      "checksum": 7280.941363657312
+    },
+    {
+      "name": "se3_exp",
+      "iterations": 50000,
+      "seconds": 1.1436629650002033,
+      "operations_per_second": 43719.17385642641,
+      "checksum": 49967.50379144138
+    },
+    {
+      "name": "interval_newton_sqrt2",
+      "iterations": 20000,
+      "seconds": 0.2991264559996125,
+      "operations_per_second": 66861.35445012563,
+      "checksum": 28284.271247465687
+    },
+    {
+      "name": "persistence_h0_128",
+      "iterations": 2000,
+      "seconds": 0.4328353780001635,
+      "operations_per_second": 4620.694383256363,
+      "checksum": 256000.0
+    }
+  ]
+}
+
+===== PDF PREFLIGHT =====
+{
+  "path": "report/UGTS_KC_3_0_Technical_Report.pdf",
+  "ok_open": true,
+  "encrypted": false,
+  "pages": 24,
+  "likely_scanned": false,
+  "xfa_present": false,
+  "warnings": [],
+  "pdffonts_excerpt": null
+}

@@ -1,0 +1,42 @@
+==PROF== Connected to process 11732 (C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.3.0\klb_seedchain_gpu_v0.3.0\build-cuda128-vs\Release\klb_orbit_bench.exe)
+==PROF== Profiling "query_seed_count_kernel" - 0: 0%
+==WARNING== Launching the workload is taking more time than expected. If this continues to hang, terminate the profile and re-try by profiling the range of all related launches using '--replay-mode range'. See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#replay for more details.
+....50%....100% - 40 passes
+==PROF== Profiling "query_seed_count_kernel" - 1: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_seed_count_kernel" - 2: 0%....50%....100% - 40 passes
+==PROF== Disconnected from process 11732
+Device                      : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability          : 12.0
+CUDA global memory          : 12226.562500 MiB
+Reported L2                 : 36864.000000 KiB
+SM count                    : 46
+Memory bus width            : 192 bits
+Predictor                   : coarse Kepler + compiled secular J2
+Reference epoch             : 2026-08-16T05:33:12.693024Z
+Seeds / chain nodes         : 32 / 7
+Query                       : crossing
+Epochs/intervals            : 1048576
+Candidates                  : 33554432
+Dense float4 positions      : 33554464
+Dense working set           : 512.000488 MiB
+KLOC1 container             : 3809 bytes
+Working-set ratio           : 140948.129168x
+Auto-wrap stress timeline   : 604800.000000 s
+Station                     : 52.000000, 5.000000 deg
+Elevation guard             : 10.000000 deg
+Physical-horizon boundary   : repeated bounded timeline for load only
+
+Mode                        : query_seed_direct
+p50 / p95 / p99             : 16757.214844 / 16757.214844 / 16757.214844 ms
+Inner repeats               : 1
+Rate                        : 2.002387 M candidates/s
+Candidates                  : 33554432
+Support survivors           : 33311183
+Compatible survivors        : 33311183
+Verified states/events      : 1243
+Verified yield              : 0.003704%
+
+Acceptance boundary         : promote only if measured memory savings justify
+                              predictor cost at the required error budget.
+==PROF== Report: C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.3.0\klb_seedchain_gpu_v0.3.0\orbit_seed_profile.ncu-rep
+Nsight Compute report: C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.3.0\klb_seedchain_gpu_v0.3.0\orbit_seed_profile.ncu-rep

@@ -1,0 +1,28 @@
+PDF: /mnt/data/ugts_kc3_build/UGTS_KC_3_0/report/UGTS_KC_3_0_Technical_Report.pdf
+Pages: 23
+Encrypted: False
+Page sizes (pt, rounded):
+  - 595 x 842 (19 page(s))
+  - 842 x 595 (4 page(s))
+Metadata:
+  /Author: UGTS-KC 3.0 package
+  /CreationDate: D:20260816163701Z'
+  /Creator: Writer
+  /Keywords: UGTS, geometry, topology, kinematics, events, constraints, persistence, dynamics
+  /Producer: LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community
+  /Subject: Unified Geometric-Topological Substrate engineering expansion
+  /Title: UGTS-KC 3.0 Technical Report
+Outline items: 75
+Form fields: 0
+Attachments: 0
+Annotations: 0
+
+Fonts (pdffonts, first 25 lines):
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+BAAAAA+LiberationSans-Bold           TrueType          WinAnsi          yes yes yes   2115  0
+CAAAAA+LiberationSans                TrueType          WinAnsi          yes yes yes   2105  0
+DAAAAA+LiberationSans-Italic         TrueType          WinAnsi          yes yes yes   2110  0
+EAAAAA+Carlito-Bold                  TrueType          WinAnsi          yes yes yes   2125  0
+FAAAAA+OpenSymbol                    TrueType          WinAnsi          yes yes yes   2130  0
+GAAAAA+LiberationMono                TrueType          WinAnsi          yes yes yes   2120  0

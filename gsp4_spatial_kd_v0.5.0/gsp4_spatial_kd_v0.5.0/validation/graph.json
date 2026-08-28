@@ -1,0 +1,848 @@
+{
+  "bytes": 57545,
+  "human_bytes": "56.196 KiB",
+  "path": "/mnt/data/gsp4_spatial_kd_v0.5.0/data/flevoland_pilot.ugkg",
+  "sha256": "649ba082f664506c89e4bac0a0e3bdc6000feb9e1496d89835464cc2f379472b",
+  "summary": {
+    "array_bytes": 169548,
+    "bytes_per_node_plus_edge": 110.59882583170254,
+    "edge_dim": 4,
+    "edges": 1305,
+    "format": "UGKG2",
+    "input_dim": 32,
+    "metadata": {
+      "coordinates_are_synthetic": true,
+      "edge_attr_contract": [
+        "distance_m",
+        "sin_bearing",
+        "cos_bearing",
+        "abs_delta_time_s"
+      ],
+      "generator": "ugts_spatial.synthetic.generate_flevoland_pilot",
+      "identity_contract": "persistent node_id + lineage_seed + ordered novelty",
+      "name": "synthetic-flevoland-variable-event-pilot",
+      "node_metadata": {
+        "100": {
+          "kind": "road"
+        },
+        "101": {
+          "kind": "water"
+        },
+        "102": {
+          "kind": "facility"
+        },
+        "103": {
+          "kind": "road"
+        },
+        "104": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "106": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "108": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "11": {
+          "grid_x": 0,
+          "grid_y": 0
+        },
+        "110": {
+          "sensor_kind": "water",
+          "time_step": 0
+        },
+        "111": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "112": {
+          "sensor_kind": "water",
+          "time_step": 0
+        },
+        "113": {
+          "guard_threshold": 0.72,
+          "sensor_kind": "water"
+        },
+        "114": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "115": {
+          "sensor_kind": "air",
+          "time_step": 0
+        },
+        "116": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "117": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "118": {
+          "guard_threshold": 0.76,
+          "sensor_kind": "traffic"
+        },
+        "119": {
+          "sensor_kind": "air",
+          "time_step": 0
+        },
+        "12": {
+          "grid_x": 1,
+          "grid_y": 0
+        },
+        "120": {
+          "sensor_kind": "water",
+          "time_step": 0
+        },
+        "121": {
+          "guard_threshold": 0.72,
+          "sensor_kind": "water"
+        },
+        "122": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "123": {
+          "guard_threshold": 0.76,
+          "sensor_kind": "traffic"
+        },
+        "124": {
+          "sensor_kind": "air",
+          "time_step": 0
+        },
+        "125": {
+          "sensor_kind": "water",
+          "time_step": 0
+        },
+        "126": {
+          "guard_threshold": 0.72,
+          "sensor_kind": "water"
+        },
+        "127": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "128": {
+          "sensor_kind": "air",
+          "time_step": 0
+        },
+        "129": {
+          "sensor_kind": "traffic",
+          "time_step": 0
+        },
+        "13": {
+          "grid_x": 2,
+          "grid_y": 0
+        },
+        "130": {
+          "sensor_kind": "air",
+          "time_step": 1
+        },
+        "131": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "132": {
+          "sensor_kind": "traffic",
+          "time_step": 1
+        },
+        "133": {
+          "guard_threshold": 0.76,
+          "sensor_kind": "traffic"
+        },
+        "134": {
+          "sensor_kind": "water",
+          "time_step": 1
+        },
+        "135": {
+          "sensor_kind": "traffic",
+          "time_step": 1
+        },
+        "136": {
+          "sensor_kind": "traffic",
+          "time_step": 1
+        },
+        "137": {
+          "sensor_kind": "air",
+          "time_step": 1
+        },
+        "138": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "139": {
+          "sensor_kind": "air",
+          "time_step": 1
+        },
+        "14": {
+          "grid_x": 0,
+          "grid_y": 1
+        },
+        "140": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "141": {
+          "sensor_kind": "traffic",
+          "time_step": 1
+        },
+        "142": {
+          "sensor_kind": "water",
+          "time_step": 1
+        },
+        "143": {
+          "sensor_kind": "air",
+          "time_step": 2
+        },
+        "144": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "145": {
+          "sensor_kind": "water",
+          "time_step": 2
+        },
+        "146": {
+          "sensor_kind": "traffic",
+          "time_step": 2
+        },
+        "147": {
+          "sensor_kind": "air",
+          "time_step": 2
+        },
+        "148": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "149": {
+          "sensor_kind": "traffic",
+          "time_step": 2
+        },
+        "15": {
+          "grid_x": 1,
+          "grid_y": 1
+        },
+        "150": {
+          "sensor_kind": "air",
+          "time_step": 2
+        },
+        "151": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "152": {
+          "sensor_kind": "air",
+          "time_step": 2
+        },
+        "153": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "154": {
+          "sensor_kind": "traffic",
+          "time_step": 2
+        },
+        "155": {
+          "guard_threshold": 0.76,
+          "sensor_kind": "traffic"
+        },
+        "156": {
+          "sensor_kind": "air",
+          "time_step": 2
+        },
+        "157": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "158": {
+          "sensor_kind": "traffic",
+          "time_step": 2
+        },
+        "159": {
+          "sensor_kind": "air",
+          "time_step": 2
+        },
+        "16": {
+          "grid_x": 2,
+          "grid_y": 1
+        },
+        "160": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "161": {
+          "sensor_kind": "traffic",
+          "time_step": 2
+        },
+        "162": {
+          "sensor_kind": "traffic",
+          "time_step": 3
+        },
+        "163": {
+          "sensor_kind": "water",
+          "time_step": 3
+        },
+        "164": {
+          "sensor_kind": "water",
+          "time_step": 3
+        },
+        "165": {
+          "sensor_kind": "air",
+          "time_step": 3
+        },
+        "166": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "167": {
+          "sensor_kind": "air",
+          "time_step": 3
+        },
+        "168": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "169": {
+          "sensor_kind": "water",
+          "time_step": 3
+        },
+        "17": {
+          "grid_x": 0,
+          "grid_y": 2
+        },
+        "170": {
+          "guard_threshold": 0.72,
+          "sensor_kind": "water"
+        },
+        "171": {
+          "sensor_kind": "air",
+          "time_step": 3
+        },
+        "172": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "173": {
+          "sensor_kind": "water",
+          "time_step": 3
+        },
+        "174": {
+          "sensor_kind": "water",
+          "time_step": 3
+        },
+        "175": {
+          "sensor_kind": "traffic",
+          "time_step": 3
+        },
+        "176": {
+          "sensor_kind": "air",
+          "time_step": 3
+        },
+        "177": {
+          "sensor_kind": "water",
+          "time_step": 4
+        },
+        "178": {
+          "sensor_kind": "traffic",
+          "time_step": 4
+        },
+        "179": {
+          "sensor_kind": "traffic",
+          "time_step": 4
+        },
+        "18": {
+          "grid_x": 1,
+          "grid_y": 2
+        },
+        "180": {
+          "sensor_kind": "water",
+          "time_step": 4
+        },
+        "181": {
+          "sensor_kind": "traffic",
+          "time_step": 4
+        },
+        "182": {
+          "sensor_kind": "air",
+          "time_step": 4
+        },
+        "183": {
+          "guard_threshold": 0.68,
+          "sensor_kind": "air"
+        },
+        "184": {
+          "sensor_kind": "water",
+          "time_step": 4
+        },
+        "185": {
+          "sensor_kind": "traffic",
+          "time_step": 4
+        },
+        "186": {
+          "sensor_kind": "water",
+          "time_step": 4
+        },
+        "187": {
+          "sensor_kind": "traffic",
+          "time_step": 4
+        },
+        "188": {
+          "sensor_kind": "water",
+          "time_step": 4
+        },
+        "189": {
+          "sensor_kind": "water",
+          "time_step": 4
+        },
+        "19": {
+          "grid_x": 2,
+          "grid_y": 2
+        },
+        "190": {
+          "sensor_kind": "traffic",
+          "time_step": 4
+        },
+        "191": {
+          "sensor_kind": "air",
+          "time_step": 4
+        },
+        "192": {
+          "sensor_kind": "air",
+          "time_step": 5
+        },
+        "193": {
+          "sensor_kind": "water",
+          "time_step": 5
+        },
+        "194": {
+          "sensor_kind": "air",
+          "time_step": 5
+        },
+        "195": {
+          "sensor_kind": "traffic",
+          "time_step": 5
+        },
+        "196": {
+          "sensor_kind": "water",
+          "time_step": 5
+        },
+        "197": {
+          "sensor_kind": "water",
+          "time_step": 5
+        },
+        "198": {
+          "sensor_kind": "traffic",
+          "time_step": 5
+        },
+        "199": {
+          "sensor_kind": "air",
+          "time_step": 5
+        },
+        "20": {
+          "kind": "road"
+        },
+        "200": {
+          "sensor_kind": "traffic",
+          "time_step": 5
+        },
+        "201": {
+          "sensor_kind": "air",
+          "time_step": 5
+        },
+        "202": {
+          "sensor_kind": "air",
+          "time_step": 5
+        },
+        "203": {
+          "sensor_kind": "water",
+          "time_step": 5
+        },
+        "204": {
+          "sensor_kind": "air",
+          "time_step": 5
+        },
+        "205": {
+          "sensor_kind": "traffic",
+          "time_step": 5
+        },
+        "206": {
+          "sensor_kind": "water",
+          "time_step": 6
+        },
+        "207": {
+          "sensor_kind": "traffic",
+          "time_step": 6
+        },
+        "208": {
+          "sensor_kind": "air",
+          "time_step": 6
+        },
+        "209": {
+          "sensor_kind": "traffic",
+          "time_step": 6
+        },
+        "21": {
+          "kind": "water"
+        },
+        "210": {
+          "sensor_kind": "air",
+          "time_step": 6
+        },
+        "211": {
+          "sensor_kind": "water",
+          "time_step": 6
+        },
+        "212": {
+          "sensor_kind": "traffic",
+          "time_step": 6
+        },
+        "213": {
+          "sensor_kind": "traffic",
+          "time_step": 6
+        },
+        "214": {
+          "sensor_kind": "air",
+          "time_step": 6
+        },
+        "215": {
+          "sensor_kind": "traffic",
+          "time_step": 6
+        },
+        "216": {
+          "sensor_kind": "air",
+          "time_step": 6
+        },
+        "217": {
+          "sensor_kind": "air",
+          "time_step": 7
+        },
+        "218": {
+          "sensor_kind": "traffic",
+          "time_step": 7
+        },
+        "219": {
+          "sensor_kind": "water",
+          "time_step": 7
+        },
+        "22": {
+          "kind": "facility"
+        },
+        "220": {
+          "sensor_kind": "air",
+          "time_step": 7
+        },
+        "221": {
+          "sensor_kind": "water",
+          "time_step": 7
+        },
+        "222": {
+          "sensor_kind": "water",
+          "time_step": 7
+        },
+        "223": {
+          "sensor_kind": "traffic",
+          "time_step": 7
+        },
+        "224": {
+          "sensor_kind": "traffic",
+          "time_step": 7
+        },
+        "225": {
+          "sensor_kind": "air",
+          "time_step": 7
+        },
+        "226": {
+          "sensor_kind": "water",
+          "time_step": 7
+        },
+        "227": {
+          "sensor_kind": "traffic",
+          "time_step": 7
+        },
+        "23": {
+          "kind": "road"
+        },
+        "24": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "26": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "28": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "30": {
+          "kind": "road"
+        },
+        "31": {
+          "kind": "water"
+        },
+        "32": {
+          "kind": "facility"
+        },
+        "33": {
+          "kind": "road"
+        },
+        "34": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "36": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "38": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "40": {
+          "kind": "road"
+        },
+        "41": {
+          "kind": "water"
+        },
+        "42": {
+          "kind": "facility"
+        },
+        "43": {
+          "kind": "road"
+        },
+        "44": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "46": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "48": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "50": {
+          "kind": "road"
+        },
+        "51": {
+          "kind": "water"
+        },
+        "52": {
+          "kind": "facility"
+        },
+        "53": {
+          "kind": "road"
+        },
+        "54": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "56": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "58": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "60": {
+          "kind": "road"
+        },
+        "61": {
+          "kind": "water"
+        },
+        "62": {
+          "kind": "facility"
+        },
+        "63": {
+          "kind": "road"
+        },
+        "64": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "66": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "68": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "70": {
+          "kind": "road"
+        },
+        "71": {
+          "kind": "water"
+        },
+        "72": {
+          "kind": "facility"
+        },
+        "73": {
+          "kind": "road"
+        },
+        "74": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "76": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "78": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "80": {
+          "kind": "road"
+        },
+        "81": {
+          "kind": "water"
+        },
+        "82": {
+          "kind": "facility"
+        },
+        "83": {
+          "kind": "road"
+        },
+        "84": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "86": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "88": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        },
+        "90": {
+          "kind": "road"
+        },
+        "91": {
+          "kind": "water"
+        },
+        "92": {
+          "kind": "facility"
+        },
+        "93": {
+          "kind": "road"
+        },
+        "94": {
+          "sensor_kind": "air",
+          "threshold": 0.68
+        },
+        "96": {
+          "sensor_kind": "water",
+          "threshold": 0.72
+        },
+        "98": {
+          "sensor_kind": "traffic",
+          "threshold": 0.76
+        }
+      },
+      "node_types": {
+        "0": "spatial_entity",
+        "1": "sensor",
+        "2": "observation",
+        "3": "spatial_cell",
+        "4": "concept",
+        "5": "event",
+        "6": "lineage_state"
+      },
+      "novelty_specs": 118,
+      "observation_counts_per_window": [
+        15,
+        9,
+        12,
+        11,
+        14,
+        14,
+        11,
+        11
+      ],
+      "observation_max_per_window": 15,
+      "observation_min_per_window": 9,
+      "ontology_version": "ugts-geo-ontology-v1",
+      "relation_types": {
+        "0": "located_in",
+        "1": "adjacent_to",
+        "10": "compatible_with",
+        "11": "crossed_guard",
+        "12": "transitioned_to",
+        "13": "same_cell",
+        "14": "connected_to",
+        "15": "derived_from",
+        "2": "near",
+        "3": "observes",
+        "4": "made_by_sensor",
+        "5": "has_property",
+        "6": "instance_of",
+        "7": "affects",
+        "8": "descends_from",
+        "9": "supersedes"
+      },
+      "seed": 20260710,
+      "source": "procedurally generated; no external data",
+      "spatial_index": {
+        "backend": "morton",
+        "resolution": 14,
+        "role": "broad-phase only; exact metric/guard follows"
+      },
+      "split_policy": "spatial-cell holdout",
+      "teacher": {
+        "backend": "hash-lexical-v1",
+        "dimensions": 64,
+        "role": "smoke-test teacher; replace with downloaded embedding model"
+      },
+      "time_steps": 8,
+      "variable_length": true
+    },
+    "node_counts": {
+      "concept": 11,
+      "event": 21,
+      "lineage_state": 27,
+      "observation": 97,
+      "sensor": 27,
+      "spatial_cell": 9,
+      "spatial_entity": 36
+    },
+    "nodes": 228,
+    "relation_counts": {
+      "adjacent_to": 24,
+      "affects": 118,
+      "compatible_with": 27,
+      "connected_to": 18,
+      "crossed_guard": 21,
+      "derived_from": 118,
+      "descends_from": 80,
+      "has_property": 133,
+      "instance_of": 84,
+      "located_in": 160,
+      "made_by_sensor": 97,
+      "near": 252,
+      "observes": 27,
+      "same_cell": 54,
+      "supersedes": 71,
+      "transitioned_to": 21
+    },
+    "schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+    "split_counts": {
+      "test": 38,
+      "train": 142,
+      "validation": 48
+    },
+    "teacher_dim": 64,
+    "teacher_rows": 228,
+    "time_range": [
+      0.0,
+      1704073500.23
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "nl.tomklootwijk.ugtskc.signature"
+    compileSdk 36
+    ndkVersion "29.0.14206865"
+
+    defaultConfig {
+        applicationId "nl.tomklootwijk.ugtskc.signature"
+        minSdk 26
+        targetSdk 36
+        versionCode 391
+        versionName "3.9.1"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++20 -Wall -Wextra -Wpedantic"
+                arguments "-DANDROID_STL=c++_static", "-DUGTS_KC_PROFILE_HINT=auto"
+            }
+        }
+    }
+
+    flavorDimensions "device"
+    productFlavors {
+        universal {
+            dimension "device"
+            ndk {
+                abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
+            }
+        }
+        pocoX7Pro {
+            dimension "device"
+            applicationIdSuffix ".pocox7pro"
+            versionNameSuffix "-poco-x7-pro"
+            ndk {
+                abiFilters "arm64-v8a"
+            }
+            externalNativeBuild {
+                cmake {
+                    arguments "-DUGTS_KC_PROFILE_HINT=poco_x7_pro_12gb"
+                }
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
+            version "3.22.1"
+        }
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+}

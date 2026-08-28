@@ -1,0 +1,30 @@
+
+Fatbin ptx code:
+================
+arch = sm_120
+code version = [8,7]
+host = windows
+compile_size = 64bit
+compressed
+identifier = C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/src/network_bench.cu
+ptxasOptions = -v --generate-line-info 
+
+Fatbin elf code:
+================
+arch = sm_120
+code version = [1,8]
+host = windows
+compile_size = 64bit
+identifier = C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/src/network_bench.cu
+
+Resource usage:
+ Common:
+  GLOBAL:272 CONSTANT[4]:16
+ Function _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main18dense_query_kernelEPK7double4PKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEjjjydPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy:
+  REG:74 STACK:0 SHARED:0 LOCAL:0 CONSTANT[0]:1008 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main18materialize_kernelEPK8ElsetRecjydddjP7double4:
+  REG:142 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:960 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main20grouped_query_kernelEPK8ElsetRecPKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEjjjydddjPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy:
+  REG:154 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1032 TEXTURE:0 SURFACE:0 SAMPLER:0
+ Function _ZN45_GLOBAL__N__1d6154b6_16_network_bench_cu_main17pair_query_kernelEPK8ElsetRecPKNS_10ObjectMetaEPKN3klb20NetworkObjectProfileEPKNS6_17NetworkStationGpuEPKNS_9PairIndexEjydddjPKNS6_20Sgp4TimelineNodeDiskEjPNS_11GpuCountersEPNS_8GpuEventEPyy:
+  REG:152 STACK:48 SHARED:0 LOCAL:0 CONSTANT[0]:1032 TEXTURE:0 SURFACE:0 SAMPLER:0

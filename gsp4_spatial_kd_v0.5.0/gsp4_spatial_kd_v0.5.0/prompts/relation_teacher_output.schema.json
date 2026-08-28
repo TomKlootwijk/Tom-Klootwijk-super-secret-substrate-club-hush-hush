@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ugts:gsp4:relation-teacher-output-v1",
+  "title": "GSP4 relation teacher output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "relation",
+    "confidence",
+    "abstain",
+    "requires_geometric_verification",
+    "evidence_fields",
+    "rationale"
+  ],
+  "properties": {
+    "relation": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "abstain": {"type": "boolean"},
+    "requires_geometric_verification": {"type": "boolean"},
+    "evidence_fields": {"type": "array", "items": {"type": "string"}},
+    "rationale": {"type": "string", "maxLength": 1000}
+  }
+}

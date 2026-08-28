@@ -1,0 +1,42 @@
+{
+  "schema": "UGTS-NVIDIA-SMI-TELEMETRY-1.0",
+  "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "sample_interval_ms": 100,
+  "valid_samples": 212,
+  "partial_trailing_rows_excluded": 1,
+  "pstate_samples": {
+    "P0": 80,
+    "P2": 4,
+    "P4": 107,
+    "P5": 9,
+    "P8": 12
+  },
+  "active_samples": {
+    "definition": "nvidia-smi utilization.gpu > 0",
+    "count": 109,
+    "graphics_clock_mhz": {"min": 630, "mean": 2060.39, "max": 2782},
+    "memory_clock_mhz": {"min": 9001, "max": 14001},
+    "gpu_utilization_percent": {"mean": 78.56, "max": 99},
+    "power_w": {"min": 12.99, "mean": 64.77, "max": 118.32},
+    "temperature_c": {"min": 54, "max": 65}
+  },
+  "benchmark": {
+    "candidates": 4194304,
+    "warmup_ms_per_case": 2000,
+    "iterations_per_case": 400,
+    "device_p50_ms": {
+      "dense_evaluate": 0.532,
+      "dense_evaluate_commit": 0.597,
+      "atomic_append": 0.219,
+      "atomic_append_counts": 0.477,
+      "subgroup_append": 0.219,
+      "subgroup_append_counts": 0.221
+    },
+    "included_in_performance_aggregate": false
+  },
+  "notes": [
+    "Sampling is asynchronous and not phase-labelled, so telemetry explains run-level variability but is not attributed to individual dispatches.",
+    "The sampler was force-stopped after the benchmark; one incomplete trailing CSV row is excluded from this summary.",
+    "GPU device timestamps remain the source of kernel latency; nvidia-smi telemetry is contextual only."
+  ]
+}

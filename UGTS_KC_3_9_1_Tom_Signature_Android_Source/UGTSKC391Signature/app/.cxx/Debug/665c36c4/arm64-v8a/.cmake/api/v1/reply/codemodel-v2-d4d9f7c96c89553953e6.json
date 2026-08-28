@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ugts_kc_native",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "native_app_glue::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-native_app_glue-Debug-224184210d5b6f8f7dd5.json",
+					"name" : "native_app_glue",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ugts_kc_native::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ugts_kc_native-Debug-627a700ff7049238185f.json",
+					"name" : "ugts_kc_native",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Tom/Documents/theTomKlootwijkManifold/UGTS_KC_3_9_1_Tom_Signature_Android_Source/UGTSKC391Signature/app/.cxx/Debug/665c36c4/arm64-v8a",
+		"source" : "C:/Users/Tom/Documents/theTomKlootwijkManifold/UGTS_KC_3_9_1_Tom_Signature_Android_Source/UGTSKC391Signature/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

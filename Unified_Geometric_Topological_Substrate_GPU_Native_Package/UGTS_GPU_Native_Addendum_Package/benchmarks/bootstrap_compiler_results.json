@@ -1,0 +1,182 @@
+{
+  "schema": "UGTS-BENCH-1.1",
+  "measurement_scope": "native GPU API compile and synchronous dispatch on validation device",
+  "physical_gpu_claim": false,
+  "device": {
+    "egl_vendor": "Google Inc. (Google)",
+    "egl_version": "1.5 (ANGLE 2.1 git hash: unknown hash)",
+    "gl_vendor": "Google Inc. (Google)",
+    "gl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+    "gl_version": "OpenGL ES 3.1 (ANGLE 2.1 git hash: unknown hash)",
+    "glsl_version": "OpenGL ES GLSL ES 3.10 (ANGLE 2.1 git hash: unknown hash)"
+  },
+  "run_parameters": {"warmup": 3, "iterations": 12},
+  "programs": [
+    {"name": "G64_E32_evaluate", "compile_ms": 0.731436, "link_ms": 0.233176, "binary_bytes": 6990, "binary_format": 37798, "binary_reload_ms": 0.019589, "binary_reload_ok": true, "spirv_modules": [{"offset": 1998, "bytes": 4888, "version_word": 66560, "generator_word": 1572865, "bound": 267, "instructions": 283, "path": "G64_E32_evaluate_module.spv"}]},
+    {"name": "G64_E32_evaluate_commit", "compile_ms": 0.677196, "link_ms": 0.108241, "binary_bytes": 7638, "binary_format": 37798, "binary_reload_ms": 0.022083, "binary_reload_ok": true, "spirv_modules": [{"offset": 2026, "bytes": 5508, "version_word": 66560, "generator_word": 1572865, "bound": 291, "instructions": 322, "path": "G64_E32_evaluate_commit_module.spv"}]},
+    {"name": "G32_E16_evaluate", "compile_ms": 0.700140, "link_ms": 0.088151, "binary_bytes": 7180, "binary_format": 37798, "binary_reload_ms": 0.027240, "binary_reload_ok": true, "spirv_modules": [{"offset": 1548, "bytes": 5528, "version_word": 66560, "generator_word": 1572865, "bound": 300, "instructions": 329, "path": "G32_E16_evaluate_module.spv"}]},
+    {"name": "G32_E16_evaluate_commit", "compile_ms": 0.762082, "link_ms": 0.116463, "binary_bytes": 7828, "binary_format": 37798, "binary_reload_ms": 0.022964, "binary_reload_ok": true, "spirv_modules": [{"offset": 1576, "bytes": 6148, "version_word": 66560, "generator_word": 1572865, "bound": 324, "instructions": 368, "path": "G32_E16_evaluate_commit_module.spv"}]}
+  ],
+  "benchmarks": [
+    {
+      "profile": "G64_E32", "mode": "evaluate",
+      "candidates": 1024,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 98320, "upload_ms": 0.281529,
+      "dispatch_ms": {"min": 0.050194, "mean": 0.067706, "p50": 0.063294, "p95": 0.102857, "p99": 0.117539, "max": 0.121210},
+      "candidate_rate_mps": 16.178469, "verified_event_rate_mps": 0.789964, "effective_bandwidth_gbps": 1.553133,
+      "counts": {"candidates": 1024, "supported": 544, "compatible": 91, "verified": 50},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate",
+      "candidates": 16384,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 1572880, "upload_ms": 1.174295,
+      "dispatch_ms": {"min": 0.225055, "mean": 0.253913, "p50": 0.235004, "p95": 0.320431, "p99": 0.368065, "max": 0.379974},
+      "candidate_rate_mps": 69.717962, "verified_event_rate_mps": 3.433984, "effective_bandwidth_gbps": 6.692924,
+      "counts": {"candidates": 16384, "supported": 8634, "compatible": 1441, "verified": 807},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate",
+      "candidates": 262144,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 25165840, "upload_ms": 7.529073,
+      "dispatch_ms": {"min": 2.599421, "mean": 2.692749, "p50": 2.676045, "p95": 2.833223, "p99": 2.848073, "max": 2.851786},
+      "candidate_rate_mps": 97.959489, "verified_event_rate_mps": 4.813073, "effective_bandwidth_gbps": 9.404111,
+      "counts": {"candidates": 262144, "supported": 138109, "compatible": 23011, "verified": 12880},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate",
+      "candidates": 1048576,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 100663312, "upload_ms": 199.253863,
+      "dispatch_ms": {"min": 10.468910, "mean": 11.733011, "p50": 10.882845, "p95": 15.482487, "p99": 17.998977, "max": 18.628099},
+      "candidate_rate_mps": 96.351276, "verified_event_rate_mps": 4.734148, "effective_bandwidth_gbps": 9.249722,
+      "counts": {"candidates": 1048576, "supported": 552419, "compatible": 92040, "verified": 51521},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate_commit",
+      "candidates": 1024,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 98320, "upload_ms": 0.025558,
+      "dispatch_ms": {"min": 0.067961, "mean": 0.081569, "p50": 0.080560, "p95": 0.096946, "p99": 0.104067, "max": 0.105847},
+      "candidate_rate_mps": 12.711102, "verified_event_rate_mps": 0.620659, "effective_bandwidth_gbps": 1.220266,
+      "counts": {"candidates": 1024, "supported": 544, "compatible": 91, "verified": 50},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate_commit",
+      "candidates": 16384,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 1572880, "upload_ms": 0.087280,
+      "dispatch_ms": {"min": 0.434015, "mean": 0.455782, "p50": 0.456873, "p95": 0.477776, "p99": 0.479526, "max": 0.479963},
+      "candidate_rate_mps": 35.861130, "verified_event_rate_mps": 1.766353, "effective_bandwidth_gbps": 3.442668,
+      "counts": {"candidates": 16384, "supported": 8634, "compatible": 1441, "verified": 807},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate_commit",
+      "candidates": 262144,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 25165840, "upload_ms": 6.874331,
+      "dispatch_ms": {"min": 5.448793, "mean": 6.423730, "p50": 6.542958, "p95": 6.839179, "p99": 6.941675, "max": 6.967299},
+      "candidate_rate_mps": 40.065059, "verified_event_rate_mps": 1.968529, "effective_bandwidth_gbps": 3.846246,
+      "counts": {"candidates": 262144, "supported": 138109, "compatible": 23011, "verified": 12880},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G64_E32", "mode": "evaluate_commit",
+      "candidates": 1048576,
+      "input_record_bytes": 64, "output_record_bytes": 32,
+      "total_buffer_bytes": 100663312, "upload_ms": 31.346048,
+      "dispatch_ms": {"min": 19.184364, "mean": 22.444383, "p50": 20.470565, "p95": 33.179044, "p99": 34.124774, "max": 34.361207},
+      "candidate_rate_mps": 51.223598, "verified_event_rate_mps": 2.516833, "effective_bandwidth_gbps": 4.917465,
+      "counts": {"candidates": 1048576, "supported": 552419, "compatible": 92040, "verified": 51521},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate",
+      "candidates": 1024,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 49168, "upload_ms": 0.026810,
+      "dispatch_ms": {"min": 0.049733, "mean": 0.071443, "p50": 0.056980, "p95": 0.130271, "p99": 0.140120, "max": 0.142582},
+      "candidate_rate_mps": 17.971376, "verified_event_rate_mps": 0.947709, "effective_bandwidth_gbps": 0.862626,
+      "counts": {"candidates": 1024, "supported": 507, "compatible": 90, "verified": 54},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate",
+      "candidates": 16384,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 786448, "upload_ms": 0.036053,
+      "dispatch_ms": {"min": 0.236311, "mean": 0.266094, "p50": 0.248198, "p95": 0.334167, "p99": 0.356936, "max": 0.362628},
+      "candidate_rate_mps": 66.011680, "verified_event_rate_mps": 3.142646, "effective_bandwidth_gbps": 3.168561,
+      "counts": {"candidates": 16384, "supported": 8136, "compatible": 1357, "verified": 780},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate",
+      "candidates": 262144,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 12582928, "upload_ms": 3.596061,
+      "dispatch_ms": {"min": 3.038243, "mean": 3.260016, "p50": 3.178841, "p95": 3.689023, "p99": 3.995291, "max": 4.071858},
+      "candidate_rate_mps": 82.465263, "verified_event_rate_mps": 3.924071, "effective_bandwidth_gbps": 3.958333,
+      "counts": {"candidates": 262144, "supported": 130332, "compatible": 21690, "verified": 12474},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate",
+      "candidates": 1048576,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 50331664, "upload_ms": 11.399382,
+      "dispatch_ms": {"min": 10.917616, "mean": 12.988008, "p50": 12.077844, "p95": 18.314768, "p99": 23.812153, "max": 25.186499},
+      "candidate_rate_mps": 86.818144, "verified_event_rate_mps": 4.129711, "effective_bandwidth_gbps": 4.167271,
+      "counts": {"candidates": 1048576, "supported": 521319, "compatible": 86737, "verified": 49878},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate_commit",
+      "candidates": 1024,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 49168, "upload_ms": 0.023555,
+      "dispatch_ms": {"min": 0.049684, "mean": 0.074103, "p50": 0.065142, "p95": 0.125018, "p99": 0.152272, "max": 0.159086},
+      "candidate_rate_mps": 15.719505, "verified_event_rate_mps": 0.828958, "effective_bandwidth_gbps": 0.754536,
+      "counts": {"candidates": 1024, "supported": 507, "compatible": 90, "verified": 54},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate_commit",
+      "candidates": 16384,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 786448, "upload_ms": 0.037586,
+      "dispatch_ms": {"min": 0.314197, "mean": 0.336806, "p50": 0.327421, "p95": 0.375333, "p99": 0.388107, "max": 0.391301},
+      "candidate_rate_mps": 50.039475, "verified_event_rate_mps": 2.382250, "effective_bandwidth_gbps": 2.401895,
+      "counts": {"candidates": 16384, "supported": 8136, "compatible": 1357, "verified": 780},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate_commit",
+      "candidates": 262144,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 12582928, "upload_ms": 1.043320,
+      "dispatch_ms": {"min": 4.178687, "mean": 4.732174, "p50": 4.475907, "p95": 5.893407, "p99": 6.644296, "max": 6.832018},
+      "candidate_rate_mps": 58.567788, "verified_event_rate_mps": 2.786921, "effective_bandwidth_gbps": 2.811254,
+      "counts": {"candidates": 262144, "supported": 130332, "compatible": 21690, "verified": 12474},
+      "counter_validation": true, "sample_validation": true
+    },
+    {
+      "profile": "G32_E16", "mode": "evaluate_commit",
+      "candidates": 1048576,
+      "input_record_bytes": 32, "output_record_bytes": 16,
+      "total_buffer_bytes": 50331664, "upload_ms": 10.469551,
+      "dispatch_ms": {"min": 18.036881, "mean": 21.399214, "p50": 19.481086, "p95": 31.492434, "p99": 33.456489, "max": 33.947503},
+      "candidate_rate_mps": 53.825336, "verified_event_rate_mps": 2.560330, "effective_bandwidth_gbps": 2.583616,
+      "counts": {"candidates": 1048576, "supported": 521319, "compatible": 86737, "verified": 49878},
+      "counter_validation": true, "sample_validation": true
+    }
+  ]
+}

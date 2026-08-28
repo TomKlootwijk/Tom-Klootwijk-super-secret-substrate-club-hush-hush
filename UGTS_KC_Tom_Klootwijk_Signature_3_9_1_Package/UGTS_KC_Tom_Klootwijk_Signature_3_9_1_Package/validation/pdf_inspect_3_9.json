@@ -1,0 +1,27 @@
+{
+  "path": "report/UGTS_KC_3_9_KC_Elizabeth_Vector_Game_Runtime.pdf",
+  "pages": 16,
+  "encrypted": false,
+  "page_sizes": [
+    {
+      "width_pt": 612,
+      "height_pt": 792,
+      "count": 16
+    }
+  ],
+  "metadata": {
+    "/Title": "UGTS-KC 3.9 - KC Elizabeth Vector Game Runtime",
+    "/Author": "Prepared for Tom Klootwijk",
+    "/Subject": "Technical release report",
+    "/Keywords": "UGTS-KC, KC, Elizabeth, vector, art, game, runtime, HTML5, deterministic, simulation",
+    "/Creator": "Writer",
+    "/Producer": "LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community",
+    "/CreationDate": "D:20260823045243Z'"
+  },
+  "outline_items": 38,
+  "form_fields": 0,
+  "attachments": 0,
+  "annotations": 0,
+  "poppler_pdfinfo": "Title:           UGTS-KC 3.9 - KC Elizabeth Vector Game Runtime\nSubject:         Technical release report\nKeywords:        UGTS-KC, KC, Elizabeth, vector, art, game, runtime, HTML5, deterministic, simulation\nAuthor:          Prepared for Tom Klootwijk\nCreator:         Writer\nProducer:        LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community\nCreationDate:    Sun Aug 23 04:52:43 2026 UTC\nCustom Metadata: no\nMetadata Stream: yes\nTagged:          yes\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           16\nEncrypted:       no\nPage size:       612 x 792 pts (letter)\nPage rot:        0\nFile size:       681130 bytes\nOptimized:       no\nPDF version:     1.7",
+  "poppler_pdffonts": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nBAAAAA+LiberationSans                TrueType          WinAnsi          yes yes yes   1040  0\nCAAAAA+LiberationSans-Bold           TrueType          WinAnsi          yes yes yes   1050  0\nDAAAAA+DejaVuSerif                   TrueType          WinAnsi          yes yes yes   1060  0\nEAAAAA+LiberationSans-Italic         TrueType          WinAnsi          yes yes yes   1045  0\nFAAAAA+Carlito-Bold                  TrueType          WinAnsi          yes yes yes   1065  0\nGAAAAA+OpenSymbol                    TrueType          WinAnsi          yes yes yes   1070  0\nHAAAAA+LiberationMono                TrueType          WinAnsi          yes yes yes   1055  0"
+}

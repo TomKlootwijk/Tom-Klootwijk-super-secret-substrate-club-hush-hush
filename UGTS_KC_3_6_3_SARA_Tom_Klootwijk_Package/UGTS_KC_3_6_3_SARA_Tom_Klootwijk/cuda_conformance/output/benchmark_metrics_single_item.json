@@ -1,0 +1,19 @@
+{
+  "schema": "sara363.cuda.fixed-vector.metrics.v1",
+  "safety_profile": "immutable-published-vectors-only",
+  "device": {"name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU", "compute_capability": "12.0", "driver_version": 13010, "runtime_version": 12080},
+  "configuration": {"bip39_batch": 1, "bip32_batch": 1, "timed_runs": 7},
+  "correctness": {"cpu_bip39": true, "cpu_bip32_vector1_full_path": true, "gpu_bip39": true, "gpu_bip32_vector1_full_path": true, "repeatability": true},
+  "cpu": {"bip39_ms_per_operation": 1.993500, "bip32_vector1_ms_per_path": 3.498029},
+  "gpu": {
+    "bip39_mean_batch_ms": 61.425106,
+    "bip39_min_batch_ms": 61.404385,
+    "bip39_operations_per_second": 16.279988,
+    "pbkdf2_rounds_per_second": 33341.415778,
+    "bip32_mean_batch_ms": 26.174286,
+    "bip32_min_batch_ms": 26.167295,
+    "bip32_paths_per_second": 38.205436,
+    "bip32_ckd_edges_per_second": 191.027179
+  },
+  "throughput_speedup_vs_single_cpu": {"bip39": 0.032454, "bip32_vector1_path": 0.133644}
+}

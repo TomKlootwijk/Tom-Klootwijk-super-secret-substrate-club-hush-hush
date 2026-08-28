@@ -1,0 +1,169 @@
+{
+  "schema": "UGTS-CUDA-VMM-UNIFORM6-PROVENANCE-1.0",
+  "date": "2026-08-15",
+  "device": {
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "driver": "591.59",
+    "compute_capability": "12.0",
+    "l2_bytes": 37748736,
+    "multiprocessors": 46,
+    "occupancy_blocks_per_sm": 24,
+    "total_warps": 1104
+  },
+  "toolchain": {
+    "cuda_compiler": "12.8.61",
+    "compute_sanitizer": "2025.1.0.0",
+    "retained_global_path_sanitizer_errors": 0
+  },
+  "artifacts": {
+    "source": {
+      "path": "benchmarks/cuda_vmm_uniform6_exact/artifacts/bench.cu",
+      "bytes": 44774,
+      "sha256": "57C1358B2862B72E0F4B8AB06128F28E74F6440BA3358D2124C56BF602C28F90"
+    },
+    "executable": {
+      "path": "benchmarks/cuda_vmm_uniform6_exact/artifacts/bench.exe",
+      "bytes": 701440,
+      "sha256": "A1BF24FC402E5459D81411E0F6BDD75A08085CE723D0CABA9E3EF9245663FADD"
+    },
+    "aggregator": {
+      "path": "benchmarks/cuda_vmm_uniform6_exact/artifacts/aggregate.py",
+      "bytes": 10961,
+      "sha256": "8858D4A8CDD0D90407E9DBD4D9DA5B1572CCA5B0202056A7DB2FF48F91A73D54"
+    },
+    "summarizer": {
+      "path": "benchmarks/cuda_vmm_uniform6_exact/artifacts/summarize.py",
+      "bytes": 12185,
+      "sha256": "7A5F14C0A897F12CD29E7E993E8A686F0C6731D5C72878605584161C5162627D"
+    },
+    "screen_aggregate": {
+      "path": "benchmarks/cuda_vmm_uniform6_code_sweep_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "bytes": 1135899,
+      "sha256": "FF0AC9952E153FEF94CA757309EB5BBBF359E19A72253186F33894C5269A87C4"
+    },
+    "refinement_aggregate": {
+      "path": "benchmarks/cuda_vmm_uniform6_midpattern_refinement_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "bytes": 201927,
+      "sha256": "F670866AA386D5F4FEC6AC804D427B1BC5350F84792946048F026F1446B8DEC2"
+    },
+    "map": {
+      "path": "benchmarks/cuda_vmm_uniform6_exact/uniform6_map.json",
+      "bytes": 51357,
+      "sha256": "F651DE3F4F20ECF56B31E98BEB004538F9C2BD129164599AEF1DA252329E4BCA"
+    },
+    "texture_rejection": {
+      "path": "benchmarks/cuda_vmm_uniform6_texture_rejection/cuda_vmm_compression_lut_results.json",
+      "bytes": 86822,
+      "sha256": "CAD36CF1AF7191D0E0DD4BD1EA95E7F2D903855128BE39D31C981395EB21AED1"
+    }
+  },
+  "corpora": [
+    {
+      "name": "all_code_screen",
+      "aggregate_artifact": "screen_aggregate",
+      "codes": 64,
+      "sizes_mib": [36, 40, 64, 128, 240, 248],
+      "runs": [
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_code_sweep_isolated/f1/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 1059033,
+          "sha256": "C4F61726FE56A36BE2BA0E65AC916A280962906DAED7DE6AE1A2DC8EBEEF3EE9"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_code_sweep_isolated/r1/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 1058961,
+          "sha256": "4D993BE407E41B02193AC014FAB23206796525B65FDAC08F4F5D4E90D788C0F7"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_code_sweep_isolated/f2/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 1059016,
+          "sha256": "A6D3EE5C08DDD74B40112F4EC9B57BF095EBC74749CD0E3FD6610367052C2069"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_code_sweep_isolated/r2/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 1058789,
+          "sha256": "E78519A04AF92AFD7ABDFA6BF0A5D0F7B4D4CC6122E1D5D75A8A4F80B5FD4510"
+        }
+      ],
+      "raw_rows": 3072,
+      "validated_payloads": 3255828480,
+      "timed_gpu_lookups": 1111322787840,
+      "invalid_rows": 0,
+      "mismatches": 0
+    },
+    {
+      "name": "midpattern_refinement",
+      "aggregate_artifact": "refinement_aggregate",
+      "codes": 4,
+      "sizes_mib": [36, 40, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 88, 96, 112, 128],
+      "runs": [
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_midpattern_refinement_isolated/f1/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 187791,
+          "sha256": "44F6B2C1FB71C2A376107EE0A790499CBDA25782AFD292E11DC6BE1C3D104237"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_midpattern_refinement_isolated/r1/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 187777,
+          "sha256": "8402CDB5AB2EACC9F72B6F3C64771A827DF632492CDE1FCFF4A1481D2C4205EE"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_midpattern_refinement_isolated/f2/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 187779,
+          "sha256": "294C6B27DE07642A2EF62F7AB17B6329B1CEFBDBCF02E6BF2744DAA94DF523F6"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_uniform6_midpattern_refinement_isolated/r2/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 187781,
+          "sha256": "3F15B3E376A3838F62F90239516E9223CB2359754371E7BDC6A1322A2EFE882B"
+        }
+      ],
+      "raw_rows": 544,
+      "validated_payloads": 576552960,
+      "timed_gpu_lookups": 196796743680,
+      "invalid_rows": 0,
+      "mismatches": 0
+    }
+  ],
+  "combined": {
+    "runs": 8,
+    "raw_rows": 3616,
+    "validated_payloads": 3832381440,
+    "timed_gpu_lookups": 1308119531520,
+    "invalid_rows": 0,
+    "mismatches": 0
+  },
+  "texture_rejection": {
+    "raw_rows": 64,
+    "invalid_nonzero_texture_rows": 24,
+    "decoded_mismatches": 424112712,
+    "zero_texture_rows_that_falsely_validate": 8,
+    "included_in_capacity_evidence": false
+  },
+  "native_code": {
+    "retained_load_instruction": "LDG.E.STRONG.GPU",
+    "timer_instruction": "CS2R SR_CLOCKLO",
+    "global_registers": 23,
+    "stack_bytes": 0,
+    "local_bytes": 0,
+    "shared_bytes": 0,
+    "texture_rejection_instruction": "TLD.LZ RZ"
+  },
+  "result": {
+    "identical_packed_word_codes": [0, 21, 42, 63],
+    "codes_with_capacity_beyond_36_mib": [0, 21, 42, 63],
+    "codes_full_through_240_mib": [0, 63],
+    "codes_with_refined_70_mib_endpoint": [21, 42],
+    "codes_with_36_mib_endpoint": 60,
+    "codes_full_at_248_mib": [],
+    "physical_word_correlation_exact_for_tested_layout": true
+  }
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "claim_id": "C362-01",
+    "source_claim_or_motif": "A side length T alone defines the cone",
+    "disposition": "CORRECTED",
+    "technical_boundary": "T is paired with a half-angle; h=T cos alpha and R=T sin alpha."
+  },
+  {
+    "claim_id": "C362-02",
+    "source_claim_or_motif": "The source theta+pi wrap alone is a Klein-bottle base quotient",
+    "disposition": "BOUNDED",
+    "technical_boundary": "It is retained as an internal state-bundle half-turn. A reflective theta map is required for the non-orientable base profile."
+  },
+  {
+    "claim_id": "C362-03",
+    "source_claim_or_motif": "Time stops being linear and becomes a loop",
+    "disposition": "CORRECTED",
+    "technical_boundary": "Linear time is retained; phase is time modulo a declared period and winding remains separate lineage."
+  },
+  {
+    "claim_id": "C362-04",
+    "source_claim_or_motif": "18:55 is an intrinsic physical constant",
+    "disposition": "REJECT",
+    "technical_boundary": "It is a profile seed/reference tick with a declared unit."
+  },
+  {
+    "claim_id": "C362-05",
+    "source_claim_or_motif": "Bit shifting directly halves rho and theta",
+    "disposition": "CORRECTED",
+    "technical_boundary": "Appending a trie bit refines one scheduled quantized interval; coordinate values are decoded separately."
+  },
+  {
+    "claim_id": "C362-06",
+    "source_claim_or_motif": "Every branch is chaotic",
+    "disposition": "REJECT",
+    "technical_boundary": "A binary branch is deterministic. Chaos requires a specified map and measured sensitivity."
+  },
+  {
+    "claim_id": "C362-07",
+    "source_claim_or_motif": "A missing shackle automatically produces chaos",
+    "disposition": "CORRECTED",
+    "technical_boundary": "Constraint-row deletion changes rank/nullity; dynamics require mass, force and damping models."
+  },
+  {
+    "claim_id": "C362-08",
+    "source_claim_or_motif": "All forces automatically scale by e^-rho",
+    "disposition": "CORRECTED",
+    "technical_boundary": "Coordinate covectors transform by the inverse Jacobian; physical force laws remain separately typed."
+  },
+  {
+    "claim_id": "C362-09",
+    "source_claim_or_motif": "The sweep field is always an exact SDF",
+    "disposition": "REJECT",
+    "technical_boundary": "The report provides an exact cone SDF and a certified interval for the sweep infimum; a generic sweep envelope is not automatically an exact SDF."
+  },
+  {
+    "claim_id": "C362-10",
+    "source_claim_or_motif": "One jitter bit contains roughness, sensor noise and full state",
+    "disposition": "REJECT",
+    "technical_boundary": "The bit is a bounded deterministic perturbation or selector; residual, error, topology and lineage remain separate."
+  },
+  {
+    "claim_id": "C362-11",
+    "source_claim_or_motif": "The contiguous bit table is the same as Morton interleaving",
+    "disposition": "CORRECTED",
+    "technical_boundary": "Two explicit layouts are supplied and tested independently."
+  },
+  {
+    "claim_id": "C362-12",
+    "source_claim_or_motif": "Pointerless sparse trees have zero metadata",
+    "disposition": "REJECT",
+    "technical_boundary": "They avoid explicit child pointers but still require topology/presence and navigation metadata."
+  },
+  {
+    "claim_id": "C362-13",
+    "source_claim_or_motif": "192-to-64 is an equivalent 3:1 compression",
+    "disposition": "BOUNDED",
+    "technical_boundary": "It is a nominal width ratio unless decode ranges, errors and semantic equivalence are declared."
+  },
+  {
+    "claim_id": "C362-14",
+    "source_claim_or_motif": "A sign bit is equivalent to a float SDF",
+    "disposition": "REJECT",
+    "technical_boundary": "It discards magnitude and uncertainty and needs a separate boundary representation."
+  },
+  {
+    "claim_id": "C362-15",
+    "source_claim_or_motif": "A 12-bit word is equivalent to any 4x4 float matrix",
+    "disposition": "REJECT",
+    "technical_boundary": "It can only select a versioned finite codebook/state family."
+  },
+  {
+    "claim_id": "C362-16",
+    "source_claim_or_motif": "Eight keys per cache line means eight outcomes per clock",
+    "disposition": "REJECT",
+    "technical_boundary": "Capacity does not establish execution width, latency or instruction throughput."
+  },
+  {
+    "claim_id": "C362-17",
+    "source_claim_or_motif": "Log packing stores infinite detail in finite memory",
+    "disposition": "REJECT",
+    "technical_boundary": "The declared profile contains exactly 2^64 keys and finite grammar/state budgets."
+  },
+  {
+    "claim_id": "C362-18",
+    "source_claim_or_motif": "All possible movements are universal O(1)",
+    "disposition": "REJECT",
+    "technical_boundary": "Only bounded direct lookup after key construction may be constant expected access; generation, collisions, verification and memory remain."
+  },
+  {
+    "claim_id": "C362-19",
+    "source_claim_or_motif": "L-system recursion is infinite in the substrate",
+    "disposition": "CORRECTED",
+    "technical_boundary": "Expansion is finite and rejects depth, symbol or stack overflow."
+  },
+  {
+    "claim_id": "C362-20",
+    "source_claim_or_motif": "Rasterization/raymarching are required",
+    "disposition": "EXCLUDED",
+    "technical_boundary": "The 3.6.2 core is purely referential geometry, topology, indexing and event calculus; display remains downstream."
+  }
+]

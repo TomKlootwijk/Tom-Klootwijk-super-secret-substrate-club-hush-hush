@@ -1,0 +1,53 @@
+{
+  "release": "UGTS-KC Two Hands 3.0",
+  "version": "3.0.0",
+  "date": "2026-08-16",
+  "requester_attribution": {
+    "name": "Tom Klootwijk",
+    "identifier": "NL200678942",
+    "date_of_birth": "1990-07-10",
+    "status": "requester-supplied; not independently verified"
+  },
+  "mechanisms": {
+    "source_normalized_baseline": 197,
+    "kc2_engineering_additions": 60,
+    "kc3_engineering_additions": 72,
+    "extended_total": 329
+  },
+  "validation": {
+    "tests": {
+      "status": "PASS",
+      "test_count": 117,
+      "elapsed_seconds": 0.033,
+      "python_version": "3.13.5",
+      "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+      "baseline_kc2_tests": 47,
+      "kc3_tests": 70,
+      "captured_output": "validation/test_results.txt"
+    },
+    "schema": "PASS",
+    "catalog": "PASS",
+    "artifacts": "PASS",
+    "pdf_pages": 20,
+    "pdf_preflight": true,
+    "sandbox_scene_hash": "e061c325aaacfa32da19743dc5215067cdbd183ceda9bcfbdc80483b904f0b22"
+  },
+  "implemented_scope": [
+    "scene/assets/instances",
+    "geometry compilation",
+    "spatial BVH and queries",
+    "PBR preview and SVG",
+    "two-hand interaction",
+    "event proposal/commit",
+    "checkpoint/replay",
+    "glTF/USDA/JSON export"
+  ],
+  "not_claimed": [
+    "commercial engine readiness",
+    "3.0 physical-GPU benchmark",
+    "full Vulkan/WebGPU renderer",
+    "OpenXR runtime binding",
+    "full OpenUSD/MaterialX/OCIO integration",
+    "complete character physics or multiplayer service"
+  ]
+}

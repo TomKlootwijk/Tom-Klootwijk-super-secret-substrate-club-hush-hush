@@ -1,0 +1,81 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:13 (project)"
+    message: |
+      The system is: Windows - 10.0.26200 - AMD64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeDetermineCompilerId.cmake:468 (find_file)"
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeDetermineCompilerId.cmake:506 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeDetermineCompilerId.cmake:53 (__determine_compiler_id_test)"
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeDetermineCUDACompiler.cmake:163 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:13 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCUDACompilerId.cu.in"
+    candidate_directories:
+      - "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/"
+    found: "C:/Users/Tom/miniconda3/Lib/site-packages/cmake/data/share/cmake-4.3/Modules/CMakeCUDACompilerId.cu.in"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\Tom\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\Tom\\.codex\\tmp\\arg0\\codex-arg0LY1fUB"
+        - "C:\\Users\\Tom\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\override"
+        - "C:\\Program Files\\Meta Horizon\\Support\\oculus-runtime"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.8\\libnvvp"
+        - "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath"
+        - "C:\\Program Files\\Eclipse Adoptium\\jdk-25.0.1.8-hotspot\\bin"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64"
+        - "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin"
+        - "C:\\Windows\\system32"
+        - "C:\\Windows"
+        - "C:\\Windows\\System32\\Wbem"
+        - "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\"
+        - "C:\\Windows\\System32\\OpenSSH\\"
+        - "C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common"
+        - "C:\\Program Files\\NVIDIA Corporation\\NVIDIA app\\NvDLISR"
+        - "C:\\Program Files\\dotnet\\"
+        - "C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.3.1\\"
+        - "C:\\Users\\Tom\\AppData\\Local\\Muse Hub\\lib"
+        - "C:\\Program Files\\Git\\cmd"
+        - "C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.1.0\\"
+        - "C:\\Program Files\\nodejs\\"
+        - "C:\\Users\\Tom\\AppData\\Local\\Muse Hub\\lib"
+        - "C:\\Program Files\\GitHub CLI\\"
+        - "C:\\Users\\Tom\\.local\\bin"
+        - "C:\\Users\\Tom\\miniconda3"
+        - "C:\\Users\\Tom\\miniconda3\\Library\\mingw-w64\\bin"
+        - "C:\\Users\\Tom\\miniconda3\\Library\\usr\\bin"
+        - "C:\\Users\\Tom\\miniconda3\\Library\\bin"
+        - "C:\\Users\\Tom\\miniconda3\\Scripts"
+        - "C:\\Users\\Tom\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\Tom\\AppData\\Local\\Microsoft\\WindowsApps"
+        - "C:\\Users\\Tom\\AppData\\Local\\Android\\Sdk\\platform-tools"
+        - "C:\\Users\\Tom\\AppData\\Local\\Microsoft\\WinGet\\Links"
+        - "C:\\Users\\Tom\\.lmstudio\\bin"
+        - "C:\\Users\\Tom\\AppData\\Local\\TypeDB"
+        - "C:\\Users\\Tom\\AppData\\Roaming\\npm"
+        - "C:\\Users\\Tom\\AppData\\Local\\Programs\\Ollama"
+        - "C:\\Users\\Tom\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\bin\\fallback"
+        - "C:\\Users\\Tom\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\git\\cmd"
+        - "C:\\Users\\Tom\\AppData\\Local\\OpenAI\\Codex\\bin\\53c73f34a40c42be"
+        - "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.810.7004.0_x64__2p2nqsd0c76g0\\app\\resources"
+...

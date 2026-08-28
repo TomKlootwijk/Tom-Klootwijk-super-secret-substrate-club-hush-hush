@@ -1,0 +1,34 @@
+[  5%] Building CXX object CMakeFiles/klb_core.dir/src/format.cpp.o
+[ 10%] Building CXX object CMakeFiles/klb_core.dir/src/ply.cpp.o
+[ 15%] Building CXX object CMakeFiles/klb_core.dir/src/seedchain.cpp.o
+[ 20%] Building CXX object CMakeFiles/klb_core.dir/src/orbit.cpp.o
+[ 25%] Building CXX object CMakeFiles/klb_core.dir/src/sgp4.cpp.o
+[ 30%] Linking CXX static library libklb_core.a
+[ 30%] Built target klb_core
+[ 35%] Building CXX object CMakeFiles/klb_pack.dir/src/pack_main.cpp.o
+[ 40%] Linking CXX executable klb_pack
+[ 40%] Built target klb_pack
+[ 45%] Building CXX object CMakeFiles/klb_seedchain.dir/src/seedchain_main.cpp.o
+[ 50%] Linking CXX executable klb_seedchain
+[ 50%] Built target klb_seedchain
+[ 55%] Building CXX object CMakeFiles/klb_orbit.dir/src/orbit_main.cpp.o
+[ 60%] Linking CXX executable klb_orbit
+[ 60%] Built target klb_orbit
+[ 65%] Building CXX object CMakeFiles/klb_sgp4.dir/src/sgp4_main.cpp.o
+[ 70%] Linking CXX executable klb_sgp4
+[ 70%] Built target klb_sgp4
+[ 75%] Building CXX object CMakeFiles/klb_tests.dir/tests/test_cpu.cpp.o
+[ 30%] Built target klb_core
+[ 40%] Built target klb_pack
+[ 50%] Built target klb_seedchain
+[ 60%] Built target klb_orbit
+[ 70%] Built target klb_sgp4
+[ 75%] Building CXX object CMakeFiles/klb_tests.dir/tests/test_cpu.cpp.o
+[ 80%] Linking CXX executable klb_tests
+[ 80%] Built target klb_tests
+[ 85%] Building CXX object CMakeFiles/klb_orbit_tests.dir/tests/test_orbit.cpp.o
+[ 90%] Linking CXX executable klb_orbit_tests
+[ 90%] Built target klb_orbit_tests
+[ 95%] Building CXX object CMakeFiles/klb_sgp4_tests.dir/tests/test_sgp4.cpp.o
+[100%] Linking CXX executable klb_sgp4_tests
+[100%] Built target klb_sgp4_tests

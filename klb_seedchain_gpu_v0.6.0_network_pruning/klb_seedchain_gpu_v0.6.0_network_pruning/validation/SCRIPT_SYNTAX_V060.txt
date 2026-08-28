@@ -1,0 +1,21 @@
+Bash syntax:
+PASS build_cpu_linux.sh
+PASS build_linux.sh
+PASS compare_sp3_linux.sh
+PASS demo_network_linux.sh
+PASS demo_orbit_linux.sh
+PASS demo_seedchain_linux.sh
+PASS demo_sgp4_linux.sh
+PASS fetch_bunny_linux.sh
+PASS fetch_gps_ops_linux.sh
+PASS fit_sequence_linux.sh
+PASS profile_linux.sh
+PASS profile_orbit_linux.sh
+PASS profile_seedchain_linux.sh
+PASS profile_sgp4_linux.sh
+PASS stress_orbit_linux.sh
+
+Python bytecode compilation:
+PASS tools/*.py
+
+PowerShell parser: SKIP (pwsh unavailable in preparation environment)

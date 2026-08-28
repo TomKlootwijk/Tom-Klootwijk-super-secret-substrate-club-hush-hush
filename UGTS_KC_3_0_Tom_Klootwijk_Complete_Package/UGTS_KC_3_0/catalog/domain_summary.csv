@@ -1,0 +1,81 @@
+domain,count
+GPU-native,23
+Physical hardware,23
+Parametric pattern,20
+Topology,16
+Audit,14
+Numeric/encoding,13
+Projection,13
+Kinematic calculus,12
+Hybrid event calculus,10
+Kinematics,10
+Topology calculus,10
+Constraint dynamics,9
+Event calculus,9
+Implicit field,9
+Contact calculus,7
+Glyph encoder,7
+Certified numerics,6
+Field algebra,6
+Persistent topology,6
+Bounded dynamics,5
+Lie kinematics,5
+Query architecture,5
+Reproducibility,5
+Routing geometry,5
+Discrete topology,4
+Field dynamics,4
+Geometric dynamics,4
+Glyph geometry,4
+Information architecture,4
+Numeric/fractal,4
+Overlap geometry,4
+Architecture,3
+Differential kinematics,3
+Field geometry,3
+Implicit surface,3
+Metric geometry,3
+Persistence,3
+Topology/control,3
+Uncertainty calculus,3
+Coordinate geometry,2
+Differential geometry,2
+Fluid threshold,2
+Identity,2
+Indexing,2
+Manifold kinematics,2
+Multiresolution pattern,2
+Numerics,2
+Phase-field dynamics,2
+Pruning,2
+Risk,2
+Runtime ABI,2
+Sampling pattern,2
+Spatial indexing,2
+Spatial partition,2
+Substitution pattern,2
+Support geometry,2
+Symmetry pattern,2
+Topology geometry,2
+Algebraic topology,1
+Arrival-time dynamics,1
+Complexity,1
+Covering topology,1
+Discrete exterior calculus,1
+Frame transport,1
+GPU runtime,1
+Governance,1
+Lie-group dynamics,1
+Memory,1
+Networking,1
+Numerical dynamics,1
+Numerical policy,1
+Persistent event calculus,1
+Quasiperiodic pattern,1
+Runtime governance,1
+Spatial relaxation,1
+Spectral pattern,1
+Topology invariant,1
+Trajectory synthesis,1
+Trajectory timing,1
+Verification,1

@@ -1,0 +1,24 @@
+========= COMPUTE-SANITIZER
+KLB mixed-orbit network GPU challenge
+  device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+  compute capability        : 12.0
+  objects/stations          : 58/16
+  pair plan                 : all=928, support=711, active=438
+  total relation gain       : 2.118721x
+  intervals/step            : 2048/60.000000 s
+  dense baseline            : 0.000000 MiB
+  pair_all               p50=62.384193   ms  relations/s=30465153.042729  propagations/s=30465153.042729
+  pair_support           p50=63.042561   ms  relations/s=23097538.974681  propagations/s=23097538.974681
+  pair_active            p50=61.984161   ms  relations/s=14471826.028988  propagations/s=14471826.028988
+  grouped_all            p50=63.252064   ms  relations/s=30047146.089574  propagations/s=1877946.630598
+  grouped_active         p50=62.545441   ms  relations/s=14341956.669199  propagations/s=1899163.211903
+Validation over 2048 intervals
+  pair-all vs CPU events    : FAIL
+  pair-active vs CPU events : FAIL
+  pair vs grouped events    : PASS
+  pair vs grouped counters  : PASS
+  grouped vs dense events   : SKIP
+  grouped vs dense counters : SKIP
+  propagation errors zero   : PASS
+========= Target application returned an error
+========= RACECHECK SUMMARY: 0 hazards displayed (0 errors, 0 warnings)

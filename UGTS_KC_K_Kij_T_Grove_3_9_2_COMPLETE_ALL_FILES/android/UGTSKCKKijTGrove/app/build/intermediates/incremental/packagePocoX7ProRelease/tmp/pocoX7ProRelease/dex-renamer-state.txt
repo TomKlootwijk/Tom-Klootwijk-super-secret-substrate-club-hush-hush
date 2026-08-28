@@ -1,0 +1,4 @@
+#Sun Aug 23 17:54:07 CEST 2026
+base.0=C\:\\Tom Klootwijk Coronation\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\android\\UGTSKCKKijTGrove\\app\\build\\intermediates\\dex\\pocoX7ProRelease\\mergeDexPocoX7ProRelease\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

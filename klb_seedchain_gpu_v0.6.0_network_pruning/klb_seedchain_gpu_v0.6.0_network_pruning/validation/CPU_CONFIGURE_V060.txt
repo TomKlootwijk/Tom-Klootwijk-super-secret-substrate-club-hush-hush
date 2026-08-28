@@ -1,0 +1,10 @@
+$ cmake -S . -B /mnt/data/build_klb_v060_release_verify -DCMAKE_BUILD_TYPE=Release -DKLB_BUILD_CUDA=OFF
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /mnt/data/build_klb_v060_release_verify

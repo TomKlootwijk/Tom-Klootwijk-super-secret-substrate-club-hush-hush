@@ -1,0 +1,9 @@
+UGTS-KC 3.0 requester attribution
+
+Name: Tom Klootwijk
+Identifier supplied by requester: NL200678942
+Date of birth supplied by requester: 10-07-1990
+
+Status: requester-supplied metadata; not independently verified.
+Purpose: attribution for this requested technical expansion only.
+Privacy note: the full identifier and date of birth are not printed in the public-facing technical report; they are isolated in this file inside the requested package.

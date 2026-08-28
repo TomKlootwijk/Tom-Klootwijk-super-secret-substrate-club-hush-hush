@@ -1,0 +1,1 @@
+error: station IDs must be unique

@@ -1,0 +1,15 @@
+Device                    NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        12.0
+Objects                   32
+Deep-space objects        32
+Initialized record bytes  1488
+Portable seed bytes       4096
+Reference frame           TEME -> PEF by GMST approximation
+CPU/GPU full-SGP4 validation
+  states                 256
+  error mismatches       0
+  method mismatches      0
+  RMS position delta     0.000070649 mm
+  max position delta     0.000383791 mm
+  RMS velocity delta     0.000000010 mm/s
+  max velocity delta     0.000000056 mm/s

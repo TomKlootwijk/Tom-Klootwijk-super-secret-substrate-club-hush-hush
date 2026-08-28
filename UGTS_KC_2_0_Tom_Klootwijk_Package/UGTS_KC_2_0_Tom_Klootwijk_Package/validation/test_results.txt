@@ -1,0 +1,52 @@
+test_damped_energy_decreases (test_ugts_kc.DynamicsEventTests.test_damped_energy_decreases) ... ok
+test_graph_diffusion_mass (test_ugts_kc.DynamicsEventTests.test_graph_diffusion_mass) ... ok
+test_gray_scott_shape (test_ugts_kc.DynamicsEventTests.test_gray_scott_shape) ... ok
+test_hybrid (test_ugts_kc.DynamicsEventTests.test_hybrid) ... ok
+test_patch_resolution (test_ugts_kc.DynamicsEventTests.test_patch_resolution) ... ok
+test_root_and_classification (test_ugts_kc.DynamicsEventTests.test_root_and_classification) ... ok
+test_symplectic (test_ugts_kc.DynamicsEventTests.test_symplectic) ... ok
+test_ellipsoid_sign (test_ugts_kc.FieldTests.test_ellipsoid_sign) ... ok
+test_metaball (test_ugts_kc.FieldTests.test_metaball) ... ok
+test_minimal_fields (test_ugts_kc.FieldTests.test_minimal_fields) ... ok
+test_offset_arrival (test_ugts_kc.FieldTests.test_offset_arrival) ... ok
+test_ruled (test_ugts_kc.FieldTests.test_ruled) ... ok
+test_superquadric_boundary (test_ugts_kc.FieldTests.test_superquadric_boundary) ... ok
+test_tube (test_ugts_kc.FieldTests.test_tube) ... ok
+test_arc_length (test_ugts_kc.KinematicsTests.test_arc_length) ... ok
+test_bishop (test_ugts_kc.KinematicsTests.test_bishop) ... ok
+test_curvature_limit (test_ugts_kc.KinematicsTests.test_curvature_limit) ... ok
+test_dls_ik (test_ugts_kc.KinematicsTests.test_dls_ik) ... ok
+test_duration (test_ugts_kc.KinematicsTests.test_duration) ... ok
+test_forward_kinematics (test_ugts_kc.KinematicsTests.test_forward_kinematics) ... ok
+test_frenet (test_ugts_kc.KinematicsTests.test_frenet) ... ok
+test_scurve_endpoints (test_ugts_kc.KinematicsTests.test_scurve_endpoints) ... ok
+test_se2_translation (test_ugts_kc.KinematicsTests.test_se2_translation) ... ok
+test_se3_interpolate_endpoints (test_ugts_kc.KinematicsTests.test_se3_interpolate_endpoints) ... ok
+test_se3_translation (test_ugts_kc.KinematicsTests.test_se3_translation) ... ok
+test_slerp_endpoints (test_ugts_kc.KinematicsTests.test_slerp_endpoints) ... ok
+test_bezier_endpoints (test_ugts_kc.PatternTests.test_bezier_endpoints) ... ok
+test_bspline_endpoints (test_ugts_kc.PatternTests.test_bspline_endpoints) ... ok
+test_catenary_symmetry (test_ugts_kc.PatternTests.test_catenary_symmetry) ... ok
+test_clothoid (test_ugts_kc.PatternTests.test_clothoid) ... ok
+test_gielis_finite (test_ugts_kc.PatternTests.test_gielis_finite) ... ok
+test_involute_start (test_ugts_kc.PatternTests.test_involute_start) ... ok
+test_lissajous_bounds (test_ugts_kc.PatternTests.test_lissajous_bounds) ... ok
+test_medial_midpoints (test_ugts_kc.PatternTests.test_medial_midpoints) ... ok
+test_nurbs_quarter_circle (test_ugts_kc.PatternTests.test_nurbs_quarter_circle) ... ok
+test_power_nearest (test_ugts_kc.PatternTests.test_power_nearest) ... ok
+test_reuleaux_sampler (test_ugts_kc.PatternTests.test_reuleaux_sampler) ... ok
+test_rose_periodicity (test_ugts_kc.PatternTests.test_rose_periodicity) ... ok
+test_spirals (test_ugts_kc.PatternTests.test_spirals) ... ok
+test_superellipse_axis (test_ugts_kc.PatternTests.test_superellipse_axis) ... ok
+test_trochoids (test_ugts_kc.PatternTests.test_trochoids) ... ok
+test_boundary_squared (test_ugts_kc.TopologyTests.test_boundary_squared) ... ok
+test_braid_reduction (test_ugts_kc.TopologyTests.test_braid_reduction) ... ok
+test_cocycle (test_ugts_kc.TopologyTests.test_cocycle) ... ok
+test_covering_and_homotopy (test_ugts_kc.TopologyTests.test_covering_and_homotopy) ... ok
+test_discrete_morse (test_ugts_kc.TopologyTests.test_discrete_morse) ... ok
+test_winding (test_ugts_kc.TopologyTests.test_winding) ... ok
+
+----------------------------------------------------------------------
+Ran 47 tests in 0.003s
+
+OK

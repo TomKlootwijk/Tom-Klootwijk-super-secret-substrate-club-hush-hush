@@ -1,0 +1,46 @@
+{
+  "schema": "klb-network-source-manifest-v1",
+  "release": "0.6.0",
+  "generated_utc": "2026-08-16T20:13:57.126767Z",
+  "sources": [
+    {
+      "file": "gps_ops_2026-08-16_omm.csv",
+      "records": 32,
+      "sha256": "f45d43705e1cdc9121eb17d15baa3bc0ad0d97e0c21e94a78c44d4ddd6ddb8fb",
+      "source_query": "https://celestrak.org/NORAD/elements/gp.php?GROUP=GPS-OPS&FORMAT=CSV",
+      "provenance": "inherited byte-for-byte from the validated v0.5 package; source label/date retained"
+    },
+    {
+      "file": "tdrss_mixed_2026-07-29.tle",
+      "records": 26,
+      "sha256": "be33d7588ee6240564c789561e72fb45a74da275d1e63be4e367c56fc73984c0",
+      "source_query": "https://celestrak.org/NORAD/elements/gp.php?GROUP=TDRSS&FORMAT=TLE",
+      "provenance": "public CelesTrak TDRSS group snapshot used for the mixed-orbit challenge"
+    },
+    {
+      "file": "tdrss_mixed_2026-07-29_omm.csv",
+      "records": 26,
+      "sha256": "927867ee4eddf0e10cab5f43bc48815cef2797cd4c53c4646907bbc345314191",
+      "derived_by": "tools/tle_to_omm_csv.py",
+      "derived_from": "tdrss_mixed_2026-07-29.tle"
+    },
+    {
+      "file": "celestrak_mixed_gps_tdrss_2026-08-16_omm.csv",
+      "records": 58,
+      "sha256": "aa3c274d4591646853263a33675a9c314b6c4e5d306cbb4c002352079982ec85",
+      "derived_by": "tools/merge_omm_csv.py",
+      "derived_from": [
+        "gps_ops_2026-08-16_omm.csv",
+        "tdrss_mixed_2026-07-29_omm.csv"
+      ],
+      "deduplication_key": "NORAD_CAT_ID"
+    }
+  ],
+  "benchmark_station_file": {
+    "file": "../benchmark_station_network.csv",
+    "records": 16,
+    "sha256": "66066f0504cf043f4c1bb91a688bd2d7e8762d758606e8bb8ab30e8ff08e2831",
+    "boundary": "authored benchmark policy profiles; not an operational station registry"
+  },
+  "refresh_policy": "cache the last successful response; do not request the same CelesTrak group more often than its update cadence; stop on HTTP errors"
+}

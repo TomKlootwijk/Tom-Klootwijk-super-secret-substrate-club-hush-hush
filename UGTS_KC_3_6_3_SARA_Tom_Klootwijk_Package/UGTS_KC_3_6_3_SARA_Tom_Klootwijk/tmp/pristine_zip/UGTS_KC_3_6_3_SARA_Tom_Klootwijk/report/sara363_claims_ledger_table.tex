@@ -1,0 +1,51 @@
+\setlength{\tabcolsep}{3pt}\begin{longtable}{@{}p{0.09\linewidth} p{0.33\linewidth} p{0.09\linewidth} p{0.40\linewidth}@{}}
+\toprule
+\textbf{ID} & \textbf{Claim} & \textbf{Disposition} & \textbf{Technical note}\\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Claim} & \textbf{Disposition} & \textbf{Technical note}\\
+\midrule
+\endhead
+SARA-C001 & A BIP39 mnemonic is a human-created sentence or brainwallet. & REJECT & BIP39 transports computer-generated entropy and explicitly warns against user-created sentences.\\
+\addlinespace[1.5pt]
+SARA-C002 & The checksum adds independent secret entropy. & CORRECT & The checksum constrains valid encodings and catches some errors; valid mnemonic count remains 2\textasciicircum{}ENT.\\
+\addlinespace[1.5pt]
+SARA-C003 & A valid mnemonic checksum proves the owner or wallet balance. & REJECT & Checksum validity is syntax/integrity only.\\
+\addlinespace[1.5pt]
+SARA-C004 & The PBKDF2 step makes weak user passphrases unguessable. & BOUND & BIP39 fixes 2048 iterations; passphrase quality remains security-critical.\\
+\addlinespace[1.5pt]
+SARA-C005 & A public Bitcoin address can be inverted to its private key. & REJECT & The address exposes a script commitment and checksum, not spend authority.\\
+\addlinespace[1.5pt]
+SARA-C006 & Any hash collision can spend a specific P2WPKH output. & REJECT & A target preimage matching the witness program and a valid signature path are required; generic collision rhetoric is not sufficient.\\
+\addlinespace[1.5pt]
+SARA-C007 & A Bech32 checksum authenticates the wallet owner. & REJECT & It detects transcription errors; it is not authentication.\\
+\addlinespace[1.5pt]
+SARA-C008 & An address label on a block explorer proves legal ownership. & REJECT & Labels are external metadata and require independent provenance.\\
+\addlinespace[1.5pt]
+SARA-C009 & A 32-bit BIP32 parent fingerprint is a collision-free identity. & REJECT & It is a short identifier and implementations must tolerate collisions.\\
+\addlinespace[1.5pt]
+SARA-C010 & An extended public key is harmless public information. & BOUND & It cannot sign by itself but can reveal address families, balances and privacy-sensitive structure.\\
+\addlinespace[1.5pt]
+SARA-C011 & Hardened and normal derivation edges are interchangeable. & REJECT & Hardened children cannot be derived from an extended public parent.\\
+\addlinespace[1.5pt]
+SARA-C012 & A Bitcoin address is the same object as a key or wallet. & REJECT & Address, script, public key, extended node, seed and mnemonic are distinct typed objects.\\
+\addlinespace[1.5pt]
+SARA-C013 & The supplied public address authorizes private-key testing because it is public. & REJECT & Public visibility does not confer authorization to access or spend funds.\\
+\addlinespace[1.5pt]
+SARA-C014 & Brute force against a uniformly random 12-word mnemonic is a practical test plan. & REJECT & The valid keyspace is 2\textasciicircum{}128 and the reference metric is astronomically large even at unrealistic rates.\\
+\addlinespace[1.5pt]
+SARA-C015 & Address-targeted key search belongs in the reference package. & REJECT & The package provides decoding and feasibility metrics only, not search or candidate generation.\\
+\addlinespace[1.5pt]
+SARA-C016 & Mainnet and test networks are equivalent audit environments. & REJECT & Training and destructive experiments belong on regtest, signet, testnet or self-owned fixtures.\\
+\addlinespace[1.5pt]
+SARA-C017 & Seed or mnemonic may be stored in the UGTS lineage log. & REJECT & Secrets are transient and prohibited from definitions, traces and certificates.\\
+\addlinespace[1.5pt]
+SARA-C018 & The same mnemonic words translated into another language preserve the seed. & REJECT & BIP39 seed derivation hashes the normalized sentence; translation changes the seed.\\
+\addlinespace[1.5pt]
+SARA-C019 & One bit can represent the full wallet state. & REJECT & Checksums, keys, paths, scripts, policy, uncertainty and lineage remain separate.\\
+\addlinespace[1.5pt]
+SARA-C020 & Passing public test vectors proves production wallet security. & REJECT & It establishes reference conformance only; production security needs hardened libraries, secure entropy and key custody.\\
+\addlinespace[1.5pt]
+\bottomrule
+\end{longtable}

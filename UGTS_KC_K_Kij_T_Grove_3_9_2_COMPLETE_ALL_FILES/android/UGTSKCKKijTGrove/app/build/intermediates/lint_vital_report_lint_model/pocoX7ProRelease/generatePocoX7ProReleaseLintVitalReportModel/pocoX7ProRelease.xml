@@ -1,0 +1,31 @@
+<variant
+    name="pocoX7ProRelease"
+    package="nl.tomklootwijk.ugtskc.grove"
+    minSdkVersion="26"
+    targetSdkVersion="36.0"
+    mergedManifest="build\intermediates\merged_manifest\pocoX7ProRelease\processPocoX7ProReleaseMainManifest\AndroidManifest.xml"
+    manifestMergeReport="build\outputs\logs\manifest-merger-pocoX7Pro-release-report.txt"
+    proguardFiles="build\intermediates\default_proguard_files\global\proguard-android-optimize.txt-8.13.2;proguard-rules.pro"
+    partialResultsDir="build\intermediates\lint_vital_partial_results\pocoX7ProRelease\lintVitalAnalyzePocoX7ProRelease\out">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src\main\AndroidManifest.xml"
+        javaDirectories="src\main\java;src\pocoX7Pro\java;src\release\java;src\pocoX7ProRelease\java;src\main\kotlin;src\pocoX7Pro\kotlin;src\release\kotlin;src\pocoX7ProRelease\kotlin"
+        resDirectories="src\main\res;src\pocoX7Pro\res;src\release\res;src\pocoX7ProRelease\res"
+        assetsDirectories="src\main\assets;src\pocoX7Pro\assets;src\release\assets;src\pocoX7ProRelease\assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="build\intermediates\javac\pocoX7ProRelease\compilePocoX7ProReleaseJavaWithJavac\classes;build\intermediates\compile_and_runtime_not_namespaced_r_class_jar\pocoX7ProRelease\processPocoX7ProReleaseResources\R.jar"
+      type="MAIN"
+      applicationId="nl.tomklootwijk.ugtskc.grove.poco"
+      generatedSourceFolders="build\generated\ap_generated_sources\pocoX7ProRelease\out"
+      generatedResourceFolders="build\generated\res\resValues\pocoX7Pro\release"
+      desugaredMethodsFiles="C:\Users\Tom\.gradle\caches\8.13\transforms\f38194b2570ff8fd1f9853d13b97ed28\transformed\D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

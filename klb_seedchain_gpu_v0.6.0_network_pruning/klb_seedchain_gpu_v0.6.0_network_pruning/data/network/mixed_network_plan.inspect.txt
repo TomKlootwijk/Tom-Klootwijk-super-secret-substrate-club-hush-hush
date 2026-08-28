@@ -1,0 +1,15 @@
+Mixed-orbit network plan
+  reference UTC              : 2026-08-16T05:33:12.693024Z
+  objects                    : 58
+  stations                   : 16
+  all object-station pairs   : 928
+  support-possible pairs     : 711
+  policy-compatible pairs    : 438
+  support rejection gain     : 1.305204x
+  compatibility gain         : 1.623288x
+  total relation gain        : 2.118721x
+  orbit classes              : LEO=11, MEO=32, GEO=8, HEO=7
+  station-bitmask limit      : 16/32
+  policy boundary            : benchmark profiles, not operational station authorizations
+  frame boundary             : TEME->PEF GMST+DUT1; polar motion/EOP omitted
+  pair audit CSV             : data/network/mixed_network_pair_plan.csv

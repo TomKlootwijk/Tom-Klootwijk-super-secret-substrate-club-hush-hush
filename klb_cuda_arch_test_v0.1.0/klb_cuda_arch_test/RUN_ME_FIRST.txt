@@ -1,0 +1,22 @@
+KLB37 RTX 5070 Ti Laptop quick path
+===================================
+
+1. Install a current NVIDIA driver, CUDA Toolkit 12.8 or newer, CMake 3.24+, and Visual Studio 2022 x64.
+2. Open x64 Native Tools Command Prompt for VS 2022 in this directory.
+3. Run:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\build_windows.ps1
+
+4. Run the included, no-download test:
+
+   .\build\Release\klb_bench.exe .\data\procedural_65536.klb --queries 1048576 --depth 12 --repeats 20 --csv procedural_results.csv
+
+5. Keep verification enabled on the first run. Expected mismatch counts are all zero.
+
+6. Optional real data (4.9 MB):
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\fetch_bunny_windows.ps1
+   .\build\Release\klb_pack.exe pack .\external_data\bunny\reconstruction\bun_zipper.ply bunny.klb --decoded bunny_roundtrip_points.ply
+   .\build\Release\klb_bench.exe bunny.klb --queries 1048576 --depth 12 --repeats 30 --csv bunny_results.csv
+
+Read README.md and docs\ARCHITECTURE_MAPPING.md before interpreting compression or bandwidth numbers.

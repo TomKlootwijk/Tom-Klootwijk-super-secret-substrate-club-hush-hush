@@ -1,0 +1,21 @@
+# ninja log v5
+0	1151	8092032234087317	CMakeFiles/native_app_glue.dir/1e3a68904659e71a72de41ca2bfe2223/android_native_app_glue.c.o	41759a6f584d62b3
+1152	1251	8092032234961878	libnative_app_glue.a	ee7a358b20d67bb6
+27	3720	8092032259799890	CMakeFiles/ugts_kc_grove.dir/grove_juice.cpp.o	9112b122a7999413
+31	4201	8092032264612190	CMakeFiles/ugts_kc_grove.dir/adaptive_quality.cpp.o	5d426a5e72a04a63
+36	4255	8092032265153248	CMakeFiles/ugts_kc_grove.dir/grove_tuning.cpp.o	235b22692aecf394
+22	4385	8092032266443871	CMakeFiles/ugts_kc_grove.dir/device_profile.cpp.o	3f5111dde4c41e9a
+13	4421	8092032266801396	CMakeFiles/ugts_kc_grove.dir/renderer_gles3.cpp.o	8a5abc7237a13f66
+17	4854	8092032271133790	CMakeFiles/ugts_kc_grove.dir/scene_pack.cpp.o	de35b9bda6221f30
+9	5595	8092032278544423	CMakeFiles/ugts_kc_grove.dir/main.cpp.o	9ec0480e6bbd6e6
+5	6266	8092032285196545	CMakeFiles/ugts_kc_grove.dir/engine.cpp.o	c96dc71860cdec24
+6266	6451	8092032286921712	C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/build/intermediates/cxx/RelWithDebInfo/566k433r/obj/arm64-v8a/libugts_kc_grove.so	98724b0dc30d85b8
+25	499	8092033409999036	CMakeFiles/ugts_kc_grove.dir/grove_juice.cpp.o	9112b122a7999413
+21	811	8092033413159529	CMakeFiles/ugts_kc_grove.dir/renderer_gles3.cpp.o	8a5abc7237a13f66
+13	1018	8092033415226687	CMakeFiles/ugts_kc_grove.dir/main.cpp.o	9ec0480e6bbd6e6
+9	1460	8092033419599673	CMakeFiles/ugts_kc_grove.dir/engine.cpp.o	c96dc71860cdec24
+1460	1567	8092033420641533	C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/build/intermediates/cxx/RelWithDebInfo/566k433r/obj/arm64-v8a/libugts_kc_grove.so	98724b0dc30d85b8
+4	1398	8092035475372891	CMakeFiles/ugts_kc_grove.dir/main.cpp.o	9ec0480e6bbd6e6
+1398	1539	8092035476802061	C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/build/intermediates/cxx/RelWithDebInfo/566k433r/obj/arm64-v8a/libugts_kc_grove.so	98724b0dc30d85b8
+4	1345	8092036460832910	CMakeFiles/ugts_kc_grove.dir/main.cpp.o	9ec0480e6bbd6e6
+1345	1506	8092036462497721	C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/build/intermediates/cxx/RelWithDebInfo/566k433r/obj/arm64-v8a/libugts_kc_grove.so	98724b0dc30d85b8

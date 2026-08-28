@@ -1,0 +1,44 @@
+#version 450
+#extension GL_EXT_shader_realtime_clock : require
+
+#ifndef CHASE_STEPS
+#define CHASE_STEPS 512
+#endif
+
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 2) readonly buffer NextIndexBuffer {
+    uint next_indices[];
+};
+layout(std430, binding = 1) writeonly buffer ClockResultBuffer {
+    uvec4 clock_results[];
+};
+
+uint mix32(uint x) {
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+void main() {
+    uint invocation = gl_GlobalInvocationID.x;
+    if (invocation >= uint(clock_results.length()) / 2u) {
+        return;
+    }
+
+    uint index = mix32(invocation) % uint(next_indices.length());
+    uvec2 started = clockRealtime2x32EXT();
+    for (uint step = 0u; step < uint(CHASE_STEPS); ++step) {
+        index = next_indices[index];
+    }
+    uvec2 finished = clockRealtime2x32EXT();
+
+    // Store clocks and the final dependent value separately so the host can
+    // validate every chain without conflating an index error with clock bits.
+    clock_results[2u * invocation] = uvec4(started, finished);
+    clock_results[2u * invocation + 1u] =
+        uvec4(index, mix32(index ^ invocation), 0x55475453u, CHASE_STEPS);
+}

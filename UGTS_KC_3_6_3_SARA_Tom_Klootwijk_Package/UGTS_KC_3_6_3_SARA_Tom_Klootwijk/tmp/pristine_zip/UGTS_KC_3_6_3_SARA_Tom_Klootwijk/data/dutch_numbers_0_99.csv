@@ -1,0 +1,101 @@
+value,orthography,pronunciation_segments,morphemes,syllable_count,place_order,spoken_order,hinge_kind,hinge_count,binary,popcount,pulse_match
+0,nul,nul,nul,1,0,0,none,0,0,0,False
+1,een,een,een,1,1,1,none,0,1,1,True
+2,twee,twee,twee,1,2,2,none,0,10,1,True
+3,drie,drie,drie,1,3,3,none,0,11,2,False
+4,vier,vier,vier,1,4,4,none,0,100,1,True
+5,vijf,vijf,vijf,1,5,5,none,0,101,2,False
+6,zes,zes,zes,1,6,6,none,0,110,2,False
+7,zeven,ze | ven,zeven,2,7,7,none,0,111,3,False
+8,acht,acht,acht,1,8,8,none,0,1000,1,True
+9,negen,ne | gen,negen,2,9,9,none,0,1001,2,True
+10,tien,tien,tien,1,10,10,none,0,1010,2,False
+11,elf,elf,elf,1,11,11,irregular,0,1011,3,False
+12,twaalf,twaalf,twaalf,1,12,12,irregular,0,1100,2,False
+13,dertien,der | tien,drie | tien,2,10 | 3,3 | tien,teen_suffix,1,1101,3,False
+14,veertien,veer | tien,vier | tien,2,10 | 4,4 | tien,teen_suffix,1,1110,3,False
+15,vijftien,vijf | tien,vijf | tien,2,10 | 5,5 | tien,teen_suffix,1,1111,4,False
+16,zestien,zes | tien,zes | tien,2,10 | 6,6 | tien,teen_suffix,1,10000,1,False
+17,zeventien,ze | ven | tien,zeven | tien,3,10 | 7,7 | tien,teen_suffix,1,10001,2,False
+18,achttien,acht | tien,acht | tien,2,10 | 8,8 | tien,teen_suffix,1,10010,2,True
+19,negentien,ne | gen | tien,negen | tien,3,10 | 9,9 | tien,teen_suffix,1,10011,3,True
+20,twintig,twin | tig,twintig,2,20,20,none,0,10100,2,True
+21,eenentwintig,een | en | twin | tig,een | en | twintig,4,20 | 1,1 | en | 20,en_connector,1,10101,3,False
+22,tweeëntwintig,twee | en | twin | tig,twee | en | twintig,4,20 | 2,2 | en | 20,en_connector,1,10110,3,False
+23,drieëntwintig,drie | en | twin | tig,drie | en | twintig,4,20 | 3,3 | en | 20,en_connector,1,10111,4,True
+24,vierentwintig,vier | en | twin | tig,vier | en | twintig,4,20 | 4,4 | en | 20,en_connector,1,11000,2,False
+25,vijfentwintig,vijf | en | twin | tig,vijf | en | twintig,4,20 | 5,5 | en | 20,en_connector,1,11001,3,False
+26,zesentwintig,zes | en | twin | tig,zes | en | twintig,4,20 | 6,6 | en | 20,en_connector,1,11010,3,False
+27,zevenentwintig,ze | ven | en | twin | tig,zeven | en | twintig,5,20 | 7,7 | en | 20,en_connector,1,11011,4,False
+28,achtentwintig,acht | en | twin | tig,acht | en | twintig,4,20 | 8,8 | en | 20,en_connector,1,11100,3,False
+29,negenentwintig,ne | gen | en | twin | tig,negen | en | twintig,5,20 | 9,9 | en | 20,en_connector,1,11101,4,False
+30,dertig,der | tig,dertig,2,30,30,none,0,11110,4,False
+31,eenendertig,een | en | der | tig,een | en | dertig,4,30 | 1,1 | en | 30,en_connector,1,11111,5,False
+32,tweeëndertig,twee | en | der | tig,twee | en | dertig,4,30 | 2,2 | en | 30,en_connector,1,100000,1,False
+33,drieëndertig,drie | en | der | tig,drie | en | dertig,4,30 | 3,3 | en | 30,en_connector,1,100001,2,False
+34,vierendertig,vier | en | der | tig,vier | en | dertig,4,30 | 4,4 | en | 30,en_connector,1,100010,2,False
+35,vijfendertig,vijf | en | der | tig,vijf | en | dertig,4,30 | 5,5 | en | 30,en_connector,1,100011,3,False
+36,zesendertig,zes | en | der | tig,zes | en | dertig,4,30 | 6,6 | en | 30,en_connector,1,100100,2,False
+37,zevenendertig,ze | ven | en | der | tig,zeven | en | dertig,5,30 | 7,7 | en | 30,en_connector,1,100101,3,False
+38,achtendertig,acht | en | der | tig,acht | en | dertig,4,30 | 8,8 | en | 30,en_connector,1,100110,3,False
+39,negenendertig,ne | gen | en | der | tig,negen | en | dertig,5,30 | 9,9 | en | 30,en_connector,1,100111,4,False
+40,veertig,veer | tig,veertig,2,40,40,none,0,101000,2,True
+41,eenenveertig,een | en | veer | tig,een | en | veertig,4,40 | 1,1 | en | 40,en_connector,1,101001,3,False
+42,tweeënveertig,twee | en | veer | tig,twee | en | veertig,4,40 | 2,2 | en | 40,en_connector,1,101010,3,False
+43,drieënveertig,drie | en | veer | tig,drie | en | veertig,4,40 | 3,3 | en | 40,en_connector,1,101011,4,True
+44,vierenveertig,vier | en | veer | tig,vier | en | veertig,4,40 | 4,4 | en | 40,en_connector,1,101100,3,False
+45,vijfenveertig,vijf | en | veer | tig,vijf | en | veertig,4,40 | 5,5 | en | 40,en_connector,1,101101,4,True
+46,zesenveertig,zes | en | veer | tig,zes | en | veertig,4,40 | 6,6 | en | 40,en_connector,1,101110,4,True
+47,zevenenveertig,ze | ven | en | veer | tig,zeven | en | veertig,5,40 | 7,7 | en | 40,en_connector,1,101111,5,True
+48,achtenveertig,acht | en | veer | tig,acht | en | veertig,4,40 | 8,8 | en | 40,en_connector,1,110000,2,False
+49,negenenveertig,ne | gen | en | veer | tig,negen | en | veertig,5,40 | 9,9 | en | 40,en_connector,1,110001,3,False
+50,vijftig,vijf | tig,vijftig,2,50,50,none,0,110010,3,False
+51,eenenvijftig,een | en | vijf | tig,een | en | vijftig,4,50 | 1,1 | en | 50,en_connector,1,110011,4,True
+52,tweeënvijftig,twee | en | vijf | tig,twee | en | vijftig,4,50 | 2,2 | en | 50,en_connector,1,110100,3,False
+53,drieënvijftig,drie | en | vijf | tig,drie | en | vijftig,4,50 | 3,3 | en | 50,en_connector,1,110101,4,True
+54,vierenvijftig,vier | en | vijf | tig,vier | en | vijftig,4,50 | 4,4 | en | 50,en_connector,1,110110,4,True
+55,vijfenvijftig,vijf | en | vijf | tig,vijf | en | vijftig,4,50 | 5,5 | en | 50,en_connector,1,110111,5,False
+56,zesenvijftig,zes | en | vijf | tig,zes | en | vijftig,4,50 | 6,6 | en | 50,en_connector,1,111000,3,False
+57,zevenenvijftig,ze | ven | en | vijf | tig,zeven | en | vijftig,5,50 | 7,7 | en | 50,en_connector,1,111001,4,False
+58,achtenvijftig,acht | en | vijf | tig,acht | en | vijftig,4,50 | 8,8 | en | 50,en_connector,1,111010,4,True
+59,negenenvijftig,ne | gen | en | vijf | tig,negen | en | vijftig,5,50 | 9,9 | en | 50,en_connector,1,111011,5,True
+60,zestig,zes | tig,zestig,2,60,60,none,0,111100,4,False
+61,eenenzestig,een | en | zes | tig,een | en | zestig,4,60 | 1,1 | en | 60,en_connector,1,111101,5,False
+62,tweeënzestig,twee | en | zes | tig,twee | en | zestig,4,60 | 2,2 | en | 60,en_connector,1,111110,5,False
+63,drieënzestig,drie | en | zes | tig,drie | en | zestig,4,60 | 3,3 | en | 60,en_connector,1,111111,6,False
+64,vierenzestig,vier | en | zes | tig,vier | en | zestig,4,60 | 4,4 | en | 60,en_connector,1,1000000,1,False
+65,vijfenzestig,vijf | en | zes | tig,vijf | en | zestig,4,60 | 5,5 | en | 60,en_connector,1,1000001,2,False
+66,zesenzestig,zes | en | zes | tig,zes | en | zestig,4,60 | 6,6 | en | 60,en_connector,1,1000010,2,False
+67,zevenenzestig,ze | ven | en | zes | tig,zeven | en | zestig,5,60 | 7,7 | en | 60,en_connector,1,1000011,3,False
+68,achtenzestig,acht | en | zes | tig,acht | en | zestig,4,60 | 8,8 | en | 60,en_connector,1,1000100,2,False
+69,negenenzestig,ne | gen | en | zes | tig,negen | en | zestig,5,60 | 9,9 | en | 60,en_connector,1,1000101,3,False
+70,zeventig,ze | ven | tig,zeventig,3,70,70,none,0,1000110,3,True
+71,eenenzeventig,een | en | ze | ven | tig,een | en | zeventig,5,70 | 1,1 | en | 70,en_connector,1,1000111,4,False
+72,tweeënzeventig,twee | en | ze | ven | tig,twee | en | zeventig,5,70 | 2,2 | en | 70,en_connector,1,1001000,2,False
+73,drieënzeventig,drie | en | ze | ven | tig,drie | en | zeventig,5,70 | 3,3 | en | 70,en_connector,1,1001001,3,False
+74,vierenzeventig,vier | en | ze | ven | tig,vier | en | zeventig,5,70 | 4,4 | en | 70,en_connector,1,1001010,3,False
+75,vijfenzeventig,vijf | en | ze | ven | tig,vijf | en | zeventig,5,70 | 5,5 | en | 70,en_connector,1,1001011,4,False
+76,zesenzeventig,zes | en | ze | ven | tig,zes | en | zeventig,5,70 | 6,6 | en | 70,en_connector,1,1001100,3,False
+77,zevenenzeventig,ze | ven | en | ze | ven | tig,zeven | en | zeventig,6,70 | 7,7 | en | 70,en_connector,1,1001101,4,False
+78,achtenzeventig,acht | en | ze | ven | tig,acht | en | zeventig,5,70 | 8,8 | en | 70,en_connector,1,1001110,4,False
+79,negenenzeventig,ne | gen | en | ze | ven | tig,negen | en | zeventig,6,70 | 9,9 | en | 70,en_connector,1,1001111,5,False
+80,tachtig,tach | tig,tachtig,2,80,80,none,0,1010000,2,True
+81,eenentachtig,een | en | tach | tig,een | en | tachtig,4,80 | 1,1 | en | 80,en_connector,1,1010001,3,False
+82,tweeëntachtig,twee | en | tach | tig,twee | en | tachtig,4,80 | 2,2 | en | 80,en_connector,1,1010010,3,False
+83,drieëntachtig,drie | en | tach | tig,drie | en | tachtig,4,80 | 3,3 | en | 80,en_connector,1,1010011,4,True
+84,vierentachtig,vier | en | tach | tig,vier | en | tachtig,4,80 | 4,4 | en | 80,en_connector,1,1010100,3,False
+85,vijfentachtig,vijf | en | tach | tig,vijf | en | tachtig,4,80 | 5,5 | en | 80,en_connector,1,1010101,4,True
+86,zesentachtig,zes | en | tach | tig,zes | en | tachtig,4,80 | 6,6 | en | 80,en_connector,1,1010110,4,True
+87,zevenentachtig,ze | ven | en | tach | tig,zeven | en | tachtig,5,80 | 7,7 | en | 80,en_connector,1,1010111,5,True
+88,achtentachtig,acht | en | tach | tig,acht | en | tachtig,4,80 | 8,8 | en | 80,en_connector,1,1011000,3,False
+89,negenentachtig,ne | gen | en | tach | tig,negen | en | tachtig,5,80 | 9,9 | en | 80,en_connector,1,1011001,4,False
+90,negentig,ne | gen | tig,negentig,3,90,90,none,0,1011010,4,False
+91,eenennegentig,een | en | ne | gen | tig,een | en | negentig,5,90 | 1,1 | en | 90,en_connector,1,1011011,5,True
+92,tweeënnegentig,twee | en | ne | gen | tig,twee | en | negentig,5,90 | 2,2 | en | 90,en_connector,1,1011100,4,False
+93,drieënnegentig,drie | en | ne | gen | tig,drie | en | negentig,5,90 | 3,3 | en | 90,en_connector,1,1011101,5,True
+94,vierennegentig,vier | en | ne | gen | tig,vier | en | negentig,5,90 | 4,4 | en | 90,en_connector,1,1011110,5,True
+95,vijfennegentig,vijf | en | ne | gen | tig,vijf | en | negentig,5,90 | 5,5 | en | 90,en_connector,1,1011111,6,False
+96,zesennegentig,zes | en | ne | gen | tig,zes | en | negentig,5,90 | 6,6 | en | 90,en_connector,1,1100000,2,False
+97,zevenennegentig,ze | ven | en | ne | gen | tig,zeven | en | negentig,6,90 | 7,7 | en | 90,en_connector,1,1100001,3,False
+98,achtennegentig,acht | en | ne | gen | tig,acht | en | negentig,5,90 | 8,8 | en | 90,en_connector,1,1100010,3,False
+99,negenennegentig,ne | gen | en | ne | gen | tig,negen | en | negentig,6,90 | 9,9 | en | 90,en_connector,1,1100011,4,False

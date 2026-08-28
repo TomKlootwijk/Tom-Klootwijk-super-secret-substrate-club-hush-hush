@@ -1,0 +1,3054 @@
+{
+  "candidates": [
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4251583551,
+      "orientation": 0,
+      "phase": -1.4751267003729505,
+      "position": [
+        1201.4171840216245,
+        -12519.642813265798,
+        -0.4563751220703125
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2928993989,
+      "orientation": 0,
+      "phase": -0.9671932784735525,
+      "position": [
+        7292.093300857828,
+        -10576.845500931784,
+        -2.407736301422119
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1431034743,
+      "orientation": 0,
+      "phase": -0.966062363782179,
+      "position": [
+        7113.160382771893,
+        -10292.384149579939,
+        -0.9077363014221191
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3669693169,
+      "orientation": 0,
+      "phase": -2.868168423344234,
+      "position": [
+        -9611.15575877773,
+        -2695.4309158814604,
+        -4.926276922225952
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1574873393,
+      "orientation": 0,
+      "phase": -3.133828340598176,
+      "position": [
+        -12075.022861975547,
+        -93.75614090466524,
+        -9.222242712974548
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3811210374,
+      "orientation": 0,
+      "phase": -2.972212099742239,
+      "position": [
+        -12626.693254075164,
+        -2159.406866535397,
+        -7.035844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 10066684,
+      "orientation": 0,
+      "phase": -2.9004555423121303,
+      "position": [
+        -10010.687924733224,
+        -2461.850871725768,
+        -0.6946315765380859
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2276733614,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 119402068,
+      "orientation": 0,
+      "phase": -3.1361103534962584,
+      "position": [
+        -11616.119798952464,
+        -63.68369267908995,
+        -7.722242683172226
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1327829474,
+      "orientation": 0,
+      "phase": -2.929940549611041,
+      "position": [
+        -12298.96254900929,
+        -2642.680701714661,
+        -5.535844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1448176299,
+      "orientation": 0,
+      "phase": -1.0563161492602409,
+      "position": [
+        290.3011536160183,
+        -513.5751267173919,
+        -1.5
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1241722371,
+      "orientation": 0,
+      "phase": -1.6316206318976312,
+      "position": [
+        -272.4075219213818,
+        -4473.072170363512,
+        -11.18106722831726
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 133879699,
+      "orientation": 0,
+      "phase": -2.0376529225064286,
+      "position": [
+        -1317.5661691977666,
+        -2614.126817530689,
+        -5.876390099525452
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 366323179,
+      "orientation": 0,
+      "phase": 0.9399602040071767,
+      "position": [
+        1501.4508223468836,
+        2055.6664725285973,
+        -7.49764633923769
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3482754105,
+      "orientation": 0,
+      "phase": -1.6231112157356262,
+      "position": [
+        -256.21249082136103,
+        -4893.037434765213,
+        -9.68106722831726
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3738521476,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1265441477,
+      "orientation": 0,
+      "phase": 0.08470909790172054,
+      "position": [
+        9428.49455251036,
+        800.5951098950179,
+        -11.455871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2586592933,
+      "orientation": 0,
+      "phase": -0.06220058700606726,
+      "position": [
+        10569.784838468822,
+        -658.2960038599622,
+        -2.080704689025879
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 275635084,
+      "orientation": 0,
+      "phase": -0.06808877958818285,
+      "position": [
+        11018.411802862272,
+        -751.3917429222923,
+        -7.261274680495262
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2631804825,
+      "orientation": 0,
+      "phase": 0.2134902460857642,
+      "position": [
+        9144.438547390875,
+        1982.4592511911135,
+        -10.06044340133667
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 932694337,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2521536498,
+      "orientation": 0,
+      "phase": -0.07522466368521039,
+      "position": [
+        10224.293178671387,
+        -770.5730578478116,
+        -0.5807046890258789
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 703304038,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2060653060,
+      "orientation": 0,
+      "phase": 2.360149875196455,
+      "position": [
+        -11957.755733021771,
+        11863.532873912387,
+        -6.001236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3996586508,
+      "orientation": 0,
+      "phase": 2.485315688263088,
+      "position": [
+        -11737.559755538556,
+        9039.7580574882,
+        -4.993757486343384
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1817065699,
+      "orientation": 0,
+      "phase": 2.4445299223713413,
+      "position": [
+        -11632.869243613579,
+        9739.964625092147,
+        -0.12668657302856445
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3217816492,
+      "orientation": 0,
+      "phase": 2.4918913216881147,
+      "position": [
+        -11141.917060944379,
+        8464.884687246926,
+        -0.976348876953125
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 352238721,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3736284357,
+      "orientation": 0,
+      "phase": 2.5213337153139883,
+      "position": [
+        -12053.032759210613,
+        8609.481170617753,
+        -3.493757486343384
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 717296488,
+      "orientation": 0,
+      "phase": 2.4527791356284334,
+      "position": [
+        -12010.349637767393,
+        9888.641700174467,
+        1.3733129501342773
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1252875468,
+      "orientation": 0,
+      "phase": 1.5456009241462294,
+      "position": [
+        259.48819070949594,
+        10296.84992865107,
+        -2.1035828590393066
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2431224218,
+      "orientation": 0,
+      "phase": 1.4180914876904764,
+      "position": [
+        1496.0323441520009,
+        9720.619800927228,
+        -6.599092543125153
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3149983083,
+      "orientation": 0,
+      "phase": 1.5890901002700968,
+      "position": [
+        -205.36028178337878,
+        11224.440533256387,
+        -7.263417258858681
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2281366151,
+      "orientation": 0,
+      "phase": 1.569013069428842,
+      "position": [
+        17.805819278211185,
+        9984.98631938457,
+        -0.6035828590393066
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3200760957,
+      "orientation": 0,
+      "phase": 1.4621385362994863,
+      "position": [
+        1008.3708260048898,
+        9243.692935087292,
+        -5.099092483520508
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2894057748,
+      "orientation": 0,
+      "phase": 0.9256481079773187,
+      "position": [
+        7182.946662254763,
+        9544.470026889743,
+        -9.143378973007202
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4035482824,
+      "orientation": 0,
+      "phase": 0.803051910654121,
+      "position": [
+        11293.810502840728,
+        11699.775635589063,
+        -9.034699559211731
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1245389873,
+      "orientation": 0,
+      "phase": 0.9046695942776459,
+      "position": [
+        6731.824938750058,
+        8565.000124843014,
+        -9.901151895523071
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25703,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 480744618,
+      "orientation": 0,
+      "phase": 0.7201569683994336,
+      "position": [
+        10369.515215272033,
+        9097.649109851445,
+        -9.846496105194092
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 625691685,
+      "orientation": 0,
+      "phase": 0.9608216273672727,
+      "position": [
+        7229.2013548995465,
+        10343.963065809663,
+        -7.6433790028095245
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 217405835,
+      "orientation": 0,
+      "phase": 0.7889557464837986,
+      "position": [
+        11804.8047019688,
+        11889.098085391895,
+        -7.53469955176115
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 25709,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1970028052,
+      "orientation": 0,
+      "phase": 0.8440062564090063,
+      "position": [
+        7437.074146729904,
+        8364.219639135024,
+        -8.401151835918427
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1039658333,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3301495212,
+      "orientation": 0,
+      "phase": -2.929940549611041,
+      "position": [
+        -12298.96254900929,
+        -2642.680701714661,
+        -5.535844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3753555382,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1941129402,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2339511134,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 649166611,
+      "orientation": 0,
+      "phase": -0.07522466368521039,
+      "position": [
+        10224.293178671387,
+        -770.5730578478116,
+        -0.5807046890258789
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2770181710,
+      "orientation": 0,
+      "phase": -0.07522466368521039,
+      "position": [
+        10224.293178671387,
+        -770.5730578478116,
+        -0.5807046890258789
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1022138095,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3161973712,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3615626129,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 60764390,
+      "orientation": 0,
+      "phase": 2.5213337153139883,
+      "position": [
+        -12053.032759210613,
+        8609.481170617753,
+        -3.493757486343384
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3920749372,
+      "orientation": 0,
+      "phase": 2.5213337153139883,
+      "position": [
+        -12053.032759210613,
+        8609.481170617753,
+        -3.493757486343384
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1022033613,
+      "orientation": 0,
+      "phase": 2.4527791356284334,
+      "position": [
+        -12010.349637767393,
+        9888.641700174467,
+        1.3733129501342773
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3286366578,
+      "orientation": 0,
+      "phase": 1.569013069428842,
+      "position": [
+        17.805819278211185,
+        9984.98631938457,
+        -0.6035828590393066
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 528843672,
+      "orientation": 0,
+      "phase": 0.8440062564090063,
+      "position": [
+        7437.074146729904,
+        8364.219639135024,
+        -8.401151835918427
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2412257811,
+      "orientation": 0,
+      "phase": -0.966062363782179,
+      "position": [
+        7113.160382771893,
+        -10292.384149579939,
+        -0.9077363014221191
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4143371483,
+      "orientation": 0,
+      "phase": -2.929940549611041,
+      "position": [
+        -12298.96254900929,
+        -2642.680701714661,
+        -5.535844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1652369976,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3599777049,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2908918150,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1341185234,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4174396385,
+      "orientation": 0,
+      "phase": 2.4527791356284334,
+      "position": [
+        -12010.349637767393,
+        9888.641700174467,
+        1.3733129501342773
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1132045606,
+      "orientation": 0,
+      "phase": 0.7889557464837986,
+      "position": [
+        11804.8047019688,
+        11889.098085391895,
+        -7.53469955176115
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1842340109,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3606825646,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1048693632,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1523341482,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2429447220,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1348437979,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2458721218,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2268110647,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 257575479,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2443354059,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1705342184,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3772087529,
+      "orientation": 0,
+      "phase": 0.8440062564090063,
+      "position": [
+        7437.074146729904,
+        8364.219639135024,
+        -8.401151835918427
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 855560141,
+      "orientation": 0,
+      "phase": -0.966062363782179,
+      "position": [
+        7113.160382771893,
+        -10292.384149579939,
+        -0.9077363014221191
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1306015060,
+      "orientation": 0,
+      "phase": -3.1361103534962584,
+      "position": [
+        -11616.119798952464,
+        -63.68369267908995,
+        -7.722242683172226
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1924908478,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1818436938,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1310968448,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1844145429,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 925560493,
+      "orientation": 0,
+      "phase": -0.07522466368521039,
+      "position": [
+        10224.293178671387,
+        -770.5730578478116,
+        -0.5807046890258789
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2004012712,
+      "orientation": 0,
+      "phase": -0.07522466368521039,
+      "position": [
+        10224.293178671387,
+        -770.5730578478116,
+        -0.5807046890258789
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 368021833,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4230528244,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3949085293,
+      "orientation": 0,
+      "phase": 2.5213337153139883,
+      "position": [
+        -12053.032759210613,
+        8609.481170617753,
+        -3.493757486343384
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1621750931,
+      "orientation": 0,
+      "phase": 1.4621385362994863,
+      "position": [
+        1008.3708260048898,
+        9243.692935087292,
+        -5.099092483520508
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3499525856,
+      "orientation": 0,
+      "phase": 0.9608216273672727,
+      "position": [
+        7229.2013548995465,
+        10343.963065809663,
+        -7.6433790028095245
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3113228020,
+      "orientation": 0,
+      "phase": -0.966062363782179,
+      "position": [
+        7113.160382771893,
+        -10292.384149579939,
+        -0.9077363014221191
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1995364259,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 40897,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1048424545,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1431017034,
+      "orientation": 0,
+      "phase": -3.1361103534962584,
+      "position": [
+        -11616.119798952464,
+        -63.68369267908995,
+        -7.722242683172226
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 147795670,
+      "orientation": 0,
+      "phase": -2.929940549611041,
+      "position": [
+        -12298.96254900929,
+        -2642.680701714661,
+        -5.535844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3054934010,
+      "orientation": 0,
+      "phase": -1.6231112157356262,
+      "position": [
+        -256.21249082136103,
+        -4893.037434765213,
+        -9.68106722831726
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2796935820,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3000137234,
+      "orientation": 0,
+      "phase": 2.5213337153139883,
+      "position": [
+        -12053.032759210613,
+        8609.481170617753,
+        -3.493757486343384
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2384298770,
+      "orientation": 0,
+      "phase": 1.4621385362994863,
+      "position": [
+        1008.3708260048898,
+        9243.692935087292,
+        -5.099092483520508
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3133808665,
+      "orientation": 0,
+      "phase": 0.9608216273672727,
+      "position": [
+        7229.2013548995465,
+        10343.963065809663,
+        -7.6433790028095245
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 949028112,
+      "orientation": 0,
+      "phase": -0.966062363782179,
+      "position": [
+        7113.160382771893,
+        -10292.384149579939,
+        -0.9077363014221191
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4162043415,
+      "orientation": 0,
+      "phase": -3.1361103534962584,
+      "position": [
+        -11616.119798952464,
+        -63.68369267908995,
+        -7.722242683172226
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1982814934,
+      "orientation": 0,
+      "phase": -2.929940549611041,
+      "position": [
+        -12298.96254900929,
+        -2642.680701714661,
+        -5.535844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1277502129,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1628471770,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3508937,
+      "orientation": 0,
+      "phase": 0.09740707464880417,
+      "position": [
+        9778.363624853562,
+        955.5056988533751,
+        -9.955871343612671
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1336743733,
+      "orientation": 0,
+      "phase": 2.352112373690065,
+      "position": [
+        -11985.268359583246,
+        12083.520505547376,
+        -4.501236438751221
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1256446584,
+      "orientation": 0,
+      "phase": 0.9608216273672727,
+      "position": [
+        7229.2013548995465,
+        10343.963065809663,
+        -7.6433790028095245
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1999153270,
+      "orientation": 0,
+      "phase": 0.8440062564090063,
+      "position": [
+        7437.074146729904,
+        8364.219639135024,
+        -8.401151835918427
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 1177579211,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3059569777,
+      "orientation": 0,
+      "phase": -2.929940549611041,
+      "position": [
+        -12298.96254900929,
+        -2642.680701714661,
+        -5.535844326019287
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2170973272,
+      "orientation": 0,
+      "phase": 0.0,
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 574462227,
+      "orientation": 0,
+      "phase": -0.07522466368521039,
+      "position": [
+        10224.293178671387,
+        -770.5730578478116,
+        -0.5807046890258789
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 274076355,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2985139528,
+      "orientation": 0,
+      "phase": 2.4527791356284334,
+      "position": [
+        -12010.349637767393,
+        9888.641700174467,
+        1.3733129501342773
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3926878588,
+      "orientation": 0,
+      "phase": 1.569013069428842,
+      "position": [
+        17.805819278211185,
+        9984.98631938457,
+        -0.6035828590393066
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3999608036,
+      "orientation": 0,
+      "phase": 1.4621385362994863,
+      "position": [
+        1008.3708260048898,
+        9243.692935087292,
+        -5.099092483520508
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2000795742,
+      "orientation": 0,
+      "phase": 0.9608216273672727,
+      "position": [
+        7229.2013548995465,
+        10343.963065809663,
+        -7.6433790028095245
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3640160621,
+      "orientation": 0,
+      "phase": -0.966062363782179,
+      "position": [
+        7113.160382771893,
+        -10292.384149579939,
+        -0.9077363014221191
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2843077923,
+      "orientation": 0,
+      "phase": -2.789863244682835,
+      "position": [
+        -10014.088216561793,
+        -3675.066030383629,
+        -3.4262771606445312
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4125203559,
+      "orientation": 0,
+      "phase": -3.1361103534962584,
+      "position": [
+        -11616.119798952464,
+        -63.68369267908995,
+        -7.722242683172226
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 4115190738,
+      "orientation": 0,
+      "phase": -1.6231112157356262,
+      "position": [
+        -256.21249082136103,
+        -4893.037434765213,
+        -9.68106722831726
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2587117443,
+      "orientation": 0,
+      "phase": -1.7400464897599177,
+      "position": [
+        -394.5892491300993,
+        -2309.0925076361304,
+        -4.376389980316162
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3795339777,
+      "orientation": 0,
+      "phase": -0.03189201503328292,
+      "position": [
+        11180.6885184395,
+        -356.69562629453463,
+        -5.761274695396423
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 2747509921,
+      "orientation": 0,
+      "phase": 1.569013069428842,
+      "position": [
+        17.805819278211185,
+        9984.98631938457,
+        -0.6035828590393066
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    },
+    {
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "compatibility_mask": 49141,
+      "cone_cos": -1.0,
+      "confidence_floor": 0.0,
+      "guard_epsilon": 25.0,
+      "lineage_seed": 3492380619,
+      "orientation": 0,
+      "phase": 1.4621385362994863,
+      "position": [
+        1008.3708260048898,
+        9243.692935087292,
+        -5.099092483520508
+      ],
+      "radius": 10000.0,
+      "sheet": 1,
+      "time": 0.0
+    }
+  ],
+  "encoder_variant": "standard",
+  "metadata": {
+    "binary_g32": "wheel_bridge.g32.bin",
+    "binary_g64": "wheel_bridge.g64.bin",
+    "candidate_indices": [
+      33,
+      41,
+      46,
+      50,
+      51,
+      52,
+      53,
+      54,
+      56,
+      58,
+      60,
+      61,
+      62,
+      63,
+      66,
+      68,
+      70,
+      71,
+      72,
+      73,
+      74,
+      76,
+      78,
+      80,
+      81,
+      82,
+      83,
+      84,
+      86,
+      88,
+      90,
+      92,
+      93,
+      94,
+      98,
+      100,
+      101,
+      102,
+      103,
+      104,
+      106,
+      108,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      134,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      175,
+      176,
+      180,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      190,
+      191,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      204,
+      205,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      227
+    ],
+    "candidate_node_types": [
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "sensor",
+      "sensor",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "sensor",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "sensor",
+      "sensor",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "sensor",
+      "sensor",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "sensor",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "spatial_entity",
+      "sensor",
+      "sensor",
+      "sensor",
+      "observation",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "event",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation",
+      "observation"
+    ],
+    "origin_elevation_m": 7.456484794616699,
+    "origin_latitude": 52.531186508509556,
+    "origin_longitude": 5.48506509279024,
+    "relation_name": "near",
+    "source_graph_schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+    "source_index": 64,
+    "time_coordinate_convention": "query-local seconds; state.time=absolute_time-time_origin",
+    "time_origin_absolute": 1704073500.23
+  },
+  "profile": "G64_E32",
+  "query": {
+    "commit": false,
+    "mode_bit": 2,
+    "precision": "float32",
+    "target_orientation": 0,
+    "target_sheet": 1
+  },
+  "schema": "UGTS-GN-1.1"
+}

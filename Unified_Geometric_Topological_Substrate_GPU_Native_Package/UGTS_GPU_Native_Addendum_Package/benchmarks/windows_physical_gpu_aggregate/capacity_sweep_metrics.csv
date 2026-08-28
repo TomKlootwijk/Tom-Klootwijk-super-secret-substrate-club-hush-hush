@@ -1,0 +1,4 @@
+candidates,capacity_ratio,capacity_events,verified_demand,retained_events,headroom_events,overflow_events,allocated_output_bytes,output_allocation_reduction_ratio,subgroup_append_p50_ms,subgroup_append_counts_p50_ms,lossless_for_corpus,retained_outputs_validated,overflow_demand_validated,completeness_validated,counters_validated
+4194304,0.04,167773,199179,167773,-31406,31406,2684368,24.999874830872667,0.218896,0.220608,False,True,True,False,True
+4194304,0.0475,199230,199179,199179,51,0,3187680,21.052572403754453,0.219072,0.220736,True,True,True,True,True
+4194304,0.05,209716,199179,199179,10537,0,3355456,19.999923706345726,0.21904,0.220752,True,True,True,True,True

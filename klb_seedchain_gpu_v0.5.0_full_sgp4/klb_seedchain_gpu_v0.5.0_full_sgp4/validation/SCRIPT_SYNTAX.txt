@@ -1,0 +1,3 @@
+Linux shell scripts: PASS (`bash -n`)
+Python tools: PASS (`python -m py_compile`)
+PowerShell scripts: not parser-executed because PowerShell Core was unavailable in the preparation environment.

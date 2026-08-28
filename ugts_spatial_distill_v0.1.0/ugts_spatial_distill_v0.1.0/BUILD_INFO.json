@@ -1,0 +1,36 @@
+{
+  "format": "UGTS-SPATIAL-BUILD-INFO-1",
+  "package_version": "0.1.0",
+  "snapshot_date": "2026-08-16",
+  "preparation_environment": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "torch": "2.10.0+cpu",
+    "cuda_available": false,
+    "cuda_runtime": null
+  },
+  "validation": {
+    "unittest_passed": 10,
+    "compileall": "passed",
+    "wheel_isolated_resource_load": "passed",
+    "query_smoke_verified_events": 4,
+    "abi_smoke_candidates": 203
+  },
+  "demo": {
+    "nodes": 510,
+    "edges": 1827,
+    "events": 1013,
+    "examples": 720,
+    "checkpoint_parameters": 477328,
+    "checkpoint_sha256": "33c1f78a109c22b539cc55c55cab6013b1f4163cc6783cfc22662abd8b1105d5"
+  },
+  "vendored_catalog": {
+    "records": 211,
+    "sha256": "a64ac99f5aa50290b7a1e81b188dd4db771f726258ef968b93e9151dfa22e7db"
+  },
+  "boundaries": [
+    "No CUDA-capable GPU was available in the preparation environment.",
+    "Bundled benchmark_cpu.json is not an RTX 5070 Ti result.",
+    "Teacher model and real geospatial datasets are not bundled."
+  ]
+}

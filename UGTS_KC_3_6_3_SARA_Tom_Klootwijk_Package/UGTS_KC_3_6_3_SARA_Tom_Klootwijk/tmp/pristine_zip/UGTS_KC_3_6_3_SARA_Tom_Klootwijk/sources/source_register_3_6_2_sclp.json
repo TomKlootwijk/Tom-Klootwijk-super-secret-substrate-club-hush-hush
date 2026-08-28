@@ -1,0 +1,19 @@
+{
+  "version": "3.6.2",
+  "records": [
+    {
+      "source_id": "SCLP362-S11",
+      "descriptive_name": "1855-sdf-with-a-sweeping-cone-analytical-1bit-jitter-with-T-as-side-of-the-pyramid-the-circle-of-the-cone-the-delta-the-sphere-and-change-of-chang.pdf",
+      "sha256": "7e29c1c800d905268f35084a6a4c7d9c1cfed50c926c63a8ec2c79021e32ab63",
+      "pages": 13,
+      "role": "Swept cone, log-polar metric, time/phase, topology, finite grammar, 64-bit packing and compression motifs.",
+      "redistributed": false
+    },
+    {
+      "source_id": "BASE-361",
+      "descriptive_name": "UGTS-KC 3.6.1 BEA Course-Corrected package",
+      "role": "Immediate formal baseline and referential registry inherited by 3.6.2.",
+      "redistributed": true
+    }
+  ]
+}

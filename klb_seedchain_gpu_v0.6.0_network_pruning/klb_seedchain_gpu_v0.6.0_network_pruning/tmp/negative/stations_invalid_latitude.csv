@@ -1,0 +1,2 @@
+station_id,name,latitude_deg,longitude_deg,altitude_km,elevation_mask_deg,crossing_band_deg,max_range_km,orbit_mask,service_mask,route_mask
+2001,Invalid Latitude Profile,91.0000,5.1000,0.050,10.0,1.0,33000,MEO,NAV,any

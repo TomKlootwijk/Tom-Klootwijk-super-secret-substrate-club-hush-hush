@@ -1,0 +1,92 @@
+{
+  "authorization_gate": {
+    "direct_derivation_api_has_authorization_parameter": false,
+    "direct_derivation_succeeds_without_authorization_certificate": true,
+    "forbidden_reason_codes": [
+      "FORBIDDEN_PRIVATE_KEY_OR_FUNDS_ACCESS_SCOPE",
+      "UNRECOGNIZED_OR_UNAUTHORIZED_SCOPE"
+    ],
+    "forbidden_scope_authorized": false,
+    "self_asserted_scope_authorized_without_ownership_proof": true
+  },
+  "input_resilience": {
+    "bech32_latency_max_microseconds": 20.20000829361379,
+    "bech32_latency_p95_microseconds": 4.9000082071870565,
+    "derivation_path_component_limit_enforced": false,
+    "derivation_path_components_accepted": 100000,
+    "derivation_path_parse_seconds": 0.01459669999894686,
+    "million_bit_estimate_exception": "OverflowError",
+    "million_bit_estimate_seconds": 6.029999349266291e-05,
+    "random_bech32_cases": 10000,
+    "random_bech32_cases_accepted": 0,
+    "runtime_trace_count_after_first_run": 6,
+    "runtime_trace_count_after_second_run": 12,
+    "search_bits_upper_bound_enforced": false,
+    "trace_is_reset_between_runs": false
+  },
+  "performance": {
+    "expected_128_bit_search_years_at_measured_full_derivation_rate": 1.4852430443763542e+30,
+    "expected_half_of_one_million_passphrase_dictionary_seconds_at_measured_rate": 137740.62500306172,
+    "full_bip84_derivations_per_second": 3.630011116828357,
+    "full_derivation_measurement_batch_seconds": 0.5509625000122469,
+    "pbkdf2_measurement_batch_seconds": 0.2241218999843113,
+    "pbkdf2_seed_derivations_per_second": 1115.4643969085582
+  },
+  "runtime_capabilities": {
+    "absolute_path_disclosed_in_trace": true,
+    "blocked_capability_calls": [],
+    "file_open_modes": [
+      "r"
+    ],
+    "runtime_completed": true,
+    "trace_entries": 6,
+    "write_like_file_opens": []
+  },
+  "scope": "non-destructive local defensive probes using only public test vectors",
+  "secret_boundary": {
+    "hdnode_asdict_keys": [
+      "chain_code",
+      "child_number",
+      "depth",
+      "parent_fingerprint",
+      "private_key"
+    ],
+    "hdnode_has_zeroize_method": false,
+    "hdnode_repr_contains_chain_code": true,
+    "hdnode_repr_contains_private_key": true,
+    "inputs_are_immutable_python_types": {
+      "mnemonic": "str",
+      "passphrase": "str",
+      "seed": "bytes"
+    },
+    "mnemonic_validation_asdict_keys": [
+      "checksum_bits",
+      "checksum_expected",
+      "checksum_observed",
+      "checksum_valid",
+      "entropy_bits",
+      "entropy_fingerprint",
+      "indices",
+      "word_count",
+      "wordlist_fingerprint"
+    ],
+    "public_certificate_contains_exact_secret_values": {
+      "chain_code_hex": false,
+      "mnemonic": false,
+      "private_key_decimal": false,
+      "private_key_hex": false,
+      "seed_hex": false
+    }
+  },
+  "validator_strength": {
+    "evasive_dynamic_import_scan_result": {
+      "network_imports": [],
+      "prohibited_function_names": []
+    },
+    "evasive_source_actually_contains_dynamic_socket_import": true,
+    "reads_stored_test_transcript_instead_of_running_tests": true,
+    "runtime_capability_flags_are_read_from_certificate": true,
+    "source_files_scanned_for_imports": 2,
+    "visual_inspection_count_is_hardcoded": true
+  }
+}

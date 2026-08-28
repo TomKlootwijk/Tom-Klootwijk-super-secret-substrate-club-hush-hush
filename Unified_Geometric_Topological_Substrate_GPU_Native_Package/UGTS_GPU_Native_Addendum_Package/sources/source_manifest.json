@@ -1,0 +1,115 @@
+{
+  "schema": "UGTS-SOURCE-MANIFEST-1.1",
+  "sources": [
+    {
+      "source_id": "S01",
+      "title": "Glyph-to-bit, 100% and timeline addendum",
+      "pages": 29,
+      "role": "New addendum: custom glyph encoder, pulse pair, log-polar/SDF register model, trident/cup threshold motif",
+      "family": "numeric-glyph-addendum",
+      "status": "PRIMARY ADDENDUM",
+      "privacy": "Personal contextual details omitted from synthesis",
+      "bytes": 450338,
+      "sha256": "fc5ffcd4c8e6f53cc0d4a0103ba14be3b4673246a2b2d7e0369fb33f6b5829d3"
+    },
+    {
+      "source_id": "S02",
+      "title": "Zero-based timeline, split oval and overlap geometry",
+      "pages": 19,
+      "role": "Index/ordinal distinction; torsional split-oval; double arches; overlap lens as interference, tolerance and shared domain",
+      "family": "numeric-geometry",
+      "status": "PRIMARY",
+      "privacy": "Narrative and political material excluded as non-technical",
+      "bytes": 4163199,
+      "sha256": "1ab4f04669ded1aa2308c28ce634e487fa4c26ba0a82bfe436e606388ef0f6dd"
+    },
+    {
+      "source_id": "S03",
+      "title": "Chronological synthesis of the spherical substrate line",
+      "pages": 12,
+      "role": "Mature interpretive rule: queryable relations, support, compatibility, event solving, transition, lineage, novelty log",
+      "family": "canonical-synthesis",
+      "status": "CANONICAL",
+      "privacy": "None",
+      "bytes": 2111182,
+      "sha256": "9bacfe071a64951fb412798a036e08f9d445b83087acb001b660e64d6036e052"
+    },
+    {
+      "source_id": "S04",
+      "title": "Vector graphical art system",
+      "pages": 10,
+      "role": "Log-polar addressing, SDF/CSG, phasor-like coverage, PDM/delta-sigma, chromatic offsets and prepress output",
+      "family": "projection-output",
+      "status": "TRANSLATED",
+      "privacy": "System name retained only as corpus label",
+      "bytes": 173133,
+      "sha256": "6518f7f73f46ec6c6288fe93f95e8d9e4f331376aee33ceb26f4508a1e30e58c"
+    },
+    {
+      "source_id": "S05",
+      "title": "Practical waveguide liquid-substrate lensing",
+      "pages": 12,
+      "role": "Bounded optofluidic endpoint, measured B.C.E., benchmark vector, fabrication and kill criteria",
+      "family": "physical-hardware",
+      "status": "CANONICAL HARDWARE",
+      "privacy": "None",
+      "bytes": 464845,
+      "sha256": "949d7ee3cd7c9e4ffdb27d63b2805ce4f1491568a6fdd5b7e04331d3c96d16ac"
+    },
+    {
+      "source_id": "S06",
+      "title": "D\u2013phi\u2013torque extended dialogue (title redacted)",
+      "pages": 52,
+      "role": "Large exploratory branch: glyph morphing, parity hinge, SDF cone, M\u00f6bius/Klein motifs, fixed-width records, AR/waveguide and speculative biology",
+      "family": "d-phi-torque-family",
+      "status": "EXPLORATORY / DEDUPED",
+      "privacy": "Original title contains personal identifiers; excluded",
+      "bytes": 4714143,
+      "sha256": "543515e2a0f3b545cb14db9133587835180d7e7d2c8f8c1ec769cf1f8682f043"
+    },
+    {
+      "source_id": "S07",
+      "title": "D\u2013phi\u2013torque extended variant",
+      "pages": 42,
+      "role": "Near-duplicate branch with a later grounded technical specification and dream/AR analogies",
+      "family": "d-phi-torque-family",
+      "status": "EXPLORATORY / DEDUPED",
+      "privacy": "Personal/contextual passages omitted",
+      "bytes": 4517038,
+      "sha256": "41fab10296500bfca59b2ffe97b7ef9f3d47502f2d943294c3ca8b96bbaf7114"
+    },
+    {
+      "source_id": "S08",
+      "title": "Hollowland double-vacuum exploration",
+      "pages": 36,
+      "role": "Source of double-vacuum, Klein, hourglass, event horizon, UUID, GPU-native and compression rhetoric",
+      "family": "topology-grand-claims",
+      "status": "MOTIF SOURCE / CLAIMS AUDITED",
+      "privacy": "None",
+      "bytes": 1008188,
+      "sha256": "69a6b341d02c87f43dcaf048489ef0b046c9a6d0a24efbc61f180f696d9912a8"
+    },
+    {
+      "source_id": "S09",
+      "title": "19, radix thresholds and fractal topology",
+      "pages": 30,
+      "role": "Radix thresholds, active-bit/phonetic map, Pascal parity, Sierpi\u0144ski, cone/lemniscate/chirality and log-polar motifs",
+      "family": "numeric-fractal",
+      "status": "PRIMARY MOTIF SOURCE",
+      "privacy": "Personal contextual details omitted",
+      "bytes": 460740,
+      "sha256": "745ceb1251ac496d5137deb2a83e33b41a0812072844809d2580b6d597c188ee"
+    },
+    {
+      "source_id": "S10",
+      "title": "D\u2013phi\u2013torque compact variant",
+      "pages": 34,
+      "role": "Shorter near-duplicate of the D\u2013phi\u2013torque family; useful for glyph, SDF, fixed-width and waveguide motifs",
+      "family": "d-phi-torque-family",
+      "status": "EXPLORATORY / DEDUPED",
+      "privacy": "Personal identifiers omitted",
+      "bytes": 4426242,
+      "sha256": "66f17de45fd6e358700d97296e581eb8fc3e93d49bf7a0681531b66ebdd922fe"
+    }
+  ]
+}

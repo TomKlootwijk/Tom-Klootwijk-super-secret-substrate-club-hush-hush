@@ -1,0 +1,33 @@
+{
+  "algorithm": "SHA-256",
+  "file_count": 4,
+  "files": [
+    {
+      "bytes": 1639,
+      "path": "README_GROVE_3_9_2.md",
+      "sha256": "4121765836e7eeee2719950483abd8b6da1a13184595886adab77b89f9e3cf30"
+    },
+    {
+      "bytes": 6,
+      "path": "VERSION",
+      "sha256": "2e9fa1560d7dc408e42825c89133fcd37ffa3d2a7d3f911ab21ec6b21ad76cd8"
+    },
+    {
+      "bytes": 89,
+      "path": "validation/glsl_validation_status.txt",
+      "sha256": "0db2f6733f0f400d4eb790c469922206640bb766981485f5e96b192716f0b972"
+    },
+    {
+      "bytes": 23,
+      "path": "validation/pytest_final.txt",
+      "sha256": "a6fc53a5cef0fe8278c459c532a5e372bbe2dd65e4c365a7d7757a210299799f"
+    }
+  ],
+  "manifest_excludes": [
+    "manifest/FILE_MANIFEST_3_9_2.json",
+    "manifest/SHA256SUMS_3_9_2.txt"
+  ],
+  "release": "UGTS-KC 3.9.2 K-Kij-T / Grove",
+  "root": "UGTS_KC_K_Kij_T_Grove_3_9_2_Package",
+  "total_bytes": 1757
+}

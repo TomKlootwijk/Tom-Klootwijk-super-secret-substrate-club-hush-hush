@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "LINKED_RESOURCES_BINARY_FORMAT",
+    "kind": "Directory"
+  },
+  "applicationId": "nl.tomklootwijk.ugtskc.signature.pocox7pro",
+  "variantName": "pocoX7ProDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 391,
+      "versionName": "3.9.1-poco-x7-pro",
+      "outputFile": "linked-resources-binary-format-pocoX7ProDebug.ap_"
+    }
+  ],
+  "elementType": "File"
+}

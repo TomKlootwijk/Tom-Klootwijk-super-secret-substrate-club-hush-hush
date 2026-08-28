@@ -1,0 +1,40 @@
+{
+  "samples": 777,
+  "first_timestamp": "2026/08/17 08:26:40.905",
+  "last_timestamp": "2026/08/17 08:30:33.165",
+  "utilization_gpu_pct": {
+    "minimum": 0.0,
+    "average": 99.61389961389962,
+    "maximum": 100.0
+  },
+  "utilization_memory_pct": {
+    "minimum": 0.0,
+    "average": 0.06692406692406692,
+    "maximum": 4.0
+  },
+  "memory_used_mib": {
+    "minimum": 612.0,
+    "average": 688.7387387387388,
+    "maximum": 2472.0
+  },
+  "power_draw_w": {
+    "minimum": 6.14,
+    "average": 73.69951093951083,
+    "maximum": 85.06
+  },
+  "temperature_gpu_c": {
+    "minimum": 50.0,
+    "average": 70.34105534105534,
+    "maximum": 74.0
+  },
+  "clocks_sm_mhz": {
+    "minimum": 180.0,
+    "average": 2757.1492921492923,
+    "maximum": 2782.0
+  },
+  "clocks_mem_mhz": {
+    "minimum": 405.0,
+    "average": 11823.91377091377,
+    "maximum": 14001.0
+  }
+}

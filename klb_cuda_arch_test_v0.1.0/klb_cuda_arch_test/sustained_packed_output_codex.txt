@@ -1,0 +1,12 @@
+Device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        : 12.0
+CUDA driver/runtime       : 13010 / 12080
+VRAM                      : 11.94 GiB
+Dataset records           : 8388608 (padded 8388608)
+KLB container             : 38797448 bytes, 4.62 payload bytes/input point
+Quantization RMS/max      : 0.00 / 0.00
+Queries/depth/repeats     : 4194304 / 12 / 3000
+
+packed          3.3354 ms    1257.524 Mquery/s  nominal    69.793 GB/s  load-ceil   181.083 GB/s  hash 0xe3d0e9bc
+
+Verification disabled.

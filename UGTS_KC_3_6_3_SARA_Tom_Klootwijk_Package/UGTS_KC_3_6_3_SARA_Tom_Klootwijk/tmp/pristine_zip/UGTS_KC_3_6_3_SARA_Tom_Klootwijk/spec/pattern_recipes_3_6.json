@@ -1,0 +1,126 @@
+{
+  "schema_version": "3.6.0",
+  "count": 20,
+  "patterns": [
+    {
+      "id": "P36-01",
+      "name": "Radix threshold ladder",
+      "pipeline": "number -> thresholds",
+      "rule": "Use b^k boundaries as discrete scale events or shell indices."
+    },
+    {
+      "id": "P36-02",
+      "name": "Active-bit pulse simplex",
+      "pipeline": "integer -> set-bit pulses -> polygon",
+      "rule": "Embed sparse active positions as a chosen simplex or regular polygon while retaining bit positions as metadata."
+    },
+    {
+      "id": "P36-03",
+      "name": "Pascal parity mask",
+      "pipeline": "(n,k) -> C(n,k) mod 2",
+      "rule": "Generate a Sierpinski occupancy mask with exact parity tests; do not claim generic power-of-two rows are all odd."
+    },
+    {
+      "id": "P36-04",
+      "name": "Dutch teen suffix hinge",
+      "pipeline": "13..19 -> unit-root + tien",
+      "rule": "Represent morphological order separately from decimal place order."
+    },
+    {
+      "id": "P36-05",
+      "name": "Dutch en-order hinge",
+      "pipeline": "21..99 non-multiple tens -> unit + en + tens",
+      "rule": "Insert a connector node and perform a two-component semantic transposition."
+    },
+    {
+      "id": "P36-06",
+      "name": "Cut-open boundary graph",
+      "pipeline": "closed edge -> cut port pair",
+      "rule": "Change a loop constraint into an open path with explicit endpoint identity."
+    },
+    {
+      "id": "P36-07",
+      "name": "Loop-to-leg morph",
+      "pipeline": "closed arc -> diagonal segment",
+      "rule": "Interpolate curve controls while separately recording the topology event."
+    },
+    {
+      "id": "P36-08",
+      "name": "Split-oval antisymmetry",
+      "pipeline": "single loop -> two branches",
+      "rule": "Use a fixed center node and opposite signed displacement fields."
+    },
+    {
+      "id": "P36-09",
+      "name": "Overlap-lens domain",
+      "pipeline": "A,B -> A intersection B",
+      "rule": "Treat overlap as geometry, tolerance, blend or join domain only after semantics are declared."
+    },
+    {
+      "id": "P36-10",
+      "name": "SDF-zero event",
+      "pipeline": "f(x(t)) -> root -> transition",
+      "rule": "Promote a boundary crossing from sampling detail to event semantics."
+    },
+    {
+      "id": "P36-11",
+      "name": "Cone support gate",
+      "pipeline": "position,axis,radius,angle -> admit/reject",
+      "rule": "Prune by radial and angular support before relation solving."
+    },
+    {
+      "id": "P36-12",
+      "name": "Nested-shell relevance",
+      "pipeline": "radius -> interval index",
+      "rule": "Use concentric intervals as local multiscale support, not global identity."
+    },
+    {
+      "id": "P36-13",
+      "name": "Mobius orientation wrap",
+      "pipeline": "boundary crossing -> coordinate wrap + orientation flip",
+      "rule": "Implement non-orientability as an explicit quotient map."
+    },
+    {
+      "id": "P36-14",
+      "name": "Klein sheet wrap",
+      "pipeline": "boundary crossing -> wrap + orientation and sheet update",
+      "rule": "Keep projected self-intersection distinct from state coupling."
+    },
+    {
+      "id": "P36-15",
+      "name": "Hourglass route table",
+      "pipeline": "guard locus + quadrant + parity -> branch",
+      "rule": "Route through a finite four-sector table."
+    },
+    {
+      "id": "P36-16",
+      "name": "Log-polar bitmask",
+      "pipeline": "Cartesian point -> core flag, rho, theta -> sector bit",
+      "rule": "Use a compact local admission mask with explicit dimensions and singular core."
+    },
+    {
+      "id": "P36-17",
+      "name": "Golden-angle schedule",
+      "pipeline": "index -> low-regularity angular sample",
+      "rule": "Use as a sample schedule only; no zero-aliasing or zero-cost claim."
+    },
+    {
+      "id": "P36-18",
+      "name": "Bounded grammar recursion",
+      "pipeline": "seed + productions + budgets -> definition graph",
+      "rule": "Stop on depth, symbol, expression or cycle limits."
+    },
+    {
+      "id": "P36-19",
+      "name": "Event-latched field morph",
+      "pipeline": "continuous alpha + discrete topology state",
+      "rule": "Keep visual interpolation and committed topology state separate."
+    },
+    {
+      "id": "P36-20",
+      "name": "Content-addressed definition graph",
+      "pipeline": "canonical records -> hashes -> dependency DAG",
+      "rule": "Make the substrate carry and verify its own operator definitions."
+    }
+  ]
+}

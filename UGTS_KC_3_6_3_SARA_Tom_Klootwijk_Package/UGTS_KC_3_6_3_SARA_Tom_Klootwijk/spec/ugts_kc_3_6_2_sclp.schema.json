@@ -1,0 +1,296 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ugts-kc:3.6.2:sclp",
+  "title": "UGTS-KC 3.6.2 SCLP Substrate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "substrate_id",
+    "metadata",
+    "definitions",
+    "instances",
+    "pipelines"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "3.6.2"
+    },
+    "substrate_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9:._/-]+$"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "title",
+        "description",
+        "evidence_boundary",
+        "revision_status",
+        "requester_attribution",
+        "source"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision_status": {
+          "const": "delta-over-3.6.1-course-corrected"
+        },
+        "requester_attribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "identifier",
+            "date_of_birth",
+            "status"
+          ],
+          "properties": {
+            "name": {
+              "const": "Tom Klootwijk"
+            },
+            "identifier": {
+              "const": "NL200678942"
+            },
+            "date_of_birth": {
+              "const": "10-07-1990"
+            },
+            "status": {
+              "const": "requester-supplied-unverified"
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "descriptive_name",
+            "sha256",
+            "pages",
+            "redistributed"
+          ],
+          "properties": {
+            "descriptive_name": {
+              "type": "string"
+            },
+            "sha256": {
+              "const": "7e29c1c800d905268f35084a6a4c7d9c1cfed50c926c63a8ec2c79021e32ab63"
+            },
+            "pages": {
+              "const": 13
+            },
+            "redistributed": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/definition"
+      }
+    },
+    "instances": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/instance"
+      }
+    },
+    "pipelines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/pipeline"
+      }
+    },
+    "queries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind"
+        ],
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9:._/-]*$"
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "domain",
+        "codomain",
+        "evaluation_phase",
+        "dependencies",
+        "parameters",
+        "invariants",
+        "provenance",
+        "content_hash"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "codomain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evaluation_phase": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "invariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "class",
+            "note",
+            "source_refs"
+          ],
+          "properties": {
+            "class": {
+              "enum": [
+                "source-derived",
+                "profile-axiom",
+                "engineering-derived",
+                "corrected",
+                "bounded"
+              ]
+            },
+            "note": {
+              "type": "string"
+            },
+            "source_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "instance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "definition_ref",
+        "literal",
+        "state"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "definition_ref": {
+          "$ref": "#/$defs/id"
+        },
+        "literal": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "point",
+            "cone",
+            "logpolar",
+            "time",
+            "hinge",
+            "jitter",
+            "wrap_state",
+            "constraint",
+            "grammar",
+            "sweep"
+          ]
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "profile_ref"
+          ]
+        }
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "description",
+        "steps"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "description": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    }
+  }
+}

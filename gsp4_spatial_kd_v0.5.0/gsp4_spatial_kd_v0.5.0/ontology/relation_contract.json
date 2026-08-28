@@ -1,0 +1,301 @@
+{
+  "format": "GSP4-RELATION-CONTRACT-1",
+  "relations": [
+    {
+      "id": 0,
+      "name": "located_in",
+      "requires_geometry": true,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "spatial_entity",
+        "sensor",
+        "observation",
+        "event"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "spatial_cell",
+        "spatial_entity"
+      ],
+      "uri": "http://www.opengis.net/ont/geosparql#sfWithin"
+    },
+    {
+      "id": 1,
+      "name": "adjacent_to",
+      "requires_geometry": true,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "spatial_cell",
+        "spatial_entity"
+      ],
+      "symmetric": true,
+      "target_types": [
+        "spatial_cell",
+        "spatial_entity"
+      ],
+      "uri": "http://www.opengis.net/ont/geosparql#sfTouches"
+    },
+    {
+      "id": 2,
+      "name": "near",
+      "requires_geometry": true,
+      "requires_guard": true,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "spatial_entity",
+        "sensor",
+        "observation"
+      ],
+      "symmetric": true,
+      "target_types": [
+        "spatial_entity",
+        "sensor",
+        "observation"
+      ],
+      "uri": "urn:ugts:gsp4:near"
+    },
+    {
+      "id": 3,
+      "name": "observes",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "sensor"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "concept"
+      ],
+      "uri": "http://www.w3.org/ns/sosa/observes"
+    },
+    {
+      "id": 4,
+      "name": "made_by_sensor",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "observation"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "sensor"
+      ],
+      "uri": "http://www.w3.org/ns/sosa/madeBySensor"
+    },
+    {
+      "id": 5,
+      "name": "has_property",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "observation",
+        "spatial_entity",
+        "sensor"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "concept"
+      ],
+      "uri": "http://www.w3.org/ns/sosa/observedProperty"
+    },
+    {
+      "id": 6,
+      "name": "instance_of",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "spatial_entity",
+        "sensor",
+        "observation",
+        "event"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "concept"
+      ],
+      "uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+    },
+    {
+      "id": 7,
+      "name": "affects",
+      "requires_geometry": true,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "observation",
+        "event"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "spatial_entity",
+        "sensor",
+        "spatial_cell"
+      ],
+      "uri": "urn:ugts:gsp4:affects"
+    },
+    {
+      "id": 8,
+      "name": "descends_from",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "event",
+        "lineage_state",
+        "observation"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "event",
+        "lineage_state",
+        "observation"
+      ],
+      "uri": "urn:ugts:gsp4:descendsFrom"
+    },
+    {
+      "id": 9,
+      "name": "supersedes",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "event",
+        "observation",
+        "lineage_state"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "event",
+        "observation",
+        "lineage_state"
+      ],
+      "uri": "urn:ugts:gsp4:supersedes"
+    },
+    {
+      "id": 10,
+      "name": "compatible_with",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "spatial_entity",
+        "sensor",
+        "observation",
+        "spatial_cell",
+        "concept",
+        "event",
+        "lineage_state"
+      ],
+      "symmetric": true,
+      "target_types": [
+        "spatial_entity",
+        "sensor",
+        "observation",
+        "spatial_cell",
+        "concept",
+        "event",
+        "lineage_state"
+      ],
+      "uri": "urn:ugts:gsp4:compatibleWith"
+    },
+    {
+      "id": 11,
+      "name": "crossed_guard",
+      "requires_geometry": true,
+      "requires_guard": true,
+      "semantic_teacher_allowed": false,
+      "source_types": [
+        "event",
+        "observation"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "spatial_entity",
+        "spatial_cell",
+        "sensor"
+      ],
+      "uri": "urn:ugts:gsp4:crossedGuard"
+    },
+    {
+      "id": 12,
+      "name": "transitioned_to",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "event",
+        "lineage_state",
+        "observation"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "event",
+        "lineage_state",
+        "observation"
+      ],
+      "uri": "urn:ugts:gsp4:transitionedTo"
+    },
+    {
+      "id": 13,
+      "name": "same_cell",
+      "requires_geometry": true,
+      "requires_guard": false,
+      "semantic_teacher_allowed": false,
+      "source_types": [
+        "spatial_entity",
+        "sensor",
+        "observation"
+      ],
+      "symmetric": true,
+      "target_types": [
+        "spatial_entity",
+        "sensor",
+        "observation"
+      ],
+      "uri": "urn:ugts:gsp4:sameCell"
+    },
+    {
+      "id": 14,
+      "name": "connected_to",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "spatial_entity",
+        "sensor",
+        "spatial_cell"
+      ],
+      "symmetric": true,
+      "target_types": [
+        "spatial_entity",
+        "sensor",
+        "spatial_cell"
+      ],
+      "uri": "urn:ugts:gsp4:connectedTo"
+    },
+    {
+      "id": 15,
+      "name": "derived_from",
+      "requires_geometry": false,
+      "requires_guard": false,
+      "semantic_teacher_allowed": true,
+      "source_types": [
+        "observation",
+        "event"
+      ],
+      "symmetric": false,
+      "target_types": [
+        "sensor",
+        "observation",
+        "event"
+      ],
+      "uri": "http://www.w3.org/ns/prov#wasDerivedFrom"
+    }
+  ]
+}

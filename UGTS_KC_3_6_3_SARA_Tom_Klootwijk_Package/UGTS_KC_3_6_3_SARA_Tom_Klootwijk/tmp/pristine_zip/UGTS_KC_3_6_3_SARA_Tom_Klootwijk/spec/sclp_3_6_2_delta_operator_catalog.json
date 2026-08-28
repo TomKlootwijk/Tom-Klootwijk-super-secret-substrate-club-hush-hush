@@ -1,0 +1,452 @@
+[
+  {
+    "operator_id": "sclp362.profile.packed-swept-cone-v1",
+    "domain": "Profile",
+    "mechanism": "Packed SCLP profile",
+    "formal_definition": "Typed finite profile combining a cone relation, log-polar chart, modular time, topology, grammar and two 64-bit key layouts.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Specified",
+    "source_scope": "pp.9-13"
+  },
+  {
+    "operator_id": "sclp362.type.symbol-separation-v1",
+    "domain": "Typing",
+    "mechanism": "Overloaded-symbol separation",
+    "formal_definition": "T is slant length; t is linear time; X is a modular tick; phi is a hoop angle; delta_rho and epsilon_guard are distinct.",
+    "disposition": "CORRECTED",
+    "validation": "Exact contract",
+    "source_scope": "pp.1-8"
+  },
+  {
+    "operator_id": "sclp362.type.lowercase-phi-circle-v1",
+    "domain": "Typing",
+    "mechanism": "Lower-case phi as S1 coordinate",
+    "formal_definition": "Represent phi as a periodic angle in R/(2pi Z); do not identify it with the golden ratio Phi.",
+    "disposition": "RETAIN",
+    "validation": "Exact",
+    "source_scope": "pp.1,3,7-10"
+  },
+  {
+    "operator_id": "sclp362.type.delta-family-v1",
+    "domain": "Typing",
+    "mechanism": "Typed delta family",
+    "formal_definition": "Separate log-radius increment, time increment, finite-difference step, jitter amplitude and guard margin.",
+    "disposition": "CORRECTED",
+    "validation": "Exact contract",
+    "source_scope": "pp.1-3,7-8"
+  },
+  {
+    "operator_id": "sclp362.type.evidence-boundary-v1",
+    "domain": "Governance",
+    "mechanism": "Source/normalization boundary",
+    "formal_definition": "Every claim is labeled source-derived, corrected, bounded or rejected and carries a profile scope.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "all"
+  },
+  {
+    "operator_id": "sclp362.geometry.cone-slant-angle-v1",
+    "domain": "Geometry",
+    "mechanism": "Cone from slant length and half-angle",
+    "formal_definition": "Given T>0 and alpha in (0,pi/2), derive height h=T cos alpha and base radius R=T sin alpha.",
+    "disposition": "CORRECTED",
+    "validation": "Exact",
+    "source_scope": "p.1"
+  },
+  {
+    "operator_id": "sclp362.geometry.finite-cone-sdf-v1",
+    "domain": "Geometry",
+    "mechanism": "Exact finite-cone signed distance",
+    "formal_definition": "Reduce to signed distance from the meridian point to the filled triangle (-R,h),(R,h),(0,0).",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.1,8,10"
+  },
+  {
+    "operator_id": "sclp362.geometry.cone-relation-class-v1",
+    "domain": "Geometry",
+    "mechanism": "Three-state relation class",
+    "formal_definition": "Classify a finite-cone residual as interior, guard-zero or exterior with a declared epsilon.",
+    "disposition": "RETAIN",
+    "validation": "Implemented",
+    "source_scope": "pp.9-10"
+  },
+  {
+    "operator_id": "sclp362.geometry.sphere-sdf-v1",
+    "domain": "Geometry",
+    "mechanism": "Sphere relation",
+    "formal_definition": "Use ||x-c||-R as an exact local spherical relation.",
+    "disposition": "RETAIN",
+    "validation": "Implemented",
+    "source_scope": "p.1"
+  },
+  {
+    "operator_id": "sclp362.geometry.paired-sphere-support-v1",
+    "domain": "Support",
+    "mechanism": "Two-sphere support pair",
+    "formal_definition": "Treat the two-sphered eye motif as two local spherical supports with union/intersection and overlap tags.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "p.1"
+  },
+  {
+    "operator_id": "sclp362.sweep.translation-family-v1",
+    "domain": "Sweep",
+    "mechanism": "Rigid translational cone family",
+    "formal_definition": "C(u)=C0+s(u) with fixed orientation and a declared finite interval.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.1,6-8"
+  },
+  {
+    "operator_id": "sclp362.sweep.lipschitz-interval-v1",
+    "domain": "Sweep",
+    "mechanism": "Certified sweep interval",
+    "formal_definition": "Uniform samples plus the 1-Lipschitz translation law bound the true sweep infimum in [m-Lh/2,m].",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.1,6-8"
+  },
+  {
+    "operator_id": "sclp362.sweep.zero-tangent-projector-v1",
+    "domain": "Kinematics",
+    "mechanism": "Zero-surface tangent projection",
+    "formal_definition": "Project a proposed velocity with P=I-n n^T so its first-order field derivative vanishes on a regular zero set.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.3-4"
+  },
+  {
+    "operator_id": "sclp362.logpolar.chart-v1",
+    "domain": "Coordinates",
+    "mechanism": "Log-polar chart",
+    "formal_definition": "rho=ln(r/r0), theta=atan2(y,x) with an explicit core radius.",
+    "disposition": "RETAIN",
+    "validation": "Implemented",
+    "source_scope": "pp.2-3,8-10"
+  },
+  {
+    "operator_id": "sclp362.logpolar.core-v1",
+    "domain": "Coordinates",
+    "mechanism": "Explicit origin core",
+    "formal_definition": "The logarithmic chart does not remove the r=0 singularity; a core flag and radius are mandatory.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "p.2"
+  },
+  {
+    "operator_id": "sclp362.logpolar.metric-v1",
+    "domain": "Metric",
+    "mechanism": "Conformal metric tensor",
+    "formal_definition": "In the plane ds^2=r^2(d rho^2+d theta^2), so the metric factor is r^2=e^(2 rho) r0^2.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.2,9-10"
+  },
+  {
+    "operator_id": "sclp362.logpolar.exact-radial-step-v1",
+    "domain": "Metric",
+    "mechanism": "Exact local radial increment",
+    "formal_definition": "A log step delta_rho gives delta_r=r(exp(delta_rho)-1), approximately r delta_rho only to first order.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "p.2"
+  },
+  {
+    "operator_id": "sclp362.logpolar.jacobian-v1",
+    "domain": "Kinematics",
+    "mechanism": "Log-polar Jacobian",
+    "formal_definition": "J=r[[cos theta,-sin theta],[sin theta,cos theta]].",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.3,8,10"
+  },
+  {
+    "operator_id": "sclp362.logpolar.velocity-v1",
+    "domain": "Kinematics",
+    "mechanism": "Velocity transform",
+    "formal_definition": "v=r(rho_dot e_r+theta_dot e_theta).",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "p.3"
+  },
+  {
+    "operator_id": "sclp362.logpolar.acceleration-v1",
+    "domain": "Kinematics",
+    "mechanism": "Change-of-change transform",
+    "formal_definition": "a=r[(rho_ddot+rho_dot^2-theta_dot^2)e_r+(theta_ddot+2 rho_dot theta_dot)e_theta].",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.1,3,8,10"
+  },
+  {
+    "operator_id": "sclp362.logpolar.gradient-v1",
+    "domain": "Metric",
+    "mechanism": "Gradient covector transform",
+    "formal_definition": "Cartesian gradient equals (f_rho e_r+f_theta e_theta)/r; physical force scaling still requires a model.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "p.10"
+  },
+  {
+    "operator_id": "sclp362.jitter.deterministic-bit-v1",
+    "domain": "Topology/control",
+    "mechanism": "Deterministic one-bit jitter",
+    "formal_definition": "Hash address, time tick and seed to a reproducible bit used as a bounded signed perturbation or selector.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.1-6"
+  },
+  {
+    "operator_id": "sclp362.jitter.interval-guard-v1",
+    "domain": "Event calculus",
+    "mechanism": "Jitter interval certificate",
+    "formal_definition": "Authoritative residual f is enclosed by [f-epsilon_j,f+epsilon_j]; epsilon_j must remain below the event margin.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.1-3"
+  },
+  {
+    "operator_id": "sclp362.time.phase-clock-v1",
+    "domain": "Time",
+    "mechanism": "Linear-time phase clock",
+    "formal_definition": "Keep linear time and map it to phase plus integer winding; the source timestamp is profile metadata with a declared unit.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.3-5"
+  },
+  {
+    "operator_id": "sclp362.time.winding-lineage-v1",
+    "domain": "Persistence",
+    "mechanism": "Winding lineage",
+    "formal_definition": "Record winding count and parity separately from periodic phase so repeated coordinates retain history.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.3-4"
+  },
+  {
+    "operator_id": "sclp362.topology.source-half-turn-v0",
+    "domain": "Topology",
+    "mechanism": "Source half-turn bundle twist",
+    "formal_definition": "On odd radial wraps apply theta+pi, phi->-phi and orientation flip; base gluing is not itself a Klein quotient.",
+    "disposition": "RETAIN/BOUND",
+    "validation": "Implemented",
+    "source_scope": "pp.9-10"
+  },
+  {
+    "operator_id": "sclp362.topology.klein-reflection-v1",
+    "domain": "Topology",
+    "mechanism": "Reflective Klein radial gluing",
+    "formal_definition": "Use theta->pi-theta plus phi and orientation reversal on odd radial wraps to obtain an orientation-reversing quotient.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.2-4,9-10"
+  },
+  {
+    "operator_id": "sclp362.topology.tangent-chirality-v1",
+    "domain": "Topology",
+    "mechanism": "Tangent chirality map",
+    "formal_definition": "The chart transition sends dtheta and dphi to their negatives on odd reflective wraps; it is not a physical impulse.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.4,6,10"
+  },
+  {
+    "operator_id": "sclp362.topology.wrap-event-v1",
+    "domain": "Event calculus",
+    "mechanism": "Topological wrap event",
+    "formal_definition": "Crossing rho_max emits a transition with coordinate map, orientation patch, wrap count and lineage.",
+    "disposition": "TRANSLATE",
+    "validation": "Specified",
+    "source_scope": "pp.2-5,9-11"
+  },
+  {
+    "operator_id": "sclp362.hinge.state-v1",
+    "domain": "Kinematics",
+    "mechanism": "Hinge state phi, omega, alpha",
+    "formal_definition": "Store angle, angular velocity and angular acceleration as separate typed coordinates.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.1,3,8,10"
+  },
+  {
+    "operator_id": "sclp362.hinge.torque-model-v1",
+    "domain": "Kinematics",
+    "mechanism": "Optional physical torque model",
+    "formal_definition": "Only after declaring inertia, damping and stiffness may torque be computed as I alpha+c omega+k phi.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.1,3,8"
+  },
+  {
+    "operator_id": "sclp362.constraint.row-release-v1",
+    "domain": "Kinematics",
+    "mechanism": "Missing-shackle row deletion",
+    "formal_definition": "Model the missing shackle as removal of one constraint-Jacobian row.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.1,3-6,8-10"
+  },
+  {
+    "operator_id": "sclp362.constraint.nullity-gain-v1",
+    "domain": "Kinematics",
+    "mechanism": "Freedom-gain certificate",
+    "formal_definition": "Compare nullities before and after row deletion; one independent row can add one degree of freedom.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "pp.1,3,8,10"
+  },
+  {
+    "operator_id": "sclp362.branch.binary-guard-v1",
+    "domain": "Event calculus",
+    "mechanism": "Binary guard branch",
+    "formal_definition": "A declared guard partitions state into branch 0 or 1 and selects a transition/grammar rule.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.4-7"
+  },
+  {
+    "operator_id": "sclp362.branch.no-chaos-inference-v1",
+    "domain": "Audit",
+    "mechanism": "No automatic chaos inference",
+    "formal_definition": "Binary branching is deterministic; chaos requires a defined dynamical map and measured sensitivity/Lyapunov evidence.",
+    "disposition": "CORRECTED",
+    "validation": "Enforced",
+    "source_scope": "p.5"
+  },
+  {
+    "operator_id": "sclp362.grammar.bounded-binary-lsystem-v1",
+    "domain": "Grammar",
+    "mechanism": "Bounded binary parametric L-system",
+    "formal_definition": "Each F emits two dyadically scaled branches, a typed turn and jitter token under depth, symbol and stack budgets.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented",
+    "source_scope": "pp.6-8"
+  },
+  {
+    "operator_id": "sclp362.grammar.chirality-automorphism-v1",
+    "domain": "Grammar",
+    "mechanism": "Chirality turn automorphism",
+    "formal_definition": "A topological orientation flip maps positive turns to negative turns and vice versa.",
+    "disposition": "RETAIN",
+    "validation": "Implemented",
+    "source_scope": "pp.6-7"
+  },
+  {
+    "operator_id": "sclp362.packing.quantize-20-18-14-12-v1",
+    "domain": "Packing",
+    "mechanism": "20/18/14/12 quantizer",
+    "formal_definition": "Quantize rho, theta, modular time and phi into exactly 64 field bits with declared ranges and errors.",
+    "disposition": "RETAIN/BOUND",
+    "validation": "Implemented",
+    "source_scope": "pp.11-13"
+  },
+  {
+    "operator_id": "sclp362.packing.contiguous-key-v1",
+    "domain": "Packing",
+    "mechanism": "Contiguous field key",
+    "formal_definition": "Pack fields into source table ranges [63:44],[43:26],[25:12],[11:0].",
+    "disposition": "RETAIN",
+    "validation": "Implemented",
+    "source_scope": "p.12"
+  },
+  {
+    "operator_id": "sclp362.packing.morton-key-v1",
+    "domain": "Packing",
+    "mechanism": "MSB round-robin Morton key",
+    "formal_definition": "Interleave rho19,theta17,time13,phi11, then continue round-robin until all 64 bits are consumed.",
+    "disposition": "RETAIN/CLARIFY",
+    "validation": "Implemented",
+    "source_scope": "pp.10-12"
+  },
+  {
+    "operator_id": "sclp362.packing.layout-separation-v1",
+    "domain": "Packing",
+    "mechanism": "Key-layout separation",
+    "formal_definition": "The contiguous table and interleaved Morton word are two distinct encodings, never silently treated as the same bit layout.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.10-12"
+  },
+  {
+    "operator_id": "sclp362.index.prefix-refinement-v1",
+    "domain": "Indexing",
+    "mechanism": "Radix prefix refinement",
+    "formal_definition": "Appending a bit fixes one scheduled coordinate bit and refines a quantized cell; it does not directly divide rho or theta values.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.4-5"
+  },
+  {
+    "operator_id": "sclp362.index.radix-trie-v1",
+    "domain": "Indexing",
+    "mechanism": "Radix-2 trie terminology",
+    "formal_definition": "Use a radix trie over key prefixes rather than calling the structure a comparison-based binary search tree.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.1-12"
+  },
+  {
+    "operator_id": "sclp362.index.one-bit-payload-v1",
+    "domain": "Indexing",
+    "mechanism": "Narrow one-bit payload",
+    "formal_definition": "A leaf bit may encode route, occupancy class or predicate result; continuous residual, uncertainty and lineage remain external.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.1-2,9-10"
+  },
+  {
+    "operator_id": "sclp362.index.sparse-presence-accounting-v1",
+    "domain": "Memory",
+    "mechanism": "Sparse presence accounting",
+    "formal_definition": "Pointerless sparse storage still needs topology/presence bits and rank/select or equivalent navigation metadata.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented lower bound",
+    "source_scope": "pp.11-12"
+  },
+  {
+    "operator_id": "sclp362.metrics.cacheline-eight-keys-v1",
+    "domain": "Metrics",
+    "mechanism": "Eight raw keys per cache line",
+    "formal_definition": "A 64-byte line stores eight 64-bit keys; this does not imply eight evaluations in one cycle.",
+    "disposition": "CORRECTED",
+    "validation": "Exact capacity",
+    "source_scope": "p.13"
+  },
+  {
+    "operator_id": "sclp362.metrics.nominal-width-audit-v1",
+    "domain": "Metrics",
+    "mechanism": "Nominal width audit",
+    "formal_definition": "Report 3x,32x and 42.666x only as bit-width ratios because the compared records do not preserve equal semantics.",
+    "disposition": "CORRECTED",
+    "validation": "Implemented",
+    "source_scope": "pp.12-13"
+  },
+  {
+    "operator_id": "sclp362.metrics.finite-capacity-v1",
+    "domain": "Metrics",
+    "mechanism": "Finite 2^64 key capacity",
+    "formal_definition": "The 20+18+14+12 profile has exactly 2^64 address combinations, not infinite detail.",
+    "disposition": "CORRECTED",
+    "validation": "Exact",
+    "source_scope": "pp.12-13"
+  },
+  {
+    "operator_id": "sclp362.query.direct-lookup-bound-v1",
+    "domain": "Query",
+    "mechanism": "Bounded direct lookup",
+    "formal_definition": "Fixed-width array/hash lookup may be constant expected RAM access after key construction; traversal, decoding, verification and storage remain costs.",
+    "disposition": "BOUNDED",
+    "validation": "Specified",
+    "source_scope": "pp.7-11"
+  },
+  {
+    "operator_id": "sclp362.query.ugts-handoff-v1",
+    "domain": "Architecture",
+    "mechanism": "Canonical UGTS handoff",
+    "formal_definition": "SCLP outputs feed support, compatibility, guard, verified event, transition and lineage in that order.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented",
+    "source_scope": "p.9-11"
+  }
+]

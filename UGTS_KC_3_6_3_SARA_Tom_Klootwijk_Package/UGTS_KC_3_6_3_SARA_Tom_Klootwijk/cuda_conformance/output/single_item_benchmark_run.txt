@@ -1,0 +1,36 @@
+SARA 3.6.3 CUDA fixed-vector conformance benchmark
+SAFETY PROFILE: immutable published vectors only; no candidate enumeration or target comparison.
+
+CPU official-vector checks:
+  BIP39 vector (PBKDF2-HMAC-SHA512/2048) PASS
+  m                            PASS
+  m/0'                         PASS
+  m/0'/1                       PASS
+  m/0'/1/2'                    PASS
+  m/0'/1/2'/2                  PASS
+  m/0'/1/2'/2/1000000000       PASS
+  CPU mean timings (7 runs): BIP39 1.994 ms; full BIP32 vector-1 path 3.498 ms
+
+CUDA device: NVIDIA GeForce RTX 5070 Ti Laptop GPU (compute 12.0)
+CUDA driver/runtime: 13010/12080
+
+GPU full BIP32 vector-1 checks:
+  m                            PASS
+  m/0'                         PASS
+  m/0'/1                       PASS
+  m/0'/1/2'                    PASS
+  m/0'/1/2'/2                  PASS
+  m/0'/1/2'/2/1000000000       PASS
+
+GPU batch verification:
+  BIP39 all 1 outputs across 7 run(s): PASS
+  BIP32 all 1 paths across 7 run(s): PASS
+  Byte-for-byte repeatability: PASS
+
+Measured GPU metrics (mean of 7 timed run(s)):
+  BIP39 batch: 61.425 ms for 1 operations; 16.3 operations/s; 33341.4 PBKDF2 rounds/s
+  BIP32 vector-1 batch: 26.174 ms for 1 complete paths; 38.2 paths/s; 191.0 CKD edges/s
+  Throughput vs this single CPU implementation: BIP39 0.0x; BIP32 0.1x
+Metrics JSON: C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\cuda_conformance\output\benchmark_metrics_single_item.json
+
+OVERALL CONFORMANCE: PASS

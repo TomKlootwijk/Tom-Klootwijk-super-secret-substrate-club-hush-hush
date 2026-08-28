@@ -1,0 +1,7 @@
+{
+  "schema": "ugts-kc-browser-regression-3.9.1",
+  "passed": true,
+  "node_returncode": 0,
+  "retained_2d_project_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+  "note": "Bundle regenerated from retained 3.9 project; JavaScript syntax checked with Node."
+}

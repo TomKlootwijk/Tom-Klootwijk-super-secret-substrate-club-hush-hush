@@ -1,0 +1,21 @@
+claim_id,source_claim_or_motif,disposition,technical_boundary
+C362-01,A side length T alone defines the cone,CORRECTED,T is paired with a half-angle; h=T cos alpha and R=T sin alpha.
+C362-02,The source theta+pi wrap alone is a Klein-bottle base quotient,BOUNDED,It is retained as an internal state-bundle half-turn. A reflective theta map is required for the non-orientable base profile.
+C362-03,Time stops being linear and becomes a loop,CORRECTED,Linear time is retained; phase is time modulo a declared period and winding remains separate lineage.
+C362-04,18:55 is an intrinsic physical constant,REJECT,It is a profile seed/reference tick with a declared unit.
+C362-05,Bit shifting directly halves rho and theta,CORRECTED,Appending a trie bit refines one scheduled quantized interval; coordinate values are decoded separately.
+C362-06,Every branch is chaotic,REJECT,A binary branch is deterministic. Chaos requires a specified map and measured sensitivity.
+C362-07,A missing shackle automatically produces chaos,CORRECTED,"Constraint-row deletion changes rank/nullity; dynamics require mass, force and damping models."
+C362-08,All forces automatically scale by e^-rho,CORRECTED,Coordinate covectors transform by the inverse Jacobian; physical force laws remain separately typed.
+C362-09,The sweep field is always an exact SDF,REJECT,The report provides an exact cone SDF and a certified interval for the sweep infimum; a generic sweep envelope is not automatically an exact SDF.
+C362-10,"One jitter bit contains roughness, sensor noise and full state",REJECT,"The bit is a bounded deterministic perturbation or selector; residual, error, topology and lineage remain separate."
+C362-11,The contiguous bit table is the same as Morton interleaving,CORRECTED,Two explicit layouts are supplied and tested independently.
+C362-12,Pointerless sparse trees have zero metadata,REJECT,They avoid explicit child pointers but still require topology/presence and navigation metadata.
+C362-13,192-to-64 is an equivalent 3:1 compression,BOUNDED,"It is a nominal width ratio unless decode ranges, errors and semantic equivalence are declared."
+C362-14,A sign bit is equivalent to a float SDF,REJECT,It discards magnitude and uncertainty and needs a separate boundary representation.
+C362-15,A 12-bit word is equivalent to any 4x4 float matrix,REJECT,It can only select a versioned finite codebook/state family.
+C362-16,Eight keys per cache line means eight outcomes per clock,REJECT,"Capacity does not establish execution width, latency or instruction throughput."
+C362-17,Log packing stores infinite detail in finite memory,REJECT,The declared profile contains exactly 2^64 keys and finite grammar/state budgets.
+C362-18,All possible movements are universal O(1),REJECT,"Only bounded direct lookup after key construction may be constant expected access; generation, collisions, verification and memory remain."
+C362-19,L-system recursion is infinite in the substrate,CORRECTED,"Expansion is finite and rejects depth, symbol or stack overflow."
+C362-20,Rasterization/raymarching are required,EXCLUDED,"The 3.6.2 core is purely referential geometry, topology, indexing and event calculus; display remains downstream."

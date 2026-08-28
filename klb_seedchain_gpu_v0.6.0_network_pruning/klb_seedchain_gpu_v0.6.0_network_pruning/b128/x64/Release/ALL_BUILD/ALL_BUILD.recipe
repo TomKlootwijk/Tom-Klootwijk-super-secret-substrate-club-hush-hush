@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\x64\Release\ZERO_CHECK</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_bench.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_network.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_network_bench.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_network_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_orbit.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_orbit_bench.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_orbit_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_pack.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_seedchain.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_seedchain_bench.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_sgp4.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_sgp4_bench.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_sgp4_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\x64\Release\ALL_BUILD</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

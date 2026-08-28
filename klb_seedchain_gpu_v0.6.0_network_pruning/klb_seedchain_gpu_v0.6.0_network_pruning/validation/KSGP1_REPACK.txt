@@ -1,0 +1,39 @@
+Format                      : KSGP1 v1
+Predictor                   : full Vallado/CSSI SGP4 + SDP4 deep-space
+Reference epoch             : 2026-08-16T05:33:12.693024Z
+Reference frame             : TEME; GMST TEME->PEF query conversion
+Gravity constants           : WGS-72
+Source label                : CelesTrak OMM CSV / full SGP4
+Source bytes                : 4852
+Source FNV-1a64             : 0x56eb74ff9610d21b
+Container bytes             : 5793
+Compact mean-element seeds  : 32 x 128 bytes
+Compiled coefficient state  : 45568 bytes (load-time, not stored)
+Hash-linked timeline nodes  : 7
+Timeline duration           : 604800.000000 s
+Timeline step               : 1.000000 s
+Timeline state samples      : 604801
+Equivalent dense float4     : 309658112 bytes
+Equivalent dense pos+vel    : 928974336 bytes
+Ratio vs dense float4       : 53453.842914x
+Ratio vs dense pos+vel      : 160361.528742x
+Near-Earth records          : 0
+Deep-space non-resonant     : 32
+Synchronous resonance       : 0
+Half-day resonance          : 0
+Default DUT1                : 0.000000 s
+Default elevation mask      : 10.000000 degrees
+Terminal chain hash         : 0x5f6eefa0d766a54e
+Payload hash                : 0xbf7257582ad0c462
+
+Seed preview:
+  [0] NORAD 26407, PRN 22, route 3, branch deep/irez=0, e=0.011950, n=2.005581 rev/day, GPS BIIR-5  (PRN 22)
+  [1] NORAD 27663, PRN 16, route 3, branch deep/irez=0, e=0.014916, n=2.005574 rev/day, GPS BIIR-8  (PRN 16)
+  [2] NORAD 28190, PRN 19, route 4, branch deep/irez=0, e=0.011810, n=2.005526 rev/day, GPS BIIR-11 (PRN 19)
+  [3] NORAD 28474, PRN 2, route 5, branch deep/irez=0, e=0.017099, n=2.005585 rev/day, GPS BIIR-13 (PRN 02)
+  [4] NORAD 28874, PRN 17, route 4, branch deep/irez=0, e=0.012862, n=2.005616 rev/day, GPS BIIRM-1 (PRN 17)
+  [5] NORAD 29486, PRN 31, route 2, branch deep/irez=0, e=0.010806, n=2.005666 rev/day, GPS BIIRM-2 (PRN 31)
+  [6] NORAD 29601, PRN 12, route 3, branch deep/irez=0, e=0.008491, n=2.005614 rev/day, GPS BIIRM-3 (PRN 12)
+  [7] NORAD 32260, PRN 15, route 1, branch deep/irez=0, e=0.016864, n=2.005530 rev/day, GPS BIIRM-4 (PRN 15)
+Byte-for-byte repack: PASS
+188c754b69f4d87ba3db077515330c19570718633bab26ead4e0019a63718f7a  temporary_repack.ksgp

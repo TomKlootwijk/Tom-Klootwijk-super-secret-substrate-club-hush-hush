@@ -1,0 +1,1 @@
+Represent this Dutch or multilingual geospatial entity for ontology classification, spatial relation prediction, temporal knowledge transfer, and durable identity reconstruction. Preserve distinctions between persistent entities, observations, verified events, concepts, and lineage state.

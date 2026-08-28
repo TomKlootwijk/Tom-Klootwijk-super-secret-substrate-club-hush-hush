@@ -1,0 +1,19 @@
+{
+  "source_documents": [
+    {
+      "label": "UGTS-0 1.0",
+      "filename": "Unified_Geometric_Topological_Substrate(1).pdf",
+      "pages": 45,
+      "sha256": "c991aba24cc939ba680697b62b9e19545131cf34060793490bf149c6e2ab522e",
+      "included_in_zip": false
+    },
+    {
+      "label": "UGTS-GN 1.1",
+      "filename": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum(2).pdf",
+      "pages": 28,
+      "sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "included_in_zip": false
+    }
+  ],
+  "note": "Source PDFs were supplied by the requester and are referenced by hash; they are not redistributed in this ZIP."
+}

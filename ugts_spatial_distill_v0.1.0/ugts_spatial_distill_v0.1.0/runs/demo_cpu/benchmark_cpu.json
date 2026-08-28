@@ -1,0 +1,41 @@
+{
+  "format": "UGTS-SPATIAL-BENCHMARK-1",
+  "device": "cpu",
+  "device_name": "CPU",
+  "torch_version": "2.10.0+cpu",
+  "cuda_runtime": null,
+  "amp": false,
+  "warmup": 1,
+  "repeats": 3,
+  "counts": {
+    "nodes": 510,
+    "edges": 1827,
+    "events": 1013,
+    "examples": 720
+  },
+  "latency_ms": {
+    "p50": 18.829179000022123,
+    "p95": 22.3935813002754,
+    "p99": 22.710417060297914,
+    "min": 18.7664949999089,
+    "max": 22.789626000303542
+  },
+  "rates_at_p50": {
+    "nodes_per_s": 27085.620674135647,
+    "edge_messages_per_s": 97030.25288558006,
+    "temporal_events_per_s": 53799.47792725375,
+    "candidate_examples_per_s": 38238.52330466209
+  },
+  "tensor_storage": {
+    "device": "cpu",
+    "tensor_bytes": 329922,
+    "tensor_mib": 0.3146381378173828
+  },
+  "checksum": 5.1680145263671875,
+  "finite_logits": true,
+  "checkpoint_best_epoch": 28,
+  "notes": [
+    "This times full-graph event aggregation, typed message passing and candidate scoring together.",
+    "The rate is not raw DRAM bandwidth and must not be compared with UGTS CER/SET unless workload and gate are identical."
+  ]
+}

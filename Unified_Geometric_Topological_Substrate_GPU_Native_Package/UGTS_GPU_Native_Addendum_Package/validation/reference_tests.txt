@@ -1,0 +1,23 @@
+test_catalog_count (test_reference.TestUGTSReference.test_catalog_count) ... ok
+test_counters (test_reference.TestUGTSReference.test_counters) ... ok
+test_evaluate_outside_cone (test_reference.TestUGTSReference.test_evaluate_outside_cone) ... ok
+test_evaluate_outside_radius (test_reference.TestUGTSReference.test_evaluate_outside_radius) ... ok
+test_evaluate_verified (test_reference.TestUGTSReference.test_evaluate_verified) ... ok
+test_event_sizes (test_reference.TestUGTSReference.test_event_sizes) ... ok
+test_g32_roundtrip (test_reference.TestUGTSReference.test_g32_roundtrip) ... ok
+test_g64_roundtrip (test_reference.TestUGTSReference.test_g64_roundtrip) ... ok
+test_glyph_encoder_v0 (test_reference.TestUGTSReference.test_glyph_encoder_v0) ... ok
+test_glyph_encoder_v1 (test_reference.TestUGTSReference.test_glyph_encoder_v1) ... ok
+test_incompatible_mask (test_reference.TestUGTSReference.test_incompatible_mask) ... ok
+test_incompatible_sheet (test_reference.TestUGTSReference.test_incompatible_sheet) ... ok
+test_log2_fractional_scale (test_reference.TestUGTSReference.test_log2_fractional_scale) ... ok
+test_memory_model (test_reference.TestUGTSReference.test_memory_model) ... ok
+test_mix32_deterministic (test_reference.TestUGTSReference.test_mix32_deterministic) ... ok
+test_pythagorean_threshold (test_reference.TestUGTSReference.test_pythagorean_threshold) ... ok
+test_schema_loads (test_reference.TestUGTSReference.test_schema_loads) ... ok
+test_standard_percent (test_reference.TestUGTSReference.test_standard_percent) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.001s
+
+OK

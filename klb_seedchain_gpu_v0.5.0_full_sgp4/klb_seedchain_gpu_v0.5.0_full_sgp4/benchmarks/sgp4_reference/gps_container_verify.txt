@@ -1,0 +1,8 @@
+KSGP1 hash chain and payload : valid
+Compiled SGP4 records        : 32
+Reference evaluations        : 160
+Propagation failures         : 0
+Sampled TEME radius range    : 26065.952586335 .. 27026.766703343 km
+Sampled TEME speed range     : 3.806459986 .. 3.946624679 km/s
+Reference-vector coverage    : run klb_sgp4_tests (near, deep, irez=1, irez=2, GPS-like)
+Frame boundary               : TEME->PEF uses GMST+DUT1; polar motion/EOP omitted

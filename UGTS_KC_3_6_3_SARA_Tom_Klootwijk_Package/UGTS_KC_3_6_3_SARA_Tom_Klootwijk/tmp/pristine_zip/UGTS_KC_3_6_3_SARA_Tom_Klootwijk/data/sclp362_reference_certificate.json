@@ -1,0 +1,498 @@
+{
+  "profile_id": "sclp362:profile:packed-swept-cone-v1",
+  "cone": {
+    "T_slant": 2.0,
+    "alpha_half_angle_rad": 0.5235987755982988,
+    "height": 1.7320508075688774,
+    "base_radius": 0.9999999999999999,
+    "query_point": [
+      0.15,
+      0.0,
+      0.6
+    ],
+    "signed_distance": -0.1700961894323342,
+    "relation_class": -1
+  },
+  "logpolar": {
+    "rho": -1.8971199848858813,
+    "theta": 0.0,
+    "core": false,
+    "metric_scale": 0.0225,
+    "exact_delta_r_for_delta_rho_1e-3": 0.00015007502500625125
+  },
+  "quantized": {
+    "rho": 949111,
+    "theta": 0,
+    "time": 1920,
+    "phi": 227
+  },
+  "keys": {
+    "contiguous_u64": 16696937288809578723,
+    "contiguous_hex": "0xe7b77000007800e3",
+    "morton_u64": 9836490199748121227,
+    "morton_hex": "0x88823bb88099128b",
+    "layouts_are_distinct": true
+  },
+  "jitter": {
+    "bit": 1,
+    "offset": 0.0001,
+    "authoritative_residual": -0.1700961894323342,
+    "interval": [
+      -0.1701961894323342,
+      -0.16999618943233422
+    ],
+    "amplitude": 0.0001,
+    "guard_margin": 0.001,
+    "safe_under_margin": true,
+    "role": "bounded perturbation or route metadata; not complete state"
+  },
+  "time": {
+    "tick": 1920.0,
+    "reference_tick": 1135,
+    "period_ticks": 256,
+    "unit": "minute",
+    "phase_S1": 0.06640625,
+    "winding": 3,
+    "winding_parity": 1,
+    "note": "linear time is retained; only the phase is periodic"
+  },
+  "topology": {
+    "profile": "klein-reflective-radial-gluing-v1",
+    "rho": -19.75,
+    "theta": -3.141592653589793,
+    "phi": -0.34906585039886595,
+    "orientation": -1,
+    "wrap_count": 1,
+    "base_non_orientable": true,
+    "source_formula_preserved": false,
+    "tangent_signs": {
+      "dtheta": -1,
+      "dphi": -1
+    }
+  },
+  "shackle": {
+    "original_rank": 2,
+    "released_rank": 1,
+    "original_nullity": 1,
+    "released_nullity": 2,
+    "freedom_gain": 1,
+    "released_basis": [
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "grammar": {
+    "depth": 4,
+    "symbol_count": 76,
+    "forward_count": 16,
+    "max_stack_depth": 4,
+    "grammar_state_word_12": 1058,
+    "symbols": [
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": -0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": -0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "PUSH",
+        "value": null
+      },
+      {
+        "kind": "TURN",
+        "value": 0.4363323129985824
+      },
+      {
+        "kind": "F",
+        "value": 0.0625
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      },
+      {
+        "kind": "POP",
+        "value": null
+      },
+      {
+        "kind": "JITTER",
+        "value": 0.00015007502500625125
+      }
+    ]
+  },
+  "sweep": {
+    "sample_count": 65,
+    "sample_min": -0.296617088266467,
+    "lower_bound": -0.302476463266467,
+    "upper_bound": -0.296617088266467,
+    "lipschitz_error": 0.005859375,
+    "status": "certified-inside-witness"
+  },
+  "metrics": {
+    "quantization": {
+      "bits": {
+        "rho": 20,
+        "theta": 18,
+        "time": 14,
+        "phi": 12
+      },
+      "capacities": {
+        "rho": 1048576,
+        "theta": 262144,
+        "time": 16384,
+        "phi": 4096
+      },
+      "total_states": 18446744073709551616,
+      "rho_step": 1.9073504518036383e-05,
+      "theta_step_rad": 2.3968449810713143e-05,
+      "phi_step_rad": 0.0015339807878856412,
+      "time_states": 16384,
+      "keys_per_64_byte_cache_line": 8
+    },
+    "source_width_metrics": [
+      {
+        "name": "coordinate-boundary-key",
+        "baseline_bits": 192,
+        "packed_bits": 64,
+        "ratio": 3.0,
+        "semantic_equivalence": false,
+        "qualification": "Nominal width ratio: six float32 values versus one quantized key; decode metadata and error differ."
+      },
+      {
+        "name": "sdf-sign-only",
+        "baseline_bits": 32,
+        "packed_bits": 1,
+        "ratio": 32.0,
+        "semantic_equivalence": false,
+        "qualification": "A sign bit does not preserve distance magnitude, uncertainty or a zero-state encoding by itself."
+      },
+      {
+        "name": "kinematic-state-word",
+        "baseline_bits": 512,
+        "packed_bits": 12,
+        "ratio": 42.666666666666664,
+        "semantic_equivalence": false,
+        "qualification": "A 12-bit state selector is not semantically equivalent to an arbitrary 4x4 float matrix."
+      }
+    ],
+    "morton_schedule_prefix": [
+      "rho19",
+      "theta17",
+      "time13",
+      "phi11",
+      "rho18",
+      "theta16",
+      "time12",
+      "phi10",
+      "rho17",
+      "theta15",
+      "time11",
+      "phi9",
+      "rho16",
+      "theta14",
+      "time10",
+      "phi8"
+    ],
+    "morton_schedule_length": 64
+  },
+  "handoff": {
+    "sequence": [
+      "support",
+      "compatibility",
+      "guard",
+      "verified_event",
+      "transition",
+      "lineage"
+    ],
+    "relation_residual": -0.1700961894323342,
+    "guard_interval": [
+      -0.1701961894323342,
+      -0.16999618943233422
+    ],
+    "verified": true,
+    "reason": "jitter interval must not change the declared guard class"
+  },
+  "valid": true
+}

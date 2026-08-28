@@ -1,0 +1,22 @@
+Title:           SARA 3.6.3 Defensive Red-Team Audit
+Subject:         Local defensive feasibility, security, standards and packaging review
+Keywords:        
+Author:          OpenAI Codex for Tom Klootwijk
+Creator:         (unspecified)
+Producer:        ReportLab PDF Library - (opensource)
+CreationDate:    Tue Aug 18 09:49:02 2026 W. Europe Daylight Time
+ModDate:         Tue Aug 18 09:49:02 2026 W. Europe Daylight Time
+Custom Metadata: no
+Metadata Stream: no
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           16
+Encrypted:       no
+Page size:       595.276 x 841.89 pts (A4)
+Page rot:        0
+File size:       138393 bytes
+Optimized:       no
+PDF version:     1.4

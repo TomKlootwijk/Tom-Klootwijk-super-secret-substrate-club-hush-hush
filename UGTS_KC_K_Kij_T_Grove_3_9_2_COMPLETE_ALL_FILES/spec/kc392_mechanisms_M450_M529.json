@@ -1,0 +1,402 @@
+{
+  "range": "M450-M529",
+  "version": "3.9.2",
+  "codename": "grove",
+  "entries": [
+    {
+      "id": "M450",
+      "name": "GroveProfile",
+      "status": "implemented"
+    },
+    {
+      "id": "M451",
+      "name": "JuiceEvent",
+      "status": "implemented"
+    },
+    {
+      "id": "M452",
+      "name": "JuiceDecay",
+      "status": "implemented"
+    },
+    {
+      "id": "M453",
+      "name": "JuiceShockwave",
+      "status": "implemented"
+    },
+    {
+      "id": "M454",
+      "name": "JuiceFlash",
+      "status": "implemented"
+    },
+    {
+      "id": "M455",
+      "name": "JuiceBloom",
+      "status": "implemented"
+    },
+    {
+      "id": "M456",
+      "name": "JuiceAberration",
+      "status": "implemented"
+    },
+    {
+      "id": "M457",
+      "name": "JuiceVignette",
+      "status": "implemented"
+    },
+    {
+      "id": "M458",
+      "name": "JuicePulse",
+      "status": "implemented"
+    },
+    {
+      "id": "M459",
+      "name": "JuiceSaturation",
+      "status": "implemented"
+    },
+    {
+      "id": "M460",
+      "name": "JuiceContrast",
+      "status": "implemented"
+    },
+    {
+      "id": "M461",
+      "name": "MaliG720Tier",
+      "status": "implemented"
+    },
+    {
+      "id": "M462",
+      "name": "Poco120Hint",
+      "status": "implemented"
+    },
+    {
+      "id": "M463",
+      "name": "ThermalJuiceClamp",
+      "status": "implemented"
+    },
+    {
+      "id": "M464",
+      "name": "PostComposite",
+      "status": "implemented"
+    },
+    {
+      "id": "M465",
+      "name": "PostGlow",
+      "status": "implemented"
+    },
+    {
+      "id": "M466",
+      "name": "PostColorResponse",
+      "status": "implemented"
+    },
+    {
+      "id": "M467",
+      "name": "PostShockWarp",
+      "status": "implemented"
+    },
+    {
+      "id": "M468",
+      "name": "PostChromatic",
+      "status": "implemented"
+    },
+    {
+      "id": "M469",
+      "name": "PostVignette",
+      "status": "implemented"
+    },
+    {
+      "id": "M470",
+      "name": "DynamicJuiceScale",
+      "status": "implemented"
+    },
+    {
+      "id": "M471",
+      "name": "EventPulseRouter",
+      "status": "implemented"
+    },
+    {
+      "id": "M472",
+      "name": "LandingFeel",
+      "status": "implemented"
+    },
+    {
+      "id": "M473",
+      "name": "PickupFeel",
+      "status": "implemented"
+    },
+    {
+      "id": "M474",
+      "name": "GoalFeel",
+      "status": "implemented"
+    },
+    {
+      "id": "M475",
+      "name": "HazardFeel",
+      "status": "implemented"
+    },
+    {
+      "id": "M476",
+      "name": "JumpFeel",
+      "status": "implemented"
+    },
+    {
+      "id": "M477",
+      "name": "DeterministicJuice",
+      "status": "implemented"
+    },
+    {
+      "id": "M478",
+      "name": "GroveScenePack",
+      "status": "implemented"
+    },
+    {
+      "id": "M479",
+      "name": "KC3D392Parser",
+      "status": "implemented"
+    },
+    {
+      "id": "M480",
+      "name": "KC3D391Fallback",
+      "status": "implemented"
+    },
+    {
+      "id": "M481",
+      "name": "GroveNativeOnly",
+      "status": "implemented"
+    },
+    {
+      "id": "M482",
+      "name": "AndroidFlavor",
+      "status": "implemented"
+    },
+    {
+      "id": "M483",
+      "name": "PocoArm64Flavor",
+      "status": "implemented"
+    },
+    {
+      "id": "M484",
+      "name": "UniversalAndroidFlavor",
+      "status": "implemented"
+    },
+    {
+      "id": "M485",
+      "name": "GroveHigh90",
+      "status": "implemented"
+    },
+    {
+      "id": "M486",
+      "name": "GroveBalanced60",
+      "status": "implemented"
+    },
+    {
+      "id": "M487",
+      "name": "GroveCompat60",
+      "status": "implemented"
+    },
+    {
+      "id": "M488",
+      "name": "GroveThermal45",
+      "status": "implemented"
+    },
+    {
+      "id": "M489",
+      "name": "GroveG720120",
+      "status": "implemented"
+    },
+    {
+      "id": "M490",
+      "name": "GroveG72090",
+      "status": "implemented"
+    },
+    {
+      "id": "M491",
+      "name": "FrameBudget8ms",
+      "status": "implemented"
+    },
+    {
+      "id": "M492",
+      "name": "FrameBudget11ms",
+      "status": "implemented"
+    },
+    {
+      "id": "M493",
+      "name": "FrameBudget16ms",
+      "status": "implemented"
+    },
+    {
+      "id": "M494",
+      "name": "FrameBudget22ms",
+      "status": "implemented"
+    },
+    {
+      "id": "M495",
+      "name": "PostToggle",
+      "status": "implemented"
+    },
+    {
+      "id": "M496",
+      "name": "InternalScaleGuard",
+      "status": "implemented"
+    },
+    {
+      "id": "M497",
+      "name": "Gles3PostPass",
+      "status": "implemented"
+    },
+    {
+      "id": "M498",
+      "name": "FullscreenTriangle",
+      "status": "implemented"
+    },
+    {
+      "id": "M499",
+      "name": "BloomThreshold",
+      "status": "implemented"
+    },
+    {
+      "id": "M500",
+      "name": "BloomNeighborhood",
+      "status": "implemented"
+    },
+    {
+      "id": "M501",
+      "name": "ShockCenter",
+      "status": "implemented"
+    },
+    {
+      "id": "M502",
+      "name": "PulseEnvelope",
+      "status": "implemented"
+    },
+    {
+      "id": "M503",
+      "name": "MasterIntensity",
+      "status": "implemented"
+    },
+    {
+      "id": "M504",
+      "name": "ThermalRecovery",
+      "status": "implemented"
+    },
+    {
+      "id": "M505",
+      "name": "QualityFallback",
+      "status": "implemented"
+    },
+    {
+      "id": "M506",
+      "name": "QualityRecovery",
+      "status": "implemented"
+    },
+    {
+      "id": "M507",
+      "name": "GpuHintNormalization",
+      "status": "implemented"
+    },
+    {
+      "id": "M508",
+      "name": "ModelHintNormalization",
+      "status": "implemented"
+    },
+    {
+      "id": "M509",
+      "name": "MaliFamilyHint",
+      "status": "implemented"
+    },
+    {
+      "id": "M510",
+      "name": "PocoModelHint",
+      "status": "implemented"
+    },
+    {
+      "id": "M511",
+      "name": "RamTierHint",
+      "status": "implemented"
+    },
+    {
+      "id": "M512",
+      "name": "CpuTierHint",
+      "status": "implemented"
+    },
+    {
+      "id": "M513",
+      "name": "RefreshTierHint",
+      "status": "implemented"
+    },
+    {
+      "id": "M514",
+      "name": "GeneralAndroidFallback",
+      "status": "implemented"
+    },
+    {
+      "id": "M515",
+      "name": "NoProprietaryGpuExtension",
+      "status": "implemented"
+    },
+    {
+      "id": "M516",
+      "name": "HapticTodo",
+      "status": "implemented"
+    },
+    {
+      "id": "M517",
+      "name": "AudioJuiceBridge",
+      "status": "implemented"
+    },
+    {
+      "id": "M518",
+      "name": "PCGFutureContract",
+      "status": "future_todo"
+    },
+    {
+      "id": "M519",
+      "name": "ReplayJuiceState",
+      "status": "implemented"
+    },
+    {
+      "id": "M520",
+      "name": "DeterministicVisualState",
+      "status": "implemented"
+    },
+    {
+      "id": "M521",
+      "name": "AuthoringJuiceConfig",
+      "status": "implemented"
+    },
+    {
+      "id": "M522",
+      "name": "NativeSceneAsset",
+      "status": "implemented"
+    },
+    {
+      "id": "M523",
+      "name": "GroveGltfExport",
+      "status": "implemented"
+    },
+    {
+      "id": "M524",
+      "name": "GroveScenePreview",
+      "status": "implemented"
+    },
+    {
+      "id": "M525",
+      "name": "GroveReleaseManifest",
+      "status": "implemented"
+    },
+    {
+      "id": "M526",
+      "name": "GroveChecksumManifest",
+      "status": "implemented"
+    },
+    {
+      "id": "M527",
+      "name": "GroveBuildBoundary",
+      "status": "implemented"
+    },
+    {
+      "id": "M528",
+      "name": "GroveEvidenceBoundary",
+      "status": "implemented"
+    }
+  ]
+}

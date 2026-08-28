@@ -1,0 +1,54 @@
+[
+  {
+    "index": 0,
+    "operator": "sara363.wordlist.commitment",
+    "status": "start",
+    "detail": {
+      "path": "/mnt/data/ugts363_build/UGTS_KC_3_6_3_SARA_Tom_Klootwijk/data/bip39_english.txt"
+    }
+  },
+  {
+    "index": 1,
+    "operator": "sara363.bip39.checksum_hinge",
+    "status": "pass",
+    "detail": {
+      "word_count": 12
+    }
+  },
+  {
+    "index": 2,
+    "operator": "sara363.bip84.public_projection",
+    "status": "pass",
+    "detail": {
+      "address": "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu",
+      "path": "m/84'/0'/0'/0/0"
+    }
+  },
+  {
+    "index": 3,
+    "operator": "sara363.address.public_decode",
+    "status": "pass",
+    "detail": {
+      "address_type": "p2wpkh",
+      "witness_program_bytes": 20
+    }
+  },
+  {
+    "index": 4,
+    "operator": "sara363.authorization.gate",
+    "status": "pass",
+    "detail": {
+      "reason_codes": [
+        "AUTHORIZED_PUBLIC_OR_SELF_OWNED_AUDIT_ONLY"
+      ]
+    }
+  },
+  {
+    "index": 5,
+    "operator": "sara363.certificate.issue",
+    "status": "pass",
+    "detail": {
+      "valid": true
+    }
+  }
+]

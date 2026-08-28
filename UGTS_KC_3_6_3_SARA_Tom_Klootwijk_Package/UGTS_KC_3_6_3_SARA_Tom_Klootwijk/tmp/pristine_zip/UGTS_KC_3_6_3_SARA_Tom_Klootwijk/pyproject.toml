@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugts-kc-363-sara"
+version = "3.6.3"
+description = "Seed-address referential algebra with BIP39/BIP32/BIP84/Bech32 public-only audit certificates"
+requires-python = ">=3.11"
+license = {text = "Reference package supplied with UGTS-KC 3.6.3"}
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

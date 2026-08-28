@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-kc-2.0.schema.json",
+  "title": "UGTS-KC 2.0 substrate definition",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "attribution",
+    "patterns",
+    "queries"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0.0"
+    },
+    "attribution": {
+      "type": "object",
+      "required": [
+        "name",
+        "identifier",
+        "date_of_birth",
+        "verification_status"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "date_of_birth": {
+          "type": "string",
+          "format": "date"
+        },
+        "verification_status": {
+          "const": "requester-supplied-not-independently-verified"
+        }
+      },
+      "additionalProperties": false
+    },
+    "state_profile": {
+      "type": "object",
+      "properties": {
+        "position_dimension": {
+          "enum": [
+            2,
+            3
+          ]
+        },
+        "orientation_encoding": {
+          "enum": [
+            "angle",
+            "quaternion",
+            "matrix"
+          ]
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "mechanism_id",
+          "parameters"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "mechanism_id": {
+            "pattern": "^M(19[8-9]|2[0-5][0-9]|257)$"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "frame": {
+            "type": "string"
+          },
+          "support_id": {
+            "type": "string"
+          },
+          "compatibility_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "validation_contract": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "dynamics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "parameters"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "closed_form",
+              "twist",
+              "s_curve",
+              "integrated",
+              "hybrid"
+            ]
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "guard_policy": {
+            "type": "string"
+          },
+          "error_budget": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "queries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "state_at",
+              "next_event",
+              "events_in_support",
+              "can_couple",
+              "route_class",
+              "reconstruct_identity",
+              "frame_at",
+              "curvature_at"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

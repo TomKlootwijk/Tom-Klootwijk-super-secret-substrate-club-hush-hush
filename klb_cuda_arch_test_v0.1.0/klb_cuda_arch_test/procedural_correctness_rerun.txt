@@ -1,0 +1,19 @@
+Device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        : 12.0
+CUDA driver/runtime       : 13010 / 12080
+VRAM                      : 11.94 GiB
+Dataset records           : 65536 (padded 65536)
+KLB container             : 303240 bytes, 4.62 payload bytes/input point
+Quantization RMS/max      : 0.00 / 0.00
+Queries/depth/repeats     : 1048576 / 12 / 20
+
+float           0.4645 ms    2257.542 Mquery/s  nominal   433.448 GB/s  load-ceil   433.448 GB/s  hash 0xfad2fb54
+u64             0.6579 ms    1593.813 Mquery/s  nominal   153.006 GB/s  load-ceil   153.006 GB/s  hash 0xfad2fb54
+packed          0.6843 ms    1532.407 Mquery/s  nominal    85.049 GB/s  load-ceil   220.667 GB/s  hash 0xfad2fb54
+
+Verification queries      : 4096
+CPU/GPU hash mismatches  : 0
+CPU/GPU value mismatches : 0 (max abs error 0.000)
+u64/packed hash mismatch : 0
+u64/packed bit mismatch  : 0
+Wrote CSV: "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\klb_cuda_arch_test_v0.1.0\\klb_cuda_arch_test\\procedural_correctness_rerun.csv"

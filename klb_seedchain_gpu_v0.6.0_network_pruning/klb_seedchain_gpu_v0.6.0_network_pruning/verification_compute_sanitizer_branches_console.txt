@@ -1,0 +1,18 @@
+========= COMPUTE-SANITIZER
+Device                    NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        12.0
+Objects                   5
+Deep-space objects        4
+Initialized record bytes  1488
+Portable seed bytes       640
+Reference frame           TEME -> PEF by GMST approximation
+Note                      mixed near/deep object set
+CPU/GPU full-SGP4 validation
+  states                 40
+  error mismatches       0
+  method mismatches      0
+  RMS position delta     0.000072286 mm
+  max position delta     0.000378879 mm
+  RMS velocity delta     0.000000019 mm/s
+  max velocity delta     0.000000096 mm/s
+========= ERROR SUMMARY: 0 errors

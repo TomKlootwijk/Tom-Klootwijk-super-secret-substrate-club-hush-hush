@@ -1,0 +1,43 @@
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{longtable}{>{\raggedright\arraybackslash\scriptsize}p{1.4cm}>{\raggedright\arraybackslash\ttfamily\scriptsize}p{5.8cm}>{\RaggedRight\arraybackslash\scriptsize}p{13.6cm}>{\raggedright\arraybackslash\scriptsize}p{2.4cm}}
+\toprule
+\textbf{ID} & \textbf{Operator} & \textbf{Formal role and bound} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{ID} & \textbf{Operator} & \textbf{Formal role and bound} & \textbf{Status} \\
+\midrule
+\endhead
+BEA361-D001 & \seqsplit{bea361.profile.synthetic-text-v2} & P=(Sigma,N,tau,L,w,T4,nu) fixes normalization, provenance transduction, explicit cycle annotations, zero-metric whitespace hinges, torus dimension 4 and target value 19. Bound: Valid only inside the named profile; not standard font topology. & PROFILE-AXIOM \\
+BEA361-D002 & \seqsplit{bea361.normalize.canonical-space-v1} & N lowercases, applies NFC and reduces every non-empty whitespace run to one separator while preserving separator count after normalization. Bound: Positional cycle annotations require unchanged layout. & ENGINEERING \\
+BEA361-D003 & \seqsplit{bea361.transduce.leet-provenance-v1} & tau maps a->4, e->3, i->1, o->0 while retaining each source index and source symbol as cell provenance. Bound: Finite versioned map; not a universal leet alphabet. & SOURCE-DERIVED \\
+BEA361-D004 & \seqsplit{bea361.cell.token-path-v1} & Each token of m symbols becomes a path with m edges and m+1 vertices; separate tokens begin as distinct components. Bound: One-dimensional CW model only. & PROFILE-AXIOM \\
+BEA361-D005 & \seqsplit{bea361.cell.intrinsic-cycle-annotation-v1} & Each declared cycle position adds one loop 1-cell at the symbol anchor. The source and target records each declare exactly four positions. Bound: Annotations are explicit data, not inferred glyph counters. & PROFILE-AXIOM \\
+BEA361-D006 & \seqsplit{bea361.cell.whitespace-space-loop-v1} & Each token boundary contributes one zero-metric loop edge at the right endpoint of the preceding token, tagged with the next token's entry vertex. Bound: Pseudometric weight zero does not remove the topological cell. & PROFILE-AXIOM \\
+BEA361-D007 & \seqsplit{bea361.topology.betti-graph-v1} & For finite graph X, beta0 is the component count and beta1=E-V+beta0, with loop edges included. Bound: Graph/CW complexes only. & ENGINEERING \\
+BEA361-D008 & \seqsplit{bea361.topology.euler-characteristic-v1} & chi(X)=V-E=beta0-beta1. Bound: No planar-renderer interpretation is imported. & SOURCE-DERIVED \\
+BEA361-D009 & \seqsplit{bea361.hinge.space-hole-trade-v1} & Replace a loop edge (u,u) by a bridge (u,v) to a distinct component. V and E stay fixed; beta0 and beta1 both decrease by one; chi is conserved. Bound: Requires v in a different component and an actual loop edge. & PROFILE-AXIOM \\
+BEA361-D010 & \seqsplit{bea361.hinge.zero-metric-bridge-v1} & The traded separator becomes a bridge with metric weight 0. It joins components topologically while collapsing its metric length in the profile pseudometric. Bound: Weighted algorithms must accept a pseudometric. & PROFILE-AXIOM \\
+BEA361-D011 & \seqsplit{bea361.hinge.iterated-space-collapse-v1} & Apply the Space-Hole trade once per separator. For k tokens and h intrinsic cycles, (beta0,beta1)=(k,h+k-1) becomes (1,h) with chi=1-h throughout. Bound: Separator adjacency must be a tree/order chain. & ENGINEERING \\
+BEA361-D012 & \seqsplit{bea361.torus.spanning-tree-collapse-v1} & Collapse the canonical backbone/bridge spanning tree T, obtaining X/T homeomorphic to a wedge of beta1 circles. Bound: The quotient, not the uncollapsed tree, is the immersion domain. & ENGINEERING \\
+BEA361-D013 & \seqsplit{bea361.torus.cycle-basis-four-v1} & When beta1=4, order the four intrinsic loop edges by profile cycle index to obtain c1,...,c4 and H1(X/T;Z)=Z\textasciicircum{}4. Bound: Reject if canonical beta1 is not exactly four. & PROFILE-AXIOM \\
+BEA361-D014 & \seqsplit{bea361.torus.coordinate-circle-immersion-v1} & Map cj(t) to the jth coordinate circle in T\_syn\textasciicircum{}4=(R/Z)\textasciicircum{}4; all four cycle generators have winding vectors e\_j. Bound: Image is the union of four coordinate circles, not the full torus. & PROFILE-AXIOM \\
+BEA361-D015 & \seqsplit{bea361.torus.homology-rank-certificate-v1} & The induced H1 matrix is I4 and has rank 4. Bound: Certifies generator alignment, not homeomorphism to T4. & ENGINEERING \\
+BEA361-D016 & \seqsplit{bea361.bits.ascii-fixed-width-v1} & Encode the two transduced strings in 8-bit ASCII. Bound: ASCII only in the shipped witness. & SOURCE-DERIVED \\
+BEA361-D017 & \seqsplit{bea361.bits.left-nul-alignment-v1} & Embed both byte strings in length n=max(lengths) by appending 0x00 to the shorter source. Bound: Alignment and pad byte are part of the witness. & SOURCE-DERIVED \\
+BEA361-D018 & \seqsplit{bea361.bits.xor-delta-matrix-v1} & Delta=X xor Y in F2\textasciicircum{}(n x 8); applying the same Delta again inverts the affine translation. Bound: This is bytewise XOR, not a shift instruction. & SOURCE-DERIVED \\
+BEA361-D019 & \seqsplit{bea361.bits.even-weight-subspace-v1} & E\_n=ker(p), p(Delta)=sum\_ij Delta\_ij mod 2. It has dimension 8n-1 for n>0. Bound: Guarantees parity class, not Hamming weight. & PROFILE-AXIOM \\
+BEA361-D020 & \seqsplit{bea361.bits.symmetric-row-pairs-v1} & The shipped affine subspace adds Delta\_3=Delta\_4 and Delta\_7=Delta\_8, reproducing masks 0x5d and 0x5e. Bound: Zero-based row indices; pair constraints are profile-specific. & ENGINEERING \\
+BEA361-D021 & \seqsplit{bea361.bits.parity-coset-invariance-v1} & For Y=X+Delta, pi(Y)=pi(X)+p(Delta). Delta in E\_n forces pi(Y)=pi(X). Bound: One-bit global parity only. & ENGINEERING \\
+BEA361-D022 & \seqsplit{bea361.bits.bijective-entropy-invariance-v1} & x->x+Delta is a bijection. For any random variable X on the fixed-width code space, H(X+Delta)=H(X); an even Delta additionally keeps parity cosets invariant. Bound: Does not assert equal empirical bit weight or physical entropy. & ENGINEERING \\
+BEA361-D023 & \seqsplit{bea361.semantic.profile-evaluator-v1} & nu maps each declared representation ID to a finite real value; the shipped source and target both map to 19. Bound: No external linguistic universality is inferred. & PROFILE-AXIOM \\
+BEA361-D024 & \seqsplit{bea361.semantic.fiber-quotient-v1} & r\textasciitilde{}r' iff nu(r)=nu(r'). The quotient Q=R/\textasciitilde{} is identified with im(nu) subset R. Bound: Evaluator/profile must be declared. & ENGINEERING \\
+BEA361-D025 & \seqsplit{bea361.semantic.pullback-pseudometric-v1} & For spatial samples p,q labeled by representations, d\_nu(p,q)=|nu(lambda(p))-nu(lambda(q))|. It is a pseudometric on space and a metric on Q. Bound: Distinct spatial points in one semantic fiber may have distance zero. & PROFILE-AXIOM \\
+BEA361-D026 & \seqsplit{bea361.semantic.sdf19-v1} & F\_19(p)=nu(lambda(p))-19 and Z\_19=F\_19\textasciicircum{}-1(0). Under d\_nu, |F\_19(p)|=dist\_dnu(p,Z\_19). Bound: Exact only in the semantic quotient/pullback metric, not Euclidean rendering space. & PROFILE-AXIOM \\
+BEA361-D027 & \seqsplit{bea361.semantic.zero-set-guard-v1} & g\_epsilon(r)=|nu(r)-19|-epsilon; commit when g\_epsilon<=0 under ordinary UGTS support and compatibility gates. Bound: epsilon must be finite and non-negative. & ENGINEERING \\
+BEA361-D028 & \seqsplit{bea361.certificate.integrated-bea-v2} & Record augmented/canonical Betti signatures, trade records, T4 homology certificates, XOR witness, parity/entropy scope, semantic quotient and explicit non-claims. Bound: Certificate validity is profile-exact and non-transferable without profile identity. & ENGINEERING \\
+BEA361-D029 & \seqsplit{bea361.pipeline.query-first-handoff-v1} & After the BEA certificate, continue support -> compatibility -> guard -> verified event -> transition -> lineage. Bound: BEA does not replace support or compatibility. & ENGINEERING \\
+BEA361-D030 & \seqsplit{bea361.lineage.course-correction-v1} & Mark this package as the course-corrected 3.6.1 edition and retain the earlier 3.6 baseline as provenance, while superseding the prior planar-glyph BEA interpretation. Bound: Version remains 3.6.1; revision status must be explicit. & ENGINEERING \\
+\bottomrule
+\end{longtable}

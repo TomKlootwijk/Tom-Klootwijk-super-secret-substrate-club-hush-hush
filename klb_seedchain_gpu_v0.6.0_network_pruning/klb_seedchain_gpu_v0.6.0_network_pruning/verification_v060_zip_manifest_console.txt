@@ -1,0 +1,10 @@
+{
+  "archive": "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\klb_seedchain_gpu_v0.6.0_network_pruning.zip",
+  "archive_bytes": 1901903,
+  "prefix": "klb_seedchain_gpu_v0.6.0_network_pruning/",
+  "manifest_entries": 251,
+  "passed": 251,
+  "missing": 0,
+  "mismatch": 0,
+  "malformed": 0
+}

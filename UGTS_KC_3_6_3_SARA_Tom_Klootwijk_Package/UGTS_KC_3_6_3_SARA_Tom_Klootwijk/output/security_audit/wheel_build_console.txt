@@ -1,0 +1,9 @@
+Processing .\.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: ugts-kc-363-sara
+  Building wheel for ugts-kc-363-sara (pyproject.toml): started
+  Building wheel for ugts-kc-363-sara (pyproject.toml): finished with status 'done'
+  Created wheel for ugts-kc-363-sara: filename=ugts_kc_363_sara-3.6.3-py3-none-any.whl size=49610 sha256=4ded3bef063177ae59ddda87a8ad1fea3af13693dd19362b267a44a94e8df677
+  Stored in directory: C:\Users\Tom\AppData\Local\Temp\pip-ephem-wheel-cache-zd_ryf_m\wheels\61\48\f0\b5bd925df2d4d5616d08cc7646a87a8c8883270930f9271a28
+Successfully built ugts-kc-363-sara

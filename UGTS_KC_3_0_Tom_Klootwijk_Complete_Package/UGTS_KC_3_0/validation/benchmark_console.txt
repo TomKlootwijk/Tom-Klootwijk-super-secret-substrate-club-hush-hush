@@ -1,0 +1,36 @@
+{
+  "boundary": "Reference Python CPU benchmark only; not a GPU, hardware or universal performance claim.",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "processor": "",
+  "results": [
+    {
+      "name": "superformula",
+      "iterations": 200000,
+      "seconds": 0.10097532800000408,
+      "operations_per_second": 1980681.8552745073,
+      "checksum": 7280.941363657312
+    },
+    {
+      "name": "se3_exp",
+      "iterations": 50000,
+      "seconds": 1.1436629650002033,
+      "operations_per_second": 43719.17385642641,
+      "checksum": 49967.50379144138
+    },
+    {
+      "name": "interval_newton_sqrt2",
+      "iterations": 20000,
+      "seconds": 0.2991264559996125,
+      "operations_per_second": 66861.35445012563,
+      "checksum": 28284.271247465687
+    },
+    {
+      "name": "persistence_h0_128",
+      "iterations": 2000,
+      "seconds": 0.4328353780001635,
+      "operations_per_second": 4620.694383256363,
+      "checksum": 256000.0
+    }
+  ]
+}

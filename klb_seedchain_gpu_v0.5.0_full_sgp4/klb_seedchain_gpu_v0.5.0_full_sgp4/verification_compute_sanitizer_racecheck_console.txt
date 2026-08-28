@@ -1,0 +1,61 @@
+========= COMPUTE-SANITIZER
+Device                    NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        12.0
+Objects                   32
+Deep-space objects        32
+Initialized record bytes  1488
+Portable seed bytes       4096
+Reference frame           TEME -> PEF by GMST approximation
+CPU/GPU full-SGP4 validation
+  states                 256
+  error mismatches       0
+  method mismatches      0
+  RMS position delta     0.000070649 mm
+  max position delta     0.000383791 mm
+  RMS velocity delta     0.000000010 mm/s
+  max velocity delta     0.000000056 mm/s
+Intervals per object      8192
+Step seconds              1.000000
+Candidate intervals       262144
+Chunk size                256
+Direct worker threads     1024
+CPU prefix oracle
+  intervals              65536
+  supported              65536
+  compatible             65536
+  boundary evaluations   65536
+  visible endpoints      18253
+  AOS                    2
+  LOS                    1
+  propagation errors     0
+GPU prefix
+  intervals              65536
+  supported              65536
+  compatible             65536
+  boundary evaluations   65536
+  visible endpoints      18253
+  AOS                    2
+  LOS                    1
+  propagation errors     0
+Direct full-SGP4 counters
+  intervals              262144
+  supported              259392
+  compatible             259392
+  boundary evaluations   259392
+  visible endpoints      73860
+  AOS                    6
+  LOS                    5
+  propagation errors     0
+query_seed_sgp4_direct
+  inner repeats          1
+  p50 ms                 15.685344
+  p95 ms                 15.685344
+  p99 ms                 15.685344
+  mean ms                15.685344
+Compacted direct events   11
+KSGP1 file bytes          5793
+Dense float4 bytes        4194816
+Dense double4 bytes       8389632
+Float4 horizon ratio      724.118074x
+Double4 horizon ratio     1448.236147x
+========= RACECHECK SUMMARY: 0 hazards displayed (0 errors, 0 warnings)

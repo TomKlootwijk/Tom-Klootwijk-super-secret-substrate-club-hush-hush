@@ -1,0 +1,51 @@
+{
+  "archive": "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package.zip",
+  "archive_sha256": "d537b6e452995c7fb1f324782e1f06f86be5d644eb84a5d6939579e3f7e62892",
+  "files": {
+    "README.md": {
+      "archive_sha256": "aac9b3016ce6ead7e89d5ebda90860e8f15a1da2457794ee3c23b2d37c5454f2",
+      "current_sha256": "18f0c3c14708f2068a7a38670c8bb4bda83962b9292427bf70372ff30ecad7bb",
+      "hash_match": false,
+      "archive_bytes": 5283,
+      "current_bytes": 4413,
+      "diff_removed_lines": 28,
+      "diff_added_lines": 15,
+      "policy_phrase_status": {
+        "Non-negotiable security boundary": {
+          "present_in_archive": true,
+          "present_in_current": false
+        },
+        "third-party wallet brute force": {
+          "present_in_archive": false,
+          "present_in_current": false
+        }
+      },
+      "policy_guard_weakened": true
+    },
+    "SECURITY.md": {
+      "archive_sha256": "a55cbb0d89c85dbaea7e502c7fc52aae531db6e0c01e1bbb3fc256abb3e59d1e",
+      "current_sha256": "9a80e13318c6b78468c6c2c38fec17a1dfbb62f05a06c0c66dbb34004c1482a0",
+      "hash_match": false,
+      "archive_bytes": 1282,
+      "current_bytes": 974,
+      "diff_removed_lines": 12,
+      "diff_added_lines": 6,
+      "policy_phrase_status": {
+        "Rejected capabilities": {
+          "present_in_archive": true,
+          "present_in_current": false
+        },
+        "Third-party key search": {
+          "present_in_archive": false,
+          "present_in_current": false
+        },
+        "Transaction signing": {
+          "present_in_archive": true,
+          "present_in_current": false
+        }
+      },
+      "policy_guard_weakened": true
+    }
+  },
+  "policy_guard_weakened": true
+}

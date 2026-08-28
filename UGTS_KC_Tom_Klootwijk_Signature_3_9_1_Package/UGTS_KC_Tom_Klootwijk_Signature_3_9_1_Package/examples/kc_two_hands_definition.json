@@ -1,0 +1,154 @@
+{
+  "schema_version": "3.0.0",
+  "attribution": {
+    "name": "Tom Klootwijk",
+    "identifier": "NL200678942",
+    "date_of_birth": "1990-07-10",
+    "verification_status": "requester-supplied-not-independently-verified"
+  },
+  "scene_metadata": {
+    "units_per_meter": 1.0,
+    "up_axis": "Y",
+    "handedness": "right",
+    "time_unit": "seconds",
+    "working_color_space": "scene-linear",
+    "determinism_profile": "tolerance-certified",
+    "fixed_dt": 0.016666666666666666
+  },
+  "materials": [
+    {
+      "id": "teal",
+      "base_color": [0.12, 0.72, 0.78, 1.0],
+      "metallic": 0.12,
+      "roughness": 0.32,
+      "emissive": [0.0, 0.0, 0.0],
+      "alpha_mode": "OPAQUE"
+    },
+    {
+      "id": "gold",
+      "base_color": [0.95, 0.62, 0.12, 0.86],
+      "metallic": 0.42,
+      "roughness": 0.28,
+      "emissive": [0.0, 0.0, 0.0],
+      "alpha_mode": "BLEND"
+    }
+  ],
+  "assets": [
+    {
+      "id": "gielis_tube_asset",
+      "mechanism_id": "M199",
+      "content_hash": "5303a1385ba984ab5e357f951fb84ad61faf699a130090334e7a09807d8c2e01",
+      "material_id": "teal",
+      "geometry_contract": {
+        "representation": "mesh",
+        "world_error": 0.005,
+        "collision_error": 0.02,
+        "screen_space_error_pixels": 1.0,
+        "topology_preserved": true
+      }
+    },
+    {
+      "id": "gyroid_asset",
+      "mechanism_id": "M225",
+      "content_hash": "d353641eed53dc2c80fbaa10d497a04bbac9b06c62a670e311a191b6775b9706",
+      "material_id": "gold",
+      "geometry_contract": {
+        "representation": "mesh",
+        "world_error": 0.1,
+        "collision_error": 0.15,
+        "screen_space_error_pixels": 2.0,
+        "topology_preserved": null
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "world",
+      "asset_id": null,
+      "parent_id": null,
+      "local_transform": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],
+      "visible": true,
+      "tags": ["root"],
+      "lineage": []
+    },
+    {
+      "id": "sculpture",
+      "asset_id": "gielis_tube_asset",
+      "parent_id": "world",
+      "local_transform": [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],
+      "visible": true,
+      "tags": ["interactive", "two_hand"],
+      "lineage": []
+    },
+    {
+      "id": "gyroid_panel",
+      "asset_id": "gyroid_asset",
+      "parent_id": "world",
+      "local_transform": [[0.8,0,0,2],[0,0.8,0,-0.1],[0,0,0.8,0],[0,0,0,1]],
+      "visible": true,
+      "tags": ["decorative"],
+      "lineage": []
+    }
+  ],
+  "layers": [],
+  "hands": [
+    {
+      "side": "left",
+      "wrist_position": [-1.0, 0.65, 0.1],
+      "wrist_orientation": [0.9971888181, -0.0749297073, 0.0, 0.0],
+      "joints": {},
+      "joint_radii": {},
+      "confidence": 1.0,
+      "tracked": true,
+      "source": "synthetic",
+      "timestamp": 1.0
+    },
+    {
+      "side": "right",
+      "wrist_position": [1.65, 0.95, 0.35],
+      "wrist_orientation": [0.9624251976, 0.2715469369, 0.0, 0.0],
+      "joints": {},
+      "joint_radii": {},
+      "confidence": 1.0,
+      "tracked": true,
+      "source": "synthetic",
+      "timestamp": 1.0
+    }
+  ],
+  "event_proposals": [
+    {
+      "proposal_id": "hands-transform-0001",
+      "event_time": 1.0,
+      "event_type": "set_transform",
+      "entity_id": "sculpture",
+      "payload": {"gesture": "bimanual_transform"},
+      "source": "two_hands",
+      "priority": 10,
+      "confidence": 1.0,
+      "support_ok": true,
+      "compatibility_ok": true,
+      "guard_status": "crossing",
+      "numeric_error": 0.0,
+      "event_margin": 0.000001,
+      "lineage_label": "two_hands:transform:0001"
+    }
+  ],
+  "queries": [
+    {"type": "state_at"},
+    {"type": "scene_bounds"},
+    {"type": "ray_query"},
+    {"type": "render_preview"},
+    {"type": "replay_to"}
+  ],
+  "exports": [
+    {"format": "gltf-2.0", "authority": "non-authoritative-presentation", "path": "output/sandbox_scene.gltf"},
+    {"format": "usda", "authority": "non-authoritative-presentation", "path": "output/sandbox_scene.usda"},
+    {"format": "event-log", "authority": "authoritative-event-log", "path": "output/sandbox_replay.json"}
+  ],
+  "authority_policy": {
+    "discrete_change": "verified-event-commit-only",
+    "gpu_role": "proposal-only-for-gameplay",
+    "render_role": "non-authoritative-projection",
+    "accepted_guard_statuses": ["crossing", "touch", "tangency"]
+  }
+}

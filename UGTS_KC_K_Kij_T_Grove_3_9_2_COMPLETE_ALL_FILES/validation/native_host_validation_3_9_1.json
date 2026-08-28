@@ -1,0 +1,7 @@
+{
+  "schema": "ugts-kc-native-host-validation-3.9.1",
+  "compile_returncode": 0,
+  "run_returncode": 0,
+  "passed": true,
+  "output": "PASS native core: Tom Klootwijk Signature Arena 3D meshes=4 nodes=66 profile=poco_x7_pro_12gb quality=signature_ultra"
+}

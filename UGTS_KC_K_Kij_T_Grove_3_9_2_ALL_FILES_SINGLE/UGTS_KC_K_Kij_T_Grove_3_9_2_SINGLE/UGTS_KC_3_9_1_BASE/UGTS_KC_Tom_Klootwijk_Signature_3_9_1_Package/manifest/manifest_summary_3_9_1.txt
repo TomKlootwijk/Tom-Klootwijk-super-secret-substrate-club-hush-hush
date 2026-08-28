@@ -1,0 +1,5 @@
+UGTS-KC 3.9.1 Tom Klootwijk Signature Edition
+Files hashed: 268
+Total bytes: 14778362
+Content root SHA-256: 2532173d38644d4b6f1b73dd42e8a3faf8b5096712488f6e41008489a28b0aa3
+Manifest excludes manifest/ to avoid recursion.

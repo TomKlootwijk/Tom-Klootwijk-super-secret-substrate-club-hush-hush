@@ -1,0 +1,12 @@
+metric,symbol,unit,definition,value,scope
+Candidate Evaluation Rate,CER,million candidates/s,"Candidate relations evaluated per second, using device timestamp p50.",83.699878,"G64_E32 evaluate, N=1048576"
+Spherical Event Throughput,SET,million verified events/s,Verified support + compatibility + guard events per second.,4.112531,"G64_E32 evaluate, N=1048576"
+Effective Substrate Bandwidth,ESB,GB/s,Logical input plus output record bytes divided by device p50 time; not raw DRAM bandwidth.,8.035188,"G64_E32 evaluate, N=1048576"
+Support Rejection Gain,SRG,x,Input candidates divided by candidates admitted by radial-angular support.,1.8981533944342972,G64_E32 deterministic corpus
+Compatibility Rejection Gain,CRG,x,Supported candidates divided by support-and-compatibility survivors.,6.001944806605824,G64_E32 deterministic corpus
+Event Yield,EY,%,Verified events divided by input candidates.,4.913425445556641,G64_E32 deterministic corpus
+State Compression Ratio,SCR,x,Dense G64_E32 bytes divided by dense packed G32_E16 bytes.,2.0,N=1048576
+Event Compaction Ratio,ECR,x,Dense G32 E16 output bytes divided by verified-event-only E16 bytes.,21.022815670235374,"G32_E16 evaluate, N=1048576"
+State-plus-Novelty Compression,SNC,x,Dense G64_E32 bytes divided by G32 state plus compact verified E16 event log.,2.9303065164436455,N=1048576
+Commit Cost Factor,CCF,x,Evaluate+atomic-commit p50 divided by evaluate-only p50.,1.7531244093140637,"G64_E32, N=1048576"
+Packed Compute Penalty,PCP,x,G32 evaluate p50 divided by G64 evaluate p50 on this validation device.,1.0622079297511584,N=1048576; software Vulkan device

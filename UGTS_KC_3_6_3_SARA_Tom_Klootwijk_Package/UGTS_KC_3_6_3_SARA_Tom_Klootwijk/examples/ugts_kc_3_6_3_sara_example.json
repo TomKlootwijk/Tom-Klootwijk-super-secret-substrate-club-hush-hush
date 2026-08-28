@@ -1,0 +1,541 @@
+{
+  "$schema": "../spec/ugts_kc_3_6_3_sara.schema.json",
+  "schema_version": "3.6.3",
+  "substrate_id": "ugts:kc:3.6.3:sara:seed-address-referential-algebra",
+  "metadata": {
+    "title": "UGTS-KC 3.6.3 SARA referential example",
+    "requester_attribution": {
+      "name": "Tom Klootwijk",
+      "role": "Principal Creative Technologist",
+      "identifier": "NL200678942",
+      "date_of_birth": "10-07-1990",
+      "status": "requester-supplied-unverified"
+    },
+    "security_boundary": "Public standards conformance and self-owned validation only. No third-party key search, mnemonic enumeration, signing, broadcast or funds transfer.",
+    "base_version": "UGTS-KC 3.6.2 SCLP"
+  },
+  "definitions": [
+    {
+      "id": "sara363:profile:v1",
+      "kind": "profile",
+      "domain": "typed_crypto_input",
+      "codomain": "public_audit_certificate",
+      "evaluation_phase": 0,
+      "dependencies": [],
+      "parameters": {
+        "version": "3.6.3",
+        "secret_serialization": false
+      },
+      "description": "Seed-address referential profile.",
+      "provenance": [
+        "BIP39",
+        "BIP32",
+        "BIP84",
+        "BIP173",
+        "BIP350"
+      ],
+      "status": "engineering-derived",
+      "invariants": [],
+      "content_hash": "sha256:bbfab5c1a39f1198b8bb65d4f2f53cce7039930359990d23581fdae9f082f612"
+    },
+    {
+      "id": "sara363:op:authorization-gate",
+      "kind": "authorization_gate",
+      "domain": "audit_scope",
+      "codomain": "authorization_certificate",
+      "evaluation_phase": 1,
+      "dependencies": [
+        "sara363:profile:v1"
+      ],
+      "parameters": {
+        "allowed": [
+          "bip_test_vector",
+          "public_address_decode",
+          "self_owned_known_seed_derivation",
+          "search_space_estimate"
+        ],
+        "forbidden": [
+          "third_party_mainnet_key_search",
+          "mnemonic_enumeration",
+          "private_key_scan",
+          "transaction_signing"
+        ]
+      },
+      "description": "Reject unauthorized secret/funds-access scopes before cryptographic evaluation.",
+      "provenance": [
+        "package safety boundary"
+      ],
+      "status": "engineering-derived",
+      "invariants": [],
+      "content_hash": "sha256:a212b45ba5355e38d512f95f6f59fd14993ed3cd9274b31a07126a8008c428e0"
+    },
+    {
+      "id": "sara363:op:wordlist-commitment",
+      "kind": "wordlist_commitment",
+      "domain": "wordlist_file",
+      "codomain": "wordlist_profile",
+      "evaluation_phase": 1,
+      "dependencies": [
+        "sara363:profile:v1"
+      ],
+      "parameters": {
+        "count": 2048,
+        "sha256": "2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda"
+      },
+      "description": "Bind the English BIP39 wordlist by count, order and hash.",
+      "provenance": [
+        "BIP39"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:ea99f7d10dbcf9b951b9626ef7b00f00c5a549470f40cde0ee2db3c3306e7acf"
+    },
+    {
+      "id": "sara363:op:entropy-checksum",
+      "kind": "checksum_hinge",
+      "domain": "entropy_bits",
+      "codomain": "entropy_plus_checksum",
+      "evaluation_phase": 2,
+      "dependencies": [
+        "sara363:op:wordlist-commitment"
+      ],
+      "parameters": {
+        "ENT": [
+          128,
+          160,
+          192,
+          224,
+          256
+        ],
+        "CS": "ENT/32",
+        "hash": "SHA-256"
+      },
+      "description": "Append the first CS hash bits to ENT.",
+      "provenance": [
+        "BIP39"
+      ],
+      "status": "source-derived",
+      "invariants": [
+        "ENT+CS divisible by 11"
+      ],
+      "content_hash": "sha256:59019684d2e55b50d3859496e481f95d27800673233785823f43675a60e4fa0a"
+    },
+    {
+      "id": "sara363:op:word-cells",
+      "kind": "cell_complex",
+      "domain": "entropy_plus_checksum",
+      "codomain": "ordered_word_cells",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sara363:op:entropy-checksum",
+        "sara363:op:wordlist-commitment"
+      ],
+      "parameters": {
+        "cell_width": 11,
+        "index_range": [
+          0,
+          2047
+        ]
+      },
+      "description": "Segment the bit string into an ordered path of 11-bit word cells.",
+      "provenance": [
+        "BIP39",
+        "UGTS topology translation"
+      ],
+      "status": "translated",
+      "invariants": [],
+      "content_hash": "sha256:2d97d9fa32a524fccf321781ce4b7d83d2b7b7d9d34232ec6176e57d7c04bcb1"
+    },
+    {
+      "id": "sara363:op:mnemonic-validate",
+      "kind": "relation",
+      "domain": "mnemonic_sentence",
+      "codomain": "checksum_status",
+      "evaluation_phase": 4,
+      "dependencies": [
+        "sara363:op:word-cells"
+      ],
+      "parameters": {
+        "normalization": "UTF-8 NFKD"
+      },
+      "description": "Resolve words to cells and test the checksum hinge.",
+      "provenance": [
+        "BIP39"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:43dbd12101db13ecebe8f6fd15fb6e966ff72e543340bee496662c19b01c0992"
+    },
+    {
+      "id": "sara363:op:seed-transition",
+      "kind": "key_derivation",
+      "domain": "mnemonic_sentence x passphrase",
+      "codomain": "seed512_transient",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "sara363:op:mnemonic-validate",
+        "sara363:op:authorization-gate"
+      ],
+      "parameters": {
+        "function": "PBKDF2-HMAC-SHA512",
+        "iterations": 2048,
+        "salt_prefix": "mnemonic",
+        "bytes": 64,
+        "serialize": false
+      },
+      "description": "Derive a transient 512-bit seed after scope and checksum validation.",
+      "provenance": [
+        "BIP39"
+      ],
+      "status": "source-derived",
+      "invariants": [
+        "no secret egress"
+      ],
+      "content_hash": "sha256:12fa254434c40cbc497ed276f59e999b08e94c467ba4f3334ccc7ca62778ee11"
+    },
+    {
+      "id": "sara363:op:bip32-root",
+      "kind": "tree_root",
+      "domain": "seed512_transient",
+      "codomain": "extended_private_node",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "sara363:op:seed-transition"
+      ],
+      "parameters": {
+        "hmac_key": "Bitcoin seed",
+        "curve": "secp256k1"
+      },
+      "description": "Create the BIP32 root node.",
+      "provenance": [
+        "BIP32"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:39444ac243735d5f681bbc359b47fb07ef31e770c3a371284b707925d61dcfd1"
+    },
+    {
+      "id": "sara363:op:hd-tree",
+      "kind": "key_tree",
+      "domain": "extended_node x child_index",
+      "codomain": "extended_child_node",
+      "evaluation_phase": 7,
+      "dependencies": [
+        "sara363:op:bip32-root"
+      ],
+      "parameters": {
+        "normal_range": [
+          0,
+          2147483647
+        ],
+        "hardened_range": [
+          2147483648,
+          4294967295
+        ]
+      },
+      "description": "Apply normal or hardened child-key derivation with explicit edge type.",
+      "provenance": [
+        "BIP32"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:3f0e7d817333aff71de0032399cd367907bd923ce80479d99c170788063b0148"
+    },
+    {
+      "id": "sara363:op:bip84-path",
+      "kind": "path_policy",
+      "domain": "extended_key_tree",
+      "codomain": "p2wpkh_leaf",
+      "evaluation_phase": 8,
+      "dependencies": [
+        "sara363:op:hd-tree"
+      ],
+      "parameters": {
+        "path": "m/84'/0'/0'/0/0",
+        "network": "mainnet",
+        "purpose": 84
+      },
+      "description": "Select the public BIP84 test-vector leaf.",
+      "provenance": [
+        "BIP84"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:2c0847c5e6cf78a9e642eb8a17684ef1ea07b2b4d5b3e5c92f785b5e168e0073"
+    },
+    {
+      "id": "sara363:op:public-projection",
+      "kind": "public_projection",
+      "domain": "p2wpkh_leaf",
+      "codomain": "compressed_public_key",
+      "evaluation_phase": 9,
+      "dependencies": [
+        "sara363:op:bip84-path"
+      ],
+      "parameters": {
+        "format": "SEC1 compressed",
+        "serialize_private": false
+      },
+      "description": "Project the private scalar to a public curve point only.",
+      "provenance": [
+        "BIP32",
+        "SEC1"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:b686b3a8521c9d8ee5e6eef8f19ad62c8cb767a242e153ffa3fb2ffa3326f4bd"
+    },
+    {
+      "id": "sara363:op:hash160",
+      "kind": "hash_commitment",
+      "domain": "compressed_public_key",
+      "codomain": "witness_program20",
+      "evaluation_phase": 10,
+      "dependencies": [
+        "sara363:op:public-projection"
+      ],
+      "parameters": {
+        "pipeline": "RIPEMD160(SHA256(pubkey))"
+      },
+      "description": "Construct the P2WPKH witness program.",
+      "provenance": [
+        "BIP84",
+        "BIP141"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:cc4e581270f3ca759cb869112b90b37db4857e1e275ce85002656cc756fc6c3f"
+    },
+    {
+      "id": "sara363:op:scriptpubkey",
+      "kind": "script_relation",
+      "domain": "witness_program20",
+      "codomain": "script_pubkey",
+      "evaluation_phase": 11,
+      "dependencies": [
+        "sara363:op:hash160"
+      ],
+      "parameters": {
+        "prefix_hex": "0014"
+      },
+      "description": "Construct witness-v0 P2WPKH scriptPubKey.",
+      "provenance": [
+        "BIP141",
+        "BIP84"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:833e9f00be6d79ac88544aa7b2024a59612d4a19238bdd23acd194029ea60754"
+    },
+    {
+      "id": "sara363:op:bech32-address",
+      "kind": "address_projection",
+      "domain": "witness_program20",
+      "codomain": "bech32_address",
+      "evaluation_phase": 11,
+      "dependencies": [
+        "sara363:op:hash160"
+      ],
+      "parameters": {
+        "hrp": "bc",
+        "witness_version": 0,
+        "checksum": "Bech32"
+      },
+      "description": "Encode the public receiving address.",
+      "provenance": [
+        "BIP173",
+        "BIP84"
+      ],
+      "status": "source-derived",
+      "invariants": [],
+      "content_hash": "sha256:4b07812423ea98aea8645ae9350a62e216f1f4190561c42fc02caa32dbca2fcb"
+    },
+    {
+      "id": "sara363:op:public-address-decode",
+      "kind": "public_query",
+      "domain": "bech32_address",
+      "codomain": "address_decode_certificate",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sara363:op:authorization-gate"
+      ],
+      "parameters": {
+        "fixture": "bc1q7ydrtdn8z62xhslqyqtyt38mm4e2c4h3mxjkug",
+        "use": "checksum_and_script_decode_only"
+      },
+      "description": "Decode the supplied public address without key search.",
+      "provenance": [
+        "user-supplied public fixture",
+        "BIP173",
+        "BIP141"
+      ],
+      "status": "bounded",
+      "invariants": [],
+      "content_hash": "sha256:dc9ae2e4ab83c8c5324e5b01e10731c1840a5311416a24274eb73a6bc6809bda"
+    },
+    {
+      "id": "sara363:op:search-space-estimate",
+      "kind": "metric",
+      "domain": "bit_security x rate",
+      "codomain": "time_estimate",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sara363:op:authorization-gate"
+      ],
+      "parameters": {
+        "rates": [
+          1000000,
+          1000000000000000
+        ],
+        "enumeration": false
+      },
+      "description": "Calculate optimistic expected work without generating candidates.",
+      "provenance": [
+        "engineering metric"
+      ],
+      "status": "engineering-derived",
+      "invariants": [],
+      "content_hash": "sha256:eff11f430261179c311e261c983a04e203630fd49c9fc7f45ab1340a3e023f93"
+    },
+    {
+      "id": "sara363:op:public-certificate",
+      "kind": "certificate",
+      "domain": "public_derivation x public_decode x metrics",
+      "codomain": "sara_certificate",
+      "evaluation_phase": 12,
+      "dependencies": [
+        "sara363:op:mnemonic-validate",
+        "sara363:op:bech32-address",
+        "sara363:op:scriptpubkey",
+        "sara363:op:public-address-decode",
+        "sara363:op:search-space-estimate"
+      ],
+      "parameters": {
+        "secret_fields": [],
+        "public_fields": [
+          "fingerprints",
+          "public_key",
+          "script_pubkey",
+          "address",
+          "reason_codes"
+        ]
+      },
+      "description": "Issue a public-only standards-conformance certificate.",
+      "provenance": [
+        "engineering integration"
+      ],
+      "status": "engineering-derived",
+      "invariants": [
+        "no secret fields"
+      ],
+      "content_hash": "sha256:2770f449a65bc5605dcc96659903a7d1c978fb4d7defee53f725c0687adfb8cb"
+    },
+    {
+      "id": "sara363:op:lineage",
+      "kind": "lineage_record",
+      "domain": "sara_certificate",
+      "codomain": "audit_lineage",
+      "evaluation_phase": 13,
+      "dependencies": [
+        "sara363:op:public-certificate"
+      ],
+      "parameters": {
+        "log": [
+          "schema",
+          "source digests",
+          "public fixture",
+          "test results",
+          "reason codes"
+        ],
+        "exclude": [
+          "mnemonic",
+          "passphrase",
+          "seed",
+          "private key",
+          "chain code"
+        ]
+      },
+      "description": "Persist public evidence and exclusions only.",
+      "provenance": [
+        "UGTS lineage"
+      ],
+      "status": "engineering-derived",
+      "invariants": [],
+      "content_hash": "sha256:f4ad3d055a1c2de98f27e928ac8041eb9bf0cca877f5175109f59549e395438e"
+    },
+    {
+      "id": "sara363:handoff:ugts",
+      "kind": "ugts_handoff",
+      "domain": "sara_certificate",
+      "codomain": "ugts_event_record",
+      "evaluation_phase": 14,
+      "dependencies": [
+        "sara363:op:lineage"
+      ],
+      "parameters": {
+        "sequence": [
+          "support",
+          "compatibility",
+          "guard",
+          "verified_event",
+          "transition",
+          "lineage"
+        ]
+      },
+      "description": "Return control to the canonical UGTS event sequence.",
+      "provenance": [
+        "UGTS base architecture"
+      ],
+      "status": "retained",
+      "invariants": [],
+      "content_hash": "sha256:24e7bf58d62e2b2e4a7b74d02cebf5522ef6c454b46c7c2a4f5ed1bdf2ef672a"
+    }
+  ],
+  "instances": [
+    {
+      "id": "sara363:instance:bip84-public-test-vector",
+      "definition_ref": "sara363:profile:v1",
+      "literal": {
+        "mnemonic_profile": "BIP39 official public test vector: 128-bit zero entropy",
+        "path": "m/84'/0'/0'/0/0",
+        "expected_address": "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu",
+        "secret_status": "public test vector"
+      }
+    },
+    {
+      "id": "sara363:instance:user-public-address-fixture",
+      "definition_ref": "sara363:op:public-address-decode",
+      "literal": {
+        "address": "bc1q7ydrtdn8z62xhslqyqtyt38mm4e2c4h3mxjkug",
+        "context_label": "user-supplied; not used as ownership proof",
+        "allowed_use": "format/checksum/witness-program/scriptPubKey decode only"
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "sara363:pipeline:public-certificate",
+      "steps": [
+        "sara363:profile:v1",
+        "sara363:op:authorization-gate",
+        "sara363:op:wordlist-commitment",
+        "sara363:op:entropy-checksum",
+        "sara363:op:word-cells",
+        "sara363:op:mnemonic-validate",
+        "sara363:op:seed-transition",
+        "sara363:op:bip32-root",
+        "sara363:op:hd-tree",
+        "sara363:op:bip84-path",
+        "sara363:op:public-projection",
+        "sara363:op:hash160",
+        "sara363:op:scriptpubkey",
+        "sara363:op:bech32-address",
+        "sara363:op:public-address-decode",
+        "sara363:op:search-space-estimate",
+        "sara363:op:public-certificate",
+        "sara363:op:lineage",
+        "sara363:handoff:ugts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "docx": {
+    "zip_integrity": true,
+    "bad_member": null,
+    "size_bytes": 1294991
+  },
+  "pdf": {
+    "preflight_ok": true,
+    "pages": 20,
+    "a4_page_count": 20,
+    "fonts_embedded": true,
+    "rendered_pages_pdfium": 20,
+    "visually_inspected_pages": 20,
+    "visual_findings": "No clipping, overlap, broken glyphs, black boxes or broken tables observed in DOCX and PDFium render sets."
+  },
+  "gltf": {
+    "json_parse": true,
+    "asset_version": "2.0",
+    "buffer_declared_bytes": 100352,
+    "buffer_actual_bytes": 100352,
+    "buffer_length_matches": true,
+    "mesh_count": 2,
+    "node_count": 3
+  },
+  "usda": {
+    "header_ok": true,
+    "mesh_defs": 2
+  },
+  "svg": {
+    "files": 2,
+    "parse_ok": true
+  },
+  "scene": {
+    "asset_count": 2,
+    "node_count": 3
+  },
+  "replay": {
+    "event_count": 1,
+    "checkpoint_count": 1
+  },
+  "scene_audit": {
+    "issues": [],
+    "metrics": {
+      "asset_count": 2,
+      "layer_count": 0,
+      "node_count": 3,
+      "scene_bounds": {
+        "maximum": [
+          2.6,
+          1.874088693740145,
+          2.281853935109714
+        ],
+        "minimum": [
+          -1.5103247599767262,
+          -0.7000000000000001,
+          -1.8084574277351009
+        ]
+      },
+      "scene_hash": "e061c325aaacfa32da19743dc5215067cdbd183ceda9bcfbdc80483b904f0b22"
+    },
+    "passed": true
+  }
+}

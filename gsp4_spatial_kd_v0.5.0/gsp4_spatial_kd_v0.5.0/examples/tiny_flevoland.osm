@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="gsp4-example">
+  <node id="1" lat="52.5185" lon="5.4714">
+    <tag k="place" v="city"/>
+    <tag k="name" v="Lelystad Example"/>
+  </node>
+  <node id="2" lat="52.5200" lon="5.4750">
+    <tag k="amenity" v="monitoring_station"/>
+    <tag k="name" v="Example Sensor"/>
+  </node>
+  <node id="3" lat="52.5160" lon="5.4680"/>
+  <node id="4" lat="52.5170" lon="5.4800"/>
+  <way id="10">
+    <nd ref="3"/>
+    <nd ref="1"/>
+    <nd ref="4"/>
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="Example Road"/>
+  </way>
+</osm>

@@ -1,0 +1,22 @@
+{
+  "issues": [],
+  "metrics": {
+    "asset_count": 2,
+    "layer_count": 0,
+    "node_count": 3,
+    "scene_bounds": {
+      "maximum": [
+        2.6,
+        1.874088693740145,
+        2.281853935109714
+      ],
+      "minimum": [
+        -1.5103247599767262,
+        -0.7000000000000001,
+        -1.8084574277351009
+      ]
+    },
+    "scene_hash": "e061c325aaacfa32da19743dc5215067cdbd183ceda9bcfbdc80483b904f0b22"
+  },
+  "passed": true
+}

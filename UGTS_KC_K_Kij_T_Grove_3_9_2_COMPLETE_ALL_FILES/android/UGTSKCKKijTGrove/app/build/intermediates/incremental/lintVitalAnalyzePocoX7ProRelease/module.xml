@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="C:\Tom Klootwijk Coronation\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\android\UGTSKCKKijTGrove\app"
+    name=":app"
+    type="APP"
+    maven="UGTSKCKKijTGrove392:app:unspecified"
+    agpVersion="8.13.2"
+    buildFolder="build"
+    bootClassPath="C:\Users\Tom\AppData\Local\Android\Sdk\platforms\android-36\android.jar;C:\Users\Tom\AppData\Local\Android\Sdk\build-tools\35.0.0\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-36"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="pocoX7ProRelease"/>
+</lint-module>

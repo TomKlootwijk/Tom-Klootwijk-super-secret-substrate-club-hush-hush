@@ -1,0 +1,656 @@
+{
+  "schema_version": "3.0.0",
+  "baseline_mechanism_count": 257,
+  "added_mechanism_count": 72,
+  "extended_total": 329,
+  "mechanisms": [
+    {
+      "id": "M258",
+      "domain": "Scene and assets",
+      "mechanism": "Stable asset identity",
+      "definition": "Asset identity is a stable schema identifier separate from node identity, coordinates and lineage.",
+      "formula": "asset=(asset_id, content_hash, schema_hash, payload)",
+      "integration": "Allows one immutable asset to be instanced by many scene nodes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M259",
+      "domain": "Scene and assets",
+      "mechanism": "Content-addressed asset hash",
+      "definition": "Canonical mesh/material/source metadata are hashed so derived geometry can be cached and compared.",
+      "formula": "h_asset=SHA256(canonical(asset_payload))",
+      "integration": "Cache key and integrity check; not a legal or cryptographic identity claim.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M260",
+      "domain": "Scene and assets",
+      "mechanism": "Scene-node transform hierarchy",
+      "definition": "Nodes form an explicit parent-child transform graph with local and world transforms.",
+      "formula": "T_world(n)=T_world(parent(n))*T_local(n)",
+      "integration": "Supports conventional scene composition while UGTS events remain authoritative for changes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M261",
+      "domain": "Scene and assets",
+      "mechanism": "Hierarchy cycle rejection",
+      "definition": "Parent edits are accepted only when the scene graph remains acyclic.",
+      "formula": "parent walk must not revisit a node",
+      "integration": "Prevents undefined world transforms and recursive editor corruption.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M262",
+      "domain": "Scene and assets",
+      "mechanism": "Asset-instance separation",
+      "definition": "Mesh/material assets are immutable payloads; nodes carry transform, visibility, tags and lineage.",
+      "formula": "instance=(node_id, asset_id, local_transform, tags, lineage)",
+      "integration": "Allows reuse and streaming without treating render meshes as identity.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M263",
+      "domain": "Scene and assets",
+      "mechanism": "Layered scene opinions",
+      "definition": "Ordered layers may override declared node fields without destructively rewriting the base scene.",
+      "formula": "composed(n)=fold_layers(base(n), opinions(n))",
+      "integration": "Reference form of non-destructive authoring and variant overrides.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M264",
+      "domain": "Scene and assets",
+      "mechanism": "Coordinate-system declaration",
+      "definition": "Every scene declares up axis, handedness and working coordinate convention.",
+      "formula": "coordinate_contract=(up_axis, handedness, units_per_meter)",
+      "integration": "Prevents silent axis flips across engine, glTF, USD and XR adapters.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M265",
+      "domain": "Scene and assets",
+      "mechanism": "Unit and time-base declaration",
+      "definition": "Linear scale, time unit and working color space are schema fields.",
+      "formula": "metadata=(units_per_meter,time_unit,working_color_space)",
+      "integration": "Separates authored values from implicit engine defaults.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M266",
+      "domain": "Scene and assets",
+      "mechanism": "Streaming-region membership",
+      "definition": "World bounds map deterministically to one or more spatial cells.",
+      "formula": "cell(p)=floor(p/cell_size)",
+      "integration": "Supplies world partition and asynchronous loading keys.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M267",
+      "domain": "Scene and assets",
+      "mechanism": "Schema migration record",
+      "definition": "Version changes append an explicit from/to migration entry and description.",
+      "formula": "migration=(from_version,to_version,operation)",
+      "integration": "Makes save-game and asset upgrades inspectable and replay-safe.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M268",
+      "domain": "Geometry compilation",
+      "mechanism": "Adaptive cubic-curve tessellation",
+      "definition": "Cubic Bezier segments subdivide until a declared flatness tolerance or depth limit is reached.",
+      "formula": "flatness=max(dist(P1,line P0P3),dist(P2,line P0P3)) <= epsilon",
+      "integration": "Produces render/collision polylines from authoritative curves.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M269",
+      "domain": "Geometry compilation",
+      "mechanism": "Dual simulation and presentation error contract",
+      "definition": "Derived geometry records independent world, collision, screen-space and normal error budgets.",
+      "formula": "error=(e_world,e_collision,e_pixels,e_normal,topology_status)",
+      "integration": "Prevents visually acceptable meshes from silently redefining event geometry.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M270",
+      "domain": "Geometry compilation",
+      "mechanism": "Even-odd and nonzero fill rules",
+      "definition": "Closed 2D paths use an explicitly selected winding rule for interior classification.",
+      "formula": "inside_evenodd = crossing_count mod 2; inside_nonzero = winding != 0",
+      "integration": "Supports vector fills, guards and hit regions without ambiguous self-intersections.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M271",
+      "domain": "Geometry compilation",
+      "mechanism": "Stroke expansion",
+      "definition": "An open polyline is compiled to a ribbon mesh with explicit width and join policy.",
+      "formula": "v_i^+/- = p_i +/- (width/2)*n_i",
+      "integration": "Reference path-to-triangle conversion for editor and runtime previews.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M272",
+      "domain": "Geometry compilation",
+      "mechanism": "Swept tube mesh",
+      "definition": "A profile ring is swept along a sampled 3D path to form a triangle mesh.",
+      "formula": "v_ij=p_i+r(cos(theta_j)N_i+sin(theta_j)B_i)",
+      "integration": "Makes 2.0 curve families renderable and exportable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M273",
+      "domain": "Geometry compilation",
+      "mechanism": "Parallel-transport sweep frames",
+      "definition": "Rotation-minimizing tangent/normal/binormal frames orient profiles across low-curvature sections.",
+      "formula": "N_i=normalize(N_(i-1)-T_i dot(N_(i-1),T_i)); B_i=T_i x N_i",
+      "integration": "Avoids Frenet flips at near-zero curvature.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M274",
+      "domain": "Geometry compilation",
+      "mechanism": "Implicit-field grid sampling",
+      "definition": "A bounded 3D lattice samples a declared scalar field and iso value.",
+      "formula": "s_ijk=f(x_i,y_j,z_k)-iso",
+      "integration": "Input stage for deterministic field-to-mesh compilation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M275",
+      "domain": "Geometry compilation",
+      "mechanism": "Marching-tetrahedra meshing",
+      "definition": "Each voxel cube is decomposed into tetrahedra and crossing edges are triangulated.",
+      "formula": "p_cross=lerp(p_a,p_b,(iso-f_a)/(f_b-f_a))",
+      "integration": "Reference isosurface compiler with bounded resolution and no hidden raymarch loop.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M276",
+      "domain": "Geometry compilation",
+      "mechanism": "Field-gradient normal generation",
+      "definition": "Analytic gradients are preferred; finite differences supply a bounded fallback.",
+      "formula": "n=normalize(grad f); grad_x approx (f(x+h)-f(x-h))/(2h)",
+      "integration": "Supplies lighting orientation and diagnostic residuals.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M277",
+      "domain": "Geometry compilation",
+      "mechanism": "Sweep UV generation",
+      "definition": "Tube vertices receive angular and cumulative-length coordinates.",
+      "formula": "u=j/sides; v=arc_length_i/total_length",
+      "integration": "Provides stable procedural material coordinates.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M278",
+      "domain": "Geometry compilation",
+      "mechanism": "Collision proxy generation",
+      "definition": "A derived axis-aligned proxy mesh is emitted from authoritative bounds.",
+      "formula": "proxy=AABB(mesh)",
+      "integration": "Allows inexpensive broad-phase and fallback collision.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M279",
+      "domain": "Geometry compilation",
+      "mechanism": "Reference mesh LOD hierarchy",
+      "definition": "Triangle subsets form deterministic lower-detail previews with explicit topology-preservation status.",
+      "formula": "N_lod=round(ratio*N_triangles)",
+      "integration": "Reference only; production simplification must preserve application error contracts.",
+      "validation": "Implemented + tested (reference)"
+    },
+    {
+      "id": "M280",
+      "domain": "Spatial and streaming",
+      "mechanism": "Axis-aligned bounding box contract",
+      "definition": "Each renderable or support volume may expose finite minimum/maximum bounds.",
+      "formula": "AABB=[xmin,xmax]x[ymin,ymax]x[zmin,zmax]",
+      "integration": "Common currency for culling, broad phase and streaming.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M281",
+      "domain": "Spatial and streaming",
+      "mechanism": "Oriented-bound proxy contract",
+      "definition": "An optional local frame and half-extents describe tighter oriented bounds.",
+      "formula": "OBB=(center,axes,half_extents)",
+      "integration": "Specified for production adapters; reference runtime falls back to AABB.",
+      "validation": "Specified; not implemented"
+    },
+    {
+      "id": "M282",
+      "domain": "Spatial and streaming",
+      "mechanism": "Deterministic BVH construction",
+      "definition": "A median split along the longest axis builds an inspectable hierarchy.",
+      "formula": "axis=argmax(extent); split=median(center_axis)",
+      "integration": "Conventional acceleration complements UGTS support predicates.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M283",
+      "domain": "Spatial and streaming",
+      "mechanism": "Support-aware broad phase",
+      "definition": "BVH overlap results pass through local-support predicates before exact relation work.",
+      "formula": "candidates=BVH(query) intersect support_ok",
+      "integration": "Preserves the canonical support -> compatibility -> guard order.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M284",
+      "domain": "Spatial and streaming",
+      "mechanism": "Frustum visibility query",
+      "definition": "AABB positive vertices are tested against declared view planes.",
+      "formula": "visible iff dot(n,p_positive)+d >= 0 for all planes",
+      "integration": "Downstream view selection only; visibility does not change identity.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M285",
+      "domain": "Spatial and streaming",
+      "mechanism": "Ray and picking query",
+      "definition": "Slab intervals return ordered AABB ray candidates.",
+      "formula": "t_axis=(bound-origin)/direction; intersect intervals",
+      "integration": "Editor picking and coarse interaction support.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M286",
+      "domain": "Spatial and streaming",
+      "mechanism": "World streaming cells",
+      "definition": "Object bounds enumerate every intersected regular-grid cell.",
+      "formula": "cells(AABB)=Cartesian range(floor(min/s),floor(max/s))",
+      "integration": "Reference partition key for load/unload policies.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M287",
+      "domain": "Spatial and streaming",
+      "mechanism": "Per-user interest set",
+      "definition": "Spatial overlap and required tags define a player/client interest set.",
+      "formula": "interest={e: bounds(e) intersects query and tags_required subset tags(e)}",
+      "integration": "Supports replication and streaming scope.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M288",
+      "domain": "Spatial and streaming",
+      "mechanism": "Culling reason codes",
+      "definition": "Every rejected item reports frustum, support or compatibility cause.",
+      "formula": "reason in {outside_frustum,outside_support,incompatible,visible}",
+      "integration": "Makes editor and performance diagnostics actionable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M289",
+      "domain": "GPU and rendering",
+      "mechanism": "Pattern-opcode dispatch",
+      "definition": "Versioned numeric opcodes select pattern/field evaluators in coherent shader batches.",
+      "formula": "evaluator=dispatch[opcode]",
+      "integration": "GPU target keeps the 2.0 parameterized operator model.",
+      "validation": "Shader contract supplied"
+    },
+    {
+      "id": "M290",
+      "domain": "GPU and rendering",
+      "mechanism": "Parameter-buffer reference",
+      "definition": "Instances store aligned offsets into a validated parameter buffer rather than inflating every hot record.",
+      "formula": "params=buffer[param_offset:param_offset+param_count]",
+      "integration": "Supports compact instancing and schema hashing.",
+      "validation": "Shader contract supplied"
+    },
+    {
+      "id": "M291",
+      "domain": "GPU and rendering",
+      "mechanism": "Derivative availability flags",
+      "definition": "Bit flags declare analytic position, tangent, curvature, gradient or Hessian support.",
+      "formula": "flags & DERIVATIVE_*",
+      "integration": "Missing derivatives select a declared numerical path.",
+      "validation": "Shader contract supplied"
+    },
+    {
+      "id": "M292",
+      "domain": "GPU and rendering",
+      "mechanism": "Render-graph resource contract",
+      "definition": "Passes declare read/write resources, queue class and dependency edges.",
+      "formula": "render_graph=(passes,resources,barriers)",
+      "integration": "Specified bridge from query results to raster/compute presentation.",
+      "validation": "Specified; not executed"
+    },
+    {
+      "id": "M293",
+      "domain": "GPU and rendering",
+      "mechanism": "GPU-driven draw-list contract",
+      "definition": "Visible instances may be compacted into indirect draw or mesh-dispatch commands.",
+      "formula": "draws=compact(visible and lod_selected)",
+      "integration": "Production target; CPU reference emits ordinary SVG triangles.",
+      "validation": "Specified; not executed"
+    },
+    {
+      "id": "M294",
+      "domain": "GPU and rendering",
+      "mechanism": "GPU event proposal buffer",
+      "definition": "GPU kernels may append bounded event proposals with residual, status and confidence.",
+      "formula": "proposal=(time,entity,guard,error,confidence,source)",
+      "integration": "Gameplay state is not committed by an unchecked shader write.",
+      "validation": "Specified + runtime schema"
+    },
+    {
+      "id": "M295",
+      "domain": "GPU and rendering",
+      "mechanism": "Deterministic authoritative commit boundary",
+      "definition": "Verified proposals are ordered by time, priority, source and proposal ID before state patches.",
+      "formula": "sort_key=(event_time,-priority,source,proposal_id)",
+      "integration": "Separates parallel detection from authoritative lineage change.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M296",
+      "domain": "GPU and rendering",
+      "mechanism": "Vulkan backend profile",
+      "definition": "Native target declares Vulkan 1.4-compatible resource, shader and timestamp contracts.",
+      "formula": "backend=vulkan; physical_gpu_claim requires named device metrics",
+      "integration": "No physical-GPU benchmark is claimed by this package.",
+      "validation": "Specified only"
+    },
+    {
+      "id": "M297",
+      "domain": "GPU and rendering",
+      "mechanism": "WebGPU/WGSL portability profile",
+      "definition": "Portable target expresses compute and presentation kernels in WGSL-compatible layouts.",
+      "formula": "backend=webgpu; shader_language=WGSL",
+      "integration": "Prototype shader supplied; browser/device execution remains target-specific.",
+      "validation": "Prototype supplied"
+    },
+    {
+      "id": "M298",
+      "domain": "GPU and rendering",
+      "mechanism": "CPU SVG reference renderer",
+      "definition": "A deterministic camera, painter-order triangle pass and preview shader emit inspectable SVG.",
+      "formula": "project(p)=focal*(camera_space.xy/camera_space.z)",
+      "integration": "Regression oracle and demonstrator, not a production renderer.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M299",
+      "domain": "Materials and color",
+      "mechanism": "Typed metallic-roughness PBR material",
+      "definition": "Base color, metallic, roughness, emissive and alpha mode have bounded ranges.",
+      "formula": "material=(baseColor,metallic,roughness,emissive,alphaMode)",
+      "integration": "Maps directly to common runtime asset conventions.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M300",
+      "domain": "Materials and color",
+      "mechanism": "Procedural pattern coordinates",
+      "definition": "Material graphs may read phase, curvature, arc length, sheet or pattern coordinates.",
+      "formula": "presentation_value=graph(pattern_context)",
+      "integration": "Allows 2.0 patterns to drive masks and appearance.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M301",
+      "domain": "Materials and color",
+      "mechanism": "Acyclic material graph",
+      "definition": "Small typed nodes evaluate constants, patterns, add, multiply, mix and clamp operations.",
+      "formula": "value(node)=op(value(inputs))",
+      "integration": "Reference graph with explicit cycle rejection.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M302",
+      "domain": "Materials and color",
+      "mechanism": "Material authority boundary",
+      "definition": "Material evaluation is presentation-only and cannot mutate authoritative substrate state.",
+      "formula": "material_output -> pixels; state change -> guard/event only",
+      "integration": "Preserves the core reading rule.",
+      "validation": "Specified + enforced by API shape"
+    },
+    {
+      "id": "M303",
+      "domain": "Materials and color",
+      "mechanism": "Light and shadow contract",
+      "definition": "Lights declare kind, direction/color/intensity and shadow intent.",
+      "formula": "light=(kind,pose,color,intensity,casts_shadow)",
+      "integration": "Reference renderer implements one directional preview light; production shadows remain downstream.",
+      "validation": "Partially implemented"
+    },
+    {
+      "id": "M304",
+      "domain": "Materials and color",
+      "mechanism": "HDR exposure and tone mapping",
+      "definition": "Scene-linear color is exposed and mapped through declared preview operators.",
+      "formula": "c_exposed=2^EV*c; c_out=tone_map(c_exposed)",
+      "integration": "Makes output transforms reproducible.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M305",
+      "domain": "Materials and color",
+      "mechanism": "OCIO and ACES metadata target",
+      "definition": "Color-pipeline records may name an OCIO configuration and ACES profile/view.",
+      "formula": "color_contract=(working_space,display,view,config,profile)",
+      "integration": "Interchange target only; this package does not bundle an OCIO runtime.",
+      "validation": "Metadata specified"
+    },
+    {
+      "id": "M306",
+      "domain": "Materials and color",
+      "mechanism": "Transparency policy",
+      "definition": "Opaque, mask and blend modes are explicit material states.",
+      "formula": "alpha_mode in {OPAQUE,MASK,BLEND}",
+      "integration": "Prevents implicit ordering and collision semantics.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M307",
+      "domain": "Game runtime and animation",
+      "mechanism": "Fixed simulation clock separation",
+      "definition": "Authoritative simulation advances in fixed dt while input and presentation may use separate clocks.",
+      "formula": "t_tick=n*dt_fixed",
+      "integration": "Makes rollback and event ordering explicit.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M308",
+      "domain": "Game runtime and animation",
+      "mechanism": "ECS component mapping",
+      "definition": "Scene, support, relation, motion, interaction and lineage data map to explicit engine components.",
+      "formula": "entity -> {Transform,Asset,Support,Compatibility,Lineage,...}",
+      "integration": "Adapter contract; no engine-specific fork is authoritative.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M309",
+      "domain": "Game runtime and animation",
+      "mechanism": "Skeletal hierarchy contract",
+      "definition": "Joints form an acyclic transform hierarchy with inverse-bind and pose data.",
+      "formula": "p_skinned=sum_i w_i T_joint_i B_i^-1 p_rest",
+      "integration": "Production animation extension; no skinned character is bundled.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M310",
+      "domain": "Game runtime and animation",
+      "mechanism": "Animation state-machine contract",
+      "definition": "Clips, blend states and guarded transitions carry versioned event labels.",
+      "formula": "state_next=transition(state,guard,event)",
+      "integration": "Animation events use the same event authority boundary.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M311",
+      "domain": "Game runtime and animation",
+      "mechanism": "IK and maintained-constraint bridge",
+      "definition": "The 2.0 damped least-squares IK operator is connected to explicit joint-limit/constraint status.",
+      "formula": "delta_q=J^T(JJ^T+lambda^2 I)^-1 e",
+      "integration": "2.0 reference implementation retained; 3D production constraints remain application-specific.",
+      "validation": "Inherited implementation + specified bridge"
+    },
+    {
+      "id": "M312",
+      "domain": "Game runtime and animation",
+      "mechanism": "Conventional rigid-body fallback",
+      "definition": "Unsupported contacts and dense constraints may be delegated to a conventional physics solver.",
+      "formula": "unsupported_relation -> physics_adapter",
+      "integration": "Prevents the event substrate from pretending to replace general contact mechanics.",
+      "validation": "Specified boundary"
+    },
+    {
+      "id": "M313",
+      "domain": "Game runtime and animation",
+      "mechanism": "Impact versus persistent constraint split",
+      "definition": "Crossing/impact produces an event; resting contact, joint and grasp use maintained constraints.",
+      "formula": "impact -> event; contact_interval -> constraint_mode",
+      "integration": "Avoids infinite coincident-event emission.",
+      "validation": "Specified boundary"
+    },
+    {
+      "id": "M314",
+      "domain": "Game runtime and animation",
+      "mechanism": "Character sweep-controller contract",
+      "definition": "Capsule/shape sweeps return travel fraction, normal, support and compatibility status.",
+      "formula": "hit=min valid TOI along displacement",
+      "integration": "Target interface for playable movement.",
+      "validation": "Specified; not implemented"
+    },
+    {
+      "id": "M315",
+      "domain": "Two-hand interaction",
+      "mechanism": "Typed hand state",
+      "definition": "Each hand records side, wrist pose, joints, radii, confidence, tracking state, source and timestamp.",
+      "formula": "HandState=(side,wrist,joints,radii,confidence,status,time)",
+      "integration": "Input adapter boundary for XR, mocap or desktop emulation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M316",
+      "domain": "Two-hand interaction",
+      "mechanism": "Pinch hysteresis",
+      "definition": "Separate enter and exit distances prevent noisy pinch chatter.",
+      "formula": "enter if d<=d_enter; exit if d>=d_exit, d_exit>d_enter",
+      "integration": "Produces guarded interaction state with reason codes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M317",
+      "domain": "Two-hand interaction",
+      "mechanism": "Bimanual midpoint frame",
+      "definition": "The pair midpoint is the translation anchor for cooperative transforms.",
+      "formula": "m=(p_left+p_right)/2",
+      "integration": "Stable pair frame independent of world origin.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M318",
+      "domain": "Two-hand interaction",
+      "mechanism": "Bimanual scale",
+      "definition": "Object scale follows current hand separation relative to anchor separation within clamps.",
+      "formula": "s=clamp(||r-l||/||r0-l0||,s_min,s_max)",
+      "integration": "Supports direct two-hand sizing with a declared degeneracy policy.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M319",
+      "domain": "Two-hand interaction",
+      "mechanism": "Bimanual twist and alignment",
+      "definition": "Shortest-axis alignment combines with averaged wrist twist around the current pair axis.",
+      "formula": "q=q_twist*q_align; q_align maps a0 to a1",
+      "integration": "Provides rotation without Euler-angle discontinuities.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M320",
+      "domain": "Two-hand interaction",
+      "mechanism": "Cooperative grab ownership",
+      "definition": "One- and two-hand ownership transitions are an explicit state machine.",
+      "formula": "none -> one -> two -> one -> none",
+      "integration": "Supports join, release and simultaneous-grab events.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M321",
+      "domain": "Two-hand interaction",
+      "mechanism": "Handover lineage event",
+      "definition": "When one hand releases a two-hand object, ownership persists under the remaining hand with a lineage label.",
+      "formula": "owners={L,R}->{R} emits handover",
+      "integration": "Preserves interaction ancestry instead of silently changing controller.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M322",
+      "domain": "Two-hand interaction",
+      "mechanism": "Tracking confidence and desktop fallback",
+      "definition": "Low-confidence/untracked poses reject transforms; cursor input can emulate the same schema.",
+      "formula": "accepted=tracked and confidence>=floor",
+      "integration": "Makes XR optional and keeps tests reproducible.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M323",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Authoritative event sequence",
+      "definition": "Every committed event receives a monotonic sequence number and pre/post state hashes.",
+      "formula": "sequence_next=sequence+1",
+      "integration": "Replication and editor timelines use the same ordering.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M324",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Checkpoint and rollback",
+      "definition": "Runtime snapshots are hashed and later events can be replayed from the nearest checkpoint.",
+      "formula": "state_k=checkpoint_j + replay(events j+1..k)",
+      "integration": "Reference rollback path for deterministic profiles.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M325",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Deterministic canonical state hash",
+      "definition": "Canonical JSON over schema, scene and runtime counters produces a comparison digest.",
+      "formula": "h_state=SHA256(canonical(state))",
+      "integration": "Divergence detector; digest is not a replacement for full state.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M326",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Schema and asset negotiation",
+      "definition": "Peers exchange schema version, mechanism support and asset hashes before authoritative replay.",
+      "formula": "compatible_peer=schemas_match and required_assets_available",
+      "integration": "Production networking contract.",
+      "validation": "Specified"
+    },
+    {
+      "id": "M327",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Editor diagnostics and inspector records",
+      "definition": "Scene audits, event timelines, culling reasons, lineage edges and runtime metrics are machine-readable.",
+      "formula": "diagnostic=(severity,code,subject,message,metrics)",
+      "integration": "Makes hidden support/guard/lineage state inspectable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M328",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Replay divergence detection",
+      "definition": "Replay stops at the first sequence whose expected and actual state hashes differ.",
+      "formula": "divergence=min{k: h_expected(k)!=h_actual(k)}",
+      "integration": "Prevents silent cross-platform desynchronization.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M329",
+      "domain": "Networking, editor and validation",
+      "mechanism": "Physical-GPU benchmark promotion gate",
+      "definition": "GPU performance claims require a named physical device, driver, workload, precision and equal-error baseline.",
+      "formula": "promote_claim iff physical_gpu and metrics_complete and oracle_match",
+      "integration": "Retains the 1.1/2.0 evidence boundary.",
+      "validation": "Acceptance gate; not claimed"
+    }
+  ]
+}

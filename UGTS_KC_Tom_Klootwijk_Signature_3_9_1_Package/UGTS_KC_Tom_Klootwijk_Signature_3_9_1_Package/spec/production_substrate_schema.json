@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-kc-two-hands-3.0.schema.json",
+  "title": "UGTS-KC Two Hands 3.0 interactive graphics and game-runtime definition",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "attribution",
+    "scene_metadata",
+    "assets",
+    "nodes",
+    "queries",
+    "authority_policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0.0"
+    },
+    "attribution": {
+      "type": "object",
+      "required": ["name", "identifier", "date_of_birth", "verification_status"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "identifier": {"type": "string", "minLength": 1},
+        "date_of_birth": {"type": "string", "format": "date"},
+        "verification_status": {"const": "requester-supplied-not-independently-verified"}
+      },
+      "additionalProperties": false
+    },
+    "scene_metadata": {
+      "type": "object",
+      "required": ["units_per_meter", "up_axis", "handedness", "time_unit", "working_color_space", "determinism_profile"],
+      "properties": {
+        "units_per_meter": {"type": "number", "exclusiveMinimum": 0},
+        "up_axis": {"enum": ["X", "Y", "Z"]},
+        "handedness": {"enum": ["left", "right"]},
+        "time_unit": {"enum": ["seconds", "milliseconds", "ticks"]},
+        "working_color_space": {"type": "string"},
+        "determinism_profile": {"enum": ["restricted-bit-exact", "tolerance-certified", "presentation-only"]},
+        "fixed_dt": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "materials": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/material"}
+    },
+    "assets": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/asset"}
+    },
+    "nodes": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/node"}
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "opinions"],
+        "properties": {
+          "name": {"type": "string"},
+          "muted": {"type": "boolean"},
+          "opinions": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "hands": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/hand"}
+    },
+    "event_proposals": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event_proposal"}
+    },
+    "queries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "enum": [
+              "state_at",
+              "next_event",
+              "events_in_support",
+              "can_couple",
+              "route_class",
+              "reconstruct_identity",
+              "frame_at",
+              "curvature_at",
+              "scene_bounds",
+              "ray_query",
+              "frustum_query",
+              "interest_set",
+              "render_preview",
+              "replay_to"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "exports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["format", "authority"],
+        "properties": {
+          "format": {"enum": ["gltf-2.0", "usda", "svg-preview", "ugts-json", "event-log"]},
+          "authority": {"enum": ["non-authoritative-presentation", "authoritative-event-log", "authoritative-scene-definition"]},
+          "path": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "authority_policy": {
+      "type": "object",
+      "required": ["discrete_change", "gpu_role", "render_role"],
+      "properties": {
+        "discrete_change": {"const": "verified-event-commit-only"},
+        "gpu_role": {"enum": ["proposal-only-for-gameplay", "presentation-authoritative-only"]},
+        "render_role": {"const": "non-authoritative-projection"},
+        "accepted_guard_statuses": {
+          "type": "array",
+          "items": {"enum": ["crossing", "touch", "tangency"]},
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "quat": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "mat4": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 4,
+        "items": {"type": "number"}
+      }
+    },
+    "mechanism_id": {
+      "type": "string",
+      "pattern": "^M(19[8-9]|2[0-9][0-9]|3[0-2][0-9])$"
+    },
+    "material": {
+      "type": "object",
+      "required": ["id", "base_color", "metallic", "roughness", "alpha_mode"],
+      "properties": {
+        "id": {"type": "string"},
+        "base_color": {
+          "type": "array",
+          "items": {"type": "number", "minimum": 0, "maximum": 1},
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "metallic": {"type": "number", "minimum": 0, "maximum": 1},
+        "roughness": {"type": "number", "minimum": 0, "maximum": 1},
+        "emissive": {
+          "type": "array",
+          "items": {"type": "number", "minimum": 0},
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "alpha_mode": {"enum": ["OPAQUE", "MASK", "BLEND"]}
+      },
+      "additionalProperties": true
+    },
+    "asset": {
+      "type": "object",
+      "required": ["id", "mechanism_id", "content_hash", "geometry_contract"],
+      "properties": {
+        "id": {"type": "string"},
+        "mechanism_id": {"$ref": "#/$defs/mechanism_id"},
+        "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "schema_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "material_id": {"type": ["string", "null"]},
+        "geometry_contract": {
+          "type": "object",
+          "required": ["representation", "world_error", "collision_error", "screen_space_error_pixels"],
+          "properties": {
+            "representation": {"enum": ["curve", "mesh", "implicit-field", "volume", "collision-proxy"]},
+            "world_error": {"type": "number", "minimum": 0},
+            "collision_error": {"type": "number", "minimum": 0},
+            "screen_space_error_pixels": {"type": "number", "minimum": 0},
+            "topology_preserved": {"type": ["boolean", "null"]}
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "local_transform", "visible", "tags", "lineage"],
+      "properties": {
+        "id": {"type": "string"},
+        "asset_id": {"type": ["string", "null"]},
+        "parent_id": {"type": ["string", "null"]},
+        "local_transform": {"$ref": "#/$defs/mat4"},
+        "visible": {"type": "boolean"},
+        "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "lineage": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "hand": {
+      "type": "object",
+      "required": ["side", "wrist_position", "wrist_orientation", "confidence", "tracked", "source", "timestamp"],
+      "properties": {
+        "side": {"enum": ["left", "right"]},
+        "wrist_position": {"$ref": "#/$defs/vec3"},
+        "wrist_orientation": {"$ref": "#/$defs/quat"},
+        "joints": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/vec3"}
+        },
+        "joint_radii": {
+          "type": "object",
+          "additionalProperties": {"type": "number", "minimum": 0}
+        },
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "tracked": {"type": "boolean"},
+        "source": {"type": "string"},
+        "timestamp": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "event_proposal": {
+      "type": "object",
+      "required": ["proposal_id", "event_time", "event_type", "entity_id", "payload", "source", "priority", "confidence", "support_ok", "compatibility_ok", "guard_status", "numeric_error", "event_margin"],
+      "properties": {
+        "proposal_id": {"type": "string"},
+        "event_time": {"type": "number"},
+        "event_type": {"type": "string"},
+        "entity_id": {"type": "string"},
+        "payload": {"type": "object"},
+        "source": {"type": "string"},
+        "priority": {"type": "integer"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "support_ok": {"type": "boolean"},
+        "compatibility_ok": {"type": "boolean"},
+        "guard_status": {"enum": ["crossing", "touch", "tangency", "coincident", "none"]},
+        "numeric_error": {"type": "number", "minimum": 0},
+        "event_margin": {"type": "number", "minimum": 0},
+        "lineage_label": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

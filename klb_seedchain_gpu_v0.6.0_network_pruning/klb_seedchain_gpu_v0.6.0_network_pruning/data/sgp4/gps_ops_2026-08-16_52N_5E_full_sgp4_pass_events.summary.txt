@@ -1,0 +1,11 @@
+KSGP1 full-SGP4 visibility schedule
+  intervals               : 604800
+  seeds                   : 32
+  candidate intervals     : 19353600
+  support survivors       : 19207536
+  compatible survivors    : 19207536
+  visible samples         : 5498429
+  acquisition/loss events : 717
+  propagation failures    : 0
+  model                   : full SGP4/SDP4
+  frame boundary          : TEME->PEF GMST+DUT1; polar motion/EOP omitted

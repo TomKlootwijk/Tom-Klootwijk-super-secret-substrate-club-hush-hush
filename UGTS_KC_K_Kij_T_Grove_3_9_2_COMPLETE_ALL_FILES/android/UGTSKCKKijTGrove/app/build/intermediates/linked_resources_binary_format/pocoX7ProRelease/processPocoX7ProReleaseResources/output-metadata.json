@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "LINKED_RESOURCES_BINARY_FORMAT",
+    "kind": "Directory"
+  },
+  "applicationId": "nl.tomklootwijk.ugtskc.grove.poco",
+  "variantName": "pocoX7ProRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 392,
+      "versionName": "3.9.2-poco-x7-pro-grove",
+      "outputFile": "linked-resources-binary-format-pocoX7ProRelease.ap_"
+    }
+  ],
+  "elementType": "File"
+}

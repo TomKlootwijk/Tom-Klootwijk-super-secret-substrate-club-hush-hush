@@ -1,0 +1,32 @@
+{
+  "path": "report/UGTS_KC_3_0_Technical_Report.pdf",
+  "pages": 24,
+  "encrypted": false,
+  "page_sizes": [
+    {
+      "width_pt": 595,
+      "height_pt": 842,
+      "count": 20
+    },
+    {
+      "width_pt": 842,
+      "height_pt": 595,
+      "count": 4
+    }
+  ],
+  "metadata": {
+    "/Title": "UGTS-KC 3.0 Technical Report",
+    "/Author": "UGTS-KC 3.0 package",
+    "/Subject": "Unified Geometric-Topological Substrate engineering expansion",
+    "/Keywords": "UGTS, geometry, topology, kinematics, events, constraints, persistence, dynamics",
+    "/Creator": "Writer",
+    "/Producer": "LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community",
+    "/CreationDate": "D:20260816163649Z'"
+  },
+  "outline_items": 75,
+  "form_fields": 0,
+  "attachments": 0,
+  "annotations": 0,
+  "poppler_pdfinfo": "Title:           UGTS-KC 3.0 Technical Report\nSubject:         Unified Geometric-Topological Substrate engineering expansion\nKeywords:        UGTS, geometry, topology, kinematics, events, constraints, persistence, dynamics\nAuthor:          UGTS-KC 3.0 package\nCreator:         Writer\nProducer:        LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community\nCreationDate:    Sun Aug 16 16:36:49 2026 UTC\nCustom Metadata: no\nMetadata Stream: yes\nTagged:          yes\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           24\nEncrypted:       no\nPage size:       595.304 x 841.89 pts (A4)\nPage rot:        0\nFile size:       1781673 bytes\nOptimized:       no\nPDF version:     1.7",
+  "poppler_pdffonts": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nBAAAAA+LiberationSans-Bold           TrueType          WinAnsi          yes yes yes   2118  0\nCAAAAA+LiberationSans                TrueType          WinAnsi          yes yes yes   2108  0\nDAAAAA+LiberationSans-Italic         TrueType          WinAnsi          yes yes yes   2113  0\nEAAAAA+Carlito-Bold                  TrueType          WinAnsi          yes yes yes   2128  0\nFAAAAA+OpenSymbol                    TrueType          WinAnsi          yes yes yes   2133  0\nGAAAAA+LiberationMono                TrueType          WinAnsi          yes yes yes   2123  0"
+}

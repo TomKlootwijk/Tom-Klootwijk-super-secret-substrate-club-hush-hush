@@ -1,0 +1,75 @@
+KLB SeedChain GPU 0.3.0 — useful OrbitSeed deployment
+======================================================
+
+What this package now tests
+---------------------------
+The v0.2 65,536-point test was correct but completed in only tens of
+microseconds and did not force a large dense time-series working set.
+
+Version 0.3 includes actual CelesTrak GPS Operational OMM data and compares:
+
+  direct seed reconstruction + event query
+  versus
+  dense float4 timeline materialization + event query
+
+The included seven-day file represents 19,353,600 satellite-time intervals and
+about 295.3 MiB of dense float4 positions from a 3,809-byte KLOC1 container.
+That is model-based reconstruction, not lossless compression of an existing
+trajectory file.
+
+Windows
+-------
+1. Install a current NVIDIA driver, CUDA Toolkit 12.8 or newer,
+   CMake 3.24+, and Visual Studio 2022 x64.
+2. Open an x64 Native Tools Command Prompt for VS 2022 in this directory.
+3. Build and run tests:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\build_windows.ps1
+
+4. Run the actual seven-day application and sustained benchmark:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\demo_orbit_windows.ps1
+
+5. Run the larger ~512 MiB dense baseline:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\stress_orbit_windows.ps1 -Preset laptop
+
+6. Optional ~2 GiB dense baseline:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\stress_orbit_windows.ps1 -Preset vram
+
+Linux
+-----
+   ./scripts/build_linux.sh
+   ./scripts/demo_orbit_linux.sh
+   ./scripts/stress_orbit_linux.sh ./build laptop
+
+Expected first-run checks
+-------------------------
+   CPU/GPU oracle prefix       exact counters
+   direct/dense counters       equal
+   compacted event set         equal
+   event output truncated      no
+
+Practical CPU command
+---------------------
+Generate a coarse acquisition/loss schedule without CUDA:
+
+   .\build\Release\klb_orbit.exe passes ^
+     .\data\orbit\gps_ops_2026-08-16_7d_1s.kloc ^
+     --lat 52 --lon 5 --elevation-deg 10 ^
+     --hours 168 --step-seconds 1 --output pass_events.csv
+
+Accuracy boundary
+-----------------
+CelesTrak GP data is intended for SGP4. The included predictor is deterministic
+Kepler plus secular J2, for compression/performance and coarse visibility only.
+It is not navigation-grade and must not be used for safety-critical decisions.
+
+Read next
+---------
+   docs\CURRENT_DEPLOYMENT_ANALYSIS.md
+   docs\ORBIT_DEPLOYMENT.md
+   docs\FILE_FORMAT_KLOC1.md
+   docs\VALIDATION.md
+   AUTHORSHIP_NOTICE.md

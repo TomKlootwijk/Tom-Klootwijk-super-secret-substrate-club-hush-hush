@@ -1,0 +1,4 @@
+PASS
+Device-only LLVM IR generated successfully for src/network_bench.cu.
+IR lines: 5738
+This is a compiler front-end/code-generation check, not native nvcc execution.

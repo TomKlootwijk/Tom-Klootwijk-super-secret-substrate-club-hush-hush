@@ -1,0 +1,23 @@
+{
+  "dataset": "CelesTrak GPS Operational constellation general perturbations data",
+  "group": "GPS-OPS",
+  "format": "OMM-keyword CSV",
+  "source_url": "https://celestrak.org/NORAD/elements/gp.php?GROUP=GPS-OPS&FORMAT=CSV",
+  "documentation_url": "https://celestrak.org/NORAD/documentation/gp-data-formats.php",
+  "usage_policy_url": "https://celestrak.org/usage-policy.php",
+  "retrieved_utc": "2026-08-16",
+  "source_sha256": "f45d43705e1cdc9121eb17d15baa3bc0ad0d97e0c21e94a78c44d4ddd6ddb8fb",
+  "packed_file": "gps_ops_2026-08-16_7d_1s.kloc",
+  "packed_sha256": "fe0036df05ad0f4036f8cfcf489a3d371557924bd8868f00c8e525cf6d2c6f73",
+  "pass_event_file": "gps_ops_2026-08-16_52N_5E_pass_events.csv",
+  "pass_event_sha256": "a08b9295d29c94dac7244d3a70aea2e0196ad56e5c25733c909e4fbdf68d4f86",
+  "records": 32,
+  "reference_epoch": "2026-08-16T05:33:12.693024Z",
+  "timeline_seconds": 604800,
+  "sample_step_seconds": 1,
+  "candidate_intervals": 19353600,
+  "pass_events": 717,
+  "predictor": "deterministic Kepler solve with pack-time secular J2 rates",
+  "route_semantics": "six deterministic RAAN bins for compatibility-query load; not official GPS orbital planes",
+  "accuracy_boundary": "performance/compression and coarse visibility demonstration only; not SGP4, precise orbit determination, safety-critical, or navigation-grade"
+}

@@ -1,0 +1,2 @@
+recursive-include src/ugts_kc3/android_template/project *
+include README.md

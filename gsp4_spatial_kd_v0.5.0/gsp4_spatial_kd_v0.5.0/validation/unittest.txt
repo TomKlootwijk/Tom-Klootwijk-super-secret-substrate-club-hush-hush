@@ -1,0 +1,26 @@
+test_deployment_hashes_and_g64_g32_bridge (test_deployment_bridge.DeploymentAndBridgeTests.test_deployment_hashes_and_g64_g32_bridge) ... ok
+test_embedding_candidates_labels_and_ultra_adapter (test_distillation.DistillationTests.test_embedding_candidates_labels_and_ultra_adapter) ... ok
+test_local_enu_has_expected_axes (test_geocell.GeoCellTests.test_local_enu_has_expected_axes) ... ok
+test_morton_roundtrip_and_neighbors (test_geocell.GeoCellTests.test_morton_roundtrip_and_neighbors) ... ok
+test_spatial_index_broad_phase (test_geocell.GeoCellTests.test_spatial_index_broad_phase) ... ok
+test_demo_is_sparse_variable_length_and_roundtrips (test_graph.GraphPackageTests.test_demo_is_sparse_variable_length_and_roundtrips) ... ok
+test_subgraph_preserves_valid_edges (test_graph.GraphPackageTests.test_subgraph_preserves_valid_edges) ... ok
+test_type_and_relation_vocabulary_present (test_graph.GraphPackageTests.test_type_and_relation_vocabulary_present) ... ok
+test_report_is_explicit_about_runtime (test_hardware.HardwareReportTests.test_report_is_explicit_about_runtime) ... ok
+test_geonames_plus_variable_observations (test_ingestion.IngestionTests.test_geonames_plus_variable_observations) ... ok
+test_small_osm_xml_adapter (test_ingestion.IngestionTests.test_small_osm_xml_adapter) ... ok
+test_hash_linked_append_and_tamper_detection (test_novelty.NoveltyTests.test_hash_linked_append_and_tamper_detection) ... ok
+test_01_variable_length_graph_and_roundtrip (test_spatial_kd.SpatialKDTests.test_01_variable_length_graph_and_roundtrip) ... ok
+test_02_hash_linked_novelty (test_spatial_kd.SpatialKDTests.test_02_hash_linked_novelty) ... ok
+test_03_hash_teacher_cache (test_spatial_kd.SpatialKDTests.test_03_hash_teacher_cache) ... ok
+test_04_train_load_and_query (test_spatial_kd.SpatialKDTests.test_04_train_load_and_query) ... ok
+test_05_ultra_teacher_adapter (test_spatial_kd.SpatialKDTests.test_05_ultra_teacher_adapter) ... ok
+test_06_g64_g32_bridge_precision_contract (test_spatial_kd.SpatialKDTests.test_06_g64_g32_bridge_precision_contract) ... ok
+test_07_deployment_bundle (test_spatial_kd.SpatialKDTests.test_07_deployment_bundle) ... ok
+test_08_geonames_plus_irregular_observations (test_spatial_kd.SpatialKDTests.test_08_geonames_plus_irregular_observations) ... ok
+test_train_query_commit_and_benchmark (test_training_query.TrainingAndQueryTests.test_train_query_commit_and_benchmark) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 1.049s
+
+OK

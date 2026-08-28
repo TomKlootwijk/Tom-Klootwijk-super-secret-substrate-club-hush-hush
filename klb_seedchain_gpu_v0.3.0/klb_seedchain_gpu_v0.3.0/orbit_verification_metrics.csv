@@ -1,0 +1,57 @@
+scope,metric,value,unit_or_result
+file,dense_working_set_mib,295.31298828125,MiB
+file,working_set_ratio,81296.4326595,x
+file,direct_seed_p50,3.68899899437,ms
+file,end_to_end_dense_p50,3.72359364827,ms
+file,direct_p50_advantage,0.9290663044307479,%
+file,direct_vs_resident_dense,4.695656633569195,x slower
+file,compacted_events,717,events
+laptop,dense_working_set_mib,512.00048828125,MiB
+laptop,working_set_ratio,140948.129168,x
+laptop,direct_seed_p50,6.60837261493,ms
+laptop,end_to_end_dense_p50,6.7565908993,ms
+laptop,direct_p50_advantage,2.1936844568368863,%
+laptop,direct_vs_resident_dense,4.483467568039606,x slower
+laptop,compacted_events,1243,events
+vram,dense_working_set_mib,2048.00048828125,MiB
+vram,working_set_ratio,563792.113416,x
+vram,direct_seed_p50,26.5012268066,ms
+vram,end_to_end_dense_p50,27.1796295166,ms
+vram,direct_p50_advantage,2.4959968993899073,%
+vram,direct_vs_resident_dense,4.512259757435885,x slower
+vram,compacted_events,4970,events
+demo,active_power_average,132.00621621621622,W
+demo,power_maximum,143.51,W
+demo,temperature_maximum,75.0,C
+demo,vram_used_maximum,870.0,MiB
+demo,active_sm_clock_average,2590.2162162162163,MHz
+laptop,active_power_average,133.6946153846154,W
+laptop,power_maximum,140.12,W
+laptop,temperature_maximum,79.0,C
+laptop,vram_used_maximum,1090.0,MiB
+laptop,active_sm_clock_average,2558.730769230769,MHz
+vram,active_power_average,134.8132558139535,W
+vram,power_maximum,140.32,W
+vram,temperature_maximum,84.0,C
+vram,vram_used_maximum,2626.0,MiB
+vram,active_sm_clock_average,2590.046511627907,MHz
+validation,manifest_hashes,82,of 82 passed
+validation,cpu_test_suites,2,of 2 passed
+validation,compute_sanitizer_errors,0,errors
+validation,full_horizon_support_difference,1,candidate
+profile,seed_count_registers,46,registers/thread
+profile,seed_compact_registers,52,registers/thread
+profile,kernel_spills,0,bytes
+profile,seed_count_achieved_occupancy,81.636171,%
+profile,seed_compact_achieved_occupancy,65.610496,%
+profile,seed_count_compute_throughput,66.187378,% of peak
+profile,seed_count_dram_throughput,0.002975,% of peak
+profile,seed_count_l2_throughput,0.095049,% of peak
+profile,seed_count_xu_pipe_utilization,20.064937,% of peak active
+profile,seed_count_idc_request_activity,63.359952,% of peak elapsed
+profile,seed_compact_compute_throughput,65.536077,% of peak
+profile,seed_compact_dram_throughput,0.007861,% of peak
+profile,seed_compact_l2_throughput,0.081524,% of peak
+profile,seed_compact_xu_pipe_utilization,18.105335,% of peak active
+profile,compact_global_atomic_requests,1243,requests
+profile,compact_l2_atomic_input_activity,0.038542,% of peak elapsed

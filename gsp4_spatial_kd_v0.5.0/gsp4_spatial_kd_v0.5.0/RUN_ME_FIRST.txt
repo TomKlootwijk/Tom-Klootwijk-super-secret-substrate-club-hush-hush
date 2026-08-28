@@ -1,0 +1,56 @@
+GSP4 SPATIAL KNOWLEDGE DISTILLATION v0.5.0
+RTX 5070 Ti Laptop / no-download first run
+============================================================
+
+1. Extract the package to a normal local folder.
+2. Open PowerShell in that folder.
+3. Create the environment:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1
+
+   To install the current stable Blackwell-capable PyTorch wheel for an RTX 50 laptop:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1 -Cuda
+
+4. Run the supplied graph/checkpoint without downloading a model:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\run_no_download_windows.ps1
+
+5. Run the laptop GPU acceptance sequence:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\run_rtx_pilot_windows.ps1
+
+6. Inspect the generated files in results\rtx_pilot.
+
+7. Optional semantic teacher with the smallest disk footprint:
+
+   Qwen3-Embedding-0.6B-Q8_0.gguf, approximately 639 MB.
+   Verify SHA-256:
+   06507c7b42688469c4e7298b0a1e16deff06caf291cf0a5b278c308249c3e439
+
+   Start it through scripts\start_embedding_server_windows.ps1.
+
+8. Optional relation teacher:
+
+   Qwen3-4B-Q4_K_M.gguf, approximately 2.5 GB.
+   Verify SHA-256:
+   7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5
+
+9. Optional real spatial data:
+
+   GeoNames NL.zip: small country gazetteer.
+   Geofabrik flevoland-latest.osm.pbf: regional OSM extract.
+
+The package never requires a padded [frame,max_points,...] tensor. Persistent
+entities remain stable while observations and events are sparse rows and
+hash-linked novelty records.
+
+Expected acceptance conditions:
+- all 21 tests pass;
+- CUDA is reported available on the laptop;
+- no NaN/Inf in mixed-precision smoke operations;
+- deployment hash validation succeeds;
+- G32 coordinate/guard error remains below the selected event margin;
+- query event IDs and lineage are stable under deterministic replay.
+
+Read README.md and docs\RTX5070TI_RUNBOOK.md before interpreting throughput.

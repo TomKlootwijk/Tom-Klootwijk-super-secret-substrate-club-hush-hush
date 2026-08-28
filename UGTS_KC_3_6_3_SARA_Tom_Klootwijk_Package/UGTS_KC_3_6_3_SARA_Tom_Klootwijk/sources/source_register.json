@@ -1,0 +1,27 @@
+{
+  "package_version": "3.6.0",
+  "policy": "The uploaded source files are not copied into this ZIP. This register stores hashes, roles and bounded extraction notes.",
+  "sources": [
+    {
+      "id": "SRC-A",
+      "name": "waarom-heeft-19-drie-lettergrepen-en-in-binaire-waarom-het-kantelpunt-tussen-1-en-2-cijfers-geometrisch.md",
+      "sha256": "7aa55d4f03e07c6ec058b1dd05554c03730d0f6263803b9364fe34ccce6c1851",
+      "role": "Dutch phonetic-number, radix threshold, active-bit, triangle, fractal, log-polar, hinge and speculative association dialogue.",
+      "handling": "Exact arithmetic and reusable transforms retained; personal and unrelated subject matter excluded; unsupported physical and historical extrapolations rejected."
+    },
+    {
+      "id": "SRC-B",
+      "name": "Unified_Geometric_Topological_Substrate(1).pdf",
+      "sha256": "c991aba24cc939ba680697b62b9e19545131cf34060793490bf149c6e2ab522e",
+      "role": "UGTS-0 query-first relation/event architecture, geometry, topology, lineage, schema and validation basis.",
+      "handling": "Used as the primary architecture and evidence-boundary source."
+    },
+    {
+      "id": "SRC-C",
+      "name": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum(2).pdf",
+      "sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "role": "UGTS-GN 1.1 normalized mechanism catalog, GPU-native ABI, precision rules, memory, hardware and claims ledger.",
+      "handling": "Used for typed fields, event guards, narrow one-bit semantics, content discipline and validation boundaries."
+    }
+  ]
+}

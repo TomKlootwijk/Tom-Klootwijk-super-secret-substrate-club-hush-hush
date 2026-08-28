@@ -1,0 +1,101 @@
+{
+  "schema": "UGTS-CUDA-VMM-G24-CODE8-PROVENANCE-1.0",
+  "date": "2026-08-15",
+  "device": {
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "driver": "591.59",
+    "compute_capability": "12.0",
+    "l2_bytes": 37748736,
+    "multiprocessors": 46,
+    "occupancy_blocks_per_sm": 24,
+    "total_warps": 1104
+  },
+  "toolchain": {
+    "cuda_compiler": "12.8.61",
+    "compute_sanitizer": "2025.1.0.0",
+    "compute_sanitizer_errors": 0
+  },
+  "artifacts": {
+    "source": {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/artifacts/bench.cu",
+      "bytes": 43849,
+      "sha256": "019B4136098EAD6012E51B990D3DD7FA42710E595BCF521BF655527093482927"
+    },
+    "executable": {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/artifacts/bench.exe",
+      "bytes": 690176,
+      "sha256": "1EBAC29900AC9BDF03E7EDD40382717322453BA6070CD412E47EC157964339B1"
+    },
+    "aggregator": {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/artifacts/aggregate.py",
+      "bytes": 10961,
+      "sha256": "8858D4A8CDD0D90407E9DBD4D9DA5B1572CCA5B0202056A7DB2FF48F91A73D54"
+    },
+    "summarizer": {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/artifacts/summarize.py",
+      "bytes": 8726,
+      "sha256": "FB83ECF563ECE574AF171122285239C81A0AAD2BF024F87D4FC10C648E50DF8A"
+    },
+    "aggregate": {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "bytes": 98056,
+      "sha256": "45824ED216AA061B3FBB8F00C43508666BD5B6C0B07729D29C4896DEDD4E1DBF"
+    },
+    "summary": {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/aggregate/g24_code8_summary.json",
+      "bytes": 9164,
+      "sha256": "1328E5B6869DD211A3781C11D16C9B9BB431110E9A12A8375051E9CD5870F95D"
+    }
+  },
+  "runs": [
+    {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/f1/cuda_vmm_compression_lut_results.json",
+      "order": 0,
+      "bytes": 89948,
+      "sha256": "3B20F46046F6CF336CE84E621E50CA336D8E7109D48001798387269B6A9BBBBE"
+    },
+    {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/r1/cuda_vmm_compression_lut_results.json",
+      "order": 1,
+      "bytes": 89943,
+      "sha256": "94A7A372A036D33206317321DF045E275130A69F4F76824CF43C5325AF83B8ED"
+    },
+    {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/f2/cuda_vmm_compression_lut_results.json",
+      "order": 0,
+      "bytes": 89941,
+      "sha256": "4FE218AA5AAEFD8DBB0F1CEF6CA14EBDFAE64F6D267670617E673998DD9E4302"
+    },
+    {
+      "path": "benchmarks/cuda_vmm_g24_code8_isolated/r2/cuda_vmm_compression_lut_results.json",
+      "order": 1,
+      "bytes": 89950,
+      "sha256": "F63F731A4643C549EFFA7EF7B1D5AFB452EA445F8BBB8CCAEFC6B68274681AB6"
+    }
+  ],
+  "validation": {
+    "raw_rows": 256,
+    "validated_payloads": 271319040,
+    "timed_gpu_lookups": 92610232320,
+    "invalid_rows": 0,
+    "mismatches": 0
+  },
+  "native_code": {
+    "global_load_instruction": "LDG.E.STRONG.GPU",
+    "texture_load_instruction": "TLD.LZ",
+    "timer_instruction": "CS2R SR_CLOCKLO",
+    "global_registers": 22,
+    "texture_registers": 18,
+    "stack_bytes": 0,
+    "local_bytes": 0,
+    "shared_bytes": 0
+  },
+  "result": {
+    "paired_hot_ratio_median": 0.9999931960932056,
+    "paired_hot_ratio_minimum": 0.9941749135196511,
+    "paired_hot_ratio_maximum": 1.0122116907685874,
+    "last_full_rate_mib_non_compressible": 36,
+    "last_full_rate_mib_generic_compressible": 36,
+    "compression_capacity_extension_observed": false
+  }
+}

@@ -1,0 +1,1747 @@
+{
+  "network": {
+    "row_coverage": {
+      "pair_rows": 928,
+      "unique_pair_rows": 928,
+      "objects": 58,
+      "stations": 16,
+      "complete_cartesian_product": true,
+      "event_rows": 9335,
+      "unique_event_identities": 9335
+    },
+    "pair_counts": {
+      "all": 928,
+      "support": 711,
+      "compatible_before_support": 438,
+      "active": 438,
+      "active_invariant_errors": 0
+    },
+    "object_counts_by_orbit": {
+      "GEO": 8,
+      "LEO": 11,
+      "MEO": 32,
+      "HEO": 7
+    },
+    "object_counts_by_service": {
+      "RELAY": 8,
+      "SCIENCE": 12,
+      "SCIENCE|CREWED": 1,
+      "EARTH_OBS|SCIENCE": 5,
+      "NAV": 32
+    },
+    "coverage_by_orbit": {
+      "LEO": {
+        "objects": 11,
+        "total_pairs": 176,
+        "support_pairs": 176,
+        "compatible_pairs": 99,
+        "active_pairs": 99,
+        "active_pairs_with_events": 74,
+        "events": 3625,
+        "objects_with_events": 11
+      },
+      "MEO": {
+        "objects": 32,
+        "total_pairs": 512,
+        "support_pairs": 352,
+        "compatible_pairs": 256,
+        "active_pairs": 256,
+        "active_pairs_with_events": 256,
+        "events": 5191,
+        "objects_with_events": 32
+      },
+      "GEO": {
+        "objects": 8,
+        "total_pairs": 128,
+        "support_pairs": 71,
+        "compatible_pairs": 48,
+        "active_pairs": 48,
+        "active_pairs_with_events": 4,
+        "events": 56,
+        "objects_with_events": 4
+      },
+      "HEO": {
+        "objects": 7,
+        "total_pairs": 112,
+        "support_pairs": 112,
+        "compatible_pairs": 35,
+        "active_pairs": 35,
+        "active_pairs_with_events": 35,
+        "events": 463,
+        "objects_with_events": 7
+      }
+    },
+    "coverage_by_service": {
+      "EARTH_OBS|SCIENCE": {
+        "objects": 5,
+        "support_pairs": 80,
+        "active_pairs": 45,
+        "events": 2551
+      },
+      "NAV": {
+        "objects": 32,
+        "support_pairs": 352,
+        "active_pairs": 256,
+        "events": 5191
+      },
+      "RELAY": {
+        "objects": 8,
+        "support_pairs": 71,
+        "active_pairs": 48,
+        "events": 56
+      },
+      "SCIENCE": {
+        "objects": 12,
+        "support_pairs": 192,
+        "active_pairs": 80,
+        "events": 1382
+      },
+      "SCIENCE|CREWED": {
+        "objects": 1,
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 155
+      }
+    },
+    "event_coverage": {
+      "events": 9335,
+      "event_types": {
+        "loss": 4682,
+        "acquire": 4653
+      },
+      "route_sectors": {
+        "0": 1032,
+        "1": 1153,
+        "2": 2745,
+        "3": 1733,
+        "4": 1524,
+        "5": 1148
+      },
+      "objects_with_events": 54,
+      "objects_without_events": [
+        {
+          "norad_id": 21639,
+          "object_name": "TDRS 5",
+          "orbit_class": "GEO",
+          "service_class": "RELAY",
+          "support_pairs": 9,
+          "active_pairs": 6,
+          "events": 0
+        },
+        {
+          "norad_id": 39070,
+          "object_name": "TDRS 11",
+          "orbit_class": "GEO",
+          "service_class": "RELAY",
+          "support_pairs": 8,
+          "active_pairs": 6,
+          "events": 0
+        },
+        {
+          "norad_id": 39504,
+          "object_name": "TDRS 12",
+          "orbit_class": "GEO",
+          "service_class": "RELAY",
+          "support_pairs": 9,
+          "active_pairs": 6,
+          "events": 0
+        },
+        {
+          "norad_id": 42915,
+          "object_name": "TDRS 13",
+          "orbit_class": "GEO",
+          "service_class": "RELAY",
+          "support_pairs": 9,
+          "active_pairs": 6,
+          "events": 0
+        }
+      ],
+      "stations_with_events": 14,
+      "stations_without_events": [
+        {
+          "station_id": 1008,
+          "station_name": "Singapore Relay Profile",
+          "support_pairs": 58,
+          "active_pairs": 8,
+          "events": 0
+        },
+        {
+          "station_id": 1014,
+          "station_name": "Equatorial Relay Profile",
+          "support_pairs": 58,
+          "active_pairs": 8,
+          "events": 0
+        }
+      ],
+      "active_pairs_with_events": 369,
+      "active_pairs_without_events": 69,
+      "events_map_only_to_active_pairs": true,
+      "minimum_interval_index": 3,
+      "maximum_interval_index": 10077
+    },
+    "per_station": [
+      {
+        "station_id": 1001,
+        "station_name": "NL Navigation Profile",
+        "support_pairs": 50,
+        "active_pairs": 32,
+        "events": 716
+      },
+      {
+        "station_id": 1002,
+        "station_name": "NL Science Profile",
+        "support_pairs": 58,
+        "active_pairs": 18,
+        "events": 400
+      },
+      {
+        "station_id": 1003,
+        "station_name": "Svalbard Polar Profile",
+        "support_pairs": 18,
+        "active_pairs": 11,
+        "events": 601
+      },
+      {
+        "station_id": 1004,
+        "station_name": "Canberra Deep Profile",
+        "support_pairs": 58,
+        "active_pairs": 47,
+        "events": 746
+      },
+      {
+        "station_id": 1005,
+        "station_name": "Goldstone Deep Profile",
+        "support_pairs": 58,
+        "active_pairs": 47,
+        "events": 771
+      },
+      {
+        "station_id": 1006,
+        "station_name": "Madrid Deep Profile",
+        "support_pairs": 58,
+        "active_pairs": 47,
+        "events": 714
+      },
+      {
+        "station_id": 1007,
+        "station_name": "Hawaii Navigation Profile",
+        "support_pairs": 57,
+        "active_pairs": 32,
+        "events": 561
+      },
+      {
+        "station_id": 1008,
+        "station_name": "Singapore Relay Profile",
+        "support_pairs": 58,
+        "active_pairs": 8,
+        "events": 0
+      },
+      {
+        "station_id": 1009,
+        "station_name": "Cape Town EO Profile",
+        "support_pairs": 18,
+        "active_pairs": 11,
+        "events": 331
+      },
+      {
+        "station_id": 1010,
+        "station_name": "Santiago EO Profile",
+        "support_pairs": 18,
+        "active_pairs": 11,
+        "events": 305
+      },
+      {
+        "station_id": 1011,
+        "station_name": "McMurdo Polar Profile",
+        "support_pairs": 18,
+        "active_pairs": 11,
+        "events": 605
+      },
+      {
+        "station_id": 1012,
+        "station_name": "Tokyo Science Profile",
+        "support_pairs": 58,
+        "active_pairs": 50,
+        "events": 1004
+      },
+      {
+        "station_id": 1013,
+        "station_name": "Tromso Polar Profile",
+        "support_pairs": 18,
+        "active_pairs": 11,
+        "events": 444
+      },
+      {
+        "station_id": 1014,
+        "station_name": "Equatorial Relay Profile",
+        "support_pairs": 58,
+        "active_pairs": 8,
+        "events": 0
+      },
+      {
+        "station_id": 1015,
+        "station_name": "Alaska Mixed Profile",
+        "support_pairs": 50,
+        "active_pairs": 43,
+        "events": 1296
+      },
+      {
+        "station_id": 1016,
+        "station_name": "Kwajalein Mixed Profile",
+        "support_pairs": 58,
+        "active_pairs": 51,
+        "events": 841
+      }
+    ],
+    "per_object": [
+      {
+        "norad_id": 19548,
+        "object_name": "TDRS 3",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 14
+      },
+      {
+        "norad_id": 20580,
+        "object_name": "HST",
+        "orbit_class": "LEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 126
+      },
+      {
+        "norad_id": 21639,
+        "object_name": "TDRS 5",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 0
+      },
+      {
+        "norad_id": 22314,
+        "object_name": "TDRS 6",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 14
+      },
+      {
+        "norad_id": 23613,
+        "object_name": "TDRS 7",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 14
+      },
+      {
+        "norad_id": 25544,
+        "object_name": "ISS (ZARYA)",
+        "orbit_class": "LEO",
+        "service_class": "SCIENCE|CREWED",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 155
+      },
+      {
+        "norad_id": 25994,
+        "object_name": "TERRA",
+        "orbit_class": "LEO",
+        "service_class": "EARTH_OBS|SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 573
+      },
+      {
+        "norad_id": 26388,
+        "object_name": "TDRS 8",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 14
+      },
+      {
+        "norad_id": 26407,
+        "object_name": "GPS BIIR-5  (PRN 22)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 170
+      },
+      {
+        "norad_id": 26998,
+        "object_name": "TIMED",
+        "orbit_class": "LEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 390
+      },
+      {
+        "norad_id": 27424,
+        "object_name": "AQUA",
+        "orbit_class": "LEO",
+        "service_class": "EARTH_OBS|SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 577
+      },
+      {
+        "norad_id": 27651,
+        "object_name": "SORCE",
+        "orbit_class": "LEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 174
+      },
+      {
+        "norad_id": 27663,
+        "object_name": "GPS BIIR-8  (PRN 16)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 28190,
+        "object_name": "GPS BIIR-11 (PRN 19)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 28376,
+        "object_name": "AURA",
+        "orbit_class": "LEO",
+        "service_class": "EARTH_OBS|SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 534
+      },
+      {
+        "norad_id": 28474,
+        "object_name": "GPS BIIR-13 (PRN 02)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 155
+      },
+      {
+        "norad_id": 28485,
+        "object_name": "SWIFT",
+        "orbit_class": "LEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 62
+      },
+      {
+        "norad_id": 28874,
+        "object_name": "GPS BIIRM-1 (PRN 17)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 29486,
+        "object_name": "GPS BIIRM-2 (PRN 31)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 29601,
+        "object_name": "GPS BIIRM-3 (PRN 12)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 140
+      },
+      {
+        "norad_id": 30580,
+        "object_name": "THEMIS A",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 68
+      },
+      {
+        "norad_id": 30797,
+        "object_name": "THEMIS D",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 67
+      },
+      {
+        "norad_id": 30798,
+        "object_name": "THEMIS E",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 64
+      },
+      {
+        "norad_id": 32260,
+        "object_name": "GPS BIIRM-4 (PRN 15)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 32384,
+        "object_name": "GPS BIIRM-5 (PRN 29)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 140
+      },
+      {
+        "norad_id": 32711,
+        "object_name": "GPS BIIRM-6 (PRN 07)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 183
+      },
+      {
+        "norad_id": 33053,
+        "object_name": "FGRST (GLAST)",
+        "orbit_class": "LEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 167
+      },
+      {
+        "norad_id": 35752,
+        "object_name": "GPS BIIRM-8 (PRN 05)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 197
+      },
+      {
+        "norad_id": 36585,
+        "object_name": "GPS BIIF-1  (PRN 25)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 140
+      },
+      {
+        "norad_id": 38833,
+        "object_name": "GPS BIIF-3  (PRN 24)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 155
+      },
+      {
+        "norad_id": 39070,
+        "object_name": "TDRS 11",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 8,
+        "active_pairs": 6,
+        "events": 0
+      },
+      {
+        "norad_id": 39166,
+        "object_name": "GPS BIIF-4  (PRN 27)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 154
+      },
+      {
+        "norad_id": 39504,
+        "object_name": "TDRS 12",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 0
+      },
+      {
+        "norad_id": 39533,
+        "object_name": "GPS BIIF-5  (PRN 30)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 140
+      },
+      {
+        "norad_id": 39574,
+        "object_name": "GPM-CORE",
+        "orbit_class": "LEO",
+        "service_class": "EARTH_OBS|SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 298
+      },
+      {
+        "norad_id": 39741,
+        "object_name": "GPS BIIF-6  (PRN 06)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 183
+      },
+      {
+        "norad_id": 40105,
+        "object_name": "GPS BIIF-7  (PRN 09)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 140
+      },
+      {
+        "norad_id": 40294,
+        "object_name": "GPS BIIF-8  (PRN 03)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 141
+      },
+      {
+        "norad_id": 40482,
+        "object_name": "MMS 1",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 66
+      },
+      {
+        "norad_id": 40483,
+        "object_name": "MMS 2",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 66
+      },
+      {
+        "norad_id": 40484,
+        "object_name": "MMS 3",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 66
+      },
+      {
+        "norad_id": 40485,
+        "object_name": "MMS 4",
+        "orbit_class": "HEO",
+        "service_class": "SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 5,
+        "events": 66
+      },
+      {
+        "norad_id": 40534,
+        "object_name": "GPS BIIF-9  (PRN 26)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 40730,
+        "object_name": "GPS BIIF-10 (PRN 08)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 154
+      },
+      {
+        "norad_id": 41019,
+        "object_name": "GPS BIIF-11 (PRN 10)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 41328,
+        "object_name": "GPS BIIF-12 (PRN 32)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 183
+      },
+      {
+        "norad_id": 42915,
+        "object_name": "TDRS 13",
+        "orbit_class": "GEO",
+        "service_class": "RELAY",
+        "support_pairs": 9,
+        "active_pairs": 6,
+        "events": 0
+      },
+      {
+        "norad_id": 43013,
+        "object_name": "NOAA 20 (JPSS-1)",
+        "orbit_class": "LEO",
+        "service_class": "EARTH_OBS|SCIENCE",
+        "support_pairs": 16,
+        "active_pairs": 9,
+        "events": 569
+      },
+      {
+        "norad_id": 43873,
+        "object_name": "GPS BIII-1  (PRN 04)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 154
+      },
+      {
+        "norad_id": 44506,
+        "object_name": "GPS BIII-2  (PRN 18)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 182
+      },
+      {
+        "norad_id": 45854,
+        "object_name": "GPS BIII-3  (PRN 23)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 169
+      },
+      {
+        "norad_id": 46826,
+        "object_name": "GPS BIII-4  (PRN 14)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 48859,
+        "object_name": "GPS BIII-5  (PRN 11)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 168
+      },
+      {
+        "norad_id": 55268,
+        "object_name": "GPS BIII-6  (PRN 28)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 182
+      },
+      {
+        "norad_id": 62339,
+        "object_name": "GPS BIII-7  (PRN 01)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 154
+      },
+      {
+        "norad_id": 64202,
+        "object_name": "GPS BIII-8  (PRN 21)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 169
+      },
+      {
+        "norad_id": 67588,
+        "object_name": "GPS BIII-9  (PRN 20)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 154
+      },
+      {
+        "norad_id": 68791,
+        "object_name": "GPS BIII-10 (PRN 13)",
+        "orbit_class": "MEO",
+        "service_class": "NAV",
+        "support_pairs": 11,
+        "active_pairs": 8,
+        "events": 140
+      }
+    ],
+    "packaged_reproduction": {
+      "pair_table": {
+        "left_rows": 928,
+        "right_rows": 928,
+        "same_row_count": true,
+        "field_difference_count": 0,
+        "field_differences": []
+      },
+      "event_table": {
+        "left_rows": 9335,
+        "right_rows": 9335,
+        "same_row_count": true,
+        "field_difference_count": 3,
+        "field_differences": [
+          {
+            "row": 3350,
+            "field": "seconds_from_reference",
+            "left": "75912.523312428",
+            "right": "75912.523312429"
+          },
+          {
+            "row": 4221,
+            "field": "seconds_from_reference",
+            "left": "161863.334039721",
+            "right": "161863.334039720"
+          },
+          {
+            "row": 4304,
+            "field": "seconds_from_reference",
+            "left": "284208.954259528",
+            "right": "284208.954259529"
+          }
+        ]
+      },
+      "event_identity_intersection": 9335,
+      "event_identity_only_packaged": 0,
+      "event_identity_only_fresh": 0,
+      "event_time_delta_seconds": {
+        "count": 9335,
+        "rms": 1.7739138928595255e-11,
+        "mean": 3.180065031158905e-13,
+        "median": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "maximum": 9.89530235528946e-10
+      },
+      "event_guard_delta": {
+        "count": 9335,
+        "rms": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "maximum": 0.0
+      }
+    }
+  },
+  "sp3": {
+    "epochs": 192,
+    "samples": 6144,
+    "first_epoch": "2026-08-15T18:00:00Z",
+    "last_epoch": "2026-08-17T17:45:00Z",
+    "observed_predicted_boundary_inferred": "2026-08-16T18:00:00Z",
+    "all": {
+      "count": 6144,
+      "rms": 56.795517649257754,
+      "mean": 55.88098355749543,
+      "median": 54.76960797722457,
+      "p95": 60.827637054373675,
+      "p99": 114.12306764654836,
+      "maximum": 126.67471877044837,
+      "absolute_element_age_hours": {
+        "count": 6144,
+        "rms": 60.56809132432008,
+        "mean": 34.60068800588542,
+        "median": 25.68221276,
+        "p95": 72.19812216,
+        "p99": 301.99449088,
+        "maximum": 317.24449088
+      },
+      "age_error_pearson": -0.07309212475062578
+    },
+    "observed_half": {
+      "count": 3072,
+      "rms": 56.249912222519455,
+      "mean": 55.61326025170292,
+      "median": 54.75908189164619,
+      "p95": 60.93807449192654,
+      "p99": 100.45871790529814,
+      "maximum": 106.86881795858523,
+      "absolute_element_age_hours": {
+        "count": 3072,
+        "rms": 53.3806456990844,
+        "mean": 23.07636136927083,
+        "median": 12.27211436,
+        "p95": 59.869546160000006,
+        "p99": 285.74449088,
+        "maximum": 293.24449088
+      },
+      "age_error_pearson": -0.11155743964746083
+    },
+    "predicted_half": {
+      "count": 3072,
+      "rms": 57.33593136117312,
+      "mean": 56.14870686328795,
+      "median": 54.78745219312481,
+      "p95": 60.719329467368226,
+      "p99": 119.67519875705108,
+      "maximum": 126.67471877044837,
+      "absolute_element_age_hours": {
+        "count": 3072,
+        "rms": 66.9887605355643,
+        "mean": 46.1250146425,
+        "median": 36.27211436,
+        "p95": 83.86954616,
+        "p99": 309.74449088,
+        "maximum": 317.24449088
+      },
+      "age_error_pearson": -0.061403267529747264
+    },
+    "at_or_after_container_reference": {
+      "count": 4640,
+      "rms": 57.05364855216425,
+      "mean": 56.01387459278208,
+      "median": 54.76696683259702,
+      "p95": 60.808742816579844,
+      "p99": 116.62950367736303,
+      "maximum": 126.67471877044837,
+      "absolute_element_age_hours": {
+        "count": 4640,
+        "rms": 63.415167287123715,
+        "mean": 40.0000146425,
+        "median": 30.968609119999996,
+        "p95": 76.36954616,
+        "p99": 305.74449088,
+        "maximum": 317.24449088
+      },
+      "age_error_pearson": -0.06630371688642407
+    },
+    "age_buckets": {
+      "under_24h": {
+        "count": 2875,
+        "rms": 54.84341930284624,
+        "mean": 54.7442227084813,
+        "median": 54.89696097823684,
+        "p95": 60.078913478112746,
+        "p99": 61.69948921440983,
+        "maximum": 62.4196004239998,
+        "absolute_element_age_hours": {
+          "count": 2875,
+          "rms": 13.596398065301909,
+          "mean": 11.632608493328696,
+          "median": 11.34519384,
+          "p95": 22.78032512,
+          "p99": 23.7639036,
+          "maximum": 23.99442552
+        },
+        "age_error_pearson": 0.016513122103831476
+      },
+      "24_to_72h": {
+        "count": 2960,
+        "rms": 56.31544518396343,
+        "mean": 55.78173254977897,
+        "median": 54.79995243468756,
+        "p95": 60.651474461291414,
+        "p99": 99.28110318425134,
+        "maximum": 106.52652560225255,
+        "absolute_element_age_hours": {
+          "count": 2960,
+          "rms": 39.483674935598316,
+          "mean": 38.17415730681081,
+          "median": 36.41730896,
+          "p95": 58.3340696,
+          "p99": 68.36954616,
+          "maximum": 71.94812216
+        },
+        "age_error_pearson": 0.35697584274151567
+      },
+      "72h_or_more": {
+        "count": 309,
+        "rms": 75.98399641068364,
+        "mean": 67.4083959321115,
+        "median": 45.4086366617265,
+        "p95": 122.55301000260584,
+        "p99": 126.60185971925995,
+        "maximum": 126.67471877044837,
+        "absolute_element_age_hours": {
+          "count": 309,
+          "rms": 237.2525009781381,
+          "mean": 214.06916524815534,
+          "median": 278.74449088,
+          "p95": 313.49449088,
+          "p99": 316.49449088,
+          "maximum": 317.24449088
+        },
+        "age_error_pearson": -0.9233536626757303
+      }
+    },
+    "per_prn": [
+      {
+        "gps_id": "G01",
+        "element_epoch": "2026-08-14T14:48:06.760224Z",
+        "count": 192,
+        "rms": 54.167365541311796,
+        "mean": 54.09973492944501,
+        "median": 54.12512236773601,
+        "p95": 57.838326998709256,
+        "p99": 58.1770852192919,
+        "maximum": 58.27517141469749,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 52.91935939556477,
+          "mean": 51.073122160000004,
+          "median": 51.073122160000004,
+          "p95": 72.69812216,
+          "p99": 74.69812216,
+          "maximum": 74.94812216
+        },
+        "age_error_pearson": 0.018779198553560906
+      },
+      {
+        "gps_id": "G02",
+        "element_epoch": "2026-08-16T03:55:23.705184Z",
+        "count": 192,
+        "rms": 57.35979852426447,
+        "mean": 57.29348713727672,
+        "median": 57.249791265355896,
+        "p95": 61.713945048678994,
+        "p99": 62.136291513892964,
+        "maximum": 62.24334374500035,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 19.66331812152081,
+          "mean": 16.05518666,
+          "median": 13.95174856,
+          "p95": 35.57674856,
+          "p99": 37.576748560000006,
+          "maximum": 37.826748560000006
+        },
+        "age_error_pearson": -0.009107162144187945
+      },
+      {
+        "gps_id": "G03",
+        "element_epoch": "2026-08-15T18:05:23.081568Z",
+        "count": 192,
+        "rms": 58.8232547193772,
+        "mean": 58.76799030923238,
+        "median": 58.98449080404802,
+        "p95": 62.21433518794244,
+        "p99": 62.4196004239998,
+        "maximum": 62.45727384184745,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 27.52695320572462,
+          "mean": 23.786189962500004,
+          "median": 23.785255120000002,
+          "p95": 45.41025512,
+          "p99": 47.41025512,
+          "maximum": 47.66025512
+        },
+        "age_error_pearson": -0.034576518319288284
+      },
+      {
+        "gps_id": "G04",
+        "element_epoch": "2026-08-16T02:36:35.997408Z",
+        "count": 192,
+        "rms": 54.82295871056476,
+        "mean": 54.75668453313636,
+        "median": 54.83472558279867,
+        "p95": 58.422322939042004,
+        "p99": 58.53299054221199,
+        "maximum": 58.53709865289981,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 20.615892865657486,
+          "mean": 16.854583790833335,
+          "median": 15.26500072,
+          "p95": 36.89000072,
+          "p99": 38.89000072,
+          "maximum": 39.14000072
+        },
+        "age_error_pearson": -0.06961842659920299
+      },
+      {
+        "gps_id": "G05",
+        "element_epoch": "2026-08-15T16:58:05.150784Z",
+        "count": 192,
+        "rms": 53.98585742026847,
+        "mean": 53.9182615643324,
+        "median": 54.01343563777299,
+        "p95": 57.76139565081926,
+        "p99": 57.96254859259586,
+        "maximum": 57.98540975837237,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 28.501729540503348,
+          "mean": 24.906902560000002,
+          "median": 24.90690256,
+          "p95": 46.53190256,
+          "p99": 48.53190256,
+          "maximum": 48.78190256
+        },
+        "age_error_pearson": 0.10410146429515169
+      },
+      {
+        "gps_id": "G06",
+        "element_epoch": "2026-08-15T19:02:13.979040Z",
+        "count": 192,
+        "rms": 53.6380362828286,
+        "mean": 53.56300879706661,
+        "median": 53.50973960828682,
+        "p95": 57.64628532432676,
+        "p99": 57.988709894291546,
+        "maximum": 58.03360747874401,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 26.712527986454138,
+          "mean": 22.865763620833334,
+          "median": 22.837783599999998,
+          "p95": 44.4627836,
+          "p99": 46.4627836,
+          "maximum": 46.7127836
+        },
+        "age_error_pearson": -0.11019333422928981
+      },
+      {
+        "gps_id": "G07",
+        "element_epoch": "2026-08-15T23:09:50.518656Z",
+        "count": 192,
+        "rms": 55.7613590106302,
+        "mean": 55.68187330055517,
+        "median": 56.09293211432639,
+        "p95": 59.754993074961945,
+        "p99": 60.11688241818525,
+        "maximum": 60.210905965957345,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 23.28293536559841,
+          "mean": 19.29372425,
+          "median": 18.71096704,
+          "p95": 40.33596704,
+          "p99": 42.33596704,
+          "maximum": 42.58596704
+        },
+        "age_error_pearson": -0.029758752281341394
+      },
+      {
+        "gps_id": "G08",
+        "element_epoch": "2026-08-16T01:16:16.445568Z",
+        "count": 192,
+        "rms": 52.53184199838421,
+        "mean": 52.465775763375014,
+        "median": 52.40809625566649,
+        "p95": 56.30702900747931,
+        "p99": 56.6003375298492,
+        "maximum": 56.66297194183029,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 21.625905942336736,
+          "mean": 17.74321352,
+          "median": 16.60376512,
+          "p95": 38.22876512,
+          "p99": 40.22876512,
+          "maximum": 40.47876512
+        },
+        "age_error_pearson": -0.09378177434206884
+      },
+      {
+        "gps_id": "G09",
+        "element_epoch": "2026-08-15T21:13:10.829568Z",
+        "count": 192,
+        "rms": 57.65088809149978,
+        "mean": 57.59539860214193,
+        "median": 57.764928910430015,
+        "p95": 61.103638140963454,
+        "p99": 61.40856650944798,
+        "maximum": 61.414755016295466,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 24.872419413470208,
+          "mean": 20.88819776,
+          "median": 20.65532512,
+          "p95": 42.28032512,
+          "p99": 44.28032512,
+          "maximum": 44.53032512
+        },
+        "age_error_pearson": -0.03987260676380862
+      },
+      {
+        "gps_id": "G10",
+        "element_epoch": "2026-08-15T14:34:55.375104Z",
+        "count": 192,
+        "rms": 56.41863660506889,
+        "mean": 56.354361187564336,
+        "median": 56.301771529837666,
+        "p95": 60.61857613137983,
+        "p99": 60.83629157320343,
+        "maximum": 60.852743590002646,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 30.608822022514886,
+          "mean": 27.29295136,
+          "median": 27.29295136,
+          "p95": 48.917951359999996,
+          "p99": 50.917951359999996,
+          "maximum": 51.167951359999996
+        },
+        "age_error_pearson": -0.09929440851803818
+      },
+      {
+        "gps_id": "G11",
+        "element_epoch": "2026-08-15T08:11:39.187392Z",
+        "count": 192,
+        "rms": 53.94706368620965,
+        "mean": 53.87612891588193,
+        "median": 53.93164055253626,
+        "p95": 57.71463941812024,
+        "p99": 57.87241258764962,
+        "maximum": 57.94448522734065,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 36.419635079141926,
+          "mean": 33.68078128,
+          "median": 33.68078128,
+          "p95": 55.305781280000005,
+          "p99": 57.305781280000005,
+          "maximum": 57.555781280000005
+        },
+        "age_error_pearson": -0.08741296809973219
+      },
+      {
+        "gps_id": "G12",
+        "element_epoch": "2026-08-15T18:00:20.068128Z",
+        "count": 192,
+        "rms": 57.134766865804174,
+        "mean": 57.082233702936314,
+        "median": 57.16669578613485,
+        "p95": 60.41016565981577,
+        "p99": 60.51627229373352,
+        "maximum": 60.52022997470449,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 27.599714968120484,
+          "mean": 23.8694835875,
+          "median": 23.86942552,
+          "p95": 45.49442551999999,
+          "p99": 47.49442551999999,
+          "maximum": 47.74442551999999
+        },
+        "age_error_pearson": -0.029360924350873414
+      },
+      {
+        "gps_id": "G13",
+        "element_epoch": "2026-08-04T12:30:19.832832Z",
+        "count": 192,
+        "rms": 41.86408586692035,
+        "mean": 41.71627729894529,
+        "median": 42.05078127012399,
+        "p95": 46.80851267951434,
+        "p99": 47.5042898032804,
+        "maximum": 47.75920905458699,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 293.6965321056023,
+          "mean": 293.36949088,
+          "median": 293.36949088,
+          "p95": 314.99449088,
+          "p99": 316.99449088,
+          "maximum": 317.24449088
+        },
+        "age_error_pearson": -0.27288528099937626
+      },
+      {
+        "gps_id": "G14",
+        "element_epoch": "2026-08-15T19:20:00.000384Z",
+        "count": 192,
+        "rms": 53.190706863199935,
+        "mean": 53.128443482216454,
+        "median": 53.26422478143105,
+        "p95": 56.75912262957777,
+        "p99": 57.0722212773408,
+        "maximum": 57.11170612422014,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 26.459809579225787,
+          "mean": 22.585937400000002,
+          "median": 22.54166656,
+          "p95": 44.166666559999996,
+          "p99": 46.166666559999996,
+          "maximum": 46.416666559999996
+        },
+        "age_error_pearson": -0.04290126499930432
+      },
+      {
+        "gps_id": "G15",
+        "element_epoch": "2026-08-15T13:24:17.302176Z",
+        "count": 192,
+        "rms": 53.456470371164684,
+        "mean": 53.38105285887823,
+        "median": 53.668618782212704,
+        "p95": 57.12495018895564,
+        "p99": 57.383989271394306,
+        "maximum": 57.44997859431436,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 31.663018317176277,
+          "mean": 28.470193839999997,
+          "median": 28.47019384,
+          "p95": 50.09519384,
+          "p99": 52.09519384,
+          "maximum": 52.34519384
+        },
+        "age_error_pearson": 0.051033430824237294
+      },
+      {
+        "gps_id": "G16",
+        "element_epoch": "2026-08-15T23:25:25.268160Z",
+        "count": 192,
+        "rms": 52.410150004379304,
+        "mean": 52.339102587164525,
+        "median": 52.387228982003606,
+        "p95": 56.50811217501232,
+        "p99": 56.6977980378779,
+        "maximum": 56.731098516774004,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 23.07478699260979,
+          "mean": 19.09267985,
+          "median": 18.451314399999998,
+          "p95": 40.0763144,
+          "p99": 42.0763144,
+          "maximum": 42.3263144
+        },
+        "age_error_pearson": 0.07409908950991469
+      },
+      {
+        "gps_id": "G17",
+        "element_epoch": "2026-08-16T03:51:19.365120Z",
+        "count": 192,
+        "rms": 52.32324304836122,
+        "mean": 52.246178793405555,
+        "median": 52.36670284137615,
+        "p95": 55.98062434064616,
+        "p99": 56.20108888949765,
+        "maximum": 56.26951441926628,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 19.711533655260293,
+          "mean": 16.0947788,
+          "median": 14.0196208,
+          "p95": 35.6446208,
+          "p99": 37.6446208,
+          "maximum": 37.8946208
+        },
+        "age_error_pearson": 0.070149391067765
+      },
+      {
+        "gps_id": "G18",
+        "element_epoch": "2026-08-15T19:09:59.999904Z",
+        "count": 192,
+        "rms": 55.183534040979,
+        "mean": 55.11627007943551,
+        "median": 55.2952930474624,
+        "p95": 58.98023247997696,
+        "p99": 59.29085273702387,
+        "maximum": 59.35188799419744,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 26.60193969723929,
+          "mean": 22.74305558083333,
+          "median": 22.70833336,
+          "p95": 44.33333336,
+          "p99": 46.33333336,
+          "maximum": 46.58333336
+        },
+        "age_error_pearson": 0.10421442718982236
+      },
+      {
+        "gps_id": "G19",
+        "element_epoch": "2026-08-16T05:33:12.693024Z",
+        "count": 192,
+        "rms": 54.12277771740289,
+        "mean": 54.05295979748925,
+        "median": 54.09248188391663,
+        "p95": 58.650945256219664,
+        "p99": 58.89868798748707,
+        "maximum": 58.93195049664528,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 18.54220906856069,
+          "mean": 15.162783685833334,
+          "median": 12.32147416,
+          "p95": 33.94647416,
+          "p99": 35.94647416,
+          "maximum": 36.19647416
+        },
+        "age_error_pearson": 0.019322499888826016
+      },
+      {
+        "gps_id": "G20",
+        "element_epoch": "2026-08-15T00:39:57.349440Z",
+        "count": 192,
+        "rms": 54.253878688947616,
+        "mean": 54.189111326488266,
+        "median": 54.328506570396954,
+        "p95": 57.788048393896915,
+        "p99": 57.94308892219399,
+        "maximum": 58.00435915033792,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 43.476225790244385,
+          "mean": 41.2090696,
+          "median": 41.2090696,
+          "p95": 62.8340696,
+          "p99": 64.8340696,
+          "maximum": 65.0840696
+        },
+        "age_error_pearson": -0.09522768488313078
+      },
+      {
+        "gps_id": "G21",
+        "element_epoch": "2026-08-15T10:10:16.949856Z",
+        "count": 192,
+        "rms": 54.02195546401673,
+        "mean": 53.955496546480305,
+        "median": 54.040267948887774,
+        "p95": 57.69206076503971,
+        "p99": 57.94205905465972,
+        "maximum": 57.946076937218045,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 34.59934439181734,
+          "mean": 31.703625040000002,
+          "median": 31.70362504,
+          "p95": 53.328625040000006,
+          "p99": 55.328625040000006,
+          "maximum": 55.578625040000006
+        },
+        "age_error_pearson": 0.1102664973856655
+      },
+      {
+        "gps_id": "G22",
+        "element_epoch": "2026-08-16T05:01:25.315392Z",
+        "count": 192,
+        "rms": 55.00403965432944,
+        "mean": 54.938711165554,
+        "median": 55.03760063817748,
+        "p95": 58.811493637407665,
+        "p99": 58.95277785940638,
+        "maximum": 58.992073356044465,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 18.898432111050806,
+          "mean": 15.440535055,
+          "median": 12.851301280000001,
+          "p95": 34.47630128,
+          "p99": 36.47630128,
+          "maximum": 36.72630128
+        },
+        "age_error_pearson": 0.011026967843641027
+      },
+      {
+        "gps_id": "G23",
+        "element_epoch": "2026-08-15T19:09:59.999904Z",
+        "count": 192,
+        "rms": 55.77710899125428,
+        "mean": 55.71444274326816,
+        "median": 55.83852493939776,
+        "p95": 59.613547303475784,
+        "p99": 60.203236477547584,
+        "maximum": 60.29765366951152,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 26.60193969723929,
+          "mean": 22.74305558083333,
+          "median": 22.70833336,
+          "p95": 44.33333336,
+          "p99": 46.33333336,
+          "maximum": 46.58333336
+        },
+        "age_error_pearson": 0.016059396779073906
+      },
+      {
+        "gps_id": "G24",
+        "element_epoch": "2026-08-13T15:37:49.633824Z",
+        "count": 192,
+        "rms": 107.45945816169777,
+        "mean": 106.8605474752942,
+        "median": 106.81914508639073,
+        "p95": 126.19688806590774,
+        "p99": 126.66302458557057,
+        "maximum": 126.67471877044837,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 75.52646838142928,
+          "mean": 74.24454616,
+          "median": 74.24454616,
+          "p95": 95.86954616,
+          "p99": 97.86954616,
+          "maximum": 98.11954616
+        },
+        "age_error_pearson": 0.9882836941286893
+      },
+      {
+        "gps_id": "G25",
+        "element_epoch": "2026-08-15T12:59:09.947040Z",
+        "count": 192,
+        "rms": 56.00284362525242,
+        "mean": 55.946980083506446,
+        "median": 55.97169626570559,
+        "p95": 59.605239144037824,
+        "p99": 59.825671079416715,
+        "maximum": 59.89812319373827,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 32.04003031953559,
+          "mean": 28.888903600000003,
+          "median": 28.8889036,
+          "p95": 50.5139036,
+          "p99": 52.5139036,
+          "maximum": 52.7639036
+        },
+        "age_error_pearson": -0.14713324592004495
+      },
+      {
+        "gps_id": "G26",
+        "element_epoch": "2026-08-15T21:24:12.772800Z",
+        "count": 192,
+        "rms": 51.34616137704645,
+        "mean": 51.27802812577713,
+        "median": 51.26975456723356,
+        "p95": 55.21947486123615,
+        "p99": 55.43542818891759,
+        "maximum": 55.436981813072805,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 24.719934034195372,
+          "mean": 20.730823583333333,
+          "median": 20.471452,
+          "p95": 42.096452,
+          "p99": 44.096452,
+          "maximum": 44.346452
+        },
+        "age_error_pearson": 0.01304521165499289
+      },
+      {
+        "gps_id": "G27",
+        "element_epoch": "2026-08-15T12:20:15.089856Z",
+        "count": 192,
+        "rms": 54.379384303265205,
+        "mean": 54.31726244086864,
+        "median": 54.464316108722706,
+        "p95": 58.00986781126268,
+        "p99": 58.44227393440492,
+        "maximum": 58.4538664814891,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 32.62602064925004,
+          "mean": 29.53747504,
+          "median": 29.537475039999997,
+          "p95": 51.16247504,
+          "p99": 53.16247504,
+          "maximum": 53.41247504
+        },
+        "age_error_pearson": -0.055715700903451564
+      },
+      {
+        "gps_id": "G28",
+        "element_epoch": "2026-08-15T19:20:00.000384Z",
+        "count": 192,
+        "rms": 54.18952884565527,
+        "mean": 54.12075682841017,
+        "median": 54.24853620376089,
+        "p95": 57.956780586984124,
+        "p99": 58.18869379931409,
+        "maximum": 58.25243435033569,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 26.459809579225787,
+          "mean": 22.585937400000002,
+          "median": 22.54166656,
+          "p95": 44.166666559999996,
+          "p99": 46.166666559999996,
+          "maximum": 46.416666559999996
+        },
+        "age_error_pearson": 0.028974940269466492
+      },
+      {
+        "gps_id": "G29",
+        "element_epoch": "2026-08-15T14:54:19.316160Z",
+        "count": 192,
+        "rms": 57.198098303631056,
+        "mean": 57.14293432908811,
+        "median": 57.15910939040662,
+        "p95": 60.85001064151091,
+        "p99": 61.22882426230356,
+        "maximum": 61.23815170471987,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 30.32088341945746,
+          "mean": 26.9696344,
+          "median": 26.9696344,
+          "p95": 48.594634400000004,
+          "p99": 50.594634400000004,
+          "maximum": 50.844634400000004
+        },
+        "age_error_pearson": -0.009444846708540287
+      },
+      {
+        "gps_id": "G30",
+        "element_epoch": "2026-08-16T00:20:54.498624Z",
+        "count": 192,
+        "rms": 56.36636916974044,
+        "mean": 56.30523756113019,
+        "median": 56.53702711783937,
+        "p95": 60.13271377602827,
+        "p99": 60.53048514405111,
+        "maximum": 60.63423246397684,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 22.342201794137022,
+          "mean": 18.399551783333333,
+          "median": 17.52652816,
+          "p95": 39.15152816,
+          "p99": 41.15152816,
+          "maximum": 41.40152816
+        },
+        "age_error_pearson": -0.10555615698781697
+      },
+      {
+        "gps_id": "G31",
+        "element_epoch": "2026-08-15T20:08:29.844384Z",
+        "count": 192,
+        "rms": 52.951873689824495,
+        "mean": 52.87761526450175,
+        "median": 53.06396813770781,
+        "p95": 56.95437190978306,
+        "p99": 57.22849510054187,
+        "maximum": 57.280453899723945,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 25.77468619334529,
+          "mean": 21.8404037575,
+          "median": 21.73337656,
+          "p95": 43.35837656,
+          "p99": 45.35837656,
+          "maximum": 45.60837656
+        },
+        "age_error_pearson": -0.12972251414741495
+      },
+      {
+        "gps_id": "G32",
+        "element_epoch": "2026-08-15T04:46:32.035296Z",
+        "count": 192,
+        "rms": 53.180291015904125,
+        "mean": 53.109126309007685,
+        "median": 53.08807562690715,
+        "p95": 56.8695525422219,
+        "p99": 56.9843890976164,
+        "maximum": 57.005696271408915,
+        "absolute_element_age_hours": {
+          "count": 192,
+          "rms": 39.60256105701119,
+          "mean": 37.099434640000005,
+          "median": 37.099434640000005,
+          "p95": 58.724434640000005,
+          "p99": 60.724434640000005,
+          "maximum": 60.974434640000005
+        },
+        "age_error_pearson": 0.08382559515675332
+      }
+    ],
+    "worst_prn_by_maximum": {
+      "gps_id": "G24",
+      "element_epoch": "2026-08-13T15:37:49.633824Z",
+      "count": 192,
+      "rms": 107.45945816169777,
+      "mean": 106.8605474752942,
+      "median": 106.81914508639073,
+      "p95": 126.19688806590774,
+      "p99": 126.66302458557057,
+      "maximum": 126.67471877044837,
+      "absolute_element_age_hours": {
+        "count": 192,
+        "rms": 75.52646838142928,
+        "mean": 74.24454616,
+        "median": 74.24454616,
+        "p95": 95.86954616,
+        "p99": 97.86954616,
+        "maximum": 98.11954616
+      },
+      "age_error_pearson": 0.9882836941286893
+    }
+  },
+  "sp3_visibility": {
+    "scope": {
+      "epochs": 192,
+      "gps_satellites": 32,
+      "active_gps_station_pairs": 256,
+      "endpoint_evaluations": 49152,
+      "sample_step_seconds": 900.0
+    },
+    "endpoint_visibility": {
+      "sgp4_visible": 14556,
+      "sp3_visible": 14550,
+      "disagreements": 28,
+      "agreement_fraction": 0.9994303385416666,
+      "support_disagreements": 2
+    },
+    "coarse_crossings": {
+      "sgp4_events": 645,
+      "sp3_events": 650,
+      "common_identities": 588,
+      "only_sgp4": 57,
+      "only_sp3": 62,
+      "common_crossing_time_delta_seconds": {
+        "count": 588,
+        "rms": 18.795778239835215,
+        "mean": 18.507387469387755,
+        "median": 18.166686,
+        "p95": 20.635081,
+        "p99": 38.304599,
+        "maximum": 49.64809
+      }
+    },
+    "boundary": "15-minute SP3 endpoint and linear crossing comparison; not the package's 60-second seven-day oracle"
+  }
+}

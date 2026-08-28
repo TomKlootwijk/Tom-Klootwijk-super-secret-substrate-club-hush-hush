@@ -1,0 +1,65 @@
+Mixed-orbit network plan
+  reference UTC              : 2026-08-16T05:33:12.693024Z
+  objects                    : 58
+  stations                   : 16
+  all object-station pairs   : 928
+  support-possible pairs     : 711
+  policy-compatible pairs    : 438
+  support rejection gain     : 1.305204x
+  compatibility gain         : 1.623288x
+  total relation gain        : 2.118721x
+  orbit classes              : LEO=11, MEO=32, GEO=8, HEO=7
+  station-bitmask limit      : 16/32
+  policy boundary            : benchmark profiles, not operational station authorizations
+  frame boundary             : TEME->PEF GMST+DUT1; polar motion/EOP omitted
+CPU all-pairs relation oracle
+  elapsed                    : 0.462859 s
+  time intervals             : 10080
+  propagated object intervals: 584640
+  relation intervals         : 9354240
+  supported intervals        : 5932861
+  compatible intervals       : 3970997
+  boundary evaluations       : 3970997
+  visible endpoints          : 1101511
+  acquisition events         : 4653
+  loss events                : 4682
+  total events               : 9335
+  propagation failures       : 0
+  object propagations/s      : 1263106.315985
+  logical relations/s        : 20209701.055765
+CPU support-envelope relation set
+  elapsed                    : 0.416054 s
+  time intervals             : 10080
+  propagated object intervals: 584640
+  relation intervals         : 7166880
+  supported intervals        : 5932861
+  compatible intervals       : 3970997
+  boundary evaluations       : 3970997
+  visible endpoints          : 1101511
+  acquisition events         : 4653
+  loss events                : 4682
+  total events               : 9335
+  propagation failures       : 0
+  object propagations/s      : 1405203.222565
+  logical relations/s        : 17225853.297303
+CPU support+compatibility active set
+  elapsed                    : 0.358565 s
+  time intervals             : 10080
+  propagated object intervals: 584640
+  relation intervals         : 4415040
+  supported intervals        : 3970997
+  compatible intervals       : 3970997
+  boundary evaluations       : 3970997
+  visible endpoints          : 1101511
+  acquisition events         : 4653
+  loss events                : 4682
+  total events               : 9335
+  propagation failures       : 0
+  object propagations/s      : 1630501.625231
+  logical relations/s        : 12313098.480190
+Pruning acceptance
+  all/support event identity : PASS
+  all/active event identity  : PASS
+  support survivor equality  : PASS
+  active compatible equality : PASS
+  propagation failures zero  : PASS

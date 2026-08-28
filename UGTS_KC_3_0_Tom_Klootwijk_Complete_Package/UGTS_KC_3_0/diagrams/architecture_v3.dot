@@ -1,0 +1,22 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad=0.2, nodesep=0.35, ranksep=0.6, fontname="DejaVu Sans"];
+  node [shape=box, style="rounded", fontname="DejaVu Sans", fontsize=10, margin="0.12,0.08"];
+  edge [fontname="DejaVu Sans", fontsize=9];
+
+  base [label="M001-M197\nsource-derived + normalized\nfinite grammar, typed state, support,\ncompatibility, guard, event, transition, lineage"];
+  kc2 [label="M198-M257\npatterns, implicit fields, topology,\nLie kinematics, frames and bounded dynamics"];
+  kc3 [label="M258-M360\njet calculus, constraints/contact,\ncertified hybrid events, persistence,\nmultiscale patterns, geometric dynamics, uncertainty"];
+
+  support [label="local support\nradial-angular / shell / time"];
+  compatible [label="typed compatibility\nphase / sheet / orientation / policy"];
+  guard [label="guard + certified interval\nanalytic / bracketed / interval / Sturm"];
+  batch [label="simultaneous event class\npriority DAG + atomic transition batch"];
+  state [label="post-state\nroute + topology + contact + jet"];
+  log [label="lineage + novelty log\ncanonical hash + Merkle chain"];
+  adapters [label="optional consumers\nprojection / GPU / hardware / telemetry"];
+
+  base -> kc2 -> kc3;
+  kc3 -> support -> compatible -> guard -> batch -> state -> log;
+  state -> adapters [style=dashed];
+  log -> adapters [style=dashed];
+}

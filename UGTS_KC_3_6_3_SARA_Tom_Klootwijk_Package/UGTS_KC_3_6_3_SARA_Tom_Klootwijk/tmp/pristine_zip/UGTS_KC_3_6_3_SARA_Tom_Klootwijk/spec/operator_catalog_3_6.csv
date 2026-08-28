@@ -1,0 +1,37 @@
+id,domain,name,definition,disposition,validation
+K36-01,Referential core,Literal definition node,"A geometry, topology, operator, profile or schedule is stored as a typed definition record inside the substrate.",RETAIN,Schema + tests
+K36-02,Referential core,Content-addressed definition,"Canonical UTF-8 JSON, excluding the hash field itself, is hashed with SHA-256 to make definition identity verifiable.",ENGINEERING,Implemented
+K36-03,Referential core,Explicit dependency edge,Every composed definition lists definition IDs it depends on; hidden imports and implicit global state are forbidden.,RETAIN,Implemented
+K36-04,Referential core,Versioned namespace,Definition IDs include stable namespaces while schema_version and profile_version separate compatible from incompatible semantics.,RETAIN,Schema
+K36-05,Referential core,Definition-instance separation,A definition describes an operator or shape family; an instance supplies literal parameters and state through definition_ref.,RETAIN,Schema + runtime
+K36-06,Referential core,Acyclic resolution rule,"Definition dependency graphs must be acyclic unless a future fixed-point kind declares bounds, tolerance and termination.",BOUNDED,Cycle rejection tested
+K36-07,Geometry,Typed implicit-field sign,"An implicit field declares domain, codomain and sign convention: negative interior, zero boundary, positive exterior.",RETAIN,Specified
+K36-08,Geometry,Exact-SDF capability flag,Exact signed-distance status is a capability that only valid primitives and distance-preserving transforms may claim.,CORRECTED,Schema guard
+K36-09,Geometry,Parametric curve and sweep,A curve gamma(u) and a frame or transport rule may generate a swept surface; parameter interval and regularity are explicit.,ENGINEERING,Specified
+K36-10,Geometry,Pulse polygon embedding,"m declared pulses map to a point, segment or regular m-gon; for m=3 the result is a triangle.",ENGINEERING,Implemented
+K36-11,Geometry,Radix shell chart,Digit thresholds b^k form exact scale boundaries and may index nested shells without implying that space is inherently radix-based.,RETAIN,Implemented
+K36-12,Geometry,Log-polar core chart,"rho=ln(r/r0), theta=atan2(y,x) is local and carries an explicit core/singularity flag.",RETAIN,Implemented
+K36-13,Topology,Explicit quotient/gluing map,"Topology is represented by boundary ports, coordinate maps, orientation transport and optional sheet changes.",RETAIN,Implemented examples
+K36-14,Topology,Sheet-aware co-location,"Equal coordinates do not imply equality or coupling; sheet, phase, orientation, branch and policy remain typed state.",RETAIN,Schema
+K36-15,Topology,Orientation transport,Orientation is propagated independently and flips only at declared maps or transitions.,RETAIN,Mobius/Klein tests
+K36-16,Topology,Port and branch routing,A guarded crossing selects an explicit output port and branch; the routing table is finite and inspectable.,RETAIN,Specified
+K36-17,Topology,Split-merge lineage,Splits create child addresses and merges record all parents; coordinates never replace durable identity.,RETAIN,Schema
+K36-18,Topology,Guarded topology change,"A morph may vary continuously, but a topology-class change commits only at an event with a declared guard and transition.",CORRECTED,Specified
+K36-19,Hinge calculus,Generic hinge tuple,"A hinge is H=(pivot,state,map,guard,invariant) with typed continuous or discrete state.",ENGINEERING,Specified
+K36-20,Hinge calculus,Continuous planar hinge,A continuous hinge uses an affine rotation about a fixed pivot; velocity follows the derivative of the transform.,RETAIN,Implemented
+K36-21,Hinge calculus,Discrete parity hinge,A one-bit state selects one of two declared maps or routes and does not carry full geometry or identity.,RETAIN,Implemented
+K36-22,Hinge calculus,Connector hinge,"A zero-magnitude connector can be topologically necessary in an ordered parse graph, as with Dutch en.",ENGINEERING,Lexicon-tested
+K36-23,Hinge calculus,Non-commutative hinge chain,Composition order is explicit because H2∘H1 generally differs from H1∘H2.,RETAIN,Tested
+K36-24,Hinge calculus,Invariant subspace contract,"A hinge may declare fixed points, axes or quantities; the runtime validates them instead of inferring invariance from a name.",ENGINEERING,Specified
+K36-25,Dutch phonetics,Bounded Dutch number profile,"A versioned lexicon covers standard 0..99 orthography, pronunciation-like segments, morphemes and hinge metadata.",BOUNDED,100 entries generated
+K36-26,Dutch phonetics,Syllable-pulse operator,Each declared pronunciation segment emits one pulse; dialect and tokenizer are profile metadata.,ENGINEERING,Implemented
+K36-27,Dutch phonetics,Teen suffix hinge,"For regular 13..19 forms, the unit root precedes tien although decimal place semantics are ten plus unit.",RETAIN,Lexicon-tested
+K36-28,Dutch phonetics,En connector hinge,"For non-multiple tens 21..99, spoken morphology is unit-en-tens while numeral place order is tens-unit.",RETAIN,Lexicon-tested
+K36-29,Dutch phonetics,Spoken-place permutation,The place tuple and spoken tuple are separate charts connected by an explicit permutation plus optional connector node.,ENGINEERING,Implemented
+K36-30,Dutch phonetics,Feature-count comparison,"Binary popcount and phonetic pulse count may be compared; equality is tagged as a coincidence, never numeric identity.",CORRECTED,Implemented
+K36-31,Evaluation,Phase-ordered evaluator,"The canonical order is parse, normalize, resolve, construct, transform, support, compatibility, guard, transition, lineage.",ENGINEERING,Schedule shipped
+K36-32,Evaluation,Support-compatibility-guard discipline,Cheap local support precedes compatibility; event solving occurs only after both gates admit a candidate.,RETAIN,Runtime rule
+K36-33,Evaluation,Deterministic trace,"Each pipeline step records definition ID, operator kind and typed output to make order and provenance inspectable.",RETAIN,Runtime + demo
+K36-34,Evaluation,Evidence disposition,"Every source-derived or newly inferred mechanism is labeled RETAIN, ENGINEERING, CORRECTED, BOUNDED, DEMOTE or REJECT.",RETAIN,Catalog
+K36-35,Evaluation,Unknown-reference and cycle rejection,"Loading fails on missing definition IDs, duplicate IDs, invalid hashes or cyclic dependencies.",RETAIN,Tests
+K36-36,Evaluation,Package verification contract,"Schema validation, executable tests, source hashes, file hashes and a reproducible demo accompany the PDF.",RETAIN,Delivered

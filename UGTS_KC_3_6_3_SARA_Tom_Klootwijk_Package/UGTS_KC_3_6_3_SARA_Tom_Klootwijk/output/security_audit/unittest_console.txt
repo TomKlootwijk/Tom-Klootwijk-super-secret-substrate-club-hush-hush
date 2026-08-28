@@ -1,0 +1,70 @@
+test_bea361_synthetic (unittest.loader._FailedTest.test_bea361_synthetic) ... ERROR
+test_sara363 (unittest.loader._FailedTest.test_sara363) ... ERROR
+test_sclp362 (unittest.loader._FailedTest.test_sclp362) ... ERROR
+test_ugts36 (unittest.loader._FailedTest.test_ugts36) ... ERROR
+
+======================================================================
+ERROR: test_bea361_synthetic (unittest.loader._FailedTest.test_bea361_synthetic)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_bea361_synthetic
+Traceback (most recent call last):
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\tests\test_bea361_synthetic.py", line 7, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+======================================================================
+ERROR: test_sara363 (unittest.loader._FailedTest.test_sara363)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_sara363
+Traceback (most recent call last):
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\tests\test_sara363.py", line 44, in <module>
+    import jsonschema  # noqa: E402
+    ^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+======================================================================
+ERROR: test_sclp362 (unittest.loader._FailedTest.test_sclp362)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_sclp362
+Traceback (most recent call last):
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\tests\test_sclp362.py", line 12, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+======================================================================
+ERROR: test_ugts36 (unittest.loader._FailedTest.test_ugts36)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_ugts36
+Traceback (most recent call last):
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\tests\test_ugts36.py", line 9, in <module>
+    from jsonschema import Draft202012Validator
+ModuleNotFoundError: No module named 'jsonschema'
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+FAILED (errors=4)

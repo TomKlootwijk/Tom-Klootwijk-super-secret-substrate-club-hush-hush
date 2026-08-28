@@ -1,0 +1,285 @@
+{
+  "schema": "UGTS-CUDA-VMM-G24-CODE8-SUMMARY-1.0",
+  "source_aggregate": "benchmarks/cuda_vmm_g24_code8_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+  "question": "Does the exact uniform packed6 threshold-code stream emitted by the current G24 benchmark producer gain throughput-equivalent cache capacity from a driver-confirmed generic-compressible CUDA VMM allocation?",
+  "producer_mapping": {
+    "confidence_floor_source_value": 0.7,
+    "confidence_floor_binary16": 0.7001953125,
+    "confidence_distance": 0.016067834103065476,
+    "quantized_code": 8,
+    "codes_per_group": 16,
+    "bytes_per_group": 12,
+    "bytes_per_code": 0.75,
+    "packed_words_hex": [
+      "0x08208208",
+      "0x82082082",
+      "0x20820820"
+    ],
+    "set_bits_per_96_bit_group": 16
+  },
+  "validation": {
+    "all_valid": true,
+    "raw_rows": 256,
+    "aggregate_rows": 64,
+    "paired_comparisons": 32,
+    "repetitions_per_case": 4,
+    "invalid_rows": 0,
+    "paired_mapping_per_process_verified": true,
+    "validated_payloads": 271319040,
+    "timed_gpu_lookups": 92610232320
+  },
+  "sizes_mib": [
+    4,
+    28,
+    32,
+    36,
+    38,
+    40,
+    48,
+    64,
+    96,
+    128,
+    160,
+    192,
+    208,
+    224,
+    240,
+    248
+  ],
+  "full_rate_definition": {
+    "retained_fraction_of_best_hot_rate": 0.99,
+    "result": {
+      "global_cg": {
+        "non_compressible": {
+          "best_size_mib": 4,
+          "best_hot_glookups_s": 38.4902125,
+          "last_size_mib": 36,
+          "last_entries": 50331648,
+          "last_table_bytes": 37748736
+        },
+        "generic_compressible": {
+          "best_size_mib": 4,
+          "best_hot_glookups_s": 38.4934875,
+          "last_size_mib": 36,
+          "last_entries": 50331648,
+          "last_table_bytes": 37748736
+        }
+      },
+      "texture_object": {
+        "non_compressible": {
+          "best_size_mib": 28,
+          "best_hot_glookups_s": 42.8942125,
+          "last_size_mib": 36,
+          "last_entries": 50331648,
+          "last_table_bytes": 37748736
+        },
+        "generic_compressible": {
+          "best_size_mib": 28,
+          "best_hot_glookups_s": 42.9161845,
+          "last_size_mib": 36,
+          "last_entries": 50331648,
+          "last_table_bytes": 37748736
+        }
+      }
+    }
+  },
+  "l2_transition": {
+    "global_cg": {
+      "non_compressible": {
+        "hot_glookups_s_36_mib": 38.472528999999994,
+        "hot_glookups_s_40_mib": 23.650544,
+        "loss_fraction_36_to_40_mib": 0.38526151997961966
+      },
+      "generic_compressible": {
+        "hot_glookups_s_36_mib": 38.4869365,
+        "hot_glookups_s_40_mib": 23.494017999999997,
+        "loss_fraction_36_to_40_mib": 0.38955863634404886
+      }
+    },
+    "texture_object": {
+      "non_compressible": {
+        "hot_glookups_s_36_mib": 42.645801500000005,
+        "hot_glookups_s_40_mib": 23.5886105,
+        "loss_fraction_36_to_40_mib": 0.44687144641894005
+      },
+      "generic_compressible": {
+        "hot_glookups_s_36_mib": 42.7029855,
+        "hot_glookups_s_40_mib": 23.463523000000002,
+        "loss_fraction_36_to_40_mib": 0.4505413913038936
+      }
+    }
+  },
+  "paired_generic_to_non_compressible_hot_ratio": {
+    "all_size_path_pairs": {
+      "median": 0.9999931960932056,
+      "minimum": 0.9941749135196511,
+      "maximum": 1.0122116907685874,
+      "maximum_absolute_distance_from_unity": 0.012211690768587413
+    },
+    "by_path": {
+      "global_cg": {
+        "median": 0.9999660303907316,
+        "minimum": 0.9941749135196511,
+        "maximum": 1.000510858121689,
+        "maximum_absolute_distance_from_unity": 0.005825086480348851
+      },
+      "texture_object": {
+        "median": 1.0000822673825094,
+        "minimum": 0.9949759504774565,
+        "maximum": 1.0122116907685874,
+        "maximum_absolute_distance_from_unity": 0.012211690768587413
+      }
+    },
+    "all_pairs_within_two_percent_of_unity": true
+  },
+  "absolute_rate_stability": {
+    "maximum_repetition_relative_range": 0.6028077791119347,
+    "rows_at_or_above_10_percent_relative_range": [
+      {
+        "path": "global_cg",
+        "compression": "generic_compressible",
+        "size_mib": 4,
+        "hot_glookups_s_relative_range": 0.46114488846977036
+      },
+      {
+        "path": "texture_object",
+        "compression": "generic_compressible",
+        "size_mib": 4,
+        "hot_glookups_s_relative_range": 0.6014735700446731
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 4,
+        "hot_glookups_s_relative_range": 0.4624710762508781
+      },
+      {
+        "path": "texture_object",
+        "compression": "non_compressible",
+        "size_mib": 4,
+        "hot_glookups_s_relative_range": 0.6028077791119347
+      },
+      {
+        "path": "global_cg",
+        "compression": "generic_compressible",
+        "size_mib": 28,
+        "hot_glookups_s_relative_range": 0.6000960879267581
+      },
+      {
+        "path": "texture_object",
+        "compression": "generic_compressible",
+        "size_mib": 28,
+        "hot_glookups_s_relative_range": 0.45800956513270646
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 28,
+        "hot_glookups_s_relative_range": 0.6008066424994901
+      },
+      {
+        "path": "texture_object",
+        "compression": "non_compressible",
+        "size_mib": 28,
+        "hot_glookups_s_relative_range": 0.45790951401660546
+      },
+      {
+        "path": "global_cg",
+        "compression": "generic_compressible",
+        "size_mib": 32,
+        "hot_glookups_s_relative_range": 0.5928688448074445
+      },
+      {
+        "path": "texture_object",
+        "compression": "generic_compressible",
+        "size_mib": 32,
+        "hot_glookups_s_relative_range": 0.5901043765474295
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 32,
+        "hot_glookups_s_relative_range": 0.591246651795219
+      },
+      {
+        "path": "texture_object",
+        "compression": "non_compressible",
+        "size_mib": 32,
+        "hot_glookups_s_relative_range": 0.5887584143757463
+      },
+      {
+        "path": "global_cg",
+        "compression": "generic_compressible",
+        "size_mib": 36,
+        "hot_glookups_s_relative_range": 0.44538135686637453
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 36,
+        "hot_glookups_s_relative_range": 0.44561895060238954
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 40,
+        "hot_glookups_s_relative_range": 0.1034147036956105
+      },
+      {
+        "path": "global_cg",
+        "compression": "generic_compressible",
+        "size_mib": 240,
+        "hot_glookups_s_relative_range": 0.27638913788663283
+      },
+      {
+        "path": "texture_object",
+        "compression": "generic_compressible",
+        "size_mib": 240,
+        "hot_glookups_s_relative_range": 0.12330574930279509
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 240,
+        "hot_glookups_s_relative_range": 0.27624253233563884
+      },
+      {
+        "path": "texture_object",
+        "compression": "non_compressible",
+        "size_mib": 240,
+        "hot_glookups_s_relative_range": 0.12413039818409627
+      },
+      {
+        "path": "global_cg",
+        "compression": "generic_compressible",
+        "size_mib": 248,
+        "hot_glookups_s_relative_range": 0.29440884820747526
+      },
+      {
+        "path": "texture_object",
+        "compression": "generic_compressible",
+        "size_mib": 248,
+        "hot_glookups_s_relative_range": 0.13168811878738326
+      },
+      {
+        "path": "global_cg",
+        "compression": "non_compressible",
+        "size_mib": 248,
+        "hot_glookups_s_relative_range": 0.2941272983271795
+      },
+      {
+        "path": "texture_object",
+        "compression": "non_compressible",
+        "size_mib": 248,
+        "hot_glookups_s_relative_range": 0.13151139589886762
+      }
+    ],
+    "interpretation": "Laptop clock/performance-state changes make some cross-size absolute medians unstable. Compression modes alternate inside each measured sample, so paired compression ratios are the primary causal evidence."
+  },
+  "conclusion": {
+    "compression_capacity_extension_observed": false,
+    "both_modes_last_full_rate_at_36_mib_on_both_paths": true,
+    "interpretation": "The exact current G24 uniform code-8 stream does not extend the 99%-of-best throughput endpoint beyond nominal 36 MiB L2 on either native access path. A uniform semantic value is therefore insufficient; the packed physical word pattern matters."
+  },
+  "scope_note": "This is an externalized packed threshold-code stream from the package's synthetic G24 producer, not the complete interleaved G24 state record and not a measured production knowledge distribution. It does not expose physical compressed bytes, cache-hit rate, sector traffic, or a portable hardware compression ratio."
+}

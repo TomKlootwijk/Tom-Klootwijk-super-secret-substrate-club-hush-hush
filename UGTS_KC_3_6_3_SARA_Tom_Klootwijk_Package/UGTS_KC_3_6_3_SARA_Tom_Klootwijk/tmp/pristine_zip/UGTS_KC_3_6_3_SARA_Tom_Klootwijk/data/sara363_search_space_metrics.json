@@ -1,0 +1,38 @@
+[
+  {
+    "bits": 128,
+    "guesses_per_second": 1000000000000000.0,
+    "total_candidates": 340282366920938463463374607431768211456,
+    "expected_guesses": 1.7014118346046923e+38,
+    "expected_seconds": 1.7014118346046924e+23,
+    "expected_years": 5391448762278159.0,
+    "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+  },
+  {
+    "bits": 160,
+    "guesses_per_second": 1000000000000000.0,
+    "total_candidates": 1461501637330902918203684832716283019655932542976,
+    "expected_guesses": 7.307508186654515e+47,
+    "expected_seconds": 7.307508186654515e+32,
+    "expected_years": 2.315609611204437e+25,
+    "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+  },
+  {
+    "bits": 256,
+    "guesses_per_second": 1000000000000000.0,
+    "total_candidates": 115792089237316195423570985008687907853269984665640564039457584007913129639936,
+    "expected_guesses": 5.78960446186581e+76,
+    "expected_seconds": 5.78960446186581e+61,
+    "expected_years": 1.834614945960976e+54,
+    "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+  },
+  {
+    "bits": 20,
+    "guesses_per_second": 1000000.0,
+    "total_candidates": 1048576,
+    "expected_guesses": 524288.0,
+    "expected_seconds": 0.524288,
+    "expected_years": 1.661368418384161e-08,
+    "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+  }
+]

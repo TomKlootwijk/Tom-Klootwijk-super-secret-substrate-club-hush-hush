@@ -1,0 +1,10 @@
+^C:\USERS\TOM\DOCUMENTS\TOMKLOOTWIJKVENTURECORP\KLOOTWIJK\KLB_SEEDCHAIN_GPU_V0.6.0_NETWORK_PRUNING\KLB_SEEDCHAIN_GPU_V0.6.0_NETWORK_PRUNING\B128\CMAKEFILES\9F8A23CD83FDBC317477ACE1B883FE2A\GENERATE.STAMP.RULE
+setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe -SC:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning -BC:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/b128 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/b128/klb_seedchain_gpu.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

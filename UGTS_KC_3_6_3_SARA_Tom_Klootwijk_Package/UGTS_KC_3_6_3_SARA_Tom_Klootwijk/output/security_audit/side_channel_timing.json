@@ -1,0 +1,37 @@
+{
+  "method": {
+    "rounds": 9,
+    "calls_per_round": 20,
+    "chosen_public_test_scalars_only": true,
+    "key_material_recorded": false
+  },
+  "cases": {
+    "scalar_1_bitlength_1": {
+      "bit_length": 1,
+      "population_count": 1,
+      "median_ms_per_call": 0.07846999942557886,
+      "min_ms_per_call": 0.07624499994562939,
+      "max_ms_per_call": 0.08535000088158995
+    },
+    "scalar_single_high_bit_bitlength_256": {
+      "bit_length": 256,
+      "population_count": 1,
+      "median_ms_per_call": 20.598025000072084,
+      "min_ms_per_call": 20.283044999814592,
+      "max_ms_per_call": 23.202365000906866
+    },
+    "scalar_n_minus_1_dense_bitlength_256": {
+      "bit_length": 256,
+      "population_count": 191,
+      "median_ms_per_call": 40.35621500079287,
+      "min_ms_per_call": 39.885954999772366,
+      "max_ms_per_call": 42.188460000033956
+    }
+  },
+  "ratios_vs_scalar_1": {
+    "scalar_1_bitlength_1": 1.0,
+    "scalar_single_high_bit_bitlength_256": 262.4955416191547,
+    "scalar_n_minus_1_dense_bitlength_256": 514.2884579611448
+  },
+  "interpretation": "Large chosen-input timing differences are consistent with variable-time double-and-add scalar multiplication. This is not a remote exploit by itself; risk requires use with real secrets plus a capable local/co-resident observer."
+}

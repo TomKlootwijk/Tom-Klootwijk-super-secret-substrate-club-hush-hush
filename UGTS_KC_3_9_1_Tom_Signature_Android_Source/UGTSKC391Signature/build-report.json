@@ -1,0 +1,152 @@
+{
+  "agp": "8.13.2",
+  "compile_sdk": 36,
+  "edition": "3.9.1 - Tom Klootwijk Signature Edition",
+  "files": [
+    {
+      "bytes": 1218,
+      "path": "README.md",
+      "sha256": "ad142754914f4c58364db5b87239e3d9a788a6a9e2b504cb4ca5bb7ad9754456"
+    },
+    {
+      "bytes": 1659,
+      "path": "app/build.gradle",
+      "sha256": "50b59fff9f9d52b1ff2a7a299230481fbe5309f25ed3dd4def25f5edf81318ec"
+    },
+    {
+      "bytes": 57,
+      "path": "app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1553,
+      "path": "app/src/main/AndroidManifest.xml",
+      "sha256": "317663eeba2db53959828583863cfe2dbaea62810e926e82a078241fdc723238"
+    },
+    {
+      "bytes": 160201,
+      "path": "app/src/main/assets/project.json",
+      "sha256": "8d5bf4b9b2037fd0ee2065c3e8ddf3e47e001d9466b152314990069b0f1399f0"
+    },
+    {
+      "bytes": 15486,
+      "path": "app/src/main/assets/scene-pack-inspection.json",
+      "sha256": "c31e2b8c6e9ced61cf8900932abac3dd605f9d94d4e5072063373754d4776582"
+    },
+    {
+      "bytes": 680,
+      "path": "app/src/main/assets/shaders/scene.frag",
+      "sha256": "3ebd9bd3d65aa8c15f7981f9008692a4b605e792352778b1562cc8588b7deab9"
+    },
+    {
+      "bytes": 413,
+      "path": "app/src/main/assets/shaders/scene.vert",
+      "sha256": "eb70f4a63997af001db413f85d163573df5f5d12840235c998d12c52e9e7d298"
+    },
+    {
+      "bytes": 21735,
+      "path": "app/src/main/assets/signature_scene.kc3d",
+      "sha256": "485bb8a5ed7d4632577195dc0a889b4e6d3ea13ebc55482c5ea40761729ba437"
+    },
+    {
+      "bytes": 1021,
+      "path": "app/src/main/cpp/CMakeLists.txt",
+      "sha256": "6ecdf9c937452bce624df3464074190dcc8cbbbc0ff0751e07070c1b6e26409c"
+    },
+    {
+      "bytes": 860,
+      "path": "app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 2770,
+      "path": "app/src/main/cpp/device_profile.cpp",
+      "sha256": "03fe6f61f9d1aeca0b055715afa6bd8611927e65ec0f63a5d3950e95f4f964a8"
+    },
+    {
+      "bytes": 676,
+      "path": "app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 10395,
+      "path": "app/src/main/cpp/engine.cpp",
+      "sha256": "19e560cb17d6d72c7cb10e919458cf038855d548703b93019565a935e367bc20"
+    },
+    {
+      "bytes": 1509,
+      "path": "app/src/main/cpp/engine.hpp",
+      "sha256": "c6c07ce6b00f32b4fc1aee6af0084a04946b5ca79e79cd3559bcc29c5d69e413"
+    },
+    {
+      "bytes": 3792,
+      "path": "app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1612,
+      "path": "app/src/main/cpp/main.cpp",
+      "sha256": "037b624cf9aac4bb04b56ba26394713ad6843592c48016d21fcc74367517e66f"
+    },
+    {
+      "bytes": 10051,
+      "path": "app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "bc961dfe22e0e2ca01b6f8da70d6cb7af9b1773243da62b7db032ceb4c6580c1"
+    },
+    {
+      "bytes": 1734,
+      "path": "app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "16159c9a2115b73e3d7c27a716c52b53d26a92ff6e024109b68cd828f22e04ba"
+    },
+    {
+      "bytes": 6240,
+      "path": "app/src/main/cpp/scene_pack.cpp",
+      "sha256": "7bc46d2e9dbb65951396bdf11afce1087a3d7be01640dab4ddc74db89f69dff1"
+    },
+    {
+      "bytes": 2836,
+      "path": "app/src/main/cpp/scene_pack.hpp",
+      "sha256": "1f44ddca087e5ffe396503c851e91e6ffb4797e28d9e586d878497247e2c724c"
+    },
+    {
+      "bytes": 134,
+      "path": "app/src/main/res/values/strings.xml",
+      "sha256": "89fcc20706f981b9ca513f3afc605cff18cf529505dd17a45be36984e795d3a5"
+    },
+    {
+      "bytes": 766,
+      "path": "app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 74,
+      "path": "build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 159,
+      "path": "gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 336,
+      "path": "settings.gradle",
+      "sha256": "4e5d4e490bdb0855a97d187f5272eb6378a04cfbfd34d0b3e08363ead750f4b7"
+    }
+  ],
+  "gradle": "8.13",
+  "min_sdk": 26,
+  "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+  "ndk": "r29 / 29.0.14206865",
+  "profile_hint": "auto",
+  "project_hash": "e86bebe946cb6a4f7e418143869191c4900bed22d2773054e0b1bf0a6493c244",
+  "project_id": "tom_klootwijk_signature_arena_3d",
+  "schema": "ugts-kc-android-source-build-3.9.1",
+  "target_sdk": 36,
+  "vulkan_status": "interface reserved; backend is a post-3.9.1 task"
+}

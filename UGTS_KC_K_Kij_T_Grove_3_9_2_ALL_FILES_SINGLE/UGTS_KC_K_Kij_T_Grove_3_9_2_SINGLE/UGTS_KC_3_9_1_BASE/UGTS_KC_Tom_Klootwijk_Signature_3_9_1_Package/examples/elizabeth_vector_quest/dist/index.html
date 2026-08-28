@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#070b1b">
+<title>Elizabeth's Vector Garden</title>
+<style>
+:root{color-scheme:dark;background:#050712;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#050712;overscroll-behavior:none}
+body{display:grid;place-items:center}#kc-shell{position:relative;display:grid;place-items:center;width:100%;height:100%;isolation:isolate}
+#kc-canvas{display:block;max-width:none;max-height:none;touch-action:none;outline:none;box-shadow:0 24px 90px rgba(0,0,0,.55)}
+#kc-status{position:fixed;left:-10000px;width:1px;height:1px;overflow:hidden}
+#kc-touch[hidden]{display:none}#kc-credit{position:fixed;right:12px;bottom:8px;color:rgba(255,255,255,.35);font-size:10px;pointer-events:none;letter-spacing:.04em}
+@media (prefers-reduced-motion:reduce){#kc-canvas{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main id="kc-shell">
+<canvas id="kc-canvas" tabindex="0" role="application" aria-label="Elizabeth's Vector Garden game canvas"></canvas>
+<div id="kc-touch" aria-hidden="true"></div>
+<div id="kc-status" role="status" aria-live="polite">Loading</div>
+<div id="kc-credit">UGTS-KC 3.9.0 · KC Elizabeth</div>
+</main>
+<script id="kc-project" type="application/json">{"$schema":"ugts-kc-game-project-3.9","metadata":{"id":"kc.elizabeth.vector-quest","title":"Elizabeth's Vector Garden","author":"Tom Klootwijk","version":"1.0.0","runtime_version":"3.9.0","codename":"KC Elizabeth","description":"A dependency-free vector-art arcade demonstration for the UGTS-KC 3.9 KC Elizabeth edition.","license":"Requester-controlled project content; runtime attribution retained","website":null},"display":{"width":960,"height":540,"background":"#070b1b","scaling":"fit","pixel_ratio":"device","fullscreen":false,"orientation":"landscape","antialias":true},"input":{"actions":[{"name":"dash","bindings":[{"kind":"key","code":"Space","scale":1,"device":0},{"kind":"key","code":"ShiftLeft","scale":1,"device":0},{"kind":"gamepad_button","code":"0","scale":1,"device":0},{"kind":"touch_axis","code":"dash","scale":1,"device":0}],"deadzone":0,"threshold":0.5,"combine":"sum"},{"name":"load","bindings":[{"kind":"key","code":"KeyL","scale":1,"device":0}],"deadzone":0,"threshold":0.5,"combine":"sum"},{"name":"move_x","bindings":[{"kind":"key","code":"KeyA","scale":-1,"device":0},{"kind":"key","code":"KeyD","scale":1,"device":0},{"kind":"key","code":"ArrowLeft","scale":-1,"device":0},{"kind":"key","code":"ArrowRight","scale":1,"device":0},{"kind":"gamepad_axis","code":"0","scale":1,"device":0},{"kind":"touch_axis","code":"move_x","scale":1,"device":0}],"deadzone":0.12,"threshold":0.5,"combine":"sum"},{"name":"move_y","bindings":[{"kind":"key","code":"KeyW","scale":-1,"device":0},{"kind":"key","code":"KeyS","scale":1,"device":0},{"kind":"key","code":"ArrowUp","scale":-1,"device":0},{"kind":"key","code":"ArrowDown","scale":1,"device":0},{"kind":"gamepad_axis","code":"1","scale":1,"device":0},{"kind":"touch_axis","code":"move_y","scale":1,"device":0}],"deadzone":0.12,"threshold":0.5,"combine":"sum"},{"name":"mute","bindings":[{"kind":"key","code":"KeyM","scale":1,"device":0}],"deadzone":0,"threshold":0.5,"combine":"sum"},{"name":"pause","bindings":[{"kind":"key","code":"Escape","scale":1,"device":0},{"kind":"key","code":"KeyP","scale":1,"device":0},{"kind":"gamepad_button","code":"9","scale":1,"device":0}],"deadzone":0,"threshold":0.5,"combine":"sum"},{"name":"restart","bindings":[{"kind":"key","code":"KeyR","scale":1,"device":0}],"deadzone":0,"threshold":0.5,"combine":"sum"},{"name":"save","bindings":[{"kind":"key","code":"KeyK","scale":1,"device":0}],"deadzone":0,"threshold":0.5,"combine":"sum"}]},"vector_assets":{"crystal":{"id":"crystal","size":[72,72],"pivot":[0,0],"paths":[{"id":"body","commands":[["M",0,-30],["L",20,-6],["L",13,24],["L",0,33],["L",-13,24],["L",-20,-6],["Z"]],"paint":{"fill":"@crystal-main","stroke":"#fffbd3","stroke_width":2,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"facet","commands":[["M",0,-25],["L",9,-4],["L",0,23],["L",-9,-4],["Z"]],"paint":{"fill":"@crystal-core","stroke":"#ffffff","stroke_width":0.8,"opacity":0.82,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}}],"gradients":[{"type":"linear","id":"crystal-main","start":[-22,-28],"end":[22,28],"stops":[{"offset":0,"color":"#fff6a5"},{"offset":0.4,"color":"#ffd44f"},{"offset":1,"color":"#ff8f3d"}]},{"type":"radial","id":"crystal-core","center":[0,-2],"radius":16,"stops":[{"offset":0,"color":"#ffffff"},{"offset":0.45,"color":"#fff9bf"},{"offset":1,"color":"#ffb23f"}]}],"metadata":{"role":"collectible"}},"hazard_orb":{"id":"hazard_orb","size":[90,90],"pivot":[0,0],"paths":[{"id":"spikes","commands":[["M",2.4492935982947065e-15,-40],["L",13.999999999999996,-24.248711305964285],["L",34.64101615137754,-20],["L",28,0],["L",34.64101615137755,19.999999999999993],["L",13.999999999999996,24.248711305964285],["L",2.4492935982947065e-15,40],["L",-13.999999999999993,24.248711305964285],["L",-34.64101615137754,20.000000000000014],["L",-28,3.429011037612589e-15],["L",-34.64101615137754,-20.000000000000004],["L",-14.000000000000012,-24.248711305964274],["Z"]],"paint":{"fill":"#8f1244","stroke":"#ff6b89","stroke_width":1.3,"opacity":0.9,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"outer","commands":[["M",31,0],["C",31,17.1208272447546,17.1208272447546,31,0,31],["C",-17.1208272447546,31,-31,17.1208272447546,-31,0],["C",-31,-17.1208272447546,-17.1208272447546,-31,0,-31],["C",17.1208272447546,-31,31,-17.1208272447546,31,0],["Z"]],"paint":{"fill":"@hazard-core","stroke":"#ff9ab0","stroke_width":2.5,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"inner","commands":[["M",13,0],["C",13,7.1797017478003164,7.1797017478003164,13,0,13],["C",-7.1797017478003164,13,-13,7.1797017478003164,-13,0],["C",-13,-7.1797017478003164,-7.1797017478003164,-13,0,-13],["C",7.1797017478003164,-13,13,-7.1797017478003164,13,0],["Z"]],"paint":{"fill":"#29051c","stroke":"#ff7390","stroke_width":2,"opacity":0.96,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}}],"gradients":[{"type":"radial","id":"hazard-core","center":[-5,-7],"radius":33,"stops":[{"offset":0,"color":"#ffd0d6"},{"offset":0.22,"color":"#ff647e"},{"offset":0.72,"color":"#bb164c"},{"offset":1,"color":"#450526"}]}],"metadata":{"role":"hazard"}},"obstacle":{"id":"obstacle","size":[120,72],"pivot":[0,0],"paths":[{"id":"body","commands":[["M",-46,-36],["L",46,-36],["C",53.73198649763111,-36,60,-29.73198649763111,60,-22],["L",60,22],["C",60,29.73198649763111,53.73198649763111,36,46,36],["L",-46,36],["C",-53.73198649763111,36,-60,29.73198649763111,-60,22],["L",-60,-22],["C",-60,-29.73198649763111,-53.73198649763111,-36,-46,-36],["Z"]],"paint":{"fill":"@obstacle-main","stroke":"#718ed7","stroke_width":2,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"inset","commands":[["M",-38,-24],["L",38,-24],["C",43.52284749830794,-24,48,-19.522847498307936,48,-14],["L",48,14],["C",48,19.522847498307936,43.52284749830794,24,38,24],["L",-38,24],["C",-43.52284749830794,24,-48,19.522847498307936,-48,14],["L",-48,-14],["C",-48,-19.522847498307936,-43.52284749830794,-24,-38,-24],["Z"]],"paint":{"fill":"#172653","stroke":"#4667ac","stroke_width":2,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}}],"gradients":[{"type":"linear","id":"obstacle-main","start":[-60,-36],"end":[60,36],"stops":[{"offset":0,"color":"#304b8d"},{"offset":0.5,"color":"#203362"},{"offset":1,"color":"#121d43"}]}],"metadata":{"role":"world"}},"player_ship":{"id":"player_ship","size":[80,80],"pivot":[0,0],"paths":[{"id":"wing-left","commands":[["M",-8,10],["L",-31,25],["L",-14,2],["Z"]],"paint":{"fill":"#3848af","stroke":"#88b9ff","stroke_width":1.2,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"wing-right","commands":[["M",8,10],["L",31,25],["L",14,2],["Z"]],"paint":{"fill":"#3848af","stroke":"#88b9ff","stroke_width":1.2,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"body","commands":[["M",0,-34],["L",30,19],["L",11,14],["L",0,31],["L",-11,14],["L",-30,19],["Z"]],"paint":{"fill":"@player-body","stroke":"#d9fbff","stroke_width":2.2,"opacity":1,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"core","commands":[["M",10,0],["C",10,5.522847498307936,5.522847498307936,10,0,10],["C",-5.522847498307936,10,-10,5.522847498307936,-10,0],["C",-10,-5.522847498307936,-5.522847498307936,-10,0,-10],["C",5.522847498307936,-10,10,-5.522847498307936,10,0],["Z"]],"paint":{"fill":"@player-core","stroke":"#ffffff","stroke_width":1.2,"opacity":0.95,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}}],"gradients":[{"type":"linear","id":"player-body","start":[-34,-30],"end":[32,34],"stops":[{"offset":0,"color":"#75f6ff"},{"offset":0.48,"color":"#4aa5ff"},{"offset":1,"color":"#8b6cff"}]},{"type":"radial","id":"player-core","center":[0,0],"radius":22,"stops":[{"offset":0,"color":"#ffffff"},{"offset":0.32,"color":"#c4fbff"},{"offset":1,"color":"#49d8ff"}]}],"metadata":{"role":"player"}},"portal":{"id":"portal","size":[104,104],"pivot":[0,0],"paths":[{"id":"ring","commands":[["M",43,0],["C",43,23.748244242724123,23.748244242724123,43,0,43],["C",-23.748244242724123,43,-43,23.748244242724123,-43,0],["C",-43,-23.748244242724123,-23.748244242724123,-43,0,-43],["C",23.748244242724123,-43,43,-23.748244242724123,43,0],["Z"]],"paint":{"fill":null,"stroke":"@portal","stroke_width":12,"opacity":0.88,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}},{"id":"core","commands":[["M",22,0],["C",22,12.150264496277458,12.150264496277458,22,0,22],["C",-12.150264496277458,22,-22,12.150264496277458,-22,0],["C",-22,-12.150264496277458,-12.150264496277458,-22,0,-22],["C",12.150264496277458,-22,22,-12.150264496277458,22,0],["Z"]],"paint":{"fill":"#12295d","stroke":"#74ecff","stroke_width":2,"opacity":0.55,"line_cap":"round","line_join":"round"},"fill_rule":"nonzero","metadata":{}}],"gradients":[{"type":"radial","id":"portal","center":[0,0],"radius":48,"stops":[{"offset":0,"color":"rgba(255,255,255,0)"},{"offset":0.45,"color":"#7b5cff"},{"offset":0.75,"color":"#35d4ff"},{"offset":1,"color":"rgba(20,30,90,0)"}]}],"metadata":{"role":"decoration"}}},"audio":{"cues":[{"id":"collect","waveform":"triangle","frequency":1318.5102276514797,"duration":0.11,"volume":0.18,"detune":0,"sweep_to":1975.533205024496,"envelope":{"attack":0.002,"decay":0.025,"sustain":0.45,"release":0.09},"noise":0},{"id":"damage","waveform":"square","frequency":130.8127826502993,"duration":0.14,"volume":0.12,"detune":0,"sweep_to":87.30705785825097,"envelope":{"attack":0.001,"decay":0.03,"sustain":0.35,"release":0.12},"noise":0.2},{"id":"dash","waveform":"sawtooth","frequency":220,"duration":0.09,"volume":0.13,"detune":0,"sweep_to":880,"envelope":{"attack":0.002,"decay":0.02,"sustain":0.3,"release":0.06},"noise":0},{"id":"game_over","waveform":"sine","frequency":146.8323839587038,"duration":0.5,"volume":0.16,"detune":0,"sweep_to":110,"envelope":{"attack":0.01,"decay":0.1,"sustain":0.55,"release":0.35},"noise":0},{"id":"music_pluck","waveform":"sine","frequency":523.2511306011972,"duration":0.12,"volume":0.025,"detune":0,"sweep_to":null,"envelope":{"attack":0.005,"decay":0.04,"sustain":0.25,"release":0.1},"noise":0},{"id":"save","waveform":"sine","frequency":783.9908719634985,"duration":0.08,"volume":0.1,"detune":0,"sweep_to":null,"envelope":{"attack":0.002,"decay":0.015,"sustain":0.5,"release":0.05},"noise":0},{"id":"win","waveform":"triangle","frequency":523.2511306011972,"duration":0.45,"volume":0.17,"detune":0,"sweep_to":1046.5022612023945,"envelope":{"attack":0.01,"decay":0.08,"sustain":0.7,"release":0.3},"noise":0}],"sequences":[{"id":"garden_pulse","bpm":96,"length_beats":8,"notes":[{"beat":0,"cue_id":"music_pluck","pitch_ratio":1,"gain":0.55},{"beat":2,"cue_id":"music_pluck","pitch_ratio":1.25,"gain":0.42},{"beat":4,"cue_id":"music_pluck","pitch_ratio":1.5,"gain":0.5},{"beat":6,"cue_id":"music_pluck","pitch_ratio":1.25,"gain":0.42}],"loop":true}]},"tilemaps":{},"scenes":{"vector_garden":{"id":"vector_garden","world_size":[1600,900],"background":"#0a0f25","tilemaps":[],"initial_state":{"score":0},"rules":{"collect_sound":"collect","damage_sound":"damage","dash_sound":"dash","game_over_sound":"game_over","gravity":[0,0],"grid":{"color":"rgba(125,170,255,.055)","enabled":true,"spacing":80},"music":"garden_pulse","pause_action":"pause","player_id":"player","restart_action":"restart","save_sound":"save","score_to_win":12,"vignette":true,"win_sound":"win"},"ui":[{"align":"right","color":"rgba(225,235,255,.72)","font":"12px system-ui, sans-serif","position":[936,30],"text":"WASD / arrows / stick · Space dash · P pause · K save · L load","type":"text"},{"align":"right","color":"rgba(175,205,255,.65)","font":"12px system-ui, sans-serif","position":[936,51],"text":"Best {best}","type":"text"}],"entities":[{"id":"player","tags":["controllable","player"],"active":true,"metadata":{"description":"Player-controlled vector ship"},"components":{"body":{"body_type":"dynamic","damping":1.5,"fixed_rotation":true,"friction":0.15,"gravity_scale":0,"mass":1,"max_speed":560,"restitution":0.15},"bounds_constraint":{"bounds":{"maximum":[1555,855],"minimum":[45,45],"type":"aabb"},"mode":"clamp"},"collider":{"filter":{"layer":1,"mask":14,"sensor":false},"shape":{"center":[0,0],"radius":19,"type":"circle"}},"health":{"current":5,"invulnerability":0.7,"maximum":5},"player_controller":{"dash_action":"dash","dash_cooldown":0.62,"dash_duration":0.13,"dash_speed":590,"last_direction":[1,0],"speed":245,"x_action":"move_x","y_action":"move_y"},"transform":{"position":[170,450],"rotation":1.5707963267948966,"scale":[1,1]},"vector_renderer":{"asset_id":"player_ship","shadow_blur":18,"shadow_color":"rgba(70,190,255,.5)","z_index":20}}},{"id":"camera","tags":["camera"],"active":true,"metadata":{},"components":{"camera":{"bounds":{"maximum":[1600,900],"minimum":[0,0],"type":"aabb"},"follow_entity":"player","follow_smoothing":7.5,"position":[480,450],"viewport":[960,540],"zoom":1}}},{"id":"portal_start","tags":["decoration"],"active":true,"metadata":{},"components":{"pulse":{"amount":0.08,"speed":2.2},"spin":{"speed":-0.25},"transform":{"position":[170,450],"rotation":0,"scale":[1.1,1.1]},"vector_renderer":{"asset_id":"portal","opacity":0.78,"shadow_blur":22,"shadow_color":"rgba(70,120,255,.5)","z_index":-2}}},{"id":"crystal_01","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":0.7,"speed":2.6},"spin":{"speed":0.81},"transform":{"position":[360,180],"rotation":0.31,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_02","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":1.4,"speed":2.6},"spin":{"speed":0.97},"transform":{"position":[590,135],"rotation":0.62,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_03","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":2.0999999999999996,"speed":2.6},"spin":{"speed":0.65},"transform":{"position":[820,210],"rotation":0.9299999999999999,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_04","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":2.8,"speed":2.6},"spin":{"speed":0.81},"transform":{"position":[1100,145],"rotation":1.24,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_05","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":3.5,"speed":2.6},"spin":{"speed":0.97},"transform":{"position":[1400,250],"rotation":1.55,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_06","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":4.199999999999999,"speed":2.6},"spin":{"speed":0.65},"transform":{"position":[420,430],"rotation":1.8599999999999999,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_07","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":4.8999999999999995,"speed":2.6},"spin":{"speed":0.81},"transform":{"position":[760,410],"rotation":2.17,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_08","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":5.6,"speed":2.6},"spin":{"speed":0.97},"transform":{"position":[1040,390],"rotation":2.48,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_09","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":6.3,"speed":2.6},"spin":{"speed":0.65},"transform":{"position":[1320,500],"rotation":2.79,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_10","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":7,"speed":2.6},"spin":{"speed":0.81},"transform":{"position":[320,735],"rotation":3.1,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_11","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":7.699999999999999,"speed":2.6},"spin":{"speed":0.97},"transform":{"position":[735,720],"rotation":3.41,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"crystal_12","tags":["collectible"],"active":true,"metadata":{},"components":{"collectible":{"destroy_on_collect":true,"points":1,"sound":"collect","state_key":"score"},"collider":{"filter":{"layer":4,"mask":1,"sensor":true},"shape":{"center":[0,0],"radius":22,"type":"circle"}},"pulse":{"amount":0.1,"phase":8.399999999999999,"speed":2.6},"spin":{"speed":0.65},"transform":{"position":[1210,735],"rotation":3.7199999999999998,"scale":[0.82,0.82]},"vector_renderer":{"asset_id":"crystal","shadow_blur":16,"shadow_color":"rgba(255,205,80,.5)","z_index":8}}},{"id":"obstacle_01","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[520,300],"rotation":0,"scale":[1.6,0.8]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"obstacle_02","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[890,105],"rotation":0,"scale":[1.15,0.72]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"obstacle_03","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[1170,285],"rotation":0,"scale":[1.45,0.78]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"obstacle_04","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[675,565],"rotation":0,"scale":[1.55,0.74]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"obstacle_05","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[1060,610],"rotation":0,"scale":[1.25,0.82]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"obstacle_06","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[1420,690],"rotation":0,"scale":[1,0.8]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"obstacle_07","tags":["obstacle","world"],"active":true,"metadata":{},"components":{"body":{"body_type":"static","friction":0.55,"restitution":0.15,"velocity":[0,0]},"collider":{"filter":{"layer":2,"mask":9,"sensor":false},"shape":{"maximum":[58,34],"minimum":[-58,-34],"type":"aabb"}},"transform":{"position":[220,610],"rotation":0,"scale":[0.9,1.4]},"vector_renderer":{"asset_id":"obstacle","shadow_blur":12,"shadow_color":"rgba(0,0,0,.45)","z_index":4}}},{"id":"hazard_01","tags":["enemy","hazard"],"active":true,"metadata":{},"components":{"body":{"body_type":"kinematic","friction":0,"restitution":1,"velocity":[0,0]},"bounds_constraint":{"bounds":{"maximum":[1520,820],"minimum":[80,80],"type":"aabb"},"mode":"bounce"},"collider":{"filter":{"layer":8,"mask":3,"sensor":false},"shape":{"center":[0,0],"radius":29,"type":"circle"}},"hazard":{"cooldown":0.65,"damage":1,"knockback":260,"sound":"damage"},"patrol":{"direction":[1,-0.35],"speed":120},"spin":{"speed":-0.83},"transform":{"position":[505,770],"rotation":0.4,"scale":[0.9,0.9]},"vector_renderer":{"asset_id":"hazard_orb","shadow_blur":18,"shadow_color":"rgba(255,40,100,.48)","z_index":12}}},{"id":"hazard_02","tags":["enemy","hazard"],"active":true,"metadata":{},"components":{"body":{"body_type":"kinematic","friction":0,"restitution":1,"velocity":[0,0]},"bounds_constraint":{"bounds":{"maximum":[1520,820],"minimum":[80,80],"type":"aabb"},"mode":"bounce"},"collider":{"filter":{"layer":8,"mask":3,"sensor":false},"shape":{"center":[0,0],"radius":29,"type":"circle"}},"hazard":{"cooldown":0.65,"damage":1,"knockback":260,"sound":"damage"},"patrol":{"direction":[-0.5,1],"speed":108},"spin":{"speed":0.91},"transform":{"position":[865,325],"rotation":0.8,"scale":[0.9,0.9]},"vector_renderer":{"asset_id":"hazard_orb","shadow_blur":18,"shadow_color":"rgba(255,40,100,.48)","z_index":12}}},{"id":"hazard_03","tags":["enemy","hazard"],"active":true,"metadata":{},"components":{"body":{"body_type":"kinematic","friction":0,"restitution":1,"velocity":[0,0]},"bounds_constraint":{"bounds":{"maximum":[1520,820],"minimum":[80,80],"type":"aabb"},"mode":"bounce"},"collider":{"filter":{"layer":8,"mask":3,"sensor":false},"shape":{"center":[0,0],"radius":29,"type":"circle"}},"hazard":{"cooldown":0.65,"damage":1,"knockback":260,"sound":"damage"},"patrol":{"direction":[-1,0.42],"speed":132},"spin":{"speed":-0.99},"transform":{"position":[1260,165],"rotation":1.2000000000000002,"scale":[0.9,0.9]},"vector_renderer":{"asset_id":"hazard_orb","shadow_blur":18,"shadow_color":"rgba(255,40,100,.48)","z_index":12}}},{"id":"hazard_04","tags":["enemy","hazard"],"active":true,"metadata":{},"components":{"body":{"body_type":"kinematic","friction":0,"restitution":1,"velocity":[0,0]},"bounds_constraint":{"bounds":{"maximum":[1520,820],"minimum":[80,80],"type":"aabb"},"mode":"bounce"},"collider":{"filter":{"layer":8,"mask":3,"sensor":false},"shape":{"center":[0,0],"radius":29,"type":"circle"}},"hazard":{"cooldown":0.65,"damage":1,"knockback":260,"sound":"damage"},"patrol":{"direction":[-0.75,-1],"speed":116},"spin":{"speed":1.07},"transform":{"position":[1370,610],"rotation":1.6,"scale":[0.9,0.9]},"vector_renderer":{"asset_id":"hazard_orb","shadow_blur":18,"shadow_color":"rgba(255,40,100,.48)","z_index":12}}}]}},"start_scene":"vector_garden","build":{"debug":false,"minify":false,"single_file":true}}</script>
+<script>
+(() => {
+"use strict";
+const PROJECT = JSON.parse(document.getElementById("kc-project").textContent);
+const VERSION = "3.9.0";
+const CODENAME = "KC Elizabeth";
+const canvas = document.getElementById("kc-canvas");
+const ctx = canvas.getContext("2d", {alpha: false, desynchronized: true});
+const statusNode = document.getElementById("kc-status");
+const touchNode = document.getElementById("kc-touch");
+const display = PROJECT.display;
+const baseWidth = display.width;
+const baseHeight = display.height;
+let dpr = 1;
+let cssScale = 1;
+let fixedDt = 1 / 60;
+let accumulator = 0;
+let previousTimestamp = performance.now();
+let fps = 60;
+let frameCounter = 0;
+let fpsTime = previousTimestamp;
+let debug = !!(PROJECT.build && PROJECT.build.debug);
+let muted = false;
+let audioContext = null;
+let musicClock = null;
+const keys = new Set();
+const pointerButtons = new Set();
+const touchAxes = Object.create(null);
+const activePointers = new Map();
+let joystickPointer = null;
+let joystickStart = {x: 0, y: 0};
+let joystickCurrent = {x: 0, y: 0};
+let pointerPosition = {x: 0, y: 0};
+let previousActions = Object.create(null);
+let currentActions = Object.create(null);
+let gamepadButtons = Object.create(null);
+let gamepadAxes = Object.create(null);
+let particles = [];
+let contacts = new Set();
+let eventLog = [];
+let tick = 0;
+let gameTime = 0;
+let paused = false;
+let won = false;
+let gameOver = false;
+let scene = null;
+let entities = [];
+let entityMap = new Map();
+let state = Object.create(null);
+let camera = {position: [baseWidth / 2, baseHeight / 2], zoom: 1, rotation: 0, follow_entity: null, follow_smoothing: 8};
+let worldSize = [baseWidth, baseHeight];
+let sceneRules = Object.create(null);
+const assets = PROJECT.vector_assets || {};
+const audioCues = new Map(((PROJECT.audio && PROJECT.audio.cues) || []).map(cue => [cue.id, cue]));
+const audioSequences = new Map(((PROJECT.audio && PROJECT.audio.sequences) || []).map(sequence => [sequence.id, sequence]));
+const actionDefinitions = new Map(((PROJECT.input && PROJECT.input.actions) || []).map(action => [action.name, action]));
+
+function deepClone(value) { return JSON.parse(JSON.stringify(value)); }
+function clamp(value, minimum, maximum) { return Math.max(minimum, Math.min(maximum, value)); }
+function length(x, y) { return Math.hypot(x, y); }
+function normalize(x, y) { const n = Math.hypot(x, y); return n > 1e-9 ? [x / n, y / n] : [0, 0]; }
+function pairKey(a, b) { return a < b ? `${a}|${b}` : `${b}|${a}`; }
+function component(entity, name) { return entity.components ? entity.components[name] : null; }
+function hasTag(entity, tag) { return Array.isArray(entity.tags) && entity.tags.includes(tag); }
+function entitiesWith(...names) { return entities.filter(entity => entity.active !== false && names.every(name => component(entity, name))); }
+function emit(kind, source = null, target = null, payload = {}) {
+  const event = {sequence: eventLog.length + 1, tick, time: gameTime, kind, source, target, payload};
+  eventLog.push(event);
+  if (eventLog.length > 512) eventLog.shift();
+  return event;
+}
+
+function resizeCanvas() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const ratio = display.pixel_ratio === "1" ? 1 : display.pixel_ratio === "2" ? 2 : Math.min(window.devicePixelRatio || 1, 2.5);
+  dpr = ratio;
+  let width = vw;
+  let height = vh;
+  if (display.scaling !== "stretch") {
+    const scaleFit = Math.min(vw / baseWidth, vh / baseHeight);
+    const scaleFill = Math.max(vw / baseWidth, vh / baseHeight);
+    cssScale = display.scaling === "fill" ? scaleFill : display.scaling === "integer" ? Math.max(1, Math.floor(scaleFit)) : scaleFit;
+    width = Math.max(1, Math.round(baseWidth * cssScale));
+    height = Math.max(1, Math.round(baseHeight * cssScale));
+  } else {
+    cssScale = vw / baseWidth;
+  }
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+  canvas.width = Math.max(1, Math.round(baseWidth * dpr));
+  canvas.height = Math.max(1, Math.round(baseHeight * dpr));
+  canvas.style.imageRendering = display.antialias === false ? "pixelated" : "auto";
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function canvasPoint(event) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (event.clientX - rect.left) * baseWidth / rect.width,
+    y: (event.clientY - rect.top) * baseHeight / rect.height,
+  };
+}
+
+const blockedKeys = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
+window.addEventListener("keydown", event => {
+  keys.add(event.code);
+  if (blockedKeys.has(event.code)) event.preventDefault();
+  if (event.code === "F3" && !event.repeat) { debug = !debug; event.preventDefault(); }
+  unlockAudio();
+});
+window.addEventListener("keyup", event => { keys.delete(event.code); });
+window.addEventListener("blur", () => { keys.clear(); pointerButtons.clear(); });
+canvas.addEventListener("contextmenu", event => event.preventDefault());
+canvas.addEventListener("pointerdown", event => {
+  canvas.setPointerCapture(event.pointerId);
+  unlockAudio();
+  const point = canvasPoint(event);
+  pointerPosition = point;
+  activePointers.set(event.pointerId, {point, type: event.pointerType});
+  pointerButtons.add(String(event.button));
+  if (event.pointerType === "touch") {
+    if (point.x < baseWidth * 0.58 && joystickPointer === null) {
+      joystickPointer = event.pointerId;
+      joystickStart = point;
+      joystickCurrent = point;
+    } else {
+      touchAxes.dash = 1;
+    }
+  }
+});
+canvas.addEventListener("pointermove", event => {
+  const point = canvasPoint(event);
+  pointerPosition = point;
+  const entry = activePointers.get(event.pointerId);
+  if (entry) entry.point = point;
+  if (joystickPointer === event.pointerId) joystickCurrent = point;
+});
+function releasePointer(event) {
+  activePointers.delete(event.pointerId);
+  pointerButtons.delete(String(event.button));
+  if (joystickPointer === event.pointerId) {
+    joystickPointer = null;
+    touchAxes.move_x = 0;
+    touchAxes.move_y = 0;
+  } else if (event.pointerType === "touch") {
+    touchAxes.dash = 0;
+  }
+}
+canvas.addEventListener("pointerup", releasePointer);
+canvas.addEventListener("pointercancel", releasePointer);
+
+function pollGamepads() {
+  gamepadButtons = Object.create(null);
+  gamepadAxes = Object.create(null);
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (let device = 0; device < pads.length; device += 1) {
+    const pad = pads[device];
+    if (!pad) continue;
+    pad.buttons.forEach((button, index) => {
+      gamepadButtons[`${device}:${index}`] = typeof button === "number" ? button : button.value;
+    });
+    pad.axes.forEach((value, index) => { gamepadAxes[`${device}:${index}`] = value; });
+  }
+}
+
+function bindingValue(binding) {
+  const scale = Number.isFinite(binding.scale) ? binding.scale : 1;
+  const device = Number.isFinite(binding.device) ? binding.device : 0;
+  let value = 0;
+  if (binding.kind === "key") value = keys.has(binding.code) ? 1 : 0;
+  else if (binding.kind === "pointer_button") value = pointerButtons.has(binding.code) ? 1 : 0;
+  else if (binding.kind === "gamepad_button") value = gamepadButtons[`${device}:${binding.code}`] || 0;
+  else if (binding.kind === "gamepad_axis") value = gamepadAxes[`${device}:${binding.code}`] || 0;
+  else if (binding.kind === "touch_axis") value = touchAxes[binding.code] || 0;
+  return clamp(value, -1, 1) * scale;
+}
+
+function sampleActions() {
+  pollGamepads();
+  if (joystickPointer !== null) {
+    const dx = joystickCurrent.x - joystickStart.x;
+    const dy = joystickCurrent.y - joystickStart.y;
+    const radius = 70;
+    touchAxes.move_x = clamp(dx / radius, -1, 1);
+    touchAxes.move_y = clamp(dy / radius, -1, 1);
+  }
+  const result = Object.create(null);
+  for (const action of actionDefinitions.values()) {
+    const samples = action.bindings.map(bindingValue);
+    let value = action.combine === "max" ? samples.reduce((best, sample) => Math.abs(sample) > Math.abs(best) ? sample : best, 0) : clamp(samples.reduce((sum, sample) => sum + sample, 0), -1, 1);
+    const deadzone = action.deadzone ?? 0.15;
+    if (Math.abs(value) < deadzone) value = 0;
+    else value = Math.sign(value) * clamp((Math.abs(value) - deadzone) / (1 - deadzone), 0, 1);
+    result[action.name] = value;
+  }
+  currentActions = result;
+}
+function actionValue(name) { return currentActions[name] || 0; }
+function actionDown(name) { const def = actionDefinitions.get(name); return Math.abs(actionValue(name)) >= (def ? (def.threshold ?? 0.5) : 0.5); }
+function actionPressed(name) { const def = actionDefinitions.get(name); const threshold = def ? (def.threshold ?? 0.5) : 0.5; return Math.abs(actionValue(name)) >= threshold && Math.abs(previousActions[name] || 0) < threshold; }
+
+function unlockAudio() {
+  if (muted) return;
+  if (!audioContext) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) audioContext = new AudioCtx();
+  }
+  if (audioContext && audioContext.state === "suspended") audioContext.resume();
+}
+
+function playCue(id, gainScale = 1, pitchRatio = 1) {
+  if (muted || !audioContext || !audioCues.has(id)) return;
+  const cue = audioCues.get(id);
+  const now = audioContext.currentTime;
+  const end = now + cue.duration + (cue.envelope?.release || 0.08) + 0.02;
+  const gain = audioContext.createGain();
+  const envelope = cue.envelope || {attack: 0.005, decay: 0.04, sustain: 0.55, release: 0.08};
+  const volume = clamp((cue.volume ?? 0.2) * gainScale, 0, 1);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume), now + Math.max(0.001, envelope.attack));
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * envelope.sustain), now + envelope.attack + Math.max(0.001, envelope.decay));
+  gain.gain.setValueAtTime(Math.max(0.0001, volume * envelope.sustain), now + cue.duration);
+  gain.gain.exponentialRampToValueAtTime(0.0001, end);
+  gain.connect(audioContext.destination);
+  const oscillator = audioContext.createOscillator();
+  oscillator.type = cue.waveform || "sine";
+  oscillator.frequency.setValueAtTime(cue.frequency * pitchRatio, now);
+  if (cue.sweep_to) oscillator.frequency.exponentialRampToValueAtTime(cue.sweep_to * pitchRatio, now + cue.duration);
+  oscillator.detune.setValueAtTime(cue.detune || 0, now);
+  oscillator.connect(gain);
+  oscillator.start(now);
+  oscillator.stop(end);
+  if ((cue.noise || 0) > 0) {
+    const frames = Math.max(1, Math.floor(audioContext.sampleRate * cue.duration));
+    const buffer = audioContext.createBuffer(1, frames, audioContext.sampleRate);
+    const channel = buffer.getChannelData(0);
+    for (let i = 0; i < frames; i += 1) channel[i] = (Math.random() * 2 - 1) * cue.noise;
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(gain);
+    source.start(now);
+  }
+}
+
+function scheduleMusic(dt) {
+  const sequenceId = sceneRules.music;
+  if (!sequenceId || !audioSequences.has(sequenceId) || muted || !audioContext) return;
+  const sequence = audioSequences.get(sequenceId);
+  const beatDuration = 60 / sequence.bpm;
+  if (!musicClock) musicClock = {beat: 0, previous: -1};
+  musicClock.beat += dt / beatDuration;
+  let currentBeat = sequence.loop ? musicClock.beat % sequence.length_beats : Math.min(sequence.length_beats, musicClock.beat);
+  let previousBeat = musicClock.previous;
+  for (const note of sequence.notes) {
+    const crossed = previousBeat < 0 ? note.beat <= currentBeat : currentBeat >= previousBeat ? note.beat > previousBeat && note.beat <= currentBeat : note.beat > previousBeat || note.beat <= currentBeat;
+    if (crossed) playCue(note.cue_id, note.gain ?? 1, note.pitch_ratio ?? 1);
+  }
+  musicClock.previous = currentBeat;
+}
+
+function resetScene() {
+  scene = deepClone(PROJECT.scenes[PROJECT.start_scene]);
+  entities = scene.entities || [];
+  entityMap = new Map(entities.map(entity => [entity.id, entity]));
+  for (const entity of entities) {
+    entity.active = entity.active !== false;
+    entity.tags = entity.tags || [];
+    entity.components = entity.components || {};
+    const transform = component(entity, "transform");
+    if (transform) {
+      transform.position = transform.position || [0, 0];
+      transform.scale = transform.scale || [1, 1];
+      transform.rotation = transform.rotation || 0;
+      transform._base_scale = [...transform.scale];
+    }
+    const body = component(entity, "body");
+    if (body) {
+      body.velocity = body.velocity || [0, 0];
+      body.acceleration = body.acceleration || [0, 0];
+      body.force = body.force || [0, 0];
+    }
+    const health = component(entity, "health");
+    if (health) {
+      health.current = health.current ?? health.maximum;
+      health.invulnerable_remaining = 0;
+    }
+    const controller = component(entity, "player_controller");
+    if (controller) {
+      controller.dash_remaining = 0;
+      controller.cooldown_remaining = 0;
+      controller.last_direction = controller.last_direction || [1, 0];
+    }
+    const hazard = component(entity, "hazard");
+    if (hazard) hazard._last_hits = Object.create(null);
+  }
+  state = deepClone(scene.initial_state || {});
+  state.score = state.score || 0;
+  state.scene = scene.id;
+  state.best_score = Number(localStorage.getItem(`${PROJECT.metadata.id}:best`) || 0);
+  worldSize = scene.world_size || [baseWidth, baseHeight];
+  sceneRules = scene.rules || {};
+  const cameraEntity = entities.find(entity => component(entity, "camera"));
+  camera = cameraEntity ? component(cameraEntity, "camera") : {position: [worldSize[0] / 2, worldSize[1] / 2], zoom: 1, rotation: 0, follow_entity: sceneRules.player_id || null, follow_smoothing: 8};
+  camera.position = camera.position || [worldSize[0] / 2, worldSize[1] / 2];
+  camera.zoom = camera.zoom || 1;
+  camera.rotation = camera.rotation || 0;
+  contacts = new Set();
+  particles = [];
+  eventLog = [];
+  tick = 0;
+  gameTime = 0;
+  paused = false;
+  won = false;
+  gameOver = false;
+  musicClock = null;
+  previousActions = Object.create(null);
+  currentActions = Object.create(null);
+  updateStatus("Ready");
+}
+
+function playerEntity() {
+  if (sceneRules.player_id && entityMap.has(sceneRules.player_id)) return entityMap.get(sceneRules.player_id);
+  return entities.find(entity => entity.active !== false && hasTag(entity, "player"));
+}
+
+function updateControllers(dt) {
+  for (const entity of entitiesWith("transform", "player_controller")) {
+    const controller = component(entity, "player_controller");
+    const body = component(entity, "body");
+    let x = actionValue(controller.x_action || "move_x");
+    let y = actionValue(controller.y_action || "move_y");
+    const magnitude = Math.hypot(x, y);
+    if (magnitude > 1) { x /= magnitude; y /= magnitude; }
+    if (magnitude > 0.001) controller.last_direction = normalize(x, y);
+    controller.cooldown_remaining = Math.max(0, (controller.cooldown_remaining || 0) - dt);
+    controller.dash_remaining = Math.max(0, (controller.dash_remaining || 0) - dt);
+    let speed = controller.speed ?? 220;
+    if (controller.dash_remaining > 0) {
+      speed = controller.dash_speed ?? 520;
+      [x, y] = controller.last_direction;
+    } else if (controller.dash_action && actionPressed(controller.dash_action) && controller.cooldown_remaining <= 0) {
+      controller.dash_remaining = controller.dash_duration ?? 0.12;
+      controller.cooldown_remaining = controller.dash_cooldown ?? 0.65;
+      speed = controller.dash_speed ?? 520;
+      [x, y] = controller.last_direction;
+      emit("dash", entity.id);
+      playCue(sceneRules.dash_sound || "dash");
+      spawnBurst(component(entity, "transform").position, "#7cf7ff", 12, 130);
+    }
+    if (body) body.velocity = [x * speed, y * speed];
+    else {
+      const transform = component(entity, "transform");
+      transform.position[0] += x * speed * dt;
+      transform.position[1] += y * speed * dt;
+    }
+  }
+}
+
+function updateBehaviors(dt) {
+  for (const entity of entities) {
+    if (entity.active === false) continue;
+    const transform = component(entity, "transform");
+    if (!transform) continue;
+    const spin = component(entity, "spin");
+    if (spin) transform.rotation += (spin.speed || 0) * dt;
+    const pulse = component(entity, "pulse");
+    if (pulse) {
+      const base = transform._base_scale || [1, 1];
+      const amount = pulse.amount ?? 0.12;
+      const speed = pulse.speed ?? 3;
+      const factor = 1 + Math.sin(gameTime * speed + (pulse.phase || 0)) * amount;
+      transform.scale = [base[0] * factor, base[1] * factor];
+    }
+    const patrol = component(entity, "patrol");
+    const body = component(entity, "body");
+    if (patrol && body) {
+      if (!patrol._initialized) {
+        const direction = patrol.direction || [1, 0];
+        const n = normalize(direction[0], direction[1]);
+        body.velocity = [n[0] * (patrol.speed || 100), n[1] * (patrol.speed || 100)];
+        patrol._initialized = true;
+      }
+    }
+  }
+}
+
+function integratePhysics(dt) {
+  const gravity = sceneRules.gravity || [0, 0];
+  for (const entity of entitiesWith("transform", "body")) {
+    const transform = component(entity, "transform");
+    const body = component(entity, "body");
+    if ((body.body_type || "dynamic") === "static") continue;
+    if ((body.body_type || "dynamic") === "dynamic") {
+      const mass = Math.max(1e-6, body.mass || 1);
+      const ax = (body.acceleration?.[0] || 0) + gravity[0] * (body.gravity_scale ?? 1) + (body.force?.[0] || 0) / mass;
+      const ay = (body.acceleration?.[1] || 0) + gravity[1] * (body.gravity_scale ?? 1) + (body.force?.[1] || 0) / mass;
+      body.velocity[0] += ax * dt;
+      body.velocity[1] += ay * dt;
+      if ((body.damping || 0) > 0) {
+        const damping = Math.exp(-body.damping * dt);
+        body.velocity[0] *= damping;
+        body.velocity[1] *= damping;
+      }
+      if (body.max_speed) {
+        const speed = Math.hypot(body.velocity[0], body.velocity[1]);
+        if (speed > body.max_speed) {
+          body.velocity[0] = body.velocity[0] / speed * body.max_speed;
+          body.velocity[1] = body.velocity[1] / speed * body.max_speed;
+        }
+      }
+    }
+    transform.position[0] += body.velocity[0] * dt;
+    transform.position[1] += body.velocity[1] * dt;
+    if (!body.fixed_rotation) transform.rotation += (body.angular_velocity || 0) * dt;
+    body.force = [0, 0];
+  }
+}
+
+function applyBounds() {
+  for (const entity of entitiesWith("transform", "bounds_constraint")) {
+    const transform = component(entity, "transform");
+    const constraint = component(entity, "bounds_constraint");
+    const shape = constraint.bounds;
+    const minimum = shape.minimum || [0, 0];
+    const maximum = shape.maximum || worldSize;
+    const body = component(entity, "body");
+    let [x, y] = transform.position;
+    if (constraint.mode === "wrap") {
+      if (x < minimum[0]) x = maximum[0]; else if (x > maximum[0]) x = minimum[0];
+      if (y < minimum[1]) y = maximum[1]; else if (y > maximum[1]) y = minimum[1];
+    } else {
+      const cx = clamp(x, minimum[0], maximum[0]);
+      const cy = clamp(y, minimum[1], maximum[1]);
+      if (body && constraint.mode === "bounce") {
+        if (cx !== x) body.velocity[0] = -body.velocity[0] * (body.restitution ?? 1);
+        if (cy !== y) body.velocity[1] = -body.velocity[1] * (body.restitution ?? 1);
+      }
+      x = cx; y = cy;
+    }
+    transform.position = [x, y];
+  }
+}
+
+function worldShape(entity) {
+  const transform = component(entity, "transform");
+  const collider = component(entity, "collider");
+  if (!transform || !collider || collider.enabled === false) return null;
+  const shape = collider.shape || {type: "circle", radius: 0.5};
+  const offset = collider.offset || [0, 0];
+  const ox = transform.position[0] + offset[0] * transform.scale[0];
+  const oy = transform.position[1] + offset[1] * transform.scale[1];
+  if (shape.type === "circle") {
+    return {type: "circle", x: ox + (shape.center?.[0] || 0), y: oy + (shape.center?.[1] || 0), radius: (shape.radius || 0) * Math.max(Math.abs(transform.scale[0]), Math.abs(transform.scale[1]))};
+  }
+  let minimum = shape.minimum;
+  let maximum = shape.maximum;
+  if (shape.half_extents) {
+    const center = shape.center || [0, 0];
+    minimum = [center[0] - shape.half_extents[0], center[1] - shape.half_extents[1]];
+    maximum = [center[0] + shape.half_extents[0], center[1] + shape.half_extents[1]];
+  }
+  if (shape.type === "polygon") {
+    const points = shape.points || [];
+    minimum = [Math.min(...points.map(p => p[0])), Math.min(...points.map(p => p[1]))];
+    maximum = [Math.max(...points.map(p => p[0])), Math.max(...points.map(p => p[1]))];
+  }
+  minimum = minimum || [-0.5, -0.5];
+  maximum = maximum || [0.5, 0.5];
+  const sx = Math.abs(transform.scale[0]);
+  const sy = Math.abs(transform.scale[1]);
+  const localHalfX = (maximum[0] - minimum[0]) * 0.5 * sx;
+  const localHalfY = (maximum[1] - minimum[1]) * 0.5 * sy;
+  const localCenterX = (minimum[0] + maximum[0]) * 0.5 * transform.scale[0];
+  const localCenterY = (minimum[1] + maximum[1]) * 0.5 * transform.scale[1];
+  const c = Math.abs(Math.cos(transform.rotation || 0));
+  const s = Math.abs(Math.sin(transform.rotation || 0));
+  const halfX = localHalfX * c + localHalfY * s;
+  const halfY = localHalfX * s + localHalfY * c;
+  const x = ox + localCenterX;
+  const y = oy + localCenterY;
+  return {type: "aabb", minX: x - halfX, minY: y - halfY, maxX: x + halfX, maxY: y + halfY, x, y};
+}
+
+function collisionFilter(entity) {
+  const filter = component(entity, "collider")?.filter || {};
+  return {layer: filter.layer ?? 1, mask: filter.mask ?? 0xffffffff, sensor: !!filter.sensor};
+}
+function filtersAllow(a, b) { return !!((a.mask & b.layer) && (b.mask & a.layer)); }
+function collideShapes(a, b) {
+  if (a.type === "circle" && b.type === "circle") {
+    const dx = b.x - a.x; const dy = b.y - a.y; const d = Math.hypot(dx, dy); const r = a.radius + b.radius;
+    if (d > r) return null;
+    const n = d > 1e-9 ? [dx / d, dy / d] : [1, 0];
+    return {normal: n, penetration: Math.max(0, r - d)};
+  }
+  if (a.type === "aabb" && b.type === "aabb") {
+    const ox = Math.min(a.maxX, b.maxX) - Math.max(a.minX, b.minX);
+    const oy = Math.min(a.maxY, b.maxY) - Math.max(a.minY, b.minY);
+    if (ox < 0 || oy < 0) return null;
+    if (ox <= oy) return {normal: [b.x >= a.x ? 1 : -1, 0], penetration: ox};
+    return {normal: [0, b.y >= a.y ? 1 : -1], penetration: oy};
+  }
+  if (a.type === "circle") {
+    const hit = collideCircleAabb(a, b);
+    return hit;
+  }
+  if (b.type === "circle") {
+    const hit = collideCircleAabb(b, a);
+    return hit ? {normal: [-hit.normal[0], -hit.normal[1]], penetration: hit.penetration} : null;
+  }
+  return null;
+}
+function collideCircleAabb(circle, box) {
+  const closestX = clamp(circle.x, box.minX, box.maxX);
+  const closestY = clamp(circle.y, box.minY, box.maxY);
+  let dx = closestX - circle.x;
+  let dy = closestY - circle.y;
+  let d = Math.hypot(dx, dy);
+  if (d > circle.radius) return null;
+  if (d < 1e-9) {
+    const choices = [
+      [Math.abs(circle.x - box.minX), -1, 0], [Math.abs(box.maxX - circle.x), 1, 0],
+      [Math.abs(circle.y - box.minY), 0, -1], [Math.abs(box.maxY - circle.y), 0, 1],
+    ].sort((x, y) => x[0] - y[0]);
+    return {normal: [choices[0][1], choices[0][2]], penetration: circle.radius + choices[0][0]};
+  }
+  // Normal must point from circle (a) toward box (b).
+  return {normal: [dx / d, dy / d], penetration: circle.radius - d};
+}
+
+function inverseMass(entity) {
+  const body = component(entity, "body");
+  return body && (body.body_type || "dynamic") === "dynamic" ? 1 / Math.max(1e-6, body.mass || 1) : 0;
+}
+function resolveCollision(a, b, manifold) {
+  const filterA = collisionFilter(a); const filterB = collisionFilter(b);
+  if (filterA.sensor || filterB.sensor) return;
+  const invA = inverseMass(a); const invB = inverseMass(b); const total = invA + invB;
+  if (total <= 0) return;
+  const correction = Math.max(0, manifold.penetration - 0.001) * 0.82 / total;
+  const ta = component(a, "transform"); const tb = component(b, "transform");
+  if (invA > 0) { ta.position[0] -= manifold.normal[0] * correction * invA; ta.position[1] -= manifold.normal[1] * correction * invA; }
+  if (invB > 0) { tb.position[0] += manifold.normal[0] * correction * invB; tb.position[1] += manifold.normal[1] * correction * invB; }
+  const ba = component(a, "body"); const bb = component(b, "body");
+  const va = ba ? ba.velocity : [0, 0]; const vb = bb ? bb.velocity : [0, 0];
+  const rvx = vb[0] - va[0]; const rvy = vb[1] - va[1];
+  const normalVelocity = rvx * manifold.normal[0] + rvy * manifold.normal[1];
+  if (normalVelocity >= 0) return;
+  const restitution = Math.min(ba?.restitution || 0, bb?.restitution || 0);
+  const impulse = -(1 + restitution) * normalVelocity / total;
+  if (ba && invA > 0) { ba.velocity[0] -= manifold.normal[0] * impulse * invA; ba.velocity[1] -= manifold.normal[1] * impulse * invA; }
+  if (bb && invB > 0) { bb.velocity[0] += manifold.normal[0] * impulse * invB; bb.velocity[1] += manifold.normal[1] * impulse * invB; }
+}
+
+function processGameplayContact(a, b, manifold, entered) {
+  const arrangements = [[a, b, manifold.normal], [b, a, [-manifold.normal[0], -manifold.normal[1]]]];
+  for (const [special, other, normal] of arrangements) {
+    const collectible = component(special, "collectible");
+    if (entered && collectible && hasTag(other, "player") && special.active !== false) {
+      const key = collectible.state_key || "score";
+      state[key] = (state[key] || 0) + (collectible.points || 1);
+      special.active = false;
+      emit("collected", other.id, special.id, {points: collectible.points || 1});
+      playCue(collectible.sound || sceneRules.collect_sound || "collect");
+      spawnBurst(component(special, "transform").position, "#ffe56f", 18, 180);
+      state.best_score = Math.max(state.best_score || 0, state[key]);
+      localStorage.setItem(`${PROJECT.metadata.id}:best`, String(state.best_score));
+    }
+    const hazard = component(special, "hazard");
+    const health = component(other, "health");
+    if (hazard && health && hasTag(other, "player")) {
+      hazard._last_hits = hazard._last_hits || Object.create(null);
+      const last = hazard._last_hits[other.id] ?? -Infinity;
+      if (gameTime - last >= (hazard.cooldown ?? 0.5) && (health.invulnerable_remaining || 0) <= 0) {
+        hazard._last_hits[other.id] = gameTime;
+        health.current = Math.max(0, health.current - (hazard.damage ?? 1));
+        health.invulnerable_remaining = health.invulnerability || 0;
+        const body = component(other, "body");
+        if (body) {
+          body.velocity[0] -= normal[0] * (hazard.knockback || 220);
+          body.velocity[1] -= normal[1] * (hazard.knockback || 220);
+        }
+        emit("damaged", special.id, other.id, {damage: hazard.damage || 1, health: health.current});
+        playCue(hazard.sound || sceneRules.damage_sound || "damage");
+        spawnBurst(component(other, "transform").position, "#ff6b7c", 12, 140);
+      }
+    }
+  }
+}
+
+function collisionStep() {
+  const colliders = entitiesWith("transform", "collider").filter(entity => component(entity, "collider").enabled !== false);
+  const nextContacts = new Set();
+  for (let i = 0; i < colliders.length; i += 1) {
+    const a = colliders[i]; const shapeA = worldShape(a); const filterA = collisionFilter(a);
+    for (let j = i + 1; j < colliders.length; j += 1) {
+      const b = colliders[j]; const filterB = collisionFilter(b);
+      if (!filtersAllow(filterA, filterB)) continue;
+      const manifold = collideShapes(shapeA, worldShape(b));
+      if (!manifold) continue;
+      const key = pairKey(a.id, b.id);
+      const entered = !contacts.has(key);
+      nextContacts.add(key);
+      emit(entered ? "collision_enter" : "collision_stay", a.id, b.id, manifold);
+      resolveCollision(a, b, manifold);
+      processGameplayContact(a, b, manifold, entered);
+    }
+  }
+  for (const key of contacts) if (!nextContacts.has(key)) emit("collision_exit", key.split("|")[0], key.split("|")[1]);
+  contacts = nextContacts;
+}
+
+function updateHealth(dt) {
+  for (const entity of entitiesWith("health")) {
+    const health = component(entity, "health");
+    health.invulnerable_remaining = Math.max(0, (health.invulnerable_remaining || 0) - dt);
+  }
+}
+
+function updateCamera(dt) {
+  if (!camera.follow_entity) return;
+  const target = entityMap.get(camera.follow_entity);
+  if (!target || target.active === false || !component(target, "transform")) return;
+  const p = component(target, "transform").position;
+  const smoothing = camera.follow_smoothing ?? 8;
+  const alpha = smoothing <= 0 ? 1 : 1 - Math.exp(-smoothing * dt);
+  camera.position[0] += (p[0] - camera.position[0]) * alpha;
+  camera.position[1] += (p[1] - camera.position[1]) * alpha;
+  const halfW = baseWidth * 0.5 / (camera.zoom || 1);
+  const halfH = baseHeight * 0.5 / (camera.zoom || 1);
+  if (worldSize[0] > halfW * 2) camera.position[0] = clamp(camera.position[0], halfW, worldSize[0] - halfW);
+  else camera.position[0] = worldSize[0] * 0.5;
+  if (worldSize[1] > halfH * 2) camera.position[1] = clamp(camera.position[1], halfH, worldSize[1] - halfH);
+  else camera.position[1] = worldSize[1] * 0.5;
+}
+
+function checkGameState() {
+  const scoreTarget = sceneRules.score_to_win;
+  if (!won && scoreTarget != null && (state.score || 0) >= scoreTarget) {
+    won = true;
+    emit("game_won", null, null, {score: state.score});
+    playCue(sceneRules.win_sound || "win");
+    const player = playerEntity();
+    if (player) spawnBurst(component(player, "transform").position, "#9dffb0", 56, 260);
+    updateStatus("Victory");
+  }
+  const player = playerEntity();
+  const health = player ? component(player, "health") : null;
+  if (!gameOver && health && health.current <= 0) {
+    gameOver = true;
+    emit("game_over", null, player.id);
+    playCue(sceneRules.game_over_sound || "game_over");
+    updateStatus("Game over");
+  }
+}
+
+function update(dt) {
+  sampleActions();
+  if (actionPressed(sceneRules.pause_action || "pause")) paused = !paused;
+  if (actionPressed(sceneRules.restart_action || "restart")) resetScene();
+  if (actionPressed("mute")) muted = !muted;
+  if (actionPressed("save")) saveGame();
+  if (actionPressed("load")) loadGame();
+  if (!paused && !won && !gameOver) {
+    updateControllers(dt);
+    updateBehaviors(dt);
+    integratePhysics(dt);
+    applyBounds();
+    collisionStep();
+    updateHealth(dt);
+    updateCamera(dt);
+    scheduleMusic(dt);
+    checkGameState();
+    gameTime += dt;
+    tick += 1;
+  }
+  updateParticles(dt);
+  previousActions = {...currentActions};
+  touchAxes.dash = 0;
+}
+
+function spawnBurst(position, color, count, speed) {
+  for (let i = 0; i < count; i += 1) {
+    const angle = Math.random() * Math.PI * 2;
+    const magnitude = speed * (0.35 + Math.random() * 0.65);
+    particles.push({x: position[0], y: position[1], vx: Math.cos(angle) * magnitude, vy: Math.sin(angle) * magnitude, life: 0.35 + Math.random() * 0.5, maxLife: 0.85, color, size: 2 + Math.random() * 4});
+  }
+}
+function updateParticles(dt) {
+  for (const particle of particles) {
+    particle.life -= dt;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
+    particle.vx *= Math.exp(-2.5 * dt);
+    particle.vy *= Math.exp(-2.5 * dt);
+  }
+  particles = particles.filter(particle => particle.life > 0);
+}
+
+function worldToScreen(point) {
+  const zoom = camera.zoom || 1;
+  const dx = point[0] - camera.position[0];
+  const dy = point[1] - camera.position[1];
+  const c = Math.cos(-(camera.rotation || 0)); const s = Math.sin(-(camera.rotation || 0));
+  return [baseWidth * 0.5 + (dx * c - dy * s) * zoom, baseHeight * 0.5 + (dx * s + dy * c) * zoom];
+}
+
+function resolvePaint(value, asset, path) {
+  if (!value) return null;
+  if (value === "currentColor") return path?.paint?.color || "#ffffff";
+  if (!value.startsWith("@")) return value;
+  const id = value.slice(1);
+  const gradient = (asset.gradients || []).find(item => item.id === id);
+  if (!gradient) return "#ff00ff";
+  let paint;
+  if (gradient.type === "linear") paint = ctx.createLinearGradient(gradient.start[0], gradient.start[1], gradient.end[0], gradient.end[1]);
+  else {
+    const focal = gradient.focal || gradient.center;
+    paint = ctx.createRadialGradient(focal[0], focal[1], 0, gradient.center[0], gradient.center[1], gradient.radius);
+  }
+  for (const stop of gradient.stops) paint.addColorStop(stop.offset, stop.color);
+  return paint;
+}
+
+function drawVectorEntity(entity) {
+  const transform = component(entity, "transform");
+  const renderer = component(entity, "vector_renderer");
+  if (!transform || !renderer || renderer.visible === false || entity.active === false) return;
+  const asset = assets[renderer.asset_id];
+  if (!asset) return;
+  const screen = worldToScreen(transform.position);
+  const zoom = camera.zoom || 1;
+  const extent = Math.max(asset.size?.[0] || 0, asset.size?.[1] || 0) * zoom * Math.max(Math.abs(transform.scale[0]), Math.abs(transform.scale[1]));
+  if (screen[0] + extent < -80 || screen[1] + extent < -80 || screen[0] - extent > baseWidth + 80 || screen[1] - extent > baseHeight + 80) return;
+  ctx.save();
+  ctx.translate(screen[0], screen[1]);
+  ctx.rotate((transform.rotation || 0) - (camera.rotation || 0));
+  ctx.scale(transform.scale[0] * zoom, transform.scale[1] * zoom);
+  if (renderer.shadow_blur) {
+    ctx.shadowBlur = renderer.shadow_blur;
+    ctx.shadowColor = renderer.shadow_color || "rgba(0,0,0,.55)";
+  }
+  ctx.globalAlpha = renderer.opacity ?? 1;
+  ctx.translate(-(asset.pivot?.[0] || 0), -(asset.pivot?.[1] || 0));
+  for (const path of asset.paths || []) {
+    ctx.beginPath();
+    for (const command of path.commands || []) {
+      const op = command[0];
+      if (op === "M") ctx.moveTo(command[1], command[2]);
+      else if (op === "L") ctx.lineTo(command[1], command[2]);
+      else if (op === "Q") ctx.quadraticCurveTo(command[1], command[2], command[3], command[4]);
+      else if (op === "C") ctx.bezierCurveTo(command[1], command[2], command[3], command[4], command[5], command[6]);
+      else if (op === "Z") ctx.closePath();
+    }
+    const paint = path.paint || {};
+    ctx.lineCap = paint.line_cap || "round";
+    ctx.lineJoin = paint.line_join || "round";
+    ctx.lineWidth = paint.stroke_width ?? 1;
+    const priorAlpha = ctx.globalAlpha;
+    ctx.globalAlpha = priorAlpha * (paint.opacity ?? 1);
+    const fill = resolvePaint(paint.fill, asset, path);
+    if (fill) { ctx.fillStyle = fill; ctx.fill(path.fill_rule === "evenodd" ? "evenodd" : "nonzero"); }
+    const stroke = resolvePaint(paint.stroke, asset, path);
+    if (stroke && ctx.lineWidth > 0) { ctx.strokeStyle = stroke; ctx.stroke(); }
+    ctx.globalAlpha = priorAlpha;
+  }
+  ctx.restore();
+}
+
+function drawBackground() {
+  ctx.fillStyle = scene.background || display.background;
+  ctx.fillRect(0, 0, baseWidth, baseHeight);
+  const grid = sceneRules.grid || {};
+  if (grid.enabled !== false) {
+    const spacing = grid.spacing || 80;
+    const zoom = camera.zoom || 1;
+    const left = camera.position[0] - baseWidth * 0.5 / zoom;
+    const top = camera.position[1] - baseHeight * 0.5 / zoom;
+    ctx.save();
+    ctx.strokeStyle = grid.color || "rgba(255,255,255,.055)";
+    ctx.lineWidth = 1;
+    const startX = Math.floor(left / spacing) * spacing;
+    const startY = Math.floor(top / spacing) * spacing;
+    for (let x = startX; x <= left + baseWidth / zoom + spacing; x += spacing) {
+      const sx = worldToScreen([x, 0])[0];
+      ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, baseHeight); ctx.stroke();
+    }
+    for (let y = startY; y <= top + baseHeight / zoom + spacing; y += spacing) {
+      const sy = worldToScreen([0, y])[1];
+      ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(baseWidth, sy); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  if (sceneRules.vignette !== false) {
+    const gradient = ctx.createRadialGradient(baseWidth / 2, baseHeight / 2, baseHeight * 0.2, baseWidth / 2, baseHeight / 2, baseWidth * 0.72);
+    gradient.addColorStop(0, "rgba(0,0,0,0)"); gradient.addColorStop(1, "rgba(0,0,0,.42)");
+    ctx.fillStyle = gradient; ctx.fillRect(0, 0, baseWidth, baseHeight);
+  }
+}
+
+function drawParticles() {
+  for (const particle of particles) {
+    const screen = worldToScreen([particle.x, particle.y]);
+    ctx.globalAlpha = clamp(particle.life / particle.maxLife, 0, 1);
+    ctx.fillStyle = particle.color;
+    ctx.beginPath(); ctx.arc(screen[0], screen[1], particle.size * (camera.zoom || 1), 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawDebug() {
+  ctx.save();
+  ctx.lineWidth = 1;
+  for (const entity of entitiesWith("transform", "collider")) {
+    const shape = worldShape(entity);
+    if (!shape) continue;
+    ctx.strokeStyle = collisionFilter(entity).sensor ? "#50f0ff" : "#ff4f8b";
+    if (shape.type === "circle") {
+      const p = worldToScreen([shape.x, shape.y]);
+      ctx.beginPath(); ctx.arc(p[0], p[1], shape.radius * (camera.zoom || 1), 0, Math.PI * 2); ctx.stroke();
+    } else {
+      const p0 = worldToScreen([shape.minX, shape.minY]); const p1 = worldToScreen([shape.maxX, shape.maxY]);
+      ctx.strokeRect(p0[0], p0[1], p1[0] - p0[0], p1[1] - p0[1]);
+    }
+  }
+  ctx.fillStyle = "rgba(0,0,0,.72)"; ctx.fillRect(10, baseHeight - 100, 320, 88);
+  ctx.fillStyle = "#c7ffe9"; ctx.font = "13px ui-monospace, SFMono-Regular, Menlo, monospace";
+  ctx.fillText(`KC ${VERSION} ${CODENAME}`, 22, baseHeight - 76);
+  ctx.fillText(`fps ${fps.toFixed(1)} | tick ${tick} | active ${entities.filter(e => e.active !== false).length}`, 22, baseHeight - 56);
+  ctx.fillText(`camera ${camera.position[0].toFixed(1)}, ${camera.position[1].toFixed(1)} | events ${eventLog.length}`, 22, baseHeight - 36);
+  ctx.restore();
+}
+
+function resolveTemplate(text) {
+  const player = playerEntity();
+  const health = player ? component(player, "health") : null;
+  return String(text)
+    .replaceAll("{score}", String(state.score || 0))
+    .replaceAll("{target}", String(sceneRules.score_to_win || 0))
+    .replaceAll("{health}", health ? String(Math.ceil(health.current)) : "-")
+    .replaceAll("{best}", String(state.best_score || 0));
+}
+
+function drawHud() {
+  const player = playerEntity();
+  const health = player ? component(player, "health") : null;
+  ctx.save();
+  ctx.fillStyle = "rgba(7,10,25,.72)";
+  ctx.beginPath(); ctx.roundRect(18, 16, 280, 74, 14); ctx.fill();
+  ctx.fillStyle = "#f7fbff"; ctx.font = "700 18px system-ui, sans-serif"; ctx.fillText(PROJECT.metadata.title, 34, 44);
+  ctx.fillStyle = "#a9bad9"; ctx.font = "13px system-ui, sans-serif";
+  const target = sceneRules.score_to_win;
+  ctx.fillText(target ? `Crystals ${state.score || 0} / ${target}` : `Score ${state.score || 0}`, 34, 68);
+  if (health) {
+    const ratio = clamp(health.current / health.maximum, 0, 1);
+    ctx.fillStyle = "rgba(255,255,255,.12)"; ctx.fillRect(160, 58, 116, 10);
+    ctx.fillStyle = ratio > 0.45 ? "#75f0a5" : ratio > 0.2 ? "#ffd66f" : "#ff6b7c"; ctx.fillRect(160, 58, 116 * ratio, 10);
+  }
+  for (const item of scene.ui || []) {
+    if (item.type !== "text") continue;
+    ctx.font = item.font || "14px system-ui, sans-serif";
+    ctx.textAlign = item.align || "left";
+    ctx.fillStyle = item.color || "#ffffff";
+    ctx.globalAlpha = item.opacity ?? 1;
+    ctx.fillText(resolveTemplate(item.text || ""), item.position?.[0] || 0, item.position?.[1] || 0);
+  }
+  ctx.restore();
+}
+
+function drawOverlay() {
+  if (!(paused || won || gameOver)) return;
+  ctx.save();
+  ctx.fillStyle = "rgba(5,7,18,.76)"; ctx.fillRect(0, 0, baseWidth, baseHeight);
+  ctx.textAlign = "center";
+  ctx.fillStyle = won ? "#9dffb0" : gameOver ? "#ff7d8d" : "#f4f7ff";
+  ctx.font = "800 48px system-ui, sans-serif";
+  ctx.fillText(won ? "Vector Garden Complete" : gameOver ? "Signal Lost" : "Paused", baseWidth / 2, baseHeight / 2 - 28);
+  ctx.fillStyle = "#d4def2"; ctx.font = "18px system-ui, sans-serif";
+  ctx.fillText(won ? `You collected all ${state.score || 0} crystals.` : gameOver ? "Press R or the restart action to try again." : "Press P / Escape to continue.", baseWidth / 2, baseHeight / 2 + 16);
+  if (won || gameOver) {
+    ctx.fillStyle = "#8fa5c8"; ctx.font = "14px system-ui, sans-serif";
+    ctx.fillText("R: restart • F3: diagnostics • M: mute", baseWidth / 2, baseHeight / 2 + 54);
+  }
+  ctx.restore();
+}
+
+function drawTouchControls() {
+  const touchCapable = navigator.maxTouchPoints > 0;
+  touchNode.hidden = !touchCapable;
+  if (!touchCapable) return;
+  ctx.save();
+  ctx.globalAlpha = 0.2;
+  const center = joystickPointer === null ? {x: 104, y: baseHeight - 104} : joystickStart;
+  ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(center.x, center.y, 62, 0, Math.PI * 2); ctx.stroke();
+  const knob = joystickPointer === null ? center : {x: center.x + clamp(joystickCurrent.x - center.x, -52, 52), y: center.y + clamp(joystickCurrent.y - center.y, -52, 52)};
+  ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(knob.x, knob.y, 24, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(baseWidth - 94, baseHeight - 94, 46, 0, Math.PI * 2); ctx.stroke();
+  ctx.font = "700 13px system-ui"; ctx.textAlign = "center"; ctx.fillText("DASH", baseWidth - 94, baseHeight - 89);
+  ctx.restore();
+}
+
+function render() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.imageSmoothingEnabled = display.antialias !== false;
+  drawBackground();
+  const renderables = entitiesWith("transform", "vector_renderer").sort((a, b) => {
+    const za = component(a, "vector_renderer").z_index || 0;
+    const zb = component(b, "vector_renderer").z_index || 0;
+    return za - zb || a.id.localeCompare(b.id);
+  });
+  for (const entity of renderables) drawVectorEntity(entity);
+  drawParticles();
+  drawHud();
+  drawTouchControls();
+  if (debug) drawDebug();
+  drawOverlay();
+}
+
+function saveGame() {
+  const payload = {
+    schema: "ugts-kc-html5-save-1",
+    project: PROJECT.metadata.id,
+    project_version: PROJECT.metadata.version,
+    state,
+    gameTime,
+    tick,
+    entities: entities.map(entity => ({
+      id: entity.id,
+      active: entity.active !== false,
+      transform: deepClone(component(entity, "transform")),
+      body: deepClone(component(entity, "body")),
+      health: deepClone(component(entity, "health")),
+    })),
+  };
+  localStorage.setItem(`${PROJECT.metadata.id}:save`, JSON.stringify(payload));
+  updateStatus("Game saved");
+  playCue(sceneRules.save_sound || "save");
+  return payload;
+}
+function loadGame() {
+  const raw = localStorage.getItem(`${PROJECT.metadata.id}:save`);
+  if (!raw) { updateStatus("No saved game"); return false; }
+  try {
+    const payload = JSON.parse(raw);
+    if (payload.schema !== "ugts-kc-html5-save-1" || payload.project !== PROJECT.metadata.id) throw new Error("incompatible save");
+    state = payload.state || {};
+    gameTime = payload.gameTime || 0;
+    tick = payload.tick || 0;
+    for (const saved of payload.entities || []) {
+      const entity = entityMap.get(saved.id);
+      if (!entity) continue;
+      entity.active = saved.active;
+      if (saved.transform) entity.components.transform = saved.transform;
+      if (saved.body) entity.components.body = saved.body;
+      if (saved.health) entity.components.health = saved.health;
+    }
+    won = false; gameOver = false; paused = false; contacts.clear();
+    updateStatus("Game loaded");
+    return true;
+  } catch (error) {
+    console.error(error); updateStatus("Save could not be loaded"); return false;
+  }
+}
+
+function updateStatus(message) {
+  statusNode.textContent = message;
+}
+
+function frame(timestamp) {
+  const elapsed = Math.min(0.25, Math.max(0, (timestamp - previousTimestamp) / 1000));
+  previousTimestamp = timestamp;
+  accumulator += elapsed;
+  let steps = 0;
+  while (accumulator >= fixedDt && steps < 8) {
+    update(fixedDt);
+    accumulator -= fixedDt;
+    steps += 1;
+  }
+  render();
+  frameCounter += 1;
+  if (timestamp - fpsTime >= 500) {
+    fps = frameCounter * 1000 / (timestamp - fpsTime);
+    frameCounter = 0; fpsTime = timestamp;
+  }
+  requestAnimationFrame(frame);
+}
+
+window.KCGame = {
+  version: VERSION,
+  codename: CODENAME,
+  project: PROJECT,
+  state: () => deepClone(state),
+  events: () => deepClone(eventLog),
+  pause: value => { paused = value == null ? !paused : !!value; },
+  restart: resetScene,
+  save: saveGame,
+  load: loadGame,
+  playCue,
+  setDebug: value => { debug = !!value; },
+};
+
+resetScene();
+requestAnimationFrame(frame);
+})();
+
+</script>
+</body>
+</html>

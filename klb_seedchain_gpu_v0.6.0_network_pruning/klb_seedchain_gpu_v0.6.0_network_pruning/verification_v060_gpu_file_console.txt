@@ -1,0 +1,23 @@
+KLB mixed-orbit network GPU challenge
+  device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+  compute capability        : 12.0
+  objects/stations          : 58/16
+  pair plan                 : all=928, support=711, active=438
+  total relation gain       : 2.118721x
+  intervals/step            : 10080/60.000000 s
+  dense baseline            : 17.843567 MiB
+  pair_all               p50=136.008698  ms  relations/s=68776778.038981  propagations/s=68776778.038981
+  pair_support           p50=136.925705  ms  relations/s=52341377.408283  propagations/s=52341377.408283
+  pair_active            p50=86.656148   ms  relations/s=50948952.704456  propagations/s=50948952.704456
+  grouped_all            p50=56.141022   ms  relations/s=166620408.962894  propagations/s=10413775.560181
+  grouped_active         p50=56.399811   ms  relations/s=78281113.678901  propagations/s=10365992.222320
+  materialize_dense      p50=51.062930   ms  relations/s=11449401.681215  propagations/s=11449401.681215
+  query_dense_active     p50=1.503261    ms  relations/s=2936974407.044146  propagations/s=0.000000
+Validation over 10080 intervals
+  pair-all vs CPU events    : FAIL
+  pair-active vs CPU events : FAIL
+  pair vs grouped events    : PASS
+  pair vs grouped counters  : PASS
+  grouped vs dense events   : PASS
+  grouped vs dense counters : PASS
+  propagation errors zero   : PASS

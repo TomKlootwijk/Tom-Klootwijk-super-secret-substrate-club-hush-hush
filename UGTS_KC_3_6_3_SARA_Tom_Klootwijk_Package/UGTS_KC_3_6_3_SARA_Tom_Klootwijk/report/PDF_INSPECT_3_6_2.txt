@@ -1,0 +1,34 @@
+PDF: /mnt/data/ugts362_work/UGTS_KC_3_6_2_SCLP_Tom_Klootwijk/report/UGTS_KC_3_6_2_SCLP_Tom_Klootwijk.pdf
+Pages: 19
+Encrypted: False
+Page sizes (pt, rounded):
+  - 595 x 842 (19 page(s))
+Metadata:
+  /Author: Tom Klootwijk (requester-supplied attribution)
+  /CreationDate: D:20260817184137Z
+  /Creator: LaTeX with hyperref
+  /Keywords: UGTS, kinematic calculus, signed distance, cone, log-polar, Klein bottle, radix trie, Morton key, L-system, topology
+  /Producer: xdvipdfmx (20240305)
+  /Subject: Formal integration of swept cone geometry, log-polar metric calculus, topology, grammar and finite 64-bit packing
+  /Title: UGTS-KC 3.6.2 SCLP - Swept-Cone Log-Polar Packing
+Outline items: 32
+Form fields: 0
+Attachments: 0
+Annotations: 50
+
+Fonts (pdffonts, first 25 lines):
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+REBDEF+Inter-ExtraBold-Identity-H    CID Type 0C       Identity-H       yes yes yes      6  0
+YMWZUT+Inter-Regular-Identity-H      CID Type 0C       Identity-H       yes yes yes      8  0
+RQWMOW+NotoSans-ExtraBold            CID TrueType      Identity-H       yes yes yes     10  0
+LYCPFT+NotoSans-Regular              CID TrueType      Identity-H       yes yes yes     12  0
+RBQMAU+CMMI10                        Type 1C           Builtin          yes yes yes     19  0
+OMJRYP+CMSY10                        Type 1C           Builtin          yes yes no      20  0
+EGIKXW+DejaVuSansMono                CID TrueType      Identity-H       yes yes yes     61  0
+FKMJWK+CMR10                         Type 1C           Builtin          yes yes yes     69  0
+YSMKAX+CMMI7                         Type 1C           Builtin          yes yes yes     70  0
+RTEOJW+MSBM10                        Type 1C           Builtin          yes yes yes     71  0
+TAXQAJ+CMR7                          Type 1C           Builtin          yes yes yes     72  0
+DZXELL+CMSY7                         Type 1C           Builtin          yes yes yes     79  0
+EAMCZO+CMEX10                        Type 1C           Builtin          yes yes yes     86  0

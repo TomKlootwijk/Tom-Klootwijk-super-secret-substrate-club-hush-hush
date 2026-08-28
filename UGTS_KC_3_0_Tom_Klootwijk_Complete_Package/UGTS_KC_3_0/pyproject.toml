@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugts-kc3"
+version = "3.0.0"
+description = "Dependency-free reference implementation for the UGTS-KC 3.0 query-first geometric-topological substrate"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Requester-attributed UGTS-KC package"}]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

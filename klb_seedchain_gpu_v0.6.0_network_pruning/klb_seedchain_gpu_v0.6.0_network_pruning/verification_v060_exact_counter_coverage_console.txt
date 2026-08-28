@@ -1,0 +1,29 @@
+  counter pair_all relation=9354240 propagated=9354240 supported=5932861 compatible=3970997 visible=1101511 boundary=3970997 aos=4653 los=4682 errors=0 events=9335
+  counter pair_support relation=7166880 propagated=7166880 supported=5932861 compatible=3970997 visible=1101511 boundary=3970997 aos=4653 los=4682 errors=0 events=9335
+  counter pair_active relation=4415040 propagated=4415040 supported=3970997 compatible=3970997 visible=1101511 boundary=3970997 aos=4653 los=4682 errors=0 events=9335
+  counter grouped_active relation=4415040 propagated=584640 supported=3970997 compatible=3970997 visible=1101511 boundary=3970997 aos=4653 los=4682 errors=0 events=9335
+  counter dense_active relation=4415040 propagated=0 supported=3970997 compatible=3970997 visible=1101511 boundary=3970997 aos=4653 los=4682 errors=0 events=9335
+KLB mixed-orbit network GPU challenge
+  device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+  compute capability        : 12.0
+  objects/stations          : 58/16
+  pair plan                 : all=928, support=711, active=438
+  total relation gain       : 2.118721x
+  intervals/step            : 10080/60.000000 s
+  dense baseline            : 17.843567 MiB
+  pair_all               p50=137.416443  ms  relations/s=68072203.038867  propagations/s=68072203.038867
+  pair_support           p50=137.839874  ms  relations/s=51994243.596650  propagations/s=51994243.596650
+  pair_active            p50=101.295998  ms  relations/s=43585532.535833  propagations/s=43585532.535833
+  grouped_all            p50=56.562561   ms  relations/s=165378650.273383  propagations/s=10336165.642086
+  grouped_active         p50=56.312511   ms  relations/s=78402470.193206  propagations/s=10382062.263027
+  materialize_dense      p50=51.065056   ms  relations/s=11448925.107411  propagations/s=11448925.107411
+  query_dense_active     p50=1.502432    ms  relations/s=2938595579.140183  propagations/s=0.000000
+Validation over 10080 intervals
+  pair-all vs CPU events    : FAIL
+  pair-active vs CPU events : FAIL
+  pair-support vs active    : PASS
+  pair vs grouped events    : PASS
+  pair vs grouped counters  : PASS
+  grouped vs dense events   : PASS
+  grouped vs dense counters : PASS
+  propagation errors zero   : PASS

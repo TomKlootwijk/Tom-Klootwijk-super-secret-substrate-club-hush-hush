@@ -1,0 +1,12 @@
+# ninja log v5
+1	1057	8091727720939207	CMakeFiles/native_app_glue.dir/1e3a68904659e71a72de41ca2bfe2223/android_native_app_glue.c.o	fe6fc4a7b90e1f4e
+1058	1192	8091727722008199	libnative_app_glue.a	ee7a358b20d67bb6
+29	6107	8091727771448394	CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o	d077ab8b2acf7ad9
+19	6138	8091727771770928	CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o	6c2eded6636377d
+24	6201	8091727772400683	CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o	41e099a8f4810392
+15	6300	8091727773362072	CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o	2a264b6d968d6d04
+11	7535	8091727785736139	CMakeFiles/ugts_kc_native.dir/main.cpp.o	33b87d2f1f6b19b1
+6	7834	8091727788693844	CMakeFiles/ugts_kc_native.dir/engine.cpp.o	5036e58d16933ad9
+7835	8003	8091727790247796	C:/Users/Tom/Documents/theTomKlootwijkManifold/UGTS_KC_3_9_1_Tom_Signature_Android_Source/UGTSKC391Signature/app/build/intermediates/cxx/Debug/665c36c4/obj/arm64-v8a/libugts_kc_native.so	47baea4c1a74e92f
+5	944	8091729170889718	CMakeFiles/ugts_kc_native.dir/main.cpp.o	33b87d2f1f6b19b1
+945	1055	8091729171934813	C:/Users/Tom/Documents/theTomKlootwijkManifold/UGTS_KC_3_9_1_Tom_Signature_Android_Source/UGTSKC391Signature/app/build/intermediates/cxx/Debug/665c36c4/obj/arm64-v8a/libugts_kc_native.so	47baea4c1a74e92f

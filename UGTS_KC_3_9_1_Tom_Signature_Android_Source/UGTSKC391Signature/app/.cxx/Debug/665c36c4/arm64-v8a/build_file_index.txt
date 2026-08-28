@@ -1,0 +1,1 @@
+C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\src\main\cpp\CMakeLists.txt

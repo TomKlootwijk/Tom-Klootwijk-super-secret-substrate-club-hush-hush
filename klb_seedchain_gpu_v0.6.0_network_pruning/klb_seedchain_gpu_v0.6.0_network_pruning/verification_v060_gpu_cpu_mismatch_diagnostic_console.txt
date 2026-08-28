@@ -1,0 +1,27 @@
+event diagnostic: count=9335 identity_mismatches=0 tolerance_mismatches=9335 max_crossing_seconds=0.00034326035529375076 max_guard=9.5582754100487222e-08 first_index=0
+event diagnostic distribution: crossing_rms=2.9234470002849311e-05 crossing_p50=1.698454434517771e-05 crossing_p95=5.4790176363894716e-05 crossing_p99=7.8669865615665913e-05 guard_rms=1.7015590597000845e-08 guard_p50=3.0123147587435284e-09 guard_p95=4.2386157805829328e-08 guard_p99=6.1131077394582789e-08
+event diagnostic first: left=1001/26407/162/2/2769835129/9767.0746486540284/0.0010189449206454426 right=1001/26407/162/2/2769835129/9767.0746375694416/0.0010189458234863003
+event diagnostic: count=9335 identity_mismatches=0 tolerance_mismatches=9335 max_crossing_seconds=0.00034326035529375076 max_guard=9.5582754100487222e-08 first_index=0
+event diagnostic distribution: crossing_rms=2.9234470002849311e-05 crossing_p50=1.698454434517771e-05 crossing_p95=5.4790176363894716e-05 crossing_p99=7.8669865615665913e-05 guard_rms=1.7015590597000845e-08 guard_p50=3.0123147587435284e-09 guard_p95=4.2386157805829328e-08 guard_p99=6.1131077394582789e-08
+event diagnostic first: left=1001/26407/162/2/2769835129/9767.0746486540284/0.0010189449206454426 right=1001/26407/162/2/2769835129/9767.0746375694416/0.0010189458234863003
+KLB mixed-orbit network GPU challenge
+  device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+  compute capability        : 12.0
+  objects/stations          : 58/16
+  pair plan                 : all=928, support=711, active=438
+  total relation gain       : 2.118721x
+  intervals/step            : 10080/60.000000 s
+  dense baseline            : 0.000000 MiB
+  pair_all               p50=135.861862  ms  relations/s=68851109.867953  propagations/s=68851109.867953
+  pair_support           p50=137.093628  ms  relations/s=52277265.604757  propagations/s=52277265.604757
+  pair_active            p50=87.068672   ms  relations/s=50707560.933785  propagations/s=50707560.933785
+  grouped_all            p50=56.103935   ms  relations/s=166730550.356251  propagations/s=10420659.397266
+  grouped_active         p50=56.344097   ms  relations/s=78358518.892042  propagations/s=10376242.227713
+Validation over 10080 intervals
+  pair-all vs CPU events    : FAIL
+  pair-active vs CPU events : FAIL
+  pair vs grouped events    : PASS
+  pair vs grouped counters  : PASS
+  grouped vs dense events   : SKIP
+  grouped vs dense counters : SKIP
+  propagation errors zero   : PASS

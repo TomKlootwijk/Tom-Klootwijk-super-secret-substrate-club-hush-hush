@@ -1,0 +1,35 @@
+{
+  "domain_counts": {
+    "Pattern geometry": 20,
+    "Field/surface geometry": 12,
+    "Topology": 10,
+    "Kinematic calculus": 12,
+    "Dynamics and events": 6
+  },
+  "validation_counts": {
+    "Implemented + tested": 37,
+    "Implemented numerically + tested": 1,
+    "Implemented sampler + tested": 1,
+    "Implemented sampled helper + tested": 1,
+    "Implemented sampled + tested": 2,
+    "Implemented helper + example": 1,
+    "Implemented compact kernel + tested": 1,
+    "Implemented constant-speed + tested": 1,
+    "Implemented polygonal + tested": 1,
+    "Implemented descriptor + tested": 1,
+    "Implemented reducer + tested": 1,
+    "Specified; numerical certification pending": 1,
+    "Implemented boundary matrices + tested": 1,
+    "Implemented invariant check + tested": 1,
+    "Implemented descriptor + example": 1,
+    "Specified exchange format; solver not bundled": 1,
+    "Implemented matrix check + tested": 1,
+    "Implemented planar chain + tested": 2,
+    "Implemented first-order diffusion + tested": 1,
+    "Implemented grid step + tested": 1,
+    "Implemented reference class + tested": 1,
+    "Implemented classifier/resolver + tested": 1
+  },
+  "added": 60,
+  "extended_total": 257
+}

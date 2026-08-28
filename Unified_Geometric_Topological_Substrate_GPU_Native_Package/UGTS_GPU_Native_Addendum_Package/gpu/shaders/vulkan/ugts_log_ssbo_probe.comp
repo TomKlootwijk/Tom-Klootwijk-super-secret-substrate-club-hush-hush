@@ -1,0 +1,42 @@
+#version 450
+
+#ifndef RANDOM_ACCESS
+#define RANDOM_ACCESS 0
+#endif
+
+layout(local_size_x = 256) in;
+
+// Byte-identical control for ugts_log_lut_probe.comp. The same packed uint
+// payload is read through a storage-buffer descriptor instead of texelFetch.
+layout(std430, binding = 2) readonly buffer LogLutBuffer {
+    uint log_lut[];
+};
+layout(std430, binding = 1) writeonly buffer OutputBuffer {
+    uint outputs[];
+};
+
+uint mix32(uint x) {
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= uint(outputs.length())) {
+        return;
+    }
+
+    uint mask = log_lut[0];
+#if RANDOM_ACCESS
+    uint logical_index = mix32(i) & mask;
+#else
+    uint logical_index = i & mask;
+#endif
+    uint packed = log_lut[1u + (logical_index >> 1)];
+    uint code = (packed >> ((logical_index & 1u) * 16u)) & 0xffffu;
+    outputs[i] = mix32(code ^ i);
+}

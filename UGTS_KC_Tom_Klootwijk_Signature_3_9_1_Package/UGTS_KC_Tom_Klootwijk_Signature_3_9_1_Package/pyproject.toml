@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugts-kc-signature"
+version = "3.9.1"
+description = "UGTS-KC 3.9.1 Tom Klootwijk Signature vector, 3D and native Android game runtime"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Tom Klootwijk"}]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Games/Entertainment",
+  "Topic :: Multimedia :: Graphics",
+  "Operating System :: Android",
+]
+
+[project.scripts]
+ugts-kc = "ugts_kc3.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+"ugts_kc3.android_template" = ["project/**/*"]

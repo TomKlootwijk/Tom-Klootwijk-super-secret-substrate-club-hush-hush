@@ -1,0 +1,4 @@
+PASS
+Command class: Clang CUDA host+device syntax check with -nocudainc/-nocudalib and tests/cuda_stub declarations.
+Target used for front-end validation: sm_80 (portable syntax check only).
+Native release target remains sm_120 and must be built with CUDA Toolkit 12.8+ on the RTX 5070 Ti laptop.

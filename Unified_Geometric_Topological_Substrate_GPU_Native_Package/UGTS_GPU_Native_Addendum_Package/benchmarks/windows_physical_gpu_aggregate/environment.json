@@ -1,0 +1,120 @@
+﻿{
+    "schema":  "UGTS-WINDOWS-GPU-ENVIRONMENT-1.8",
+    "captured_utc":  "2026-08-15T08:55:09.4058967Z",
+    "os":  {
+               "caption":  "Microsoft Windows 11 Home",
+               "version":  "10.0.26200",
+               "build_number":  "26200"
+           },
+    "cpu":  {
+                "name":  "Intel(R) Core(TM) Ultra 7 255HX",
+                "physical_cores":  20,
+                "logical_processors":  20
+            },
+    "gpu":  {
+                "name":  "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+                "pci_bus_id":  "00000000:01:00.0",
+                "driver_version":  "591.59",
+                "memory_total_mib":  12227,
+                "observed_pstate":  "P8",
+                "observed_graphics_clock_mhz":  180,
+                "observed_memory_clock_mhz":  405,
+                "observed_power_w":  6.97,
+                "power_limit_w":  null,
+                "observed_temperature_c":  54,
+                "cuda":  {
+                             "torch_version":  "2.7.1+cu128",
+                             "cuda_available":  true,
+                             "name":  "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+                             "compute_capability":  "12.0",
+                             "multiprocessor_count":  46,
+                             "total_memory_bytes":  12820480000,
+                             "l2_cache_bytes":  37748736,
+                             "uuid":  "072d759c-b0d7-47c0-04e9-48d3e81c9c8d"
+                         },
+                "vulkan_api":  "1.4.325",
+                "vulkan_device_type":  "discrete",
+                "vulkan_vendor_id":  4318,
+                "vulkan_device_id":  12056,
+                "vulkan_timestamp_period_ns":  1,
+                "vulkan_timestamp_valid_bits":  64,
+                "vulkan_pipeline_executable_properties":  true,
+                "vulkan_performance_query":  false,
+                "vulkan_capability_probe":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\native_capability_probe\\vulkan_benchmark_results.json",
+                "vulkan_shader_clock":  {
+                                            "extension":  "VK_KHR_shader_clock",
+                                            "device_clock_enabled":  true,
+                                            "source":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\l2_latency_isolated\\aggregate\\l2_latency_aggregate.json"
+                                        },
+                "vulkan_subgroup":  {
+                                        "size":  32,
+                                        "min_size":  32,
+                                        "max_size":  32,
+                                        "compute_stage_supported":  true,
+                                        "basic_supported":  true,
+                                        "ballot_supported":  true,
+                                        "source":  "local vulkaninfo device-properties query"
+                                    },
+                "cuda_l2_clock_probe":  {
+                                            "enabled":  true,
+                                            "target":  "sm_120",
+                                            "compiler":  "CUDA 12.8.61",
+                                            "load_instruction":  "LDG.E.STRONG.GPU generated from ld.global.cg.u32",
+                                            "source":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\cuda_l2_clock_isolated\\aggregate\\cuda_l2_clock_aggregate.json"
+                                        },
+                "cuda_l2_mlp_probe":  {
+                                          "enabled":  true,
+                                          "target":  "sm_120",
+                                          "one_warp_blocks_per_sm":  24,
+                                          "maximum_measured_warps_per_sm":  24,
+                                          "source":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\cuda_l2_mlp_isolated\\aggregate\\cuda_l2_mlp_aggregate.json"
+                                      },
+                "cuda_texture_lut_probe":  {
+                                               "enabled":  true,
+                                               "target":  "sm_120",
+                                               "global_instruction":  "LDG.E.STRONG.GPU",
+                                               "texture_instruction":  "TLD.LZ 1D",
+                                               "global_one_warp_blocks_per_sm":  24,
+                                               "texture_one_warp_blocks_per_sm":  24,
+                                               "source":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\cuda_texture_lut_isolated\\aggregate\\cuda_texture_lut_aggregate.json"
+                                           },
+                "cuda_packed_log_lut_probe":  {
+                                                  "enabled":  true,
+                                                  "target":  "sm_120",
+                                                  "slot16_bytes_per_code":  2,
+                                                  "packed6_bytes_per_code":  0.75,
+                                                  "global_instruction":  "LDG.E.STRONG.GPU",
+                                                  "texture_instruction":  "TLD.LZ 1D",
+                                                  "occupancy_blocks_per_sm":  {
+                                                                                  "global_slot16":  24,
+                                                                                  "global_packed6":  24,
+                                                                                  "texture_slot16":  24,
+                                                                                  "texture_packed6":  24
+                                                                              },
+                                                  "source":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\cuda_packed_log_lut_isolated\\aggregate\\cuda_packed_log_lut_aggregate.json"
+                                              },
+                "cuda_l2_stride_probe":  {
+                                             "enabled":  true,
+                                             "target":  "sm_120",
+                                             "global_instruction":  "LDG.E.STRONG.GPU",
+                                             "occupancy_blocks_per_sm":  24,
+                                             "bounded_effective_residency_unit_bytes":  128,
+                                             "classification":  "consistent with a 128-byte effective residency unit for isolated dependent-pointer u32 words in this workload; not a universal per-code cost or counter-derived hardware line-size claim",
+                                             "source":  "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\Unified_Geometric_Topological_Substrate_GPU_Native_Package\\UGTS_GPU_Native_Addendum_Package\\benchmarks\\cuda_l2_stride_isolated\\aggregate\\cuda_l2_stride_aggregate.json"
+                                         }
+            },
+    "execution":  {
+                      "driver_model":  "WDDM",
+                      "storage_memory":  "VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT",
+                      "transfer_memory":  "VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT",
+                      "gpu_timestamp_scope":  "compute dispatch only",
+                      "performance_counter_access":  "blocked: insufficient NVIDIA GPU performance-counter privilege; selected Vulkan device also does not expose VK_KHR_performance_query",
+                      "pipeline_executable_metadata":  "available through VK_KHR_pipeline_executable_properties",
+                      "shader_clock_scope":  "device-scope realtime clock; implementation-defined units",
+                      "cuda_clock_scope":  "per-SM clock64 cycle counter; elapsed thread time includes time slicing",
+                      "cuda_concurrency_scope":  "one-warp blocks scaled to 24 measured warps per SM; requested throughput is logical, not physical memory traffic",
+                      "cuda_texture_scope":  "same linear allocation through native texture-object TLD and L1-bypassing global LDG paths; independent eviction; requested throughput is logical",
+                      "cuda_packed_log_scope":  "matched slot16 and dense packed6 code lookup through native TLD and LDG paths; each decoded code is checked; rates are logical rather than physical transactions",
+                      "cuda_l2_stride_scope":  "one random dependent u32 per 4-256 byte spacing with mixed gap filler; effective residency is workload-inferred from capacity scaling, not a counter-derived physical line or sector"
+                  }
+}

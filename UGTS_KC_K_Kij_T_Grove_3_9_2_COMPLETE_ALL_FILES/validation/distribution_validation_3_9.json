@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "runtime_version": "3.9.0",
+  "schema": "ugts-kc-distribution-validation-3.9",
+  "sdist": {
+    "bytes": 111391,
+    "member_count": 54,
+    "path": "dist/ugts_kc_elizabeth-3.9.0.tar.gz",
+    "sha256": "86d08297970e6ae48f775267b508bc2de0254fdb41a3ea5a43704ebb7ed46d8c",
+    "unsafe_or_cache_members": []
+  },
+  "wheel": {
+    "bytes": 107599,
+    "console_entrypoint_present": true,
+    "contains_ugts_kc3_py_typed": true,
+    "contains_ugts_kc_py_typed": true,
+    "member_count": 40,
+    "path": "dist/ugts_kc_elizabeth-3.9.0-py3-none-any.whl",
+    "sha256": "ae2ae0802efea3d7929e5e64edff685b118bfc387f672c049c27cdecfbac72fa",
+    "unsafe_or_cache_members": []
+  }
+}

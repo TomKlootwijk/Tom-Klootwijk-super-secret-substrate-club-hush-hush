@@ -1,0 +1,386 @@
+[
+  {
+    "output_position_msb0": 0,
+    "output_bit": 63,
+    "field": "rho",
+    "source_bit": 19
+  },
+  {
+    "output_position_msb0": 1,
+    "output_bit": 62,
+    "field": "theta",
+    "source_bit": 17
+  },
+  {
+    "output_position_msb0": 2,
+    "output_bit": 61,
+    "field": "time",
+    "source_bit": 13
+  },
+  {
+    "output_position_msb0": 3,
+    "output_bit": 60,
+    "field": "phi",
+    "source_bit": 11
+  },
+  {
+    "output_position_msb0": 4,
+    "output_bit": 59,
+    "field": "rho",
+    "source_bit": 18
+  },
+  {
+    "output_position_msb0": 5,
+    "output_bit": 58,
+    "field": "theta",
+    "source_bit": 16
+  },
+  {
+    "output_position_msb0": 6,
+    "output_bit": 57,
+    "field": "time",
+    "source_bit": 12
+  },
+  {
+    "output_position_msb0": 7,
+    "output_bit": 56,
+    "field": "phi",
+    "source_bit": 10
+  },
+  {
+    "output_position_msb0": 8,
+    "output_bit": 55,
+    "field": "rho",
+    "source_bit": 17
+  },
+  {
+    "output_position_msb0": 9,
+    "output_bit": 54,
+    "field": "theta",
+    "source_bit": 15
+  },
+  {
+    "output_position_msb0": 10,
+    "output_bit": 53,
+    "field": "time",
+    "source_bit": 11
+  },
+  {
+    "output_position_msb0": 11,
+    "output_bit": 52,
+    "field": "phi",
+    "source_bit": 9
+  },
+  {
+    "output_position_msb0": 12,
+    "output_bit": 51,
+    "field": "rho",
+    "source_bit": 16
+  },
+  {
+    "output_position_msb0": 13,
+    "output_bit": 50,
+    "field": "theta",
+    "source_bit": 14
+  },
+  {
+    "output_position_msb0": 14,
+    "output_bit": 49,
+    "field": "time",
+    "source_bit": 10
+  },
+  {
+    "output_position_msb0": 15,
+    "output_bit": 48,
+    "field": "phi",
+    "source_bit": 8
+  },
+  {
+    "output_position_msb0": 16,
+    "output_bit": 47,
+    "field": "rho",
+    "source_bit": 15
+  },
+  {
+    "output_position_msb0": 17,
+    "output_bit": 46,
+    "field": "theta",
+    "source_bit": 13
+  },
+  {
+    "output_position_msb0": 18,
+    "output_bit": 45,
+    "field": "time",
+    "source_bit": 9
+  },
+  {
+    "output_position_msb0": 19,
+    "output_bit": 44,
+    "field": "phi",
+    "source_bit": 7
+  },
+  {
+    "output_position_msb0": 20,
+    "output_bit": 43,
+    "field": "rho",
+    "source_bit": 14
+  },
+  {
+    "output_position_msb0": 21,
+    "output_bit": 42,
+    "field": "theta",
+    "source_bit": 12
+  },
+  {
+    "output_position_msb0": 22,
+    "output_bit": 41,
+    "field": "time",
+    "source_bit": 8
+  },
+  {
+    "output_position_msb0": 23,
+    "output_bit": 40,
+    "field": "phi",
+    "source_bit": 6
+  },
+  {
+    "output_position_msb0": 24,
+    "output_bit": 39,
+    "field": "rho",
+    "source_bit": 13
+  },
+  {
+    "output_position_msb0": 25,
+    "output_bit": 38,
+    "field": "theta",
+    "source_bit": 11
+  },
+  {
+    "output_position_msb0": 26,
+    "output_bit": 37,
+    "field": "time",
+    "source_bit": 7
+  },
+  {
+    "output_position_msb0": 27,
+    "output_bit": 36,
+    "field": "phi",
+    "source_bit": 5
+  },
+  {
+    "output_position_msb0": 28,
+    "output_bit": 35,
+    "field": "rho",
+    "source_bit": 12
+  },
+  {
+    "output_position_msb0": 29,
+    "output_bit": 34,
+    "field": "theta",
+    "source_bit": 10
+  },
+  {
+    "output_position_msb0": 30,
+    "output_bit": 33,
+    "field": "time",
+    "source_bit": 6
+  },
+  {
+    "output_position_msb0": 31,
+    "output_bit": 32,
+    "field": "phi",
+    "source_bit": 4
+  },
+  {
+    "output_position_msb0": 32,
+    "output_bit": 31,
+    "field": "rho",
+    "source_bit": 11
+  },
+  {
+    "output_position_msb0": 33,
+    "output_bit": 30,
+    "field": "theta",
+    "source_bit": 9
+  },
+  {
+    "output_position_msb0": 34,
+    "output_bit": 29,
+    "field": "time",
+    "source_bit": 5
+  },
+  {
+    "output_position_msb0": 35,
+    "output_bit": 28,
+    "field": "phi",
+    "source_bit": 3
+  },
+  {
+    "output_position_msb0": 36,
+    "output_bit": 27,
+    "field": "rho",
+    "source_bit": 10
+  },
+  {
+    "output_position_msb0": 37,
+    "output_bit": 26,
+    "field": "theta",
+    "source_bit": 8
+  },
+  {
+    "output_position_msb0": 38,
+    "output_bit": 25,
+    "field": "time",
+    "source_bit": 4
+  },
+  {
+    "output_position_msb0": 39,
+    "output_bit": 24,
+    "field": "phi",
+    "source_bit": 2
+  },
+  {
+    "output_position_msb0": 40,
+    "output_bit": 23,
+    "field": "rho",
+    "source_bit": 9
+  },
+  {
+    "output_position_msb0": 41,
+    "output_bit": 22,
+    "field": "theta",
+    "source_bit": 7
+  },
+  {
+    "output_position_msb0": 42,
+    "output_bit": 21,
+    "field": "time",
+    "source_bit": 3
+  },
+  {
+    "output_position_msb0": 43,
+    "output_bit": 20,
+    "field": "phi",
+    "source_bit": 1
+  },
+  {
+    "output_position_msb0": 44,
+    "output_bit": 19,
+    "field": "rho",
+    "source_bit": 8
+  },
+  {
+    "output_position_msb0": 45,
+    "output_bit": 18,
+    "field": "theta",
+    "source_bit": 6
+  },
+  {
+    "output_position_msb0": 46,
+    "output_bit": 17,
+    "field": "time",
+    "source_bit": 2
+  },
+  {
+    "output_position_msb0": 47,
+    "output_bit": 16,
+    "field": "phi",
+    "source_bit": 0
+  },
+  {
+    "output_position_msb0": 48,
+    "output_bit": 15,
+    "field": "rho",
+    "source_bit": 7
+  },
+  {
+    "output_position_msb0": 49,
+    "output_bit": 14,
+    "field": "theta",
+    "source_bit": 5
+  },
+  {
+    "output_position_msb0": 50,
+    "output_bit": 13,
+    "field": "time",
+    "source_bit": 1
+  },
+  {
+    "output_position_msb0": 51,
+    "output_bit": 12,
+    "field": "rho",
+    "source_bit": 6
+  },
+  {
+    "output_position_msb0": 52,
+    "output_bit": 11,
+    "field": "theta",
+    "source_bit": 4
+  },
+  {
+    "output_position_msb0": 53,
+    "output_bit": 10,
+    "field": "time",
+    "source_bit": 0
+  },
+  {
+    "output_position_msb0": 54,
+    "output_bit": 9,
+    "field": "rho",
+    "source_bit": 5
+  },
+  {
+    "output_position_msb0": 55,
+    "output_bit": 8,
+    "field": "theta",
+    "source_bit": 3
+  },
+  {
+    "output_position_msb0": 56,
+    "output_bit": 7,
+    "field": "rho",
+    "source_bit": 4
+  },
+  {
+    "output_position_msb0": 57,
+    "output_bit": 6,
+    "field": "theta",
+    "source_bit": 2
+  },
+  {
+    "output_position_msb0": 58,
+    "output_bit": 5,
+    "field": "rho",
+    "source_bit": 3
+  },
+  {
+    "output_position_msb0": 59,
+    "output_bit": 4,
+    "field": "theta",
+    "source_bit": 1
+  },
+  {
+    "output_position_msb0": 60,
+    "output_bit": 3,
+    "field": "rho",
+    "source_bit": 2
+  },
+  {
+    "output_position_msb0": 61,
+    "output_bit": 2,
+    "field": "theta",
+    "source_bit": 0
+  },
+  {
+    "output_position_msb0": 62,
+    "output_bit": 1,
+    "field": "rho",
+    "source_bit": 1
+  },
+  {
+    "output_position_msb0": 63,
+    "output_bit": 0,
+    "field": "rho",
+    "source_bit": 0
+  }
+]

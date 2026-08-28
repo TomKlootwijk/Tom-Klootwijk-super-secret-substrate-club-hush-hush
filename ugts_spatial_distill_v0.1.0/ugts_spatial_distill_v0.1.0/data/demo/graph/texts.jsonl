@@ -1,0 +1,510 @@
+{"node_id": "0xfb5906f840a088fd", "text": "SOSA observable property: air_temperature. Air temperature in degrees Celsius."}
+{"node_id": "0x21f15b3c3425bc00", "text": "SOSA observable property: nitrogen_dioxide. Nitrogen dioxide concentration."}
+{"node_id": "0x060ceb4b1163e75e", "text": "SOSA observable property: traffic_flow. Vehicle count or traffic flow."}
+{"node_id": "0xc187d8996909efc5", "text": "SOSA observable property: water_level. Water level relative to local datum."}
+{"node_id": "0xc19054a4febc0d84", "text": "SOSA observable property: soil_moisture. Soil moisture fraction."}
+{"node_id": "0xcb0751eda72d49e3", "text": "SOSA observable property: wind_speed. Wind speed in metres per second."}
+{"node_id": "0x145407f7f1886f08", "text": "UGTS mechanism domain: Numeric/encoding."}
+{"node_id": "0xcb9577f3bd71745b", "text": "M001 Radix digit threshold. Domain Numeric/encoding. A digit-count transition occurs at b^k in radix b. GPU realization: Integer compare or findMSB. Status RETAIN; validation Exact."}
+{"node_id": "0x3bce401354f0d4cf", "text": "M002 Positional power weighting. Domain Numeric/encoding. Value is Σ digit_k·b^k. GPU realization: Shift/add for base 2; multiply-add otherwise. Status RETAIN; validation Exact."}
+{"node_id": "0x563144dd4bb329d0", "text": "M003 Literal binary glyph parse. Domain Numeric/encoding. Parser mode is part of the schema; `100₂=4₁₀`. GPU realization: Small DFA or compile-time constant. Status RETAIN; validation Exact."}
+{"node_id": "0xd123b18fcee129d1", "text": "M004 Left-shift pulse placement. Domain Numeric/encoding. A pulse at bit position k has value 2^k. GPU realization: Native integer shift. Status RETAIN; validation Exact."}
+{"node_id": "0xc601c861d9fe6bd7", "text": "M005 Zero-based offset/ordinal distinction. Domain Numeric/encoding. Offset is zero-based; ordinal is offset+1. GPU realization: Unsigned index with explicit display conversion. Status RETAIN; validation Exact."}
+{"node_id": "0x6d92a686d3ec3dbe", "text": "M006 Active-bit filtering. Domain Numeric/encoding. Extract set-bit positions or popcount; never change numeric identity silently. GPU realization: popcount/findLSB loop/subgroup ballot. Status RETAIN; validation Exact."}
+{"node_id": "0x201bbbf6f1c72529", "text": "M007 Zero as inactive/silence metadata. Domain Numeric/encoding. A domain-specific interpretation attached to bit state, not arithmetic. GPU realization: Mask channel and metadata tag. Status TRANSLATE; validation Schema-dependent."}
+{"node_id": "0x6216b187ee2dc35c", "text": "M008 Binary 19 decomposition. Domain Numeric/encoding. 19 = 16+2+1; Hamming weight 3. GPU realization: Constant/test vector. Status RETAIN; validation Exact."}
+{"node_id": "0xf258d96e471b4829", "text": "M009 Phonetic-to-active-count map. Domain Numeric/encoding. Associate an external label count with popcount under a declared language/tokenizer. GPU realization: Metadata join, not arithmetic kernel. Status BOUNDED; validation Corpus-specific."}
+{"node_id": "0x7ec5edc45c2e9ea4", "text": "UGTS mechanism domain: Numeric/fractal."}
+{"node_id": "0xe0bff735461e2f30", "text": "M010 Pascal parity recurrence. Domain Numeric/fractal. Cell parity is C(n,k) mod 2. GPU realization: Bitwise Lucas-theorem test `(k & ~n)==0`. Status RETAIN; validation Exact."}
+{"node_id": "0xc2fbe55478aaf024", "text": "M011 Sierpiński generation. Domain Numeric/fractal. Binary parity recurrence yields self-similar triangular occupancy. GPU realization: One thread per cell or bitplane. Status RETAIN; validation Exact."}
+{"node_id": "0x54832c10b45ed48d", "text": "M012 Combination count C(5,3). Domain Numeric/fractal. Combinatorial count is 10; it is separate from value 19. GPU realization: Integer combinatorics/test oracle. Status RETAIN; validation Exact."}
+{"node_id": "0xf0b3002714191f83", "text": "M013 Power-of-two scale boundary. Domain Numeric/fractal. Dyadic levels define exact multiresolution boundaries. GPU realization: Bit shifts and mip-like level IDs. Status RETAIN; validation Exact."}
+{"node_id": "0xedcfd140dbb78518", "text": "UGTS mechanism domain: Glyph encoder."}
+{"node_id": "0x7dd9cb510c73fdf6", "text": "M014 Standard percent semantics boundary. Domain Glyph encoder. Default mathematical parser returns 1.0. GPU realization: Separate parser mode and unit test. Status RETAIN; validation Exact."}
+{"node_id": "0x250d5a94e45e3ada", "text": "M015 Percent loop decomposition. Domain Glyph encoder. Represent glyph as two loop primitives and one slash/stem primitive. GPU realization: Vector/SDF primitives. Status TRANSLATE; validation Constructive."}
+{"node_id": "0xf0926a6bc01e2a5b", "text": "M016 Slash/phi removal operator. Domain Glyph encoder. Delete the slash primitive under an explicit glyph rewrite rule. GPU realization: Grammar production `Percent→Loop Gap Loop`. Status TRANSLATE; validation Rule-defined."}
+{"node_id": "0x74cdaddbd5396271", "text": "M017 Open-loop terminal suppression. Domain Glyph encoder. A source-specific encoder suppresses the final active bit when the terminal loop is open. GPU realization: Branch in glyph compiler. Status BOUNDED; validation Custom rule."}
+{"node_id": "0x0799d42577899814", "text": "M018 100100 concatenation. Domain Glyph encoder. Concatenate two 3-bit pulse words to a 6-bit word. GPU realization: `(4u<<3)|4u = 36u`. Status RETAIN; validation Exact under custom schema."}
+{"node_id": "0x30a6f6d4067c645d", "text": "M019 Two-pulse timeline. Domain Glyph encoder. Treat set-bit clusters as two events separated by an address interval. GPU realization: Event IDs and relative bit positions. Status TRANSLATE; validation Deterministic."}
+{"node_id": "0xf242dc7c77f0dd27", "text": "M020 Pulse superposition by OR. Domain Glyph encoder. Combine non-overlapping pulse masks with bitwise OR. GPU realization: Native OR. Status RETAIN; validation Exact."}
+{"node_id": "0xf460379be8b44447", "text": "M021 Explicit-width complement. Domain Numeric/encoding. Complement must specify width and mask; topology route is not unbounded `~x`. GPU realization: `(~x)&((1u<<w)-1)`. Status TRANSLATE; validation Exact when width declared."}
+{"node_id": "0x67e6c46baa2891e3", "text": "M022 Fractional scale correction. Domain Numeric/encoding. Multiplication by 1.5 corresponds to a log2 displacement of log2(1.5), not an integer bit shift. GPU realization: Multiply/FMA or log2 coordinate offset. Status CORRECTED; validation Exact."}
+{"node_id": "0xec471dfad7363ca7", "text": "M023 Packed fixed-width record. Domain Numeric/encoding. State fields have declared widths, scales and schemas. GPU realization: std430 structs, bitfields, FP16 pairs. Status TRANSLATE; validation Implemented."}
+{"node_id": "0xece74682c9fff801", "text": "M024 Fixed-point financial boundary. Domain Numeric/encoding. Use fixed-point/decimal for exact currency-like quantities; unrelated to geometry unless typed. GPU realization: Integer scaled arithmetic. Status RETAIN; validation Established."}
+{"node_id": "0xe20129171af6f420", "text": "UGTS mechanism domain: Topology/control."}
+{"node_id": "0xe973c1af8997580f", "text": "M025 One-bit parity narrow role. Domain Topology/control. One bit selects a route, orientation or validity convention; continuous state remains separate. GPU realization: Bitfield predicate. Status RETAIN; validation Implemented."}
+{"node_id": "0xa5c0c31995504237", "text": "M026 One-bit support mask. Domain Topology/control. A bit masks candidate sectors; it does not encode full geometry. GPU realization: Bitset/texture/buffer mask. Status RETAIN; validation Implemented."}
+{"node_id": "0xff015f944c31cc2f", "text": "M027 Deterministic jitter seed. Domain Topology/control. Pseudo-random sequence is keyed by lineage/address for replay. GPU realization: Hash/blue-noise index. Status TRANSLATE; validation Specified."}
+{"node_id": "0x8d04ff8d7176efd4", "text": "UGTS mechanism domain: Glyph geometry."}
+{"node_id": "0x1fa91640e17f895b", "text": "M028 D-to-R cut and unroll. Domain Glyph geometry. A curve segment changes constraint class from loop arc to open segment while upper loop remains. GPU realization: Parametric curve morph or SDF blend. Status RETAIN; validation Constructive."}
+{"node_id": "0xbfeb2ea829b591c7", "text": "M029 B-to-R lower-loop unfurl. Domain Glyph geometry. Release one loop edge and map it to an open leg. GPU realization: Grammar rewrite. Status RETAIN; validation Constructive."}
+{"node_id": "0x1e4f42e18630caab", "text": "M030 Phi loop-plus-stem decomposition. Domain Glyph geometry. Primitive graph with loop node and axial segment. GPU realization: SDF union or vector graph. Status RETAIN; validation Constructive."}
+{"node_id": "0x9d0b72d7c51082df", "text": "UGTS mechanism domain: Kinematics."}
+{"node_id": "0xa334bd66275e1bf1", "text": "M031 Stem as cutting/rotation axis. Domain Kinematics. Axis defines local frame, cut plane and rotational reference. GPU realization: Normalized axis vector in state. Status RETAIN; validation Implemented."}
+{"node_id": "0x3ada600507c417b9", "text": "M032 Side-view pyramid as delta triangle. Domain Kinematics. Use a 2D triangular cross-section for a conical/pyramidal support. GPU realization: Cone/triangle SDF. Status TRANSLATE; validation Constructive."}
+{"node_id": "0x49f9bf26058e86a4", "text": "M033 Delta-T changing axis. Domain Kinematics. Store reference axis and time derivative separately. GPU realization: Axis vector plus angular velocity/torque field. Status TRANSLATE; validation Specified."}
+{"node_id": "0xa1f2f89e66f90f4f", "text": "M034 Loop-to-line release. Domain Kinematics. Topology flag selects closed relation vs open parametric segment. GPU realization: Branchless blend or event-triggered rewrite. Status RETAIN; validation Implemented as route."}
+{"node_id": "0x7b308d8433f1de06", "text": "M035 Localized parity hinge. Domain Kinematics. A graph edge toggles while a pivot node remains invariant. GPU realization: Adjacency bit plus pivot ID. Status RETAIN; validation Specified."}
+{"node_id": "0x5ab99ad57dbb327d", "text": "UGTS mechanism domain: Field geometry."}
+{"node_id": "0xff3496d99b443e9a", "text": "M036 Global hinge everywhere. Domain Field geometry. A field parameter switches or blends two implicit functions over the domain. GPU realization: `f=(1-p)f_closed+p f_open`. Status TRANSLATE; validation Specified."}
+{"node_id": "0x167b9c6976505d62", "text": "M037 Split zero-centered oval. Domain Kinematics. Two half-curves share a zero-displacement boundary. GPU realization: Paired parametric arcs. Status RETAIN; validation Constructive."}
+{"node_id": "0x5fcfbeefe77577f6", "text": "M038 Antisymmetric torsional wave. Domain Kinematics. Opposite signed displacement about the central hinge. GPU realization: Sinusoidal phase with sign by side. Status TRANSLATE; validation Physical model dependent."}
+{"node_id": "0xe661af04948f209f", "text": "M039 2π unrolled into two π arches. Domain Kinematics. Partition a periodic path into two half-period intervals. GPU realization: Phase interval test. Status RETAIN; validation Exact."}
+{"node_id": "0x547a5fe3720736df", "text": "M040 1:1 arch balance. Domain Kinematics. Equal interval length; amplitude balance is a model parameter, not universal stability law. GPU realization: Normalization constraint. Status BOUNDED; validation Conditional."}
+{"node_id": "0x7f328d916f152ce8", "text": "UGTS mechanism domain: Overlap geometry."}
+{"node_id": "0x1c38b8ee8aafe351", "text": "M041 Lens intersection region. Domain Overlap geometry. Explicit intersection `A∩B` with area/phase/confidence. GPU realization: SDF max/intersection. Status RETAIN; validation Exact geometry."}
+{"node_id": "0xe3fa1b3a23e44b7d", "text": "M042 Constructive interference interpretation. Domain Overlap geometry. Combine complex amplitudes where supports intersect. GPU realization: Complex/phasor add. Status TRANSLATE; validation Model dependent."}
+{"node_id": "0xc08c77e1e3b5a269", "text": "M043 Tolerance/phase-slip buffer. Domain Overlap geometry. Overlap width is a measurable alignment or phase-error margin. GPU realization: Guard-band scalar. Status TRANSLATE; validation Measurable."}
+{"node_id": "0x541c858fca5f80f0", "text": "M044 Mutual-information domain. Domain Overlap geometry. Use overlap membership as a join key; mutual information requires distributions, not area alone. GPU realization: Set intersection plus statistics. Status CORRECTED; validation Conditional."}
+{"node_id": "0xc5368ded4587dc3b", "text": "UGTS mechanism domain: Metric geometry."}
+{"node_id": "0x4ea299bc6926049a", "text": "M045 Scaled 5–12–13 triangle. Domain Metric geometry. Multiply the Pythagorean triple by 0.3. GPU realization: Test vector/constants. Status RETAIN; validation Exact."}
+{"node_id": "0x390096f00797ae42", "text": "M046 Leg ratio 2.4. Domain Metric geometry. Aspect/torque parameter `q=2.4`. GPU realization: Uniform scalar. Status RETAIN; validation Exact."}
+{"node_id": "0xbd4f88f6e8e07d57", "text": "M047 Torque-cone angle. Domain Metric geometry. Derive cone half-angle from leg ratio under stated triangle convention. GPU realization: Precomputed cosine in state. Status RETAIN; validation Exact under convention."}
+{"node_id": "0x0db5ed93886eb089", "text": "M048 Logarithmic spiral step law. Domain Kinematics. Scale changes exponentially with phase. GPU realization: `exp2`/LUT recurrence. Status TRANSLATE; validation Parameter dependent."}
+{"node_id": "0x4d201d5ee735bca0", "text": "UGTS mechanism domain: Coordinate geometry."}
+{"node_id": "0x517a1483c9878113", "text": "M049 Base-2 log-radius. Domain Coordinate geometry. Multiplicative radial scale becomes additive coordinate displacement. GPU realization: Log2 LUT or approximation. Status RETAIN; validation Implemented concept."}
+{"node_id": "0xf89ab5fde9125f27", "text": "M050 Local spherical chart. Domain Coordinate geometry. Use radial-angular coordinates locally around a query/coupler; not a global world replacement. GPU realization: Dot/radius tests or spherical bins. Status RETAIN; validation Canonical."}
+{"node_id": "0x1af3e107a730eb27", "text": "UGTS mechanism domain: Support geometry."}
+{"node_id": "0xc8ae47faa0582167", "text": "M051 Cone support. Domain Support geometry. Admit candidates satisfying radial reach and angular cosine threshold. GPU realization: Branchless norm/dot compares. Status RETAIN; validation Implemented."}
+{"node_id": "0xf9c0eb8ef2b0d13e", "text": "M052 Nested shell support. Domain Support geometry. Partition radius into ordered intervals for multiscale relevance. GPU realization: Bucket by radius/log radius. Status RETAIN; validation Specified."}
+{"node_id": "0xdd85de8ddc0658f1", "text": "UGTS mechanism domain: Routing geometry."}
+{"node_id": "0x86ef4694c8f1ba28", "text": "M053 Four-chamber hourglass. Domain Routing geometry. Four routing sectors meet at a central rank-changing locus. GPU realization: Two route bits plus event guard. Status TRANSLATE; validation Canonical abstraction."}
+{"node_id": "0x117fe5f23c306e6c", "text": "M054 Pinch event locus. Domain Routing geometry. A guard surface at which rank, route or mode changes. GPU realization: SDF/measurement threshold. Status RETAIN; validation Measurable."}
+{"node_id": "0xa9612566e9d5ccd9", "text": "M055 Invariant eigen-axis. Domain Routing geometry. A tagged axis/mode remains invariant across route transition. GPU realization: Invariant field/tag. Status TRANSLATE; validation Specified."}
+{"node_id": "0x6bcc64bde971369b", "text": "M056 Swept phase arc. Domain Routing geometry. Phase parameter maps between routing sectors. GPU realization: Phase function and branch map. Status TRANSLATE; validation Specified."}
+{"node_id": "0xdcb2c83e69a76f91", "text": "M057 Trident 3-to-1 convergence. Domain Routing geometry. Three input channels merge into one event/reset channel. GPU realization: Reduction tree or fan-in. Status TRANSLATE; validation Constructive."}
+{"node_id": "0x0e457d983f8d3151", "text": "UGTS mechanism domain: Fluid threshold."}
+{"node_id": "0x0caaea68baaea32e", "text": "M058 Pythagorean-cup trigger. Domain Fluid threshold. Hysteretic threshold state machine with latch and reset. GPU realization: Guard crossing plus state reset. Status RETAIN; validation Physical principle established; corpus mapping unvalidated."}
+{"node_id": "0x126704a6ea1776bd", "text": "M059 Greedy reset cycle. Domain Fluid threshold. On trigger, emit event then reset selected accumulator/state. GPU realization: Atomic commit + clear/FIFO. Status TRANSLATE; validation Specified."}
+{"node_id": "0x9ae10494a1c0afdc", "text": "M060 Inward G/shelf transform. Domain Glyph geometry. Additional glyph grammar rule; not core topology. GPU realization: Vector/SDF morph. Status OPTIONAL; validation Exploratory."}
+{"node_id": "0x0e7ae35893644298", "text": "UGTS mechanism domain: Topology geometry."}
+{"node_id": "0x52ab2fb96be52171", "text": "M061 Lemniscate crossing. Domain Topology geometry. A crossing with orientation/chirality state and two lobes. GPU realization: Two-sheet parametric curve plus route bit. Status TRANSLATE; validation Exploratory."}
+{"node_id": "0xf35d4806522a7838", "text": "M062 Escher-style shrink to crossing. Domain Topology geometry. Use bounded log-scale coordinate; do not infer infinite physical resolution. GPU realization: Clamped log coordinate. Status CORRECTED; validation Bounded."}
+{"node_id": "0x4f0f2ee0bdf5fad9", "text": "M063 Cone SDF. Domain Field geometry. Implicit conical support/boundary function. GPU realization: Analytic SDF. Status RETAIN; validation Specified."}
+{"node_id": "0xfd9584a820cdd9f9", "text": "M064 Sphere SDF. Domain Field geometry. `f(p)=||p||-R` with zero guard. GPU realization: Native benchmark relation. Status RETAIN; validation Implemented and validated."}
+{"node_id": "0x800bcffbb34581b6", "text": "UGTS mechanism domain: Topology."}
+{"node_id": "0x9b171423e025cf12", "text": "M065 Möbius orientation reversal. Domain Topology. A quotient boundary reverses orientation when traversed. GPU realization: Orientation bit toggled at portal. Status TRANSLATE; validation Mathematically exact abstraction."}
+{"node_id": "0x3e23236e445a9b57", "text": "M066 Klein gluing map. Domain Topology. Specify ports and an orientation-reversing identification; use as routing, not literal container. GPU realization: Portal table/quotient coordinate transform. Status TRANSLATE; validation Canonical abstraction."}
+{"node_id": "0x8341e5cddbe67299", "text": "M067 Same coordinate, different sheet. Domain Topology. State includes sheet/phase/address; coordinate equality alone does not imply coupling. GPU realization: Sheet field plus compatibility predicate. Status RETAIN; validation Implemented."}
+{"node_id": "0xf28977ca27fd29c4", "text": "M068 Non-orientable orientation bit. Domain Topology. One bit records local orientation class and toggles at gluing maps. GPU realization: Packed bitfield. Status RETAIN; validation Implemented."}
+{"node_id": "0xc8f4777cda3ccf8e", "text": "M069 Projected self-intersection. Domain Topology. Treat apparent collision as two distinct sheet/address states unless physical interaction is specified. GPU realization: Sheet-aware collision key. Status CORRECTED; validation Specified."}
+{"node_id": "0x56a9134ecdc4b4c1", "text": "M070 Double vacuum as incompatibility. Domain Topology. No coupling because compatibility is false, despite co-location. GPU realization: Mask/phase/sheet predicate. Status RETAIN; validation Canonical."}
+{"node_id": "0x5e471e9ec535f554", "text": "M071 Phase-separated co-location. Domain Topology. Phase is part of state and coupling law. GPU realization: Phase field and tolerance. Status RETAIN; validation Specified."}
+{"node_id": "0xd050e65e78206cb3", "text": "M072 Four-way routing partition. Domain Topology. Two route bits select one of four sectors around an event locus. GPU realization: Switch/case or LUT. Status TRANSLATE; validation Specified."}
+{"node_id": "0x94873555e039bdf3", "text": "M073 Portal/gluing transition. Domain Topology. At event, apply coordinate, sheet, orientation and lineage transform. GPU realization: Transition kernel. Status RETAIN; validation Specified."}
+{"node_id": "0xd3680a1e4accd808", "text": "M074 Branch transition. Domain Topology. Branch ID is updated only by a declared transition. GPU realization: Event output branch field. Status RETAIN; validation Specified."}
+{"node_id": "0x5b7114ebacb4a1e8", "text": "UGTS mechanism domain: Identity."}
+{"node_id": "0x27d2b582d5bb0011", "text": "M075 Lineage-based identity. Domain Identity. Identity is seed/generative address plus transition history/invariants. GPU realization: Hash/address fields and append-only event log. Status RETAIN; validation Canonical."}
+{"node_id": "0x6b98836358469f0b", "text": "M076 Split/merge lineage. Domain Identity. Splits create child addresses; merges require explicit reconciliation record. GPU realization: Prefix/tree address plus merge event. Status RETAIN; validation Specified; stress test required."}
+{"node_id": "0xa8a5f6199524959a", "text": "M077 Toroidal/poloidal chart labels. Domain Topology. Use two periodic coordinates where appropriate; no claim of 4D physics follows. GPU realization: Wrapped phase variables. Status TRANSLATE; validation Exploratory."}
+{"node_id": "0x1697abeb9bb6598e", "text": "M078 Re-entry map. Domain Topology. Explicit transition maps output port to input address with optional orientation flip. GPU realization: Portal table/queue feedback. Status TRANSLATE; validation Specified."}
+{"node_id": "0x587061e34ec0d35f", "text": "M079 Parity-controlled open/closed boundary. Domain Topology. Parity selects one of two topology templates; changes occur at guarded events. GPU realization: Template ID/branchless blend. Status RETAIN; validation Specified."}
+{"node_id": "0x6de21db6e5b88abb", "text": "M080 Sphere eversion analogy. Domain Topology. Useful visualization only; not required by substrate. GPU realization: Optional orientation test. Status DEMOTE; validation Analogy."}
+{"node_id": "0x01bd096c1f513086", "text": "M081 Physical Klein self-assembly. Domain Topology. Not supported; requires material mechanics and cannot be inferred from SDF parity. GPU realization: Excluded. Status REJECT; validation Unsupported."}
+{"node_id": "0x05e2b83f6c387067", "text": "M082 Topology-powered energy recycling. Domain Topology. Topology does not create or preserve usable energy without a loss/drive model. GPU realization: Energy accounting required. Status REJECT; validation Dimensionally unsupported."}
+{"node_id": "0x2172b112145fe78b", "text": "UGTS mechanism domain: Information architecture."}
+{"node_id": "0x209cbd6a67e1bca0", "text": "M083 Finite grammar. Domain Information architecture. A bounded set of productions generates typed expressions/state. GPU realization: GPU tables or host compiler emits IR. Status RETAIN; validation Canonical."}
+{"node_id": "0xb0f90293ed2deb92", "text": "M084 L-system production. Domain Information architecture. Parametric grammar operator with bounded depth and normalized output. GPU realization: Iterative/stackless expansion or precompiled IR. Status TRANSLATE; validation Depth must be bounded."}
+{"node_id": "0x5788441c8d1f8c62", "text": "M085 Projective-phase state manifold. Domain Information architecture. Typed product state, not a single coordinate array. GPU realization: G64/G32 ABI fields. Status RETAIN; validation Implemented subset."}
+{"node_id": "0x07da6b7068dfe31a", "text": "M086 Typed state tuple. Domain Information architecture. Every field has unit, width and semantic convention. GPU realization: Schema JSON + C/GLSL layout. Status RETAIN; validation Implemented."}
+{"node_id": "0x30cd77d3bec82744", "text": "UGTS mechanism domain: Event calculus."}
+{"node_id": "0x800aa08ed818a39c", "text": "M087 Relation surface. Domain Event calculus. An event candidate is a root of an explicit scalar relation. GPU realization: Analytic function or compiled expression. Status RETAIN; validation Implemented sphere relation."}
+{"node_id": "0xb7b36544550f4122", "text": "M088 Support predicate. Domain Event calculus. Local domain selects relevant candidates before event solving. GPU realization: Radius/dot comparisons. Status RETAIN; validation Implemented."}
+{"node_id": "0x32d3065e2c5f520b", "text": "M089 Compatibility predicate. Domain Event calculus. Coupling requires phase/sheet/address/mode/policy compatibility. GPU realization: Mask/bitfield comparisons. Status RETAIN; validation Implemented subset."}
+{"node_id": "0xb8ccce2881771408", "text": "M090 Earliest valid event. Domain Event calculus. Choose earliest certified root satisfying all gates. GPU realization: Analytic root or bracketed solver; benchmark uses current-state guard. Status RETAIN; validation Prototype subset."}
+{"node_id": "0xf9037de8113b9aad", "text": "M091 Transition operator. Domain Event calculus. Apply atomic state patch at event and preserve invariants. GPU realization: Commit kernel/event consumer. Status RETAIN; validation Specified."}
+{"node_id": "0x00741c7b99880bd3", "text": "UGTS mechanism domain: Persistence."}
+{"node_id": "0xbb7d09ded6fc9ea6", "text": "M092 External novelty log. Domain Persistence. Closed dynamics may be rebuilt; unpredictable external changes are appended. GPU realization: Compact E16/E32 records. Status RETAIN; validation Implemented format."}
+{"node_id": "0x74796a9e031e633d", "text": "UGTS mechanism domain: Query architecture."}
+{"node_id": "0x96599e78bb905965", "text": "M093 state_at(t). Domain Query architecture. Evaluate closed expression at requested time without replay when possible. GPU realization: Compiled expression kernel. Status RETAIN; validation Restricted families only."}
+{"node_id": "0x6b643d10a8db59d8", "text": "M094 next_event. Domain Query architecture. Support + compatibility + root solve + branch resolution. GPU realization: GPU candidate evaluation and reduction. Status RETAIN; validation Restricted families only."}
+{"node_id": "0xd59b44806f534933", "text": "M095 events_in_cone. Domain Query architecture. Return events whose supports intersect query support. GPU realization: Support kernel + compaction. Status RETAIN; validation Specified."}
+{"node_id": "0x649cf784585a25f9", "text": "M096 reachable relation query. Domain Query architecture. Graph/grammar reachability under compatibility. GPU realization: Adjacency/bitset traversal. Status RETAIN; validation Specified."}
+{"node_id": "0x986a9758152e401f", "text": "M097 identity reconstruction. Domain Query architecture. Reconstruct identity without relying on current coordinate. GPU realization: Address hash and event replay. Status RETAIN; validation Specified."}
+{"node_id": "0xa1b18d163e92c413", "text": "UGTS mechanism domain: Pruning."}
+{"node_id": "0x75cd2562db3d1c68", "text": "M098 Support rejection. Domain Pruning. Local analytic filter precedes expensive relation work. GPU realization: First-stage predicate. Status RETAIN; validation Measured by SRG."}
+{"node_id": "0xda6802e1899828c7", "text": "M099 Compatibility rejection. Domain Pruning. Filter supported candidates by typed mode/policy mask. GPU realization: Bitwise mask and sheet/orientation compare. Status RETAIN; validation Measured by CRG."}
+{"node_id": "0x89be618901fba67b", "text": "M100 Finite guard band. Domain Event calculus. Use epsilon band around relation zero to tolerate finite precision/noise. GPU realization: `abs(f)<=epsilon`. Status RETAIN; validation Implemented."}
+{"node_id": "0x3127d7c345e3da2e", "text": "M101 Confidence threshold. Domain Event calculus. Event commits only if confidence/certification exceeds floor. GPU realization: Confidence scalar compare. Status RETAIN; validation Implemented synthetic model."}
+{"node_id": "0xcc7ade955522469a", "text": "M102 Hysteresis/debounce. Domain Event calculus. Separate enter/exit thresholds and hold time. GPU realization: Stateful guard. Status RETAIN; validation Specified."}
+{"node_id": "0xe55a7149785b8b72", "text": "UGTS mechanism domain: Numerics."}
+{"node_id": "0xb934516bb85e2c80", "text": "M103 Certified/bracketed root solve. Domain Numerics. Return bounded root interval when exact analytic solve is unstable. GPU realization: Interval arithmetic or bisection. Status RETAIN; validation Future implementation."}
+{"node_id": "0xa4c6ec0b8b2727fc", "text": "M104 Tangency and degeneracy handling. Domain Numerics. Classify derivative/rank conditions; avoid false crossing. GPU realization: Derivative/interval tests. Status RETAIN; validation Risk register."}
+{"node_id": "0xa7fdd03281ecc530", "text": "UGTS mechanism domain: Field algebra."}
+{"node_id": "0x1d42f94f9bc5276c", "text": "M105 SDF zero as event boundary. Domain Field algebra. Zero is semantic transition surface, not a reason to raymarch indefinitely. GPU realization: Relation evaluation. Status RETAIN; validation Canonical."}
+{"node_id": "0xf42925ab4abff9d2", "text": "M106 CSG union. Domain Field algebra. Implicit union operator. GPU realization: min instruction. Status RETAIN; validation Exact for SDF sign."}
+{"node_id": "0xc3c8a0da47f2eda0", "text": "M107 CSG intersection. Domain Field algebra. Implicit intersection/operator for overlap lens. GPU realization: max instruction. Status RETAIN; validation Exact for sign."}
+{"node_id": "0x8f15d9eda9729df2", "text": "M108 CSG subtraction. Domain Field algebra. Implicit difference. GPU realization: max/negate. Status RETAIN; validation Exact for sign."}
+{"node_id": "0x599625111152a3e0", "text": "M109 SDF gradient orientation. Domain Field algebra. Gradient provides normal/orientation; finite difference or analytic derivative. GPU realization: Derivative code or sampled neighbors. Status RETAIN; validation Specified."}
+{"node_id": "0xc0eb7922b19e39b3", "text": "M110 Parity-conditioned field blend. Domain Field algebra. Discrete state selects or interpolates implicit geometry. GPU realization: select/mix. Status TRANSLATE; validation Specified."}
+{"node_id": "0x7e82b7661632136c", "text": "UGTS mechanism domain: Indexing."}
+{"node_id": "0xb7013b21a5b215ab", "text": "M111 Log-polar LUT. Domain Indexing. Index radial-angular parameters by additive log radius and angle. GPU realization: Texture/buffer LUT or direct math. Status RETAIN; validation Specified."}
+{"node_id": "0x4572c1d8d2496f72", "text": "M112 BST-to-flat-table translation. Domain Indexing. Compile tree decisions into breadth-first arrays or direct bit tests; avoid pointer chasing on GPU. GPU realization: Flat SSBO/LUT. Status CORRECTED; validation GPU-specific."}
+{"node_id": "0x42d209c4272261ff", "text": "UGTS mechanism domain: Complexity."}
+{"node_id": "0x0d03d0dae55aeb6d", "text": "M113 Horizon-independent closed expression. Domain Complexity. For fixed expression size, state_at cost need not scale with skipped steps. GPU realization: Direct evaluation. Status BOUNDED; validation Restricted claim."}
+{"node_id": "0x10f96436870220b7", "text": "UGTS mechanism domain: Memory."}
+{"node_id": "0x2f2204395bf99e6b", "text": "M114 Novelty-proportional retention. Domain Memory. Store seed/grammar/invariants and external events, not every frame, when reconstruction is valid. GPU realization: Compact event log. Status BOUNDED; validation Depends on reconstructibility."}
+{"node_id": "0x43bac7a7eb7a7c00", "text": "M115 Seed+grammar+log rebuild. Domain Persistence. Deterministic replay from versioned seed, grammar and event log. GPU realization: Reference implementation. Status RETAIN; validation Specified."}
+{"node_id": "0xc2a80424b2cc53e1", "text": "UGTS mechanism domain: Architecture."}
+{"node_id": "0x5a0f418abe4ceacb", "text": "M116 Query-first, no mandatory frame loop. Domain Architecture. Authoritative runtime serves state/event queries; projection is optional. GPU realization: Headless compute API. Status RETAIN; validation Canonical."}
+{"node_id": "0x263585719a878303", "text": "M117 Optional projection. Domain Architecture. Render/print/display is a consumer of query results. GPU realization: Separate output shader. Status RETAIN; validation Canonical."}
+{"node_id": "0xdd8723def7e9f282", "text": "M118 Bounded Compatibility Event. Domain Event calculus. Verified event requires support, compatibility, guard crossing and confidence. GPU realization: Kernel predicate and event record. Status RETAIN; validation Implemented synthetic / specified physical."}
+{"node_id": "0x3e9269ab2b82ea98", "text": "M119 Event lineage record. Domain Persistence. Event carries route, state flags, time/confidence and lineage. GPU realization: E32/E16 ABI. Status RETAIN; validation Implemented."}
+{"node_id": "0xf7548286795c4e13", "text": "M120 Schema-bound one-bit semantics. Domain Architecture. Every bitfield is versioned and named by schema. GPU realization: JSON schema/C headers. Status RETAIN; validation Implemented."}
+{"node_id": "0x18b34f0385115141", "text": "UGTS mechanism domain: Networking."}
+{"node_id": "0xf000a7a903572349", "text": "M121 Deterministic rollback/replay. Domain Networking. Replay versioned deterministic transitions plus external event log. GPU realization: Hash checks and event ordering. Status TRANSLATE; validation Restricted."}
+{"node_id": "0xfef1b4e6e0b9b803", "text": "UGTS mechanism domain: Risk."}
+{"node_id": "0x9e66a830bd800786", "text": "M122 Algebraic closure. Domain Risk. Composition must remain in a normalized relation family or lose direct-query advantage. GPU realization: IR normalization and limits. Status RETAIN; validation Open risk."}
+{"node_id": "0x8d9442b418e92122", "text": "M123 Event/branch explosion. Domain Risk. Bound candidate count, branch depth and event density. GPU realization: Budgets/queues/overflow flags. Status RETAIN; validation Open risk."}
+{"node_id": "0x60290f378720b9ab", "text": "UGTS mechanism domain: Governance."}
+{"node_id": "0xd6e4dd9e8571c520", "text": "M124 Query authority and policy. Domain Governance. Policy/provenance is part of compatibility, not hidden side logic. GPU realization: Mask/tag input. Status RETAIN; validation Specified."}
+{"node_id": "0xa803fb1e8466a084", "text": "UGTS mechanism domain: GPU-native."}
+{"node_id": "0xe6bef2297c29b89b", "text": "M125 GLSL-to-SPIR-V compilation. Domain GPU-native. Compile compute kernels to SPIR-V; bundled modules are SPIR-V 1.4. GPU realization: glslang or bootstrap compiler; manifest validates magic, entry, local size and bindings. Status RETAIN; validation Compiled and inspected."}
+{"node_id": "0x20e95d0868b2cb46", "text": "M126 Direct Vulkan compute runtime. Domain GPU-native. Create shader module, compute pipeline, descriptors, buffers and dispatch directly through Vulkan. GPU realization: Native Vulkan C++ host. Status RETAIN; validation Executed."}
+{"node_id": "0x03d415bb856808e5", "text": "M127 Descriptor ABI. Domain GPU-native. Set 0 binding 0 state, 1 event, 2 counters/commit. GPU realization: Storage buffers. Status RETAIN; validation Validated."}
+{"node_id": "0xed451680ff50d254", "text": "M128 256-thread workgroup. Domain GPU-native. One invocation evaluates one candidate. GPU realization: Compute dispatch groups ceil(N/256). Status RETAIN; validation Compiled."}
+{"node_id": "0x11039b6759394069", "text": "M129 G64 authoritative state record. Domain GPU-native. Four 16-byte vectors: position/time, axis/radius, phase/guard, metadata. GPU realization: std430 State64. Status RETAIN; validation Implemented."}
+{"node_id": "0x6c5d214fda2a6e84", "text": "M130 E32 full event record. Domain GPU-native. Float-bit scalars plus topology/lineage flags. GPU realization: std430 Event32. Status RETAIN; validation Implemented."}
+{"node_id": "0xa0b8d7eb2c488d0a", "text": "M131 G32 packed state record. Domain GPU-native. Pair FP16 fields and pack topology metadata. GPU realization: unpackHalf2x16. Status RETAIN; validation Implemented and validated."}
+{"node_id": "0x18f7e046a9c1f7ee", "text": "M132 E16 packed event record. Domain GPU-native. SDF plus packed guard/confidence, flags and lineage hash. GPU realization: uvec4 output. Status RETAIN; validation Implemented and validated."}
+{"node_id": "0x4af67ab4311a1e5f", "text": "M133 Evaluate mode. Domain GPU-native. Write per-candidate result without global counters. GPU realization: SPIR-V evaluate modules. Status RETAIN; validation Benchmarked."}
+{"node_id": "0x64975f6c3745fae4", "text": "M134 Evaluate+commit mode. Domain GPU-native. Add four atomic counters for candidates/support/compatible/verified. GPU realization: SPIR-V commit modules. Status RETAIN; validation Benchmarked."}
+{"node_id": "0x3247e2274fcd98dd", "text": "M135 Device timestamp measurement. Domain GPU-native. Use Vulkan timestamp queries and host fence timing. GPU realization: Query pool, p50/p95/p99. Status RETAIN; validation Benchmarked."}
+{"node_id": "0xcf4eb87e94fd90d4", "text": "M136 Pipeline cache artifact. Domain GPU-native. Persist vendor/driver-specific cache blob; portability is not assumed. GPU realization: VkPipelineCache. Status RETAIN; validation Reload tested."}
+{"node_id": "0xc23ca305257c3fe4", "text": "M137 SPIR-V module manifest. Domain GPU-native. Hash and inspect version, entry point, local size and descriptors. GPU realization: Custom dependency-free parser. Status RETAIN; validation Validated."}
+{"node_id": "0x80f9ae5e67989348", "text": "M138 Lineage hash. Domain GPU-native. Compact deterministic lineage checksum; not a unique or cryptographic identity. GPU realization: 32-bit hash. Status RETAIN; validation Validated as checksum; structured-seed collisions measured and bucketed during compact validation."}
+{"node_id": "0x4288d0229e93e586", "text": "M139 Dense output path. Domain GPU-native. Simple validation layout; non-events still occupy output. GPU realization: Dense SSBO. Status RETAIN; validation Benchmarked baseline."}
+{"node_id": "0x9f93362a60349dbd", "text": "M140 Verified-event compaction. Domain GPU-native. Use ballot/prefix scan or atomic append to retain verified events. GPU realization: Per-lane atomic and subgroup/workgroup range-reservation kernels with bounded-capacity overflow guard and optional pre-threshold predicate. Status RETAIN; validation Implemented; dense-capacity, bounded-capacity, deliberate-overflow and pre-threshold paths validated."}
+{"node_id": "0xdaf4e7570b2250c4", "text": "M141 Structure-of-arrays option. Domain GPU-native. Split position/support/meta streams when hardware favors field locality. GPU realization: Multiple SSBOs. Status OPTIONAL; validation Not benchmarked."}
+{"node_id": "0x9acca34f58a5d03d", "text": "M142 Memory coalescing contract. Domain GPU-native. G64/G32 use 16-byte-aligned records; fixed-query G24 uses a verified 24-byte scalar-word stride; G20 splits five adjacent hot words from a separate lineage word loaded only by retained lanes. GPU realization: std430 aligned/scalar-word structs and optional split SSBO. Status RETAIN; validation G24/G20 strides disassembled; footprint-shifted L2 boundary and isolated cold-lineage locality gain measured on named device; driver-native append resource statistics are identical; paired texture/SSBO paths share the random-access cliff."}
+{"node_id": "0x68bfaf50ebc88d11", "text": "M143 FP16 error contract. Domain GPU-native. G32 requires declared range/tolerance; event guard must exceed quantization uncertainty. GPU realization: Half conversion and validation. Status RETAIN; validation Sample validated."}
+{"node_id": "0xfd8d115672f78f58", "text": "M144 Cold versus cache-seeded compilation. Domain GPU-native. Report shader-module, cold pipeline and cache-seeded pipeline times separately. GPU realization: CPC/CPH metrics. Status RETAIN; validation Benchmarked."}
+{"node_id": "0xa3e596b6acfca187", "text": "M145 CPU reference oracle. Domain GPU-native. Scalar implementation checks every dense output and compact-stream completeness plus counters. GPU realization: C++ reference. Status RETAIN; validation Passed."}
+{"node_id": "0xafa635d35db43437", "text": "M146 Deterministic benchmark corpus. Domain GPU-native. Fixed formula yields reproducible support, compatibility and event counts. GPU realization: C++ generator. Status RETAIN; validation Passed."}
+{"node_id": "0x0dd64e52f87cab1f", "text": "M147 No Unity/Godot target layer. Domain GPU-native. Engine adapters are intentionally absent; ABI is Vulkan/SPIR-V and physical register/stream definitions. GPU realization: Direct runtime and shader modules. Status RETAIN; validation Package audited."}
+{"node_id": "0xa27ba4f18da01705", "text": "UGTS mechanism domain: Projection."}
+{"node_id": "0x155d414c0750f43a", "text": "M148 Cartesian-to-log-polar mapping. Domain Projection. Transform only in output/sensor stage where radial symmetry helps. GPU realization: Shader math/LUT. Status RETAIN; validation Optional."}
+{"node_id": "0x29c88f4c364c563b", "text": "M149 One-bit sector activation. Domain Projection. Skip inactive sectors before field evaluation. GPU realization: Bitset fetch. Status RETAIN; validation Optional."}
+{"node_id": "0xc86eb700f08104b0", "text": "M150 Phasor coverage accumulation. Domain Projection. Deterministic complex amplitude/phase accumulation or multisample coverage. GPU realization: Complex pair accumulation. Status CORRECTED; validation Not quantum simulation."}
+{"node_id": "0x184e7c1e6da4a222", "text": "M151 Subpixel gradient alignment. Domain Projection. Use gradient/normal to orient filter or coverage. GPU realization: Derivative/normal calculation. Status TRANSLATE; validation Optional."}
+{"node_id": "0xc1584cb6008c5002", "text": "M152 Pulse-density modulation. Domain Projection. Encode scalar magnitude as pulse density over a declared window. GPU realization: PDM/delta-sigma kernel. Status RETAIN; validation Established technique."}
+{"node_id": "0xd7dd18a2c769b7bd", "text": "M153 Anisotropic delta-sigma. Domain Projection. Shape quantization error by radial/angular sampling density. GPU realization: Error accumulator by sector. Status TRANSLATE; validation Requires measurement."}
+{"node_id": "0xe9040199e100042b", "text": "M154 Chromatic log-radius offset. Domain Projection. A multiplicative radial scale becomes an additive log-radius offset per channel. GPU realization: Per-channel add. Status RETAIN; validation Mathematically exact coordinate identity."}
+{"node_id": "0xba8cf3bcebbe531c", "text": "M155 Wavelength-dependent phase. Domain Projection. Model dispersion with per-wavelength phase parameters. GPU realization: Vector lanes/channels. Status TRANSLATE; validation Physical model required."}
+{"node_id": "0xea4bc73250f19b82", "text": "M156 Seeded stochastic blend. Domain Projection. Use deterministic noise threshold keyed by coordinate/lineage. GPU realization: Hash/blue-noise. Status RETAIN; validation Optional."}
+{"node_id": "0x61096cdd68e2b358", "text": "M157 Log-polar blue-noise screening. Domain Projection. Warp screening frequency to maintain intended density under coordinate expansion. GPU realization: Threshold texture. Status TRANSLATE; validation Output-specific."}
+{"node_id": "0x53cb461ae2f8d392", "text": "M158 SDF edge lock. Domain Projection. Near zero surface, bias threshold using gradient/coverage. GPU realization: Edge-aware threshold. Status TRANSLATE; validation Output-specific."}
+{"node_id": "0xe27e749936db81e9", "text": "M159 Dot-gain compensation. Domain Projection. Calibrate binary threshold to measured process gain. GPU realization: Calibration LUT. Status RETAIN; validation Established output practice."}
+{"node_id": "0xf8954b06a86209e9", "text": "M160 CMYK angular separation. Domain Projection. Assign independent angular offsets to reduce moiré. GPU realization: Per-plate phase/angle. Status RETAIN; validation Output-specific."}
+{"node_id": "0xdac84170d8c1158c", "text": "UGTS mechanism domain: Physical hardware."}
+{"node_id": "0x28e27af536687965", "text": "M161 Liquid overclad. Domain Physical hardware. Liquid changes effective index/coupling over a solid guide. GPU realization: Control ABI only. Status RETAIN; validation Prototype class established."}
+{"node_id": "0x9ac0d9c2b568fdb8", "text": "M162 Liquid-core guide. Domain Physical hardware. Higher interaction with harder loss/packaging constraints. GPU realization: Control ABI only. Status OPTIONAL; validation Component class established."}
+{"node_id": "0x40754960daf388c2", "text": "M163 Input liquid lens. Domain Physical hardware. Deformable interface couples free-space angular support into guide. GPU realization: Input calibration table. Status RETAIN; validation Component class established."}
+{"node_id": "0x22c638ae38e96d21", "text": "M164 Solid photonic substrate. Domain Physical hardware. Provides conventional low-loss routing and couplers. GPU realization: Device descriptor. Status RETAIN; validation Established."}
+{"node_id": "0xb0060508680dd47f", "text": "M165 2×2 interferometric kernel. Domain Physical hardware. Minimal mode/phase comparison primitive. GPU realization: Digital twin/reference model. Status RETAIN; validation Prototype proposal."}
+{"node_id": "0x76136401460de4be", "text": "M166 Balanced detection. Domain Physical hardware. Difference readout reduces common-mode intensity noise. GPU realization: Input ADC record. Status RETAIN; validation Established."}
+{"node_id": "0x2afdf9da9bed62ff", "text": "M167 Spherical-to-mode overlap. Domain Physical hardware. Coupling efficiency is normalized field overlap integral. GPU realization: Precomputed/calibrated coefficient. Status RETAIN; validation Established equation."}
+{"node_id": "0x89ef695e41986147", "text": "M168 Coupled-mode evolution. Domain Physical hardware. Track propagation constants, attenuation and coupling. GPU realization: Reduced-order simulator/config. Status RETAIN; validation Established theory."}
+{"node_id": "0x8263c56afe02da58", "text": "M169 Young–Laplace curvature. Domain Physical hardware. Pressure-curvature law drives lens shape. GPU realization: Controller model. Status RETAIN; validation Established theory."}
+{"node_id": "0x05602487600174f1", "text": "M170 Maxwell field boundary. Domain Physical hardware. Optical behavior must be solved/calibrated from dielectric geometry. GPU realization: Offline solver/reference, not replaced by event kernel. Status RETAIN; validation Established."}
+{"node_id": "0xb5817bd4944614e0", "text": "M171 Actuation modes. Domain Physical hardware. Actuator has range, settling, hysteresis, power and cycle life. GPU realization: Control registers and timing. Status RETAIN; validation Measure."}
+{"node_id": "0x2a6d343b9e15989b", "text": "M172 Measured B.C.E. guard. Domain Physical hardware. Detector threshold plus mode/policy compatibility commits event. GPU realization: Same event ABI as GPU. Status RETAIN; validation Prototype criterion."}
+{"node_id": "0xdf502db5944b5111", "text": "M173 Calibration and drift state. Domain Physical hardware. Calibration coefficients and uncertainty are first-class state. GPU realization: Calibration buffer/event tags. Status RETAIN; validation Required."}
+{"node_id": "0xfd0d0837cf5a07d0", "text": "M174 Events per joule. Domain Physical hardware. Count verified events over full source+actuator+detector+control energy. GPU realization: Benchmark field. Status RETAIN; validation Required."}
+{"node_id": "0xef39e84222bb6e63", "text": "M175 Optical insertion loss. Domain Physical hardware. Report loss beside event throughput. GPU realization: Device metadata. Status RETAIN; validation Required."}
+{"node_id": "0x9e3b6c4170f70e22", "text": "M176 Packaging failure controls. Domain Physical hardware. Bubble rate, evaporation, swelling, alignment and seal life are kill criteria. GPU realization: Health/status events. Status RETAIN; validation Required."}
+{"node_id": "0xec5b2c4c4e7cd763", "text": "M177 Digital commit sidecar. Domain Physical hardware. Use FPGA/ASIC/MCU for thresholds, uncertainty, lineage and safety; this is not a game-engine adapter. GPU realization: Same E16/E32/event ABI. Status RETAIN; validation Canonical."}
+{"node_id": "0x7753b78671e229c7", "text": "M178 Fixed-function support engine. Domain Physical hardware. ASIC/FPGA datapath evaluates radial and angular support. GPU realization: Maps Vulkan kernel stages to PEs. Status TRANSLATE; validation Architecture specified."}
+{"node_id": "0x8052fb025fd91bdf", "text": "M179 Compatibility mask engine. Domain Physical hardware. Bitfield compares before guard evaluation. GPU realization: Maps shader predicate. Status TRANSLATE; validation Architecture specified."}
+{"node_id": "0x4a4d1e785e6cd646", "text": "M180 Event FIFO and lineage commit. Domain Physical hardware. Compact verified events and maintain monotonic sequence/lineage. GPU realization: Compaction/FIFO interface. Status TRANSLATE; validation Architecture specified."}
+{"node_id": "0x860977a376236c6b", "text": "M181 Fluidic threshold/reset endpoint. Domain Physical hardware. Optional physical hysteretic reset, not a computation or energy source. GPU realization: Control state machine. Status BOUNDED; validation Requires lab validation."}
+{"node_id": "0x635deac794e5a8e6", "text": "M182 Explicit topology transfer map. Domain Physical hardware. Non-orientable naming is permitted only with port, orientation and transfer matrix. GPU realization: Routing table. Status RETAIN; validation Required."}
+{"node_id": "0xcece6289363cd7cd", "text": "M183 Failure/kill criteria. Domain Physical hardware. Reject device if loss, drift, false events, actuation speed, packaging or sidecar cost erase benefit. GPU realization: Benchmark gate. Status RETAIN; validation Required."}
+{"node_id": "0x03e860f04306536d", "text": "UGTS mechanism domain: Audit."}
+{"node_id": "0xc4cdf5cfce9f6794", "text": "M184 100% does not ordinarily equal 36. Domain Audit. 36 is output of a custom glyph encoder only. GPU realization: Parser mode required. Status CORRECTED; validation Exact."}
+{"node_id": "0xd83dcf07c5addd4b", "text": "M185 100101 versus 100100 inconsistency. Domain Audit. Canonical addendum uses the later explicit open-loop suppression rule; both encodings are logged as variants. GPU realization: Versioned encoder rule. Status CORRECTED; validation Source inconsistency resolved explicitly."}
+{"node_id": "0xd730b5ea6648dd15", "text": "M186 Information entropy is not automatically heat. Domain Audit. Thermodynamic energy requires temperature and irreversible erasure model; use Landauer lower bound only as a bound. GPU realization: Units/type checker. Status REJECT; validation Dimensionally invalid source claim."}
+{"node_id": "0x624a3dfb7a2b00e8", "text": "M187 Absolute single vacuum claim. Domain Audit. A siphon uses pressure difference and gravity; no absolute vacuum is created. GPU realization: Use threshold/reset abstraction. Status CORRECTED; validation Established physics boundary."}
+{"node_id": "0x38f0257551bd7243", "text": "M188 Zero-cost chromatic correction. Domain Audit. Log-space offset is cheap, not free; report instructions/bandwidth/passes. GPU realization: Benchmark separately. Status REJECT; validation Absolute claim."}
+{"node_id": "0x1f8d6a9a2e2942e1", "text": "M189 Perfect alias elimination. Domain Audit. PDM/dither redistributes error; quality is finite and measurable. GPU realization: Error metrics. Status REJECT; validation Absolute claim."}
+{"node_id": "0x225326c2cd0c3de8", "text": "M190 Universal O(1). Domain Audit. Only fixed closed-expression state queries may be horizon-independent; event/branch costs remain. GPU realization: Complexity budgets. Status BOUNDED; validation Canonical correction."}
+{"node_id": "0x8e3c8754549f043b", "text": "M191 Zero memory/latency/heat. Domain Audit. All state, caches, logs, sources, actuators and controls count. GPU realization: Full accounting. Status REJECT; validation Canonical rejection."}
+{"node_id": "0x3df186d8159263f3", "text": "M192 Perfect determinism/exact chaos. Domain Audit. Finite precision, degeneracies and external novelty require uncertainty and logs. GPU realization: Intervals/error bounds. Status REJECT; validation Unsupported absolute."}
+{"node_id": "0x84e51e1e840d9607", "text": "M193 One bit as complete state. Domain Audit. One bit is route/validity only; continuous state and lineage remain separate. GPU realization: Typed ABI. Status REJECT; validation Canonical correction."}
+{"node_id": "0x315b1c09dfab16cd", "text": "M194 No broad phase ever. Domain Audit. Support/compatibility are themselves analytic broad-phase/pruning operators. GPU realization: Keep measurable pruning. Status CORRECTED; validation Terminology correction."}
+{"node_id": "0xd890761c137f84cc", "text": "M195 General AI/world replacement. Domain Audit. No support in corpus; restrict to state/event substrate. GPU realization: Excluded from requirements. Status REJECT; validation Unsupported."}
+{"node_id": "0xe12b01be5dd1ed95", "text": "M196 Biological one-bit equivalence. Domain Audit. Use as analogy only; biological/quantum mechanisms are not established by the geometry. GPU realization: Excluded from technical core. Status DEMOTE; validation Unsupported analogy."}
+{"node_id": "0xce41e1d14354f483", "text": "M197 Physical-GPU benchmark boundary. Domain Audit. Results prove API-native execution and correctness on named device, not physical-GPU throughput. GPU realization: physical_gpu_claim=false. Status RETAIN; validation Explicit boundary."}
+{"node_id": "0x044e4b1f62a92831", "text": "UGTS mechanism domain: Performance/cache."}
+{"node_id": "0xc248a0cf2b024b9d", "text": "M198 Native device-clock L2 boundary. Domain Performance/cache. A saturated random dependent-load working set is flat through 36 MiB, then rises at 38 MiB and sharply at 40 MiB. GPU realization: VK_KHR_shader_clock control plus dependent SSBO chase. Status RETAIN; validation Measured with implementation-defined clock-unit and scheduler-exposure bounds."}
+{"node_id": "0x4e129e544c7c92b8", "text": "M199 Native CUDA L2 cycle control. Domain Performance/cache. The immediate-hot L2/global path is about 400 exposed cycles per dependent warp step while a 256 MiB eviction raises it to about 1088 cycles on the named GPU. GPU realization: Native sm_120 clock64 control and dependent ld.global.cg loop. Status RETAIN; validation Measured with time-slicing and multi-sector warp-step bounds."}
+{"node_id": "0x8b81d083df2d6346", "text": "M200 Native CUDA L2 concurrency curve. Domain Performance/cache. At 1104 warps hot requested throughput is unchanged between 4 and 36 MiB but falls 45.20% at 40 MiB and 82.59% at 128 MiB. GPU realization: Native sm_120 clock64 plus CUDA-event dependent-chain matrix. Status RETAIN; validation Measured logical requested-load throughput with scheduling and transaction-granularity bounds."}
+{"node_id": "0x3a982b3bcebcdb32", "text": "M201 Native CUDA texture-path capacity control. Domain Performance/cache. Native TLD and LDG paths share the same 36-40 MiB throughput cliff; texture adds no effective capacity tier and is slower at low concurrency. GPU realization: Native sm_120 TLD.LZ versus LDG.E.STRONG.GPU matched matrix. Status RETAIN; validation Measured with logical-throughput and unavailable-counter bounds."}
+{"node_id": "0x35188204ad70a24d", "text": "M202 Dense 6-bit CUDA log-LUT packing. Domain Performance/cache. Dense packing realizes 2.667x code capacity at the same bytes; on the named GPU the saturated texture path preserves 98.61% of slot16 throughput at the 36 MiB capacity endpoint. GPU realization: Native sm_120 packed extraction through matched TLD.LZ and LDG.E.STRONG.GPU paths. Status RETAIN; validation Measured logical decoded-code throughput with per-load validation and unavailable-counter bounds."}
+{"node_id": "0x52d20a6599f99280", "text": "M203 Native CUDA sparse-stride effective residency. Domain Performance/cache. Active-node capacity scales 4:2:1 at 32/64/128-byte spacing and saturates by 128 bytes, bounding dependent-pointer effective residency at 128 bytes for the named workload. GPU realization: Native sm_120 nonlinear dependent ld.global.cg chase with CPU replay and spacing controls. Status RETAIN; validation Measured workload-level effective residency with dependency, physical-line and unavailable-counter bounds."}
+{"node_id": "0x792de3de57fc1371", "text": "M204 Packed-LUT neighborhood occupancy curve. Domain Performance/cache. At 36 MiB all layouts sustain 42.437-43.010 Glookup/s while post-L2 throughput changes continuously with address-region touch probability, rejecting a universal 128-byte cost for independently scheduled packed codes. GPU realization: Native sm_120 independent packed6 lookup matrix through matched TLD.LZ and LDG.E.STRONG.GPU paths. Status RETAIN; validation Measured logical decoded-code throughput with arithmetic address-span and unavailable-counter bounds."}
+{"node_id": "0x1a4ea52634049a65", "text": "M205 Sparse-LUT residency decomposition. Domain Performance/cache. Independent sparse packed-LUT throughput cannot be predicted by requested data bytes, allocation, or containing-line count alone; resident data portions, containing-line-address pressure, and address span are separately observable timing terms. GPU realization: Native sm_120 independent packed6 global/texture stride matrix with exact line-equivalent refinement. Status RETAIN; validation Measured timing model with undocumented-sector tag set TLB and unavailable-counter bounds."}
+{"node_id": "0x2e72b97c07a4fbeb", "text": "M206 Sparse-LUT page-spaced address reach. Domain Performance/cache. At fixed useful words and containing test-line count, full-rate independent sparse lookup persists through a 252 MiB address span and transitions between 252 and 256 MiB on the named workload. GPU realization: Native sm_120 matched LDG/TLD page-stride matrix through a 1-GiB allocation span. Status RETAIN; validation Measured logical throughput with page-size TLB set partition and unavailable-counter bounds."}
+{"node_id": "0x5d167651b1966e03", "text": "M207 Sparse-LUT exact-stride alias control. Domain Performance/cache. Exact 512- and 1,024-byte sparse pitches create native texture-path throughput aliasing that is removed by a plus or minus 32-byte skew below the general address-span transition. GPU realization: Native sm_120 TLD/LDG matched pitch-skew matrix with mixed filler and per-load validation. Status RETAIN; validation Measured address-index alias evidence without physical set bank or partition claims."}
+{"node_id": "0x1867d35ff1dfb681", "text": "M208 VMM-isolated virtual address reach. Domain Performance/cache. The sparse-LUT 248-256 MiB transition persists when physical allocation and accessed physical payload remain fixed at 2 MiB; virtual address distribution and reach are therefore causal timing terms for the named workload. GPU realization: Native sm_120 paired LDG/TLD lookup over repeated CUDA VMM aliases with fixed physical backing. Status RETAIN; validation Measured virtual-address effect without hardware-page TLB page-walk set or partition claims."}
+{"node_id": "0xe96739df0d08ce4f", "text": "M209 Content-sensitive CUDA VMM compression. Domain Performance/cache. The driver grants generic compression and can expand all-zero throughput-equivalent allocation capacity through 240 MiB, but periodic and entropy-dense packed6 LUTs gain no effective cache capacity; compression benefit is content-specific and remains bounded by virtual reach. GPU realization: Native sm_120 paired LDG/TLD packed6 decoding over effective mode-0 and mode-1 VMM handles. Status RETAIN; validation Measured property and logical-throughput bounds without physical compression ratio cache-byte or DRAM counters."}
+{"node_id": "0x525c752692e9ea8f", "text": "M210 Constant-pattern CUDA VMM compression. Domain Performance/cache. An independently validated nonzero constant table reproduces the all-zero global compression boundary through 240 MiB, supporting a constant-pattern class while rejecting extrapolation to information-bearing LUTs. GPU realization: Native sm_120 paired LDG packed6 decoding over effective mode-0 and mode-1 VMM handles. Status RETAIN; validation Measured nonzero semantic control with logical-throughput and unavailable-counter bounds."}
+{"node_id": "0x54817dced2998425", "text": "M211 Zero-sentinel texture validation guard. Domain Performance/cache. A zero-only checker is insufficient for texture or compression capacity evidence; the fast zero-texture curve is rejected because an all-one sentinel produces zero valid timed payloads while information-bearing texture controls remain valid. GPU realization: Native sm_120 TLD versus LDG semantic controls with mismatch totals and exact table-group perturbation. Status RETAIN; validation Validated negative control and explicit correction of a prior zero-sentinel false positive."}
+{"node_id": "0x23a4caacda3b87da", "text": "Synthetic administrative anchor for Almere, Flevoland demonstration area. Spatial split 0."}
+{"node_id": "0x9708f735d41d2c4c", "text": "Broad-phase spatial support cell 0 around Almere."}
+{"node_id": "0xe3231b94da94cc29", "text": "Broad-phase spatial support cell 1 around Almere."}
+{"node_id": "0x675141b9b9f3655c", "text": "Broad-phase spatial support cell 2 around Almere."}
+{"node_id": "0xc54e15f7c04e909b", "text": "Broad-phase spatial support cell 3 around Almere."}
+{"node_id": "0xd8aa28931c162afe", "text": "Synthetic air_temperature sensor 0 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0xafac1f31e48ed3bd", "text": "Synthetic nitrogen_dioxide sensor 1 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x044a5f0025bd2f3f", "text": "Synthetic traffic_flow sensor 2 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0xe4677ee30855d47b", "text": "Synthetic water_level sensor 3 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0xd62738106b842f34", "text": "Synthetic soil_moisture sensor 4 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x604ae3696c814cd3", "text": "Synthetic wind_speed sensor 5 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x3c08bf65b6b97666", "text": "Synthetic air_temperature sensor 6 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x1ec2210f7bc77367", "text": "Synthetic nitrogen_dioxide sensor 7 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x490c6ff373403fc1", "text": "Synthetic traffic_flow sensor 8 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x2887c2478578b9de", "text": "Synthetic water_level sensor 9 in Almere; persistent sensor identity with irregular observations."}
+{"node_id": "0x4476cae292b7a87c", "text": "Synthetic geospatial asset: school 0 in Almere."}
+{"node_id": "0xc7290e5479b019fd", "text": "Synthetic geospatial asset: bridge 1 in Almere."}
+{"node_id": "0x70fc947a604d75a9", "text": "Synthetic geospatial asset: pumping station 2 in Almere."}
+{"node_id": "0x2bebe03ee899c478", "text": "Synthetic geospatial asset: park 3 in Almere."}
+{"node_id": "0xf6b313e7200cc6d3", "text": "Synthetic geospatial asset: industrial site 4 in Almere."}
+{"node_id": "0x01b3205b05dbbba3", "text": "Synthetic geospatial asset: waterway 5 in Almere."}
+{"node_id": "0x653904e37dafb3b6", "text": "Synthetic geospatial asset: road junction 6 in Almere."}
+{"node_id": "0xf641cc3e0e68493c", "text": "Synthetic geospatial asset: public building 7 in Almere."}
+{"node_id": "0x6f22b5923be14b55", "text": "Synthetic geospatial asset: charging site 8 in Almere."}
+{"node_id": "0x8fbbc310a9ab7b28", "text": "Synthetic geospatial asset: farm 9 in Almere."}
+{"node_id": "0x204697d01327e0f5", "text": "Synthetic geospatial asset: school 10 in Almere."}
+{"node_id": "0xa342cf7054c4f8c3", "text": "Synthetic geospatial asset: bridge 11 in Almere."}
+{"node_id": "0xb297e107bf417542", "text": "Synthetic geospatial asset: pumping station 12 in Almere."}
+{"node_id": "0xc236b525c6d3bb8b", "text": "Synthetic geospatial asset: park 13 in Almere."}
+{"node_id": "0xf1fa8ef6d65c13a9", "text": "Synthetic geospatial asset: industrial site 14 in Almere."}
+{"node_id": "0x5ff0b75248f3ecef", "text": "Synthetic geospatial asset: waterway 15 in Almere."}
+{"node_id": "0x3a7a69ea802c85bf", "text": "Synthetic route segment 0 in Almere."}
+{"node_id": "0x709fc8e0bb7ad5e4", "text": "Synthetic route segment 1 in Almere."}
+{"node_id": "0xb650e12a68d6640c", "text": "Synthetic route segment 2 in Almere."}
+{"node_id": "0x5695efa9fdc0022a", "text": "Synthetic observation 0 of air_temperature in Almere at hour 157.57."}
+{"node_id": "0xcd11b95b7e13c1da", "text": "Synthetic observation 1 of nitrogen_dioxide in Almere at hour 123.15."}
+{"node_id": "0xf0234e4d1efa4070", "text": "Synthetic observation 2 of traffic_flow in Almere at hour 70.76."}
+{"node_id": "0xda58d724896bd824", "text": "Synthetic observation 3 of water_level in Almere at hour 150.84."}
+{"node_id": "0x18e23aa837127982", "text": "Synthetic observation 4 of soil_moisture in Almere at hour 28.23."}
+{"node_id": "0x8df047d8cdca30e9", "text": "Synthetic observation 5 of wind_speed in Almere at hour 88.70."}
+{"node_id": "0x4666953c14387bf7", "text": "Synthetic observation 6 of air_temperature in Almere at hour 86.07."}
+{"node_id": "0x686bff48c79847a5", "text": "Synthetic observation 7 of nitrogen_dioxide in Almere at hour 166.21."}
+{"node_id": "0x4643b55bf4b29b1d", "text": "Lineage root for Almere synthetic spatial state."}
+{"node_id": "0xadf15d2e482fb60c", "text": "Synthetic administrative anchor for Lelystad, Flevoland demonstration area. Spatial split 0."}
+{"node_id": "0x764fe90b8dfe4358", "text": "Broad-phase spatial support cell 0 around Lelystad."}
+{"node_id": "0xd01018669236c684", "text": "Broad-phase spatial support cell 1 around Lelystad."}
+{"node_id": "0xdbe36a3f2c05663d", "text": "Broad-phase spatial support cell 2 around Lelystad."}
+{"node_id": "0x202f3c4e7f156466", "text": "Broad-phase spatial support cell 3 around Lelystad."}
+{"node_id": "0xf4db936d2f16a2e6", "text": "Synthetic traffic_flow sensor 0 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0x5eca5a5de87ec9d2", "text": "Synthetic water_level sensor 1 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0xf100ccd942cc57a9", "text": "Synthetic soil_moisture sensor 2 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0xe1bd64dc5b00dd86", "text": "Synthetic wind_speed sensor 3 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0xe536c8afa1dcaddc", "text": "Synthetic air_temperature sensor 4 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0x83e5e1b7d0e31eb5", "text": "Synthetic nitrogen_dioxide sensor 5 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0x8f46888f668f6df7", "text": "Synthetic traffic_flow sensor 6 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0x1a76d160b517d76b", "text": "Synthetic water_level sensor 7 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0x5513c652618a648e", "text": "Synthetic soil_moisture sensor 8 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0xd0911ce230310bf0", "text": "Synthetic wind_speed sensor 9 in Lelystad; persistent sensor identity with irregular observations."}
+{"node_id": "0x1f985504ffe49726", "text": "Synthetic geospatial asset: school 0 in Lelystad."}
+{"node_id": "0x2ac4ec78d78713b5", "text": "Synthetic geospatial asset: bridge 1 in Lelystad."}
+{"node_id": "0x9946d91e9351771f", "text": "Synthetic geospatial asset: pumping station 2 in Lelystad."}
+{"node_id": "0xba55c0f04e2c0f6f", "text": "Synthetic geospatial asset: park 3 in Lelystad."}
+{"node_id": "0x1270731002b8951f", "text": "Synthetic geospatial asset: industrial site 4 in Lelystad."}
+{"node_id": "0xcf7b0d0919de3b9f", "text": "Synthetic geospatial asset: waterway 5 in Lelystad."}
+{"node_id": "0x6fe89fe62c5c35ed", "text": "Synthetic geospatial asset: road junction 6 in Lelystad."}
+{"node_id": "0x9c8f481e1439ccca", "text": "Synthetic geospatial asset: public building 7 in Lelystad."}
+{"node_id": "0xd515dc56b66e176f", "text": "Synthetic geospatial asset: charging site 8 in Lelystad."}
+{"node_id": "0x82c531053557d649", "text": "Synthetic geospatial asset: farm 9 in Lelystad."}
+{"node_id": "0xdf3f59a6c3e7c16c", "text": "Synthetic geospatial asset: school 10 in Lelystad."}
+{"node_id": "0x25a45abb71cbdc22", "text": "Synthetic geospatial asset: bridge 11 in Lelystad."}
+{"node_id": "0xa917a0ea60ad1dbe", "text": "Synthetic geospatial asset: pumping station 12 in Lelystad."}
+{"node_id": "0xcf29eb2415ceebba", "text": "Synthetic geospatial asset: park 13 in Lelystad."}
+{"node_id": "0x14b1c29369e9168a", "text": "Synthetic geospatial asset: industrial site 14 in Lelystad."}
+{"node_id": "0xa551c76bed57fede", "text": "Synthetic geospatial asset: waterway 15 in Lelystad."}
+{"node_id": "0x5463c8856a2f7c40", "text": "Synthetic route segment 0 in Lelystad."}
+{"node_id": "0x5b3f6fc57df9be43", "text": "Synthetic route segment 1 in Lelystad."}
+{"node_id": "0x14e439b76add048c", "text": "Synthetic route segment 2 in Lelystad."}
+{"node_id": "0x7657d6471059e807", "text": "Synthetic observation 0 of traffic_flow in Lelystad at hour 43.29."}
+{"node_id": "0x89f74ee1ccb74a0f", "text": "Synthetic observation 1 of water_level in Lelystad at hour 44.28."}
+{"node_id": "0x165dff1428bb488e", "text": "Synthetic observation 2 of soil_moisture in Lelystad at hour 115.19."}
+{"node_id": "0xdcccc0a0d76e527b", "text": "Synthetic observation 3 of wind_speed in Lelystad at hour 24.52."}
+{"node_id": "0x78f2b2996f94327b", "text": "Synthetic observation 4 of air_temperature in Lelystad at hour 106.41."}
+{"node_id": "0x90a28f953aed7c0f", "text": "Synthetic observation 5 of nitrogen_dioxide in Lelystad at hour 133.67."}
+{"node_id": "0x79b5cc40deed6c81", "text": "Synthetic observation 6 of traffic_flow in Lelystad at hour 0.27."}
+{"node_id": "0xe60f050728f38dce", "text": "Synthetic observation 7 of water_level in Lelystad at hour 127.09."}
+{"node_id": "0xaa3bbb5ab145764c", "text": "Lineage root for Lelystad synthetic spatial state."}
+{"node_id": "0x15f2dbac40b136b7", "text": "Synthetic administrative anchor for Dronten, Flevoland demonstration area. Spatial split 0."}
+{"node_id": "0x7171c20dffffa9ae", "text": "Broad-phase spatial support cell 0 around Dronten."}
+{"node_id": "0xacc5c95064c6530f", "text": "Broad-phase spatial support cell 1 around Dronten."}
+{"node_id": "0xef1fdbf351dbba1e", "text": "Broad-phase spatial support cell 2 around Dronten."}
+{"node_id": "0xd989e1cfd19ef729", "text": "Broad-phase spatial support cell 3 around Dronten."}
+{"node_id": "0x2abdaf7d5aa7bbba", "text": "Synthetic soil_moisture sensor 0 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x73f641fd5760376e", "text": "Synthetic wind_speed sensor 1 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x58d1780ef603a6af", "text": "Synthetic air_temperature sensor 2 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x2a6dda024f917a10", "text": "Synthetic nitrogen_dioxide sensor 3 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0xbc5634622ebb4db2", "text": "Synthetic traffic_flow sensor 4 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x0f63f08c088c2d28", "text": "Synthetic water_level sensor 5 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x6902f8ff9b1d7ca1", "text": "Synthetic soil_moisture sensor 6 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x23d94fd29fc59a8c", "text": "Synthetic wind_speed sensor 7 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x1f78a9794df640ad", "text": "Synthetic air_temperature sensor 8 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x99f99d32c231a3ca", "text": "Synthetic nitrogen_dioxide sensor 9 in Dronten; persistent sensor identity with irregular observations."}
+{"node_id": "0x3283562a7800e75e", "text": "Synthetic geospatial asset: school 0 in Dronten."}
+{"node_id": "0x738200de9f2821dd", "text": "Synthetic geospatial asset: bridge 1 in Dronten."}
+{"node_id": "0x56267fd31d5df193", "text": "Synthetic geospatial asset: pumping station 2 in Dronten."}
+{"node_id": "0x6411fec0566a24d9", "text": "Synthetic geospatial asset: park 3 in Dronten."}
+{"node_id": "0xec6f1ecb0280ad64", "text": "Synthetic geospatial asset: industrial site 4 in Dronten."}
+{"node_id": "0xe226d5e4fbd0d031", "text": "Synthetic geospatial asset: waterway 5 in Dronten."}
+{"node_id": "0xc076605884800be0", "text": "Synthetic geospatial asset: road junction 6 in Dronten."}
+{"node_id": "0x9cbb7c13fd965125", "text": "Synthetic geospatial asset: public building 7 in Dronten."}
+{"node_id": "0x4f4f3343d75da304", "text": "Synthetic geospatial asset: charging site 8 in Dronten."}
+{"node_id": "0xcf63140c3c7b45fa", "text": "Synthetic geospatial asset: farm 9 in Dronten."}
+{"node_id": "0x4632321f54460045", "text": "Synthetic geospatial asset: school 10 in Dronten."}
+{"node_id": "0xd9e8697f1e10a0f4", "text": "Synthetic geospatial asset: bridge 11 in Dronten."}
+{"node_id": "0xe0530c003444e666", "text": "Synthetic geospatial asset: pumping station 12 in Dronten."}
+{"node_id": "0x3a75a62fb5b6a9bc", "text": "Synthetic geospatial asset: park 13 in Dronten."}
+{"node_id": "0xc9ee1e133d53b020", "text": "Synthetic geospatial asset: industrial site 14 in Dronten."}
+{"node_id": "0xb611f759dd1d5698", "text": "Synthetic geospatial asset: waterway 15 in Dronten."}
+{"node_id": "0x156bb84e5fb84df2", "text": "Synthetic route segment 0 in Dronten."}
+{"node_id": "0x870a666eebe59ec5", "text": "Synthetic route segment 1 in Dronten."}
+{"node_id": "0x00c2ebe156cd70d0", "text": "Synthetic route segment 2 in Dronten."}
+{"node_id": "0x5bd2a949a44607fa", "text": "Synthetic observation 0 of soil_moisture in Dronten at hour 11.59."}
+{"node_id": "0x870ff082c7e7f031", "text": "Synthetic observation 1 of wind_speed in Dronten at hour 134.09."}
+{"node_id": "0x801d7ef5d3fe5077", "text": "Synthetic observation 2 of air_temperature in Dronten at hour 31.24."}
+{"node_id": "0x092cec1576e0badf", "text": "Synthetic observation 3 of nitrogen_dioxide in Dronten at hour 32.05."}
+{"node_id": "0xcf8c6f5dfa43a194", "text": "Synthetic observation 4 of traffic_flow in Dronten at hour 37.85."}
+{"node_id": "0x3bbc7292a56725f4", "text": "Synthetic observation 5 of water_level in Dronten at hour 160.57."}
+{"node_id": "0x03cec6a2cb7b4cb0", "text": "Synthetic observation 6 of soil_moisture in Dronten at hour 81.12."}
+{"node_id": "0x87d7a130a2204b85", "text": "Synthetic observation 7 of wind_speed in Dronten at hour 49.46."}
+{"node_id": "0x4c1e9f4b3b84a716", "text": "Lineage root for Dronten synthetic spatial state."}
+{"node_id": "0xf76a7e03a3b69e87", "text": "Synthetic administrative anchor for Emmeloord, Flevoland demonstration area. Spatial split 1."}
+{"node_id": "0xda1cc0ab73fc9968", "text": "Broad-phase spatial support cell 0 around Emmeloord."}
+{"node_id": "0x002b259be2e4f482", "text": "Broad-phase spatial support cell 1 around Emmeloord."}
+{"node_id": "0xa99c4227ea224054", "text": "Broad-phase spatial support cell 2 around Emmeloord."}
+{"node_id": "0x6e78c088e698a828", "text": "Broad-phase spatial support cell 3 around Emmeloord."}
+{"node_id": "0x2cb51e9cabb08442", "text": "Synthetic air_temperature sensor 0 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0x2290dfa62632a3f3", "text": "Synthetic nitrogen_dioxide sensor 1 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0xe8303faa870cf6d9", "text": "Synthetic traffic_flow sensor 2 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0x15224fea4cccb9c2", "text": "Synthetic water_level sensor 3 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0x653d61cc696f68ce", "text": "Synthetic soil_moisture sensor 4 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0xc26dfaac420e6aa7", "text": "Synthetic wind_speed sensor 5 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0x1a6c1cc917089301", "text": "Synthetic air_temperature sensor 6 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0xbda641ae9b00b659", "text": "Synthetic nitrogen_dioxide sensor 7 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0xec2ec9582cd1efc1", "text": "Synthetic traffic_flow sensor 8 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0x15e7637fcde71adc", "text": "Synthetic water_level sensor 9 in Emmeloord; persistent sensor identity with irregular observations."}
+{"node_id": "0x7be9c14d26f57f07", "text": "Synthetic geospatial asset: school 0 in Emmeloord."}
+{"node_id": "0x1162efb044ca0058", "text": "Synthetic geospatial asset: bridge 1 in Emmeloord."}
+{"node_id": "0xcd62acd4978c69d9", "text": "Synthetic geospatial asset: pumping station 2 in Emmeloord."}
+{"node_id": "0xf5deb6cfb4357a43", "text": "Synthetic geospatial asset: park 3 in Emmeloord."}
+{"node_id": "0x20658bb92410c3cb", "text": "Synthetic geospatial asset: industrial site 4 in Emmeloord."}
+{"node_id": "0xdabe2182c75c2d9b", "text": "Synthetic geospatial asset: waterway 5 in Emmeloord."}
+{"node_id": "0x322c3069171af0f8", "text": "Synthetic geospatial asset: road junction 6 in Emmeloord."}
+{"node_id": "0xe6e7466057912148", "text": "Synthetic geospatial asset: public building 7 in Emmeloord."}
+{"node_id": "0x7cf45eb328ac73db", "text": "Synthetic geospatial asset: charging site 8 in Emmeloord."}
+{"node_id": "0x0b701e5af03b8da9", "text": "Synthetic geospatial asset: farm 9 in Emmeloord."}
+{"node_id": "0x04b1676e518403c1", "text": "Synthetic geospatial asset: school 10 in Emmeloord."}
+{"node_id": "0xd4d13e4be7ba7132", "text": "Synthetic geospatial asset: bridge 11 in Emmeloord."}
+{"node_id": "0x72a4174abd127f8b", "text": "Synthetic geospatial asset: pumping station 12 in Emmeloord."}
+{"node_id": "0xe5c22ca39ad4c041", "text": "Synthetic geospatial asset: park 13 in Emmeloord."}
+{"node_id": "0x19572c5b16299ecc", "text": "Synthetic geospatial asset: industrial site 14 in Emmeloord."}
+{"node_id": "0xa650b67365e6b0f1", "text": "Synthetic geospatial asset: waterway 15 in Emmeloord."}
+{"node_id": "0xb8d348226ca7552c", "text": "Synthetic route segment 0 in Emmeloord."}
+{"node_id": "0xacd33a3dc55ebd4f", "text": "Synthetic route segment 1 in Emmeloord."}
+{"node_id": "0x5d3078e519e1f17f", "text": "Synthetic route segment 2 in Emmeloord."}
+{"node_id": "0xf9dbae5f805e8a69", "text": "Synthetic observation 0 of air_temperature in Emmeloord at hour 76.13."}
+{"node_id": "0x0446d208c40b964d", "text": "Synthetic observation 1 of nitrogen_dioxide in Emmeloord at hour 59.35."}
+{"node_id": "0x65a32dfeed054087", "text": "Synthetic observation 2 of traffic_flow in Emmeloord at hour 25.34."}
+{"node_id": "0x3f85f0aa82962caf", "text": "Synthetic observation 3 of water_level in Emmeloord at hour 80.35."}
+{"node_id": "0x53fe9179e2e3f744", "text": "Synthetic observation 4 of soil_moisture in Emmeloord at hour 14.76."}
+{"node_id": "0x73c5859366449b04", "text": "Synthetic observation 5 of wind_speed in Emmeloord at hour 56.98."}
+{"node_id": "0x40f5cb983bf19962", "text": "Synthetic observation 6 of air_temperature in Emmeloord at hour 85.64."}
+{"node_id": "0xf5f7227fac18a554", "text": "Synthetic observation 7 of nitrogen_dioxide in Emmeloord at hour 165.97."}
+{"node_id": "0xbd1d17501eef495f", "text": "Lineage root for Emmeloord synthetic spatial state."}
+{"node_id": "0x8d02e647aa4d3c98", "text": "Synthetic administrative anchor for Urk, Flevoland demonstration area. Spatial split 2."}
+{"node_id": "0x26b6b1de88e68e5b", "text": "Broad-phase spatial support cell 0 around Urk."}
+{"node_id": "0x8d871ecb10bb994c", "text": "Broad-phase spatial support cell 1 around Urk."}
+{"node_id": "0xe521cd8a9065ef42", "text": "Broad-phase spatial support cell 2 around Urk."}
+{"node_id": "0x6f2c5a5bceb22984", "text": "Broad-phase spatial support cell 3 around Urk."}
+{"node_id": "0xd51a52429766ef80", "text": "Synthetic traffic_flow sensor 0 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0xdd69f4533e98da62", "text": "Synthetic water_level sensor 1 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0x5c577291fb0efba4", "text": "Synthetic soil_moisture sensor 2 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0x50b00f7a27942413", "text": "Synthetic wind_speed sensor 3 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0xe44f127ef6d75eda", "text": "Synthetic air_temperature sensor 4 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0xce9f86cd30642682", "text": "Synthetic nitrogen_dioxide sensor 5 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0x1b3f96890f380857", "text": "Synthetic traffic_flow sensor 6 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0x463aeb7cb8bcce25", "text": "Synthetic water_level sensor 7 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0xe8c3e95187fca6fb", "text": "Synthetic soil_moisture sensor 8 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0x9492e2a2d5fbf792", "text": "Synthetic wind_speed sensor 9 in Urk; persistent sensor identity with irregular observations."}
+{"node_id": "0x6268b0e9800056e7", "text": "Synthetic geospatial asset: school 0 in Urk."}
+{"node_id": "0xd51a7358b7fd1735", "text": "Synthetic geospatial asset: bridge 1 in Urk."}
+{"node_id": "0x1adf2097dc5060e6", "text": "Synthetic geospatial asset: pumping station 2 in Urk."}
+{"node_id": "0x4a0eeed15cdb6fbd", "text": "Synthetic geospatial asset: park 3 in Urk."}
+{"node_id": "0x8a8da9705908e929", "text": "Synthetic geospatial asset: industrial site 4 in Urk."}
+{"node_id": "0xd9b1a5dd19002859", "text": "Synthetic geospatial asset: waterway 5 in Urk."}
+{"node_id": "0xe72438856ecb17e6", "text": "Synthetic geospatial asset: road junction 6 in Urk."}
+{"node_id": "0x11be22aeaa6c25fe", "text": "Synthetic geospatial asset: public building 7 in Urk."}
+{"node_id": "0xe69cd1f5ace91132", "text": "Synthetic geospatial asset: charging site 8 in Urk."}
+{"node_id": "0xac62f61a61f8589c", "text": "Synthetic geospatial asset: farm 9 in Urk."}
+{"node_id": "0x182d317cd1693b17", "text": "Synthetic geospatial asset: school 10 in Urk."}
+{"node_id": "0x2042e27009e4ce91", "text": "Synthetic geospatial asset: bridge 11 in Urk."}
+{"node_id": "0x4ef489c4f7a5928f", "text": "Synthetic geospatial asset: pumping station 12 in Urk."}
+{"node_id": "0x31d567ff0e1acda2", "text": "Synthetic geospatial asset: park 13 in Urk."}
+{"node_id": "0x9aa724dbf2fc97ba", "text": "Synthetic geospatial asset: industrial site 14 in Urk."}
+{"node_id": "0xcc071540bb72efc1", "text": "Synthetic geospatial asset: waterway 15 in Urk."}
+{"node_id": "0xbeb614235b05feac", "text": "Synthetic route segment 0 in Urk."}
+{"node_id": "0xa18db924a6016ab7", "text": "Synthetic route segment 1 in Urk."}
+{"node_id": "0xfbaf41dcd12b2d82", "text": "Synthetic route segment 2 in Urk."}
+{"node_id": "0x5fb7ec399056e0b9", "text": "Synthetic observation 0 of traffic_flow in Urk at hour 123.38."}
+{"node_id": "0x2948aba0d6e4d02b", "text": "Synthetic observation 1 of water_level in Urk at hour 147.33."}
+{"node_id": "0x371c468bb501d58c", "text": "Synthetic observation 2 of soil_moisture in Urk at hour 15.74."}
+{"node_id": "0x008bf5435e67764b", "text": "Synthetic observation 3 of wind_speed in Urk at hour 98.35."}
+{"node_id": "0xe066a65cf0ec8bad", "text": "Synthetic observation 4 of air_temperature in Urk at hour 133.15."}
+{"node_id": "0x8811b5e26b173cc8", "text": "Synthetic observation 5 of nitrogen_dioxide in Urk at hour 39.95."}
+{"node_id": "0xf382276e29f51a0d", "text": "Synthetic observation 6 of traffic_flow in Urk at hour 74.70."}
+{"node_id": "0xdf9d7f9500f35f66", "text": "Synthetic observation 7 of water_level in Urk at hour 18.48."}
+{"node_id": "0x89d9ee6392f82408", "text": "Lineage root for Urk synthetic spatial state."}
+{"node_id": "0xa416f4c8129dcf82", "text": "Synthetic administrative anchor for Zeewolde, Flevoland demonstration area. Spatial split 2."}
+{"node_id": "0x8525968bbda8ed44", "text": "Broad-phase spatial support cell 0 around Zeewolde."}
+{"node_id": "0xc8cbe1af35fd6eb0", "text": "Broad-phase spatial support cell 1 around Zeewolde."}
+{"node_id": "0x04a791745ea24da9", "text": "Broad-phase spatial support cell 2 around Zeewolde."}
+{"node_id": "0x9b385aad5e0b9513", "text": "Broad-phase spatial support cell 3 around Zeewolde."}
+{"node_id": "0x3586038d35864a44", "text": "Synthetic soil_moisture sensor 0 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x8ff5e6245975098b", "text": "Synthetic wind_speed sensor 1 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0xb6d586d07503899d", "text": "Synthetic air_temperature sensor 2 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x5ccd6b7c9a6fab22", "text": "Synthetic nitrogen_dioxide sensor 3 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0xb838c03c637c9ff7", "text": "Synthetic traffic_flow sensor 4 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0xb69a398ca181209b", "text": "Synthetic water_level sensor 5 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x07cfdba31fdf3722", "text": "Synthetic soil_moisture sensor 6 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x22a19c82c6bea087", "text": "Synthetic wind_speed sensor 7 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x233f30ca9617bd13", "text": "Synthetic air_temperature sensor 8 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x016f1cb96d3d8885", "text": "Synthetic nitrogen_dioxide sensor 9 in Zeewolde; persistent sensor identity with irregular observations."}
+{"node_id": "0x3514e2d3fdf2fd03", "text": "Synthetic geospatial asset: school 0 in Zeewolde."}
+{"node_id": "0xfbf8e14837881fa9", "text": "Synthetic geospatial asset: bridge 1 in Zeewolde."}
+{"node_id": "0xfc57293ff9031ebc", "text": "Synthetic geospatial asset: pumping station 2 in Zeewolde."}
+{"node_id": "0x623849c60ceaa937", "text": "Synthetic geospatial asset: park 3 in Zeewolde."}
+{"node_id": "0xb3c5f1e852d34d49", "text": "Synthetic geospatial asset: industrial site 4 in Zeewolde."}
+{"node_id": "0xda39223eecf9f116", "text": "Synthetic geospatial asset: waterway 5 in Zeewolde."}
+{"node_id": "0x6bd8613cf6b10f37", "text": "Synthetic geospatial asset: road junction 6 in Zeewolde."}
+{"node_id": "0xc9300a7fd02a2dc8", "text": "Synthetic geospatial asset: public building 7 in Zeewolde."}
+{"node_id": "0xa4d0edad4d2c94eb", "text": "Synthetic geospatial asset: charging site 8 in Zeewolde."}
+{"node_id": "0x8b12b9d773d902ed", "text": "Synthetic geospatial asset: farm 9 in Zeewolde."}
+{"node_id": "0x11cc1ceb024497a6", "text": "Synthetic geospatial asset: school 10 in Zeewolde."}
+{"node_id": "0x10059bd2a5a9343f", "text": "Synthetic geospatial asset: bridge 11 in Zeewolde."}
+{"node_id": "0x7a0d5a3b97b63fda", "text": "Synthetic geospatial asset: pumping station 12 in Zeewolde."}
+{"node_id": "0x83b5538ba794947d", "text": "Synthetic geospatial asset: park 13 in Zeewolde."}
+{"node_id": "0x69c5a5ce53a0b860", "text": "Synthetic geospatial asset: industrial site 14 in Zeewolde."}
+{"node_id": "0x1bec237f5a985dfa", "text": "Synthetic geospatial asset: waterway 15 in Zeewolde."}
+{"node_id": "0xbf8b1c5ca379e2a2", "text": "Synthetic route segment 0 in Zeewolde."}
+{"node_id": "0xc6e9309ec360c287", "text": "Synthetic route segment 1 in Zeewolde."}
+{"node_id": "0xee96628d322fe5e0", "text": "Synthetic route segment 2 in Zeewolde."}
+{"node_id": "0x44a6bec29f07533d", "text": "Synthetic observation 0 of soil_moisture in Zeewolde at hour 160.92."}
+{"node_id": "0x88a7b2a05b7f8b0b", "text": "Synthetic observation 1 of wind_speed in Zeewolde at hour 16.83."}
+{"node_id": "0x01aa1627f0b0ee4f", "text": "Synthetic observation 2 of air_temperature in Zeewolde at hour 29.07."}
+{"node_id": "0x75193ea50810a050", "text": "Synthetic observation 3 of nitrogen_dioxide in Zeewolde at hour 136.43."}
+{"node_id": "0x19506299f2880ec1", "text": "Synthetic observation 4 of traffic_flow in Zeewolde at hour 131.83."}
+{"node_id": "0x97b76a63471e578a", "text": "Synthetic observation 5 of water_level in Zeewolde at hour 163.97."}
+{"node_id": "0x50fc4a2ef02fbf34", "text": "Synthetic observation 6 of soil_moisture in Zeewolde at hour 37.26."}
+{"node_id": "0x877bc176f1473155", "text": "Synthetic observation 7 of wind_speed in Zeewolde at hour 105.00."}
+{"node_id": "0x8fbc98f6fb99ad02", "text": "Lineage root for Zeewolde synthetic spatial state."}

@@ -1,0 +1,22 @@
+Title:           KLB SGP4 v0.5.0 Laptop Verification
+Subject:         Full SGP4/SDP4 GPU verification, metrics, feasibility, and ELI5 explanation
+Keywords:        
+Author:          Codex verification run for Tom Klootwijk
+Creator:         (unspecified)
+Producer:        ReportLab PDF Library - (opensource)
+CreationDate:    Sun Aug 16 20:29:41 2026 W. Europe Daylight Time
+ModDate:         Sun Aug 16 20:29:41 2026 W. Europe Daylight Time
+Custom Metadata: no
+Metadata Stream: no
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           13
+Encrypted:       no
+Page size:       595.276 x 841.89 pts (A4)
+Page rot:        0
+File size:       78251 bytes
+Optimized:       no
+PDF version:     1.4

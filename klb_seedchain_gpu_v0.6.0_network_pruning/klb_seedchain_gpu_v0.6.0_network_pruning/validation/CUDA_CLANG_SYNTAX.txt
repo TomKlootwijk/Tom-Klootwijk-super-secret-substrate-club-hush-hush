@@ -1,0 +1,24 @@
+Compiler: clang version 17.0.0 (https://github.com/swiftlang/llvm-project.git 10999b6d034fe318f3d56c83bddb6572593a8bb0)
+Purpose: CUDA host/device syntax surrogate only; no nvcc code generation or GPU execution.
+Architecture surrogate: sm_80 (clang frontend availability); production CMake target is sm_120.
+
+=== bench.cu host syntax ===
+PASS
+=== bench.cu device syntax ===
+PASS
+
+=== seedchain_bench.cu host syntax ===
+PASS
+=== seedchain_bench.cu device syntax ===
+PASS
+
+=== orbit_bench.cu host syntax ===
+PASS
+=== orbit_bench.cu device syntax ===
+PASS
+
+=== sgp4_bench.cu host syntax ===
+PASS
+=== sgp4_bench.cu device syntax ===
+PASS
+

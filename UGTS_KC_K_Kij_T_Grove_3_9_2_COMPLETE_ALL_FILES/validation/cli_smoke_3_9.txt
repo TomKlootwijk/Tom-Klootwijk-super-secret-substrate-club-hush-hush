@@ -1,0 +1,59 @@
+## info
+UGTS-KC 3.9.0
+Edition: 3.9 - KC - Elizabeth
+Capabilities: vector assets, deterministic game world, input, collision/physics, animation, tilemaps/A*, procedural audio, project validation and HTML5 Canvas export
+
+## validate demo
+{
+  "issues": [],
+  "metrics": {
+    "action_count": 8,
+    "audio_cue_count": 7,
+    "entity_count": 26,
+    "scene_count": 1,
+    "tilemap_count": 0,
+    "vector_asset_count": 5
+  },
+  "passed": true
+}
+
+## validate blank
+{
+  "issues": [],
+  "metrics": {
+    "action_count": 8,
+    "audio_cue_count": 7,
+    "entity_count": 2,
+    "scene_count": 1,
+    "tilemap_count": 0,
+    "vector_asset_count": 3
+  },
+  "passed": true
+}
+
+## simulate demo
+{
+  "entities": 26,
+  "events": 36,
+  "schema": "ugts-kc-headless-summary-3.9",
+  "state": {
+    "scene": "vector_garden",
+    "score": 0
+  },
+  "state_hash": "75bba0b908eb94d1bab561ec0eb2955ebdbd46f30ddcc2fd6d8840e87105044a",
+  "steps": 240,
+  "tick": 240,
+  "time": 4.0
+}
+
+## build single-file
+examples/elizabeth_vector_quest/dist/index.html
+4 files, 140902 bytes, project 99cfbdf321ad
+
+## build split bundle
+/tmp/kc39_bundle/index.html
+5 files, 141071 bytes, project 99cfbdf321ad
+
+## export SVG
+wrote 5 SVG assets to examples/elizabeth_vector_quest/assets_svg
+

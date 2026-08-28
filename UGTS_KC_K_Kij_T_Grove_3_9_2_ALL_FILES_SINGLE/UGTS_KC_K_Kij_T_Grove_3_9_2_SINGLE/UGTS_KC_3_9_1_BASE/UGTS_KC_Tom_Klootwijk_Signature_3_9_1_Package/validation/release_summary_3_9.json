@@ -1,0 +1,58 @@
+{
+  "capability_groups": [
+    "serializable vector art and SVG output",
+    "deterministic fixed-step ECS-style 2D game world",
+    "collision, lightweight physics and spatial hashing",
+    "action-based keyboard, pointer, gamepad and touch input",
+    "keyframe animation, easing and state machines",
+    "tilemaps, flood fill, merged collision boxes and A* pathfinding",
+    "procedural audio cues and music sequences",
+    "validated versioned game-project files",
+    "offline HTML5 Canvas/Web Audio export",
+    "CLI scaffolding, validation, simulation, SVG export and web builds"
+  ],
+  "codename": "KC Elizabeth",
+  "compatibility": "Existing 3.0 Python APIs retained; 3.9 modules added under ugts_kc3.",
+  "edition": "3.9 - KC - Elizabeth",
+  "known_boundaries": [
+    "Browser JavaScript was syntax-validated and statically inspected; automated browser execution is not claimed.",
+    "The runtime is a dependency-free reference implementation, not a claim of certification or platform-store approval.",
+    "Attribution and identity fields are preserved as supplied and are not independently verified."
+  ],
+  "manifest_policy": "The release manifest covers every regular package file except the manifest CSV and SHA-256 list themselves, avoiding recursive self-hashes.",
+  "principal_artifacts": {
+    "browser_validation": "validation/browser_build_validation_3_9.json",
+    "demo_browser_entrypoint": "examples/elizabeth_vector_quest/dist/index.html",
+    "demo_project": "examples/elizabeth_vector_quest/project.json",
+    "full_test_log": "validation/test_results_3_9.txt",
+    "game_project_schema": "spec/game_project_schema_3_9.json",
+    "package_install_smoke": "validation/package_build_3_9.txt",
+    "source_distribution": "dist/ugts_kc_elizabeth-3.9.0.tar.gz",
+    "technical_report_docx": "report/UGTS_KC_3_9_KC_Elizabeth_Vector_Game_Runtime.docx",
+    "technical_report_pdf": "report/UGTS_KC_3_9_KC_Elizabeth_Vector_Game_Runtime.pdf",
+    "wheel": "dist/ugts_kc_elizabeth-3.9.0-py3-none-any.whl"
+  },
+  "product": "UGTS-KC Two Hands / Vector Game Creation System",
+  "requester_supplied_attribution": {
+    "date_of_birth_as_supplied": "10-07-1990",
+    "identifier": "NL200678942",
+    "name": "Tom Klootwijk",
+    "substrate_attribution_as_supplied": "Kees Klootwijk (KC edition)",
+    "verification_status": "unverified requester-supplied metadata; not legal proof"
+  },
+  "schema": "ugts-kc-release-summary-3.9",
+  "validation": {
+    "browser_build_passed": true,
+    "catalog_passed": true,
+    "compileall_passed": true,
+    "distribution_passed": true,
+    "fresh_wheel_install_smoke_passed": true,
+    "legacy_tests_retained": 117,
+    "new_tests": 108,
+    "pdf_preflight_passed": true,
+    "schema_projects_passed": 3,
+    "schema_projects_total": 3,
+    "tests_passed": 225
+  },
+  "version": "3.9.0"
+}

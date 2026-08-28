@@ -1,0 +1,28 @@
+{
+  "sequence": [
+    "support",
+    "compatibility",
+    "guard",
+    "verified_event",
+    "transition",
+    "lineage"
+  ],
+  "support": true,
+  "compatibility": true,
+  "guard_interval": [
+    -0.1701961894323342,
+    -0.16999618943233422
+  ],
+  "guard_stable": true,
+  "verified_event": true,
+  "transition": {
+    "branch": 0,
+    "orientation": -1,
+    "grammar_state_word_12": 1058
+  },
+  "lineage": {
+    "morton_key_hex": "0x88823bb88099128b",
+    "wrap_count": 1,
+    "time_winding": 3
+  }
+}

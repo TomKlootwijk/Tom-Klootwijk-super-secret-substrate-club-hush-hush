@@ -1,0 +1,18 @@
+{
+  "checkpoint": "results/validation/teacher_edge_student_smoke.pt",
+  "final_metrics": {
+    "best_epoch": 1.0,
+    "best_validation_link_margin": 0.18029582500457764,
+    "device_cuda": 0.0,
+    "elapsed_s": 0.04863268200006132,
+    "epochs_completed": 1.0,
+    "peak_cuda_memory_bytes": 0.0,
+    "test_link_accuracy": 0.52173912525177,
+    "test_link_margin": 0.08969497680664062,
+    "test_teacher_cosine": 0.0474538691341877,
+    "validation_link_accuracy": 0.5256849527359009,
+    "validation_link_margin": 0.12002778053283691,
+    "validation_teacher_cosine": 0.07098505645990372
+  },
+  "metrics": "results/validation/teacher_edge_training_metrics.json"
+}

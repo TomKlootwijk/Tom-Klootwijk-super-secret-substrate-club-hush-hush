@@ -1,0 +1,103 @@
+==PROF== Connected to process 41488 (C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.5.0_full_sgp4\klb_seedchain_gpu_v0.5.0_full_sgp4\build-cuda128\Release\klb_sgp4_bench.exe)
+==PROF== Profiling "validate_states_kernel" - 0: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_seed_chunked_kernel" - 1: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_seed_chunked_kernel" - 2: 0%
+==WARNING== Launching the workload is taking more time than expected. If this continues to hang, terminate the profile and re-try by profiling the range of all related launches using '--replay-mode range'. See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#replay for more details.
+....50%....100% - 40 passes
+==PROF== Profiling "query_seed_chunked_kernel" - 3: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_seed_chunked_kernel" - 4: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_seed_chunked_kernel" - 5: 0%....50%....100% - 40 passes
+==PROF== Profiling "materialize_pef_chunked_kernel" - 6: 0%....50%....100% - 40 passes
+==PROF== Profiling "materialize_pef_chunked_kernel" - 7: 0%....50%....100% - 40 passes
+==PROF== Profiling "materialize_pef_chunked_kernel" - 8: 0%....50%....100% - 40 passes
+==PROF== Profiling "materialize_pef_chunked_kernel" - 9: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_dense_kernel" - 10: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_dense_kernel" - 11: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_dense_kernel" - 12: 0%....50%....100% - 40 passes
+==PROF== Profiling "query_dense_kernel" - 13: 0%....50%....100% - 40 passes
+==PROF== Disconnected from process 41488
+Device                    NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability        12.0
+Objects                   32
+Deep-space objects        32
+Initialized record bytes  1488
+Portable seed bytes       4096
+Reference frame           TEME -> PEF by GMST approximation
+CPU/GPU full-SGP4 validation
+  states                 256
+  error mismatches       0
+  method mismatches      0
+  RMS position delta     0.000070649 mm
+  max position delta     0.000383791 mm
+  RMS velocity delta     0.000000010 mm/s
+  max velocity delta     0.000000056 mm/s
+Intervals per object      604800
+Step seconds              1.000000
+Candidate intervals       19353600
+Chunk size                256
+Direct worker threads     75616
+CPU prefix oracle
+  intervals              65536
+  supported              65536
+  compatible             65536
+  boundary evaluations   65536
+  visible endpoints      18253
+  AOS                    2
+  LOS                    1
+  propagation errors     0
+GPU prefix
+  intervals              65536
+  supported              65536
+  compatible             65536
+  boundary evaluations   65536
+  visible endpoints      18253
+  AOS                    2
+  LOS                    1
+  propagation errors     0
+Direct full-SGP4 counters
+  intervals              19353600
+  supported              19207536
+  compatible             19207536
+  boundary evaluations   19207536
+  visible endpoints      5498429
+  AOS                    359
+  LOS                    358
+  propagation errors     0
+query_seed_sgp4_direct
+  inner repeats          1
+  p50 ms                 20792.826172
+  p95 ms                 20792.826172
+  p99 ms                 20792.826172
+  mean ms                20792.826172
+Dense double4 bytes       619316224
+Free VRAM before dense    9219080192
+materialize_full_sgp4_double4
+  inner repeats          1
+  p50 ms                 20209.273438
+  p95 ms                 20209.273438
+  p99 ms                 20209.273438
+  mean ms                20209.273438
+Dense counters
+  intervals              19353600
+  supported              19207536
+  compatible             19207536
+  boundary evaluations   19207536
+  visible endpoints      5498429
+  AOS                    359
+  LOS                    358
+  propagation errors     0
+query_dense_double4
+  inner repeats          1
+  p50 ms                 3196.452393
+  p95 ms                 3196.452393
+  p99 ms                 3196.452393
+  mean ms                3196.452393
+Dense end-to-end p50 ms   23405.725830
+Direct / dense-e2e ratio  0.888365
+Direct speedup vs e2e     1.125664x
+KSGP1 file bytes          5793
+Dense float4 bytes        309658112
+Dense double4 bytes       619316224
+Float4 horizon ratio      53453.842914x
+Double4 horizon ratio     106907.685828x
+==PROF== Report: C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.5.0_full_sgp4\klb_seedchain_gpu_v0.5.0_full_sgp4\sgp4_file_ncu.ncu-rep

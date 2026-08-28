@@ -1,0 +1,122 @@
+[
+  {
+    "id": "SARA-C001",
+    "claim": "A BIP39 mnemonic is a human-created sentence or brainwallet.",
+    "disposition": "REJECT",
+    "technical_note": "BIP39 transports computer-generated entropy and explicitly warns against user-created sentences."
+  },
+  {
+    "id": "SARA-C002",
+    "claim": "The checksum adds independent secret entropy.",
+    "disposition": "CORRECT",
+    "technical_note": "The checksum constrains valid encodings and catches some errors; valid mnemonic count remains 2^ENT."
+  },
+  {
+    "id": "SARA-C003",
+    "claim": "A valid mnemonic checksum proves the owner or wallet balance.",
+    "disposition": "REJECT",
+    "technical_note": "Checksum validity is syntax/integrity only."
+  },
+  {
+    "id": "SARA-C004",
+    "claim": "The PBKDF2 step makes weak user passphrases unguessable.",
+    "disposition": "BOUND",
+    "technical_note": "BIP39 fixes 2048 iterations; passphrase quality remains security-critical."
+  },
+  {
+    "id": "SARA-C005",
+    "claim": "A public Bitcoin address can be inverted to its private key.",
+    "disposition": "REJECT",
+    "technical_note": "The address exposes a script commitment and checksum, not spend authority."
+  },
+  {
+    "id": "SARA-C006",
+    "claim": "Any hash collision can spend a specific P2WPKH output.",
+    "disposition": "REJECT",
+    "technical_note": "A target preimage matching the witness program and a valid signature path are required; generic collision rhetoric is not sufficient."
+  },
+  {
+    "id": "SARA-C007",
+    "claim": "A Bech32 checksum authenticates the wallet owner.",
+    "disposition": "REJECT",
+    "technical_note": "It detects transcription errors; it is not authentication."
+  },
+  {
+    "id": "SARA-C008",
+    "claim": "An address label on a block explorer proves legal ownership.",
+    "disposition": "REJECT",
+    "technical_note": "Labels are external metadata and require independent provenance."
+  },
+  {
+    "id": "SARA-C009",
+    "claim": "A 32-bit BIP32 parent fingerprint is a collision-free identity.",
+    "disposition": "REJECT",
+    "technical_note": "It is a short identifier and implementations must tolerate collisions."
+  },
+  {
+    "id": "SARA-C010",
+    "claim": "An extended public key is harmless public information.",
+    "disposition": "BOUND",
+    "technical_note": "It cannot sign by itself but can reveal address families, balances and privacy-sensitive structure."
+  },
+  {
+    "id": "SARA-C011",
+    "claim": "Hardened and normal derivation edges are interchangeable.",
+    "disposition": "REJECT",
+    "technical_note": "Hardened children cannot be derived from an extended public parent."
+  },
+  {
+    "id": "SARA-C012",
+    "claim": "A Bitcoin address is the same object as a key or wallet.",
+    "disposition": "REJECT",
+    "technical_note": "Address, script, public key, extended node, seed and mnemonic are distinct typed objects."
+  },
+  {
+    "id": "SARA-C013",
+    "claim": "The supplied public address authorizes private-key testing because it is public.",
+    "disposition": "REJECT",
+    "technical_note": "Public visibility does not confer authorization to access or spend funds."
+  },
+  {
+    "id": "SARA-C014",
+    "claim": "Brute force against a uniformly random 12-word mnemonic is a practical test plan.",
+    "disposition": "REJECT",
+    "technical_note": "The valid keyspace is 2^128 and the reference metric is astronomically large even at unrealistic rates."
+  },
+  {
+    "id": "SARA-C015",
+    "claim": "Address-targeted key search belongs in the reference package.",
+    "disposition": "REJECT",
+    "technical_note": "The package provides decoding and feasibility metrics only, not search or candidate generation."
+  },
+  {
+    "id": "SARA-C016",
+    "claim": "Mainnet and test networks are equivalent audit environments.",
+    "disposition": "REJECT",
+    "technical_note": "Training and destructive experiments belong on regtest, signet, testnet or self-owned fixtures."
+  },
+  {
+    "id": "SARA-C017",
+    "claim": "Seed or mnemonic may be stored in the UGTS lineage log.",
+    "disposition": "REJECT",
+    "technical_note": "Secrets are transient and prohibited from definitions, traces and certificates."
+  },
+  {
+    "id": "SARA-C018",
+    "claim": "The same mnemonic words translated into another language preserve the seed.",
+    "disposition": "REJECT",
+    "technical_note": "BIP39 seed derivation hashes the normalized sentence; translation changes the seed."
+  },
+  {
+    "id": "SARA-C019",
+    "claim": "One bit can represent the full wallet state.",
+    "disposition": "REJECT",
+    "technical_note": "Checksums, keys, paths, scripts, policy, uncertainty and lineage remain separate."
+  },
+  {
+    "id": "SARA-C020",
+    "claim": "Passing public test vectors proves production wallet security.",
+    "disposition": "REJECT",
+    "technical_note": "It establishes reference conformance only; production security needs hardened libraries, secure entropy and key custody."
+  }
+]

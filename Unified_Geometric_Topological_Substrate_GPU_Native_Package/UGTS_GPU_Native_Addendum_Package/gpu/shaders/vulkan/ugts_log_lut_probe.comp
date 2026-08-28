@@ -1,0 +1,41 @@
+#version 450
+
+#ifndef RANDOM_ACCESS
+#define RANDOM_ACCESS 0
+#endif
+
+layout(local_size_x = 256) in;
+
+// Word zero stores the logical-entry mask. Remaining words each contain two
+// unsigned 16-bit log2 codes. A uniform texel buffer routes these reads through
+// the Vulkan texture-fetch path while retaining an exact integer payload.
+layout(binding = 0) uniform usamplerBuffer log_lut;
+layout(std430, binding = 1) writeonly buffer OutputBuffer {
+    uint outputs[];
+};
+
+uint mix32(uint x) {
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= uint(outputs.length())) {
+        return;
+    }
+
+    uint mask = texelFetch(log_lut, 0).x;
+#if RANDOM_ACCESS
+    uint logical_index = mix32(i) & mask;
+#else
+    uint logical_index = i & mask;
+#endif
+    uint packed = texelFetch(log_lut, int(1u + (logical_index >> 1))).x;
+    uint code = (packed >> ((logical_index & 1u) * 16u)) & 0xffffu;
+    outputs[i] = mix32(code ^ i);
+}

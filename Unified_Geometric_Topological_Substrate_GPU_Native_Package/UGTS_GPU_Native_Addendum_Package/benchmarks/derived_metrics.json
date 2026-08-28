@@ -1,0 +1,144 @@
+{
+  "schema": "UGTS-DERIVED-METRICS-1.1",
+  "source_benchmark": "benchmarks/vulkan_native_run/vulkan_benchmark_results.json",
+  "device": {
+    "name": "SwiftShader Device (Subzero)",
+    "type": 4,
+    "vendor_id": 6880,
+    "device_id": 49374,
+    "api_version": "1.3.0",
+    "timestamp_period_ns": 1.0,
+    "timestamp_valid_bits": 64
+  },
+  "largest_candidate_batch": 1048576,
+  "metrics": [
+    {
+      "metric": "Candidate Evaluation Rate",
+      "symbol": "CER",
+      "unit": "million candidates/s",
+      "definition": "Candidate relations evaluated per second, using device timestamp p50.",
+      "value": 83.699878,
+      "scope": "G64_E32 evaluate, N=1048576"
+    },
+    {
+      "metric": "Spherical Event Throughput",
+      "symbol": "SET",
+      "unit": "million verified events/s",
+      "definition": "Verified support + compatibility + guard events per second.",
+      "value": 4.112531,
+      "scope": "G64_E32 evaluate, N=1048576"
+    },
+    {
+      "metric": "Effective Substrate Bandwidth",
+      "symbol": "ESB",
+      "unit": "GB/s",
+      "definition": "Logical input plus output record bytes divided by device p50 time; not raw DRAM bandwidth.",
+      "value": 8.035188,
+      "scope": "G64_E32 evaluate, N=1048576"
+    },
+    {
+      "metric": "Support Rejection Gain",
+      "symbol": "SRG",
+      "unit": "x",
+      "definition": "Input candidates divided by candidates admitted by radial-angular support.",
+      "value": 1.8981533944342972,
+      "scope": "G64_E32 deterministic corpus"
+    },
+    {
+      "metric": "Compatibility Rejection Gain",
+      "symbol": "CRG",
+      "unit": "x",
+      "definition": "Supported candidates divided by support-and-compatibility survivors.",
+      "value": 6.001944806605824,
+      "scope": "G64_E32 deterministic corpus"
+    },
+    {
+      "metric": "Event Yield",
+      "symbol": "EY",
+      "unit": "%",
+      "definition": "Verified events divided by input candidates.",
+      "value": 4.913425445556641,
+      "scope": "G64_E32 deterministic corpus"
+    },
+    {
+      "metric": "State Compression Ratio",
+      "symbol": "SCR",
+      "unit": "x",
+      "definition": "Dense G64_E32 bytes divided by dense packed G32_E16 bytes.",
+      "value": 2.0,
+      "scope": "N=1048576"
+    },
+    {
+      "metric": "Event Compaction Ratio",
+      "symbol": "ECR",
+      "unit": "x",
+      "definition": "Dense G32 E16 output bytes divided by verified-event-only E16 bytes.",
+      "value": 21.022815670235374,
+      "scope": "G32_E16 evaluate, N=1048576"
+    },
+    {
+      "metric": "State-plus-Novelty Compression",
+      "symbol": "SNC",
+      "unit": "x",
+      "definition": "Dense G64_E32 bytes divided by G32 state plus compact verified E16 event log.",
+      "value": 2.9303065164436455,
+      "scope": "N=1048576"
+    },
+    {
+      "metric": "Commit Cost Factor",
+      "symbol": "CCF",
+      "unit": "x",
+      "definition": "Evaluate+atomic-commit p50 divided by evaluate-only p50.",
+      "value": 1.7531244093140637,
+      "scope": "G64_E32, N=1048576"
+    },
+    {
+      "metric": "Packed Compute Penalty",
+      "symbol": "PCP",
+      "unit": "x",
+      "definition": "G32 evaluate p50 divided by G64 evaluate p50 on this validation device.",
+      "value": 1.0622079297511584,
+      "scope": "N=1048576; software Vulkan device"
+    }
+  ],
+  "memory": [
+    {
+      "configuration": "G64_E32 dense",
+      "candidates": 1048576,
+      "bytes": 100663296,
+      "mib": 96.0,
+      "relative_to_g64_dense": 1.0,
+      "retention": "all states + dense outputs"
+    },
+    {
+      "configuration": "G32_E16 dense",
+      "candidates": 1048576,
+      "bytes": 50331648,
+      "mib": 48.0,
+      "relative_to_g64_dense": 0.5,
+      "retention": "all packed states + dense outputs"
+    },
+    {
+      "configuration": "G32 state + compact E16 novelty log",
+      "candidates": 1048576,
+      "bytes": 34352480,
+      "mib": 32.761077880859375,
+      "relative_to_g64_dense": 0.34126122792561847,
+      "retention": "all packed states + verified events only"
+    },
+    {
+      "configuration": "G32 compact E16 novelty log only",
+      "candidates": 1048576,
+      "bytes": 798048,
+      "mib": 0.761077880859375,
+      "relative_to_g64_dense": 0.007927894592285156,
+      "retention": "verified events only; state must be rebuildable"
+    }
+  ],
+  "notes": [
+    "Rates use device timestamp p50.",
+    "Effective Substrate Bandwidth is logical record traffic, not measured external DRAM bandwidth.",
+    "Compact-event memory assumes non-events are discarded and state is either retained separately or rebuildable.",
+    "The validation device may be software Vulkan; inspect physical_gpu_claim and device type before generalizing."
+  ]
+}

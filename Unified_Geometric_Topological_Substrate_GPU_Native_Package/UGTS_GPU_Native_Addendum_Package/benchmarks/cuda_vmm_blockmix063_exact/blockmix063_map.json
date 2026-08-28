@@ -1,0 +1,1981 @@
+{
+  "schema": "UGTS-CUDA-VMM-BLOCKMIX063-MAP-1.0",
+  "source_aggregates": {
+    "capacity_screen": "benchmarks/cuda_vmm_blockmix063_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+    "transition_refinement": "benchmarks/cuda_vmm_blockmix063_refinement_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json"
+  },
+  "device": {
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "compute_capability": "12.0",
+    "l2_bytes": 37748736,
+    "multiprocessors": 46,
+    "generic_compression_supported": true,
+    "occupancy_blocks_per_sm": {
+      "global_cg": 24,
+      "texture_object": 24
+    }
+  },
+  "question": "How much throughput-equivalent L2 capacity remains when the individually compressible packed6 codes 0 and 63 are mixed at controlled spatial scales?",
+  "full_rate_definition": {
+    "retained_fraction_of_best_generic_hot_rate": 0.99,
+    "screen_sizes_mib": [
+      36,
+      40,
+      48,
+      64,
+      80,
+      96,
+      112,
+      128,
+      160,
+      192,
+      224,
+      240,
+      248
+    ],
+    "refinement_sizes_mib": [
+      64,
+      66,
+      68,
+      70,
+      72,
+      74,
+      76,
+      78,
+      80,
+      82,
+      84,
+      86,
+      88,
+      90,
+      92,
+      94,
+      96
+    ],
+    "normalization": "Refined patterns use best rate and endpoints from the four-process refinement matrix; the other patterns use the four-process screen."
+  },
+  "layout": {
+    "codes_per_group": 16,
+    "bytes_per_group": 12,
+    "bytes_per_code": 0.75,
+    "code_0_words": [
+      "0x00000000",
+      "0x00000000",
+      "0x00000000"
+    ],
+    "code_63_words": [
+      "0xFFFFFFFF",
+      "0xFFFFFFFF",
+      "0xFFFFFFFF"
+    ],
+    "balance": "Each synthetic corpus is approximately 50% code 0 and 50% code 63."
+  },
+  "validation": {
+    "capacity_screen": {
+      "all_valid": true,
+      "raw_rows": 1248,
+      "aggregate_rows": 312,
+      "paired_comparisons": 156,
+      "repetitions_per_case": 4,
+      "invalid_rows": 0,
+      "paired_mapping_per_process_verified": true,
+      "validated_payloads": 1322680320,
+      "timed_gpu_lookups": 451474882560
+    },
+    "transition_refinement": {
+      "all_valid": true,
+      "raw_rows": 816,
+      "aggregate_rows": 204,
+      "paired_comparisons": 102,
+      "repetitions_per_case": 4,
+      "invalid_rows": 0,
+      "paired_mapping_per_process_verified": true,
+      "validated_payloads": 864829440,
+      "timed_gpu_lookups": 295195115520
+    },
+    "combined": {
+      "runs": 8,
+      "raw_rows": 2064,
+      "validated_payloads": 2187509760,
+      "timed_gpu_lookups": 746669998080,
+      "invalid_rows": 0
+    }
+  },
+  "observed_capacity_classes": {
+    "72_mib_endpoint": [
+      "blockmix6_0_63_hash",
+      "blockmix6_0_63_g1",
+      "blockmix6_0_63_g2",
+      "blockmix6_0_63_g4",
+      "blockmix6_0_63_g8"
+    ],
+    "88_mib_endpoint": [
+      "blockmix6_0_63_g16"
+    ],
+    "240_mib_address_limited": [
+      "blockmix6_0_63_g32",
+      "blockmix6_0_63_g64",
+      "blockmix6_0_63_g128",
+      "blockmix6_0_63_g256",
+      "blockmix6_0_63_g512",
+      "blockmix6_0_63_g1024"
+    ],
+    "first_tested_run_span_full_through_240_mib": {
+      "groups": 32,
+      "codes": 512,
+      "bytes": 384
+    }
+  },
+  "per_pattern": [
+    {
+      "pattern": "blockmix6_0_63_g1",
+      "selection": "alternating code 0/63 runs of 1 packed groups",
+      "run_groups": 1,
+      "run_codes": 16,
+      "run_bytes": 12,
+      "best_hot_glookups_s": 38.449004,
+      "reported_99pct_endpoint_mib": 72,
+      "endpoint_allocation_to_nominal_l2": 2.0,
+      "first_below_99pct_mib": 74,
+      "first_below_retained_fraction": 0.868922196268075,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.557204999999996,
+          "paired_generic_to_noncompressible_ratio": 1.0031757021094458,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0028141431179853
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.503321,
+          "paired_generic_to_noncompressible_ratio": 1.9596155688038253,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0014127023940593
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.5079115,
+          "paired_generic_to_noncompressible_ratio": 3.2968649731184243,
+          "source": "screen",
+          "retained_fraction_of_best": 1.001532094303405
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.449004,
+          "paired_generic_to_noncompressible_ratio": 4.955612010969597,
+          "source": "refinement",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.437881,
+          "paired_generic_to_noncompressible_ratio": 4.528598278344603,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9997107077208033
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.381811,
+          "paired_generic_to_noncompressible_ratio": 4.600490809197929,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9982524124682136
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.257219,
+          "paired_generic_to_noncompressible_ratio": 4.648289245061364,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9950119644191563
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 38.162159,
+          "paired_generic_to_noncompressible_ratio": 4.698318465322377,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.992539598685053
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 33.409193,
+          "paired_generic_to_noncompressible_ratio": 4.531893291832997,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.868922196268075
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 30.80247,
+          "paired_generic_to_noncompressible_ratio": 4.168615653116106,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.8011253035319198
+        },
+        {
+          "size_mib": 78,
+          "hot_glookups_s": 22.9362455,
+          "paired_generic_to_noncompressible_ratio": 3.734536144213717,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5965367919543507
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 20.795754000000002,
+          "paired_generic_to_noncompressible_ratio": 3.4208280159468747,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5408658700235772
+        },
+        {
+          "size_mib": 82,
+          "hot_glookups_s": 18.829514,
+          "paired_generic_to_noncompressible_ratio": 3.1247651050936414,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4897269640586788
+        },
+        {
+          "size_mib": 84,
+          "hot_glookups_s": 19.042280499999997,
+          "paired_generic_to_noncompressible_ratio": 2.887163714985074,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4952606964799399
+        },
+        {
+          "size_mib": 86,
+          "hot_glookups_s": 17.4324835,
+          "paired_generic_to_noncompressible_ratio": 2.6937681534234446,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4533923297466951
+        },
+        {
+          "size_mib": 88,
+          "hot_glookups_s": 16.996346,
+          "paired_generic_to_noncompressible_ratio": 2.523597393217398,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.44204905801981237
+        },
+        {
+          "size_mib": 90,
+          "hot_glookups_s": 16.5834835,
+          "paired_generic_to_noncompressible_ratio": 2.3972270621817477,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.43131113357318696
+        },
+        {
+          "size_mib": 92,
+          "hot_glookups_s": 17.0610875,
+          "paired_generic_to_noncompressible_ratio": 2.2778825444895823,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.44373288577254166
+        },
+        {
+          "size_mib": 94,
+          "hot_glookups_s": 14.9127095,
+          "paired_generic_to_noncompressible_ratio": 2.1792771803497057,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.38785684799533426
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 15.512618999999999,
+          "paired_generic_to_noncompressible_ratio": 2.0926576715988823,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.40345957986323905
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 9.228012,
+          "paired_generic_to_noncompressible_ratio": 1.673268963719915,
+          "source": "screen",
+          "retained_fraction_of_best": 0.24000652916782966
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 9.6847095,
+          "paired_generic_to_noncompressible_ratio": 1.4841185725488202,
+          "source": "screen",
+          "retained_fraction_of_best": 0.2518845351624713
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 6.865888999999999,
+          "paired_generic_to_noncompressible_ratio": 1.3101771366248833,
+          "source": "screen",
+          "retained_fraction_of_best": 0.178571309675538
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 6.994664,
+          "paired_generic_to_noncompressible_ratio": 1.227418341413265,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18192055117994735
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 7.280512,
+          "paired_generic_to_noncompressible_ratio": 1.180459049048379,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18935502204426413
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 6.521578,
+          "paired_generic_to_noncompressible_ratio": 1.1638884385554413,
+          "source": "screen",
+          "retained_fraction_of_best": 0.16961630527542404
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 6.965539,
+          "paired_generic_to_noncompressible_ratio": 1.1557990884880862,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18116305431474894
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g2",
+      "selection": "alternating code 0/63 runs of 2 packed groups",
+      "run_groups": 2,
+      "run_codes": 32,
+      "run_bytes": 24,
+      "best_hot_glookups_s": 38.456194499999995,
+      "reported_99pct_endpoint_mib": 72,
+      "endpoint_allocation_to_nominal_l2": 2.0,
+      "first_below_99pct_mib": 74,
+      "first_below_retained_fraction": 0.7527414341530856,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.5394565,
+          "paired_generic_to_noncompressible_ratio": 1.0036678876566687,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0021651128272717
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5118475,
+          "paired_generic_to_noncompressible_ratio": 1.9592601222533466,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0014471790754025
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.507912,
+          "paired_generic_to_noncompressible_ratio": 3.6763651512889446,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0013448418563622
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.4314085,
+          "paired_generic_to_noncompressible_ratio": 4.445781985168225,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9993554744476864
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.456194499999995,
+          "paired_generic_to_noncompressible_ratio": 4.53210699580376,
+          "source": "refinement",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.349848,
+          "paired_generic_to_noncompressible_ratio": 4.600250609629429,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9972346067679684
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.338144,
+          "paired_generic_to_noncompressible_ratio": 4.669307381718064,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9969302604811822
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 38.174983499999996,
+          "paired_generic_to_noncompressible_ratio": 4.7009259862949655,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9926874979790318
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 28.947571,
+          "paired_generic_to_noncompressible_ratio": 4.65310122001001,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.7527414341530856
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 25.534987,
+          "paired_generic_to_noncompressible_ratio": 4.1630977272253995,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.6640019204188289
+        },
+        {
+          "size_mib": 78,
+          "hot_glookups_s": 23.101691000000002,
+          "paired_generic_to_noncompressible_ratio": 3.7516304517298353,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.6007274328717056
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 22.8096365,
+          "paired_generic_to_noncompressible_ratio": 3.421127484617703,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5931329606729548
+        },
+        {
+          "size_mib": 82,
+          "hot_glookups_s": 18.8332845,
+          "paired_generic_to_noncompressible_ratio": 3.164941237910617,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.48973344203363656
+        },
+        {
+          "size_mib": 84,
+          "hot_glookups_s": 18.1208345,
+          "paired_generic_to_noncompressible_ratio": 2.9005485246037166,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4712071679375348
+        },
+        {
+          "size_mib": 86,
+          "hot_glookups_s": 15.8318455,
+          "paired_generic_to_noncompressible_ratio": 2.6975503275323547,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4116851837744892
+        },
+        {
+          "size_mib": 88,
+          "hot_glookups_s": 16.4040415,
+          "paired_generic_to_noncompressible_ratio": 2.532427724000799,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4265643471300834
+        },
+        {
+          "size_mib": 90,
+          "hot_glookups_s": 16.577481,
+          "paired_generic_to_noncompressible_ratio": 2.393972335352722,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.43107440077046627
+        },
+        {
+          "size_mib": 92,
+          "hot_glookups_s": 17.074006,
+          "paired_generic_to_noncompressible_ratio": 2.278999739269476,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.44398584472522373
+        },
+        {
+          "size_mib": 94,
+          "hot_glookups_s": 16.208075,
+          "paired_generic_to_noncompressible_ratio": 2.1754888483358537,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4214685100991988
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 15.496963000000001,
+          "paired_generic_to_noncompressible_ratio": 2.0918926420024664,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.40297702883731784
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 10.2032495,
+          "paired_generic_to_noncompressible_ratio": 1.6733453684964898,
+          "source": "screen",
+          "retained_fraction_of_best": 0.26532135154454767
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 8.8476185,
+          "paired_generic_to_noncompressible_ratio": 1.4830998881524535,
+          "source": "screen",
+          "retained_fraction_of_best": 0.23007004762262684
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 8.313265000000001,
+          "paired_generic_to_noncompressible_ratio": 1.3097323686575835,
+          "source": "screen",
+          "retained_fraction_of_best": 0.21617492599274227
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 6.9948365,
+          "paired_generic_to_noncompressible_ratio": 1.2281055897208026,
+          "source": "screen",
+          "retained_fraction_of_best": 0.1818910214841981
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 7.27873,
+          "paired_generic_to_noncompressible_ratio": 1.180638456499953,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18927327819709258
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 7.0245765,
+          "paired_generic_to_noncompressible_ratio": 1.164060457990172,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18266436893541302
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 7.579553000000001,
+          "paired_generic_to_noncompressible_ratio": 1.155810444127419,
+          "source": "screen",
+          "retained_fraction_of_best": 0.1970957630766092
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g4",
+      "selection": "alternating code 0/63 runs of 4 packed groups",
+      "run_groups": 4,
+      "run_codes": 64,
+      "run_bytes": 48,
+      "best_hot_glookups_s": 38.477767,
+      "reported_99pct_endpoint_mib": 72,
+      "endpoint_allocation_to_nominal_l2": 2.0,
+      "first_below_99pct_mib": 74,
+      "first_below_retained_fraction": 0.7491028260553686,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.5066015,
+          "paired_generic_to_noncompressible_ratio": 1.0029070040677246,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0007493808047645
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.503977,
+          "paired_generic_to_noncompressible_ratio": 1.9592902612740417,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0006811725846771
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.504632,
+          "paired_generic_to_noncompressible_ratio": 3.676886092939979,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0006981954020358
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.4450885,
+          "paired_generic_to_noncompressible_ratio": 4.449305294412481,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9991507173480206
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.477767,
+          "paired_generic_to_noncompressible_ratio": 4.5356580754614475,
+          "source": "refinement",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.3824255,
+          "paired_generic_to_noncompressible_ratio": 5.123900297173247,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9975221665020217
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.347898,
+          "paired_generic_to_noncompressible_ratio": 4.652460455312866,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9966248301259271
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 38.2056935,
+          "paired_generic_to_noncompressible_ratio": 4.699430240177305,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9929290725212823
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 28.823804000000003,
+          "paired_generic_to_noncompressible_ratio": 4.660799016297524,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.7491028260553686
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 25.797634,
+          "paired_generic_to_noncompressible_ratio": 4.164224978729496,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.6704555906271795
+        },
+        {
+          "size_mib": 78,
+          "hot_glookups_s": 23.142713,
+          "paired_generic_to_noncompressible_ratio": 3.780656218338876,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.60145675813256
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 24.7430455,
+          "paired_generic_to_noncompressible_ratio": 3.405715780606395,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.6430478541023443
+        },
+        {
+          "size_mib": 82,
+          "hot_glookups_s": 19.9884555,
+          "paired_generic_to_noncompressible_ratio": 3.16409073301923,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5194806522946095
+        },
+        {
+          "size_mib": 84,
+          "hot_glookups_s": 17.112266499999997,
+          "paired_generic_to_noncompressible_ratio": 2.897985183681815,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.44473127819501573
+        },
+        {
+          "size_mib": 86,
+          "hot_glookups_s": 19.137552499999998,
+          "paired_generic_to_noncompressible_ratio": 2.69852209286574,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.49736650518207043
+        },
+        {
+          "size_mib": 88,
+          "hot_glookups_s": 17.843973,
+          "paired_generic_to_noncompressible_ratio": 2.528399626293413,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4637476234002872
+        },
+        {
+          "size_mib": 90,
+          "hot_glookups_s": 18.028734999999998,
+          "paired_generic_to_noncompressible_ratio": 2.3943400496066007,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.46854940932513045
+        },
+        {
+          "size_mib": 92,
+          "hot_glookups_s": 17.060746,
+          "paired_generic_to_noncompressible_ratio": 2.2776926291227593,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4433923101618657
+        },
+        {
+          "size_mib": 94,
+          "hot_glookups_s": 16.194166000000003,
+          "paired_generic_to_noncompressible_ratio": 2.178792740955261,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.420870732961193
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 15.492961999999999,
+          "paired_generic_to_noncompressible_ratio": 2.091907599279951,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.402647118269623
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 9.222592500000001,
+          "paired_generic_to_noncompressible_ratio": 1.673006607243214,
+          "source": "screen",
+          "retained_fraction_of_best": 0.23968627129531714
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 8.842835000000001,
+          "paired_generic_to_noncompressible_ratio": 1.4839047530583729,
+          "source": "screen",
+          "retained_fraction_of_best": 0.22981674066481042
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 7.590311999999999,
+          "paired_generic_to_noncompressible_ratio": 1.3095048361802104,
+          "source": "screen",
+          "retained_fraction_of_best": 0.19726487766298909
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 6.9947515,
+          "paired_generic_to_noncompressible_ratio": 1.2277796765443256,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18178683549905583
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 6.6456634999999995,
+          "paired_generic_to_noncompressible_ratio": 1.1806476859118726,
+          "source": "screen",
+          "retained_fraction_of_best": 0.17271437555095126
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 7.023142,
+          "paired_generic_to_noncompressible_ratio": 1.1634925098709874,
+          "source": "screen",
+          "retained_fraction_of_best": 0.1825246771726644
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 7.583839,
+          "paired_generic_to_noncompressible_ratio": 1.1564373189718664,
+          "source": "screen",
+          "retained_fraction_of_best": 0.19709665064503354
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g8",
+      "selection": "alternating code 0/63 runs of 8 packed groups",
+      "run_groups": 8,
+      "run_codes": 128,
+      "run_bytes": 96,
+      "best_hot_glookups_s": 38.4889015,
+      "reported_99pct_endpoint_mib": 72,
+      "endpoint_allocation_to_nominal_l2": 2.0,
+      "first_below_99pct_mib": 74,
+      "first_below_retained_fraction": 0.828620024398462,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.5039765,
+          "paired_generic_to_noncompressible_ratio": 1.0023187751682163,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0003916713497267
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.509223000000006,
+          "paired_generic_to_noncompressible_ratio": 1.96081498472316,
+          "source": "screen",
+          "retained_fraction_of_best": 1.000527983372038
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.514472999999995,
+          "paired_generic_to_noncompressible_ratio": 3.678294532096638,
+          "source": "screen",
+          "retained_fraction_of_best": 1.000664386329654
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.4889015,
+          "paired_generic_to_noncompressible_ratio": 4.955591210110029,
+          "source": "refinement",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.411227,
+          "paired_generic_to_noncompressible_ratio": 4.526162586183862,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.997981898755931
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.3752335,
+          "paired_generic_to_noncompressible_ratio": 4.602859511786911,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.997046733069272
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.347897,
+          "paired_generic_to_noncompressible_ratio": 4.661628419607359,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9963364893643433
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 38.1659815,
+          "paired_generic_to_noncompressible_ratio": 4.697881609490594,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9916100489383934
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 31.8926745,
+          "paired_generic_to_noncompressible_ratio": 4.659855108933154,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.828620024398462
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 28.552602,
+          "paired_generic_to_noncompressible_ratio": 4.149529130287634,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.7418398781789083
+        },
+        {
+          "size_mib": 78,
+          "hot_glookups_s": 22.9303155,
+          "paired_generic_to_noncompressible_ratio": 3.7440289094276835,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5957643530044628
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 24.678787,
+          "paired_generic_to_noncompressible_ratio": 3.404462679185192,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.6411922927964052
+        },
+        {
+          "size_mib": 82,
+          "hot_glookups_s": 20.794826999999998,
+          "paired_generic_to_noncompressible_ratio": 3.1218794925908107,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5402811249367561
+        },
+        {
+          "size_mib": 84,
+          "hot_glookups_s": 19.662579,
+          "paired_generic_to_noncompressible_ratio": 2.8950666005061403,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5108636057072193
+        },
+        {
+          "size_mib": 86,
+          "hot_glookups_s": 19.1612995,
+          "paired_generic_to_noncompressible_ratio": 2.699733840452356,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4978396044896215
+        },
+        {
+          "size_mib": 88,
+          "hot_glookups_s": 17.884494500000002,
+          "paired_generic_to_noncompressible_ratio": 2.5345642542583606,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4646662752897742
+        },
+        {
+          "size_mib": 90,
+          "hot_glookups_s": 16.5726245,
+          "paired_generic_to_noncompressible_ratio": 2.3970111825481446,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.430581904240629
+        },
+        {
+          "size_mib": 92,
+          "hot_glookups_s": 17.076899,
+          "paired_generic_to_noncompressible_ratio": 2.279954806612319,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.44368372009785734
+        },
+        {
+          "size_mib": 94,
+          "hot_glookups_s": 16.208848500000002,
+          "paired_generic_to_noncompressible_ratio": 2.177422664611682,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.42113045237209495
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 15.488854,
+          "paired_generic_to_noncompressible_ratio": 2.09002261967356,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4024239039402047
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 10.6280355,
+          "paired_generic_to_noncompressible_ratio": 1.6730139073615495,
+          "source": "screen",
+          "retained_fraction_of_best": 0.2761324715905441
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 9.226417,
+          "paired_generic_to_noncompressible_ratio": 1.48396350034159,
+          "source": "screen",
+          "retained_fraction_of_best": 0.2397162984763283
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 6.8677665,
+          "paired_generic_to_noncompressible_ratio": 1.3103150771601706,
+          "source": "screen",
+          "retained_fraction_of_best": 0.17843498339384928
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 6.3274795,
+          "paired_generic_to_noncompressible_ratio": 1.2277741173033523,
+          "source": "screen",
+          "retained_fraction_of_best": 0.1643975082011629
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 7.2783555,
+          "paired_generic_to_noncompressible_ratio": 1.1804851088058554,
+          "source": "screen",
+          "retained_fraction_of_best": 0.1891027079585527
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 7.0226705,
+          "paired_generic_to_noncompressible_ratio": 1.1636404369033535,
+          "source": "screen",
+          "retained_fraction_of_best": 0.18245962410748462
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 7.5808444999999995,
+          "paired_generic_to_noncompressible_ratio": 1.1564616795611784,
+          "source": "screen",
+          "retained_fraction_of_best": 0.19696183067214845
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g16",
+      "selection": "alternating code 0/63 runs of 16 packed groups",
+      "run_groups": 16,
+      "run_codes": 256,
+      "run_bytes": 192,
+      "best_hot_glookups_s": 38.4915225,
+      "reported_99pct_endpoint_mib": 88,
+      "endpoint_allocation_to_nominal_l2": 2.4444444444444446,
+      "first_below_99pct_mib": 90,
+      "first_below_retained_fraction": 0.9687255161185166,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.608555,
+          "paired_generic_to_noncompressible_ratio": 1.004222098462812,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0030404746915376
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5111905,
+          "paired_generic_to_noncompressible_ratio": 1.9622150216299694,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0005109696557208
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.507912,
+          "paired_generic_to_noncompressible_ratio": 3.2967720833076832,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0004257950565607
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.4882465,
+          "paired_generic_to_noncompressible_ratio": 4.453535722753784,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9999148903502063
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.4915225,
+          "paired_generic_to_noncompressible_ratio": 4.535309026576895,
+          "source": "refinement",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.486936,
+          "paired_generic_to_noncompressible_ratio": 4.605829409541042,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9998808438923141
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.486936,
+          "paired_generic_to_noncompressible_ratio": 4.677039501723363,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9998808438923141
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 38.4856255,
+          "paired_generic_to_noncompressible_ratio": 4.730758877235425,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.999846797434422
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 38.435272,
+          "paired_generic_to_noncompressible_ratio": 5.1345378316248365,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9985386262650431
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 38.408480499999996,
+          "paired_generic_to_noncompressible_ratio": 5.728705806858262,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9978425898845646
+        },
+        {
+          "size_mib": 78,
+          "hot_glookups_s": 38.342045,
+          "paired_generic_to_noncompressible_ratio": 5.785281191376948,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9961166124306982
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.3270975,
+          "paired_generic_to_noncompressible_ratio": 5.830849642273313,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9957282801687046
+        },
+        {
+          "size_mib": 82,
+          "hot_glookups_s": 38.165357,
+          "paired_generic_to_noncompressible_ratio": 6.413919279926868,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9915263029671013
+        },
+        {
+          "size_mib": 84,
+          "hot_glookups_s": 37.9166635,
+          "paired_generic_to_noncompressible_ratio": 5.575707253221571,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9850653088611914
+        },
+        {
+          "size_mib": 86,
+          "hot_glookups_s": 36.432503,
+          "paired_generic_to_noncompressible_ratio": 5.653218432103618,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.946507195188239
+        },
+        {
+          "size_mib": 88,
+          "hot_glookups_s": 38.151742999999996,
+          "paired_generic_to_noncompressible_ratio": 5.0509825296525,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9911726146971711
+        },
+        {
+          "size_mib": 90,
+          "hot_glookups_s": 37.28772,
+          "paired_generic_to_noncompressible_ratio": 4.963816855370504,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9687255161185166
+        },
+        {
+          "size_mib": 92,
+          "hot_glookups_s": 36.2562335,
+          "paired_generic_to_noncompressible_ratio": 4.848694626540809,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9419277582485858
+        },
+        {
+          "size_mib": 94,
+          "hot_glookups_s": 34.902335,
+          "paired_generic_to_noncompressible_ratio": 4.686519078236889,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9067538183245414
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 33.1754885,
+          "paired_generic_to_noncompressible_ratio": 4.483150869299976,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.8618907838732541
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 23.336623,
+          "paired_generic_to_noncompressible_ratio": 3.4941788733917596,
+          "source": "screen",
+          "retained_fraction_of_best": 0.6062795515558004
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 17.9253025,
+          "paired_generic_to_noncompressible_ratio": 3.012284498099511,
+          "source": "screen",
+          "retained_fraction_of_best": 0.46569481630662957
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 13.335173000000001,
+          "paired_generic_to_noncompressible_ratio": 2.54260133310804,
+          "source": "screen",
+          "retained_fraction_of_best": 0.3464444151306304
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 14.453426,
+          "paired_generic_to_noncompressible_ratio": 2.3167003255294016,
+          "source": "screen",
+          "retained_fraction_of_best": 0.37549634468213094
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 13.459168,
+          "paired_generic_to_noncompressible_ratio": 2.1829286451006666,
+          "source": "screen",
+          "retained_fraction_of_best": 0.34966577380772607
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 12.907992499999999,
+          "paired_generic_to_noncompressible_ratio": 2.137869049006107,
+          "source": "screen",
+          "retained_fraction_of_best": 0.3353463739970275
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 13.8530815,
+          "paired_generic_to_noncompressible_ratio": 2.1133343530378665,
+          "source": "screen",
+          "retained_fraction_of_best": 0.35989954671187663
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g32",
+      "selection": "alternating code 0/63 runs of 32 packed groups",
+      "run_groups": 32,
+      "run_codes": 512,
+      "run_bytes": 384,
+      "best_hot_glookups_s": 38.5262895,
+      "reported_99pct_endpoint_mib": 240,
+      "endpoint_allocation_to_nominal_l2": 6.666666666666667,
+      "first_below_99pct_mib": 248,
+      "first_below_retained_fraction": 0.7473957101422913,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.5262895,
+          "paired_generic_to_noncompressible_ratio": 1.0026071768579659,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5171005,
+          "paired_generic_to_noncompressible_ratio": 1.9596497474773857,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9997614875421627
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.5125035,
+          "paired_generic_to_noncompressible_ratio": 3.6773053822331385,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9996421664224894
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.508568,
+          "paired_generic_to_noncompressible_ratio": 4.777882044473063,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9995400153964996
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.509223,
+          "paired_generic_to_noncompressible_ratio": 5.860191795927861,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9995570167742212
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 38.5066,
+          "paired_generic_to_noncompressible_ratio": 6.172772162092096,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9994889333944293
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 38.5072565,
+          "paired_generic_to_noncompressible_ratio": 6.377120082031861,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9995059737066037
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 38.4967655,
+          "paired_generic_to_noncompressible_ratio": 5.899630682465741,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992336661437382
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 38.490867,
+          "paired_generic_to_noncompressible_ratio": 7.34496628169837,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9990805628971875
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 38.4908675,
+          "paired_generic_to_noncompressible_ratio": 6.171806070645619,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9990805758753384
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 38.481041000000005,
+          "paired_generic_to_noncompressible_ratio": 6.894916622628767,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9988255162750622
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 38.4144555,
+          "paired_generic_to_noncompressible_ratio": 5.881568255504546,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9970972029372308
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 28.794383500000002,
+          "paired_generic_to_noncompressible_ratio": 4.412425659391189,
+          "source": "screen",
+          "retained_fraction_of_best": 0.7473957101422913
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g64",
+      "selection": "alternating code 0/63 runs of 64 packed groups",
+      "run_groups": 64,
+      "run_codes": 1024,
+      "run_bytes": 768,
+      "best_hot_glookups_s": 38.549987,
+      "reported_99pct_endpoint_mib": 240,
+      "endpoint_allocation_to_nominal_l2": 6.666666666666667,
+      "first_below_99pct_mib": 248,
+      "first_below_retained_fraction": 0.7473643895132831,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.549987,
+          "paired_generic_to_noncompressible_ratio": 1.0037166506112583,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5085675,
+          "paired_generic_to_noncompressible_ratio": 1.9603820338710882,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9989255638400084
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.5079115,
+          "paired_generic_to_noncompressible_ratio": 3.2982034365502004,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9989085469730508
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.5065995,
+          "paired_generic_to_noncompressible_ratio": 5.796529361616264,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9988745132391355
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.530881,
+          "paired_generic_to_noncompressible_ratio": 5.295535679072563,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9995043837498571
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 38.507256,
+          "paired_generic_to_noncompressible_ratio": 6.17391531992791,
+          "source": "screen",
+          "retained_fraction_of_best": 0.998891543076266
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 38.498732000000004,
+          "paired_generic_to_noncompressible_ratio": 6.379073499082715,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9986704275672
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 38.498732000000004,
+          "paired_generic_to_noncompressible_ratio": 5.898806230843897,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9986704275672
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 38.503322,
+          "paired_generic_to_noncompressible_ratio": 7.347792087505578,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9987894937552118
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 38.503976,
+          "paired_generic_to_noncompressible_ratio": 6.825492020156627,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9988064587414777
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 38.504632,
+          "paired_generic_to_noncompressible_ratio": 6.902246881894817,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9988234756084353
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 38.5000425,
+          "paired_generic_to_noncompressible_ratio": 6.372808092848002,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9987044223905963
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 28.8108875,
+          "paired_generic_to_noncompressible_ratio": 4.660232386850943,
+          "source": "screen",
+          "retained_fraction_of_best": 0.7473643895132831
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g128",
+      "selection": "alternating code 0/63 runs of 128 packed groups",
+      "run_groups": 128,
+      "run_codes": 2048,
+      "run_bytes": 1536,
+      "best_hot_glookups_s": 38.51513,
+      "reported_99pct_endpoint_mib": 240,
+      "endpoint_allocation_to_nominal_l2": 6.666666666666667,
+      "first_below_99pct_mib": 248,
+      "first_below_retained_fraction": 0.7471838859170409,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.513161499999995,
+          "paired_generic_to_noncompressible_ratio": 1.002812375287093,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9999488902153516
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.51513,
+          "paired_generic_to_noncompressible_ratio": 1.9602653753596901,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.513816500000004,
+          "paired_generic_to_noncompressible_ratio": 3.302909041369832,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9999658965191084
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.5026645,
+          "paired_generic_to_noncompressible_ratio": 5.792595028442182,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9996763479702653
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.511847,
+          "paired_generic_to_noncompressible_ratio": 5.585824023798548,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9999147607706375
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 38.5092235,
+          "paired_generic_to_noncompressible_ratio": 5.589319290231576,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9998466446822326
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 38.505288,
+          "paired_generic_to_noncompressible_ratio": 5.768303168813935,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9997444640586699
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 38.503321,
+          "paired_generic_to_noncompressible_ratio": 6.2167774774157705,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9996933932197555
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 38.5039765,
+          "paired_generic_to_noncompressible_ratio": 7.3472274347558315,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9997104125054233
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 38.504632,
+          "paired_generic_to_noncompressible_ratio": 7.470627541251575,
+          "source": "screen",
+          "retained_fraction_of_best": 0.999727431791091
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 38.5033205,
+          "paired_generic_to_noncompressible_ratio": 6.247309258627068,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9996933802378443
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 38.501355000000004,
+          "paired_generic_to_noncompressible_ratio": 6.546286265987498,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9996423483446636
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 28.7778845,
+          "paired_generic_to_noncompressible_ratio": 4.525607638154422,
+          "source": "screen",
+          "retained_fraction_of_best": 0.7471838859170409
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g256",
+      "selection": "alternating code 0/63 runs of 256 packed groups",
+      "run_groups": 256,
+      "run_codes": 4096,
+      "run_bytes": 3072,
+      "best_hot_glookups_s": 38.5341705,
+      "reported_99pct_endpoint_mib": 240,
+      "endpoint_allocation_to_nominal_l2": 6.666666666666667,
+      "first_below_99pct_mib": 248,
+      "first_below_retained_fraction": 0.7475189066285985,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.51316,
+          "paired_generic_to_noncompressible_ratio": 1.0019829264561233,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9994547566555246
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5190645,
+          "paired_generic_to_noncompressible_ratio": 1.962109945240846,
+          "source": "screen",
+          "retained_fraction_of_best": 0.999607984295393
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.5341705,
+          "paired_generic_to_noncompressible_ratio": 4.300320164457623,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.509223500000004,
+          "paired_generic_to_noncompressible_ratio": 4.7847226693813845,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9993526005704471
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.5079115,
+          "paired_generic_to_noncompressible_ratio": 6.417357472724316,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9993185528672531
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 38.511847,
+          "paired_generic_to_noncompressible_ratio": 6.183179730285156,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9994206830013378
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 38.5013535,
+          "paired_generic_to_noncompressible_ratio": 6.682377388646877,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991483662532712
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 38.505288,
+          "paired_generic_to_noncompressible_ratio": 7.146728071650317,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992504704363624
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 38.5170985,
+          "paired_generic_to_noncompressible_ratio": 7.34604624307357,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9995569646425891
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 38.50201,
+          "paired_generic_to_noncompressible_ratio": 6.173296248894802,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991654030803646
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 38.503977,
+          "paired_generic_to_noncompressible_ratio": 7.558965212727281,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992164486841619
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 38.5059435,
+          "paired_generic_to_noncompressible_ratio": 5.887265382945612,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992674813124627
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 28.805021,
+          "paired_generic_to_noncompressible_ratio": 4.4113033907618915,
+          "source": "screen",
+          "retained_fraction_of_best": 0.7475189066285985
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g512",
+      "selection": "alternating code 0/63 runs of 512 packed groups",
+      "run_groups": 512,
+      "run_codes": 8192,
+      "run_bytes": 6144,
+      "best_hot_glookups_s": 38.535497,
+      "reported_99pct_endpoint_mib": 240,
+      "endpoint_allocation_to_nominal_l2": 6.666666666666667,
+      "first_below_99pct_mib": 248,
+      "first_below_retained_fraction": 0.7475977927571559,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.535497,
+          "paired_generic_to_noncompressible_ratio": 1.002917132290422,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5111905,
+          "paired_generic_to_noncompressible_ratio": 1.9617010840104694,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9993692438947913
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.508567,
+          "paired_generic_to_noncompressible_ratio": 3.925234091169152,
+          "source": "screen",
+          "retained_fraction_of_best": 0.999301163807489
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.510535000000004,
+          "paired_generic_to_noncompressible_ratio": 4.778578547043855,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9993522336042534
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.5066,
+          "paired_generic_to_noncompressible_ratio": 5.293543469281967,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992501199608247
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 38.507912,
+          "paired_generic_to_noncompressible_ratio": 6.766761722205738,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992841664920008
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 38.502665,
+          "paired_generic_to_noncompressible_ratio": 5.765032365860902,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991480063173962
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 38.5066,
+          "paired_generic_to_noncompressible_ratio": 5.898293435348931,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992501199608247
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 38.505945,
+          "paired_generic_to_noncompressible_ratio": 7.347338097950745,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9992331226453365
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 38.495454,
+          "paired_generic_to_noncompressible_ratio": 6.823322865178119,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9989608801464271
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 38.5020105,
+          "paired_generic_to_noncompressible_ratio": 7.560656254691633,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991310219769579
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 38.500043000000005,
+          "paired_generic_to_noncompressible_ratio": 6.216371804911595,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9990799651552439
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 28.8090525,
+          "paired_generic_to_noncompressible_ratio": 4.409755120278403,
+          "source": "screen",
+          "retained_fraction_of_best": 0.7475977927571559
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_g1024",
+      "selection": "alternating code 0/63 runs of 1024 packed groups",
+      "run_groups": 1024,
+      "run_codes": 16384,
+      "run_bytes": 12288,
+      "best_hot_glookups_s": 38.539446999999996,
+      "reported_99pct_endpoint_mib": 240,
+      "endpoint_allocation_to_nominal_l2": 6.666666666666667,
+      "first_below_99pct_mib": 248,
+      "first_below_retained_fraction": 0.7476259194897115,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.5072555,
+          "paired_generic_to_noncompressible_ratio": 1.003525472132105,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991647129757727
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.5052895,
+          "paired_generic_to_noncompressible_ratio": 1.9607702591152232,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991137003081546
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.539446999999996,
+          "paired_generic_to_noncompressible_ratio": 4.30041359943227,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.500698,
+          "paired_generic_to_noncompressible_ratio": 5.293167031603314,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9989945626360441
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 38.515127,
+          "paired_generic_to_noncompressible_ratio": 5.298273591672402,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9993689582520476
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 38.5151295,
+          "paired_generic_to_noncompressible_ratio": 6.17473514959577,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9993690231206485
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 38.5079115,
+          "paired_generic_to_noncompressible_ratio": 6.681776857068818,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9991817344966056
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 38.498076,
+          "paired_generic_to_noncompressible_ratio": 5.907854706041518,
+          "source": "screen",
+          "retained_fraction_of_best": 0.998926528447593
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 38.504632,
+          "paired_generic_to_noncompressible_ratio": 7.026496558435128,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9990966398661612
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 38.5052875,
+          "paired_generic_to_noncompressible_ratio": 6.17648216997772,
+          "source": "screen",
+          "retained_fraction_of_best": 0.999113648413274
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 38.502665,
+          "paired_generic_to_noncompressible_ratio": 5.860738747098397,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9990456012511026
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 38.50332,
+          "paired_generic_to_noncompressible_ratio": 5.8878651949876994,
+          "source": "screen",
+          "retained_fraction_of_best": 0.9990625968244954
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 28.813089499999997,
+          "paired_generic_to_noncompressible_ratio": 4.414232936374283,
+          "source": "screen",
+          "retained_fraction_of_best": 0.7476259194897115
+        }
+      ]
+    },
+    {
+      "pattern": "blockmix6_0_63_hash",
+      "selection": "pseudorandom code 0/63 choice independently per 16-code group",
+      "run_groups": null,
+      "run_codes": null,
+      "run_bytes": null,
+      "best_hot_glookups_s": 38.3400945,
+      "reported_99pct_endpoint_mib": 72,
+      "endpoint_allocation_to_nominal_l2": 2.0,
+      "first_below_99pct_mib": 74,
+      "first_below_retained_fraction": 0.9291063432303225,
+      "curve": [
+        {
+          "size_mib": 36,
+          "hot_glookups_s": 38.509879,
+          "paired_generic_to_noncompressible_ratio": 1.0044113637074923,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0044283797996376
+        },
+        {
+          "size_mib": 40,
+          "hot_glookups_s": 38.495457,
+          "paired_generic_to_noncompressible_ratio": 1.962021570056605,
+          "source": "screen",
+          "retained_fraction_of_best": 1.004052220059082
+        },
+        {
+          "size_mib": 48,
+          "hot_glookups_s": 38.503976,
+          "paired_generic_to_noncompressible_ratio": 3.732237913123277,
+          "source": "screen",
+          "retained_fraction_of_best": 1.0042744156512187
+        },
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.3400945,
+          "paired_generic_to_noncompressible_ratio": 4.442224484226435,
+          "source": "refinement",
+          "retained_fraction_of_best": 1.0
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.3264455,
+          "paired_generic_to_noncompressible_ratio": 5.032947996227346,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9996440019207569
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.325796,
+          "paired_generic_to_noncompressible_ratio": 4.588715211949997,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9996270614304301
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.3154045,
+          "paired_generic_to_noncompressible_ratio": 4.656809305211032,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.999356026626382
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 38.099402999999995,
+          "paired_generic_to_noncompressible_ratio": 4.6949752551717925,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9937221985720457
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 35.622025,
+          "paired_generic_to_noncompressible_ratio": 4.752792344632347,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.9291063432303225
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 28.7987975,
+          "paired_generic_to_noncompressible_ratio": 4.2733418289335265,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.7511404934069738
+        },
+        {
+          "size_mib": 78,
+          "hot_glookups_s": 25.7025715,
+          "paired_generic_to_noncompressible_ratio": 3.8510953409819937,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.6703836241196537
+        },
+        {
+          "size_mib": 80,
+          "hot_glookups_s": 21.010424,
+          "paired_generic_to_noncompressible_ratio": 3.4744761412642458,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5480013618641446
+        },
+        {
+          "size_mib": 82,
+          "hot_glookups_s": 19.0655545,
+          "paired_generic_to_noncompressible_ratio": 3.180423756883127,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.49727458287824516
+        },
+        {
+          "size_mib": 84,
+          "hot_glookups_s": 17.3065305,
+          "paired_generic_to_noncompressible_ratio": 2.931197828167286,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4513950924142871
+        },
+        {
+          "size_mib": 86,
+          "hot_glookups_s": 19.352506499999997,
+          "paired_generic_to_noncompressible_ratio": 2.725545204314812,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5047589671433907
+        },
+        {
+          "size_mib": 88,
+          "hot_glookups_s": 19.3401555,
+          "paired_generic_to_noncompressible_ratio": 2.551455840714428,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.5044368239624449
+        },
+        {
+          "size_mib": 90,
+          "hot_glookups_s": 18.1959175,
+          "paired_generic_to_noncompressible_ratio": 2.4142320873925884,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4745924009133572
+        },
+        {
+          "size_mib": 92,
+          "hot_glookups_s": 17.179371500000002,
+          "paired_generic_to_noncompressible_ratio": 2.2938804536965893,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.4480784860871953
+        },
+        {
+          "size_mib": 94,
+          "hot_glookups_s": 16.337435,
+          "paired_generic_to_noncompressible_ratio": 2.1975632120697224,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.42611879842914835
+        },
+        {
+          "size_mib": 96,
+          "hot_glookups_s": 15.561036999999999,
+          "paired_generic_to_noncompressible_ratio": 2.101161132176469,
+          "source": "refinement",
+          "retained_fraction_of_best": 0.40586850927036705
+        },
+        {
+          "size_mib": 112,
+          "hot_glookups_s": 11.199407,
+          "paired_generic_to_noncompressible_ratio": 1.6778935792870053,
+          "source": "screen",
+          "retained_fraction_of_best": 0.2921069221673411
+        },
+        {
+          "size_mib": 128,
+          "hot_glookups_s": 8.014008,
+          "paired_generic_to_noncompressible_ratio": 1.4871835673478297,
+          "source": "screen",
+          "retained_fraction_of_best": 0.2090242109340654
+        },
+        {
+          "size_mib": 160,
+          "hot_glookups_s": 6.8751584999999995,
+          "paired_generic_to_noncompressible_ratio": 1.3122310191025948,
+          "source": "screen",
+          "retained_fraction_of_best": 0.17932033266115188
+        },
+        {
+          "size_mib": 192,
+          "hot_glookups_s": 6.333932,
+          "paired_generic_to_noncompressible_ratio": 1.2293390460322595,
+          "source": "screen",
+          "retained_fraction_of_best": 0.16520387032431544
+        },
+        {
+          "size_mib": 224,
+          "hot_glookups_s": 7.799587,
+          "paired_generic_to_noncompressible_ratio": 1.1813960839733677,
+          "source": "screen",
+          "retained_fraction_of_best": 0.20343160604364185
+        },
+        {
+          "size_mib": 240,
+          "hot_glookups_s": 7.649354499999999,
+          "paired_generic_to_noncompressible_ratio": 1.1646505852223055,
+          "source": "screen",
+          "retained_fraction_of_best": 0.19951318847166638
+        },
+        {
+          "size_mib": 248,
+          "hot_glookups_s": 6.970964,
+          "paired_generic_to_noncompressible_ratio": 1.156878402595589,
+          "source": "screen",
+          "retained_fraction_of_best": 0.1818191658343461
+        }
+      ]
+    }
+  ],
+  "conclusion": "The hardware benefit survives nonzero, balanced code-0/63 mixtures, but depends strongly on spatial organization. Hashed or 12-96-byte alternating runs reach a 72 MiB balanced endpoint; 192-byte runs reach 88 MiB; every tested run from 384 through 12,288 bytes remains full through the independently address-bounded 240 MiB endpoint. This bounds workload behavior and does not identify an undocumented compressor block size or a physical byte ratio.",
+  "scope_note": "The sequences are deterministic balanced synthetic controls on the validated raw global L2 path. They do not prove that arbitrary binary data with the same nominal run length compresses identically, and no texture, cache-hit, sector, DRAM-traffic or physical compressed-byte claim is made."
+}

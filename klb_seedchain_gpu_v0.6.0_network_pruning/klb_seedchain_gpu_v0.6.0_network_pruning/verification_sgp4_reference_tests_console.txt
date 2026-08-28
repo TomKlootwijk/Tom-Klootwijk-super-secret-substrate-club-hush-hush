@@ -1,0 +1,6 @@
+00005 near-Earth: dr=6.81921e-09 km, dv=6.38035e-10 km/s
+04632 deep-space non-resonant: dr=5.88957e-09 km, dv=4.97538e-10 km/s
+08195 half-day resonance: dr=4.22097e-09 km, dv=5.4656e-10 km/s
+14128 synchronous resonance: dr=6.28263e-09 km, dv=5.2271e-10 km/s
+28129 GPS-like deep-space: dr=5.2987e-09 km, dv=2.15794e-10 km/s
+KLB full SGP4/SDP4 tests passed

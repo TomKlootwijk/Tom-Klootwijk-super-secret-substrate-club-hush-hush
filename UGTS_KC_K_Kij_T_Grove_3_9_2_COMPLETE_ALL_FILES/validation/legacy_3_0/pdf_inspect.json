@@ -1,0 +1,27 @@
+{
+  "path": "/mnt/data/UGTS_KC_Two_Hands_3_0_Package/report/UGTS_KC_Two_Hands_3_0_Interactive_Graphics_Runtime.pdf",
+  "pages": 20,
+  "encrypted": false,
+  "page_sizes": [
+    {
+      "width_pt": 595,
+      "height_pt": 842,
+      "count": 20
+    }
+  ],
+  "metadata": {
+    "/Title": "UGTS-KC Two Hands 3.0 - Interactive Graphics, Game Runtime and Content Substrate",
+    "/Author": "Tom Klootwijk (requester-supplied attribution; not independently verified)",
+    "/Subject": "Production companion and tested reference vertical slice",
+    "/Keywords": "UGTS, geometry, topology, kinematics, graphics, game, runtime, two-hand, interaction, replay",
+    "/Creator": "Writer",
+    "/Producer": "LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community",
+    "/CreationDate": "D:20260816172202Z'"
+  },
+  "outline_items": 77,
+  "form_fields": 0,
+  "attachments": 0,
+  "annotations": 0,
+  "poppler_pdfinfo": "Title:           UGTS-KC Two Hands 3.0 - Interactive Graphics, Game Runtime and Content Substrate\nSubject:         Production companion and tested reference vertical slice\nKeywords:        UGTS, geometry, topology, kinematics, graphics, game, runtime, two-hand, interaction, replay\nAuthor:          Tom Klootwijk (requester-supplied attribution; not independently verified)\nCreator:         Writer\nProducer:        LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community\nCreationDate:    Sun Aug 16 17:22:02 2026 UTC\nCustom Metadata: no\nMetadata Stream: yes\nTagged:          yes\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           20\nEncrypted:       no\nPage size:       595.304 x 841.89 pts (A4)\nPage rot:        0\nFile size:       1740723 bytes\nOptimized:       no\nPDF version:     1.7",
+  "poppler_pdffonts": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nBAAAAA+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes   1971  0\nCAAAAA+DejaVuSans                    TrueType          WinAnsi          yes yes yes   1961  0\nDAAAAA+OpenSymbol                    TrueType          WinAnsi          yes yes yes   1976  0\nEAAAAA+DejaVuSans-Oblique            TrueType          WinAnsi          yes yes yes   1966  0\nFAAAAA+DejaVuSansMono                TrueType          WinAnsi          yes yes yes   1956  0"
+}

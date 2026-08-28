@@ -1,0 +1,30 @@
+{
+  "format": "GSP4-DEVICE-PROFILE-1",
+  "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "architecture": "Blackwell",
+  "compute_capability_expected": "12.0",
+  "cuda_target": "sm_120",
+  "cuda_cores": 5888,
+  "ai_tops_vendor": 992,
+  "memory_bytes_nominal": 12000000000,
+  "memory_type": "GDDR7",
+  "memory_interface_bits": 192,
+  "memory_bandwidth_gb_s_vendor": 672,
+  "gpu_subsystem_power_w_vendor_range": [60, 115],
+  "recommended_student": {
+    "hidden_dim": 128,
+    "heads": 8,
+    "layers": 4,
+    "precision": "float16",
+    "teacher_dimensions": 256
+  },
+  "acceptance": {
+    "cuda_available": true,
+    "no_nonfinite_smoke_outputs": true,
+    "graph_model_schema_match": true,
+    "lineage_mismatches": 0,
+    "event_order_mismatches": 0,
+    "packed_error_below_guard": true
+  },
+  "boundary": "Vendor specifications are not measured GSP4 performance. Record the actual laptop power and thermal state."
+}

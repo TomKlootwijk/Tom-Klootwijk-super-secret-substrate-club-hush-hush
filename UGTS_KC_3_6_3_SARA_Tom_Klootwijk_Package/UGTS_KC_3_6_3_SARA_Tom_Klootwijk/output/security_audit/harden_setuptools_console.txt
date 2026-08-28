@@ -1,0 +1,6 @@
+Collecting setuptools==83.0.0
+  Downloading setuptools-83.0.0-py3-none-any.whl.metadata (6.6 kB)
+Downloading setuptools-83.0.0-py3-none-any.whl (1.0 MB)
+   ---------------------------------------- 1.0/1.0 MB 4.8 MB/s  0:00:00
+Installing collected packages: setuptools
+Successfully installed setuptools-83.0.0

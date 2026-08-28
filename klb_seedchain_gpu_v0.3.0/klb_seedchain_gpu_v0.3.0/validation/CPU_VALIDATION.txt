@@ -1,0 +1,57 @@
+KLB SeedChain GPU 0.3.0 CPU validation
+========================================
+
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /mnt/data/klb_seedchain_gpu_v0.3.0_verify_build
+
+[1/15] Building CXX object CMakeFiles/klb_core.dir/src/format.cpp.o
+[2/15] Building CXX object CMakeFiles/klb_core.dir/src/seedchain.cpp.o
+[3/15] Building CXX object CMakeFiles/klb_core.dir/src/ply.cpp.o
+[4/15] Building CXX object CMakeFiles/klb_core.dir/src/orbit.cpp.o
+[5/15] Linking CXX static library libklb_core.a
+[6/15] Building CXX object CMakeFiles/klb_pack.dir/src/pack_main.cpp.o
+[7/15] Building CXX object CMakeFiles/klb_seedchain.dir/src/seedchain_main.cpp.o
+[8/15] Building CXX object CMakeFiles/klb_tests.dir/tests/test_cpu.cpp.o
+[9/15] Linking CXX executable klb_pack
+[10/15] Linking CXX executable klb_seedchain
+[11/15] Linking CXX executable klb_tests
+[12/15] Building CXX object CMakeFiles/klb_orbit.dir/src/orbit_main.cpp.o
+[13/15] Linking CXX executable klb_orbit
+[14/15] Building CXX object CMakeFiles/klb_orbit_tests.dir/tests/test_orbit.cpp.o
+[15/15] Linking CXX executable klb_orbit_tests
+
+Internal ctest changing into directory: /mnt/data/klb_seedchain_gpu_v0.3.0_verify_build
+Test project /mnt/data/klb_seedchain_gpu_v0.3.0_verify_build
+    Start 1: klb_cpu_tests
+1/2 Test #1: klb_cpu_tests ....................   Passed    0.01 sec
+    Start 2: klb_orbit_tests
+2/2 Test #2: klb_orbit_tests ..................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.02 sec
+
+KLOC1 hash chain and payload : valid
+Seeds checked                : 32
+Sampled ECI radius range     : 26071.4 .. 27048.3 km
+Model boundary               : coarse benchmark predictor; not SGP4/navigation
+
+KLOC1 coarse visibility schedule
+  intervals              : 604800
+  seeds                  : 32
+  candidate intervals    : 19353600
+  support survivors      : 19214155
+  compatible survivors   : 19214155
+  visible samples        : 5498030
+  acquisition/loss events: 717
+  model boundary         : coarse Kepler+J2; not SGP4/navigation
+
+Pass-event CSV byte comparison: exact match
+a08b9295d29c94dac7244d3a70aea2e0196ad56e5c25733c909e4fbdf68d4f86  /mnt/data/klb_seedchain_gpu_v0.3.0/data/orbit/gps_ops_2026-08-16_52N_5E_pass_events.csv

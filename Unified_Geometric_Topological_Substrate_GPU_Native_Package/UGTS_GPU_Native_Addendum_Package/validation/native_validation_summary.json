@@ -1,0 +1,158 @@
+{
+  "schema": "UGTS-VALIDATION-SUMMARY-1.1",
+  "runtime": "Vulkan compute",
+  "physical_gpu_claim": false,
+  "device": {
+    "name": "SwiftShader Device (Subzero)",
+    "type": 4,
+    "vendor_id": 6880,
+    "device_id": 49374,
+    "api_version": "1.3.0",
+    "timestamp_period_ns": 1.0,
+    "timestamp_valid_bits": 64
+  },
+  "run_parameters": {
+    "warmup": 3,
+    "iterations": 12
+  },
+  "programs": [
+    {
+      "name": "G64_E32_evaluate",
+      "spirv_bytes": 4888,
+      "shader_module_create_ms": 0.006249,
+      "cold_pipeline_create_ms": 12.890836,
+      "pipeline_cache_bytes": 32,
+      "cached_pipeline_create_ms": 7.503786,
+      "cache_reload_ok": true
+    },
+    {
+      "name": "G64_E32_evaluate_commit",
+      "spirv_bytes": 5508,
+      "shader_module_create_ms": 0.002934,
+      "cold_pipeline_create_ms": 9.544096,
+      "pipeline_cache_bytes": 32,
+      "cached_pipeline_create_ms": 7.278591,
+      "cache_reload_ok": true
+    },
+    {
+      "name": "G32_E16_evaluate",
+      "spirv_bytes": 5528,
+      "shader_module_create_ms": 0.003415,
+      "cold_pipeline_create_ms": 8.547857,
+      "pipeline_cache_bytes": 32,
+      "cached_pipeline_create_ms": 14.652413,
+      "cache_reload_ok": true
+    },
+    {
+      "name": "G32_E16_evaluate_commit",
+      "spirv_bytes": 6148,
+      "shader_module_create_ms": 0.003565,
+      "cold_pipeline_create_ms": 9.54034,
+      "pipeline_cache_bytes": 32,
+      "cached_pipeline_create_ms": 8.48958,
+      "cache_reload_ok": true
+    }
+  ],
+  "benchmark_cases": 16,
+  "all_counter_validation": true,
+  "all_sample_validation": true,
+  "largest_batch": 1048576,
+  "largest_batch_results": [
+    {
+      "profile": "G64_E32",
+      "mode": "evaluate",
+      "candidates": 1048576,
+      "device_dispatch_ms": {
+        "min": 12.134924,
+        "mean": 14.067778,
+        "p50": 12.527808,
+        "p95": 21.191875,
+        "p99": 22.742684,
+        "max": 23.130386
+      },
+      "candidate_rate_mps": 83.699878,
+      "verified_event_rate_mps": 4.112531,
+      "effective_bandwidth_gbps": 8.035188,
+      "counts": {
+        "candidates": 1048576,
+        "supported": 552419,
+        "compatible": 92040,
+        "verified": 51521
+      },
+      "counter_validation": true,
+      "sample_validation": true
+    },
+    {
+      "profile": "G64_E32",
+      "mode": "evaluate_commit",
+      "candidates": 1048576,
+      "device_dispatch_ms": {
+        "min": 20.579457,
+        "mean": 24.242124,
+        "p50": 21.962806,
+        "p95": 36.569679,
+        "p99": 38.152581,
+        "max": 38.548306
+      },
+      "candidate_rate_mps": 47.743262,
+      "verified_event_rate_mps": 2.34583,
+      "effective_bandwidth_gbps": 4.583353,
+      "counts": {
+        "candidates": 1048576,
+        "supported": 552419,
+        "compatible": 92040,
+        "verified": 51521
+      },
+      "counter_validation": true,
+      "sample_validation": true
+    },
+    {
+      "profile": "G32_E16",
+      "mode": "evaluate",
+      "candidates": 1048576,
+      "device_dispatch_ms": {
+        "min": 12.385587,
+        "mean": 14.445215,
+        "p50": 13.307137,
+        "p95": 18.859873,
+        "p99": 21.320772,
+        "max": 21.935997
+      },
+      "candidate_rate_mps": 78.798013,
+      "verified_event_rate_mps": 3.748214,
+      "effective_bandwidth_gbps": 3.782305,
+      "counts": {
+        "candidates": 1048576,
+        "supported": 521319,
+        "compatible": 86737,
+        "verified": 49878
+      },
+      "counter_validation": true,
+      "sample_validation": true
+    },
+    {
+      "profile": "G32_E16",
+      "mode": "evaluate_commit",
+      "candidates": 1048576,
+      "device_dispatch_ms": {
+        "min": 18.991207,
+        "mean": 22.218598,
+        "p50": 19.172112,
+        "p95": 32.585443,
+        "p99": 33.743369,
+        "max": 34.03285
+      },
+      "candidate_rate_mps": 54.692775,
+      "verified_event_rate_mps": 2.601591,
+      "effective_bandwidth_gbps": 2.625253,
+      "counts": {
+        "candidates": 1048576,
+        "supported": 521319,
+        "compatible": 86737,
+        "verified": 49878
+      },
+      "counter_validation": true,
+      "sample_validation": true
+    }
+  ]
+}

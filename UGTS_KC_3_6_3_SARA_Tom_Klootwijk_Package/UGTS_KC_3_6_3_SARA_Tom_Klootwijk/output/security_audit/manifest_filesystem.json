@@ -1,0 +1,22 @@
+{
+  "manifest": "checksums/SHA256SUMS.txt",
+  "entries": 152,
+  "passed": 150,
+  "missing": 0,
+  "mismatch": 2,
+  "malformed": 0,
+  "exceptions": [
+    {
+      "path": "README.md",
+      "status": "mismatch",
+      "expected": "aac9b3016ce6ead7e89d5ebda90860e8f15a1da2457794ee3c23b2d37c5454f2",
+      "actual": "18f0c3c14708f2068a7a38670c8bb4bda83962b9292427bf70372ff30ecad7bb"
+    },
+    {
+      "path": "SECURITY.md",
+      "status": "mismatch",
+      "expected": "a55cbb0d89c85dbaea7e502c7fc52aae531db6e0c01e1bbb3fc256abb3e59d1e",
+      "actual": "9a80e13318c6b78468c6c2c38fec17a1dfbb62f05a06c0c66dbb34004c1482a0"
+    }
+  ]
+}

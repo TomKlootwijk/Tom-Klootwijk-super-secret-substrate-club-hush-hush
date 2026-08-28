@@ -1,0 +1,22 @@
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.
+-- The CXX compiler identification is MSVC 19.44.35221.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Looking for a CUDA compiler
+-- Looking for a CUDA compiler - NOTFOUND
+CMake Error at CMakeLists.txt:117 (message):
+  KLB_REQUIRE_CUDA is ON, but no CUDA compiler was found
+
+
+-- Configuring incomplete, errors occurred!
+CMake configure failed with exit code 1
+At C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_
+v0.6.0_network_pruning\scripts\build_windows.ps1:14 char:9
++         throw "$Description failed with exit code $LASTEXITCODE"
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (CMake configure failed with exit code 1:String) [], RuntimeException
+    + FullyQualifiedErrorId : CMake configure failed with exit code 1
+ 

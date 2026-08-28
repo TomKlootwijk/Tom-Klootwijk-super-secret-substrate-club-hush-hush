@@ -1,0 +1,168 @@
+#version 450
+#extension GL_KHR_shader_subgroup_basic : require
+#extension GL_KHR_shader_subgroup_ballot : require
+
+#ifndef ENABLE_FULL_COUNTERS
+#define ENABLE_FULL_COUNTERS 0
+#endif
+
+layout(local_size_x = 256) in;
+
+struct State32 {
+    uvec4 a;
+    uvec4 b;
+};
+
+layout(std430, binding = 0) readonly buffer StateBuffer {
+    State32 states[];
+};
+layout(std430, binding = 1) writeonly buffer CompactEventBuffer {
+    uvec4 events[];
+};
+layout(std430, binding = 2) buffer CounterBuffer {
+    uint counters[4];
+};
+
+shared uint subgroup_verified_counts[256];
+shared uint subgroup_verified_offsets[256];
+#if ENABLE_FULL_COUNTERS
+shared uint subgroup_candidate_counts[256];
+shared uint subgroup_support_counts[256];
+shared uint subgroup_compatible_counts[256];
+#endif
+shared uint workgroup_output_base;
+
+uint mix32(uint x) {
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    bool valid_candidate = i < uint(states.length());
+    bool in_support = false;
+    bool compatible = false;
+    bool verified = false;
+    uint sheet = 0u;
+    uint orientation = 0u;
+    uint lineage_seed = 0u;
+    float sdf = 0.0;
+    float guard = 0.0;
+    float confidence = 0.0;
+
+    if (valid_candidate) {
+        State32 s = states[i];
+        vec2 xy = unpackHalf2x16(s.a.x);
+        vec2 zt = unpackHalf2x16(s.a.y);
+        vec2 axis_xy = unpackHalf2x16(s.a.z);
+        vec2 axis_z_radius = unpackHalf2x16(s.a.w);
+        vec2 cone_phase = unpackHalf2x16(s.b.x);
+        vec2 guard_confidence = unpackHalf2x16(s.b.y);
+
+        uint meta = s.b.z;
+        sheet = meta & 255u;
+        orientation = (meta >> 8) & 1u;
+        uint compatibility_mask = (meta >> 9) & 65535u;
+        lineage_seed = s.b.w;
+
+        vec3 position = vec3(xy, zt.x);
+        vec3 axis = normalize(vec3(axis_xy, axis_z_radius.x));
+        float radius = axis_z_radius.y;
+        float r = length(position);
+        float cosine_to_axis = (r > 1e-8)
+            ? dot(position / r, axis)
+            : 1.0;
+
+        in_support =
+            (r <= radius) &&
+            (cosine_to_axis >= cone_phase.x);
+        compatible =
+            ((compatibility_mask & 4u) != 0u) &&
+            (sheet == 1u) &&
+            (orientation == 0u);
+
+        sdf = r - radius;
+        guard = abs(sdf) - guard_confidence.x;
+        confidence = exp2(-abs(sdf) * 32.0);
+        verified =
+            in_support && compatible && (guard <= 0.0) &&
+            (confidence >= guard_confidence.y);
+    }
+
+    uvec4 verified_ballot = subgroupBallot(verified);
+    uint subgroup_rank = subgroupBallotExclusiveBitCount(verified_ballot);
+    uint subgroup_verified = subgroupBallotBitCount(verified_ballot);
+#if ENABLE_FULL_COUNTERS
+    uint subgroup_candidates = subgroupBallotBitCount(subgroupBallot(valid_candidate));
+    uint subgroup_support = subgroupBallotBitCount(subgroupBallot(in_support));
+    uint subgroup_compatible = subgroupBallotBitCount(subgroupBallot(in_support && compatible));
+#endif
+
+    if (subgroupElect()) {
+        subgroup_verified_counts[gl_SubgroupID] = subgroup_verified;
+#if ENABLE_FULL_COUNTERS
+        subgroup_candidate_counts[gl_SubgroupID] = subgroup_candidates;
+        subgroup_support_counts[gl_SubgroupID] = subgroup_support;
+        subgroup_compatible_counts[gl_SubgroupID] = subgroup_compatible;
+#endif
+    }
+    barrier();
+
+    if (gl_LocalInvocationIndex == 0u) {
+        uint verified_total = 0u;
+#if ENABLE_FULL_COUNTERS
+        uint candidate_total = 0u;
+        uint support_total = 0u;
+        uint compatible_total = 0u;
+#endif
+        for (uint subgroup_index = 0u; subgroup_index < gl_NumSubgroups; ++subgroup_index) {
+            subgroup_verified_offsets[subgroup_index] = verified_total;
+            verified_total += subgroup_verified_counts[subgroup_index];
+#if ENABLE_FULL_COUNTERS
+            candidate_total += subgroup_candidate_counts[subgroup_index];
+            support_total += subgroup_support_counts[subgroup_index];
+            compatible_total += subgroup_compatible_counts[subgroup_index];
+#endif
+        }
+#if ENABLE_FULL_COUNTERS
+        if (candidate_total != 0u) atomicAdd(counters[0], candidate_total);
+        if (support_total != 0u) atomicAdd(counters[1], support_total);
+        if (compatible_total != 0u) atomicAdd(counters[2], compatible_total);
+#endif
+        workgroup_output_base = (verified_total != 0u)
+            ? atomicAdd(counters[3], verified_total)
+            : 0u;
+    }
+    barrier();
+
+    if (!verified) {
+        return;
+    }
+
+    uint slot =
+        workgroup_output_base +
+        subgroup_verified_offsets[gl_SubgroupID] +
+        subgroup_rank;
+    uint route = (orientation ^ 1u) & 1u;
+    uint state_flags =
+        1u |
+        (route << 1) |
+        (sheet << 2) |
+        (1u << 10) |
+        (1u << 11);
+
+    // Keep the reservation counter authoritative even when a production FIFO
+    // is intentionally smaller than worst case. The host can detect exact
+    // excess demand from counter[3] without permitting an out-of-range write.
+    if (slot < uint(events.length())) {
+        events[slot] = uvec4(
+            floatBitsToUint(sdf),
+            packHalf2x16(vec2(guard, confidence)),
+            state_flags,
+            mix32(lineage_seed ^ i));
+    }
+}

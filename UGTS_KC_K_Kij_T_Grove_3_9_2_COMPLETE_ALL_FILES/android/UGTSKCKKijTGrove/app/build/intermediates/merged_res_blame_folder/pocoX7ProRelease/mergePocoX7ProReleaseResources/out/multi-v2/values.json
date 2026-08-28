@@ -1,0 +1,69 @@
+{
+    "logs": [
+        {
+            "outputFile": "nl.tomklootwijk.ugtskc.grove.app-mergePocoX7ProReleaseResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "C:\\Tom Klootwijk Coronation\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\android\\UGTSKCKKijTGrove\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "58",
+                        "endOffsets": "109"
+                    }
+                },
+                {
+                    "source": "C:\\Tom Klootwijk Coronation\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\android\\UGTSKCKKijTGrove\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "-1",
+                        "startColumns": "-1",
+                        "startOffsets": "-1"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "114",
+                        "endLines": "14",
+                        "endColumns": "12",
+                        "endOffsets": "811"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "C:\\Users\\Tom\\.gradle\\daemon\\8.13\\nl.tomklootwijk.ugtskc.grove.app-mergePocoX7ProReleaseResources-2:\\values\\values.xml",
+            "map": [
+                {
+                    "source": "C:\\Tom Klootwijk Coronation\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\android\\UGTSKCKKijTGrove\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "69",
+                        "endOffsets": "120"
+                    }
+                },
+                {
+                    "source": "C:\\Tom Klootwijk Coronation\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\android\\UGTSKCKKijTGrove\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "13",
+                        "endColumns": "12",
+                        "endOffsets": "752"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "125",
+                        "endLines": "14",
+                        "endColumns": "12",
+                        "endOffsets": "822"
+                    }
+                }
+            ]
+        }
+    ]
+}

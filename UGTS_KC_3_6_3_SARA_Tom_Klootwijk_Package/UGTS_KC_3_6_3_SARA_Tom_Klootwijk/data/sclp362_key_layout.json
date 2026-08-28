@@ -1,0 +1,34 @@
+[
+  {
+    "field": "rho",
+    "bits": 20,
+    "contiguous_range": "63:44",
+    "states": 1048576,
+    "range": "[-20,0]",
+    "step": 1.9073504518036383e-05
+  },
+  {
+    "field": "theta",
+    "bits": 18,
+    "contiguous_range": "43:26",
+    "states": 262144,
+    "range": "[0,2pi)",
+    "step": 2.3968449810713143e-05
+  },
+  {
+    "field": "time",
+    "bits": 14,
+    "contiguous_range": "25:12",
+    "states": 16384,
+    "range": "modular ticks",
+    "step": 1
+  },
+  {
+    "field": "phi",
+    "bits": 12,
+    "contiguous_range": "11:0",
+    "states": 4096,
+    "range": "[0,2pi)",
+    "step": 0.0015339807878856412
+  }
+]

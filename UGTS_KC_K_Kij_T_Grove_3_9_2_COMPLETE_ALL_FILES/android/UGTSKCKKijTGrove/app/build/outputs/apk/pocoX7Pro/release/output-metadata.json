@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "nl.tomklootwijk.ugtskc.grove.poco",
+  "variantName": "pocoX7ProRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 392,
+      "versionName": "3.9.2-poco-x7-pro-grove",
+      "outputFile": "app-pocoX7Pro-release.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 26
+}

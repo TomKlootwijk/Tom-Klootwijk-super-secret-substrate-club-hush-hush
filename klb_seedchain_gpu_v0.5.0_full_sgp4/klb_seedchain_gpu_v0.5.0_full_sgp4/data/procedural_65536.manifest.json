@@ -1,0 +1,17 @@
+{
+  "file": "procedural_65536.klb",
+  "format": "KLB37PK1",
+  "format_version": 1,
+  "sha256": "a99eedeeab56527ef70bbc76a37399d6787d7f117e15469cb0123bd7043ef2a7",
+  "payload_fnv1a64": "0x42067a98d1069530",
+  "record_count": 65536,
+  "padded_record_count": 65536,
+  "record_bits": 37,
+  "payload_bytes": 303104,
+  "container_bytes": 303240,
+  "payload_bytes_per_input_point": 4.625,
+  "ratio_vs_float3_container": 2.593431,
+  "rms_position_error": 0.001539,
+  "max_position_error": 0.002969,
+  "generator": "klb_pack generate --points 65536 --log-k 15"
+}

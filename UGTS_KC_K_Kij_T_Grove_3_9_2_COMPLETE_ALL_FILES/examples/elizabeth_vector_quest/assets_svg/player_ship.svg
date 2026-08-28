@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="-48 -48 96 96">
+  <title>player_ship</title>
+  <defs>
+    <linearGradient id="player-body" x1="-34" y1="-30" x2="32" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#75f6ff"/>
+      <stop offset="48%" stop-color="#4aa5ff"/>
+      <stop offset="100%" stop-color="#8b6cff"/>
+    </linearGradient>
+    <radialGradient id="player-core" cx="0" cy="0" r="22" fx="0" fy="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="32%" stop-color="#c4fbff"/>
+      <stop offset="100%" stop-color="#49d8ff"/>
+    </radialGradient>
+  </defs>
+  <path id="wing-left" d="M -8 10 L -31 25 L -14 2 Z" fill="#3848af" stroke="#88b9ff" stroke-width="1.2" opacity="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+  <path id="wing-right" d="M 8 10 L 31 25 L 14 2 Z" fill="#3848af" stroke="#88b9ff" stroke-width="1.2" opacity="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+  <path id="body" d="M 0 -34 L 30 19 L 11 14 L 0 31 L -11 14 L -30 19 Z" fill="url(#player-body)" stroke="#d9fbff" stroke-width="2.2" opacity="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+  <path id="core" d="M 10 0 C 10 5.5228475 5.5228475 10 0 10 C -5.5228475 10 -10 5.5228475 -10 0 C -10 -5.5228475 -5.5228475 -10 0 -10 C 5.5228475 -10 10 -5.5228475 10 0 Z" fill="url(#player-core)" stroke="#ffffff" stroke-width="1.2" opacity="0.95" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+</svg>

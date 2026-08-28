@@ -1,0 +1,7 @@
+OS Microsoft Windows 11 Home 10.0.26200 build 26200
+CPU Intel(R) Core(TM) Ultra 7 255HX
+LOGICAL_PROCESSORS 20
+RAM_GIB 15.42
+PYTHON Python 3.12.13
+PIP pip 26.2.1 from C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\.venv-security\Lib\site-packages\pip (python 3.12) 
+AUDIT_DATE 2026-08-18T09:42:40.5172028+02:00

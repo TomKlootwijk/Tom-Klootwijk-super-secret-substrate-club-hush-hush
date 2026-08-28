@@ -1,0 +1,7 @@
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+BAAAAA+DejaVuSans-Bold               TrueType          WinAnsi          yes yes yes   1971  0
+CAAAAA+DejaVuSans                    TrueType          WinAnsi          yes yes yes   1961  0
+DAAAAA+OpenSymbol                    TrueType          WinAnsi          yes yes yes   1976  0
+EAAAAA+DejaVuSans-Oblique            TrueType          WinAnsi          yes yes yes   1966  0
+FAAAAA+DejaVuSansMono                TrueType          WinAnsi          yes yes yes   1956  0

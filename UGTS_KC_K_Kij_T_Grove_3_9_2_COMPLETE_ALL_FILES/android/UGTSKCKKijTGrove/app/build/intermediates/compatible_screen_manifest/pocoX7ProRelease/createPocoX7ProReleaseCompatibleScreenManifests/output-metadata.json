@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "COMPATIBLE_SCREEN_MANIFEST",
+    "kind": "Directory"
+  },
+  "applicationId": "nl.tomklootwijk.ugtskc.grove.poco",
+  "variantName": "pocoX7ProRelease",
+  "elements": []
+}

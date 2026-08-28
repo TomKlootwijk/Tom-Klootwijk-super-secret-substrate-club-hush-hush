@@ -1,0 +1,33 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Tom\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Tom\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "ugts_kc_native::@6890427a1f51a3e7e1df": {
+      "artifactName": "ugts_kc_native",
+      "abi": "arm64-v8a",
+      "output": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\build\\intermediates\\cxx\\Debug\\665c36c4\\obj\\arm64-v8a\\libugts_kc_native.so",
+      "runtimeFiles": []
+    },
+    "native_app_glue::@6890427a1f51a3e7e1df": {
+      "artifactName": "native_app_glue",
+      "abi": "arm64-v8a",
+      "output": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\\libnative_app_glue.a",
+      "runtimeFiles": []
+    }
+  }
+}

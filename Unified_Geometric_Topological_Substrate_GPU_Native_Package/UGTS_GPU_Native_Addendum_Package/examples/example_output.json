@@ -1,0 +1,19 @@
+{
+  "schema": "UGTS-GN-1.1",
+  "profile": "G64_E32",
+  "events": [
+    {
+      "sdf": -0.010000000000000009,
+      "guard": -0.009999999999999992,
+      "confidence": 0.8010698775896219,
+      "event_time": 2.5,
+      "verified": true,
+      "route": 1,
+      "lineage_hash": 4125564054,
+      "in_support": true,
+      "compatible": true,
+      "sheet": 1,
+      "state_flags": 3079
+    }
+  ]
+}

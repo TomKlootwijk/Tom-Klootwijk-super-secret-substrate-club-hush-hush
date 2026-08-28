@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "sources": [
+    {
+      "role": "UGTS-0 source architecture",
+      "filename": "Unified_Geometric_Topological_Substrate(1).pdf",
+      "expected_sha256": "c991aba24cc939ba680697b62b9e19545131cf34060793490bf149c6e2ab522e",
+      "actual_sha256": "c991aba24cc939ba680697b62b9e19545131cf34060793490bf149c6e2ab522e",
+      "exists": true,
+      "match": true
+    },
+    {
+      "role": "UGTS-GN 1.1 GPU-native addendum",
+      "filename": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum(2).pdf",
+      "expected_sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "actual_sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "exists": true,
+      "match": true
+    },
+    {
+      "role": "UGTS-KC 2.0 immediate baseline package",
+      "filename": "UGTS_KC_2_0_Tom_Klootwijk_Package.zip",
+      "expected_sha256": "834997b0139ee43d366dbdddcb25116c7f62081e0ff7799ccf700c1257f12b6d",
+      "actual_sha256": "834997b0139ee43d366dbdddcb25116c7f62081e0ff7799ccf700c1257f12b6d",
+      "exists": true,
+      "match": true
+    },
+    {
+      "role": "UGTS-KC 2.0 companion report",
+      "filename": "UGTS_KC_2_0_Tom_Klootwijk_Expanded_Substrate.pdf",
+      "expected_sha256": "a29dd9959ebd300c32d0e1df8fa2c0d4ee15f428892557b98b5f18cd3e878399",
+      "actual_sha256": "a29dd9959ebd300c32d0e1df8fa2c0d4ee15f428892557b98b5f18cd3e878399",
+      "exists": true,
+      "match": true
+    }
+  ]
+}

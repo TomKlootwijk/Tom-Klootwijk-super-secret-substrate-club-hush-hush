@@ -1,0 +1,5 @@
+Clang 17 CUDA device-only LLVM IR generation for src/sgp4_bench.cu: PASS
+Output size during validation: 356 KiB
+Architecture frontend setting: sm_80 surrogate
+Command used -nocudainc/-nocudalib with tests/cuda_stub declarations.
+Boundary: LLVM IR generation is stronger than syntax-only parsing, but it is not NVIDIA PTX/cubin generation, nvcc compilation, linking, or GPU execution. Production target remains CUDA 12.8+ sm_120.

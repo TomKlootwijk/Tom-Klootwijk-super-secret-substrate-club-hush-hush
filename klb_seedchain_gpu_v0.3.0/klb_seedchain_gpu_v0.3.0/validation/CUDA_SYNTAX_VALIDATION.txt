@@ -1,0 +1,20 @@
+KLB SeedChain GPU 0.3.0 CUDA syntax validation
+================================================
+
+Compiler parser: Clang 17.0.0
+CUDA mode: host-only and device-only
+Parser architecture: sm_90
+CUDA include/runtime: local declaration-only stub; no CUDA library and no runnable binary
+
+Files checked:
+  src/bench.cu
+  src/seedchain_bench.cu
+  src/orbit_bench.cu
+
+Result:
+  all three files passed both host-side and device-side syntax parsing
+
+Boundary:
+  This catches C++/CUDA syntax and many host/device call errors. It does not
+  replace nvcc CUDA 12.8+ compilation, sm_120 code generation, linking, or
+  execution on the RTX 5070 Ti Laptop GPU.

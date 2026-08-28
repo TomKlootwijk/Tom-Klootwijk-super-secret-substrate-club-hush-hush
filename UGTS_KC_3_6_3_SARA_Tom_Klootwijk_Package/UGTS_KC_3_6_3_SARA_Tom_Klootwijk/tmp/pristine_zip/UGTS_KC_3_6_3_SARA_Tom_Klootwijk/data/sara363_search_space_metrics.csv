@@ -1,0 +1,5 @@
+bits,guesses_per_second,total_candidates,expected_guesses,expected_seconds,expected_years,assumption
+128,1000000000000000.0,340282366920938463463374607431768211456,1.7014118346046923e+38,1.7014118346046924e+23,5391448762278159.0,uniform independent candidates; ignores implementation overhead and therefore favors the attacker
+160,1000000000000000.0,1461501637330902918203684832716283019655932542976,7.307508186654515e+47,7.307508186654515e+32,2.315609611204437e+25,uniform independent candidates; ignores implementation overhead and therefore favors the attacker
+256,1000000000000000.0,115792089237316195423570985008687907853269984665640564039457584007913129639936,5.78960446186581e+76,5.78960446186581e+61,1.834614945960976e+54,uniform independent candidates; ignores implementation overhead and therefore favors the attacker
+20,1000000.0,1048576,524288.0,0.524288,1.661368418384161e-08,uniform independent candidates; ignores implementation overhead and therefore favors the attacker

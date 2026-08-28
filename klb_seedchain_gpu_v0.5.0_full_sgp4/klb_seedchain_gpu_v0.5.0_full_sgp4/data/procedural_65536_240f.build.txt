@@ -1,0 +1,19 @@
+Building hash-linked seed chain from: "data/procedural_65536.klb"
+Wrote: "data/procedural_65536_240f.klsc"
+points                     : 65536
+frames / chain nodes       : 240
+checkpoint stride          : 16
+maximum linked depth       : 15
+embedded base-word bytes  : 303112
+chain-node bytes           : 23040
+sparse novelty bytes       : 583984
+container bytes            : 910392
+bytes / point-frame        : 0.057881
+ratio vs dense float3 seq  : 207.321330x
+ratio vs dense float4 seq  : 276.428440x
+novelty records / frame    : 152.079167
+novelty record density     : 0.232054% of point-frames
+base RMS quantization      : 0.001539
+base maximum quantization  : 0.002969
+novelty quantum            : 0.000181
+terminal chain hash        : 0x3431646e6069c6d7

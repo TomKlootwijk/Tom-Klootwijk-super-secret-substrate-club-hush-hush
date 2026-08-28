@@ -1,0 +1,35 @@
+PDF: /mnt/data/ugts363_build/UGTS_KC_3_6_3_SARA_Tom_Klootwijk/report/UGTS_KC_3_6_3_SARA_Tom_Klootwijk.pdf
+Pages: 18
+Encrypted: False
+Page sizes (pt, rounded):
+  - 595 x 842 (18 page(s))
+Metadata:
+  /Author: Tom Klootwijk (requester-supplied attribution)
+  /CreationDate: D:20260818064504Z
+  /Creator: LaTeX with hyperref
+  /Keywords: UGTS, BIP39, BIP32, BIP84, Bech32, P2WPKH, cryptography, wallet conformance, authorization, security boundary
+  /Producer: xdvipdfmx (20240305)
+  /Subject: Safe formal integration of BIP39, BIP32, BIP84 and Bech32 into the UGTS referential substrate
+  /Title: UGTS-KC 3.6.3 SARA - Seed-Address Referential Algebra
+Outline items: 41
+Form fields: 0
+Attachments: 0
+Annotations: 70
+
+Fonts (pdffonts, first 25 lines):
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+REDYMC+Inter-ExtraBold-Identity-H    CID Type 0C       Identity-H       yes yes yes      6  0
+RWCBVC+Inter-Regular-Identity-H      CID Type 0C       Identity-H       yes yes yes      8  0
+TMXBOO+NotoSans-ExtraBold            CID TrueType      Identity-H       yes yes yes     10  0
+PXTOUV+NotoSans-Regular              CID TrueType      Identity-H       yes yes yes     12  0
+SGSTMH+CMSY10                        Type 1C           Builtin          yes yes yes     19  0
+PALIMI+CMMI10                        Type 1C           Builtin          yes yes yes     20  0
+LSHTBB+DejaVuSansMono                CID TrueType      Identity-H       yes yes yes     70  0
+DDDWRF+CMR10                         Type 1C           Builtin          yes yes yes     74  0
+YBYKTH+CMMI7                         Type 1C           Builtin          yes yes yes     79  0
+TSYAVK+CMR7                          Type 1C           Builtin          yes yes yes     86  0
+AOOKKK+CMSY7                         Type 1C           Builtin          yes yes yes     87  0
+HKSZKL+CMEX10                        Type 1C           Builtin          yes yes yes     88  0
+TUVDZQ+MSBM10                        Type 1C           Builtin          yes yes yes    105  0
+JXXQAJ+NotoSans-Italic               CID TrueType      Identity-H       yes yes yes    136  0

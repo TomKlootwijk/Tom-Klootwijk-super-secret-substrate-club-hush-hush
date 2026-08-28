@@ -1,0 +1,294 @@
+{
+  "schema_version": "3.6.0",
+  "count": 36,
+  "operators": [
+    {
+      "id": "K36-01",
+      "domain": "Referential core",
+      "name": "Literal definition node",
+      "definition": "A geometry, topology, operator, profile or schedule is stored as a typed definition record inside the substrate.",
+      "disposition": "RETAIN",
+      "validation": "Schema + tests"
+    },
+    {
+      "id": "K36-02",
+      "domain": "Referential core",
+      "name": "Content-addressed definition",
+      "definition": "Canonical UTF-8 JSON, excluding the hash field itself, is hashed with SHA-256 to make definition identity verifiable.",
+      "disposition": "ENGINEERING",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-03",
+      "domain": "Referential core",
+      "name": "Explicit dependency edge",
+      "definition": "Every composed definition lists definition IDs it depends on; hidden imports and implicit global state are forbidden.",
+      "disposition": "RETAIN",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-04",
+      "domain": "Referential core",
+      "name": "Versioned namespace",
+      "definition": "Definition IDs include stable namespaces while schema_version and profile_version separate compatible from incompatible semantics.",
+      "disposition": "RETAIN",
+      "validation": "Schema"
+    },
+    {
+      "id": "K36-05",
+      "domain": "Referential core",
+      "name": "Definition-instance separation",
+      "definition": "A definition describes an operator or shape family; an instance supplies literal parameters and state through definition_ref.",
+      "disposition": "RETAIN",
+      "validation": "Schema + runtime"
+    },
+    {
+      "id": "K36-06",
+      "domain": "Referential core",
+      "name": "Acyclic resolution rule",
+      "definition": "Definition dependency graphs must be acyclic unless a future fixed-point kind declares bounds, tolerance and termination.",
+      "disposition": "BOUNDED",
+      "validation": "Cycle rejection tested"
+    },
+    {
+      "id": "K36-07",
+      "domain": "Geometry",
+      "name": "Typed implicit-field sign",
+      "definition": "An implicit field declares domain, codomain and sign convention: negative interior, zero boundary, positive exterior.",
+      "disposition": "RETAIN",
+      "validation": "Specified"
+    },
+    {
+      "id": "K36-08",
+      "domain": "Geometry",
+      "name": "Exact-SDF capability flag",
+      "definition": "Exact signed-distance status is a capability that only valid primitives and distance-preserving transforms may claim.",
+      "disposition": "CORRECTED",
+      "validation": "Schema guard"
+    },
+    {
+      "id": "K36-09",
+      "domain": "Geometry",
+      "name": "Parametric curve and sweep",
+      "definition": "A curve gamma(u) and a frame or transport rule may generate a swept surface; parameter interval and regularity are explicit.",
+      "disposition": "ENGINEERING",
+      "validation": "Specified"
+    },
+    {
+      "id": "K36-10",
+      "domain": "Geometry",
+      "name": "Pulse polygon embedding",
+      "definition": "m declared pulses map to a point, segment or regular m-gon; for m=3 the result is a triangle.",
+      "disposition": "ENGINEERING",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-11",
+      "domain": "Geometry",
+      "name": "Radix shell chart",
+      "definition": "Digit thresholds b^k form exact scale boundaries and may index nested shells without implying that space is inherently radix-based.",
+      "disposition": "RETAIN",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-12",
+      "domain": "Geometry",
+      "name": "Log-polar core chart",
+      "definition": "rho=ln(r/r0), theta=atan2(y,x) is local and carries an explicit core/singularity flag.",
+      "disposition": "RETAIN",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-13",
+      "domain": "Topology",
+      "name": "Explicit quotient/gluing map",
+      "definition": "Topology is represented by boundary ports, coordinate maps, orientation transport and optional sheet changes.",
+      "disposition": "RETAIN",
+      "validation": "Implemented examples"
+    },
+    {
+      "id": "K36-14",
+      "domain": "Topology",
+      "name": "Sheet-aware co-location",
+      "definition": "Equal coordinates do not imply equality or coupling; sheet, phase, orientation, branch and policy remain typed state.",
+      "disposition": "RETAIN",
+      "validation": "Schema"
+    },
+    {
+      "id": "K36-15",
+      "domain": "Topology",
+      "name": "Orientation transport",
+      "definition": "Orientation is propagated independently and flips only at declared maps or transitions.",
+      "disposition": "RETAIN",
+      "validation": "Mobius/Klein tests"
+    },
+    {
+      "id": "K36-16",
+      "domain": "Topology",
+      "name": "Port and branch routing",
+      "definition": "A guarded crossing selects an explicit output port and branch; the routing table is finite and inspectable.",
+      "disposition": "RETAIN",
+      "validation": "Specified"
+    },
+    {
+      "id": "K36-17",
+      "domain": "Topology",
+      "name": "Split-merge lineage",
+      "definition": "Splits create child addresses and merges record all parents; coordinates never replace durable identity.",
+      "disposition": "RETAIN",
+      "validation": "Schema"
+    },
+    {
+      "id": "K36-18",
+      "domain": "Topology",
+      "name": "Guarded topology change",
+      "definition": "A morph may vary continuously, but a topology-class change commits only at an event with a declared guard and transition.",
+      "disposition": "CORRECTED",
+      "validation": "Specified"
+    },
+    {
+      "id": "K36-19",
+      "domain": "Hinge calculus",
+      "name": "Generic hinge tuple",
+      "definition": "A hinge is H=(pivot,state,map,guard,invariant) with typed continuous or discrete state.",
+      "disposition": "ENGINEERING",
+      "validation": "Specified"
+    },
+    {
+      "id": "K36-20",
+      "domain": "Hinge calculus",
+      "name": "Continuous planar hinge",
+      "definition": "A continuous hinge uses an affine rotation about a fixed pivot; velocity follows the derivative of the transform.",
+      "disposition": "RETAIN",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-21",
+      "domain": "Hinge calculus",
+      "name": "Discrete parity hinge",
+      "definition": "A one-bit state selects one of two declared maps or routes and does not carry full geometry or identity.",
+      "disposition": "RETAIN",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-22",
+      "domain": "Hinge calculus",
+      "name": "Connector hinge",
+      "definition": "A zero-magnitude connector can be topologically necessary in an ordered parse graph, as with Dutch en.",
+      "disposition": "ENGINEERING",
+      "validation": "Lexicon-tested"
+    },
+    {
+      "id": "K36-23",
+      "domain": "Hinge calculus",
+      "name": "Non-commutative hinge chain",
+      "definition": "Composition order is explicit because H2∘H1 generally differs from H1∘H2.",
+      "disposition": "RETAIN",
+      "validation": "Tested"
+    },
+    {
+      "id": "K36-24",
+      "domain": "Hinge calculus",
+      "name": "Invariant subspace contract",
+      "definition": "A hinge may declare fixed points, axes or quantities; the runtime validates them instead of inferring invariance from a name.",
+      "disposition": "ENGINEERING",
+      "validation": "Specified"
+    },
+    {
+      "id": "K36-25",
+      "domain": "Dutch phonetics",
+      "name": "Bounded Dutch number profile",
+      "definition": "A versioned lexicon covers standard 0..99 orthography, pronunciation-like segments, morphemes and hinge metadata.",
+      "disposition": "BOUNDED",
+      "validation": "100 entries generated"
+    },
+    {
+      "id": "K36-26",
+      "domain": "Dutch phonetics",
+      "name": "Syllable-pulse operator",
+      "definition": "Each declared pronunciation segment emits one pulse; dialect and tokenizer are profile metadata.",
+      "disposition": "ENGINEERING",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-27",
+      "domain": "Dutch phonetics",
+      "name": "Teen suffix hinge",
+      "definition": "For regular 13..19 forms, the unit root precedes tien although decimal place semantics are ten plus unit.",
+      "disposition": "RETAIN",
+      "validation": "Lexicon-tested"
+    },
+    {
+      "id": "K36-28",
+      "domain": "Dutch phonetics",
+      "name": "En connector hinge",
+      "definition": "For non-multiple tens 21..99, spoken morphology is unit-en-tens while numeral place order is tens-unit.",
+      "disposition": "RETAIN",
+      "validation": "Lexicon-tested"
+    },
+    {
+      "id": "K36-29",
+      "domain": "Dutch phonetics",
+      "name": "Spoken-place permutation",
+      "definition": "The place tuple and spoken tuple are separate charts connected by an explicit permutation plus optional connector node.",
+      "disposition": "ENGINEERING",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-30",
+      "domain": "Dutch phonetics",
+      "name": "Feature-count comparison",
+      "definition": "Binary popcount and phonetic pulse count may be compared; equality is tagged as a coincidence, never numeric identity.",
+      "disposition": "CORRECTED",
+      "validation": "Implemented"
+    },
+    {
+      "id": "K36-31",
+      "domain": "Evaluation",
+      "name": "Phase-ordered evaluator",
+      "definition": "The canonical order is parse, normalize, resolve, construct, transform, support, compatibility, guard, transition, lineage.",
+      "disposition": "ENGINEERING",
+      "validation": "Schedule shipped"
+    },
+    {
+      "id": "K36-32",
+      "domain": "Evaluation",
+      "name": "Support-compatibility-guard discipline",
+      "definition": "Cheap local support precedes compatibility; event solving occurs only after both gates admit a candidate.",
+      "disposition": "RETAIN",
+      "validation": "Runtime rule"
+    },
+    {
+      "id": "K36-33",
+      "domain": "Evaluation",
+      "name": "Deterministic trace",
+      "definition": "Each pipeline step records definition ID, operator kind and typed output to make order and provenance inspectable.",
+      "disposition": "RETAIN",
+      "validation": "Runtime + demo"
+    },
+    {
+      "id": "K36-34",
+      "domain": "Evaluation",
+      "name": "Evidence disposition",
+      "definition": "Every source-derived or newly inferred mechanism is labeled RETAIN, ENGINEERING, CORRECTED, BOUNDED, DEMOTE or REJECT.",
+      "disposition": "RETAIN",
+      "validation": "Catalog"
+    },
+    {
+      "id": "K36-35",
+      "domain": "Evaluation",
+      "name": "Unknown-reference and cycle rejection",
+      "definition": "Loading fails on missing definition IDs, duplicate IDs, invalid hashes or cyclic dependencies.",
+      "disposition": "RETAIN",
+      "validation": "Tests"
+    },
+    {
+      "id": "K36-36",
+      "domain": "Evaluation",
+      "name": "Package verification contract",
+      "definition": "Schema validation, executable tests, source hashes, file hashes and a reproducible demo accompany the PDF.",
+      "disposition": "RETAIN",
+      "validation": "Delivered"
+    }
+  ]
+}

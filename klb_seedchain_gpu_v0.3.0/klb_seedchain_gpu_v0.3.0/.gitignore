@@ -1,0 +1,15 @@
+build/
+build-*/
+*.o
+*.obj
+*.a
+*.lib
+*.exe
+*.pdb
+*.ncu-rep
+orbit_*_results.csv
+orbit_pass_events_rebuilt.csv
+bunny/
+frames/
+__pycache__/
+*.pyc

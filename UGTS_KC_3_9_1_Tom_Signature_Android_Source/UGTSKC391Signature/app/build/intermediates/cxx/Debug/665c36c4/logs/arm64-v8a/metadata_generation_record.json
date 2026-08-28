@@ -1,0 +1,41 @@
+[
+  {
+    "level_": 0,
+    "message_": "Start JSON generation. Platform version: 26 min SDK version: arm64-v8a",
+    "file_": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "JSON \u0027C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\\android_gradle_build.json\u0027 was up-to-date",
+    "file_": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "JSON generation completed without problems",
+    "file_": "C:\\Users\\Tom\\Documents\\theTomKlootwijkManifold\\UGTS_KC_3_9_1_Tom_Signature_Android_Source\\UGTSKC391Signature\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  }
+]

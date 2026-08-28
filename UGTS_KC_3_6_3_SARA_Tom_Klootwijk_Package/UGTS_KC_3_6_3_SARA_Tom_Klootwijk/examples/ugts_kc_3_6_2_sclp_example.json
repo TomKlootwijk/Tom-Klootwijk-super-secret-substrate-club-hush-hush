@@ -1,0 +1,732 @@
+{
+  "$schema": "../spec/ugts_kc_3_6_2_sclp.schema.json",
+  "schema_version": "3.6.2",
+  "substrate_id": "ugts:kc:3.6.2:sclp:packed-swept-cone-logpolar",
+  "metadata": {
+    "title": "UGTS-KC 3.6.2 SCLP referential example",
+    "description": "Literal integration of swept-cone geometry, log-polar metric calculus, one-bit bounded jitter, radial topological wrapping, finite grammar and two explicit 64-bit key layouts.",
+    "evidence_boundary": "Source motifs are retained only under typed finite profiles. No renderer, universal O(1), infinite-detail, physical-chaos or semantically unequal compression claim is made.",
+    "revision_status": "delta-over-3.6.1-course-corrected",
+    "requester_attribution": {
+      "name": "Tom Klootwijk",
+      "identifier": "NL200678942",
+      "date_of_birth": "10-07-1990",
+      "status": "requester-supplied-unverified"
+    },
+    "source": {
+      "descriptive_name": "1855-sdf-with-a-sweeping-cone-analytical-1bit-jitter-with-T-as-side-of-the-pyramid-the-circle-of-the-cone-the-delta-the-sphere-and-change-of-chang.pdf",
+      "sha256": "7e29c1c800d905268f35084a6a4c7d9c1cfed50c926c63a8ec2c79021e32ab63",
+      "pages": 13,
+      "redistributed": false
+    }
+  },
+  "definitions": [
+    {
+      "id": "sclp362:profile:packed-swept-cone-v1",
+      "kind": "sclp_profile",
+      "domain": "query_literal",
+      "codomain": "sclp_profile",
+      "evaluation_phase": 0,
+      "dependencies": [],
+      "parameters": {
+        "title": "Swept-Cone Log-Polar Packing",
+        "rendering_authority": false,
+        "source_sha256": "7e29c1c800d905268f35084a6a4c7d9c1cfed50c926c63a8ec2c79021e32ab63",
+        "source_pages": 13,
+        "key_bits": {
+          "rho": 20,
+          "theta": 18,
+          "time": 14,
+          "phi": 12
+        },
+        "base_version": "3.6.1 BEA course-corrected"
+      },
+      "invariants": [
+        "all operators remain profile-bound"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Versioned SCLP profile.",
+        "source_refs": [
+          "source pp.1-13"
+        ]
+      },
+      "content_hash": "sha256:a321227ff2b7b4a355353fb0458147ba7f197c91c661ff24197d7f866dc8e9a1"
+    },
+    {
+      "id": "sclp362:op:typed-symbols-v1",
+      "kind": "typed_symbol_contract",
+      "domain": "sclp_profile",
+      "codomain": "typed_symbols",
+      "evaluation_phase": 1,
+      "dependencies": [
+        "sclp362:profile:packed-swept-cone-v1"
+      ],
+      "parameters": {},
+      "invariants": [],
+      "provenance": {
+        "class": "corrected",
+        "note": "Separates T, t, X, phi and the delta family.",
+        "source_refs": [
+          "source pp.1-8"
+        ]
+      },
+      "content_hash": "sha256:323446f1d05721bafc10bcac7cf30104cd00b475a75e6bf37af87da8337a8be0"
+    },
+    {
+      "id": "sclp362:op:cone-parameterize-v1",
+      "kind": "cone_parameterize",
+      "domain": "query_literal",
+      "codomain": "finite_cone",
+      "evaluation_phase": 2,
+      "dependencies": [
+        "sclp362:op:typed-symbols-v1"
+      ],
+      "parameters": {
+        "parameterization": "T,alpha -> h,R"
+      },
+      "invariants": [
+        "T>0",
+        "0<alpha<pi/2"
+      ],
+      "provenance": {
+        "class": "corrected",
+        "note": "Finite cone from slant length and half-angle.",
+        "source_refs": [
+          "source p.1"
+        ]
+      },
+      "content_hash": "sha256:fade5fa0c2c604d36e0ac84c662a9b7b940fb89ecab1af3e9d9e3bdaf4eab657"
+    },
+    {
+      "id": "sclp362:op:cone-relation-v1",
+      "kind": "cone_relation",
+      "domain": "finite_cone x point",
+      "codomain": "relation_residual",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sclp362:op:cone-parameterize-v1"
+      ],
+      "parameters": {
+        "sign": "inside<0,boundary=0,outside>0"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Exact finite-cone SDF by meridian reduction.",
+        "source_refs": [
+          "source pp.1,8,10"
+        ]
+      },
+      "content_hash": "sha256:9595a803750dcc94201873d607afddaa7374a21311cf831d35ce717d905ebddf"
+    },
+    {
+      "id": "sclp362:op:paired-sphere-support-v1",
+      "kind": "paired_sphere_support",
+      "domain": "point",
+      "codomain": "support_certificate",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sclp362:op:typed-symbols-v1"
+      ],
+      "parameters": {
+        "mode": "union/intersection"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "bounded",
+        "note": "Two-sphere support normalization.",
+        "source_refs": [
+          "source p.1"
+        ]
+      },
+      "content_hash": "sha256:27493f7edfbaab94ab4818c3d4299c3943e6ca631674b7b4618ac30f9c2e3b51"
+    },
+    {
+      "id": "sclp362:op:logpolar-state-v1",
+      "kind": "logpolar_state",
+      "domain": "point",
+      "codomain": "logpolar_metric_state",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sclp362:op:typed-symbols-v1"
+      ],
+      "parameters": {
+        "rho": "ln(r/r0)",
+        "theta": "atan2(y,x)",
+        "core_required": true
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Log-polar coordinate and metric record.",
+        "source_refs": [
+          "source pp.2-3,8-10"
+        ]
+      },
+      "content_hash": "sha256:f369334998644c37448b95ff3559c178a1d0bddd720cad44c7966d9536ccef6b"
+    },
+    {
+      "id": "sclp362:op:phase-clock-v1",
+      "kind": "phase_clock",
+      "domain": "linear_time",
+      "codomain": "phase_winding",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "sclp362:op:typed-symbols-v1"
+      ],
+      "parameters": {
+        "reference": "18:55 -> 1135 declared minutes",
+        "linear_time_retained": true
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "corrected",
+        "note": "Phase/winding interpretation of the time thread.",
+        "source_refs": [
+          "source pp.3-5"
+        ]
+      },
+      "content_hash": "sha256:bbc053481a97126d2eb1a233acaba709afce1ca12a67bc05b117f008f0b78bcd"
+    },
+    {
+      "id": "sclp362:op:quantize-key-v1",
+      "kind": "quantize_key_fields",
+      "domain": "logpolar_metric_state x phase_winding x phi",
+      "codomain": "quantized_fields",
+      "evaluation_phase": 4,
+      "dependencies": [
+        "sclp362:op:logpolar-state-v1",
+        "sclp362:op:phase-clock-v1"
+      ],
+      "parameters": {
+        "bits": [
+          20,
+          18,
+          14,
+          12
+        ]
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "bounded",
+        "note": "Finite field quantization.",
+        "source_refs": [
+          "source pp.11-13"
+        ]
+      },
+      "content_hash": "sha256:ca2982362a8b9eec3216438cc58004c9f09cade1c0e313b0cbc9f395cb909680"
+    },
+    {
+      "id": "sclp362:op:contiguous-key-v1",
+      "kind": "pack_contiguous_key",
+      "domain": "quantized_fields",
+      "codomain": "u64",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "sclp362:op:quantize-key-v1"
+      ],
+      "parameters": {
+        "ranges": [
+          "63:44",
+          "43:26",
+          "25:12",
+          "11:0"
+        ]
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Contiguous source-table layout.",
+        "source_refs": [
+          "source p.12"
+        ]
+      },
+      "content_hash": "sha256:1135a837c310315da743b8fe6dcb5de738012e0d46d2302ba955219523920780"
+    },
+    {
+      "id": "sclp362:op:morton-key-v1",
+      "kind": "pack_morton_key",
+      "domain": "quantized_fields",
+      "codomain": "u64",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "sclp362:op:quantize-key-v1"
+      ],
+      "parameters": {
+        "schedule": "MSB round-robin rho,theta,time,phi"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Distinct Morton layout.",
+        "source_refs": [
+          "source pp.10-12"
+        ]
+      },
+      "content_hash": "sha256:ac7983bb92af6498258acab9b72d913db905de1578bbaeaac711b8ed98765d7a"
+    },
+    {
+      "id": "sclp362:op:prefix-refine-v1",
+      "kind": "radix_prefix_refinement",
+      "domain": "u64",
+      "codomain": "quantized_cell_bounds",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "sclp362:op:morton-key-v1"
+      ],
+      "parameters": {
+        "depth": 12
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "corrected",
+        "note": "Bit shift as trie-prefix refinement.",
+        "source_refs": [
+          "source pp.4-5"
+        ]
+      },
+      "content_hash": "sha256:e24739fdf8084c512a5e834fcb97e73d20ea4c796c22bf0f896678cf80e162e5"
+    },
+    {
+      "id": "sclp362:op:jitter-guard-v1",
+      "kind": "one_bit_jitter_guard",
+      "domain": "relation_residual x u64 x time",
+      "codomain": "guard_interval",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "sclp362:op:cone-relation-v1",
+        "sclp362:op:morton-key-v1",
+        "sclp362:op:phase-clock-v1"
+      ],
+      "parameters": {
+        "role": "bounded deterministic perturbation"
+      },
+      "invariants": [
+        "jitter amplitude below guard margin"
+      ],
+      "provenance": {
+        "class": "corrected",
+        "note": "One-bit jitter with error interval.",
+        "source_refs": [
+          "source pp.1-6"
+        ]
+      },
+      "content_hash": "sha256:fe29aa07a2cfbc350028d80c28f670c8a2cd2135311ab3c61158b3ba1b703ac4"
+    },
+    {
+      "id": "sclp362:op:source-twist-v0",
+      "kind": "source_bundle_twist",
+      "domain": "wrap_state",
+      "codomain": "bundle_twist_state",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "sclp362:op:logpolar-state-v1"
+      ],
+      "parameters": {
+        "odd_wrap": "theta+pi,phi->-phi,o->-o"
+      },
+      "invariants": [
+        "not named a base Klein quotient"
+      ],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Literal source half-turn bundle twist.",
+        "source_refs": [
+          "source pp.9-10"
+        ]
+      },
+      "content_hash": "sha256:ec73e823cde2b934b56d7f6c6caecbc697a544152cddf41c6e26f02d0c7ee00b"
+    },
+    {
+      "id": "sclp362:op:klein-wrap-v1",
+      "kind": "klein_reflective_wrap",
+      "domain": "wrap_state",
+      "codomain": "klein_state",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "sclp362:op:logpolar-state-v1"
+      ],
+      "parameters": {
+        "odd_wrap": "theta->pi-theta,phi->-phi,o->-o"
+      },
+      "invariants": [
+        "odd wrap flips orientation"
+      ],
+      "provenance": {
+        "class": "corrected",
+        "note": "Orientation-reversing radial gluing.",
+        "source_refs": [
+          "source pp.2-4,9-10"
+        ]
+      },
+      "content_hash": "sha256:8947ee6e5bc683544a00bdde13d0f6f76dd04a1539437c5a12cbb921064d6623"
+    },
+    {
+      "id": "sclp362:op:shackle-release-v1",
+      "kind": "missing_shackle_release",
+      "domain": "constraint_jacobian",
+      "codomain": "nullity_certificate",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "sclp362:op:typed-symbols-v1"
+      ],
+      "parameters": {
+        "operation": "delete one declared row"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "bounded",
+        "note": "Constraint release for missing shackle.",
+        "source_refs": [
+          "source pp.1,3-6,8-10"
+        ]
+      },
+      "content_hash": "sha256:2cd700adafb4fcf666ca947f55df17cc6dcb7f3f3ec7049ec06ed29efb2772a0"
+    },
+    {
+      "id": "sclp362:op:hinge-calculus-v1",
+      "kind": "hinge_calculus",
+      "domain": "hinge_state x model",
+      "codomain": "torque_and_reflection",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "sclp362:op:typed-symbols-v1"
+      ],
+      "parameters": {
+        "torque": "I alpha+c omega+k phi"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "corrected",
+        "note": "Typed hinge kinematics and optional mechanics.",
+        "source_refs": [
+          "source pp.1,3,8,10"
+        ]
+      },
+      "content_hash": "sha256:6b809f94998a2d0b0e3c623c960dad61ac33d0d6a7663c9e25650945328b3b20"
+    },
+    {
+      "id": "sclp362:op:binary-branch-v1",
+      "kind": "binary_branch_select",
+      "domain": "relation_residual",
+      "codomain": "branch_bit",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "sclp362:op:cone-relation-v1"
+      ],
+      "parameters": {
+        "threshold": 0.0
+      },
+      "invariants": [
+        "no chaos inference"
+      ],
+      "provenance": {
+        "class": "corrected",
+        "note": "Deterministic bifurcation selector.",
+        "source_refs": [
+          "source pp.4-7"
+        ]
+      },
+      "content_hash": "sha256:1f521f09c567175a4c329f3494601b1d471cd7538c152644dd001d1d6d998862"
+    },
+    {
+      "id": "sclp362:op:bounded-grammar-v1",
+      "kind": "bounded_binary_grammar",
+      "domain": "branch_bits x chirality",
+      "codomain": "grammar_state",
+      "evaluation_phase": 7,
+      "dependencies": [
+        "sclp362:op:binary-branch-v1",
+        "sclp362:op:jitter-guard-v1",
+        "sclp362:op:klein-wrap-v1",
+        "sclp362:op:logpolar-state-v1"
+      ],
+      "parameters": {
+        "budgets": [
+          "max_depth",
+          "max_symbols",
+          "max_stack"
+        ]
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "bounded",
+        "note": "Finite binary parametric L-system.",
+        "source_refs": [
+          "source pp.6-8"
+        ]
+      },
+      "content_hash": "sha256:79ff07130ee655d14fae5482d0bd2b3e9bcf66a52a999ee78420efa216922f95"
+    },
+    {
+      "id": "sclp362:op:sweep-bound-v1",
+      "kind": "certified_cone_sweep",
+      "domain": "finite_cone x linear_segment",
+      "codomain": "sweep_interval",
+      "evaluation_phase": 7,
+      "dependencies": [
+        "sclp362:op:cone-parameterize-v1"
+      ],
+      "parameters": {
+        "bound": "sample_min-L/(2(n-1)) <= inf <= sample_min"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Certified translational sweep relation.",
+        "source_refs": [
+          "source pp.1,6-8"
+        ]
+      },
+      "content_hash": "sha256:e2e55f41151bf857ebd4113946f7a1b19057a78bda216af9cde808c44500de13"
+    },
+    {
+      "id": "sclp362:op:compression-audit-v1",
+      "kind": "compression_audit",
+      "domain": "key_layout",
+      "codomain": "metric_ledger",
+      "evaluation_phase": 7,
+      "dependencies": [
+        "sclp362:op:contiguous-key-v1",
+        "sclp362:op:morton-key-v1"
+      ],
+      "parameters": {
+        "semantic_equivalence_required": true
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "corrected",
+        "note": "Audits source width ratios and finite capacity.",
+        "source_refs": [
+          "source pp.11-13"
+        ]
+      },
+      "content_hash": "sha256:4cca24ea16c4bab64f6c25f4b664d16def33e387c03954d8ed3e1d8c34d9d579"
+    },
+    {
+      "id": "sclp362:op:certificate-v1",
+      "kind": "integrated_sclp_certificate",
+      "domain": "all_delta_certificates",
+      "codomain": "sclp_certificate",
+      "evaluation_phase": 8,
+      "dependencies": [
+        "sclp362:op:paired-sphere-support-v1",
+        "sclp362:op:prefix-refine-v1",
+        "sclp362:op:jitter-guard-v1",
+        "sclp362:op:source-twist-v0",
+        "sclp362:op:klein-wrap-v1",
+        "sclp362:op:shackle-release-v1",
+        "sclp362:op:hinge-calculus-v1",
+        "sclp362:op:bounded-grammar-v1",
+        "sclp362:op:sweep-bound-v1",
+        "sclp362:op:compression-audit-v1"
+      ],
+      "parameters": {
+        "claim_level": "bounded-referential-geometric-topological-integration"
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Integrated profile certificate.",
+        "source_refs": [
+          "source pp.1-13"
+        ]
+      },
+      "content_hash": "sha256:1d6fc1da51c890545b456481947935fc5785f3907f4e8aff067150483689f5f4"
+    },
+    {
+      "id": "sclp362:schedule:ugts-handoff-v1",
+      "kind": "ugts_event_handoff",
+      "domain": "sclp_certificate",
+      "codomain": "ugts_event_record",
+      "evaluation_phase": 9,
+      "dependencies": [
+        "sclp362:op:certificate-v1",
+        "sclp362:op:binary-branch-v1",
+        "sclp362:op:bounded-grammar-v1"
+      ],
+      "parameters": {
+        "sequence": [
+          "support",
+          "compatibility",
+          "guard",
+          "verified_event",
+          "transition",
+          "lineage"
+        ]
+      },
+      "invariants": [],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Returns authority to the canonical UGTS event sequence.",
+        "source_refs": [
+          "base UGTS architecture"
+        ]
+      },
+      "content_hash": "sha256:51ae5ad8b1ded14dd6e8735c7ebe3b3357ada91072bf3a0c86be4c740b1651fc"
+    }
+  ],
+  "instances": [
+    {
+      "id": "sclp362:instance:reference-query-v1",
+      "definition_ref": "sclp362:profile:packed-swept-cone-v1",
+      "literal": {
+        "point": [
+          0.15,
+          0.0,
+          0.6
+        ],
+        "cone": {
+          "slant_length": 2.0,
+          "half_angle_deg": 30.0,
+          "apex": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "axis": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        "paired_spheres": {
+          "left_center": [
+            -0.25,
+            0.0,
+            0.5
+          ],
+          "right_center": [
+            0.25,
+            0.0,
+            0.5
+          ],
+          "radius": 0.55,
+          "mode": "union"
+        },
+        "logpolar": {
+          "r0": 1.0,
+          "rho_min": -20.0,
+          "rho_max": 0.0,
+          "core_radius": 1e-12,
+          "delta_rho": 0.001
+        },
+        "time": {
+          "tick": 1920,
+          "reference_tick": 1135,
+          "period_ticks": 256,
+          "unit": "minute",
+          "reference_label": "18:55"
+        },
+        "hinge": {
+          "phi_deg": 20.0,
+          "omega": 0.2,
+          "alpha": -0.05,
+          "inertia": 2.0,
+          "damping": 0.1,
+          "stiffness": 0.5
+        },
+        "jitter": {
+          "amplitude": 0.0001,
+          "guard_margin": 0.001,
+          "seed": "sclp362-reference"
+        },
+        "wrap_state": {
+          "rho": 0.25,
+          "theta": 0.3,
+          "phi_deg": 20.0,
+          "orientation": 1,
+          "wrap_count": 0
+        },
+        "constraint": {
+          "jacobian": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ]
+          ],
+          "release_row": 1
+        },
+        "grammar": {
+          "initial_scale": 1.0,
+          "turn_angle_deg": 25.0,
+          "delta_rho": 0.001,
+          "depth": 4,
+          "max_depth": 6,
+          "max_symbols": 20000,
+          "max_stack": 64
+        },
+        "sweep": {
+          "query_point": [
+            0.5,
+            0.0,
+            0.6
+          ],
+          "start_offset": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "end_offset": [
+            0.75,
+            0.0,
+            0.0
+          ],
+          "sample_count": 65,
+          "guard_band": 0.001
+        }
+      },
+      "state": {
+        "profile_ref": "sclp362:profile:packed-swept-cone-v1",
+        "base_substrate": "UGTS-KC 3.6.1 BEA course-corrected"
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "sclp362:pipeline:reference-certificate-v1",
+      "description": "Build the typed SCLP certificate and hand it to the canonical UGTS event sequence.",
+      "steps": [
+        "sclp362:profile:packed-swept-cone-v1",
+        "sclp362:op:typed-symbols-v1",
+        "sclp362:op:cone-parameterize-v1",
+        "sclp362:op:cone-relation-v1",
+        "sclp362:op:paired-sphere-support-v1",
+        "sclp362:op:logpolar-state-v1",
+        "sclp362:op:phase-clock-v1",
+        "sclp362:op:quantize-key-v1",
+        "sclp362:op:contiguous-key-v1",
+        "sclp362:op:morton-key-v1",
+        "sclp362:op:prefix-refine-v1",
+        "sclp362:op:jitter-guard-v1",
+        "sclp362:op:source-twist-v0",
+        "sclp362:op:klein-wrap-v1",
+        "sclp362:op:shackle-release-v1",
+        "sclp362:op:hinge-calculus-v1",
+        "sclp362:op:binary-branch-v1",
+        "sclp362:op:bounded-grammar-v1",
+        "sclp362:op:sweep-bound-v1",
+        "sclp362:op:compression-audit-v1",
+        "sclp362:op:certificate-v1",
+        "sclp362:schedule:ugts-handoff-v1"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "id": "sclp362:query:certificate",
+      "kind": "integrated-certificate"
+    },
+    {
+      "id": "sclp362:query:definition-order",
+      "kind": "definition-order"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.25, nodesep=0.38, ranksep=0.48, fontname="DejaVu Sans", splines=ortho];
+  node [shape=box, style="rounded,filled", fillcolor="#f8fbfc", color="#168c95", penwidth=1.2, fontname="DejaVu Sans", fontsize=10, margin="0.15,0.10"];
+  edge [color="#52666f", arrowsize=0.65];
+  root [label="UGTS_KC_3_0 package", fillcolor="#0B2D3D", fontcolor="white", color="#0B2D3D"];
+  docs [label="Documentation", fillcolor="#EAF5F5"];
+  spec [label="Specification and provenance", fillcolor="#FFF7E3", color="#C99916"];
+  exec [label="Executable reference and validation", fillcolor="#F4F0FA", color="#6F62A2"];
+  root -> {docs spec exec};
+  report [label="report/\nPDF, DOCX, Markdown"];
+  guide [label="README, release notes, migration, API"];
+  catalog [label="catalog/\nM001-M360 CSV/JSON"];
+  schema [label="schema/\nDraft 2020-12 + example"];
+  source [label="sources/ + provenance/\nsource hashes, manifest, SHA-256"];
+  code [label="src/ugts_kc3/\ndependency-free modules"];
+  tests [label="tests/\n182 unit and integrity tests"];
+  examples [label="examples/ + benchmarks/\n5 demos + bounded CPU reference"];
+  validation [label="validation/ + diagrams/\ncaptured results and figures"];
+  docs -> {report guide};
+  spec -> {catalog schema source};
+  exec -> {code tests examples validation};
+}

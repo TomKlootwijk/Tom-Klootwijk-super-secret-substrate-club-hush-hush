@@ -1,0 +1,362 @@
+[
+  {
+    "id": "sara363.profile.v1",
+    "domain": "Profile",
+    "name": "Seed-address referential algebra",
+    "formal_definition": "Typed BIP39/BIP32/BIP84/Bech32 profile with public-only certificates and an authorization gate.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.governance.evidence-boundary",
+    "domain": "Governance",
+    "name": "Source and standards boundary",
+    "formal_definition": "Separate BIP-defined transformations, engineering glue, public fixtures, metrics and rejected attack scopes.",
+    "disposition": "RETAIN",
+    "validation": "Enforced"
+  },
+  {
+    "id": "sara363.security.secret-class",
+    "domain": "Security",
+    "name": "Secret/public classification",
+    "formal_definition": "Entropy, mnemonic, passphrase, seed, private scalar and chain code are secret; addresses, scripts and test vectors are public.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.wordlist.commitment",
+    "domain": "Encoding",
+    "name": "2048-word list commitment",
+    "formal_definition": "Bind the selected BIP39 wordlist by count, order, uniqueness, normalization and SHA-256 digest.",
+    "disposition": "RETAIN",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.entropy.input",
+    "domain": "Encoding",
+    "name": "Computer-generated entropy input",
+    "formal_definition": "Admit only ENT in {128,160,192,224,256}; do not treat arbitrary user sentences as entropy.",
+    "disposition": "RETAIN",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.checksum.prefix",
+    "domain": "Encoding",
+    "name": "BIP39 checksum prefix",
+    "formal_definition": "CS=ENT/32 and checksum bits are the first CS bits of SHA-256(entropy).",
+    "disposition": "RETAIN",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.bits.concat",
+    "domain": "Encoding",
+    "name": "Entropy-checksum concatenation",
+    "formal_definition": "Append checksum bits to entropy before word segmentation.",
+    "disposition": "RETAIN",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.bits.segment11",
+    "domain": "Encoding",
+    "name": "Eleven-bit segmentation",
+    "formal_definition": "Split ENT+CS into ordered 11-bit cells, each in [0,2047].",
+    "disposition": "RETAIN",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.words.lookup",
+    "domain": "Encoding",
+    "name": "Word-index lookup",
+    "formal_definition": "Map each 11-bit cell to one word in the committed list.",
+    "disposition": "RETAIN",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.words.cell-complex",
+    "domain": "Topology",
+    "name": "Ordered word-cell complex",
+    "formal_definition": "Represent the mnemonic as a 1D path of labeled 11-bit cells whose adjacency preserves word order.",
+    "disposition": "TRANSLATE",
+    "validation": "Specified"
+  },
+  {
+    "id": "sara363.mnemonic.checksum-hinge",
+    "domain": "Event calculus",
+    "name": "Mnemonic checksum hinge",
+    "formal_definition": "A mnemonic is admitted only when observed checksum cells equal the entropy-hash prefix.",
+    "disposition": "TRANSLATE",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.text.nfkd",
+    "domain": "Encoding",
+    "name": "Unicode NFKD normalization",
+    "formal_definition": "Normalize mnemonic and passphrase as required before seed derivation.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.seed.pbkdf2",
+    "domain": "Cryptography",
+    "name": "Mnemonic-to-seed transition",
+    "formal_definition": "PBKDF2-HMAC-SHA512 with 2048 iterations, 64-byte output and salt 'mnemonic'+passphrase.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.seed.no-serialization",
+    "domain": "Security",
+    "name": "Seed nonserialization",
+    "formal_definition": "Seed bytes are transient and excluded from substrate definitions, traces, certificates and package data.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Enforced"
+  },
+  {
+    "id": "sara363.bip32.master",
+    "domain": "Cryptography",
+    "name": "BIP32 master node",
+    "formal_definition": "HMAC-SHA512 with key 'Bitcoin seed' creates a private scalar and 32-byte chain code.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.bip32.node",
+    "domain": "Topology",
+    "name": "Extended-key tree node",
+    "formal_definition": "Node state is key material plus chain code, depth, parent fingerprint and child number.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.bip32.normal-edge",
+    "domain": "Topology",
+    "name": "Normal derivation edge",
+    "formal_definition": "Indices below 2^31 admit private and public child derivation under BIP32 rules.",
+    "disposition": "RETAIN",
+    "validation": "Private path implemented"
+  },
+  {
+    "id": "sara363.bip32.hardened-edge",
+    "domain": "Topology",
+    "name": "Hardened derivation edge",
+    "formal_definition": "Indices at or above 2^31 require parent private material and block public-parent derivation.",
+    "disposition": "RETAIN",
+    "validation": "Private path implemented"
+  },
+  {
+    "id": "sara363.path.parser",
+    "domain": "Encoding",
+    "name": "Derivation-path parser",
+    "formal_definition": "Parse m/... with explicit hardened markers and uint32 bounds.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.path.bip44",
+    "domain": "Information architecture",
+    "name": "Five-level account hierarchy",
+    "formal_definition": "Purpose/coin/account/change/index are distinct typed path levels.",
+    "disposition": "RETAIN",
+    "validation": "Specified"
+  },
+  {
+    "id": "sara363.path.bip84",
+    "domain": "Information architecture",
+    "name": "Native P2WPKH derivation policy",
+    "formal_definition": "Use m/84'/coin'/account'/change/index for BIP84 accounts.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.ec.secp256k1",
+    "domain": "Cryptography",
+    "name": "secp256k1 public projection",
+    "formal_definition": "Map a valid scalar to a curve point without exposing a signing API.",
+    "disposition": "RETAIN",
+    "validation": "Reference implementation"
+  },
+  {
+    "id": "sara363.pubkey.compressed",
+    "domain": "Encoding",
+    "name": "Compressed public key",
+    "formal_definition": "Serialize a curve point as parity prefix plus 32-byte x coordinate.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.hash.hash160",
+    "domain": "Cryptography",
+    "name": "HASH160 commitment",
+    "formal_definition": "RIPEMD160(SHA256(compressed public key)) yields the 20-byte P2WPKH witness program.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.script.p2wpkh",
+    "domain": "Relation",
+    "name": "P2WPKH script relation",
+    "formal_definition": "Witness v0 with a 20-byte key hash maps to scriptPubKey 0x0014{program}.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.convertbits",
+    "domain": "Encoding",
+    "name": "Eight-to-five-bit regrouping",
+    "formal_definition": "Convert witness-program bytes into 5-bit Bech32 data groups with canonical padding.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.hrp",
+    "domain": "Encoding",
+    "name": "Human-readable prefix",
+    "formal_definition": "Bind the network namespace through HRP such as bc or tb.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.bech32",
+    "domain": "Encoding",
+    "name": "Bech32 checksum shell",
+    "formal_definition": "Witness version 0 addresses use the BIP173 polymod constant.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.bech32m",
+    "domain": "Encoding",
+    "name": "Bech32m checksum shell",
+    "formal_definition": "Witness versions 1-16 use the BIP350 polymod constant.",
+    "disposition": "RETAIN",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.decode",
+    "domain": "Query",
+    "name": "Public address decoder",
+    "formal_definition": "Validate case, HRP, checksum family, witness version, program length and script projection.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.classify",
+    "domain": "Query",
+    "name": "Witness-program classifier",
+    "formal_definition": "Classify v0/20 as P2WPKH, v0/32 as P2WSH and v1/32 as a Taproot-compatible form.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.address.noninverse",
+    "domain": "Security",
+    "name": "Non-reversibility boundary",
+    "formal_definition": "Address decoding exposes a script commitment, not a private key, seed or spend authority.",
+    "disposition": "CORRECTED",
+    "validation": "Enforced"
+  },
+  {
+    "id": "sara363.fixture.public-address",
+    "domain": "Fixture",
+    "name": "User-supplied public address fixture",
+    "formal_definition": "Use the supplied bc1q address only for format, checksum, witness-program and scriptPubKey validation.",
+    "disposition": "BOUNDED",
+    "validation": "Verified"
+  },
+  {
+    "id": "sara363.audit.self-owned",
+    "domain": "Audit",
+    "name": "Self-owned known-seed audit",
+    "formal_definition": "Permit deterministic backup verification only when the operator already possesses the mnemonic or seed.",
+    "disposition": "BOUNDED",
+    "validation": "Policy"
+  },
+  {
+    "id": "sara363.audit.watch-only",
+    "domain": "Audit",
+    "name": "Watch-only public audit",
+    "formal_definition": "Permit address/descriptor parsing and public derivation evidence without spend authority.",
+    "disposition": "BOUNDED",
+    "validation": "Policy"
+  },
+  {
+    "id": "sara363.audit.authorization-gate",
+    "domain": "Governance",
+    "name": "Authorization gate",
+    "formal_definition": "Every audit declares a scope and is rejected if any operation targets private keys, third-party secrets or funds.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.audit.forbidden-search",
+    "domain": "Governance",
+    "name": "Forbidden-target rejection",
+    "formal_definition": "Reject mnemonic enumeration, passphrase spraying, private-key scanning and address-targeted preimage search.",
+    "disposition": "REJECT",
+    "validation": "Enforced"
+  },
+  {
+    "id": "sara363.audit.no-network",
+    "domain": "Security",
+    "name": "No-network reference runtime",
+    "formal_definition": "The reference implementation performs no blockchain queries, balance lookups or remote calls.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Enforced"
+  },
+  {
+    "id": "sara363.audit.no-signing",
+    "domain": "Security",
+    "name": "No-signing reference runtime",
+    "formal_definition": "The reference implementation exposes no transaction signing, PSBT mutation, broadcast or funds-transfer path.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Enforced"
+  },
+  {
+    "id": "sara363.metric.uniform-search",
+    "domain": "Metric",
+    "name": "Uniform search-space estimator",
+    "formal_definition": "Report 2^b candidates, 2^(b-1) expected guesses and time at a declared optimistic rate; do not enumerate.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.metric.bip39-valid-space",
+    "domain": "Metric",
+    "name": "Valid mnemonic keyspace",
+    "formal_definition": "A 12-word BIP39 space contains 2^128 valid mnemonics; checksum filtering does not reduce the encoded entropy below ENT.",
+    "disposition": "CORRECTED",
+    "validation": "Exact"
+  },
+  {
+    "id": "sara363.metric.toy-space",
+    "domain": "Metric",
+    "name": "Reduced synthetic metric",
+    "formal_definition": "Use a 20-bit toy space only to explain scale; it is explicitly not a Bitcoin wallet or key search.",
+    "disposition": "BOUNDED",
+    "validation": "Measured"
+  },
+  {
+    "id": "sara363.certificate.public-only",
+    "domain": "Certificate",
+    "name": "Public-only derivation certificate",
+    "formal_definition": "Return path, parent routing fingerprint, compressed public key, HASH160, script and address while excluding mnemonic-, seed- and private-key-derived commitments.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "sara363.lineage.audit-record",
+    "domain": "Persistence",
+    "name": "Audit lineage record",
+    "formal_definition": "Log standards profile, public fixture digest, reason codes and test-vector result, never mnemonic/seed/private keys.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Specified"
+  },
+  {
+    "id": "sara363.handoff.ugts",
+    "domain": "Architecture",
+    "name": "Canonical UGTS handoff",
+    "formal_definition": "After cryptographic certification, return to support, compatibility, guard, event, transition and lineage.",
+    "disposition": "RETAIN",
+    "validation": "Specified"
+  }
+]

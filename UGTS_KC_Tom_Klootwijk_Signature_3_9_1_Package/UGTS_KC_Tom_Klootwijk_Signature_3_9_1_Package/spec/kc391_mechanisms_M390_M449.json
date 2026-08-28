@@ -1,0 +1,548 @@
+{
+  "schema_version": "3.9.1",
+  "baseline_mechanism_count": 389,
+  "added_mechanism_count": 60,
+  "extended_total": 449,
+  "mechanisms": [
+    {
+      "id": "M390",
+      "domain": "Mobile 3D project",
+      "mechanism": "Serializable mobile-3D project identity",
+      "definition": "A versioned JSON root binds meshes, materials, nodes, camera, light, world, quality tiers and Android targets.",
+      "formula": "project=(assets,nodes,view,world,quality,targets)",
+      "integration": "Creates one inspectable authority record for Python, glTF and native packing.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M391",
+      "domain": "Mobile 3D project",
+      "mechanism": "Typed transform record",
+      "definition": "Each node stores finite translation, normalized quaternion rotation and nonzero 3-axis scale.",
+      "formula": "T=(p,q,s), ||q||=1",
+      "integration": "Provides stable transform semantics across reference and native runtimes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M392",
+      "domain": "Mobile 3D project",
+      "mechanism": "Quaternion normalization guard",
+      "definition": "Rotations reject zero quaternions and normalize valid values before matrix or simulation use.",
+      "formula": "q'=q/||q||",
+      "integration": "Prevents drift and invalid rotation matrices.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M393",
+      "domain": "Mobile 3D project",
+      "mechanism": "Indexed triangle mesh record",
+      "definition": "Meshes use stable IDs, finite 3D vertices, triangle indices and optional per-vertex normals.",
+      "formula": "mesh=(id,V,F,N)",
+      "integration": "Shared source for glTF and KC3D391.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M394",
+      "domain": "Mobile 3D project",
+      "mechanism": "Deterministic normal synthesis",
+      "definition": "Missing vertex normals are accumulated from incident face cross products and normalized.",
+      "formula": "n_i=normalize(sum cross(e1,e2))",
+      "integration": "Keeps primitive/custom meshes renderable without external libraries.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M395",
+      "domain": "Mobile 3D project",
+      "mechanism": "PBR-style material record",
+      "definition": "Materials carry base color, metallic, roughness, emissive and double-sided state.",
+      "formula": "mat=(rgba,m,r,e,ds)",
+      "integration": "Maps into retained PBRMaterial and native shader uniforms.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M396",
+      "domain": "Mobile 3D project",
+      "mechanism": "Mobile collider contract",
+      "definition": "Nodes select none, sphere or box collider records with validated dimensions and sensor state.",
+      "formula": "C in {none,S(r),B(h)}",
+      "integration": "Provides low-cost mobile collision proxies.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M397",
+      "domain": "Mobile 3D project",
+      "mechanism": "Node reference integrity",
+      "definition": "Validation requires each node mesh/material reference and node ID to be resolvable and unique.",
+      "formula": "node.mesh in MeshIDs and node.material in MaterialIDs",
+      "integration": "Prevents deployment-time dangling references.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M398",
+      "domain": "Mobile 3D project",
+      "mechanism": "Perspective camera contract",
+      "definition": "Camera position/target/up, FOV and near/far planes are validated for nondegenerate projection.",
+      "formula": "P=perspective(fov,a,n,f)",
+      "integration": "Shared by CPU preview, glTF intent and GLES renderer.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M399",
+      "domain": "Mobile 3D project",
+      "mechanism": "Directional light contract",
+      "definition": "A finite nonzero light direction, nonnegative color/intensity and bounded ambient term define mobile shading.",
+      "formula": "L=(d,c,I,A)",
+      "integration": "Feeds the dependency-free Lambert/rim native shader.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M400",
+      "domain": "Adaptive performance",
+      "mechanism": "Ordered quality tier",
+      "definition": "Each tier declares target FPS, render scale, visible-node budget, MSAA, post and shadow level.",
+      "formula": "Q=(fps,s,N,aa,post,shadow)",
+      "integration": "Allows deterministic capability selection and runtime degradation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M401",
+      "domain": "Android targeting",
+      "mechanism": "Versioned Android target profile",
+      "definition": "A profile declares SDK levels, ABIs, GLES, refresh, memory floor, hints and default quality.",
+      "formula": "A=(sdk,abi,gles,hz,ram,hints,Q)",
+      "integration": "Separates device policy from scene/game content.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M402",
+      "domain": "Android targeting",
+      "mechanism": "POCO X7 Pro 12 GB signature profile",
+      "definition": "An ARM64 profile recognizes POCO X7 Pro/Mali-G720 hints and selects the 120 Hz ultra tier when capability floors pass.",
+      "formula": "match(model,gpu,ram)->signature_ultra",
+      "integration": "Primary optimized target requested for this edition.",
+      "validation": "Implemented + host-tested; device profiling not claimed"
+    },
+    {
+      "id": "M403",
+      "domain": "Android targeting",
+      "mechanism": "Generic high/balanced/compatibility profiles",
+      "definition": "Fallback profiles cover high-end, mainstream and compatibility Android classes.",
+      "formula": "profile=f(ram,gles,hz,abi)",
+      "integration": "Keeps the same project deployable beyond one phone model.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M404",
+      "domain": "Android targeting",
+      "mechanism": "Capability score selection",
+      "definition": "Runtime selection scores model/GPU hints, RAM, GLES and refresh support with deterministic tie-breaking.",
+      "formula": "p*=argmax score(p,device)",
+      "integration": "Picks a safe starting profile without hard failure on unknown phones.",
+      "validation": "Implemented + host-tested"
+    },
+    {
+      "id": "M405",
+      "domain": "Android targeting",
+      "mechanism": "Explicit profile override",
+      "definition": "Build/runtime callers may request a named target instead of automatic scoring.",
+      "formula": "requested!=auto => p=requested",
+      "integration": "Supports reproducible benchmarks and device-specific variants.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M406",
+      "domain": "3D game oracle",
+      "mechanism": "Fixed-step 3D world",
+      "definition": "The reference world advances by an explicit fixed time step and sorted entity order.",
+      "formula": "t_k=k*dt",
+      "integration": "Provides deterministic gameplay fixtures independent of rendering.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M407",
+      "domain": "3D game oracle",
+      "mechanism": "Gravity integration",
+      "definition": "Dynamic velocity and position integrate a declared gravity vector per fixed step.",
+      "formula": "v+=g dt; p+=v dt",
+      "integration": "Basic arcade motion shared with the native demo.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M408",
+      "domain": "3D game oracle",
+      "mechanism": "Floor contact response",
+      "definition": "Collider vertical extent constrains dynamic nodes to the floor and applies bounded restitution.",
+      "formula": "y>=floor+extent",
+      "integration": "Provides stable grounding and bounce suppression.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M409",
+      "domain": "3D game oracle",
+      "mechanism": "World-bounds response",
+      "definition": "X/Z position is clamped to declared bounds and velocity reflects with restitution.",
+      "formula": "p'=clamp(p,bounds); v'=-e v",
+      "integration": "Prevents mobile demo actors escaping the arena.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M410",
+      "domain": "3D game oracle",
+      "mechanism": "Sphere-proxy broad collision",
+      "definition": "Sphere and box colliders expose a bounding radius for deterministic pair testing.",
+      "formula": "hit iff ||pb-pa||<ra+rb",
+      "integration": "Keeps collision cost predictable for reference/gameplay use.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M411",
+      "domain": "3D game oracle",
+      "mechanism": "Impulse pair response",
+      "definition": "Penetrating dynamic pairs receive mass-weighted correction and normal impulse restitution.",
+      "formula": "j=-(1+e)vr/(invMa+invMb)",
+      "integration": "Adds conventional arcade collision response without claiming a full rigid-body engine.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M412",
+      "domain": "3D game oracle",
+      "mechanism": "Player movement mapping",
+      "definition": "Normalized 2-axis input maps to X/Z velocity at a declared player speed.",
+      "formula": "v_xz=s*normalize(input)",
+      "integration": "Shared semantics for headless tests and native controls.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M413",
+      "domain": "3D game oracle",
+      "mechanism": "Grounded jump gate",
+      "definition": "Jump velocity is applied only when the player is in grounded contact.",
+      "formula": "jump => grounded",
+      "integration": "Avoids unlimited airborne jumps in the reference loop.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M414",
+      "domain": "3D gameplay",
+      "mechanism": "Collectible tag behavior",
+      "definition": "Sensor overlap with a player despawns a collectible and increments score.",
+      "formula": "overlap(player,collectible)=>score++",
+      "integration": "Provides a complete mobile gameplay loop.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M415",
+      "domain": "3D gameplay",
+      "mechanism": "Goal tag behavior",
+      "definition": "Player overlap with a goal marks the world finished and emits a goal event.",
+      "formula": "overlap(player,goal)=>finished",
+      "integration": "Defines a deterministic completion condition.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M416",
+      "domain": "3D gameplay",
+      "mechanism": "Hazard tag behavior",
+      "definition": "Player overlap with a hazard decrements bounded health and emits damage.",
+      "formula": "health=max(0,health-1)",
+      "integration": "Demonstrates tagged interaction semantics.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M417",
+      "domain": "3D game oracle",
+      "mechanism": "Canonical 3D snapshot hash",
+      "definition": "World settings, sorted entities, state and events serialize to canonical JSON and SHA-256.",
+      "formula": "H=SHA256(canonical(snapshot))",
+      "integration": "Supports replay fixtures and deterministic regression checks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M418",
+      "domain": "3D assets",
+      "mechanism": "Hard-normal cube primitive",
+      "definition": "A cube factory emits face-separated vertices and normals for crisp mobile shading.",
+      "formula": "cube(size)->24 vertices,12 triangles",
+      "integration": "Provides a dependency-free production primitive.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M419",
+      "domain": "3D assets",
+      "mechanism": "Finite floor-plane primitive",
+      "definition": "A plane factory emits a Y-up quad with validated width/depth.",
+      "formula": "plane(w,d)->4 vertices,2 triangles",
+      "integration": "Supplies arena ground geometry.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M420",
+      "domain": "3D assets",
+      "mechanism": "Pyramid primitive",
+      "definition": "A pyramid factory emits base/side triangles and synthesized normals.",
+      "formula": "pyramid(s,h)->mesh",
+      "integration": "Adds low-cost stylized geometry.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M421",
+      "domain": "3D assets",
+      "mechanism": "UV-sphere primitive",
+      "definition": "A latitude/longitude sphere factory emits positions, normals and valid indexed triangles.",
+      "formula": "sphere(r,segments,rings)->mesh",
+      "integration": "Supports player, collectibles and collider visualization.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M422",
+      "domain": "Interchange",
+      "mechanism": "Retained Scene conversion",
+      "definition": "Mobile projects convert to the existing 3.0 Scene/Asset/Node model without changing source authority.",
+      "formula": "Mobile3DProject->Scene",
+      "integration": "Reuses established scene hashing, preview and export paths.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M423",
+      "domain": "Interchange",
+      "mechanism": "Mobile project glTF export",
+      "definition": "The retained glTF writer materializes mobile meshes, nodes, transforms and PBR material mappings.",
+      "formula": "gltf=write_gltf(project.to_scene())",
+      "integration": "Provides external 3D inspection/interchange.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M424",
+      "domain": "Native scene pack",
+      "mechanism": "KC3D391 magic/version header",
+      "definition": "Native packs start with an eight-byte magic, endian marker, format version and bounded record counts.",
+      "formula": "header=(KC3D391,0x01020304,v1,counts)",
+      "integration": "Enables early rejection of wrong or unsupported files.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M425",
+      "domain": "Native scene pack",
+      "mechanism": "Explicit endian marker",
+      "definition": "The pack declares little-endian encoding before numeric records.",
+      "formula": "marker=0x01020304",
+      "integration": "Makes byte-order assumptions testable.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M426",
+      "domain": "Native scene pack",
+      "mechanism": "Bounded UTF-8 string encoding",
+      "definition": "Strings use uint16 byte lengths and reject oversized/truncated records.",
+      "formula": "string=u16(n)+utf8[n]",
+      "integration": "Avoids external serialization libraries and unbounded reads.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M427",
+      "domain": "Native scene pack",
+      "mechanism": "Interleaved mesh stream",
+      "definition": "Vertices store float32 position/normal pairs followed by uint32 indices.",
+      "formula": "mesh=id+counts+[p,n]+indices",
+      "integration": "Uploads directly into GLES vertex/index buffers.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M428",
+      "domain": "Native scene pack",
+      "mechanism": "Material stream",
+      "definition": "Materials serialize base color, metallic, roughness, emissive and double-sided state.",
+      "formula": "material=id+rgba+m+r+e+ds",
+      "integration": "Maps directly into native render uniforms.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M429",
+      "domain": "Native scene pack",
+      "mechanism": "Node stream",
+      "definition": "Nodes serialize references, transforms, velocities, collider, mass, restitution and tag mask.",
+      "formula": "node=(refs,TRS,v,w,C,m,e,tags)",
+      "integration": "Carries scene and lightweight gameplay data into Android.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M430",
+      "domain": "Native scene pack",
+      "mechanism": "Structural pack inspector",
+      "definition": "A Python reader verifies all sections, references, hashes and exact end-of-file consumption.",
+      "formula": "inspect(pack)->counts+hashes",
+      "integration": "Provides release evidence without Android tooling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M431",
+      "domain": "Native Android",
+      "mechanism": "NativeActivity lifecycle shell",
+      "definition": "The app uses Android native_app_glue callbacks for window, focus, input and destruction.",
+      "formula": "lifecycle->Engine state",
+      "integration": "Keeps managed-code dependencies out of the runtime core.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M432",
+      "domain": "Native Android",
+      "mechanism": "C++20 NDK game core",
+      "definition": "Scene loading, profile selection, fixed-step gameplay, rendering and input live in native C++.",
+      "formula": "app=NativeActivity+C++20",
+      "integration": "Delivers the requested native source target.",
+      "validation": "Implemented + host core tested"
+    },
+    {
+      "id": "M433",
+      "domain": "Native rendering",
+      "mechanism": "EGL OpenGL ES 3 context",
+      "definition": "The renderer selects an ES3 window configuration, creates EGL context/surface and enables swap pacing.",
+      "formula": "EGL(window,ES3)",
+      "integration": "Broad Android renderer baseline with no third-party engine.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M434",
+      "domain": "Native rendering",
+      "mechanism": "Asset-loaded shader pipeline",
+      "definition": "GLSL ES 3 vertex/fragment shaders load from APK assets and compile/link with diagnostics.",
+      "formula": "program=link(compile(vs),compile(fs))",
+      "integration": "Keeps shader source editable in the Android project.",
+      "validation": "Implemented + statically validated"
+    },
+    {
+      "id": "M435",
+      "domain": "Native rendering",
+      "mechanism": "Depth and face-culling state",
+      "definition": "The renderer enables depth testing and material-aware back-face culling.",
+      "formula": "depth=LEQUAL; cull=BACK unless double-sided",
+      "integration": "Supports practical opaque 3D scenes.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M436",
+      "domain": "Adaptive performance",
+      "mechanism": "Dynamic-resolution framebuffer",
+      "definition": "The scene renders to an offscreen color/depth target sized by quality render scale and blits to the surface.",
+      "formula": "R_int=s*R_display",
+      "integration": "Reduces fragment cost while preserving full-screen presentation.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M437",
+      "domain": "Android targeting",
+      "mechanism": "Native frame-rate request",
+      "definition": "The runtime dynamically resolves ANativeWindow_setFrameRate and requests the selected target FPS.",
+      "formula": "setFrameRate(window,fps)",
+      "integration": "Allows 120 Hz intent on supported displays while retaining older-device fallback.",
+      "validation": "Implemented; physical behavior not measured"
+    },
+    {
+      "id": "M438",
+      "domain": "Native input",
+      "mechanism": "Touch virtual movement zone",
+      "definition": "Left-side touch displacement maps to bounded X/Z movement input.",
+      "formula": "move=clamp((touch-anchor)/radius)",
+      "integration": "Provides controller-free phone play.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M439",
+      "domain": "Native input",
+      "mechanism": "Orbit and pinch camera",
+      "definition": "Right drag adjusts yaw/pitch and two-pointer spacing adjusts camera distance.",
+      "formula": "camera=(yaw,pitch,distance)",
+      "integration": "Supports direct mobile 3D inspection/play.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M440",
+      "domain": "Native input",
+      "mechanism": "Keyboard and gamepad mapping",
+      "definition": "WASD/D-pad, Space/A and joystick axes share the same movement/look state.",
+      "formula": "input=keyboard|gamepad|touch",
+      "integration": "Supports Android controllers and desktop/emulator testing.",
+      "validation": "Implemented; Android build not executed here"
+    },
+    {
+      "id": "M441",
+      "domain": "Android targeting",
+      "mechanism": "Runtime device probe",
+      "definition": "Model, manufacturer, GPU renderer, RAM, CPU cores, GLES and refresh hints feed profile selection.",
+      "formula": "device=probe(platform,GL)",
+      "integration": "Moves device tuning from compile-time assumptions into runtime policy.",
+      "validation": "Implemented + host selector tested"
+    },
+    {
+      "id": "M442",
+      "domain": "Adaptive performance",
+      "mechanism": "Sustained FPS/thermal controller",
+      "definition": "Quality descends after sustained stress and recovers only after a longer comfortable interval.",
+      "formula": "Q_{k+1}=degrade/stay/recover",
+      "integration": "Avoids immediate oscillation and prioritizes thermal stability.",
+      "validation": "Implemented + Python/C++ tested"
+    },
+    {
+      "id": "M443",
+      "domain": "Android build",
+      "mechanism": "POCO ARM64 product flavor",
+      "definition": "The POCO flavor limits output to arm64-v8a and forces the signature profile.",
+      "formula": "flavor=pocoX7Pro, ABI=arm64",
+      "integration": "Produces a focused device-target source configuration.",
+      "validation": "Implemented + statically validated"
+    },
+    {
+      "id": "M444",
+      "domain": "Android build",
+      "mechanism": "Universal Android product flavor",
+      "definition": "The universal flavor includes arm64, ARMv7 and x86_64 with automatic profiles.",
+      "formula": "ABI in {arm64,armv7,x86_64}",
+      "integration": "Supports phones, older devices and emulators from one project.",
+      "validation": "Implemented + statically validated"
+    },
+    {
+      "id": "M445",
+      "domain": "Android build",
+      "mechanism": "Pinned API/toolchain contract",
+      "definition": "The source pins compile/target SDK 36, min SDK 26, AGP 8.13.2, Gradle 8.13 and NDK r29.",
+      "formula": "toolchain=(36,26,8.13.2,8.13,r29)",
+      "integration": "Makes reproducible Android setup requirements explicit.",
+      "validation": "Specified + statically validated"
+    },
+    {
+      "id": "M446",
+      "domain": "Validation",
+      "mechanism": "Host-native core test",
+      "definition": "The C++ pack parser, POCO profile selector and quality controller compile and execute on the release host.",
+      "formula": "clang++ core_tests && run(pack)",
+      "integration": "Validates cross-language deployment logic without Android SDK claims.",
+      "validation": "Implemented + passed"
+    },
+    {
+      "id": "M447",
+      "domain": "Validation",
+      "mechanism": "Android source build report",
+      "definition": "Generated Android projects include a file/hash report, project hash, backend and toolchain metadata.",
+      "formula": "report=hash(files)+config",
+      "integration": "Supports auditing and regeneration.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M448",
+      "domain": "Future backend",
+      "mechanism": "Explicit Vulkan boundary",
+      "definition": "Manifest/project metadata reserve optional Vulkan capability while 3.9.1 stays GLES3.",
+      "formula": "backend_3.9.1=GLES3; Vulkan=TODO",
+      "integration": "Prevents an optional hook from becoming a false implementation claim.",
+      "validation": "Interface reserved; not implemented"
+    },
+    {
+      "id": "M449",
+      "domain": "Future dimension",
+      "mechanism": "Explicit 4D design boundary",
+      "definition": "A draft distinguishes spacetime gameplay from four-spatial-dimensional geometry and requires metric/projection contracts.",
+      "formula": "4D in {3D+t,R4}; runtime=TODO",
+      "integration": "Makes the requested 4D possibility actionable without overstating delivery.",
+      "validation": "Specified as TODO; not implemented"
+    }
+  ]
+}

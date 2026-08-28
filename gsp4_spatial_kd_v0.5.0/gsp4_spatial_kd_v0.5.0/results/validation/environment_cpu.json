@@ -1,0 +1,15 @@
+{
+  "cuda_available": false,
+  "cuda_device_count": 0,
+  "format": "GSP4-GPU-ENVIRONMENT-2",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "python": "3.13.5",
+  "ready": true,
+  "reason": "CPU inspection requested; this does not validate the target GPU",
+  "requested_device": "cpu",
+  "requested_precision": "float32",
+  "smoke_requested": true,
+  "torch": "2.10.0+cpu",
+  "torch_arch_list": [],
+  "torch_cuda_version": null
+}

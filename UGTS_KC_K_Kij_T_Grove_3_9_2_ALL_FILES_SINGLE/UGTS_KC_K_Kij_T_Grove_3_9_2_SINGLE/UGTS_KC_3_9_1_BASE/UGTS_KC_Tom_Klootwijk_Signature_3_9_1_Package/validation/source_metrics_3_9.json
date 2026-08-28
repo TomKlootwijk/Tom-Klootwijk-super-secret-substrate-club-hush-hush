@@ -1,0 +1,35 @@
+{
+  "diagram_png_files": 12,
+  "documentation_markdown_files": 25,
+  "new_3_9_modules": [
+    "animation.py",
+    "audio.py",
+    "collision2d.py",
+    "game.py",
+    "game_input.py",
+    "project.py",
+    "templates.py",
+    "tilemap.py",
+    "vector2d.py",
+    "version.py",
+    "webexport.py",
+    "cli.py",
+    "__main__.py"
+  ],
+  "report_pdf_pages": null,
+  "runtime": {
+    "blank_lines": 1099,
+    "code_or_doc_lines": 7698,
+    "comment_lines": 16,
+    "files": 33,
+    "total_lines": 8813
+  },
+  "schema": "ugts-kc-source-metrics-3.9",
+  "tests": {
+    "blank_lines": 215,
+    "code_or_doc_lines": 1069,
+    "comment_lines": 1,
+    "files": 3,
+    "total_lines": 1285
+  }
+}

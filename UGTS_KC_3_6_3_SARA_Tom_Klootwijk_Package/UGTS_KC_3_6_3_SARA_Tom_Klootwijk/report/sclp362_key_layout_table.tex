@@ -1,0 +1,15 @@
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{0.96\textwidth}{lrrlX}
+\toprule
+\textbf{Field} & \textbf{Bits} & \textbf{States} & \textbf{Contiguous range} & \textbf{Quantization}\\
+\midrule
+rho & 20 & 1,048,576 & 63:44 & [-20,0]; step 1.9073504518e-05\\
+theta & 18 & 262,144 & 43:26 & [0,2pi); step 2.39684498107e-05\\
+time & 14 & 16,384 & 25:12 & modular ticks; step 1\\
+phi & 12 & 4,096 & 11:0 & [0,2pi); step 0.00153398078789\\
+\bottomrule
+\end{tabularx}
+\caption{Exact field widths for the 64-bit SCLP key.}
+\end{table}

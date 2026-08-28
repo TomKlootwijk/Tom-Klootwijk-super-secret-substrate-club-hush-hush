@@ -1,0 +1,17 @@
+{
+  "schema": "UGTS-LINEAGE-COLLISION-1.0",
+  "candidates": 4194304,
+  "lineage_seed_formula": "uint32(index * 2654435761)",
+  "mix_input_formula": "lineage_seed ^ uint32(index)",
+  "unique_mix_inputs": 4146164,
+  "collision_keys": 47898,
+  "extra_candidates_on_collision_keys": 48140,
+  "collision_candidate_fraction": 0.011477470397949219,
+  "maximum_key_multiplicity": 4,
+  "first_collision": {
+    "first_index": 60063,
+    "second_index": 71009,
+    "mix_input": 4189107312
+  },
+  "interpretation": "mix32 is bijective over uint32, so collisions in its input remain collisions in the emitted lineage word."
+}

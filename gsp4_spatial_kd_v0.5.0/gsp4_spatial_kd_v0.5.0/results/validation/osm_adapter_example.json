@@ -1,0 +1,115 @@
+{
+  "bytes": 6796,
+  "human_bytes": "6.637 KiB",
+  "path": "/tmp/gsp4_examples/osm.ugkg",
+  "sha256": "75deb63b85c17704a0553e3ba38c52bc017e849dc832db4fa3f7992987926597",
+  "summary": {
+    "array_bytes": 4058,
+    "bytes_per_node_plus_edge": 162.32,
+    "edge_dim": 4,
+    "edges": 18,
+    "format": "UGKG2",
+    "input_dim": 32,
+    "metadata": {
+      "converter": "ugts_spatial.ingest_osm",
+      "edge_attr_contract": [
+        "distance_m",
+        "sin_bearing",
+        "cos_bearing",
+        "abs_delta_time_s"
+      ],
+      "feature_limit": 100,
+      "identity_contract": "persistent node_id + lineage_seed + ordered novelty",
+      "license_note": "OpenStreetMap data is ODbL; preserve attribution and share-alike obligations",
+      "name": "osm-tiny_flevoland",
+      "node_metadata": {
+        "4": {
+          "kind": "place",
+          "osm_id": 1,
+          "osm_type": "node",
+          "value": "city"
+        },
+        "5": {
+          "kind": "amenity",
+          "osm_id": 2,
+          "osm_type": "node",
+          "value": "monitoring_station"
+        },
+        "6": {
+          "kind": "highway",
+          "osm_id": 10,
+          "osm_type": "way",
+          "value": "secondary"
+        }
+      },
+      "node_types": {
+        "0": "spatial_entity",
+        "1": "sensor",
+        "2": "observation",
+        "3": "spatial_cell",
+        "4": "concept",
+        "5": "event",
+        "6": "lineage_state"
+      },
+      "ontology_version": "ugts-geo-ontology-v1",
+      "relation_types": {
+        "0": "located_in",
+        "1": "adjacent_to",
+        "10": "compatible_with",
+        "11": "crossed_guard",
+        "12": "transitioned_to",
+        "13": "same_cell",
+        "14": "connected_to",
+        "15": "derived_from",
+        "2": "near",
+        "3": "observes",
+        "4": "made_by_sensor",
+        "5": "has_property",
+        "6": "instance_of",
+        "7": "affects",
+        "8": "descends_from",
+        "9": "supersedes"
+      },
+      "source": "tiny_flevoland.osm",
+      "source_cells": 1,
+      "source_features": 3,
+      "source_sha256": "cbcb0a764f08c2e18f7703c1ad97d2257940063f304bfda042e1f33999ac6b78",
+      "spatial_index": {
+        "backend": "morton",
+        "resolution": 14,
+        "role": "broad-phase only; exact metric/guard follows"
+      },
+      "split_policy": "stable spatial cell hash",
+      "teacher": {
+        "backend": "hash-lexical-v1",
+        "dimensions": 64,
+        "role": "smoke-test teacher; replace with downloaded embedding model"
+      },
+      "variable_length": true
+    },
+    "node_counts": {
+      "concept": 3,
+      "spatial_cell": 1,
+      "spatial_entity": 3
+    },
+    "nodes": 7,
+    "relation_counts": {
+      "instance_of": 3,
+      "located_in": 3,
+      "near": 6,
+      "same_cell": 6
+    },
+    "schema_hash": "ff13a7fc1f72989a1fb975c13820b040c1113cad08a2eca4583cab5f6c147a84",
+    "split_counts": {
+      "test": 4,
+      "train": 3,
+      "validation": 0
+    },
+    "teacher_dim": 64,
+    "teacher_rows": 7,
+    "time_range": [
+      0.0,
+      0.0
+    ]
+  }
+}

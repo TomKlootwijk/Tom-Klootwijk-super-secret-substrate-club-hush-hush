@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "test_count": 117,
+  "elapsed_seconds": 0.033,
+  "python_version": "3.13.5",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "baseline_kc2_tests": 47,
+  "kc3_tests": 70,
+  "captured_output": "validation/test_results.txt"
+}

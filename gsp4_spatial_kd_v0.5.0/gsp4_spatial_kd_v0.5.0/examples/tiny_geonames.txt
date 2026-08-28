@@ -1,0 +1,4 @@
+9000001	Lelystad Example	Lelystad Example		52.5185	5.4714	P	PPLA	NL		16				82000	3	3	Europe/Amsterdam	2026-01-01
+9000002	Almere Example	Almere Example		52.3508	5.2647	P	PPLA2	NL		16				220000	2	2	Europe/Amsterdam	2026-01-01
+9000003	Dronten Example	Dronten Example		52.5250	5.7181	P	PPLA2	NL		16				43000	1	1	Europe/Amsterdam	2026-01-01
+9000004	Markermeer Example	Markermeer Example		52.4660	5.3400	H	LK	NL		16				0	-1	-1	Europe/Amsterdam	2026-01-01

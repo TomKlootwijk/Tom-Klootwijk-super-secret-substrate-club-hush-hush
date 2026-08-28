@@ -1,0 +1,26 @@
+KLB SeedChain GPU 0.6.0 — mixed-orbit network challenge
+========================================================
+
+1. Extract the ZIP.
+2. Open an x64 Native Tools Command Prompt for Visual Studio 2022.
+3. Build with CUDA 12.8 or newer:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\build_windows.ps1
+
+4. Run the seven-day CPU oracle and GPU file preset:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\demo_network_windows.ps1 -Preset file
+
+5. Run the sustained ~2 GiB dense comparison:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\stress_network_windows.ps1
+
+6. The run is accepted only when every displayed validation field is PASS,
+   propagation errors are zero, and no event buffer truncation occurs.
+
+7. Profile grouped direct reconstruction:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\profile_network_windows.ps1
+
+Read docs\NETWORK_PRUNING_CHALLENGE.md before interpreting the timings.
+Read docs\SP3_REFERENCE_CHALLENGE.md before making physical orbit-accuracy claims.

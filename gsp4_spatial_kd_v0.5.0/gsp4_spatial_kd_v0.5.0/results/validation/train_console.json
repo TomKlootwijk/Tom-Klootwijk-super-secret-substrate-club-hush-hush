@@ -1,0 +1,18 @@
+{
+  "checkpoint": "models/gsp4_flevoland_student_smoke.pt",
+  "final_metrics": {
+    "best_epoch": 6.0,
+    "best_validation_link_margin": 1.2818865776062012,
+    "device_cuda": 0.0,
+    "elapsed_s": 24.975600018999558,
+    "epochs_completed": 6.0,
+    "peak_cuda_memory_bytes": 0.0,
+    "test_link_accuracy": 0.5499999523162842,
+    "test_link_margin": 1.2461836338043213,
+    "test_teacher_cosine": 0.2011464238166809,
+    "validation_link_accuracy": 0.5582191944122314,
+    "validation_link_margin": 1.267534613609314,
+    "validation_teacher_cosine": 0.22103382647037506
+  },
+  "metrics": "results/validation/training_metrics.json"
+}

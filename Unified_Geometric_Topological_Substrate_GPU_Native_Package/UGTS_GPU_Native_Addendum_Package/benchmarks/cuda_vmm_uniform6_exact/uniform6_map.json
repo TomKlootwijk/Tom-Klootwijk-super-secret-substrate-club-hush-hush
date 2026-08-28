@@ -1,0 +1,1809 @@
+{
+  "schema": "UGTS-CUDA-VMM-UNIFORM6-MAP-1.0",
+  "source_aggregates": {
+    "all_code_screen": "benchmarks/cuda_vmm_uniform6_code_sweep_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+    "midpattern_refinement": "benchmarks/cuda_vmm_uniform6_midpattern_refinement_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json"
+  },
+  "device": {
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "compute_capability": "12.0",
+    "l2_bytes": 37748736,
+    "multiprocessors": 46,
+    "generic_compression_supported": true,
+    "occupancy_blocks_per_sm": {
+      "global_cg": 24,
+      "texture_object": 24
+    }
+  },
+  "question": "Which of all 64 uniform logical 6-bit values gain throughput-equivalent cache capacity after sixteen values are densely packed into three u32 words?",
+  "full_rate_definition": {
+    "retained_fraction_of_best_generic_hot_rate": 0.99,
+    "screen_sizes_mib": [
+      36,
+      40,
+      64,
+      128,
+      240,
+      248
+    ],
+    "refinement_sizes_mib": [
+      36,
+      40,
+      64,
+      66,
+      68,
+      70,
+      72,
+      74,
+      76,
+      78,
+      80,
+      82,
+      84,
+      88,
+      96,
+      112,
+      128
+    ]
+  },
+  "validation": {
+    "all_code_screen": {
+      "all_valid": true,
+      "raw_rows": 3072,
+      "aggregate_rows": 768,
+      "paired_comparisons": 384,
+      "repetitions_per_case": 4,
+      "invalid_rows": 0,
+      "paired_mapping_per_process_verified": true,
+      "validated_payloads": 3255828480,
+      "timed_gpu_lookups": 1111322787840
+    },
+    "midpattern_refinement": {
+      "all_valid": true,
+      "raw_rows": 544,
+      "aggregate_rows": 136,
+      "paired_comparisons": 68,
+      "repetitions_per_case": 4,
+      "invalid_rows": 0,
+      "paired_mapping_per_process_verified": true,
+      "validated_payloads": 576552960,
+      "timed_gpu_lookups": 196796743680
+    },
+    "combined": {
+      "runs": 8,
+      "raw_rows": 3616,
+      "validated_payloads": 3832381440,
+      "timed_gpu_lookups": 1308119531520,
+      "invalid_rows": 0
+    }
+  },
+  "mathematical_layout": {
+    "codes_per_group": 16,
+    "bits_per_code": 6,
+    "words_per_group": 3,
+    "bytes_per_code": 0.75,
+    "word_boundary_phase_advance_bits": 2,
+    "source_period_counts": {
+      "1": 2,
+      "2": 2,
+      "3": 6,
+      "6": 54
+    },
+    "identical_packed_word_codes": [
+      0,
+      21,
+      42,
+      63
+    ],
+    "explanation": "A 32-bit boundary advances two positions through the repeated 6-bit motif. All three words are identical only when the motif is invariant under that two-bit rotation, giving exactly periods 1 or 2 and codes 0, 21, 42 and 63."
+  },
+  "observed_capacity_classes": {
+    "240_mib_address_limited": [
+      0,
+      63
+    ],
+    "70_mib_refined_endpoint": [
+      21,
+      42
+    ],
+    "36_mib_no_extension": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62
+    ],
+    "codes_full_at_248_mib": [],
+    "identical_words_exactly_match_codes_extending_beyond_36_mib": true
+  },
+  "midpattern_transition": {
+    "balanced_median_last_99pct_size_mib": 70,
+    "first_below_99pct_size_mib": 72,
+    "direction_sensitive_transition_note": "Forward runs remain near full at 72 MiB while reverse runs slow, so 70 MiB is the balanced 99%-of-best endpoint, not a counter-derived physical capacity.",
+    "codes": {
+      "21": [
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.4902115,
+          "retained_fraction_of_best": 0.9986198677068151,
+          "repetition_relative_range": 0.00044276192143042796
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.415114,
+          "retained_fraction_of_best": 0.9966714799845208,
+          "repetition_relative_range": 0.004148028820114833
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.383731499999996,
+          "retained_fraction_of_best": 0.9958572680907172,
+          "repetition_relative_range": 0.003876303688712461
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.3387935,
+          "retained_fraction_of_best": 0.9946913618026989,
+          "repetition_relative_range": 0.014430370637510927
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 35.221994499999994,
+          "retained_fraction_of_best": 0.9138267137856637,
+          "repetition_relative_range": 0.17429944235554287
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 33.7333105,
+          "retained_fraction_of_best": 0.8752031427217,
+          "repetition_relative_range": 0.25364886734137765
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 27.472446,
+          "retained_fraction_of_best": 0.7127664234867253,
+          "repetition_relative_range": 0.17636063421509687
+        }
+      ],
+      "42": [
+        {
+          "size_mib": 64,
+          "hot_glookups_s": 38.4197245,
+          "retained_fraction_of_best": 0.9971831579955515,
+          "repetition_relative_range": 0.004010205747310911
+        },
+        {
+          "size_mib": 66,
+          "hot_glookups_s": 38.475802,
+          "retained_fraction_of_best": 0.9986386483529197,
+          "repetition_relative_range": 0.0033592542138562564
+        },
+        {
+          "size_mib": 68,
+          "hot_glookups_s": 38.4190595,
+          "retained_fraction_of_best": 0.9971658979342497,
+          "repetition_relative_range": 0.004009702527986156
+        },
+        {
+          "size_mib": 70,
+          "hot_glookups_s": 38.196853000000004,
+          "retained_fraction_of_best": 0.991398532803947,
+          "repetition_relative_range": 0.03561521154635448
+        },
+        {
+          "size_mib": 72,
+          "hot_glookups_s": 37.9999305,
+          "retained_fraction_of_best": 0.9862874133728229,
+          "repetition_relative_range": 0.1381673842798213
+        },
+        {
+          "size_mib": 74,
+          "hot_glookups_s": 32.7250645,
+          "retained_fraction_of_best": 0.84937837499897,
+          "repetition_relative_range": 0.3065064699872477
+        },
+        {
+          "size_mib": 76,
+          "hot_glookups_s": 25.090144000000002,
+          "retained_fraction_of_best": 0.6512141706920137,
+          "repetition_relative_range": 0.19295648522383926
+        }
+      ]
+    }
+  },
+  "per_code": [
+    {
+      "code": 0,
+      "binary_lsb_first": "000000",
+      "source_bit_period": 1,
+      "packed_words_hex": [
+        "0x00000000",
+        "0x00000000",
+        "0x00000000"
+      ],
+      "distinct_packed_words": 1,
+      "set_bits_per_96_bit_group": 0,
+      "screen_99pct_endpoint_mib": 240,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 240,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 0.999744537511045,
+        "40": 0.9997616228713877,
+        "64": 1.0,
+        "128": 0.999931853300578,
+        "240": 0.999489243798446,
+        "248": 0.7482348037956036
+      }
+    },
+    {
+      "code": 1,
+      "binary_lsb_first": "100000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x41041041",
+        "0x10410410",
+        "0x04104104"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 16,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43442580453080454,
+        "64": 0.1912309889223365,
+        "128": 0.15486217586735174,
+        "240": 0.13174032011344747,
+        "248": 0.14534447762292535
+      }
+    },
+    {
+      "code": 2,
+      "binary_lsb_first": "010000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x82082082",
+        "0x20820820",
+        "0x08208208"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 16,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43444924226566006,
+        "64": 0.20954489393244796,
+        "128": 0.1696681380921629,
+        "240": 0.13173901348977726,
+        "248": 0.13151138853134836
+      }
+    },
+    {
+      "code": 3,
+      "binary_lsb_first": "110000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xC30C30C3",
+        "0x30C30C30",
+        "0x0C30C30C"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4357693878632886,
+        "64": 0.21009722715644125,
+        "128": 0.15527086481551083,
+        "240": 0.13206101073213428,
+        "248": 0.13184732352869252
+      }
+    },
+    {
+      "code": 4,
+      "binary_lsb_first": "001000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x04104104",
+        "0x41041041",
+        "0x10410410"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 16,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.5589475914118651,
+        "64": 0.22213876993753756,
+        "128": 0.19914391459207004,
+        "240": 0.1872562033010405,
+        "248": 0.1691369059148336
+      }
+    },
+    {
+      "code": 5,
+      "binary_lsb_first": "101000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x45145145",
+        "0x51451451",
+        "0x14514514"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4350431652567161,
+        "64": 0.20995933653106044,
+        "128": 0.14026401697632132,
+        "240": 0.13193706427640806,
+        "248": 0.14553693174990479
+      }
+    },
+    {
+      "code": 6,
+      "binary_lsb_first": "011000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x86186186",
+        "0x61861861",
+        "0x18618618"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4345881129728127,
+        "64": 0.19126877256686267,
+        "128": 0.15488447519685566,
+        "240": 0.1317836997995287,
+        "248": 0.15917013929321394
+      }
+    },
+    {
+      "code": 7,
+      "binary_lsb_first": "111000",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xC71C71C7",
+        "0x71C71C71",
+        "0x1C71C71C"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4350674713816183,
+        "64": 0.2098212783731066,
+        "128": 0.1469554359176371,
+        "240": 0.14576164432087976,
+        "248": 0.13167147398563947
+      }
+    },
+    {
+      "code": 8,
+      "binary_lsb_first": "000100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x08208208",
+        "0x82082082",
+        "0x20820820"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 16,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43519645531833057,
+        "64": 0.18130446338659767,
+        "128": 0.15511979163128256,
+        "240": 0.13823915960331484,
+        "248": 0.13171830553895947
+      }
+    },
+    {
+      "code": 9,
+      "binary_lsb_first": "100100",
+      "source_bit_period": 3,
+      "packed_words_hex": [
+        "0x49249249",
+        "0x92492492",
+        "0x24924924"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4346356737613323,
+        "64": 0.19957956747534114,
+        "128": 0.1549152346904071,
+        "240": 0.14568922383171634,
+        "248": 0.1453995294487612
+      }
+    },
+    {
+      "code": 10,
+      "binary_lsb_first": "010100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x8A28A28A",
+        "0xA28A28A2",
+        "0x28A28A28"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4350922532070616,
+        "64": 0.19136219723093698,
+        "128": 0.1402254627549523,
+        "240": 0.15962302676703324,
+        "248": 0.15932344807786017
+      }
+    },
+    {
+      "code": 11,
+      "binary_lsb_first": "110100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xCB2CB2CB",
+        "0xB2CB2CB2",
+        "0x2CB2CB2C"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4359483704698675,
+        "64": 0.21032411165188233,
+        "128": 0.14060188670926418,
+        "240": 0.1461444438435666,
+        "248": 0.13196596337397143
+      }
+    },
+    {
+      "code": 12,
+      "binary_lsb_first": "001100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x0C30C30C",
+        "0xC30C30C3",
+        "0x30C30C30"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4348706731022231,
+        "64": 0.1914253187757175,
+        "128": 0.1549991835851742,
+        "240": 0.1318584990916426,
+        "248": 0.15933787496000193
+      }
+    },
+    {
+      "code": 13,
+      "binary_lsb_first": "101100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x4D34D34D",
+        "0xD34D34D3",
+        "0x34D34D34"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4355777446300685,
+        "64": 0.2099338909917325,
+        "128": 0.14030702610113946,
+        "240": 0.13197771386716145,
+        "248": 0.14558716303669053
+      }
+    },
+    {
+      "code": 14,
+      "binary_lsb_first": "011100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x8E38E38E",
+        "0xE38E38E3",
+        "0x38E38E38"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4358655085299333,
+        "64": 0.17328865442829497,
+        "128": 0.14045622535899568,
+        "240": 0.14603728278989844,
+        "248": 0.13193848473517883
+      }
+    },
+    {
+      "code": 15,
+      "binary_lsb_first": "111100",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xCF3CF3CF",
+        "0xF3CF3CF3",
+        "0x3CF3CF3C"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43553806496578235,
+        "64": 0.21005111341021548,
+        "128": 0.17002089780900173,
+        "240": 0.13204716714154546,
+        "248": 0.1594483541993916
+      }
+    },
+    {
+      "code": 16,
+      "binary_lsb_first": "000010",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x10410410",
+        "0x04104104",
+        "0x41041041"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 16,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43501880411885746,
+        "64": 0.19146729821167482,
+        "128": 0.14026295774327724,
+        "240": 0.1457989088636672,
+        "248": 0.1317276171730107
+      }
+    },
+    {
+      "code": 17,
+      "binary_lsb_first": "100010",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x51451451",
+        "0x14514514",
+        "0x45145145"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43563613943906715,
+        "64": 0.19163931499276368,
+        "128": 0.14039613042172835,
+        "240": 0.14593049084321755,
+        "248": 0.1456948719694711
+      }
+    },
+    {
+      "code": 18,
+      "binary_lsb_first": "010010",
+      "source_bit_period": 3,
+      "packed_words_hex": [
+        "0x92492492",
+        "0x24924924",
+        "0x49249249"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4359065791888995,
+        "64": 0.21008011598625137,
+        "128": 0.14042517114984512,
+        "240": 0.13206250761021687,
+        "248": 0.15953704661068377
+      }
+    },
+    {
+      "code": 19,
+      "binary_lsb_first": "110010",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xD34D34D3",
+        "0x34D34D34",
+        "0x4D34D34D"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4354542519626691,
+        "64": 0.18149461738385175,
+        "128": 0.14040976462034396,
+        "240": 0.1459047174776046,
+        "248": 0.1380768439870233
+      }
+    },
+    {
+      "code": 20,
+      "binary_lsb_first": "001010",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x14514514",
+        "0x45145145",
+        "0x51451451"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4357739194564956,
+        "64": 0.1731717848840735,
+        "128": 0.14041564944908871,
+        "240": 0.1321092915566886,
+        "248": 0.15957117305208657
+      }
+    },
+    {
+      "code": 21,
+      "binary_lsb_first": "101010",
+      "source_bit_period": 2,
+      "packed_words_hex": [
+        "0x55555555",
+        "0x55555555",
+        "0x55555555"
+      ],
+      "distinct_packed_words": 1,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 64,
+      "refined_99pct_endpoint_mib": 70,
+      "reported_99pct_endpoint_mib": 70,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 0.9999148645507595,
+        "40": 1.0,
+        "64": 0.9973859119411471,
+        "128": 0.22794108310105346,
+        "240": 0.168893786820887,
+        "248": 0.1675372806145686
+      }
+    },
+    {
+      "code": 22,
+      "binary_lsb_first": "011010",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x96596596",
+        "0x65965965",
+        "0x59659659"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43593616996252466,
+        "64": 0.19180297459766232,
+        "128": 0.17025872269878556,
+        "240": 0.13219568977268245,
+        "248": 0.1458284691745485
+      }
+    },
+    {
+      "code": 23,
+      "binary_lsb_first": "111010",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xD75D75D7",
+        "0x75D75D75",
+        "0x5D75D75D"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4346516023594637,
+        "64": 0.18120783590025588,
+        "128": 0.14012664390885296,
+        "240": 0.13178877458381932,
+        "248": 0.14542670432648128
+      }
+    },
+    {
+      "code": 24,
+      "binary_lsb_first": "000110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x18618618",
+        "0x86186186",
+        "0x61861861"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43552620730526764,
+        "64": 0.21009146021785158,
+        "128": 0.15524874380791637,
+        "240": 0.1321351533831706,
+        "248": 0.14572759601403992
+      }
+    },
+    {
+      "code": 25,
+      "binary_lsb_first": "100110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x59659659",
+        "0x96596596",
+        "0x65965965"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43529920986956516,
+        "64": 0.20993569538571438,
+        "128": 0.16991291080154625,
+        "240": 0.13196191813937796,
+        "248": 0.1455580542540799
+      }
+    },
+    {
+      "code": 26,
+      "binary_lsb_first": "010110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x9A69A69A",
+        "0xA69A69A6",
+        "0x69A69A69"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4360285862179747,
+        "64": 0.19172450306608382,
+        "128": 0.14043049477127628,
+        "240": 0.13205618827488433,
+        "248": 0.13185461374485805
+      }
+    },
+    {
+      "code": 27,
+      "binary_lsb_first": "110110",
+      "source_bit_period": 3,
+      "packed_words_hex": [
+        "0xDB6DB6DB",
+        "0xB6DB6DB6",
+        "0x6DB6DB6D"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4360836340610867,
+        "64": 0.1917637867488211,
+        "128": 0.15531993367328065,
+        "240": 0.13216070124414342,
+        "248": 0.15966340005844812
+      }
+    },
+    {
+      "code": 28,
+      "binary_lsb_first": "001110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x1C71C71C",
+        "0xC71C71C7",
+        "0x71C71C71"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43631022661674485,
+        "64": 0.1816680492288829,
+        "128": 0.15546997760322243,
+        "240": 0.13220895952481732,
+        "248": 0.13823205156548435
+      }
+    },
+    {
+      "code": 29,
+      "binary_lsb_first": "101110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x5D75D75D",
+        "0xD75D75D7",
+        "0x75D75D75"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4358663597378967,
+        "64": 0.19168411770227337,
+        "128": 0.14040867089319403,
+        "240": 0.13205555531964175,
+        "248": 0.13182680722393286
+      }
+    },
+    {
+      "code": 30,
+      "binary_lsb_first": "011110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x9E79E79E",
+        "0xE79E79E7",
+        "0x79E79E79"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4359722464787785,
+        "64": 0.21016970661835788,
+        "128": 0.1700807414076721,
+        "240": 0.14596283126580195,
+        "248": 0.13183487933300633
+      }
+    },
+    {
+      "code": 31,
+      "binary_lsb_first": "111110",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xDF7DF7DF",
+        "0xF7DF7DF7",
+        "0x7DF7DF7D"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 80,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.5599580439648346,
+        "64": 0.24644876306120345,
+        "128": 0.18058791743432004,
+        "240": 0.18766948062389857,
+        "248": 0.2051857032395019
+      }
+    },
+    {
+      "code": 32,
+      "binary_lsb_first": "000001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x20820820",
+        "0x08208208",
+        "0x82082082"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 16,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.576137293318779,
+        "64": 0.22902147313107085,
+        "128": 0.2053287482011652,
+        "240": 0.2114355861546523,
+        "248": 0.17437057751617896
+      }
+    },
+    {
+      "code": 33,
+      "binary_lsb_first": "100001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x61861861",
+        "0x18618618",
+        "0x86186186"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4361117079250518,
+        "64": 0.20012468775911432,
+        "128": 0.17022590856231,
+        "240": 0.1460973539703482,
+        "248": 0.14581784948815965
+      }
+    },
+    {
+      "code": 34,
+      "binary_lsb_first": "010001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xA28A28A2",
+        "0x28A28A28",
+        "0x8A28A28A"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4354571770000798,
+        "64": 0.1915862613697569,
+        "128": 0.14037176469754717,
+        "240": 0.15981335159707835,
+        "248": 0.17078199151260975
+      }
+    },
+    {
+      "code": 35,
+      "binary_lsb_first": "110001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xE38E38E3",
+        "0x38E38E38",
+        "0x8E38E38E"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.435261739367183,
+        "64": 0.1998253836395249,
+        "128": 0.1699762047132749,
+        "240": 0.1597598458783464,
+        "248": 0.1456069906945257
+      }
+    },
+    {
+      "code": 36,
+      "binary_lsb_first": "001001",
+      "source_bit_period": 3,
+      "packed_words_hex": [
+        "0x24924924",
+        "0x49249249",
+        "0x92492492"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43525122076649714,
+        "64": 0.19147322941822378,
+        "128": 0.1699512794530454,
+        "240": 0.145884471256119,
+        "248": 0.13173857789513094
+      }
+    },
+    {
+      "code": 37,
+      "binary_lsb_first": "101001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x65965965",
+        "0x59659659",
+        "0x96596596"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43568281149262755,
+        "64": 0.17306722222204865,
+        "128": 0.15513974902534644,
+        "240": 0.13196473616690738,
+        "248": 0.17071625488940909
+      }
+    },
+    {
+      "code": 38,
+      "binary_lsb_first": "011001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xA69A69A6",
+        "0x69A69A69",
+        "0x9A69A69A"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4355954296975444,
+        "64": 0.19142271888283113,
+        "128": 0.16991608376684286,
+        "240": 0.13192170334103362,
+        "248": 0.131745675228588
+      }
+    },
+    {
+      "code": 39,
+      "binary_lsb_first": "111001",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xE79E79E7",
+        "0x79E79E79",
+        "0x9E79E79E"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43492613090145205,
+        "64": 0.2097857875264842,
+        "128": 0.14016741953754644,
+        "240": 0.14571037967611275,
+        "248": 0.14544895609291772
+      }
+    },
+    {
+      "code": 40,
+      "binary_lsb_first": "000101",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x28A28A28",
+        "0x8A28A28A",
+        "0xA28A28A2"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43501092289674365,
+        "64": 0.20974601384875907,
+        "128": 0.15499295567952925,
+        "240": 0.1595497496713717,
+        "248": 0.1567033105523541
+      }
+    },
+    {
+      "code": 41,
+      "binary_lsb_first": "100101",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x69A69A69",
+        "0x9A69A69A",
+        "0xA69A69A6"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4344916862825762,
+        "64": 0.17273865126493215,
+        "128": 0.16968998195120608,
+        "240": 0.13178698186650203,
+        "248": 0.14536327827415446
+      }
+    },
+    {
+      "code": 42,
+      "binary_lsb_first": "010101",
+      "source_bit_period": 2,
+      "packed_words_hex": [
+        "0xAAAAAAAA",
+        "0xAAAAAAAA",
+        "0xAAAAAAAA"
+      ],
+      "distinct_packed_words": 1,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 64,
+      "refined_99pct_endpoint_mib": 70,
+      "reported_99pct_endpoint_mib": 70,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.9999829541689663,
+        "64": 0.9975700927687873,
+        "128": 0.24971393382572116,
+        "240": 0.16886850422715838,
+        "248": 0.1962730465347812
+      }
+    },
+    {
+      "code": 43,
+      "binary_lsb_first": "110101",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xEBAEBAEB",
+        "0xBAEBAEBA",
+        "0xAEBAEBAE"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.5759569928777297,
+        "64": 0.24009852436233656,
+        "128": 0.1857063520315735,
+        "240": 0.1930990217257008,
+        "248": 0.20758949581393446
+      }
+    },
+    {
+      "code": 44,
+      "binary_lsb_first": "001101",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x2CB2CB2C",
+        "0xCB2CB2CB",
+        "0xB2CB2CB2"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4355238675260301,
+        "64": 0.20004977707141205,
+        "128": 0.17015381909727764,
+        "240": 0.1459541636676882,
+        "248": 0.182034632908754
+      }
+    },
+    {
+      "code": 45,
+      "binary_lsb_first": "101101",
+      "source_bit_period": 3,
+      "packed_words_hex": [
+        "0x6DB6DB6D",
+        "0xDB6DB6DB",
+        "0xB6DB6DB6"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43552947984262325,
+        "64": 0.19148864527200635,
+        "128": 0.14033451022955273,
+        "240": 0.1458351341417381,
+        "248": 0.1706931299998343
+      }
+    },
+    {
+      "code": 46,
+      "binary_lsb_first": "011101",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xAEBAEBAE",
+        "0xEBAEBAEB",
+        "0xBAEBAEBA"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43609161594936996,
+        "64": 0.18172056739284786,
+        "128": 0.15542451818660424,
+        "240": 0.13225658673941218,
+        "248": 0.18225848341793757
+      }
+    },
+    {
+      "code": 47,
+      "binary_lsb_first": "111101",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xEFBEFBEF",
+        "0xFBEFBEFB",
+        "0xBEFBEFBE"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 80,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43460329779749096,
+        "64": 0.19119613650148568,
+        "128": 0.1548713306839278,
+        "240": 0.14565178253209074,
+        "248": 0.17037614109710153
+      }
+    },
+    {
+      "code": 48,
+      "binary_lsb_first": "000011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x30C30C30",
+        "0x0C30C30C",
+        "0xC30C30C3"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 32,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.8478301621936096,
+        "64": 0.3370276862900676,
+        "128": 0.30207298300493873,
+        "240": 0.25700256475418093,
+        "248": 0.3543677060247958
+      }
+    },
+    {
+      "code": 49,
+      "binary_lsb_first": "100011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x71C71C71",
+        "0x1C71C71C",
+        "0xC71C71C7"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.8505428032206607,
+        "64": 0.3735473315524305,
+        "128": 0.27380603495316325,
+        "240": 0.28457904892308594,
+        "248": 0.30594416912361794
+      }
+    },
+    {
+      "code": 50,
+      "binary_lsb_first": "010011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xB2CB2CB2",
+        "0x2CB2CB2C",
+        "0xCB2CB2CB"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43678546257631334,
+        "64": 0.17345922102788172,
+        "128": 0.1554903986936946,
+        "240": 0.1600527169680383,
+        "248": 0.1571472590637735
+      }
+    },
+    {
+      "code": 51,
+      "binary_lsb_first": "110011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xF3CF3CF3",
+        "0x3CF3CF3C",
+        "0xCF3CF3CF"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43586274092002864,
+        "64": 0.17329009362093437,
+        "128": 0.15535856672516274,
+        "240": 0.1600119438700681,
+        "248": 0.1709283960296344
+      }
+    },
+    {
+      "code": 52,
+      "binary_lsb_first": "001011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x34D34D34",
+        "0x4D34D34D",
+        "0xD34D34D3"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43599583962473165,
+        "64": 0.17333486861056588,
+        "128": 0.14054356377401223,
+        "240": 0.14611976283878847,
+        "248": 0.17099826968344295
+      }
+    },
+    {
+      "code": 53,
+      "binary_lsb_first": "101011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x75D75D75",
+        "0x5D75D75D",
+        "0xD75D75D7"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4361304640141766,
+        "64": 0.17320552418857746,
+        "128": 0.14043719605853813,
+        "240": 0.13210239605270577,
+        "248": 0.17086118496305375
+      }
+    },
+    {
+      "code": 54,
+      "binary_lsb_first": "011011",
+      "source_bit_period": 3,
+      "packed_words_hex": [
+        "0xB6DB6DB6",
+        "0x6DB6DB6D",
+        "0xDB6DB6DB"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43545544414685844,
+        "64": 0.19147881947176618,
+        "128": 0.14028041720694556,
+        "240": 0.14583914127071,
+        "248": 0.17062701121899224
+      }
+    },
+    {
+      "code": 55,
+      "binary_lsb_first": "111011",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xF7DF7DF7",
+        "0x7DF7DF7D",
+        "0xDF7DF7DF"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 80,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4355776270242402,
+        "64": 0.19165835423702424,
+        "128": 0.14040880101478362,
+        "240": 0.1459831258210195,
+        "248": 0.1708473462218537
+      }
+    },
+    {
+      "code": 56,
+      "binary_lsb_first": "000111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x38E38E38",
+        "0x8E38E38E",
+        "0xE38E38E3"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 48,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43607413955001434,
+        "64": 0.17340864091353708,
+        "128": 0.1553956087188932,
+        "240": 0.13220117586058366,
+        "248": 0.17100210524761908
+      }
+    },
+    {
+      "code": 57,
+      "binary_lsb_first": "100111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x79E79E79",
+        "0x9E79E79E",
+        "0xE79E79E7"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4363791430838361,
+        "64": 0.17337029275535806,
+        "128": 0.14055514461419155,
+        "240": 0.13227849080212545,
+        "248": 0.17097844708401563
+      }
+    },
+    {
+      "code": 58,
+      "binary_lsb_first": "010111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xBAEBAEBA",
+        "0xAEBAEBAE",
+        "0xEBAEBAEB"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4355322243836002,
+        "64": 0.1915864700139339,
+        "128": 0.14038251184568148,
+        "240": 0.1598498909487367,
+        "248": 0.1569061977581947
+      }
+    },
+    {
+      "code": 59,
+      "binary_lsb_first": "110111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xFBEFBEFB",
+        "0xBEFBEFBE",
+        "0xEFBEFBEF"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 80,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.43627059271641305,
+        "64": 0.17326945913011346,
+        "128": 0.1554276927810749,
+        "240": 0.14610738400352896,
+        "248": 0.17092912922324577
+      }
+    },
+    {
+      "code": 60,
+      "binary_lsb_first": "001111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x3CF3CF3C",
+        "0xCF3CF3CF",
+        "0xF3CF3CF3"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 64,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4359353843054183,
+        "64": 0.17330653877839539,
+        "128": 0.14055269363276224,
+        "240": 0.13218697085428466,
+        "248": 0.17089817644053262
+      }
+    },
+    {
+      "code": 61,
+      "binary_lsb_first": "101111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0x7DF7DF7D",
+        "0xDF7DF7DF",
+        "0xF7DF7DF7"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 80,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4359126554342037,
+        "64": 0.19161950000558173,
+        "128": 0.17013257623347383,
+        "240": 0.1320385536628016,
+        "248": 0.17082191934458948
+      }
+    },
+    {
+      "code": 62,
+      "binary_lsb_first": "011111",
+      "source_bit_period": 6,
+      "packed_words_hex": [
+        "0xBEFBEFBE",
+        "0xEFBEFBEF",
+        "0xFBEFBEFB"
+      ],
+      "distinct_packed_words": 3,
+      "set_bits_per_96_bit_group": 80,
+      "screen_99pct_endpoint_mib": 36,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 36,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.4360418556337228,
+        "64": 0.1918046295633915,
+        "128": 0.15537315418856668,
+        "240": 0.1321482730853001,
+        "248": 0.17090455162327958
+      }
+    },
+    {
+      "code": 63,
+      "binary_lsb_first": "111111",
+      "source_bit_period": 1,
+      "packed_words_hex": [
+        "0xFFFFFFFF",
+        "0xFFFFFFFF",
+        "0xFFFFFFFF"
+      ],
+      "distinct_packed_words": 1,
+      "set_bits_per_96_bit_group": 96,
+      "screen_99pct_endpoint_mib": 240,
+      "refined_99pct_endpoint_mib": null,
+      "reported_99pct_endpoint_mib": 240,
+      "non_compressible_screen_endpoint_mib": 36,
+      "generic_retained_fraction": {
+        "36": 1.0,
+        "40": 0.999982940605472,
+        "64": 0.9999829535882684,
+        "128": 0.9999148198725277,
+        "240": 0.9996253684257974,
+        "248": 0.7482920222481508
+      }
+    }
+  ],
+  "conclusion": "Logical constancy alone does not predict compression. Only the four codes that pack into identical u32 words extend beyond nominal L2. Uniform zero/all-one words remain full through 240 MiB before the independent address-reach loss; alternating 0x55555555/0xAAAAAAAA words reach a balanced 70 MiB endpoint; all other three-word patterns remain at 36 MiB. This is an exact correlation for this layout and GPU, not proof of an undocumented compressor format.",
+  "scope_note": "The map covers uniform logical values through the validated raw global L2 path. Parameterized uniform texture rows are excluded because nonzero sentinels fail and the compiler emits the known result-discarding TLD path. No physical compressed-byte, cache-hit, sector, DRAM-traffic or portable compression-ratio claim is made."
+}

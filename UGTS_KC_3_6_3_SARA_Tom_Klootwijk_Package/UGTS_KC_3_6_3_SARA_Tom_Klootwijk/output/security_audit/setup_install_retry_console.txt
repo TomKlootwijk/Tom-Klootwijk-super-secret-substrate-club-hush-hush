@@ -1,0 +1,16 @@
+Obtaining file:///C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package/UGTS_KC_3_6_3_SARA_Tom_Klootwijk
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: ugts-kc-363-sara
+  Building editable for ugts-kc-363-sara (pyproject.toml): started
+  Building editable for ugts-kc-363-sara (pyproject.toml): finished with status 'done'
+  Created wheel for ugts-kc-363-sara: filename=ugts_kc_363_sara-3.6.3-0.editable-py3-none-any.whl size=2245 sha256=f179e42dbe0eb6ba11db595083d4014036072dc0e9d28e4a1e53c51891384f31
+  Stored in directory: C:\Users\Tom\AppData\Local\Temp\pip-ephem-wheel-cache-wc2kifqe\wheels\61\48\f0\b5bd925df2d4d5616d08cc7646a87a8c8883270930f9271a28
+Successfully built ugts-kc-363-sara
+Installing collected packages: ugts-kc-363-sara
+Successfully installed ugts-kc-363-sara-3.6.3
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\.venv-security\Scripts\python.exe -m pip install --upgrade pip

@@ -1,0 +1,4 @@
+numpy>=1.26
+torch>=2.7
+# Optional broad-phase index:
+# h3>=4.1

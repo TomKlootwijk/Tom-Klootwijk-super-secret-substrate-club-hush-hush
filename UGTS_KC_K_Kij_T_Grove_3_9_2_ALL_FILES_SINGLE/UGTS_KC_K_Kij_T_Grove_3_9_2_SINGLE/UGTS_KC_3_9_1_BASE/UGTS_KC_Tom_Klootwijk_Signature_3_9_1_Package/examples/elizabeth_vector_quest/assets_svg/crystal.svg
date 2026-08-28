@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="-44 -44 88 88">
+  <title>crystal</title>
+  <defs>
+    <linearGradient id="crystal-main" x1="-22" y1="-28" x2="22" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff6a5"/>
+      <stop offset="40%" stop-color="#ffd44f"/>
+      <stop offset="100%" stop-color="#ff8f3d"/>
+    </linearGradient>
+    <radialGradient id="crystal-core" cx="0" cy="-2" r="16" fx="0" fy="-2" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#fff9bf"/>
+      <stop offset="100%" stop-color="#ffb23f"/>
+    </radialGradient>
+  </defs>
+  <path id="body" d="M 0 -30 L 20 -6 L 13 24 L 0 33 L -13 24 L -20 -6 Z" fill="url(#crystal-main)" stroke="#fffbd3" stroke-width="2" opacity="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+  <path id="facet" d="M 0 -25 L 9 -4 L 0 23 L -9 -4 Z" fill="url(#crystal-core)" stroke="#ffffff" stroke-width="0.8" opacity="0.82" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+</svg>

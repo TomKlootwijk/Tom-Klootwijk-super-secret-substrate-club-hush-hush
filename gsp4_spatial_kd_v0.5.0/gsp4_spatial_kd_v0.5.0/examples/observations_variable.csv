@@ -1,0 +1,10 @@
+sensor_id,latitude,longitude,elevation,property,timestamp,value,uncertainty,unit,affected_geoname_id
+lelystad-air-01,52.5185,5.4714,3.0,nitrogen dioxide concentration,2026-01-01T00:00:00Z,21.4,0.05,ug/m3,
+lelystad-water-01,52.5078,5.4802,-1.0,water level,2026-01-01T00:02:11Z,0.84,0.02,m,
+lelystad-air-01,52.5185,5.4714,3.0,nitrogen dioxide concentration,2026-01-01T00:15:47Z,24.1,0.05,ug/m3,
+almere-traffic-01,52.3508,5.2647,2.0,traffic flow,2026-01-01T00:19:08Z,612.0,0.08,vehicles/hour,
+dronten-water-01,52.5250,5.7181,-2.0,water level,2026-01-01T00:31:26Z,0.79,0.02,m,
+lelystad-air-01,52.5185,5.4714,3.0,nitrogen dioxide concentration,2026-01-01T00:46:03Z,28.6,0.06,ug/m3,
+almere-traffic-01,52.3508,5.2647,2.0,traffic flow,2026-01-01T01:04:41Z,745.0,0.09,vehicles/hour,
+lelystad-water-01,52.5078,5.4802,-1.0,water level,2026-01-01T01:21:17Z,0.88,0.02,m,
+dronten-water-01,52.5250,5.7181,-2.0,water level,2026-01-01T02:13:52Z,0.76,0.03,m,

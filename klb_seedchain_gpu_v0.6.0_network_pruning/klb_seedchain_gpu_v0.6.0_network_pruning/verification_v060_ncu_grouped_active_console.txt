@@ -1,0 +1,26 @@
+==PROF== Connected to process 72296 (C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\b128\Release\klb_network_bench.exe)
+==PROF== Profiling "grouped_query_kernel": 0%....50%....100% - 40 passes
+==PROF== Disconnected from process 72296
+KLB mixed-orbit network GPU challenge
+  device                    : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+  compute capability        : 12.0
+  objects/stations          : 58/16
+  pair plan                 : all=928, support=711, active=438
+  total relation gain       : 2.118721x
+  intervals/step            : 2048/60.000000 s
+  dense baseline            : 0.000000 MiB
+  pair_all               p50=53.570881   ms  relations/s=35477184.030375  propagations/s=35477184.030375
+  pair_support           p50=53.655201   ms  relations/s=27138617.953048  propagations/s=27138617.953048
+  pair_active            p50=47.916832   ms  relations/s=18720436.287557  propagations/s=18720436.287557
+  grouped_all            p50=51.574944   ms  relations/s=36850142.132188  propagations/s=2303133.883262
+  grouped_active         p50=51.440033   ms  relations/s=17438246.991701  propagations/s=2309174.259175
+Validation over 2048 intervals
+  pair-all vs CPU events    : FAIL
+  pair-active vs CPU events : FAIL
+  pair vs grouped events    : PASS
+  pair vs grouped counters  : PASS
+  grouped vs dense events   : SKIP
+  grouped vs dense counters : SKIP
+  propagation errors zero   : PASS
+==ERROR== The application returned an error code (1).
+==PROF== Report: C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\klb_seedchain_gpu_v0.6.0_network_pruning\klb_seedchain_gpu_v0.6.0_network_pruning\verification_v060_ncu_grouped_active.ncu-rep

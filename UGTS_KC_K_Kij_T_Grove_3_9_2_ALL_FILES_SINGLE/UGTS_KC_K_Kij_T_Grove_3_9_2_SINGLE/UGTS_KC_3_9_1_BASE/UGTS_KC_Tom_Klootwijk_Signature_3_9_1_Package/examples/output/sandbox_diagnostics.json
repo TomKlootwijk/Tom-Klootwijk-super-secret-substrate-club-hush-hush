@@ -1,0 +1,51 @@
+{
+  "issues": [],
+  "metrics": {
+    "asset_count": 2,
+    "event_count": 1,
+    "event_sequence": 1,
+    "layer_count": 0,
+    "lineage_edges": [],
+    "node_count": 3,
+    "rejected_count": 0,
+    "runtime_metrics": {
+      "committed": 1,
+      "conflicts": 0,
+      "proposed": 1,
+      "reason_counts": {},
+      "rejected": 0,
+      "verified": 1
+    },
+    "scene_bounds": {
+      "maximum": [
+        2.6,
+        1.874088693740145,
+        2.281853935109714
+      ],
+      "minimum": [
+        -1.5103247599767262,
+        -0.7000000000000001,
+        -1.8084574277351009
+      ]
+    },
+    "scene_hash": "e061c325aaacfa32da19743dc5215067cdbd183ceda9bcfbdc80483b904f0b22",
+    "tick": 0,
+    "time": 0.0,
+    "timeline": [
+      {
+        "entity": "sculpture",
+        "lineage": [
+          "two_hands:transform:0001"
+        ],
+        "post": "5195748e527565ef",
+        "pre": "8c66fe60e2d6e98e",
+        "priority": 10,
+        "sequence": 1,
+        "source": "two_hands",
+        "time": 1.0,
+        "type": "set_transform"
+      }
+    ]
+  },
+  "passed": true
+}

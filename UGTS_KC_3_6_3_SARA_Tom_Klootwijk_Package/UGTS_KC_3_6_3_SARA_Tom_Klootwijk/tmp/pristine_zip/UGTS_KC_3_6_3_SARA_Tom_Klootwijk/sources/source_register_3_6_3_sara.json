@@ -1,0 +1,68 @@
+{
+  "version": "3.6.3",
+  "retrieved": "2026-08-18",
+  "sources": [
+    {
+      "id": "STD-BIP39",
+      "title": "BIP 39: Mnemonic code for generating deterministic keys",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki",
+      "role": "entropy/checksum/word cells/PBKDF2",
+      "status": "primary standard"
+    },
+    {
+      "id": "STD-BIP32",
+      "title": "BIP 32: Hierarchical Deterministic Wallets",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki",
+      "role": "extended-key tree and child derivation",
+      "status": "primary standard"
+    },
+    {
+      "id": "STD-BIP44",
+      "title": "BIP 44: Multi-account hierarchy",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki",
+      "role": "path-level semantics",
+      "status": "primary standard"
+    },
+    {
+      "id": "STD-BIP84",
+      "title": "BIP 84: Derivation scheme for P2WPKH accounts",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki",
+      "role": "m/84' path and public test vectors",
+      "status": "primary standard"
+    },
+    {
+      "id": "STD-BIP141",
+      "title": "BIP 141: Segregated Witness",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki",
+      "role": "witness program and P2WPKH script relation",
+      "status": "primary standard"
+    },
+    {
+      "id": "STD-BIP173",
+      "title": "BIP 173: Bech32 native witness addresses",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki",
+      "role": "v0 address encoding/checksum",
+      "status": "primary standard"
+    },
+    {
+      "id": "STD-BIP350",
+      "title": "BIP 350: Bech32m",
+      "url": "https://github.com/bitcoin/bips/blob/master/bip-0350.mediawiki",
+      "role": "v1-v16 address checksum",
+      "status": "primary standard"
+    },
+    {
+      "id": "BASE-SCLP",
+      "title": "UGTS-KC 3.6.2 SCLP",
+      "role": "referential geometry/topology and canonical UGTS handoff",
+      "status": "inherited package"
+    },
+    {
+      "id": "FIXTURE-USER-ADDRESS",
+      "title": "User-supplied public Bech32 address",
+      "value": "bc1q7ydrtdn8z62xhslqyqtyt38mm4e2c4h3mxjkug",
+      "role": "public checksum and script decode only",
+      "status": "ownership label not validated"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "dt": 0.1,
+  "steps": 1000,
+  "final_relative_energy_error": {
+    "Explicit Euler": 20958.155637813717,
+    "Symplectic Euler": 0.042642173223329305,
+    "Stormer-Verlet": -0.0005521681211854146
+  },
+  "boundary": "Illustrative harmonic-oscillator comparison; not a hardware benchmark."
+}

@@ -1,0 +1,52 @@
+{
+  "json_failed": [],
+  "json_file_count": 44,
+  "passed": true,
+  "schema": "ugts-kc-asset-parse-validation-3.9",
+  "svg_failed": [],
+  "svg_file_count": 7,
+  "svg_files": [
+    {
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/assets_svg/crystal.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "-44 -44 88 88"
+    },
+    {
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/assets_svg/hazard_orb.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "-53 -53 106 106"
+    },
+    {
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/assets_svg/obstacle.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "-68 -44 136 88"
+    },
+    {
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/assets_svg/player_ship.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "-48 -48 96 96"
+    },
+    {
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/assets_svg/portal.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "-60 -60 120 120"
+    },
+    {
+      "passed": true,
+      "path": "examples/output/sandbox_after.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "0 0 1100 720"
+    },
+    {
+      "passed": true,
+      "path": "examples/output/sandbox_before.svg",
+      "root_tag": "{http://www.w3.org/2000/svg}svg",
+      "viewBox": "0 0 1100 720"
+    }
+  ]
+}

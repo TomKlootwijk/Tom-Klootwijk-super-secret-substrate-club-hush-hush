@@ -1,0 +1,16 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.25, nodesep=0.38, ranksep=0.48, fontname="DejaVu Sans", splines=ortho];
+  node [shape=box, style="rounded,filled", fillcolor="#f8fbfc", color="#168c95", penwidth=1.2, fontname="DejaVu Sans", fontsize=10, margin="0.14,0.10"];
+  edge [color="#52666f", penwidth=1.0, arrowsize=0.7, fontname="DejaVu Sans", fontsize=9];
+  jet [label="Jet state q\nposition, velocity, acceleration, jerk, snap\nframe, units, phase, sheet, orientation, uncertainty"];
+  support [label="Support admission"];
+  comp [label="Compatibility with reason codes"];
+  gap [label="Relation or unilateral gap g(q)\ninterval event-time enclosure"];
+  classify [label="Crossing / touch / grazing\nsimultaneous-event class"];
+  constraint [label="Constraint/contact solve\nSHAKE/RATTLE, multipliers, impulse, friction"];
+  batch [label="Atomic transition batch\npriority order and invariant validation"];
+  commit [label="Commit or rollback"];
+  lineage [label="Event record\npre/post state, lineage, hashes and error budget"];
+  jet -> support -> comp -> gap -> classify -> constraint -> batch -> commit -> lineage;
+  batch -> jet [label="rollback", style=dashed, color="#b35f52"];
+}

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gsp4-ugts-spatial"
+version = "0.5.0"
+description = "Sparse geospatial knowledge distillation, temporal GNN, and UGTS event deployment for variable-length spatial data"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = {text = "MIT"}
+authors = [{name = "Tom Klootwijk (substrate, user-supplied provenance)"}, {name = "GSP4 engineering implementation"}]
+keywords = ["geospatial", "gnn", "knowledge-distillation", "temporal-graph", "ugts", "gpu"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = [
+  "numpy>=1.26",
+  "torch>=2.7"
+]
+
+[project.optional-dependencies]
+local-embeddings = ["sentence-transformers>=3.0"]
+h3 = ["h3>=4.1"]
+osm = ["osmium>=4.0"]
+dev = ["pytest>=8", "build>=1.2"]
+all = ["sentence-transformers>=3.0", "h3>=4.1", "osmium>=4.0", "pytest>=8", "build>=1.2"]
+
+[project.scripts]
+gsp4 = "ugts_spatial.cli:main"
+ugts-spatial = "ugts_spatial.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

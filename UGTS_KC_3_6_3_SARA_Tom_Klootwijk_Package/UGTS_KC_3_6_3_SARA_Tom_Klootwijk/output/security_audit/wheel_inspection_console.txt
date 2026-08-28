@@ -1,0 +1,23 @@
+WHEEL ugts_kc_363_sara-3.6.3-py3-none-any.whl
+SIZE 49610
+SHA256 4ded3bef063177ae59ddda87a8ad1fea3af13693dd19362b267a44a94e8df677
+File Name                                             Modified             Size
+ugts36/__init__.py                             2026-08-18 07:11:46         5233
+ugts36/bea_runtime.py                          2026-08-18 07:11:46         6586
+ugts36/bea_synthetic.py                        2026-08-18 07:11:46        37570
+ugts36/canonical.py                            2026-08-18 07:11:46         1720
+ugts36/geometry.py                             2026-08-18 07:11:46         4858
+ugts36/model.py                                2026-08-18 07:11:46         3624
+ugts36/phonetics_nl.py                         2026-08-18 07:11:46         5641
+ugts36/runtime.py                              2026-08-18 07:11:46         4530
+ugts36/sara363.py                              2026-08-18 07:11:46        24050
+ugts36/sara_runtime.py                         2026-08-18 07:11:46         2415
+ugts36/sclp362.py                              2026-08-18 07:11:46        47025
+ugts36/sclp_runtime.py                         2026-08-18 07:11:46        17187
+ugts36/topology.py                             2026-08-18 07:11:46         4543
+ugts_kc_363_sara-3.6.3.dist-info/licenses/NOTICE.md 2026-08-18 07:40:18          936
+ugts_kc_363_sara-3.6.3.dist-info/METADATA      2026-08-18 07:40:18          296
+ugts_kc_363_sara-3.6.3.dist-info/WHEEL         2026-08-18 07:40:20           91
+ugts_kc_363_sara-3.6.3.dist-info/top_level.txt 2026-08-18 07:40:18            7
+ugts_kc_363_sara-3.6.3.dist-info/RECORD        2026-08-18 07:40:20         1433
+No broken requirements found.

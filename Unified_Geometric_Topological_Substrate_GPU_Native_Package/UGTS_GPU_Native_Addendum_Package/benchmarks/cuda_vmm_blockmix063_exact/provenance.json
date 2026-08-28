@@ -1,0 +1,186 @@
+{
+  "schema": "UGTS-CUDA-VMM-BLOCKMIX063-PROVENANCE-1.0",
+  "date": "2026-08-15",
+  "device": {
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "driver": "591.59",
+    "compute_capability": "12.0",
+    "l2_bytes": 37748736,
+    "multiprocessors": 46,
+    "occupancy_blocks_per_sm": 24,
+    "total_warps": 1104
+  },
+  "toolchain": {
+    "cuda_compiler": "12.8.61",
+    "compute_sanitizer": "2025.1.0.0",
+    "sanitized_patterns": [
+      "blockmix6_0_63_g1",
+      "blockmix6_0_63_hash"
+    ],
+    "sanitized_size_mib": 4,
+    "retained_global_path_sanitizer_errors": 0
+  },
+  "artifacts": {
+    "source": {
+      "path": "benchmarks/cuda_vmm_blockmix063_exact/artifacts/bench.cu",
+      "bytes": 46620,
+      "sha256": "1FEA66B6504D91818EFC8A5CB8A8098973BE5135637D293275A0DABAFEE3DD57"
+    },
+    "executable": {
+      "path": "benchmarks/cuda_vmm_blockmix063_exact/artifacts/bench.exe",
+      "bytes": 738816,
+      "sha256": "1163F12CA2D6E71321B80B6BDC31B54BF20CB36819DFB9533AA3EE671CF476A0"
+    },
+    "aggregator": {
+      "path": "benchmarks/cuda_vmm_blockmix063_exact/artifacts/aggregate.py",
+      "bytes": 10961,
+      "sha256": "8858D4A8CDD0D90407E9DBD4D9DA5B1572CCA5B0202056A7DB2FF48F91A73D54"
+    },
+    "summarizer": {
+      "path": "benchmarks/cuda_vmm_blockmix063_exact/artifacts/summarize.py",
+      "bytes": 11479,
+      "sha256": "87680BB21ACD315EFB97678A685F1B0CFF3563011CD8521975D98EC381B1E037"
+    },
+    "screen_aggregate": {
+      "path": "benchmarks/cuda_vmm_blockmix063_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "bytes": 465908,
+      "sha256": "30CEB58E31ECB4E483A9007DE70BBF3C4C3FBCC056671B771AC6A74EAF9C1673"
+    },
+    "refinement_aggregate": {
+      "path": "benchmarks/cuda_vmm_blockmix063_refinement_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "bytes": 304132,
+      "sha256": "A8AF0664C81F084EA8027224BA92065748A3761C83D15725BF3C0FBD679E89E4"
+    },
+    "map": {
+      "path": "benchmarks/cuda_vmm_blockmix063_exact/blockmix063_map.json",
+      "bytes": 69391,
+      "sha256": "7BF56D09A4168EDC8FCE3C3209AC298EC263E9E5BBAA82A971F5D275BBC69523"
+    }
+  },
+  "corpora": [
+    {
+      "name": "capacity_screen",
+      "aggregate_artifact": "screen_aggregate",
+      "patterns": [
+        "blockmix6_0_63_g1",
+        "blockmix6_0_63_g2",
+        "blockmix6_0_63_g4",
+        "blockmix6_0_63_g8",
+        "blockmix6_0_63_g16",
+        "blockmix6_0_63_g32",
+        "blockmix6_0_63_g64",
+        "blockmix6_0_63_g128",
+        "blockmix6_0_63_g256",
+        "blockmix6_0_63_g512",
+        "blockmix6_0_63_g1024",
+        "blockmix6_0_63_hash"
+      ],
+      "sizes_mib": [36, 40, 48, 64, 80, 96, 112, 128, 160, 192, 224, 240, 248],
+      "runs": [
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_isolated/f1/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 432551,
+          "sha256": "81DC9BBB4346AC114AE03910ECA7E26249C6FB7EFEBF02A2479B48831AAA5257"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_isolated/r1/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 432859,
+          "sha256": "5788E515888A37C56D9764A181BC7B100E5308D2926F1FAA8C237AEEDE7E423D"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_isolated/f2/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 432654,
+          "sha256": "96C1A29BDAE9E2C8A6C757E09828B24511E4844713BB967A9A068EDEB79200C0"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_isolated/r2/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 432814,
+          "sha256": "187181137836B507B4564329CDA4EDCE1098FAAEC45ACADEE01D3C2B0D9ED854"
+        }
+      ],
+      "raw_rows": 1248,
+      "validated_payloads": 1322680320,
+      "timed_gpu_lookups": 451474882560,
+      "invalid_rows": 0,
+      "mismatches": 0
+    },
+    {
+      "name": "transition_refinement",
+      "aggregate_artifact": "refinement_aggregate",
+      "patterns": [
+        "blockmix6_0_63_g1",
+        "blockmix6_0_63_g2",
+        "blockmix6_0_63_g4",
+        "blockmix6_0_63_g8",
+        "blockmix6_0_63_g16",
+        "blockmix6_0_63_hash"
+      ],
+      "sizes_mib": [64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96],
+      "runs": [
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_refinement_isolated/f1/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 282822,
+          "sha256": "97054C4B5910A9F6972CC9A24706C2B24DCF2A107CF2D6850817C9EB20BA7142"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_refinement_isolated/r1/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 282944,
+          "sha256": "09E0B8782E539BFA4CBFB6185E6172F0B85EF2DF577A484F44A10044CE266556"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_refinement_isolated/f2/cuda_vmm_compression_lut_results.json",
+          "order": 0,
+          "bytes": 282845,
+          "sha256": "5603CBBCE8F45978162C9C196F8F318CE0757C31750777B75F1B4CF4CBF9419B"
+        },
+        {
+          "path": "benchmarks/cuda_vmm_blockmix063_refinement_isolated/r2/cuda_vmm_compression_lut_results.json",
+          "order": 1,
+          "bytes": 282772,
+          "sha256": "291BA5731ED704B842D523ADFBFFC389A5767E0828FCE72757B66D3E106A242D"
+        }
+      ],
+      "raw_rows": 816,
+      "validated_payloads": 864829440,
+      "timed_gpu_lookups": 295195115520,
+      "invalid_rows": 0,
+      "mismatches": 0
+    }
+  ],
+  "combined": {
+    "runs": 8,
+    "raw_rows": 2064,
+    "validated_payloads": 2187509760,
+    "timed_gpu_lookups": 746669998080,
+    "invalid_rows": 0,
+    "mismatches": 0
+  },
+  "native_code": {
+    "retained_load_instruction": "LDG.E.STRONG.GPU",
+    "timer_instruction": "CS2R SR_CLOCKLO",
+    "global_registers": 25,
+    "stack_bytes": 0,
+    "local_bytes": 0,
+    "shared_bytes": 0,
+    "occupancy_blocks_per_sm": 24,
+    "texture_results_included": false
+  },
+  "result": {
+    "hashed_and_12_to_96_byte_run_endpoint_mib": 72,
+    "192_byte_run_endpoint_mib": 88,
+    "384_to_12288_byte_run_endpoint_mib": 240,
+    "first_below_sizes_mib": {
+      "hashed_and_12_to_96_byte_runs": 74,
+      "192_byte_run": 90,
+      "384_to_12288_byte_runs": 248
+    },
+    "physical_ratio_measured": false,
+    "compressor_block_size_claimed": false
+  }
+}

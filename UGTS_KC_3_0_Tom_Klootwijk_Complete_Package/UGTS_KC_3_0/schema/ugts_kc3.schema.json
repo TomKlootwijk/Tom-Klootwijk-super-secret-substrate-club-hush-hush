@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-kc/3.0/schema.json",
+  "title": "UGTS-KC 3.0 World Exchange Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "metadata", "numeric_policy", "states", "relations"],
+  "properties": {
+    "schema_version": {"const": "3.0.0"},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["title", "authority"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "authority": {"enum": ["query-first-state-event-substrate"]},
+        "description": {"type": "string"},
+        "mechanism_catalog": {"const": "M001-M360"},
+        "source_boundary": {"type": "string"}
+      }
+    },
+    "numeric_policy": {"$ref": "#/$defs/numericPolicy"},
+    "capabilities": {"$ref": "#/$defs/capabilities"},
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/state"}
+    },
+    "relations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/relation"}
+    },
+    "constraints": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/constraint"}
+    },
+    "dynamics": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/dynamics"}
+    },
+    "topology": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/topology"}
+    },
+    "event_policy": {"$ref": "#/$defs/eventPolicy"}
+  },
+  "$defs": {
+    "finiteNumber": {"type": "number"},
+    "vector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/finiteNumber"}
+    },
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/finiteNumber"}
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lo", "hi"],
+      "properties": {
+        "lo": {"$ref": "#/$defs/finiteNumber"},
+        "hi": {"$ref": "#/$defs/finiteNumber"},
+        "status": {"type": "string"}
+      }
+    },
+    "numericPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "absolute_tolerance", "relative_tolerance", "time_tolerance", "guard_tolerance", "topology_tolerance"],
+      "properties": {
+        "precision": {"enum": ["float64-reference", "float32", "float16-bounded", "fixed-point-bounded"]},
+        "absolute_tolerance": {"type": "number", "minimum": 0},
+        "relative_tolerance": {"type": "number", "minimum": 0},
+        "time_tolerance": {"type": "number", "minimum": 0},
+        "guard_tolerance": {"type": "number", "minimum": 0},
+        "topology_tolerance": {"type": "number", "minimum": 0},
+        "root_certification": {"enum": ["sampled", "bracketed", "interval-newton", "analytic", "mixed"]},
+        "deterministic_reduction": {"type": "boolean"}
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "time", "position", "velocity", "acceleration", "jerk", "snap", "phase", "sheet", "orientation", "branch", "lineage", "uncertainty"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "time": {"$ref": "#/$defs/finiteNumber"},
+        "position": {"$ref": "#/$defs/vector"},
+        "velocity": {"$ref": "#/$defs/vector"},
+        "acceleration": {"$ref": "#/$defs/vector"},
+        "jerk": {"$ref": "#/$defs/vector"},
+        "snap": {"$ref": "#/$defs/vector"},
+        "frame": {"type": "string"},
+        "length_unit": {"type": "string"},
+        "time_unit": {"type": "string"},
+        "phase": {"$ref": "#/$defs/finiteNumber"},
+        "sheet": {"type": "integer"},
+        "orientation": {"enum": [-1, 1]},
+        "branch": {"type": "string"},
+        "lineage": {"type": "array", "items": {"type": "string"}},
+        "uncertainty": {
+          "oneOf": [
+            {"type": "number", "minimum": 0},
+            {"$ref": "#/$defs/interval"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["covariance"],
+              "properties": {
+                "covariance": {
+                  "type": "array",
+                  "items": {"type": "array", "items": {"type": "number"}}
+                }
+              }
+            }
+          ]
+        },
+        "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "support": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "origin", "radius"],
+      "properties": {
+        "type": {"enum": ["sphere", "radial-angular", "shell", "time-window"]},
+        "origin": {"$ref": "#/$defs/vector"},
+        "radius": {"type": "number", "minimum": 0},
+        "inner_radius": {"type": "number", "minimum": 0},
+        "axis": {"$ref": "#/$defs/vector"},
+        "cone_cos": {"type": "number", "minimum": -1, "maximum": 1},
+        "time_interval": {"$ref": "#/$defs/interval"}
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed_sheets": {"type": "array", "items": {"type": "integer"}},
+        "orientation": {"enum": [-1, 1]},
+        "phase_center": {"type": "number"},
+        "phase_tolerance": {"type": "number", "minimum": 0},
+        "required_tags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "policy": {"type": "string"}
+      }
+    },
+    "surface": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["plane", "sphere", "capsule", "torus", "implicit", "polynomial"]},
+        "normal": {"$ref": "#/$defs/vector"},
+        "offset": {"type": "number"},
+        "center": {"$ref": "#/$defs/vector"},
+        "radius": {"type": "number", "minimum": 0},
+        "coefficients": {"type": "array", "items": {"type": "number"}},
+        "field_id": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "set_sheet": {"type": "integer"},
+        "toggle_sheet": {"type": "boolean"},
+        "flip_orientation": {"type": "boolean"},
+        "phase_delta": {"type": "number"},
+        "set_branch": {"type": "string"},
+        "lineage_label": {"type": "string"}
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "surface", "support", "compatibility", "transition", "priority"],
+      "properties": {
+        "id": {"type": "string"},
+        "surface": {"$ref": "#/$defs/surface"},
+        "support": {"$ref": "#/$defs/support"},
+        "compatibility": {"$ref": "#/$defs/compatibility"},
+        "transition": {"$ref": "#/$defs/transition"},
+        "priority": {"type": "integer"},
+        "guard_direction": {"enum": ["rising", "falling", "either", "touch"]},
+        "solver": {"enum": ["analytic", "bisection", "interval-newton", "sturm", "sampled"]}
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {"enum": ["holonomic", "pfaffian", "unilateral-contact", "friction"]},
+        "function": {"type": "string"},
+        "jacobian": {"type": "string"},
+        "tolerance": {"type": "number", "minimum": 0},
+        "stabilization": {"enum": ["none", "baumgarte", "shake", "rattle", "projection"]}
+      }
+    },
+    "dynamics": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "type", "integrator"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {"enum": ["particle", "rigid", "hamiltonian", "lagrangian", "field", "hybrid"]},
+        "integrator": {"enum": ["symplectic-euler", "velocity-verlet", "stormer-verlet", "implicit-midpoint", "variational", "lie-group", "semi-lagrangian", "implicit-diffusion", "leapfrog", "fast-sweeping"]},
+        "step": {"type": "number", "exclusiveMinimum": 0},
+        "error_budget": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0}}
+      }
+    },
+    "topology": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "type"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {"enum": ["mobius", "klein", "portal", "cover", "simplicial", "cubical", "persistence", "monodromy"]},
+        "orientation_map": {"type": "string"},
+        "sheet_map": {"type": "array", "items": {"type": "integer"}},
+        "generators": {"type": "array", "items": {"type": "string"}},
+        "relations": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}}
+      }
+    },
+    "eventPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["simultaneous_tolerance", "tie_break", "zeno_policy", "atomic_batches"],
+      "properties": {
+        "simultaneous_tolerance": {"type": "number", "minimum": 0},
+        "tie_break": {"enum": ["priority-relation-lineage", "partial-order"]},
+        "zeno_policy": {"enum": ["stop", "collapse", "regularize", "report"]},
+        "atomic_batches": {"type": "boolean"},
+        "hysteresis_dwell": {"type": "number", "minimum": 0}
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "precision": {"type": "string"},
+        "certification": {"type": "string"},
+        "implemented_mechanisms": {"type": "array", "items": {"pattern": "^M[0-9]{3}$"}},
+        "fallbacks": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    }
+  }
+}

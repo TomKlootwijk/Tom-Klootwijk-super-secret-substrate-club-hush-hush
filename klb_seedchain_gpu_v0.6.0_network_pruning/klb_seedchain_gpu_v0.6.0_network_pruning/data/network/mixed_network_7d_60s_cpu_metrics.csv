@@ -1,0 +1,4 @@
+mode,objects,stations,total_pairs,support_pairs,active_pairs,support_rejection_gain,compatibility_rejection_gain,total_rejection_gain,intervals,propagated_object_intervals,relation_intervals,supported_intervals,compatible_intervals,boundary_evaluations,visible_endpoints,acquisition_events,loss_events,total_events,propagation_failures,elapsed_seconds,object_propagations_per_second,logical_relations_per_second
+all,58,16,928,711,438,1.305203938,1.623287671,2.118721461,10080,584640,9354240,5932861,3970997,3970997,1101511,4653,4682,9335,0,0.940492433,621631.795733970,9946108.731743513
+support,58,16,928,711,438,1.305203938,1.623287671,2.118721461,10080,584640,7166880,5932861,3970997,3970997,1101511,4653,4682,9335,0,0.832536326,702239.628160081,8608489.234858925
+active,58,16,928,711,438,1.305203938,1.623287671,2.118721461,10080,584640,4415040,3970997,3970997,3970997,1101511,4653,4682,9335,0,0.700357472,834773.702535725,6303980.719149092

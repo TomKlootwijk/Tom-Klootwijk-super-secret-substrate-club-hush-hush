@@ -1,0 +1,49 @@
+UGTS Spatial Distill 0.1.0 — RTX 5070 Ti Laptop quick start
+============================================================
+
+This source bundle already contains a small sparse graph and a trained CPU
+checkpoint. Qwen, GeoNames and OpenStreetMap downloads are optional.
+
+WINDOWS / NVIDIA GPU
+--------------------
+1. Extract the ZIP to a short path, for example C:\ugts-spatial.
+2. Open PowerShell in the extracted directory.
+3. Run:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1
+   powershell -ExecutionPolicy Bypass -File .\scripts\demo_windows.ps1 -Device cuda
+
+The setup script installs a CUDA 12.8 PyTorch wheel, this project, and optional
+H3 support. It does not download a teacher model or geospatial dataset.
+
+LOW-BANDWIDTH EXISTING PYTHON ENVIRONMENT
+-----------------------------------------
+When compatible NumPy and CUDA-enabled PyTorch are already installed:
+
+   python -m pip install --no-deps .\dist\ugts_spatial_distill-0.1.0-py3-none-any.whl
+   python -m ugts_spatial verify .\data\demo\graph --checkpoint .\runs\demo_cpu\checkpoint.pt
+   python -m ugts_spatial benchmark .\data\demo\graph .\runs\demo_cpu\checkpoint.pt --device cuda --warmup 20 --repeats 100 --output .\runs\rtx5070ti_first_run.json
+
+EXPECTED INTEGRITY RESULT
+-------------------------
+- graph: ok
+- checkpoint: ok
+- parameters: 477328
+- checkpoint SHA-256:
+  33c1f78a109c22b539cc55c55cab6013b1f4163cc6783cfc22662abd8b1105d5
+
+The CPU benchmark bundled in runs\demo_cpu is not an RTX result. The first real
+GPU result is the JSON generated on your laptop.
+
+OPTIONAL OFFLINE TEACHER
+------------------------
+Read docs\DOWNLOADS.md and docs\KNOWLEDGE_TRANSFER.md. The smallest recommended
+manual model is Qwen3-Embedding-0.6B Q8_0 (about 639 MB). It is used offline to
+create teacher embeddings; it is absent from the production query path.
+
+OPTIONAL REAL DATA
+------------------
+- GeoNames Netherlands NL.zip: about 709 KiB at the package snapshot date.
+- Geofabrik Flevoland OSM PBF: about 34.5 MB at the package snapshot date.
+
+Read README.md before treating model scores or compression figures as claims.

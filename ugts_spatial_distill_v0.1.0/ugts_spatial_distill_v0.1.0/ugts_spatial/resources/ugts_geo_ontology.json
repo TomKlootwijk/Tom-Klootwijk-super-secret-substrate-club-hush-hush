@@ -1,0 +1,46 @@
+{
+  "schema": "UGTS-SPATIAL-ONTOLOGY-1",
+  "description": "Compact interoperability layer compiled from UGTS query semantics plus GeoSPARQL, SOSA/SSN and OWL-Time concepts. It is a GPU schema, not a replacement for the source ontologies.",
+  "external_bases": {
+    "GeoSPARQL": "http://www.opengis.net/ont/geosparql#",
+    "SOSA": "http://www.w3.org/ns/sosa/",
+    "SSN": "http://www.w3.org/ns/ssn/",
+    "OWL-Time": "http://www.w3.org/2006/time#"
+  },
+  "node_types": [
+    {"id": 0, "name": "spatial_entity", "sheet": 0, "description": "Persistent physical or logical feature with a stable source identity."},
+    {"id": 1, "name": "sensor", "sheet": 1, "description": "Persistent SOSA/SSN sensor or virtual observation source."},
+    {"id": 2, "name": "observation", "sheet": 1, "description": "Time-stamped observation; variable-length and event-like."},
+    {"id": 3, "name": "spatial_cell", "sheet": 0, "description": "Broad-phase H3 or fallback spatial support cell."},
+    {"id": 4, "name": "concept", "sheet": 2, "description": "Ontology or UGTS mechanism concept."},
+    {"id": 5, "name": "event", "sheet": 1, "description": "Verified UGTS event or external novelty event."},
+    {"id": 6, "name": "lineage_state", "sheet": 3, "description": "Persistent branch and reconstruction state."},
+    {"id": 7, "name": "administrative_area", "sheet": 0, "description": "Named administrative or management area."},
+    {"id": 8, "name": "property", "sheet": 2, "description": "Observed or asserted semantic property."},
+    {"id": 9, "name": "route", "sheet": 0, "description": "Road, path, channel or graph route."}
+  ],
+  "relations": [
+    {"id": 0, "name": "self", "source_types": [0,1,2,3,4,5,6,7,8,9], "target_types": [0,1,2,3,4,5,6,7,8,9], "mode_bit": 0, "guard": "none"},
+    {"id": 1, "name": "located_in", "source_types": [0,1,2,3,5,9], "target_types": [3,7], "mode_bit": 1, "inverse": "contains", "guard": "inside"},
+    {"id": 2, "name": "contains", "source_types": [3,7], "target_types": [0,1,2,3,5,9], "mode_bit": 1, "inverse": "located_in", "guard": "inside"},
+    {"id": 3, "name": "adjacent_to", "source_types": [3,7,9], "target_types": [3,7,9], "mode_bit": 2, "symmetric": true, "guard": "distance"},
+    {"id": 4, "name": "near", "source_types": [0,1,3,5,7,9], "target_types": [0,1,3,5,7,9], "mode_bit": 2, "symmetric": true, "guard": "distance"},
+    {"id": 5, "name": "made_by_sensor", "source_types": [2], "target_types": [1], "mode_bit": 3, "inverse": "made_observation", "guard": "event"},
+    {"id": 6, "name": "observes", "source_types": [1], "target_types": [8], "mode_bit": 3, "guard": "ontology"},
+    {"id": 7, "name": "feature_of_interest", "source_types": [2], "target_types": [0,3,7], "mode_bit": 3, "inverse": "observed_in", "guard": "event"},
+    {"id": 8, "name": "instance_of", "source_types": [0,1,2,3,5,7,8,9], "target_types": [4], "mode_bit": 4, "guard": "ontology"},
+    {"id": 9, "name": "subclass_of", "source_types": [4], "target_types": [4], "mode_bit": 4, "guard": "ontology"},
+    {"id": 10, "name": "depends_on", "source_types": [4], "target_types": [4], "mode_bit": 5, "guard": "ontology"},
+    {"id": 11, "name": "compatible_with", "source_types": [0,1,2,3,4,5,6,7,8,9], "target_types": [0,1,2,3,4,5,6,7,8,9], "mode_bit": 6, "symmetric": true, "guard": "semantic"},
+    {"id": 12, "name": "crossed_guard", "source_types": [5], "target_types": [0,1,3,9], "mode_bit": 7, "guard": "boundary"},
+    {"id": 13, "name": "transitioned_to", "source_types": [5,6], "target_types": [6], "mode_bit": 7, "guard": "event"},
+    {"id": 14, "name": "derived_from", "source_types": [2,5,6], "target_types": [0,1,2,4,5,6], "mode_bit": 8, "guard": "lineage"},
+    {"id": 15, "name": "descends_from", "source_types": [6], "target_types": [6], "mode_bit": 8, "guard": "lineage"},
+    {"id": 16, "name": "supersedes", "source_types": [0,1,2,5,6], "target_types": [0,1,2,5,6], "mode_bit": 8, "guard": "lineage"},
+    {"id": 17, "name": "governed_by", "source_types": [0,1,2,5,9], "target_types": [4], "mode_bit": 9, "guard": "ontology"},
+    {"id": 18, "name": "has_property", "source_types": [0,1,3,7], "target_types": [8], "mode_bit": 10, "guard": "ontology"},
+    {"id": 19, "name": "connected_to", "source_types": [0,3,7,9], "target_types": [0,3,7,9], "mode_bit": 11, "symmetric": true, "guard": "distance"},
+    {"id": 20, "name": "made_observation", "source_types": [1], "target_types": [2], "mode_bit": 3, "inverse": "made_by_sensor", "guard": "event"},
+    {"id": 21, "name": "observed_in", "source_types": [0,3,7], "target_types": [2], "mode_bit": 3, "inverse": "feature_of_interest", "guard": "event"}
+  ]
+}

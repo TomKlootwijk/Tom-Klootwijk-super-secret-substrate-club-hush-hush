@@ -1,0 +1,6 @@
+/build/
+/build-*/
+/external_data/
+*.ncu-rep
+*.csv
+*_preview.ply

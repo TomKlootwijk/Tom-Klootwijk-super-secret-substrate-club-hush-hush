@@ -1,0 +1,5 @@
+Coarse predictor versus full SGP4
+  matched samples          : 928
+  RMS position difference  : 18.083609 km
+  maximum difference       : 50.072351 km
+  interpretation           : difference quantifies the removed v0.3 surrogate, not SGP4 error

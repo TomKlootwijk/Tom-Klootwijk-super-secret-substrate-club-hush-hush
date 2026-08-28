@@ -1,0 +1,548 @@
+{
+  "schema_version": "2.0.0",
+  "baseline_mechanism_count": 197,
+  "added_mechanism_count": 60,
+  "extended_total": 257,
+  "mechanisms": [
+    {
+      "id": "M198",
+      "domain": "Pattern geometry",
+      "mechanism": "Superellipse (Lame curve)",
+      "definition": "Parametric constant-exponent family |x/a|^n + |y/b|^n = 1 with explicit sign restoration.",
+      "formula": "x=a*sgn(cos t)|cos t|^(2/n); y=b*sgn(sin t)|sin t|^(2/n)",
+      "integration": "Pattern primitive; may define support, route boundary or swept profile.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M199",
+      "domain": "Pattern geometry",
+      "mechanism": "Gielis superformula",
+      "definition": "Bounded radial pattern grammar that generalizes circles, polygons, stars and lobed forms.",
+      "formula": "r=(|cos(m t/4)/a|^n2 + |sin(m t/4)/b|^n3)^(-1/n1)",
+      "integration": "Versioned parameter tuple; denominator floor prevents singular numerical blow-up.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M200",
+      "domain": "Pattern geometry",
+      "mechanism": "Rose curve",
+      "definition": "Polar harmonic petal pattern with integer or rational angular frequency.",
+      "formula": "r=a cos(k t)",
+      "integration": "Periodic support/template; winding and event surfaces remain separately typed.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M201",
+      "domain": "Pattern geometry",
+      "mechanism": "Lissajous curve",
+      "definition": "Two-axis harmonic pattern with declared frequencies and phase offset.",
+      "formula": "x=A sin(a t+delta); y=B sin(b t)",
+      "integration": "Kinematic test path, phase compatibility probe or calibration trajectory.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M202",
+      "domain": "Pattern geometry",
+      "mechanism": "Epitrochoid",
+      "definition": "Point attached to a circle rolling outside another circle.",
+      "formula": "x=(R+r)cos t-d cos((R+r)t/r); y=(R+r)sin t-d sin((R+r)t/r)",
+      "integration": "Closed periodic route when radius ratio is rational; otherwise bounded quasi-periodic sample.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M203",
+      "domain": "Pattern geometry",
+      "mechanism": "Hypotrochoid",
+      "definition": "Point attached to a circle rolling inside another circle.",
+      "formula": "x=(R-r)cos t+d cos((R-r)t/r); y=(R-r)sin t-d sin((R-r)t/r)",
+      "integration": "Pattern route with cusp/self-intersection events classified by derivative and sheet.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M204",
+      "domain": "Pattern geometry",
+      "mechanism": "Cycloid",
+      "definition": "Trace of a point on a circle rolling along a line.",
+      "formula": "x=r(t-sin t); y=r(1-cos t)",
+      "integration": "Exact benchmark trajectory for cusp and contact events.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M205",
+      "domain": "Pattern geometry",
+      "mechanism": "General trochoid",
+      "definition": "Rolling-circle trace with point offset d distinct from radius r.",
+      "formula": "x=r t-d sin t; y=r-d cos t",
+      "integration": "Prolate/curtate transition controlled by d/r and classified at d=r.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M206",
+      "domain": "Pattern geometry",
+      "mechanism": "Circle involute",
+      "definition": "Taut-string unwrapping curve with monotonic arc parameter.",
+      "formula": "x=r(cos t+t sin t); y=r(sin t-t cos t)",
+      "integration": "Gear/contact profile and nonuniform curvature benchmark.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M207",
+      "domain": "Pattern geometry",
+      "mechanism": "Catenary",
+      "definition": "Static hanging-chain profile retained as a bounded mechanical shape, not a generic parabola.",
+      "formula": "y=a cosh((x-x0)/a)+y0",
+      "integration": "Constraint shape or potential-energy equilibrium reference.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M208",
+      "domain": "Pattern geometry",
+      "mechanism": "Clothoid / Euler spiral",
+      "definition": "Curve whose curvature changes linearly with arc length.",
+      "formula": "kappa(s)=s/A^2; x=integral cos(u^2/2A^2)du; y=integral sin(u^2/2A^2)du",
+      "integration": "Curvature-continuous route connector and steering transition.",
+      "validation": "Implemented numerically + tested"
+    },
+    {
+      "id": "M209",
+      "domain": "Pattern geometry",
+      "mechanism": "Fermat spiral",
+      "definition": "Square-root radial spiral with explicit branch sign.",
+      "formula": "r=a sqrt(|t|), branch selects sign/phase",
+      "integration": "Two-arm address pattern and bounded sample schedule.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M210",
+      "domain": "Pattern geometry",
+      "mechanism": "Archimedean spiral",
+      "definition": "Linear radial growth under angular phase.",
+      "formula": "r=a+b t",
+      "integration": "Uniform shell-crossing benchmark and address sweep.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M211",
+      "domain": "Pattern geometry",
+      "mechanism": "Rational quadratic Bezier conic",
+      "definition": "Three control points with middle weight representing exact conic arcs under valid weights.",
+      "formula": "B(t)=[(1-t)^2P0+2w t(1-t)P1+t^2P2]/[(1-t)^2+2w t(1-t)+t^2]",
+      "integration": "Conic-support primitive with denominator guard and schema-bound weight.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M212",
+      "domain": "Pattern geometry",
+      "mechanism": "Cubic Bezier segment",
+      "definition": "Four-point polynomial curve with endpoint tangent control.",
+      "formula": "B(t)=(1-t)^3P0+3(1-t)^2tP1+3(1-t)t^2P2+t^3P3",
+      "integration": "Glyph morph, route segment and local sweep centerline.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M213",
+      "domain": "Pattern geometry",
+      "mechanism": "Open-uniform B-spline",
+      "definition": "Piecewise polynomial curve with local control and declared degree/knot vector.",
+      "formula": "C(t)=sum_i N_i,p(t) P_i",
+      "integration": "Finite grammar output normalized to bounded control points and degree.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M214",
+      "domain": "Pattern geometry",
+      "mechanism": "NURBS curve",
+      "definition": "Rational B-spline with explicit positive weights and knot vector.",
+      "formula": "C(t)=sum_i N_i,p w_i P_i / sum_i N_i,p w_i",
+      "integration": "Exact/approximate CAD-style route with denominator and weight validation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M215",
+      "domain": "Pattern geometry",
+      "mechanism": "Reuleaux constant-width profile",
+      "definition": "Three circular arcs producing a convex constant-width curve.",
+      "formula": "Boundary assembled from radius-w arcs centered at equilateral-triangle vertices.",
+      "integration": "Constant-clearance support profile and rotation benchmark.",
+      "validation": "Implemented sampler + tested"
+    },
+    {
+      "id": "M216",
+      "domain": "Pattern geometry",
+      "mechanism": "Voronoi / power-cell selector",
+      "definition": "Nearest-site partition generalized by additive site weights.",
+      "formula": "argmin_i ||x-s_i||^2-w_i",
+      "integration": "Compatibility/routing partition compiled to local candidate tests.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M217",
+      "domain": "Pattern geometry",
+      "mechanism": "Medial-axis skeletal approximation",
+      "definition": "Centerline candidates derived from equal-distance pairs or sampled boundary normals.",
+      "formula": "d(x,A)=d(x,B) with local maximality condition",
+      "integration": "Compressed shape skeleton; approximation status and sampling density are logged.",
+      "validation": "Implemented sampled helper + tested"
+    },
+    {
+      "id": "M218",
+      "domain": "Field/surface geometry",
+      "mechanism": "Superquadric implicit field",
+      "definition": "Exponent-controlled 3D generalization of ellipsoids and box-like rounded solids.",
+      "formula": "((|x/a|^(2/e2)+|y/b|^(2/e2))^(e2/e1)+|z/c|^(2/e1))-1",
+      "integration": "Implicit event/support field; not automatically an exact Euclidean SDF.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M219",
+      "domain": "Field/surface geometry",
+      "mechanism": "Anisotropic ellipsoid field",
+      "definition": "Quadratic form with positive scales or covariance-like metric.",
+      "formula": "f(x)=x^T A x-1, A positive definite",
+      "integration": "Directional guard/support with explicit metric and conditioning checks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M220",
+      "domain": "Field/surface geometry",
+      "mechanism": "Swept tube field",
+      "definition": "Distance-to-centerline field minus radius using a sampled or analytic curve.",
+      "formula": "f(x)=min_s ||x-c(s)||-r(s)",
+      "integration": "Cable, vessel, wormhole-route visualization or collision support; sampled error is declared.",
+      "validation": "Implemented sampled + tested"
+    },
+    {
+      "id": "M221",
+      "domain": "Field/surface geometry",
+      "mechanism": "Generalized cylinder / profile sweep",
+      "definition": "Cross-section transported along a centerline with an explicit moving frame.",
+      "formula": "X(s,u,v)=c(s)+u e1(s)+v e2(s)",
+      "integration": "Pattern extrusion using Frenet or Bishop frame; frame choice is schema-bound.",
+      "validation": "Implemented helper + example"
+    },
+    {
+      "id": "M222",
+      "domain": "Field/surface geometry",
+      "mechanism": "Ruled surface",
+      "definition": "Surface formed by linearly connecting corresponding points on two curves.",
+      "formula": "X(u,v)=(1-v)c0(u)+v c1(u)",
+      "integration": "Portal sheet, transition membrane or developable approximation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M223",
+      "domain": "Field/surface geometry",
+      "mechanism": "Helicoid",
+      "definition": "Ruled minimal-surface family generated by screw motion.",
+      "formula": "X(u,v)=(v cos u,v sin u,p u)",
+      "integration": "Screw-symmetry route/sheet example; physical minimality is not assumed in discrete realization.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M224",
+      "domain": "Field/surface geometry",
+      "mechanism": "Catenoid",
+      "definition": "Surface of revolution of a catenary.",
+      "formula": "X(u,v)=(a cosh(v/a)cos u,a cosh(v/a)sin u,v)",
+      "integration": "Neck/pinch geometry with finite guard and no singular-energy claim.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M225",
+      "domain": "Field/surface geometry",
+      "mechanism": "Gyroid periodic field",
+      "definition": "Triply periodic implicit pattern used as a bounded field template.",
+      "formula": "sin x cos y + sin y cos z + sin z cos x = c",
+      "integration": "Periodic support/route field; topology depends on threshold and finite domain.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M226",
+      "domain": "Field/surface geometry",
+      "mechanism": "Schwarz-P periodic field",
+      "definition": "Triply periodic cosine field serving as a connected-sheet template.",
+      "formula": "cos x+cos y+cos z=c",
+      "integration": "Field grammar primitive with threshold and cell count explicitly bounded.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M227",
+      "domain": "Field/surface geometry",
+      "mechanism": "Metaball / R-function blend",
+      "definition": "Smooth influence-field combination with explicit compact or inverse-distance kernel.",
+      "formula": "f(x)=sum_i w_i phi(||x-c_i||)-tau",
+      "integration": "Merge/split event benchmark; kernel support and saturation are declared.",
+      "validation": "Implemented compact kernel + tested"
+    },
+    {
+      "id": "M228",
+      "domain": "Field/surface geometry",
+      "mechanism": "Morphological offset / dilation",
+      "definition": "Parallel-set transform expressed as a field offset when the input is distance-like.",
+      "formula": "f_delta(x)=f(x)-delta",
+      "integration": "Guard expansion, tolerance shell and manufacturing clearance; exact only for valid distance fields.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M229",
+      "domain": "Field/surface geometry",
+      "mechanism": "Wavefront / eikonal arrival field",
+      "definition": "Arrival-time field under a declared local propagation speed.",
+      "formula": "|grad T|=1/c(x); constant-c case T=distance/c",
+      "integration": "Event-time support primitive; variable-speed solver is specified separately.",
+      "validation": "Implemented constant-speed + tested"
+    },
+    {
+      "id": "M230",
+      "domain": "Topology",
+      "mechanism": "Winding number / degree tag",
+      "definition": "Integer-valued enclosure/orientation descriptor for closed planar routes.",
+      "formula": "w=(1/2pi) integral d arg(gamma(t)-x)",
+      "integration": "Inside/outside and route class metadata without collapsing geometry to a bit.",
+      "validation": "Implemented polygonal + tested"
+    },
+    {
+      "id": "M231",
+      "domain": "Topology",
+      "mechanism": "Covering-space lift",
+      "definition": "Unwrapped coordinate retains traversal count across periodic quotient boundaries.",
+      "formula": "theta_lift=theta+2pi k",
+      "integration": "Prevents ambiguity at repeated coordinates and supports lineage reconstruction.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M232",
+      "domain": "Topology",
+      "mechanism": "Homotopy-class route label",
+      "definition": "Route label stores obstacle winding/signature rather than only endpoint coordinates.",
+      "formula": "h=(w1,...,wn) for declared obstacle generators",
+      "integration": "Compatibility and branch selection may require matching or allowed classes.",
+      "validation": "Implemented descriptor + tested"
+    },
+    {
+      "id": "M233",
+      "domain": "Topology",
+      "mechanism": "Braid-word transition",
+      "definition": "Ordered crossings represented by generators sigma_i and inverses with local cancellation.",
+      "formula": "... sigma_i sigma_i^-1 ... -> identity",
+      "integration": "Multi-entity route lineage; word length is bounded and reduction policy explicit.",
+      "validation": "Implemented reducer + tested"
+    },
+    {
+      "id": "M234",
+      "domain": "Topology",
+      "mechanism": "Knot/link checksum",
+      "definition": "Optional low-cost invariant or numerical linking estimate for closed route pairs.",
+      "formula": "Gauss linking integral or declared discrete approximation",
+      "integration": "Diagnostic checksum only; not complete knot identity and not used as sole authority.",
+      "validation": "Specified; numerical certification pending"
+    },
+    {
+      "id": "M235",
+      "domain": "Topology",
+      "mechanism": "Cell-complex incidence",
+      "definition": "Vertices, edges, faces and cells connected through oriented incidence maps.",
+      "formula": "boundary_k: C_k -> C_(k-1)",
+      "integration": "Topology storage independent of embedding; supports local gluing and route updates.",
+      "validation": "Implemented boundary matrices + tested"
+    },
+    {
+      "id": "M236",
+      "domain": "Topology",
+      "mechanism": "Boundary/coboundary update",
+      "definition": "Topology transition updates primal incidence and dual cochain state consistently.",
+      "formula": "boundary_(k-1) boundary_k = 0",
+      "integration": "Validation rejects edits violating boundary-of-boundary zero.",
+      "validation": "Implemented invariant check + tested"
+    },
+    {
+      "id": "M237",
+      "domain": "Topology",
+      "mechanism": "Discrete Morse critical event",
+      "definition": "Cell pairing identifies local critical cells where topology/routing may change.",
+      "formula": "Unpaired cells are critical under a declared matching.",
+      "integration": "Event candidate for simplification or handle birth/death; matching is explicit.",
+      "validation": "Implemented descriptor + example"
+    },
+    {
+      "id": "M238",
+      "domain": "Topology",
+      "mechanism": "Persistent-homology summary",
+      "definition": "Birth/death intervals summarize bounded filtration changes.",
+      "formula": "barcode={(birth_i,death_i,dimension_i)}",
+      "integration": "Diagnostic feature vector; does not replace full geometry or lineage.",
+      "validation": "Specified exchange format; solver not bundled"
+    },
+    {
+      "id": "M239",
+      "domain": "Topology",
+      "mechanism": "Atlas transition cocycle",
+      "definition": "Overlapping chart maps are checked for consistent composition.",
+      "formula": "g_ij g_jk = g_ik on triple overlaps",
+      "integration": "Prevents incompatible portal/gluing definitions in multi-chart worlds.",
+      "validation": "Implemented matrix check + tested"
+    },
+    {
+      "id": "M240",
+      "domain": "Kinematic calculus",
+      "mechanism": "SE(2) rigid transform and twist",
+      "definition": "Planar position/orientation update represented by the exponential of a body twist.",
+      "formula": "T(t)=exp(t [v_x,v_y,omega]^)",
+      "integration": "Exact constant-twist state_at(t) and portal patch primitive.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M241",
+      "domain": "Kinematic calculus",
+      "mechanism": "SE(3) twist exponential",
+      "definition": "Spatial rigid motion generated by angular and linear velocity.",
+      "formula": "T=exp([omega,v]^ t) with Rodrigues rotation and V matrix",
+      "integration": "Constant screw motion, frame transport and analytic state query.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M242",
+      "domain": "Kinematic calculus",
+      "mechanism": "Quaternion SLERP",
+      "definition": "Shortest-arc interpolation of unit orientations with antipodal handling.",
+      "formula": "q(t)=sin((1-t)theta)/sin theta q0 + sin(t theta)/sin theta q1",
+      "integration": "Orientation interpolation separate from position and topology.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M243",
+      "domain": "Kinematic calculus",
+      "mechanism": "Screw interpolation (SE(3) geodesic)",
+      "definition": "Interpolate through the relative rigid transform log/exponential rather than independent Euler angles.",
+      "formula": "T(t)=T0 exp(t log(T0^-1 T1))",
+      "integration": "Portal/coupler motion with consistent rotation-translation coupling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M244",
+      "domain": "Kinematic calculus",
+      "mechanism": "Frenet-Serret moving frame",
+      "definition": "Tangent, normal and binormal derived from nondegenerate curve derivatives.",
+      "formula": "T=r'/|r'|; B=(r' x r'')/|r' x r''|; N=B x T",
+      "integration": "Curvature/torsion diagnostics and sweep orientation where curvature is nonzero.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M245",
+      "domain": "Kinematic calculus",
+      "mechanism": "Bishop parallel-transport frame",
+      "definition": "Rotation-minimizing frame transported along a sampled curve.",
+      "formula": "Project previous normal into new tangent plane, then renormalize.",
+      "integration": "Stable sweep frame through near-zero-curvature segments.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M246",
+      "domain": "Kinematic calculus",
+      "mechanism": "Arc-length reparameterization",
+      "definition": "Monotone lookup maps path parameter to cumulative distance and back.",
+      "formula": "s(t)=integral_0^t |r'(u)|du",
+      "integration": "Uniform-speed queries and event bracketing with declared interpolation error.",
+      "validation": "Implemented sampled + tested"
+    },
+    {
+      "id": "M247",
+      "domain": "Kinematic calculus",
+      "mechanism": "Curvature-limited steering",
+      "definition": "Speed and angular rate constrained by path curvature and lateral acceleration.",
+      "formula": "omega=v kappa; v<=sqrt(a_lat_max/max(|kappa|,eps))",
+      "integration": "Feasible trajectory gate before event solving.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M248",
+      "domain": "Kinematic calculus",
+      "mechanism": "Jerk-bounded quintic S-curve",
+      "definition": "Endpoint-rest time law with continuous position, velocity and acceleration.",
+      "formula": "s(u)=10u^3-15u^4+6u^5, u in [0,1]",
+      "integration": "Smooth phase/route actuation; peak derivatives determine duration contract.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M249",
+      "domain": "Kinematic calculus",
+      "mechanism": "Limit-aware time scaling",
+      "definition": "Choose trajectory duration so normalized velocity, acceleration and jerk stay within declared limits.",
+      "formula": "T=max(D*v_peak/vmax, sqrt(D*a_peak/amax), cbrt(D*j_peak/jmax))",
+      "integration": "Bounded schedule; not claimed globally time-optimal for arbitrary paths.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M250",
+      "domain": "Kinematic calculus",
+      "mechanism": "Articulated-chain forward kinematics",
+      "definition": "Compose joint transforms to obtain link and endpoint frames.",
+      "formula": "T_end=product_i T_i(q_i)",
+      "integration": "Finite grammar may emit link chains; state query returns all frames and lineage.",
+      "validation": "Implemented planar chain + tested"
+    },
+    {
+      "id": "M251",
+      "domain": "Kinematic calculus",
+      "mechanism": "Jacobian damped least-squares IK",
+      "definition": "Regularized local inverse step avoids singular matrix blow-up.",
+      "formula": "Delta q=J^T(JJ^T+lambda^2 I)^-1 e",
+      "integration": "Optional solver with residual, iteration budget and failure status.",
+      "validation": "Implemented planar chain + tested"
+    },
+    {
+      "id": "M252",
+      "domain": "Dynamics and events",
+      "mechanism": "Symplectic / semi-implicit integration",
+      "definition": "Velocity is updated before position for improved qualitative energy behavior in separable mechanics.",
+      "formula": "v_(n+1)=v_n+a(x_n)dt; x_(n+1)=x_n+v_(n+1)dt",
+      "integration": "Fallback dynamic state update; timestep and error budget remain explicit.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M253",
+      "domain": "Dynamics and events",
+      "mechanism": "Damped second-order mode",
+      "definition": "Mass-spring-damper evolution with typed mass, stiffness and damping.",
+      "formula": "m x''+c x'+k x=f(t)",
+      "integration": "Actuator, hinge or threshold reset dynamics; energy bookkeeping is measurable.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M254",
+      "domain": "Dynamics and events",
+      "mechanism": "Graph-Laplacian diffusion / coupled modes",
+      "definition": "Local state exchange over an explicit adjacency graph.",
+      "formula": "x'=-alpha L x or x''+C x'+Kx=0",
+      "integration": "Phase smoothing, consensus or coupled oscillation without hidden global field.",
+      "validation": "Implemented first-order diffusion + tested"
+    },
+    {
+      "id": "M255",
+      "domain": "Dynamics and events",
+      "mechanism": "Reaction-diffusion pattern dynamics",
+      "definition": "Two-field local reaction plus diffusion update on a bounded grid or graph.",
+      "formula": "Gray-Scott: U_t=D_u Lap U-UV^2+F(1-U); V_t=D_v Lap V+UV^2-(F+k)V",
+      "integration": "Dynamic pattern generator kept downstream of typed field/state schema.",
+      "validation": "Implemented grid step + tested"
+    },
+    {
+      "id": "M256",
+      "domain": "Dynamics and events",
+      "mechanism": "Hybrid automaton continuous/discrete dynamics",
+      "definition": "Each mode has a continuous flow; guard crossings invoke discrete reset and route changes.",
+      "formula": "x'=f_m(x); if g_(m,n)(x)=0 then x^+=R_(m,n)(x)",
+      "integration": "Generalizes threshold cup, parity hinge and event transition into a typed model.",
+      "validation": "Implemented reference class + tested"
+    },
+    {
+      "id": "M257",
+      "domain": "Dynamics and events",
+      "mechanism": "Event degeneracy and simultaneity resolver",
+      "definition": "Classify crossing, tangency and coincidence; resolve equal-time patches by priority or verified commutativity.",
+      "formula": "Use sign history, derivative, residual interval and patch-conflict graph.",
+      "integration": "Prevents chatter, unordered lineage and silent overwrite at multi-guard events.",
+      "validation": "Implemented classifier/resolver + tested"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "python_sgp4_version": "2.25",
+  "gravity_model": "WGS72",
+  "datasets": [
+    {
+      "dataset": "gps_operational",
+      "states": 288,
+      "sample_files": 9,
+      "error_mismatches": 0,
+      "rms_position_delta_km": 5.7314974950513195e-08,
+      "max_position_delta_km": 1.1826543733290537e-07,
+      "rms_velocity_delta_km_s": 5.119950645200513e-10,
+      "max_velocity_delta_km_s": 7.841169468777989e-10
+    },
+    {
+      "dataset": "vallado_all_branches",
+      "states": 40,
+      "sample_files": 8,
+      "error_mismatches": 0,
+      "rms_position_delta_km": 9.779178572336449e-08,
+      "max_position_delta_km": 2.656269518315808e-07,
+      "rms_velocity_delta_km_s": 4.730193660404092e-10,
+      "max_velocity_delta_km_s": 7.708394061280024e-10
+    }
+  ],
+  "overall": {
+    "states": 328,
+    "error_mismatches": 0,
+    "rms_position_delta_km": 6.364466821950938e-08,
+    "max_position_delta_km": 2.656269518315808e-07,
+    "rms_velocity_delta_km_s": 5.07402247286102e-10,
+    "max_velocity_delta_km_s": 7.841169468777989e-10
+  }
+}

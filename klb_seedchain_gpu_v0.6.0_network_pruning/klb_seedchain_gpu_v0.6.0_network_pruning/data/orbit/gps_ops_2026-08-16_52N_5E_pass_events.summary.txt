@@ -1,0 +1,9 @@
+KLOC1 coarse visibility schedule
+  intervals              : 604800
+  seeds                  : 32
+  candidate intervals    : 19353600
+  support survivors      : 19214155
+  compatible survivors   : 19214155
+  visible samples        : 5498030
+  acquisition/loss events: 717
+  model boundary         : coarse Kepler+J2; not SGP4/navigation

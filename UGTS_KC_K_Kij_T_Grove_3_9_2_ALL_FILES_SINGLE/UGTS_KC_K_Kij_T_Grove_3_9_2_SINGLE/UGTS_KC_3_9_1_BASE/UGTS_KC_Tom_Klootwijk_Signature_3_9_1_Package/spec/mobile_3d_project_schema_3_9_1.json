@@ -1,0 +1,583 @@
+{
+  "$defs": {
+    "camera": {
+      "additionalProperties": false,
+      "properties": {
+        "far": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "near": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "position": {
+          "$ref": "#/$defs/vec3"
+        },
+        "target": {
+          "$ref": "#/$defs/vec3"
+        },
+        "up": {
+          "$ref": "#/$defs/vec3"
+        },
+        "vertical_fov_degrees": {
+          "maximum": 140,
+          "minimum": 10,
+          "type": "number"
+        }
+      },
+      "required": [
+        "position",
+        "target",
+        "up",
+        "vertical_fov_degrees",
+        "near",
+        "far"
+      ],
+      "type": "object"
+    },
+    "collider": {
+      "additionalProperties": false,
+      "properties": {
+        "half_extents": {
+          "$ref": "#/$defs/vec3"
+        },
+        "radius": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "sensor": {
+          "type": "boolean"
+        },
+        "shape": {
+          "enum": [
+            "none",
+            "sphere",
+            "box"
+          ]
+        }
+      },
+      "required": [
+        "shape",
+        "radius",
+        "half_extents",
+        "sensor"
+      ],
+      "type": "object"
+    },
+    "color3": {
+      "items": {
+        "minimum": 0,
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "type": "array"
+    },
+    "color4": {
+      "items": {
+        "maximum": 1,
+        "minimum": 0,
+        "type": "number"
+      },
+      "maxItems": 4,
+      "minItems": 4,
+      "type": "array"
+    },
+    "light": {
+      "additionalProperties": false,
+      "properties": {
+        "ambient": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "color": {
+          "$ref": "#/$defs/color3"
+        },
+        "direction": {
+          "$ref": "#/$defs/vec3"
+        },
+        "intensity": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "direction",
+        "color",
+        "intensity",
+        "ambient"
+      ],
+      "type": "object"
+    },
+    "material": {
+      "additionalProperties": false,
+      "properties": {
+        "base_color": {
+          "$ref": "#/$defs/color4"
+        },
+        "double_sided": {
+          "type": "boolean"
+        },
+        "emissive": {
+          "$ref": "#/$defs/color3"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metallic": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "roughness": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "base_color",
+        "metallic",
+        "roughness",
+        "emissive",
+        "double_sided"
+      ],
+      "type": "object"
+    },
+    "mesh": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "normals": {
+          "items": {
+            "$ref": "#/$defs/vec3"
+          },
+          "type": "array"
+        },
+        "triangles": {
+          "items": {
+            "items": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "type": "array"
+          },
+          "type": "array"
+        },
+        "vertices": {
+          "items": {
+            "$ref": "#/$defs/vec3"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "vertices",
+        "triangles",
+        "normals",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "node": {
+      "additionalProperties": false,
+      "properties": {
+        "angular_velocity": {
+          "$ref": "#/$defs/vec3"
+        },
+        "collider": {
+          "$ref": "#/$defs/collider"
+        },
+        "dynamic": {
+          "type": "boolean"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "mass": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "material_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "mesh_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "metadata": {
+          "type": "object"
+        },
+        "restitution": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "transform": {
+          "$ref": "#/$defs/transform"
+        },
+        "velocity": {
+          "$ref": "#/$defs/vec3"
+        }
+      },
+      "required": [
+        "id",
+        "mesh_id",
+        "material_id",
+        "transform",
+        "velocity",
+        "angular_velocity",
+        "collider",
+        "dynamic",
+        "mass",
+        "restitution",
+        "tags",
+        "metadata"
+      ],
+      "type": "object"
+    },
+    "number": {
+      "type": "number"
+    },
+    "quality": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "max_visible_nodes": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "msaa_samples": {
+          "enum": [
+            0,
+            2,
+            4,
+            8
+          ],
+          "type": "integer"
+        },
+        "post_processing": {
+          "type": "boolean"
+        },
+        "render_scale": {
+          "maximum": 1,
+          "minimum": 0.45,
+          "type": "number"
+        },
+        "shadow_quality": {
+          "maximum": 3,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "target_fps": {
+          "enum": [
+            30,
+            40,
+            45,
+            60,
+            72,
+            90,
+            120,
+            144
+          ],
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "target_fps",
+        "render_scale",
+        "max_visible_nodes",
+        "msaa_samples",
+        "post_processing",
+        "shadow_quality"
+      ],
+      "type": "object"
+    },
+    "quat": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 4,
+      "minItems": 4,
+      "type": "array"
+    },
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "compile_sdk": {
+          "minimum": 21,
+          "type": "integer"
+        },
+        "default_quality": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "device_hints": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "gpu_hints": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "memory_floor_mb": {
+          "minimum": 1024,
+          "type": "integer"
+        },
+        "min_sdk": {
+          "minimum": 21,
+          "type": "integer"
+        },
+        "preferred_abis": {
+          "items": {
+            "enum": [
+              "arm64-v8a",
+              "armeabi-v7a",
+              "x86_64"
+            ]
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "required_gles": {
+          "items": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "target_refresh_hz": {
+          "enum": [
+            30,
+            45,
+            60,
+            72,
+            90,
+            120,
+            144
+          ],
+          "type": "integer"
+        },
+        "target_sdk": {
+          "minimum": 21,
+          "type": "integer"
+        },
+        "vulkan_optional": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "min_sdk",
+        "target_sdk",
+        "compile_sdk",
+        "preferred_abis",
+        "required_gles",
+        "vulkan_optional",
+        "target_refresh_hz",
+        "memory_floor_mb",
+        "device_hints",
+        "gpu_hints",
+        "default_quality"
+      ],
+      "type": "object"
+    },
+    "transform": {
+      "additionalProperties": false,
+      "properties": {
+        "rotation": {
+          "$ref": "#/$defs/quat"
+        },
+        "scale": {
+          "$ref": "#/$defs/vec3"
+        },
+        "translation": {
+          "$ref": "#/$defs/vec3"
+        }
+      },
+      "required": [
+        "translation",
+        "rotation",
+        "scale"
+      ],
+      "type": "object"
+    },
+    "vec3": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "type": "array"
+    },
+    "world": {
+      "additionalProperties": false,
+      "properties": {
+        "bounds_max": {
+          "$ref": "#/$defs/vec3"
+        },
+        "bounds_min": {
+          "$ref": "#/$defs/vec3"
+        },
+        "fixed_dt": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "floor_y": {
+          "type": "number"
+        },
+        "gravity": {
+          "$ref": "#/$defs/vec3"
+        },
+        "jump_speed": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "player_speed": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "fixed_dt",
+        "gravity",
+        "floor_y",
+        "bounds_min",
+        "bounds_max",
+        "player_speed",
+        "jump_speed"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://ugts-kc.local/schema/mobile_3d_project_3_9_1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "author": {
+      "type": "string"
+    },
+    "background": {
+      "$ref": "#/$defs/color4"
+    },
+    "camera": {
+      "$ref": "#/$defs/camera"
+    },
+    "edition": {
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "light": {
+      "$ref": "#/$defs/light"
+    },
+    "materials": {
+      "items": {
+        "$ref": "#/$defs/material"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "meshes": {
+      "items": {
+        "$ref": "#/$defs/mesh"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/node"
+      },
+      "type": "array"
+    },
+    "quality_tiers": {
+      "items": {
+        "$ref": "#/$defs/quality"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema": {
+      "const": "ugts-kc-mobile-3d-project-3.9.1"
+    },
+    "start_quality": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "target_profiles": {
+      "items": {
+        "$ref": "#/$defs/target"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "title": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "world": {
+      "$ref": "#/$defs/world"
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "title",
+    "author",
+    "meshes",
+    "materials",
+    "nodes",
+    "quality_tiers",
+    "target_profiles",
+    "start_quality"
+  ],
+  "title": "UGTS-KC Mobile 3D Project 3.9.1",
+  "type": "object"
+}

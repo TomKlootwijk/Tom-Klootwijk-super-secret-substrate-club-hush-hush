@@ -1,0 +1,12 @@
+A generated release ZIP was extracted into a clean directory.
+
+Checks completed on the extracted tree:
+- `sha256sum -c MANIFEST.sha256`: PASS for every manifested file.
+- Clean CMake configuration with `KLB_BUILD_CUDA=OFF`: PASS.
+- Clean GCC 14.2/C++20 build: PASS.
+- CTest: 3/3 tests passed.
+- `klb_sgp4 verify` on the included GPS KSGP1 container: PASS.
+- 32 compiled records, 160 reference evaluations, 0 propagation failures.
+
+This round-trip validates archive completeness for the CPU portion. Native
+CUDA 12.8 sm_120 compilation and RTX execution remain target-machine checks.

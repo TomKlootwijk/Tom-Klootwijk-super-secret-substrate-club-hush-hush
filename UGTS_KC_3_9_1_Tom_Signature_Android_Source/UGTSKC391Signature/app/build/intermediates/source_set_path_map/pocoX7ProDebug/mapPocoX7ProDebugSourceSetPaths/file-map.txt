@@ -1,0 +1,10 @@
+nl.tomklootwijk.ugtskc.signature.app-pocoX7Pro-0 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\build\generated\res\pngs\pocoX7Pro\debug
+nl.tomklootwijk.ugtskc.signature.app-pocoX7Pro-1 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\build\generated\res\resValues\pocoX7Pro\debug
+nl.tomklootwijk.ugtskc.signature.app-updated_navigation_xml-2 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\build\generated\updated_navigation_xml\pocoX7ProDebug
+nl.tomklootwijk.ugtskc.signature.app-packagePocoX7ProDebugResources-3 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\build\intermediates\incremental\pocoX7ProDebug\packagePocoX7ProDebugResources\merged.dir
+nl.tomklootwijk.ugtskc.signature.app-packagePocoX7ProDebugResources-4 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\build\intermediates\incremental\pocoX7ProDebug\packagePocoX7ProDebugResources\stripped.dir
+nl.tomklootwijk.ugtskc.signature.app-pocoX7ProDebug-5 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\build\intermediates\merged_res\pocoX7ProDebug\mergePocoX7ProDebugResources
+nl.tomklootwijk.ugtskc.signature.app-debug-6 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\src\debug\res
+nl.tomklootwijk.ugtskc.signature.app-main-7 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\src\main\res
+nl.tomklootwijk.ugtskc.signature.app-pocoX7Pro-8 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\src\pocoX7Pro\res
+nl.tomklootwijk.ugtskc.signature.app-pocoX7ProDebug-9 C:\Users\Tom\Documents\theTomKlootwijkManifold\UGTS_KC_3_9_1_Tom_Signature_Android_Source\UGTSKC391Signature\app\src\pocoX7ProDebug\res

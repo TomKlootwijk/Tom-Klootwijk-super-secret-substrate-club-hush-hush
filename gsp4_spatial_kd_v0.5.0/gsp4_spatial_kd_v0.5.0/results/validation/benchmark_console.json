@@ -1,0 +1,85 @@
+{
+  "cached_query": {
+    "candidates": 110,
+    "candidates_per_second_at_p50": 31943.278030435584,
+    "event_lineage_checksum_u64": 6135401715801843656,
+    "maximum_ms": 3.443604000040068,
+    "mean_ms": 3.443604000040068,
+    "minimum_ms": 3.443604000040068,
+    "p50_ms": 3.443604000040068,
+    "p95_ms": 3.443604000040068,
+    "p99_ms": 3.443604000040068,
+    "query": {
+      "bearing_degrees": null,
+      "confidence_min": 0.0,
+      "epsilon_m": 25.0,
+      "guard_mode": "inside",
+      "half_angle_degrees": 180.0,
+      "max_candidates": 100000,
+      "max_events": 32,
+      "precision": "float32",
+      "radius_m": 10000.0,
+      "relation": 2,
+      "require_same_orientation": true,
+      "require_same_sheet": true,
+      "source_node_id": 11557937791002486528,
+      "timestamp": 1704073600.0
+    },
+    "timing_scope": "candidate lookup + deterministic UGTS gates + student scoring; graph encoding and novelty-log writes excluded",
+    "verified_events": 32
+  },
+  "config": {
+    "device": "cpu",
+    "precision": "float32",
+    "repeats": 1,
+    "scoring_batch": 65536,
+    "warmup": 0
+  },
+  "format": "UGTS-SPATIAL-BENCHMARK-2",
+  "graph": {
+    "array_bytes": 169548,
+    "edges": 1305,
+    "input_dim": 32,
+    "nodes": 228,
+    "schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+    "teacher_dim": 64
+  },
+  "measurement_boundary": "workload throughput only; not raw DRAM bandwidth and not a physical-GPU claim beyond the named device/run",
+  "model": {
+    "checkpoint_bytes": 1408503,
+    "checkpoint_format": "UGTS-SPATIAL-MODEL-1",
+    "checkpoint_human": "1.343 MiB",
+    "parameters": 341459
+  },
+  "node_encoding": {
+    "edges_per_second_at_p50": 96799.35348288486,
+    "maximum_ms": 13.481495000178256,
+    "mean_ms": 13.481495000178256,
+    "minimum_ms": 13.481495000178256,
+    "nodes_per_second_at_p50": 16912.070953331608,
+    "p50_ms": 13.481495000178256,
+    "p95_ms": 13.481495000178256,
+    "p99_ms": 13.481495000178256
+  },
+  "relation_scoring": {
+    "batch_edges": 65536,
+    "candidate_scores_per_second_at_p50": 3899272.2123679654,
+    "maximum_ms": 16.807239000172558,
+    "mean_ms": 16.807239000172558,
+    "minimum_ms": 16.807239000172558,
+    "p50_ms": 16.807239000172558,
+    "p95_ms": 16.807239000172558,
+    "p99_ms": 16.807239000172558,
+    "score_checksum": 130598.3828125
+  },
+  "runtime": {
+    "cuda": {
+      "available": false,
+      "torch_cuda_version": null
+    },
+    "device": "cpu",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu"
+  }
+}

@@ -1,0 +1,2888 @@
+{
+  "profile_id": "phon:nl-NL-standard-0-99-v1",
+  "scope": "Integers 0..99; pronunciation-like segment profile, not IPA",
+  "entries": [
+    {
+      "value": 0,
+      "orthography": "nul",
+      "pronunciation_segments": [
+        "nul"
+      ],
+      "morphemes": [
+        "nul"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        0
+      ],
+      "spoken_order": [
+        0
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "0",
+      "popcount": 0,
+      "pulse_match": false
+    },
+    {
+      "value": 1,
+      "orthography": "een",
+      "pronunciation_segments": [
+        "een"
+      ],
+      "morphemes": [
+        "een"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        1
+      ],
+      "spoken_order": [
+        1
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1",
+      "popcount": 1,
+      "pulse_match": true
+    },
+    {
+      "value": 2,
+      "orthography": "twee",
+      "pronunciation_segments": [
+        "twee"
+      ],
+      "morphemes": [
+        "twee"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        2
+      ],
+      "spoken_order": [
+        2
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "10",
+      "popcount": 1,
+      "pulse_match": true
+    },
+    {
+      "value": 3,
+      "orthography": "drie",
+      "pronunciation_segments": [
+        "drie"
+      ],
+      "morphemes": [
+        "drie"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        3
+      ],
+      "spoken_order": [
+        3
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "11",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 4,
+      "orthography": "vier",
+      "pronunciation_segments": [
+        "vier"
+      ],
+      "morphemes": [
+        "vier"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        4
+      ],
+      "spoken_order": [
+        4
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "100",
+      "popcount": 1,
+      "pulse_match": true
+    },
+    {
+      "value": 5,
+      "orthography": "vijf",
+      "pronunciation_segments": [
+        "vijf"
+      ],
+      "morphemes": [
+        "vijf"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        5
+      ],
+      "spoken_order": [
+        5
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "101",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 6,
+      "orthography": "zes",
+      "pronunciation_segments": [
+        "zes"
+      ],
+      "morphemes": [
+        "zes"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        6
+      ],
+      "spoken_order": [
+        6
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "110",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 7,
+      "orthography": "zeven",
+      "pronunciation_segments": [
+        "ze",
+        "ven"
+      ],
+      "morphemes": [
+        "zeven"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        7
+      ],
+      "spoken_order": [
+        7
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "111",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 8,
+      "orthography": "acht",
+      "pronunciation_segments": [
+        "acht"
+      ],
+      "morphemes": [
+        "acht"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        8
+      ],
+      "spoken_order": [
+        8
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1000",
+      "popcount": 1,
+      "pulse_match": true
+    },
+    {
+      "value": 9,
+      "orthography": "negen",
+      "pronunciation_segments": [
+        "ne",
+        "gen"
+      ],
+      "morphemes": [
+        "negen"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        9
+      ],
+      "spoken_order": [
+        9
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1001",
+      "popcount": 2,
+      "pulse_match": true
+    },
+    {
+      "value": 10,
+      "orthography": "tien",
+      "pronunciation_segments": [
+        "tien"
+      ],
+      "morphemes": [
+        "tien"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        10
+      ],
+      "spoken_order": [
+        10
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1010",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 11,
+      "orthography": "elf",
+      "pronunciation_segments": [
+        "elf"
+      ],
+      "morphemes": [
+        "elf"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        11
+      ],
+      "spoken_order": [
+        11
+      ],
+      "hinge_kind": "irregular",
+      "hinge_count": 0,
+      "binary": "1011",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 12,
+      "orthography": "twaalf",
+      "pronunciation_segments": [
+        "twaalf"
+      ],
+      "morphemes": [
+        "twaalf"
+      ],
+      "syllable_count": 1,
+      "place_order": [
+        12
+      ],
+      "spoken_order": [
+        12
+      ],
+      "hinge_kind": "irregular",
+      "hinge_count": 0,
+      "binary": "1100",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 13,
+      "orthography": "dertien",
+      "pronunciation_segments": [
+        "der",
+        "tien"
+      ],
+      "morphemes": [
+        "drie",
+        "tien"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        10,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "1101",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 14,
+      "orthography": "veertien",
+      "pronunciation_segments": [
+        "veer",
+        "tien"
+      ],
+      "morphemes": [
+        "vier",
+        "tien"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        10,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "1110",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 15,
+      "orthography": "vijftien",
+      "pronunciation_segments": [
+        "vijf",
+        "tien"
+      ],
+      "morphemes": [
+        "vijf",
+        "tien"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        10,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "1111",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 16,
+      "orthography": "zestien",
+      "pronunciation_segments": [
+        "zes",
+        "tien"
+      ],
+      "morphemes": [
+        "zes",
+        "tien"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        10,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "10000",
+      "popcount": 1,
+      "pulse_match": false
+    },
+    {
+      "value": 17,
+      "orthography": "zeventien",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "tien"
+      ],
+      "morphemes": [
+        "zeven",
+        "tien"
+      ],
+      "syllable_count": 3,
+      "place_order": [
+        10,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "10001",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 18,
+      "orthography": "achttien",
+      "pronunciation_segments": [
+        "acht",
+        "tien"
+      ],
+      "morphemes": [
+        "acht",
+        "tien"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        10,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "10010",
+      "popcount": 2,
+      "pulse_match": true
+    },
+    {
+      "value": 19,
+      "orthography": "negentien",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "tien"
+      ],
+      "morphemes": [
+        "negen",
+        "tien"
+      ],
+      "syllable_count": 3,
+      "place_order": [
+        10,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "tien"
+      ],
+      "hinge_kind": "teen_suffix",
+      "hinge_count": 1,
+      "binary": "10011",
+      "popcount": 3,
+      "pulse_match": true
+    },
+    {
+      "value": 20,
+      "orthography": "twintig",
+      "pronunciation_segments": [
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "twintig"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        20
+      ],
+      "spoken_order": [
+        20
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "10100",
+      "popcount": 2,
+      "pulse_match": true
+    },
+    {
+      "value": 21,
+      "orthography": "eenentwintig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "10101",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 22,
+      "orthography": "tweeëntwintig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "10110",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 23,
+      "orthography": "drieëntwintig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "10111",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 24,
+      "orthography": "vierentwintig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11000",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 25,
+      "orthography": "vijfentwintig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11001",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 26,
+      "orthography": "zesentwintig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11010",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 27,
+      "orthography": "zevenentwintig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        20,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11011",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 28,
+      "orthography": "achtentwintig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        20,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11100",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 29,
+      "orthography": "negenentwintig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "twin",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "twintig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        20,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        20
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11101",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 30,
+      "orthography": "dertig",
+      "pronunciation_segments": [
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "dertig"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        30
+      ],
+      "spoken_order": [
+        30
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "11110",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 31,
+      "orthography": "eenendertig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "11111",
+      "popcount": 5,
+      "pulse_match": false
+    },
+    {
+      "value": 32,
+      "orthography": "tweeëndertig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100000",
+      "popcount": 1,
+      "pulse_match": false
+    },
+    {
+      "value": 33,
+      "orthography": "drieëndertig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100001",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 34,
+      "orthography": "vierendertig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100010",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 35,
+      "orthography": "vijfendertig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100011",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 36,
+      "orthography": "zesendertig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100100",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 37,
+      "orthography": "zevenendertig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        30,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100101",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 38,
+      "orthography": "achtendertig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        30,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100110",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 39,
+      "orthography": "negenendertig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "der",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "dertig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        30,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        30
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "100111",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 40,
+      "orthography": "veertig",
+      "pronunciation_segments": [
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "veertig"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        40
+      ],
+      "spoken_order": [
+        40
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "101000",
+      "popcount": 2,
+      "pulse_match": true
+    },
+    {
+      "value": 41,
+      "orthography": "eenenveertig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101001",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 42,
+      "orthography": "tweeënveertig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101010",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 43,
+      "orthography": "drieënveertig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101011",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 44,
+      "orthography": "vierenveertig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101100",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 45,
+      "orthography": "vijfenveertig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101101",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 46,
+      "orthography": "zesenveertig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101110",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 47,
+      "orthography": "zevenenveertig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        40,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "101111",
+      "popcount": 5,
+      "pulse_match": true
+    },
+    {
+      "value": 48,
+      "orthography": "achtenveertig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        40,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110000",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 49,
+      "orthography": "negenenveertig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "veer",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "veertig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        40,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        40
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110001",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 50,
+      "orthography": "vijftig",
+      "pronunciation_segments": [
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "vijftig"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        50
+      ],
+      "spoken_order": [
+        50
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "110010",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 51,
+      "orthography": "eenenvijftig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110011",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 52,
+      "orthography": "tweeënvijftig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110100",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 53,
+      "orthography": "drieënvijftig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110101",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 54,
+      "orthography": "vierenvijftig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110110",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 55,
+      "orthography": "vijfenvijftig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "110111",
+      "popcount": 5,
+      "pulse_match": false
+    },
+    {
+      "value": 56,
+      "orthography": "zesenvijftig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111000",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 57,
+      "orthography": "zevenenvijftig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        50,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111001",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 58,
+      "orthography": "achtenvijftig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        50,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111010",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 59,
+      "orthography": "negenenvijftig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "vijf",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "vijftig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        50,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        50
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111011",
+      "popcount": 5,
+      "pulse_match": true
+    },
+    {
+      "value": 60,
+      "orthography": "zestig",
+      "pronunciation_segments": [
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "zestig"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        60
+      ],
+      "spoken_order": [
+        60
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "111100",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 61,
+      "orthography": "eenenzestig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111101",
+      "popcount": 5,
+      "pulse_match": false
+    },
+    {
+      "value": 62,
+      "orthography": "tweeënzestig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111110",
+      "popcount": 5,
+      "pulse_match": false
+    },
+    {
+      "value": 63,
+      "orthography": "drieënzestig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "111111",
+      "popcount": 6,
+      "pulse_match": false
+    },
+    {
+      "value": 64,
+      "orthography": "vierenzestig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000000",
+      "popcount": 1,
+      "pulse_match": false
+    },
+    {
+      "value": 65,
+      "orthography": "vijfenzestig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000001",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 66,
+      "orthography": "zesenzestig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000010",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 67,
+      "orthography": "zevenenzestig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        60,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000011",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 68,
+      "orthography": "achtenzestig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        60,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000100",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 69,
+      "orthography": "negenenzestig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "zes",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "zestig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        60,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        60
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000101",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 70,
+      "orthography": "zeventig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "zeventig"
+      ],
+      "syllable_count": 3,
+      "place_order": [
+        70
+      ],
+      "spoken_order": [
+        70
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1000110",
+      "popcount": 3,
+      "pulse_match": true
+    },
+    {
+      "value": 71,
+      "orthography": "eenenzeventig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1000111",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 72,
+      "orthography": "tweeënzeventig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001000",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 73,
+      "orthography": "drieënzeventig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001001",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 74,
+      "orthography": "vierenzeventig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001010",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 75,
+      "orthography": "vijfenzeventig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001011",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 76,
+      "orthography": "zesenzeventig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001100",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 77,
+      "orthography": "zevenenzeventig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 6,
+      "place_order": [
+        70,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001101",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 78,
+      "orthography": "achtenzeventig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        70,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001110",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 79,
+      "orthography": "negenenzeventig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "ze",
+        "ven",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "zeventig"
+      ],
+      "syllable_count": 6,
+      "place_order": [
+        70,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        70
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1001111",
+      "popcount": 5,
+      "pulse_match": false
+    },
+    {
+      "value": 80,
+      "orthography": "tachtig",
+      "pronunciation_segments": [
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "tachtig"
+      ],
+      "syllable_count": 2,
+      "place_order": [
+        80
+      ],
+      "spoken_order": [
+        80
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1010000",
+      "popcount": 2,
+      "pulse_match": true
+    },
+    {
+      "value": 81,
+      "orthography": "eenentachtig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010001",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 82,
+      "orthography": "tweeëntachtig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010010",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 83,
+      "orthography": "drieëntachtig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010011",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 84,
+      "orthography": "vierentachtig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010100",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 85,
+      "orthography": "vijfentachtig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010101",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 86,
+      "orthography": "zesentachtig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010110",
+      "popcount": 4,
+      "pulse_match": true
+    },
+    {
+      "value": 87,
+      "orthography": "zevenentachtig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        80,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1010111",
+      "popcount": 5,
+      "pulse_match": true
+    },
+    {
+      "value": 88,
+      "orthography": "achtentachtig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 4,
+      "place_order": [
+        80,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011000",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 89,
+      "orthography": "negenentachtig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "tach",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "tachtig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        80,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        80
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011001",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 90,
+      "orthography": "negentig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "negentig"
+      ],
+      "syllable_count": 3,
+      "place_order": [
+        90
+      ],
+      "spoken_order": [
+        90
+      ],
+      "hinge_kind": "none",
+      "hinge_count": 0,
+      "binary": "1011010",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 91,
+      "orthography": "eenennegentig",
+      "pronunciation_segments": [
+        "een",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "een",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        1
+      ],
+      "spoken_order": [
+        1,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011011",
+      "popcount": 5,
+      "pulse_match": true
+    },
+    {
+      "value": 92,
+      "orthography": "tweeënnegentig",
+      "pronunciation_segments": [
+        "twee",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "twee",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        2
+      ],
+      "spoken_order": [
+        2,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011100",
+      "popcount": 4,
+      "pulse_match": false
+    },
+    {
+      "value": 93,
+      "orthography": "drieënnegentig",
+      "pronunciation_segments": [
+        "drie",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "drie",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        3
+      ],
+      "spoken_order": [
+        3,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011101",
+      "popcount": 5,
+      "pulse_match": true
+    },
+    {
+      "value": 94,
+      "orthography": "vierennegentig",
+      "pronunciation_segments": [
+        "vier",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "vier",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        4
+      ],
+      "spoken_order": [
+        4,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011110",
+      "popcount": 5,
+      "pulse_match": true
+    },
+    {
+      "value": 95,
+      "orthography": "vijfennegentig",
+      "pronunciation_segments": [
+        "vijf",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "vijf",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        5
+      ],
+      "spoken_order": [
+        5,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1011111",
+      "popcount": 6,
+      "pulse_match": false
+    },
+    {
+      "value": 96,
+      "orthography": "zesennegentig",
+      "pronunciation_segments": [
+        "zes",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "zes",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        6
+      ],
+      "spoken_order": [
+        6,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1100000",
+      "popcount": 2,
+      "pulse_match": false
+    },
+    {
+      "value": 97,
+      "orthography": "zevenennegentig",
+      "pronunciation_segments": [
+        "ze",
+        "ven",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "zeven",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 6,
+      "place_order": [
+        90,
+        7
+      ],
+      "spoken_order": [
+        7,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1100001",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 98,
+      "orthography": "achtennegentig",
+      "pronunciation_segments": [
+        "acht",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "acht",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 5,
+      "place_order": [
+        90,
+        8
+      ],
+      "spoken_order": [
+        8,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1100010",
+      "popcount": 3,
+      "pulse_match": false
+    },
+    {
+      "value": 99,
+      "orthography": "negenennegentig",
+      "pronunciation_segments": [
+        "ne",
+        "gen",
+        "en",
+        "ne",
+        "gen",
+        "tig"
+      ],
+      "morphemes": [
+        "negen",
+        "en",
+        "negentig"
+      ],
+      "syllable_count": 6,
+      "place_order": [
+        90,
+        9
+      ],
+      "spoken_order": [
+        9,
+        "en",
+        90
+      ],
+      "hinge_kind": "en_connector",
+      "hinge_count": 1,
+      "binary": "1100011",
+      "popcount": 4,
+      "pulse_match": false
+    }
+  ],
+  "pulse_match_values": [
+    1,
+    2,
+    4,
+    8,
+    9,
+    18,
+    19,
+    20,
+    23,
+    40,
+    43,
+    45,
+    46,
+    47,
+    51,
+    53,
+    54,
+    58,
+    59,
+    70,
+    80,
+    83,
+    85,
+    86,
+    87,
+    91,
+    93,
+    94
+  ]
+}

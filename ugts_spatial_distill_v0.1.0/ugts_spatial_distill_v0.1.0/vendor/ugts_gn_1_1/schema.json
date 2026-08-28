@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ugts:gn:1.1:schema",
+  "title": "UGTS-GN 1.1 Query and Event Exchange",
+  "description": "Portable exchange schema for the GPU-native geometric-topological substrate. Binary GPU records are defined separately by ugts_abi.h.",
+  "type": "object",
+  "required": [
+    "schema",
+    "profile",
+    "query"
+  ],
+  "properties": {
+    "schema": {
+      "const": "UGTS-GN-1.1"
+    },
+    "profile": {
+      "enum": [
+        "G64_E32",
+        "G32_E16",
+        "HARDWARE_Q16_16_SQ"
+      ]
+    },
+    "encoder_variant": {
+      "enum": [
+        "standard",
+        "glyph-100100-v1",
+        "glyph-100101-v0"
+      ],
+      "default": "standard"
+    },
+    "query": {
+      "$ref": "#/$defs/query"
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/state"
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "items": false
+    },
+    "query": {
+      "type": "object",
+      "required": [
+        "target_sheet",
+        "target_orientation",
+        "mode_bit"
+      ],
+      "properties": {
+        "target_sheet": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "target_orientation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "mode_bit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "commit": {
+          "type": "boolean",
+          "default": false
+        },
+        "precision": {
+          "enum": [
+            "float32",
+            "binary16",
+            "q16.16-squared"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "required": [
+        "position",
+        "time",
+        "axis",
+        "radius",
+        "cone_cos",
+        "phase",
+        "guard_epsilon",
+        "confidence_floor",
+        "sheet",
+        "orientation",
+        "compatibility_mask",
+        "lineage_seed"
+      ],
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/vec3"
+        },
+        "time": {
+          "type": "number"
+        },
+        "axis": {
+          "$ref": "#/$defs/vec3"
+        },
+        "radius": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "cone_cos": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "phase": {
+          "type": "number"
+        },
+        "guard_epsilon": {
+          "type": "number",
+          "minimum": 0
+        },
+        "confidence_floor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "sheet": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "orientation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "compatibility_mask": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "lineage_seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "sdf",
+        "guard",
+        "confidence",
+        "event_time",
+        "verified",
+        "route",
+        "lineage_hash",
+        "in_support",
+        "compatible"
+      ],
+      "properties": {
+        "sdf": {
+          "type": "number"
+        },
+        "guard": {
+          "type": "number"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "event_time": {
+          "type": "number"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "route": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "lineage_hash": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "in_support": {
+          "type": "boolean"
+        },
+        "compatible": {
+          "type": "boolean"
+        },
+        "sheet": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "state_flags": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

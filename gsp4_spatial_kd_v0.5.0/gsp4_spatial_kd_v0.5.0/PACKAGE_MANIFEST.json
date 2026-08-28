@@ -1,0 +1,789 @@
+{
+  "coverage": "all distributed regular files except this manifest and its detached SHA-256 file",
+  "file_count": 156,
+  "files": [
+    {
+      "bytes": 1596,
+      "path": "AUTHORS_AND_PROVENANCE.md",
+      "sha256": "89d325b84317ddb217f59d2dd870a8a4a3f38a5a7dc799f8e3759f57ca487552"
+    },
+    {
+      "bytes": 1130,
+      "path": "CHANGELOG.md",
+      "sha256": "b7958dedf54adf0230b2d973f8090cbe37ebeefbe6c944373e01274529953cf6"
+    },
+    {
+      "bytes": 2799,
+      "path": "GSP4_DELIVERABLES.md",
+      "sha256": "dbe60fb716b02e141963d402867196d61d5af8627e98db494331b26a6f67debd"
+    },
+    {
+      "bytes": 1085,
+      "path": "LICENSE",
+      "sha256": "da1e9a764d9d6d36249eae3d624b12a33b76f4d2b910b84e10a4f6591097f1d3"
+    },
+    {
+      "bytes": 640,
+      "path": "NOTICE.md",
+      "sha256": "3516d0024cb0b81424f8668bc1db14733bad980ec636b91222f894cad2ef12f3"
+    },
+    {
+      "bytes": 3604,
+      "path": "PACKAGE_SUMMARY.json",
+      "sha256": "aeafb0c5341049a763869979c029cd4f0c088e3aa126aefe676bb391378cebee"
+    },
+    {
+      "bytes": 9903,
+      "path": "README.md",
+      "sha256": "c8b45aa0b149e3594e7f04d44521a6426c93ae1480c26939a019d402c5dc7f29"
+    },
+    {
+      "bytes": 1992,
+      "path": "RUN_ME_FIRST.txt",
+      "sha256": "ef8c03bf25149fff3130127320301c149085a1879640df7d5a1189696e36e717"
+    },
+    {
+      "bytes": 910,
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "313ed3cbab282550383f97565734cb4c403bd8ae24105510d999b82df793c62e"
+    },
+    {
+      "bytes": 3084,
+      "path": "assets/manual_downloads.json",
+      "sha256": "3611da2c68599322ffe84aef74640266429b61cbf1cb8c04985f3cccc6ac246e"
+    },
+    {
+      "bytes": 924,
+      "path": "assets/rtx5070ti_profile.json",
+      "sha256": "08ef54a826eb32f2825c40f3f11bcf1f4e47737a59d44fb15ed16fb777520adc"
+    },
+    {
+      "bytes": 57545,
+      "path": "data/flevoland_pilot.ugkg",
+      "sha256": "649ba082f664506c89e4bac0a0e3bdc6000feb9e1496d89835464cc2f379472b"
+    },
+    {
+      "bytes": 8560,
+      "path": "data/flevoland_pilot.ugnl",
+      "sha256": "57d81b289b9ed16e4f63362cd074ec3ba0c802784d95e1faa6a0cfb5abd0d5a9"
+    },
+    {
+      "bytes": 1351748,
+      "path": "data/gsp4_flevoland_smoke.ugdeploy",
+      "sha256": "38c8be1b27b3183245ee0b526d3b06f2250026f57120208fdbb91b7d11bfc7b1"
+    },
+    {
+      "bytes": 99169,
+      "path": "dist/gsp4_ugts_spatial-0.5.0-py3-none-any.whl",
+      "sha256": "2270a96368cb926a3b4c7e04af28dc5266d41d9bd9b602f960142408df03e3f4"
+    },
+    {
+      "bytes": 4386,
+      "path": "docs/DISTILLATION_WORKFLOW.md",
+      "sha256": "71a593bbcd99ecf78fb6adcc7a58e42c18be62b9979082f84586916210342242"
+    },
+    {
+      "bytes": 2905,
+      "path": "docs/FILE_FORMATS.md",
+      "sha256": "91dace4dfec5752306069b90ff1b2a1f631444af14f16644a965532846df9b71"
+    },
+    {
+      "bytes": 5341,
+      "path": "docs/GSP4_ARCHITECTURE.md",
+      "sha256": "d2e7640bf47d589a99cfc4ba58157bc18309398279d2c76a84db3b7d0a947ba8"
+    },
+    {
+      "bytes": 2734,
+      "path": "docs/MODEL_AND_DATA_DOWNLOADS.md",
+      "sha256": "31995a4b3ce30121301b1827b0111bcb2c4c4b3cbd81dca08c2827614179bb53"
+    },
+    {
+      "bytes": 3998,
+      "path": "docs/RTX5070TI_RUNBOOK.md",
+      "sha256": "0c938107b17fe97615a88146dfdb4030ea470196d8beb3553ed9450743eafe6e"
+    },
+    {
+      "bytes": 2806,
+      "path": "docs/SOURCE_TO_CODE_MAPPING.md",
+      "sha256": "16d12a56e41a429e250c103d69d6301f2acb690eaa13063560a5664300814b9c"
+    },
+    {
+      "bytes": 3518,
+      "path": "docs/VALIDATION.md",
+      "sha256": "6a3901738ac0e24296794240d517cace8174d1366b3504fcf0ce1da3f4681197"
+    },
+    {
+      "bytes": 941,
+      "path": "examples/observations_variable.csv",
+      "sha256": "2c9a9d3dab92b319eeab988592c885d832eb3d2de28f8b29894008f64efec295"
+    },
+    {
+      "bytes": 1539,
+      "path": "examples/teacher_edges_smoke.ugte",
+      "sha256": "edb5665dbd6bf73e65329fb3ab86211a9f291acdf32437984ba3796446321bec"
+    },
+    {
+      "bytes": 17403,
+      "path": "examples/teacher_labels_smoke.jsonl",
+      "sha256": "e94851f0f942e7349da63fa171440e6cf6e84184916b902c89f2a58a57e2a2f7"
+    },
+    {
+      "bytes": 594,
+      "path": "examples/tiny_flevoland.osm",
+      "sha256": "cbcb0a764f08c2e18f7703c1ad97d2257940063f304bfda042e1f33999ac6b78"
+    },
+    {
+      "bytes": 449,
+      "path": "examples/tiny_geonames.txt",
+      "sha256": "d296078641804632cff56d0238f200e0eda42509564862d241e2c28916cdd5fc"
+    },
+    {
+      "bytes": 62347,
+      "path": "examples/ugts_bridge/lelystad_near.exchange.json",
+      "sha256": "b0adf4f6b83f11bae4b6642bcd2ba5e68bc55914b06a982cce9ef2c105839506"
+    },
+    {
+      "bytes": 4032,
+      "path": "examples/ugts_bridge/lelystad_near.g32.bin",
+      "sha256": "9a4e5f695ea0dcd6b34cf3dbf054f289a31d2402b191c8161cf48ae906cadf2e"
+    },
+    {
+      "bytes": 8064,
+      "path": "examples/ugts_bridge/lelystad_near.g64.bin",
+      "sha256": "94a14b7e0b5ed561d726491ce8cd5d387124af31ecf8510d5307ce04d36b1aa4"
+    },
+    {
+      "bytes": 635,
+      "path": "examples/ugts_bridge/lelystad_near.manifest.json",
+      "sha256": "68db126cd6ade58798f4085801986dedbd0f1bf777b270fb9630488f5847f00a"
+    },
+    {
+      "bytes": 11748,
+      "path": "examples/ultra_export/test.txt",
+      "sha256": "60b634dd00263e525d627e7ef10e0441007fd5e520f5d80dc17386866ff6bcd9"
+    },
+    {
+      "bytes": 40698,
+      "path": "examples/ultra_export/train.txt",
+      "sha256": "df453062042cb92c8f4dca8aaccad945089ab87a2a2d43a2ea43e24c9ac23dd4"
+    },
+    {
+      "bytes": 765,
+      "path": "examples/ultra_export/ugts_ultra_manifest.json",
+      "sha256": "cc95d38f88864498d4508ed53d528744f75a535d26907b5f807400b51646f4c5"
+    },
+    {
+      "bytes": 14922,
+      "path": "examples/ultra_export/valid.txt",
+      "sha256": "0bf9303cef25591b042ac8322a8e7c7f5fb9234528c0775de6e17c1085770e08"
+    },
+    {
+      "bytes": 1408503,
+      "path": "models/gsp4_flevoland_student_smoke.pt",
+      "sha256": "2340a7a7cc6c1af1463045e87088c0716a85fd98d297dda3636e177d26670048"
+    },
+    {
+      "bytes": 1755,
+      "path": "ontology/gsp4_context.jsonld",
+      "sha256": "4aae589c2dd86bf0d46c6aca6c2cb65d5f1fc4c333f7be974c26591a68f6363c"
+    },
+    {
+      "bytes": 8008,
+      "path": "ontology/gsp4_ontology.json",
+      "sha256": "8262455c0c32400e73760322af7ca5ee41fad3825415197158d3bb69ad112a6b"
+    },
+    {
+      "bytes": 6770,
+      "path": "ontology/relation_contract.json",
+      "sha256": "ca6b908b0f22596c846d19384df1d9446bfb6f836b2b1ee6a54df3378091442e"
+    },
+    {
+      "bytes": 7639,
+      "path": "ontology/ugts_geo_ontology_v1.json",
+      "sha256": "579f619a491bcfd5fa8dcfb3d8b589df5b374345e2c762ca1e0e3bc02c08466d"
+    },
+    {
+      "bytes": 290,
+      "path": "prompts/embedding_instruction.txt",
+      "sha256": "8ee8ad046c397bbd3bbde34569feee480389d4e820324b4c2d45ed6b6022da57"
+    },
+    {
+      "bytes": 708,
+      "path": "prompts/relation_teacher_output.schema.json",
+      "sha256": "d9b2fe104f6bbd1f6e2df24242e9a981efbaadd61268357b52c3f715efb85acd"
+    },
+    {
+      "bytes": 677,
+      "path": "prompts/relation_teacher_system.txt",
+      "sha256": "e77e4435ac8cb743b9533fc4b10852761f41b7dc50a1d85beebc99152f222fb0"
+    },
+    {
+      "bytes": 1035,
+      "path": "provenance/source_hashes.json",
+      "sha256": "1890a5b108770bb3f0abdb236e3bc006f20bf606b3e8f6fdbc671adde04e057b"
+    },
+    {
+      "bytes": 1540,
+      "path": "pyproject.toml",
+      "sha256": "9ef92149dfdb92ae8d74483890a74cf319f7a2c6b8c6fc70d9c189d2b9843db4"
+    },
+    {
+      "bytes": 2597,
+      "path": "results/validation/benchmark_console.json",
+      "sha256": "35e19e6ccbd81058d9580b901669f9c5de8aa98c696aa4414df6d35b8f0ac9e3"
+    },
+    {
+      "bytes": 2597,
+      "path": "results/validation/benchmark_cpu.json",
+      "sha256": "35e19e6ccbd81058d9580b901669f9c5de8aa98c696aa4414df6d35b8f0ac9e3"
+    },
+    {
+      "bytes": 225,
+      "path": "results/validation/deployment_build.json",
+      "sha256": "081da5ebc8d2b325e8982cf7a711d11727fe004abb12eb664aa84ef2f51f9146"
+    },
+    {
+      "bytes": 388,
+      "path": "results/validation/deployment_validation.json",
+      "sha256": "6e32e78e750f85293ee99c3796c1c0b75b0cf366bc0463b818b9ecaa40c67e94"
+    },
+    {
+      "bytes": 437,
+      "path": "results/validation/environment_cpu.json",
+      "sha256": "bfecf222a9fa515f8633cbeeec8f6e705210d72a747336c8bd63c33a26875556"
+    },
+    {
+      "bytes": 437,
+      "path": "results/validation/environment_cpu_console.json",
+      "sha256": "bfecf222a9fa515f8633cbeeec8f6e705210d72a747336c8bd63c33a26875556"
+    },
+    {
+      "bytes": 3604,
+      "path": "results/validation/final_validation.json",
+      "sha256": "aeafb0c5341049a763869979c029cd4f0c088e3aa126aefe676bb391378cebee"
+    },
+    {
+      "bytes": 2446,
+      "path": "results/validation/geonames_adapter_example.json",
+      "sha256": "620949b366a37b64895e4e1cbb8ce6353a224ee9c36b2f7f1a6539eda26a1639"
+    },
+    {
+      "bytes": 21261,
+      "path": "results/validation/near_query.json",
+      "sha256": "9ccfd47a71747f2624a0c784e585dd168ca3566e035a30ae491d45305d3a1a54"
+    },
+    {
+      "bytes": 3078,
+      "path": "results/validation/osm_adapter_example.json",
+      "sha256": "6be174bf199be73474a4cc84c0f7dc33e84707a36ed8e5679d1c29ab33b4e10a"
+    },
+    {
+      "bytes": 21261,
+      "path": "results/validation/query_console.json",
+      "sha256": "9ccfd47a71747f2624a0c784e585dd168ca3566e035a30ae491d45305d3a1a54"
+    },
+    {
+      "bytes": 122714,
+      "path": "results/validation/teacher_candidates.jsonl",
+      "sha256": "a00171584a81f2957555c66456d51de3fa1ec0b959b486a967050c2ed8aef2c7"
+    },
+    {
+      "bytes": 83,
+      "path": "results/validation/teacher_candidates_summary.json",
+      "sha256": "0f789060b79890e66858671327a3d2cb1d067fe9f4b91812fc62f44cdf4b025e"
+    },
+    {
+      "bytes": 269285,
+      "path": "results/validation/teacher_edge_student_smoke.pt",
+      "sha256": "dec0c45a70d4b55a5550dbb16f358239942383259e3ec7d35940ed11d01b3271"
+    },
+    {
+      "bytes": 664,
+      "path": "results/validation/teacher_edge_train_console.json",
+      "sha256": "b2f50765e1e5c3fd9b10c7ca9c094408fee89d92fe2439be4e0b8bf70ac77c03"
+    },
+    {
+      "bytes": 2089,
+      "path": "results/validation/teacher_edge_training_metrics.json",
+      "sha256": "d1bb110e622473276ac05625827871ab5c15f58726f0effbac200eb9a236c1a6"
+    },
+    {
+      "bytes": 372,
+      "path": "results/validation/teacher_edges_inspect.json",
+      "sha256": "90649e74181d45d0db05c01cff0fc82a5e94cd66a14d58764d77dea1c8cfa230"
+    },
+    {
+      "bytes": 468,
+      "path": "results/validation/teacher_edges_summary.json",
+      "sha256": "9aa9a4a2931b3a089fc85f56cf815e2b35cdc40e3e937b1540c1d56be2f8a701"
+    },
+    {
+      "bytes": 80,
+      "path": "results/validation/tests.txt",
+      "sha256": "32faef56d0289369b1ac111e68ee0bb7b2ed1bcf92d3f33b75313bd0556c3e6f"
+    },
+    {
+      "bytes": 638,
+      "path": "results/validation/train_console.json",
+      "sha256": "f4b46402a68090c75133206dc08a19f55a73c23c7333153dde26cbdaf591b2df"
+    },
+    {
+      "bytes": 4686,
+      "path": "results/validation/training_metrics.json",
+      "sha256": "33de1b4a5b664aa8397f104573a2fcfed2d7f42e3c95f54b6d35a3e8719c67e1"
+    },
+    {
+      "bytes": 902,
+      "path": "results/validation/ugts_bridge.json",
+      "sha256": "3afdb6d867195e4a55cd76dd2f68b9624cab148ad8bcac9c044cd389686f3555"
+    },
+    {
+      "bytes": 765,
+      "path": "results/validation/ultra_export.json",
+      "sha256": "cc95d38f88864498d4508ed53d528744f75a535d26907b5f807400b51646f4c5"
+    },
+    {
+      "bytes": 1117,
+      "path": "scripts/distill_linux.sh",
+      "sha256": "ec76812c3db97674f3aeb083d9643776160fdd3dba9de2ecb94084768c1e10fb"
+    },
+    {
+      "bytes": 1390,
+      "path": "scripts/distill_windows.ps1",
+      "sha256": "f755e88dea23a856529d13791b470321eaed0791bef031e6f8c99b494564ba0a"
+    },
+    {
+      "bytes": 838,
+      "path": "scripts/ingest_real_linux.sh",
+      "sha256": "7765c2742f8686d67e189361be6d3e36a25739fc74379b5d69d16b14b3e2573b"
+    },
+    {
+      "bytes": 1193,
+      "path": "scripts/ingest_real_windows.ps1",
+      "sha256": "91495b38ddc9aa90959f2864407f19316dff6ebf4beaa14aba5a42f829b3e730"
+    },
+    {
+      "bytes": 2450,
+      "path": "scripts/make_package_manifest.py",
+      "sha256": "69b62cbedd693976a70bb3f8b0f4784e14c52e8c1ccc330866bf8dc242ed5251"
+    },
+    {
+      "bytes": 1128,
+      "path": "scripts/run_no_download_linux.sh",
+      "sha256": "94dc0907602f83a09ab01ecca33aff2ad0dd913d356fa9501f4b412865f5c408"
+    },
+    {
+      "bytes": 1393,
+      "path": "scripts/run_no_download_windows.ps1",
+      "sha256": "78be1f83c28817d2e07f18b8248914047bc856aa1939a579d21d4be5421ccaba"
+    },
+    {
+      "bytes": 1613,
+      "path": "scripts/run_rtx_pilot_linux.sh",
+      "sha256": "8ac1ba5e1efa43d6744c5e15f4ef65fd804955936153eaf6da4ff0e5f8cc9de8"
+    },
+    {
+      "bytes": 1806,
+      "path": "scripts/run_rtx_pilot_windows.ps1",
+      "sha256": "70c697235df107250dd389049cdcd9841fca8b6fb10ca9d46df574072deb33c8"
+    },
+    {
+      "bytes": 1246,
+      "path": "scripts/setup_linux.sh",
+      "sha256": "8eb87f11ac267fee510be7d5a67bfe5f5f9b384eb301cf689eb869139a3fbd17"
+    },
+    {
+      "bytes": 1181,
+      "path": "scripts/setup_windows.ps1",
+      "sha256": "eff943be8940da5e7f8a3b22a0ab35788db46a001e20b8c3a6f645c4280716ee"
+    },
+    {
+      "bytes": 536,
+      "path": "scripts/start_embedding_server_linux.sh",
+      "sha256": "463b2242505c8ec8e32aa79246f1bc8e661750616e63d501a47f1ac49b182999"
+    },
+    {
+      "bytes": 807,
+      "path": "scripts/start_embedding_server_windows.ps1",
+      "sha256": "b666955574c459d5e867d3513bed322fe2054dea31922b80aaba73335b0810b8"
+    },
+    {
+      "bytes": 498,
+      "path": "scripts/start_teacher_server_linux.sh",
+      "sha256": "4de67d040fae2223c2d81637c61cddac31f0954c1664781ac7b3504ff60158cb"
+    },
+    {
+      "bytes": 801,
+      "path": "scripts/start_teacher_server_windows.ps1",
+      "sha256": "604b887710ae76d5f0b5a247ecc0ccb1394ee2a0bb741d5ac1cebeb764026ac6"
+    },
+    {
+      "bytes": 688,
+      "path": "scripts/validate_all_linux.sh",
+      "sha256": "4b827c658d4771c9708e9cd4f58dbe825f11180eca5d46afd2363443ba546720"
+    },
+    {
+      "bytes": 1053,
+      "path": "scripts/validate_all_windows.ps1",
+      "sha256": "9595f7fb7662822add0be7d93a99f0e8cb6ec59a50f3b12eca1b3b40d20f2e50"
+    },
+    {
+      "bytes": 1425,
+      "path": "scripts/verify_manual_asset.py",
+      "sha256": "900fa885684c45ea2457230c63d555701acb0d212e46c2416ad6800827b6cb2c"
+    },
+    {
+      "bytes": 1835,
+      "path": "scripts/verify_package_manifest.py",
+      "sha256": "c4f8a8d37bf329d7af83bde596fec2b2991d6b590abf2102d645958a1f597527"
+    },
+    {
+      "bytes": 322,
+      "path": "src/ugts_spatial/__init__.py",
+      "sha256": "c62894a73da7535137b59a200651753fbb8883661f331b44213292ef88d21478"
+    },
+    {
+      "bytes": 79,
+      "path": "src/ugts_spatial/__main__.py",
+      "sha256": "307299fda7b77d22c64cb51430ec75e5f59d78e9c948786afb3b2544fe45e4b7"
+    },
+    {
+      "bytes": 10118,
+      "path": "src/ugts_spatial/benchmark.py",
+      "sha256": "7feaf68c05ebda334f1cac8e3892d998b69f58c328c87cfc4cd828e0d4c70881"
+    },
+    {
+      "bytes": 11694,
+      "path": "src/ugts_spatial/builder.py",
+      "sha256": "3acc59825291d2eaec66201017881f64400aa8fd011a3b4e58fa186d35cbea9e"
+    },
+    {
+      "bytes": 34919,
+      "path": "src/ugts_spatial/builders.py",
+      "sha256": "44e80b9ee4a9f319805adcb730db00225d05363012079aee6d77e7ed84ca3a88"
+    },
+    {
+      "bytes": 32791,
+      "path": "src/ugts_spatial/cli.py",
+      "sha256": "bfe67e7120af5cfffbc79f0bc17e8a4a504e3d250b9310c97f596d8b1ce883e0"
+    },
+    {
+      "bytes": 9226,
+      "path": "src/ugts_spatial/deployment.py",
+      "sha256": "94062e9a9a0796583304e7f4fe7e129e233dd9e1a1625566f43ed4addc3257d5"
+    },
+    {
+      "bytes": 10668,
+      "path": "src/ugts_spatial/distill.py",
+      "sha256": "f5c57dc669c859968bf07d31eba1416d307d2fa927767f6dfd52f2346b01a5fd"
+    },
+    {
+      "bytes": 15567,
+      "path": "src/ugts_spatial/edge_teacher.py",
+      "sha256": "f33cecdd8d3938df782d4a81c3acadcb0d857f9364919a9b28c65af280fb2cde"
+    },
+    {
+      "bytes": 7189,
+      "path": "src/ugts_spatial/embeddings.py",
+      "sha256": "22717f833721b74a08248bd3289437523eb2546cc67c37e38112f74a166d1cb5"
+    },
+    {
+      "bytes": 4792,
+      "path": "src/ugts_spatial/environment.py",
+      "sha256": "bfce59b45da5594dc890a18bd3f20ddc11323b5b6da37600efefe2f5c63538c8"
+    },
+    {
+      "bytes": 6506,
+      "path": "src/ugts_spatial/features.py",
+      "sha256": "4d3fac033254387adc229a976dd366c2ba4d10e361c2358b4445c14d973dfac0"
+    },
+    {
+      "bytes": 8988,
+      "path": "src/ugts_spatial/geocell.py",
+      "sha256": "8ae907855af872b79cf614870fbb34fd37e848df01d91da941129e60d26e60a2"
+    },
+    {
+      "bytes": 26577,
+      "path": "src/ugts_spatial/graph.py",
+      "sha256": "6b59b94bc31b881ddfe63ab4633ef75e7cf2ed62767a723dbd0aa82c32eb1adf"
+    },
+    {
+      "bytes": 3193,
+      "path": "src/ugts_spatial/hardware.py",
+      "sha256": "a8267b9f17b6dd7131d8f969d99c522106fcc9b1e580e6401970ea47093fde02"
+    },
+    {
+      "bytes": 8999,
+      "path": "src/ugts_spatial/ingest_geonames.py",
+      "sha256": "299a8e14d37567596e8ff9cb468e4775d4c172a303b6bf3fa181ad0499b08083"
+    },
+    {
+      "bytes": 11584,
+      "path": "src/ugts_spatial/ingest_osm.py",
+      "sha256": "dbebdc09b0c10efe4c434ae856cd6ad45fbc8c6cd4d2a238d8d83378453c59e8"
+    },
+    {
+      "bytes": 20021,
+      "path": "src/ugts_spatial/model.py",
+      "sha256": "b3acc95232724ef4d25dbd175cad12172dec3b5027c0d199729f6b52af2aeabf"
+    },
+    {
+      "bytes": 8447,
+      "path": "src/ugts_spatial/novelty.py",
+      "sha256": "41b9261ff33abfd5f8d1f66394a062ea5d8b4b6c787629af7d73580cc8f8d538"
+    },
+    {
+      "bytes": 18344,
+      "path": "src/ugts_spatial/query.py",
+      "sha256": "c00a281aebe9e126b5e3f4e851a89ed2e078db09f7335c2870d742eeff48466e"
+    },
+    {
+      "bytes": 10525,
+      "path": "src/ugts_spatial/schema.py",
+      "sha256": "af320e404ccac0ed5e86fb034a184d10b263caec6335530f17cc114dae1c5185"
+    },
+    {
+      "bytes": 5261,
+      "path": "src/ugts_spatial/spatial.py",
+      "sha256": "799e07b569363f4151c3e999f093fdc869e1fbabd6ecce46aa611ebaa742f21c"
+    },
+    {
+      "bytes": 17666,
+      "path": "src/ugts_spatial/synthetic.py",
+      "sha256": "83a6bf9e7eb98fd2acd07ed1d46d76fa211613a80abe4493b17330ec8b0f2978"
+    },
+    {
+      "bytes": 6529,
+      "path": "src/ugts_spatial/teacher.py",
+      "sha256": "0afafebd877b07d34c7735a11bb9af9ab70025d3644d6f99579b360db733c68f"
+    },
+    {
+      "bytes": 22294,
+      "path": "src/ugts_spatial/training.py",
+      "sha256": "6b536be2a5e1bafddf81ea6528b8f7d012a0aea1ae7dd4a65f10a4e378f81977"
+    },
+    {
+      "bytes": 10181,
+      "path": "src/ugts_spatial/ugts_bridge.py",
+      "sha256": "2a3915e335929a4bbd6e56e23f3c10f6ff6ee473fee9ff9f0347a04c34c1275f"
+    },
+    {
+      "bytes": 5616,
+      "path": "src/ugts_spatial/ultra.py",
+      "sha256": "1306a1fdfae25fe1ccf2f8b8971ae0b4d7af1ed384ffd82ab1c07c456fa3b3a8"
+    },
+    {
+      "bytes": 3402,
+      "path": "src/ugts_spatial/utils.py",
+      "sha256": "2d64f371d18e2cc0e959cfb7f9703a418377c47716ed4a4de0d0da38983da533"
+    },
+    {
+      "bytes": 113,
+      "path": "substrate/UPSTREAM_PACKAGE.sha256",
+      "sha256": "d2b4c0c3ef7c3c493108403135aa4b2b0850b3b4c5bbe3b63358385d39988273"
+    },
+    {
+      "bytes": 18296,
+      "path": "substrate/UPSTREAM_README.md",
+      "sha256": "332276067588adb25bc65fe8896282a27dad3195cf68821e9b05dbb23a3e6700"
+    },
+    {
+      "bytes": 11057,
+      "path": "substrate/reference/ugts_reference.py",
+      "sha256": "ecf5812c27590a06cb28c4b41b15e9336d3f729e4d6c039385064f7834884c32"
+    },
+    {
+      "bytes": 5322,
+      "path": "substrate/shaders/ugts_compact_g32_subgroup.comp",
+      "sha256": "29ec108f94f22f0832464f7db84cdc1d7fcf7ea7e8ebf9d10e7c1c6c2acb452c"
+    },
+    {
+      "bytes": 2576,
+      "path": "substrate/shaders/ugts_eval_g32.comp",
+      "sha256": "b0b061f6e3bb73472c1e8fe7758a440a8ff6e02cd2e44966894a1e0422ee948d"
+    },
+    {
+      "bytes": 4876,
+      "path": "substrate/spec/schema.json",
+      "sha256": "64a9c7216ae09dca10e5ad3b1d709c9302952ecee4452943a619a7a3ba4d894d"
+    },
+    {
+      "bytes": 8668,
+      "path": "substrate/spirv/ugts_g32_compact_subgroup_append.spv",
+      "sha256": "67cdeaf445511c4ed27836a82578f2ea5e6e36b94b3aeffec2003bb4ef8320e5"
+    },
+    {
+      "bytes": 6440,
+      "path": "substrate/spirv/ugts_g32_evaluate.spv",
+      "sha256": "e5e6584d2af31b892b872064ad83000fa0df5605eafeaed7c477783ab633ac72"
+    },
+    {
+      "bytes": 6920,
+      "path": "substrate/spirv/ugts_g32_evaluate_commit.spv",
+      "sha256": "3cabc708b533a1ba2edc07fab67d1d4df34484d59ed40bf0d79f9acdbbaf714f"
+    },
+    {
+      "bytes": 29404,
+      "path": "substrate/upstream/UGTS_GN_1.1.md",
+      "sha256": "190fe105be1674e58c2baedf784a5731dd08faa0abfee0dc79b6f8794924b4b4"
+    },
+    {
+      "bytes": 1516,
+      "path": "substrate/upstream/ugts_abi.h",
+      "sha256": "fd0937bfa193c96bc351d42914a265058a17f8e8b62d599f387c99db13d7dacf"
+    },
+    {
+      "bytes": 4876,
+      "path": "substrate/upstream/ugts_gn_1_1_schema.json",
+      "sha256": "64a9c7216ae09dca10e5ad3b1d709c9302952ecee4452943a619a7a3ba4d894d"
+    },
+    {
+      "bytes": 1540,
+      "path": "substrate/upstream/ugts_gn_1_1_state_layout.csv",
+      "sha256": "fc83ceb7d9a6911a192896413b5b995beb4f756f8dae89273b525cd5f241cde3"
+    },
+    {
+      "bytes": 3223,
+      "path": "tests/test_deployment_bridge.py",
+      "sha256": "91b250428c302faac57b3b046ad99b8c75928b68cd9f346eab1d16be73ed320f"
+    },
+    {
+      "bytes": 3451,
+      "path": "tests/test_distillation.py",
+      "sha256": "fe682818748925efe5375d5b02d70602e3bdc68a901544cb52b56d7d2e78688f"
+    },
+    {
+      "bytes": 1941,
+      "path": "tests/test_geocell.py",
+      "sha256": "585c77bed9016c14d635565e3e2f3df8a7fcd6355272b3f036a265300853cf76"
+    },
+    {
+      "bytes": 2393,
+      "path": "tests/test_graph.py",
+      "sha256": "323150641afb53ccbd41d032cb9dccd02e89c715ea419405d3b7d790c6a6358e"
+    },
+    {
+      "bytes": 516,
+      "path": "tests/test_hardware.py",
+      "sha256": "f079944517ac79702e32dc419bfb38a437846b559ce517872cfdc050a3f37d1b"
+    },
+    {
+      "bytes": 4115,
+      "path": "tests/test_ingestion.py",
+      "sha256": "d3ea50d4a3028612933a013f059ae4ada2ee4799bcc551e55a20cf7bbd119a7e"
+    },
+    {
+      "bytes": 1735,
+      "path": "tests/test_novelty.py",
+      "sha256": "b80b27aa9bef24f6ab6a0a4a5b156008781fb8428ff1cc6c505598a4235504fd"
+    },
+    {
+      "bytes": 10584,
+      "path": "tests/test_spatial_kd.py",
+      "sha256": "cdaf89c24a03f6bd5d7b3cd8334a7afb2d7a0be9c6b99a241d1451baa2343e49"
+    },
+    {
+      "bytes": 3844,
+      "path": "tests/test_training_query.py",
+      "sha256": "ff2d641af70596145bdba0dcbbd12ca2fa649f52d6239c94ed0d8f7e2e174410"
+    },
+    {
+      "bytes": 437,
+      "path": "validation/cpu_primitives.json",
+      "sha256": "bfecf222a9fa515f8633cbeeec8f6e705210d72a747336c8bd63c33a26875556"
+    },
+    {
+      "bytes": 388,
+      "path": "validation/deployment.json",
+      "sha256": "6e32e78e750f85293ee99c3796c1c0b75b0cf366bc0463b818b9ecaa40c67e94"
+    },
+    {
+      "bytes": 18689,
+      "path": "validation/graph.json",
+      "sha256": "a12108bec1999a73c83374583fb572dee47e398cbb7e4d6dd8ca28c3346369b8"
+    },
+    {
+      "bytes": 138,
+      "path": "validation/novelty.json",
+      "sha256": "e07bc2bbf8721091f67592d06ea53b8ec97062e51d2d470567b179310c8b06b1"
+    },
+    {
+      "bytes": 80,
+      "path": "validation/pytest.txt",
+      "sha256": "32faef56d0289369b1ac111e68ee0bb7b2ed1bcf92d3f33b75313bd0556c3e6f"
+    },
+    {
+      "bytes": 372,
+      "path": "validation/teacher.json",
+      "sha256": "90649e74181d45d0db05c01cff0fc82a5e94cd66a14d58764d77dea1c8cfa230"
+    },
+    {
+      "bytes": 2511,
+      "path": "validation/unittest.txt",
+      "sha256": "c64f9780e56060e984210202a593ee840105e5c929514e1584e8227d5ad50ced"
+    },
+    {
+      "bytes": 24,
+      "path": "validation/version.txt",
+      "sha256": "70fd11fd3ff70e10d4b793cea044b601facd1167c96264481caff71399a591d1"
+    },
+    {
+      "bytes": 62346,
+      "path": "validation/wheel_bridge.exchange.json",
+      "sha256": "1e92b640865b6177b3b7cdb25f9f94d111abb272de46c15e2a63ceb6ff84f966"
+    },
+    {
+      "bytes": 4032,
+      "path": "validation/wheel_bridge.g32.bin",
+      "sha256": "9a4e5f695ea0dcd6b34cf3dbf054f289a31d2402b191c8161cf48ae906cadf2e"
+    },
+    {
+      "bytes": 8064,
+      "path": "validation/wheel_bridge.g64.bin",
+      "sha256": "94a14b7e0b5ed561d726491ce8cd5d387124af31ecf8510d5307ce04d36b1aa4"
+    },
+    {
+      "bytes": 635,
+      "path": "validation/wheel_bridge.manifest.json",
+      "sha256": "e6b7cbf39b354670ccdd75b7da864a77d07794eeb8741dd4ba09506c7dfca537"
+    },
+    {
+      "bytes": 858,
+      "path": "validation/wheel_bridge_console.json",
+      "sha256": "65ad08b260d65987acb2e78e63f3e671d0eaee03e9b6845cfb35ae03c4e23035"
+    },
+    {
+      "bytes": 388,
+      "path": "validation/wheel_deployment.json",
+      "sha256": "6e32e78e750f85293ee99c3796c1c0b75b0cf366bc0463b818b9ecaa40c67e94"
+    },
+    {
+      "bytes": 417,
+      "path": "validation/wheel_install.txt",
+      "sha256": "09ceb21326b7ab163f6371b33099545da6554574e4b38fdff9c6e207056a1509"
+    },
+    {
+      "bytes": 16886,
+      "path": "validation/wheel_query_console.json",
+      "sha256": "ca21b2eb475ac02a3e1d1bdbeeecec8470de0744cc6047104a8c732aa23ad68b"
+    },
+    {
+      "bytes": 16886,
+      "path": "validation/wheel_query_output.json",
+      "sha256": "ca21b2eb475ac02a3e1d1bdbeeecec8470de0744cc6047104a8c732aa23ad68b"
+    },
+    {
+      "bytes": 24,
+      "path": "validation/wheel_version.txt",
+      "sha256": "70fd11fd3ff70e10d4b793cea044b601facd1167c96264481caff71399a591d1"
+    },
+    {
+      "bytes": 13,
+      "path": "validation/wheel_zip_test.txt",
+      "sha256": "5153449c54f5b8cd0970e58d05be04e2eece41146d3e5fc011673c76c3a5c20f"
+    }
+  ],
+  "format": "GSP4-PACKAGE-MANIFEST-1",
+  "total_member_bytes": 4253606,
+  "version": "0.5.0"
+}

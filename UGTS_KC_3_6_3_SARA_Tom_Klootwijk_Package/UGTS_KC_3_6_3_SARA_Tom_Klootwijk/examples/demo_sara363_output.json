@@ -1,0 +1,117 @@
+{
+  "schema_version": "3.6.3",
+  "profile": "sara363.seed-address-referential-algebra-v1",
+  "bip39_validation": {
+    "word_count": 12,
+    "entropy_bits": 128,
+    "checksum_bits": 4,
+    "checksum_valid": true,
+    "wordlist_fingerprint": "sha256:2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda",
+    "test_vector_id": "bip39-zero-entropy-12-public",
+    "secret_equivalent_cells_serialized": false
+  },
+  "bip84_public_derivation": {
+    "profile": "bip39+bip32+bip84+p2wpkh",
+    "path": "m/84'/0'/0'/0/0",
+    "node_depth": 5,
+    "parent_fingerprint_hex": "3b0373d4",
+    "child_number": 0,
+    "compressed_public_key_hex": "0330d54fd0dd420a6e5f8d3624f5f3482cae350f79d5f0753bf5beef9c2d91af3c",
+    "key_hash160_hex": "c0cebcd6c3d3ca8c75dc5ec62ebe55330ef910e2",
+    "script_pubkey_hex": "0014c0cebcd6c3d3ca8c75dc5ec62ebe55330ef910e2",
+    "address": "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu",
+    "secrets_serialized": false
+  },
+  "supplied_address_decode": {
+    "address": "bc1q7ydrtdn8z62xhslqyqtyt38mm4e2c4h3mxjkug",
+    "hrp": "bc",
+    "checksum_family": "bech32",
+    "checksum_valid": true,
+    "witness_version": 0,
+    "witness_program_hex": "f11a35b66716946bc3e0201645c4fbdd72ac56f1",
+    "witness_program_bytes": 20,
+    "script_pubkey_hex": "0014f11a35b66716946bc3e0201645c4fbdd72ac56f1",
+    "address_type": "p2wpkh"
+  },
+  "audit_boundary": {
+    "subject": "user-supplied public address fixture",
+    "requested_scopes": [
+      "bip_test_vector",
+      "public_address_decode",
+      "checksum_validation",
+      "search_space_estimate"
+    ],
+    "authorized_scopes": [
+      "bip_test_vector",
+      "public_address_decode",
+      "checksum_validation",
+      "search_space_estimate"
+    ],
+    "rejected_scopes": [],
+    "authorized": true,
+    "public_only": true,
+    "secret_egress": false,
+    "network_access": false,
+    "transaction_capability": false,
+    "reason_codes": [
+      "AUTHORIZED_PUBLIC_OR_SELF_OWNED_AUDIT_ONLY"
+    ]
+  },
+  "search_metrics": [
+    {
+      "bits": 128,
+      "guesses_per_second": 1000000000000000.0,
+      "total_candidates": 340282366920938463463374607431768211456,
+      "expected_guesses": 1.7014118346046923e+38,
+      "expected_seconds": 1.7014118346046924e+23,
+      "expected_years": 5391448762278159.0,
+      "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+    },
+    {
+      "bits": 160,
+      "guesses_per_second": 1000000000000000.0,
+      "total_candidates": 1461501637330902918203684832716283019655932542976,
+      "expected_guesses": 7.307508186654515e+47,
+      "expected_seconds": 7.307508186654515e+32,
+      "expected_years": 2.315609611204437e+25,
+      "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+    },
+    {
+      "bits": 256,
+      "guesses_per_second": 1000000000000000.0,
+      "total_candidates": 115792089237316195423570985008687907853269984665640564039457584007913129639936,
+      "expected_guesses": 5.78960446186581e+76,
+      "expected_seconds": 5.78960446186581e+61,
+      "expected_years": 1.834614945960976e+54,
+      "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+    },
+    {
+      "bits": 20,
+      "guesses_per_second": 1000000.0,
+      "total_candidates": 1048576,
+      "expected_guesses": 524288.0,
+      "expected_seconds": 0.524288,
+      "expected_years": 1.661368418384161e-08,
+      "assumption": "uniform independent candidates; ignores implementation overhead and therefore favors the attacker"
+    }
+  ],
+  "invariants": [
+    "ENT + CS = 11 * mnemonic_word_count",
+    "CS = ENT / 32",
+    "BIP39 word indices are 11-bit cells over a declared 2048-word list",
+    "BIP32 hardened edges are not derivable from an extended public parent",
+    "BIP84 mainnet receiving path is m/84'/0'/account'/0/index",
+    "witness-v0 20-byte programs use Bech32 and map to P2WPKH scriptPubKey 0x0014{program}",
+    "public address decoding does not reveal spend authority",
+    "secret seed and private key material are never serialized by the certificate"
+  ],
+  "nonclaims": [
+    "no third-party wallet access",
+    "no mnemonic or passphrase enumeration",
+    "no private-key or address-targeted preimage search",
+    "no transaction signing, broadcasting or funds transfer",
+    "no claim that a public address label proves legal ownership",
+    "no claim that checksum validity authenticates a wallet owner"
+  ],
+  "valid": true
+}

@@ -1,0 +1,4 @@
+IMPORT_OK C:\Users\Tom\Documents\TomKlootwijkVentureCorp\Klootwijk\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\.venv-wheel-test\Lib\site-packages\ugts36\__init__.py
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+TypeError: load_bip39_wordlist() missing 1 required positional argument: 'path'

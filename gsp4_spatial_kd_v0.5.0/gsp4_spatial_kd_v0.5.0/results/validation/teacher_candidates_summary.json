@@ -1,0 +1,4 @@
+{
+  "candidates": 200,
+  "output": "results/validation/teacher_candidates.jsonl"
+}

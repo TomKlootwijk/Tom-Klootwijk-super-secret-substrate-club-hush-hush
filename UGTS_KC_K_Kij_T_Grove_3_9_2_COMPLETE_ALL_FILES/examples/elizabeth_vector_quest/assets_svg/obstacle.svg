@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="136" height="88" viewBox="-68 -44 136 88">
+  <title>obstacle</title>
+  <defs>
+    <linearGradient id="obstacle-main" x1="-60" y1="-36" x2="60" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#304b8d"/>
+      <stop offset="50%" stop-color="#203362"/>
+      <stop offset="100%" stop-color="#121d43"/>
+    </linearGradient>
+  </defs>
+  <path id="body" d="M -46 -36 L 46 -36 C 53.7319865 -36 60 -29.7319865 60 -22 L 60 22 C 60 29.7319865 53.7319865 36 46 36 L -46 36 C -53.7319865 36 -60 29.7319865 -60 22 L -60 -22 C -60 -29.7319865 -53.7319865 -36 -46 -36 Z" fill="url(#obstacle-main)" stroke="#718ed7" stroke-width="2" opacity="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+  <path id="inset" d="M -38 -24 L 38 -24 C 43.5228475 -24 48 -19.5228475 48 -14 L 48 14 C 48 19.5228475 43.5228475 24 38 24 L -38 24 C -43.5228475 24 -48 19.5228475 -48 14 L -48 -14 C -48 -19.5228475 -43.5228475 -24 -38 -24 Z" fill="#172653" stroke="#4667ac" stroke-width="2" opacity="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"/>
+</svg>

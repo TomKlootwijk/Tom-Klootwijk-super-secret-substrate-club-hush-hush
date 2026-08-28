@@ -1,0 +1,320 @@
+{
+  "$schema": "ugts_kc_3_6.schema.json",
+  "schema_version": "3.6.0",
+  "substrate_id": "ugts:kc:3.6:example:nl-number-hinge",
+  "metadata": {
+    "title": "UGTS-KC 3.6 literal Dutch number-hinge example",
+    "description": "Definitions, instances and execution order are stored in the same substrate document and referenced by stable IDs.",
+    "evidence_boundary": "Phonetic and binary counts may coincide but are not treated as numeric identity. Topology is explicit routing/gluing, not physical magic.",
+    "requester_attribution": {
+      "name": "Tom Klootwijk",
+      "identifier": "NL200678942",
+      "date_of_birth": "10-07-1990",
+      "status": "requester-supplied-unverified"
+    }
+  },
+  "definitions": [
+    {
+      "id": "def:number-literal-v1",
+      "kind": "literal_integer",
+      "domain": "{}",
+      "codomain": "integer[0,99]",
+      "evaluation_phase": 0,
+      "dependencies": [],
+      "parameters": {},
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Literal numeric instance family.",
+        "source_refs": []
+      },
+      "content_hash": "sha256:79ad07905ca506b17b0f5947948a25495bbe3a2386e110b6e4b65226c6f39e16"
+    },
+    {
+      "id": "op:binary-radix-v1",
+      "kind": "radix_encode",
+      "domain": "integer[0,99]",
+      "codomain": "radix_word",
+      "evaluation_phase": 1,
+      "dependencies": [],
+      "parameters": {
+        "base": 2
+      },
+      "provenance": {
+        "class": "source-derived",
+        "note": "Exact positional encoding.",
+        "source_refs": [
+          "SRC-MD lines 29-40",
+          "UGTS-GN M001-M004"
+        ]
+      },
+      "content_hash": "sha256:35d697e690e3e3eb2f5f8ebd7c343ad73e1cb4c1b95ccd9d76507bbef47bcc50"
+    },
+    {
+      "id": "op:active-bits-v1",
+      "kind": "active_bit_filter",
+      "domain": "integer[0,99]",
+      "codomain": "active_bit_set",
+      "evaluation_phase": 2,
+      "dependencies": [
+        "op:binary-radix-v1"
+      ],
+      "parameters": {},
+      "provenance": {
+        "class": "source-derived",
+        "note": "Set-bit extraction without changing numeric identity.",
+        "source_refs": [
+          "SRC-MD lines 130-142",
+          "UGTS-GN M006-M008"
+        ]
+      },
+      "content_hash": "sha256:536b3c4408df71152ded0a91e2e290d349154808b1642dde8cb1823979681498"
+    },
+    {
+      "id": "op:nl-lexeme-v1",
+      "kind": "nl_number_lexeme",
+      "domain": "integer[0,99]",
+      "codomain": "nl_number_lexeme",
+      "evaluation_phase": 1,
+      "dependencies": [],
+      "parameters": {
+        "profile_ref": "data:dutch-numbers-0-99-v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Bounded Dutch standard profile with explicit segmentation.",
+        "source_refs": []
+      },
+      "content_hash": "sha256:175d6628b2a0fda70a174f7b2b2c0f8d0b827ed1ba2f82f5c522066b1e62edc5"
+    },
+    {
+      "id": "op:syllable-pulse-v1",
+      "kind": "syllable_pulse",
+      "domain": "nl_number_lexeme",
+      "codomain": "pulse_sequence",
+      "evaluation_phase": 2,
+      "dependencies": [
+        "op:nl-lexeme-v1"
+      ],
+      "parameters": {
+        "lexeme_step": "op:nl-lexeme-v1"
+      },
+      "provenance": {
+        "class": "corrected",
+        "note": "One declared pronunciation segment becomes one pulse; not numeric equality.",
+        "source_refs": [
+          "SRC-MD lines 177-197",
+          "UGTS-GN M009"
+        ]
+      },
+      "content_hash": "sha256:dc87ad64be6a2dc3b84001be8af35959401c7bb5f05fcb1f3784689d90fe644c"
+    },
+    {
+      "id": "op:count-compare-v1",
+      "kind": "feature_count_compare",
+      "domain": "active_bit_set x pulse_sequence",
+      "codomain": "feature_comparison",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "op:active-bits-v1",
+        "op:syllable-pulse-v1"
+      ],
+      "parameters": {
+        "left_step": "op:active-bits-v1",
+        "right_step": "op:syllable-pulse-v1"
+      },
+      "provenance": {
+        "class": "corrected",
+        "note": "Compare popcount and pulse count as metadata only.",
+        "source_refs": []
+      },
+      "content_hash": "sha256:04191b8b48b281f2a9552c69cf2f85c80e058a885b4b779ffafc07ac76a2c9de"
+    },
+    {
+      "id": "geom:pulse-polygon-v1",
+      "kind": "regular_polygon_embedding",
+      "domain": "pulse_sequence",
+      "codomain": "polygon2",
+      "evaluation_phase": 4,
+      "dependencies": [
+        "op:syllable-pulse-v1"
+      ],
+      "parameters": {
+        "count_step": "op:syllable-pulse-v1",
+        "radius": 1.0
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Maps m pulses to an m-vertex regular embedding; m=3 is a triangle.",
+        "source_refs": []
+      },
+      "capabilities": [
+        "parametric-vertices"
+      ],
+      "invariants": [
+        "vertex_count equals declared pulse count"
+      ],
+      "content_hash": "sha256:60d4a0e0427f27c535a0fd34dcab6ad9150418d3e736419a29197a6c9bfcf3a9"
+    },
+    {
+      "id": "topo:nl-en-hinge-v1",
+      "kind": "permutation_hinge",
+      "domain": "place_tuple",
+      "codomain": "spoken_graph",
+      "evaluation_phase": 4,
+      "dependencies": [
+        "op:nl-lexeme-v1"
+      ],
+      "parameters": {
+        "permutation": [
+          1,
+          0
+        ],
+        "connector": "en",
+        "scope": "21..99 excluding multiples of ten"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Explicit Dutch unit-en-tens order map.",
+        "source_refs": []
+      },
+      "invariants": [
+        "numeric value preserved",
+        "connector has no place magnitude"
+      ],
+      "content_hash": "sha256:2e21a11a5d2d12589dc03a9dd46c5650715ee462d979059de3763f34b4c9d608"
+    },
+    {
+      "id": "topo:mobius-wrap-v1",
+      "kind": "mobius_quotient",
+      "domain": "rectangle x orientation",
+      "codomain": "rectangle x orientation",
+      "evaluation_phase": 4,
+      "dependencies": [],
+      "parameters": {
+        "width": 4.0,
+        "height": 2.0,
+        "gluing": "(0,y)~(w,h-y)"
+      },
+      "provenance": {
+        "class": "source-derived",
+        "note": "Explicit non-orientable gluing abstraction.",
+        "source_refs": [
+          "UGTS-0 section 7.2",
+          "UGTS-GN M065"
+        ]
+      },
+      "capabilities": [
+        "orientation-flip"
+      ],
+      "invariants": [
+        "base point remains within quotient chart"
+      ],
+      "content_hash": "sha256:62bc87dcaa672a81c0eeb21ec67debd1c17e917f1738ea296639b93539706e23"
+    },
+    {
+      "id": "event:sdf-zero-v1",
+      "kind": "relation_guard",
+      "domain": "trajectory x implicit_field",
+      "codomain": "event_candidate",
+      "evaluation_phase": 7,
+      "dependencies": [],
+      "parameters": {
+        "relation": "f(x(t))=0",
+        "epsilon": 1e-06
+      },
+      "provenance": {
+        "class": "source-derived",
+        "note": "Boundary zero becomes an event relation.",
+        "source_refs": [
+          "UGTS-0 section 5.3",
+          "UGTS-GN M105"
+        ]
+      },
+      "capabilities": [
+        "guard-band"
+      ],
+      "content_hash": "sha256:cada396df418b0266650a37f32dd7f57af3cf72126867c0b92613556076b98a8"
+    },
+    {
+      "id": "schedule:canonical-3-6",
+      "kind": "evaluation_schedule",
+      "domain": "definition_graph",
+      "codomain": "ordered_steps",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "op:binary-radix-v1",
+        "op:nl-lexeme-v1"
+      ],
+      "parameters": {
+        "phases": [
+          "parse",
+          "normalize",
+          "resolve",
+          "construct",
+          "transform",
+          "support",
+          "compatibility",
+          "guard",
+          "transition",
+          "lineage"
+        ]
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Normative execution order for literal referential substrates.",
+        "source_refs": []
+      },
+      "content_hash": "sha256:7c536ba95e52ff14b598be0b8209c27b4eb77d0d9fc2a6df0f0d562fdf522380"
+    }
+  ],
+  "instances": [
+    {
+      "id": "number:19",
+      "definition_ref": "def:number-literal-v1",
+      "literal": {
+        "value": 19
+      },
+      "state": {
+        "language": "nl-NL",
+        "profile": "phon:nl-NL-standard-0-99-v1"
+      }
+    },
+    {
+      "id": "number:23",
+      "definition_ref": "def:number-literal-v1",
+      "literal": {
+        "value": 23
+      },
+      "state": {
+        "language": "nl-NL",
+        "profile": "phon:nl-NL-standard-0-99-v1"
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "pipeline:number-to-geometry",
+      "description": "Encode, extract, pronounce, compare and embed without collapsing semantic types.",
+      "steps": [
+        "op:binary-radix-v1",
+        "op:active-bits-v1",
+        "op:nl-lexeme-v1",
+        "op:syllable-pulse-v1",
+        "op:count-compare-v1",
+        "geom:pulse-polygon-v1"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "id": "query:trace-19",
+      "kind": "execute_pipeline",
+      "pipeline_ref": "pipeline:number-to-geometry",
+      "instance_ref": "number:19"
+    },
+    {
+      "id": "query:definition-order",
+      "kind": "definition_order"
+    }
+  ]
+}

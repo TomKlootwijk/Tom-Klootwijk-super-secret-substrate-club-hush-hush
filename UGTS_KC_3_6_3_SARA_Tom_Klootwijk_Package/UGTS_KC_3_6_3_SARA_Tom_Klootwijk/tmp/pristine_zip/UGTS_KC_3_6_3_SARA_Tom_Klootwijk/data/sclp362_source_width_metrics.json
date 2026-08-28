@@ -1,0 +1,26 @@
+[
+  {
+    "name": "coordinate-boundary-key",
+    "baseline_bits": 192,
+    "packed_bits": 64,
+    "ratio": 3.0,
+    "semantic_equivalence": false,
+    "qualification": "Nominal width ratio: six float32 values versus one quantized key; decode metadata and error differ."
+  },
+  {
+    "name": "sdf-sign-only",
+    "baseline_bits": 32,
+    "packed_bits": 1,
+    "ratio": 32.0,
+    "semantic_equivalence": false,
+    "qualification": "A sign bit does not preserve distance magnitude, uncertainty or a zero-state encoding by itself."
+  },
+  {
+    "name": "kinematic-state-word",
+    "baseline_bits": 512,
+    "packed_bits": 12,
+    "ratio": 42.666666666666664,
+    "semantic_equivalence": false,
+    "qualification": "A 12-bit state selector is not semantically equivalent to an arbitrary 4x4 float matrix."
+  }
+]

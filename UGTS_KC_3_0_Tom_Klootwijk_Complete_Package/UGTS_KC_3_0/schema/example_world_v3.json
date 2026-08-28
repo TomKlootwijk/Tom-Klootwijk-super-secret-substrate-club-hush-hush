@@ -1,0 +1,156 @@
+{
+  "schema_version": "3.0.0",
+  "metadata": {
+    "title": "UGTS-KC 3.0 contact, portal and certified-event example",
+    "authority": "query-first-state-event-substrate",
+    "description": "A planar jet state crosses a guarded plane, changes sheet and orientation, and carries a circle constraint plus a bounded contact policy.",
+    "mechanism_catalog": "M001-M360",
+    "source_boundary": "M001-M197 source-normalized; M198-M360 engineering expansion."
+  },
+  "numeric_policy": {
+    "precision": "float64-reference",
+    "absolute_tolerance": 1e-09,
+    "relative_tolerance": 1e-09,
+    "time_tolerance": 1e-09,
+    "guard_tolerance": 1e-08,
+    "topology_tolerance": 1e-08,
+    "root_certification": "mixed",
+    "deterministic_reduction": true
+  },
+  "capabilities": {
+    "precision": "float64-reference",
+    "certification": "bounded-reference",
+    "implemented_mechanisms": ["M258", "M273", "M277", "M278", "M288", "M291", "M298", "M304", "M324", "M335", "M345", "M353", "M360"],
+    "fallbacks": {
+      "M359": "stable CPU compaction"
+    }
+  },
+  "states": [
+    {
+      "id": "traveler_A",
+      "time": 0.0,
+      "position": [-2.0, 0.0],
+      "velocity": [1.0, 0.0],
+      "acceleration": [0.0, 0.0],
+      "jerk": [0.0, 0.0],
+      "snap": [0.0, 0.0],
+      "frame": "world",
+      "length_unit": "m",
+      "time_unit": "s",
+      "phase": 0.0,
+      "sheet": 0,
+      "orientation": 1,
+      "branch": "A",
+      "lineage": ["seed:traveler_A"],
+      "uncertainty": {"lo": 0.0, "hi": 1e-08, "status": "bounded"},
+      "tags": ["player", "contact-enabled"]
+    },
+    {
+      "id": "co_located_B",
+      "time": 2.0,
+      "position": [0.0, 0.0],
+      "velocity": [0.0, 0.0],
+      "acceleration": [0.0, 0.0],
+      "jerk": [0.0, 0.0],
+      "snap": [0.0, 0.0],
+      "frame": "world",
+      "length_unit": "m",
+      "time_unit": "s",
+      "phase": 3.141592653589793,
+      "sheet": 1,
+      "orientation": -1,
+      "branch": "B",
+      "lineage": ["seed:co_located_B"],
+      "uncertainty": 0.0,
+      "tags": ["ghost"]
+    }
+  ],
+  "relations": [
+    {
+      "id": "x_zero_portal",
+      "surface": {
+        "type": "plane",
+        "normal": [1.0, 0.0],
+        "offset": 0.0
+      },
+      "support": {
+        "type": "radial-angular",
+        "origin": [0.0, 0.0],
+        "radius": 3.0,
+        "axis": [1.0, 0.0],
+        "cone_cos": -1.0
+      },
+      "compatibility": {
+        "allowed_sheets": [0],
+        "orientation": 1,
+        "phase_center": 0.0,
+        "phase_tolerance": 0.2,
+        "required_tags": ["player"]
+      },
+      "transition": {
+        "set_sheet": 1,
+        "flip_orientation": true,
+        "phase_delta": 1.5707963267948966,
+        "set_branch": "B",
+        "lineage_label": "portal:x_zero"
+      },
+      "priority": 10,
+      "guard_direction": "rising",
+      "solver": "interval-newton"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "unit_circle",
+      "type": "holonomic",
+      "function": "x*x+y*y-1",
+      "jacobian": "[2*x,2*y]",
+      "tolerance": 1e-10,
+      "stabilization": "rattle"
+    },
+    {
+      "id": "ground_contact",
+      "type": "unilateral-contact",
+      "function": "y",
+      "tolerance": 1e-09,
+      "stabilization": "projection",
+      "restitution": 0.2,
+      "friction": 0.5
+    }
+  ],
+  "dynamics": [
+    {
+      "id": "traveler_dynamics",
+      "type": "hamiltonian",
+      "integrator": "stormer-verlet",
+      "step": 0.01,
+      "error_budget": {
+        "model": 1e-05,
+        "discretization": 1e-06,
+        "solver": 1e-09
+      }
+    }
+  ],
+  "topology": [
+    {
+      "id": "portal_gluing",
+      "type": "portal",
+      "orientation_map": "flip",
+      "sheet_map": [1, 0],
+      "generators": ["a"],
+      "relations": [["a", "A"]]
+    },
+    {
+      "id": "component_persistence",
+      "type": "persistence",
+      "minimum_lifetime": 0.25
+    }
+  ],
+  "event_policy": {
+    "simultaneous_tolerance": 1e-08,
+    "tie_break": "partial-order",
+    "zeno_policy": "report",
+    "atomic_batches": true,
+    "hysteresis_dwell": 0.001
+  }
+}

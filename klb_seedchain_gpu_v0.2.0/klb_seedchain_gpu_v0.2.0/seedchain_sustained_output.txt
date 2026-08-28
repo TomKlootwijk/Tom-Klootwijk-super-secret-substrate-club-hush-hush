@@ -1,0 +1,20 @@
+Device                     : NVIDIA GeForce RTX 5070 Ti Laptop GPU
+Compute capability         : 12.0
+CUDA driver/runtime        : 13010 / 12080
+Global memory              : 12226.562 MiB
+L2 cache reported          : 36864.000 KiB
+SM count                   : 46
+Memory bus width           : 192 bits
+Input container            : 910392 bytes
+Dense float3 full sequence : 188743680 bytes
+Sequence compression       : 207.321x
+Target frame               : 239 / 239
+Points                     : 65536
+Linked depth               : 15
+
+Mode                       : query_seedchain
+Device time                : 0.041111 ms
+Candidate rate             : 1594.115427 M/s
+Verified events            : 79
+Event yield                : 0.120544%
+Compact output bytes       : 1264

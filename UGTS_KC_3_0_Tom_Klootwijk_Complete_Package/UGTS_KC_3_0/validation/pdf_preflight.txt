@@ -1,0 +1,6 @@
+PDF: /mnt/data/ugts_kc3_build/UGTS_KC_3_0/report/UGTS_KC_3_0_Technical_Report.pdf
+Pages: 23
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False

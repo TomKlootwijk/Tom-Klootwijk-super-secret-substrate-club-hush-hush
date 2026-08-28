@@ -1,0 +1,513 @@
+{
+  "$schema": "../spec/ugts_kc_3_6_1_bea_synthetic.schema.json",
+  "schema_version": "3.6.1",
+  "substrate_id": "ugts:kc:3.6.1:bea:course-corrected:synthetic-cell-complex",
+  "metadata": {
+    "title": "UGTS-KC 3.6.1 BEA course-corrected synthetic topology example",
+    "description": "Literal referential integration of the Space-Hole Trading Lemma, four-cycle torus immersion, even-parity XOR subspace and semantic-boundary SDF.",
+    "evidence_boundary": "All equivalence claims are exact only inside the named synthetic profile. No standard font, dialect, historical, physical-energy or Euclidean SDF claim is made.",
+    "revision_status": "course-corrected-superseding-edition",
+    "requester_attribution": {
+      "name": "Tom Klootwijk",
+      "identifier": "NL200678942",
+      "date_of_birth": "10-07-1990",
+      "status": "requester-supplied-unverified"
+    }
+  },
+  "definitions": [
+    {
+      "id": "bea361:profile:synthetic-cell-complex-v2",
+      "kind": "synthetic_text_profile",
+      "domain": "representation_pair",
+      "codomain": "profile",
+      "evaluation_phase": 0,
+      "dependencies": [],
+      "parameters": {
+        "unicode_normalization": "NFC",
+        "lowercase": true,
+        "whitespace_policy": "single-separator",
+        "whitespace_metric_weight": 0.0,
+        "torus_dimension": 4,
+        "semantic_target": 19.0,
+        "scope": "synthetic 1D cell complex; not standard font rendering"
+      },
+      "capabilities": [
+        "profile-bound-topology",
+        "zero-metric-hinges"
+      ],
+      "invariants": [
+        "profile ID accompanies every certificate"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Course-corrected representation profile.",
+        "source_refs": [
+          "source PDF pp.1-5",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:3bce9e11976af96e8f82b72c8a2c3a6ff6f4472cce5de6a3d6c8d7384393389d"
+    },
+    {
+      "id": "bea361:op:normalize-v1",
+      "kind": "normalize_pair",
+      "domain": "representation_pair",
+      "codomain": "normalized_pair",
+      "evaluation_phase": 1,
+      "dependencies": [
+        "bea361:profile:synthetic-cell-complex-v2"
+      ],
+      "parameters": {
+        "profile_ref": "bea361:profile:synthetic-cell-complex-v2"
+      },
+      "invariants": [
+        "cycle annotation positions remain valid"
+      ],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "NFC/lowercase/single-space normalization.",
+        "source_refs": [
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:f9b819d3e880aa54927a443cdaff23a73de076b8853c254bc7aec6859a41a1da"
+    },
+    {
+      "id": "bea361:op:leet-provenance-v1",
+      "kind": "leet_pair_transduce",
+      "domain": "normalized_pair",
+      "codomain": "transduced_pair_with_provenance",
+      "evaluation_phase": 2,
+      "dependencies": [
+        "bea361:op:normalize-v1"
+      ],
+      "parameters": {
+        "map": {
+          "a": "4",
+          "e": "3",
+          "i": "1",
+          "o": "0"
+        }
+      },
+      "invariants": [
+        "source index retained for every output cell"
+      ],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Finite leet substitution pair.",
+        "source_refs": [
+          "source PDF pp.2-3"
+        ]
+      },
+      "content_hash": "sha256:09f5219c71e2292ae35d1422380561ed5cade39d0e2d2bc80edb82a23040841c"
+    },
+    {
+      "id": "bea361:op:cell-build-v1",
+      "kind": "build_augmented_cell_pair",
+      "domain": "transduced_pair_with_provenance",
+      "codomain": "augmented_cell_complex_pair",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "bea361:op:leet-provenance-v1"
+      ],
+      "parameters": {
+        "token_model": "path",
+        "cycle_model": "annotated-loop",
+        "space_model": "zero-metric-loop"
+      },
+      "invariants": [
+        "chi=1-h before gluing",
+        "h=4 intrinsic cycles per shipped representation"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Synthetic 1D CW construction.",
+        "source_refs": [
+          "source PDF pp.1,5",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:472ef646fb752aea05815753bf1b7bf4c105ea7a797a60d66125f2bf4ca04566"
+    },
+    {
+      "id": "bea361:op:space-hole-trade-v1",
+      "kind": "space_hole_trade_pair",
+      "domain": "augmented_cell_complex_pair",
+      "codomain": "canonical_cell_complex_pair",
+      "evaluation_phase": 4,
+      "dependencies": [
+        "bea361:op:cell-build-v1"
+      ],
+      "parameters": {
+        "operation": "rewire (u,u) to (u,v) across distinct components",
+        "metric_weight": 0.0
+      },
+      "invariants": [
+        "delta beta0=-1 per separator",
+        "delta beta1=-1 per separator",
+        "delta chi=0"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Formal Space-Hole Trading Lemma.",
+        "source_refs": [
+          "source PDF p.5",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:7928602e5f01fb39282bbc2ec6c0297d6d5625027383c752f34f0a6df69bddb3"
+    },
+    {
+      "id": "bea361:op:betti-certificate-v1",
+      "kind": "betti_pair_certificate",
+      "domain": "canonical_cell_complex_pair",
+      "codomain": "betti_pair",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "bea361:op:space-hole-trade-v1"
+      ],
+      "parameters": {
+        "formula": "beta1=E-V+beta0; chi=V-E"
+      },
+      "invariants": [
+        "source canonical=(1,4,-3)",
+        "target canonical=(1,4,-3)"
+      ],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Finite graph homology accounting.",
+        "source_refs": [
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:d5ff3d64b64f4305a9a87fb80d67eb2def09d4b105e7d527b21e70c1755f8769"
+    },
+    {
+      "id": "bea361:op:torus-immersion-v1",
+      "kind": "torus_pair_immersion",
+      "domain": "canonical_cell_complex_pair",
+      "codomain": "torus_immersion_pair",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "bea361:op:betti-certificate-v1"
+      ],
+      "parameters": {
+        "target": "T_syn^4=(R/Z)^4",
+        "tree_collapse": true,
+        "homology_matrix": "I4"
+      },
+      "invariants": [
+        "beta1=4",
+        "rank H1 map=4"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Cycle quotient immersed in four coordinate circles.",
+        "source_refs": [
+          "source PDF pp.1,5",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:57805aa21705faa3fd6ef02a123e3e0cee535176f921e9e6528c312b24c3745b"
+    },
+    {
+      "id": "bea361:op:ascii-align-v1",
+      "kind": "ascii_left_nul_align",
+      "domain": "transduced_pair_with_provenance",
+      "codomain": "aligned_byte_pair",
+      "evaluation_phase": 5,
+      "dependencies": [
+        "bea361:op:leet-provenance-v1"
+      ],
+      "parameters": {
+        "encoding": "ascii",
+        "alignment": "left",
+        "pad_byte": 0,
+        "width_bytes": 11
+      },
+      "invariants": [
+        "original lengths retained"
+      ],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Exact alignment policy reconstructed from source table.",
+        "source_refs": [
+          "source PDF pp.3-4"
+        ]
+      },
+      "content_hash": "sha256:e102c3aed5f73e09dd8c5e8e05aae5e870a5824e8f6cc1280de3d8e883980f78"
+    },
+    {
+      "id": "bea361:op:xor-delta-v1",
+      "kind": "xor_delta_matrix",
+      "domain": "aligned_byte_pair",
+      "codomain": "F2[11,8]",
+      "evaluation_phase": 6,
+      "dependencies": [
+        "bea361:op:ascii-align-v1"
+      ],
+      "parameters": {
+        "operation": "Delta=X xor Y"
+      },
+      "invariants": [
+        "X xor Delta=Y",
+        "Y xor Delta=X"
+      ],
+      "provenance": {
+        "class": "source-derived",
+        "note": "Bytewise XOR witness.",
+        "source_refs": [
+          "source PDF pp.3-4"
+        ]
+      },
+      "content_hash": "sha256:0aac21630d9e97f20823568025104ca8c0d1f22d079007464d7861184fb4512e"
+    },
+    {
+      "id": "bea361:op:even-parity-v1",
+      "kind": "even_parity_entropy_certificate",
+      "domain": "F2[11,8]",
+      "codomain": "parity_entropy_certificate",
+      "evaluation_phase": 7,
+      "dependencies": [
+        "bea361:op:xor-delta-v1"
+      ],
+      "parameters": {
+        "subspace": "ker(sum bits mod 2)",
+        "symmetric_pairs": [
+          [
+            3,
+            4
+          ],
+          [
+            7,
+            8
+          ]
+        ]
+      },
+      "invariants": [
+        "delta weight even",
+        "global parity preserved",
+        "fixed XOR translation is bijective"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Narrow parity and entropy statement.",
+        "source_refs": [
+          "source PDF pp.4-5",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:2ce60bf58d783eee93401b3281ff97a52887cff816e46d3215c010246e885336"
+    },
+    {
+      "id": "bea361:op:semantic-evaluator-v1",
+      "kind": "semantic_pair_evaluate",
+      "domain": "representation_pair",
+      "codomain": "R x R",
+      "evaluation_phase": 3,
+      "dependencies": [
+        "bea361:profile:synthetic-cell-complex-v2"
+      ],
+      "parameters": {
+        "target": 19.0,
+        "evaluator": "profile literal semantic_value"
+      },
+      "invariants": [
+        "both shipped representations evaluate to 19"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Typed profile evaluator.",
+        "source_refs": [
+          "source PDF p.2",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:8a236343bfb1a65e87c1e2863fc1ad9626bc7d11c41224e6e4b9a8df6ed90849"
+    },
+    {
+      "id": "bea361:op:semantic-quotient-v1",
+      "kind": "semantic_fiber_quotient",
+      "domain": "representation_pair x R",
+      "codomain": "metric_quotient",
+      "evaluation_phase": 7,
+      "dependencies": [
+        "bea361:op:semantic-evaluator-v1"
+      ],
+      "parameters": {
+        "equivalence": "r~r' iff nu(r)=nu(r')",
+        "metric": "|nu(r)-nu(r')|"
+      },
+      "invariants": [
+        "metric is well-defined on quotient"
+      ],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Semantic fiber and scalar metric.",
+        "source_refs": [
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:c5f08fe5f2f7a586fcc90e2f1b2a36ab3f6e35be1223ebad52aa16c6dd6d8e39"
+    },
+    {
+      "id": "bea361:op:semantic-sdf19-v1",
+      "kind": "semantic_boundary_sdf",
+      "domain": "spatial_samples x metric_quotient",
+      "codomain": "signed_scalar_field",
+      "evaluation_phase": 8,
+      "dependencies": [
+        "bea361:op:semantic-quotient-v1"
+      ],
+      "parameters": {
+        "field": "F19(p)=nu(lambda(p))-19",
+        "zero_set": "F19^-1(0)"
+      },
+      "invariants": [
+        "|F19| equals distance to zero set in pullback pseudometric"
+      ],
+      "provenance": {
+        "class": "profile-axiom",
+        "note": "Semantic-boundary SDF integration.",
+        "source_refs": [
+          "source PDF p.2",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:1de64aae8468cd136426632fb4fad52a2f182027032c2169cbf94d569c6cf258"
+    },
+    {
+      "id": "bea361:op:certificate-v2",
+      "kind": "integrated_bea_certificate",
+      "domain": "all BEA witnesses",
+      "codomain": "BEA361 certificate",
+      "evaluation_phase": 9,
+      "dependencies": [
+        "bea361:op:betti-certificate-v1",
+        "bea361:op:torus-immersion-v1",
+        "bea361:op:even-parity-v1",
+        "bea361:op:semantic-sdf19-v1"
+      ],
+      "parameters": {
+        "claim_level": "profile-exact-synthetic-topology-equivalence"
+      },
+      "invariants": [
+        "all references resolve",
+        "all profile claims remain scoped"
+      ],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Integrated course-corrected BEA certificate.",
+        "source_refs": [
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:5af84112b51299347c9ad110fe80d433fb85ee30d27077dc61a8218c6921122b"
+    },
+    {
+      "id": "bea361:schedule:handoff-v1",
+      "kind": "evaluation_schedule",
+      "domain": "definition_graph",
+      "codomain": "ordered_steps",
+      "evaluation_phase": 10,
+      "dependencies": [
+        "bea361:op:certificate-v2"
+      ],
+      "parameters": {
+        "after_bea": [
+          "support",
+          "compatibility",
+          "guard",
+          "verified_event",
+          "transition",
+          "lineage"
+        ]
+      },
+      "invariants": [
+        "BEA certificate precedes ordinary event commit"
+      ],
+      "provenance": {
+        "class": "engineering-derived",
+        "note": "Retains UGTS query-first event order.",
+        "source_refs": [
+          "UGTS baseline",
+          "course-correction prompt"
+        ]
+      },
+      "content_hash": "sha256:600b83bb9cf19abdfa086493d42db9bfbf7a72de075bcda2fc7a5a9870298118"
+    }
+  ],
+  "instances": [
+    {
+      "id": "repr:negentien",
+      "definition_ref": "bea361:profile:synthetic-cell-complex-v2",
+      "literal": {
+        "text": "negentien",
+        "semantic_value": 19.0,
+        "cycle_positions": [
+          1,
+          2,
+          3,
+          7
+        ]
+      },
+      "state": {
+        "profile_ref": "bea361:profile:synthetic-cell-complex-v2",
+        "role": "source"
+      }
+    },
+    {
+      "id": "repr:no-neg-moat",
+      "definition_ref": "bea361:profile:synthetic-cell-complex-v2",
+      "literal": {
+        "text": "no neg moat",
+        "semantic_value": 19.0,
+        "cycle_positions": [
+          1,
+          5,
+          8,
+          9
+        ]
+      },
+      "state": {
+        "profile_ref": "bea361:profile:synthetic-cell-complex-v2",
+        "role": "target"
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "id": "bea361:pipeline:course-corrected-certificate-v2",
+      "description": "Build the synthetic cell complexes, trade space loops into zero-metric bridges, immerse four cycle generators, verify the even XOR delta and evaluate the semantic SDF to 19.",
+      "steps": [
+        "bea361:op:normalize-v1",
+        "bea361:op:leet-provenance-v1",
+        "bea361:op:cell-build-v1",
+        "bea361:op:space-hole-trade-v1",
+        "bea361:op:betti-certificate-v1",
+        "bea361:op:torus-immersion-v1",
+        "bea361:op:ascii-align-v1",
+        "bea361:op:xor-delta-v1",
+        "bea361:op:even-parity-v1",
+        "bea361:op:semantic-evaluator-v1",
+        "bea361:op:semantic-quotient-v1",
+        "bea361:op:semantic-sdf19-v1",
+        "bea361:op:certificate-v2",
+        "bea361:schedule:handoff-v1"
+      ]
+    }
+  ],
+  "queries": [
+    {
+      "id": "bea361:query:certificate",
+      "kind": "execute_pair_pipeline",
+      "pipeline_ref": "bea361:pipeline:course-corrected-certificate-v2",
+      "source_instance_ref": "repr:negentien",
+      "target_instance_ref": "repr:no-neg-moat"
+    },
+    {
+      "id": "bea361:query:definition-order",
+      "kind": "definition_order"
+    }
+  ]
+}

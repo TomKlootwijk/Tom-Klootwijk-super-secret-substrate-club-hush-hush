@@ -1,0 +1,11 @@
+{
+  "ksgp_bytes": 9581,
+  "source_omm_bytes": 8454,
+  "ksgp_vs_source_ratio": 0.8823713599833003,
+  "file_dense_bytes": 18710336.0,
+  "file_dense_mib": 17.84356689453125,
+  "file_dense_vs_ksgp": 1952.858365515082,
+  "laptop_dense_bytes": 1946158912.0,
+  "laptop_dense_mib": 1856.0017700195312,
+  "laptop_dense_vs_ksgp": 203126.90867341612
+}

@@ -1,0 +1,10 @@
+ninja: Entering directory `C:\Tom Klootwijk Coronation\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\android\UGTSKCKKijTGrove\app\.cxx\RelWithDebInfo\566k433r\arm64-v8a'
+[1/2] Building CXX object CMakeFiles/ugts_kc_grove.dir/main.cpp.o
+C:/Tom Klootwijk Coronation/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/android/UGTSKCKKijTGrove/app/src/main/cpp/main.cpp:24:5: warning: 'app_dummy' is deprecated: Calls to app_dummy are no longer necessary. See https://github.com/android-ndk/ndk/issues/381. [-Wdeprecated-declarations]
+   24 |     app_dummy();
+      |     ^
+C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/sources/android/native_app_glue/android_native_app_glue.h:340:5: note: 'app_dummy' has been explicitly marked deprecated here
+  340 |     deprecated("Calls to app_dummy are no longer necessary. See "
+      |     ^
+1 warning generated.
+[2/2] Linking CXX shared library "C:\Tom Klootwijk Coronation\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\android\UGTSKCKKijTGrove\app\build\intermediates\cxx\RelWithDebInfo\566k433r\obj\arm64-v8a\libugts_kc_grove.so"

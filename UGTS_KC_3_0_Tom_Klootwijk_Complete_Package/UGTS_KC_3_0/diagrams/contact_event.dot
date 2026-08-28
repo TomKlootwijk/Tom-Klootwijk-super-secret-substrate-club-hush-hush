@@ -1,0 +1,18 @@
+digraph G {
+  graph [rankdir=LR, bgcolor="white", pad=0.2, nodesep=0.35, ranksep=0.55, fontname="DejaVu Sans"];
+  node [shape=box, style="rounded", fontname="DejaVu Sans", fontsize=10, margin="0.12,0.08"];
+  edge [fontname="DejaVu Sans", fontsize=9];
+
+  jet [label="jet state q\nposition, velocity, acceleration,\njerk, snap, frame, uncertainty"];
+  support [label="support admission"];
+  comp [label="compatibility\nreason codes"];
+  gap [label="relation / gap g(q)\ninterval event time"];
+  classify [label="cross / touch / grazing\nsimultaneous class"];
+  constraint [label="constraint/contact solve\nSHAKE/RATTLE, multiplier, impulse, friction"];
+  batch [label="atomic transition batch\nvalidate invariants"];
+  commit [label="commit or rollback"];
+  lineage [label="event record\npre/post hash, lineage, error budget"];
+
+  jet -> support -> comp -> gap -> classify -> constraint -> batch -> commit -> lineage;
+  batch -> jet [label="rollback", style=dashed];
+}

@@ -1,0 +1,29 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.25, nodesep=0.4, ranksep=0.55, fontname="DejaVu Sans", splines=ortho];
+  node [shape=box, style="rounded,filled", fillcolor="#f8fbfc", color="#168c95", penwidth=1.2, fontname="DejaVu Sans", fontsize=10, margin="0.14,0.10"];
+  edge [color="#52666f", penwidth=1.0, arrowsize=0.7, fontname="DejaVu Sans", fontsize=9];
+
+  subgraph cluster_layers {
+    label="Catalog and authority layers"; color="#a9cfd2"; style="rounded";
+    base [label="M001-M197\nsource-derived and normalized baseline\nfinite grammar, typed state, support, compatibility,\nguard, event, transition, lineage"];
+    kc2 [label="M198-M257\nUGTS-KC 2.0 engineering\npatterns, implicit fields, topology calculus,\nkinematics and bounded dynamics"];
+    kc3 [label="M258-M360\nUGTS-KC 3.0 engineering\njet/Lie calculus, constraints/contact, certified events,\npersistence, multiscale dynamics and reproducibility"];
+    base -> kc2 -> kc3;
+  }
+
+  subgraph cluster_runtime {
+    label="Canonical query-first runtime"; color="#d7b24b"; style="rounded";
+    support [label="1. Local support admission\nradial-angular / shell / time / policy", fillcolor="#fffaf0", color="#c99916"];
+    compatible [label="2. Typed compatibility\nphase / sheet / orientation / mode / policy", fillcolor="#fffaf0", color="#c99916"];
+    guard [label="3. Guard and certification\nanalytic / bracketed / interval / Sturm", fillcolor="#fffaf0", color="#c99916"];
+    batch [label="4. Simultaneous event class\npriority partial order + deterministic tie-break", fillcolor="#fffaf0", color="#c99916"];
+    state [label="5. Atomic transition batch\npost-state: route + topology + contact + jet", fillcolor="#fffaf0", color="#c99916"];
+    log [label="6. Lineage and novelty\npre/post hash + Merkle chain + checkpoint", fillcolor="#fffaf0", color="#c99916"];
+    support -> compatible -> guard -> batch -> state -> log;
+  }
+
+  adapters [label="Optional consumers\nprojection / GPU / physical device / telemetry\n(non-authoritative)", fillcolor="#f4f0fa", color="#6f62a2"];
+  kc3 -> support;
+  state -> adapters [style=dashed, color="#6f62a2"];
+  log -> adapters [style=dashed, color="#6f62a2"];
+}

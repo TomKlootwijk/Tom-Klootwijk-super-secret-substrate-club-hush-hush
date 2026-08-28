@@ -1,0 +1,29 @@
+===== query_first_contact_portal.py =====
+state_at_1.25 (-0.75, 0.0)
+next_event (Relation(id='x_zero_portal', guard=<function <lambda> at 0x7f83ef9bb1a0>, support=RadialAngularSupport(origin=(0.0, 0.0), radius=3.0, axis=None, cone_cos=-1.0), compatibility=CompatibilityRule(allowed_sheets=(0,), orientation=1, phase_center=0.0, phase_tolerance=0.2, required_tags=('player',)), patch={'sheet': 1, 'orientation': -1, 'branch': 'B'}, priority=0), EventInterval(t_lo=1.9999999999417923, t_hi=2.0, residual=2.9103830456733704e-11, direction='indeterminate', status='enclosed'), ())
+processed EventRecord(entity_id='traveler', relation_id='x_zero_portal', time=EventInterval(t_lo=1.9999999999417923, t_hi=2.0, residual=2.9103830456733704e-11, direction='indeterminate', status='enclosed'), pre_hash='fe110c56bacee9287fd74d79d867247e7778f996c73cb18b86aa45b84076dc1d', post_hash='bf5c3f57990e747153946690fa12118ffee4fd78e16cdfd67f7f92ba13d4f6e4', reasons=(), lineage=('seed:traveler', 'x_zero_portal'))
+post_state StateRecord(id='traveler', jet=JetState(position=(-2.9103830456733704e-11, 0.0), velocity=(1.0, 0.0), acceleration=(0.0, 0.0), jerk=(0.0, 0.0), snap=(0.0, 0.0), time=1.9999999999708962, frame='world', length_unit='unit', time_unit='unit'), phase=0.0, sheet=1, orientation=-1, branch='B', lineage=('seed:traveler', 'x_zero_portal'), uncertainty=0.0, tags=('player',))
+
+===== persistence_demo.py =====
+PersistenceInterval(birth=0.0, death=0.3, dimension=0, representative='1', confidence=1.0)
+PersistenceInterval(birth=0.0, death=None, dimension=0, representative='0', confidence=1.0)
+PersistenceInterval(birth=0.1, death=0.5, dimension=0, representative='2', confidence=1.0)
+PersistenceInterval(birth=0.2, death=0.9, dimension=0, representative='3', confidence=1.0)
+events [{'type': 'persistence_threshold', 'dimension': 0, 'birth': 0.1, 'death': 0.5, 'lifetime': 0.4, 'representative': '2', 'confidence': 1.0}, {'type': 'persistence_threshold', 'dimension': 0, 'birth': 0.2, 'death': 0.9, 'lifetime': 0.7, 'representative': '3', 'confidence': 1.0}]
+
+===== contact_demo.py =====
+normal_impulse 1.875
+friction_impulse (0.8385254915624211, -0.41926274578121053)
+
+===== field_dynamics_demo.py =====
+gray_scott_u_center [0.850338, 0.652245, 0.546986, 0.546986, 0.652245, 0.850338]
+gray_scott_v_center [0.050089, 0.196292, 0.2473, 0.2473, 0.196292, 0.050089]
+arrival_center_row [3.0, 2.0, 1.0, 0.0, 1.0, 2.0, 3.0]
+
+===== uncertainty_replay_demo.py =====
+position Interval(lo=0.99, hi=1.01)
+velocity Interval(lo=-0.02, hi=0.02)
+worst_case 0.0012100000000000001
+rss 0.0010198529305738156
+chain ['4bc2fb4202afaf1b663a492693a299d68f60119bc71dca91e6e286e20f3c4e6c', '1d3c14e1875142d22c73c3bd2c84578eca0e9c66a14b14f780ff6acd12dc7772']
+

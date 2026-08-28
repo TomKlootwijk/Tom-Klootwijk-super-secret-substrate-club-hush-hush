@@ -1,0 +1,2 @@
+$ PYTHONPATH=src python -m compileall -q src tests
+Result: PASS

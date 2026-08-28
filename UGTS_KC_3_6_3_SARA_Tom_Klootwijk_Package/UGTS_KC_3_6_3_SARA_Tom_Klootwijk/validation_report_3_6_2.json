@@ -1,0 +1,69 @@
+{
+  "package": {
+    "title": "UGTS-KC 3.6.2 - SCLP (Swept-Cone Log-Polar Packing)",
+    "version": "3.6.2",
+    "root_directory": "UGTS_KC_3_6_2_SCLP_Tom_Klootwijk",
+    "generated_utc": "2026-08-17T18:46:21.411380+00:00",
+    "requester_supplied_attribution": {
+      "name": "Tom Klootwijk",
+      "date_of_birth": "10-07-1990",
+      "identifier": "NL200678942",
+      "independently_verified": false
+    }
+  },
+  "source_basis": {
+    "file_name": "1855-sdf-with-a-sweeping-cone-analytical-1bit-jitter-with-T-as-side-of-the-pyramid-the-circle-of-the-cone-the-delta-the-sphere-and-change-of-chang.pdf",
+    "sha256": "7e29c1c800d905268f35084a6a4c7d9c1cfed50c926c63a8ec2c79021e32ab63",
+    "pages": 13,
+    "raw_source_redistributed": false,
+    "normalization_rule": "Source-derived, corrected, bounded, engineering-derived and excluded claims remain visibly separated."
+  },
+  "pdf": {
+    "path": "report/UGTS_KC_3_6_2_SCLP_Tom_Klootwijk.pdf",
+    "pages": 19,
+    "bytes": 893935,
+    "sha256": "6987490a0a7b7ed76b0091057a2e69ab831fee786434a0b4219782923f5ea580",
+    "openable": true,
+    "preflight": "PASS"
+  },
+  "referential_substrate": {
+    "schema_path": "spec/ugts_kc_3_6_2_sclp.schema.json",
+    "example_path": "examples/ugts_kc_3_6_2_sclp_example.json",
+    "schema_errors": 0,
+    "definition_count": 22,
+    "invalid_definition_hashes": [],
+    "missing_references": [],
+    "dependency_graph_acyclic": true,
+    "pipeline_count": 1,
+    "pipeline_step_count": 22
+  },
+  "catalogs_and_data": {
+    "delta_operator_count": 50,
+    "claims_ledger_count": 20,
+    "morton_schedule_rows": 64,
+    "key_field_widths": {
+      "rho": 20,
+      "theta": 18,
+      "time": 14,
+      "phi": 12
+    },
+    "key_total_bits": 64,
+    "finite_key_capacity": "2^64"
+  },
+  "reference_certificate": {
+    "valid": true,
+    "claim_level": "bounded-referential-geometric-topological-integration",
+    "sha256": "c9b7a9b5af3ee0c6700ecc90467175123977f425b960428a3b04d3d9673f406c"
+  },
+  "tests": {
+    "count": 153,
+    "passed": true,
+    "output_path": "test_results_3_6_2.txt",
+    "sha256": "700e95ffb1b103eb56f022a08a232e72e60332994e877f8c65972a7559e0fe2d"
+  },
+  "package_hygiene": {
+    "font_files_included": [],
+    "raw_source_file_included": false,
+    "latex_intermediates_for_3_6_2": []
+  }
+}

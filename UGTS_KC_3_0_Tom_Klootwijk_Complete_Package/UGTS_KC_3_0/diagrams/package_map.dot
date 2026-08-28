@@ -1,0 +1,15 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.2, nodesep=0.3, ranksep=0.45, fontname="DejaVu Sans"];
+  node [shape=folder, fontname="DejaVu Sans", fontsize=10];
+  root [label="UGTS_KC_3_0"];
+  report [label="report/\nPDF + DOCX + Markdown"];
+  catalog [label="catalog/\n360 mechanisms CSV + JSON"];
+  schema [label="schema/\nDraft 2020-12 + example"];
+  src [label="src/ugts_kc3/\nreference runtime"];
+  tests [label="tests/\n182 unit tests"];
+  examples [label="examples/\nrunnable demonstrations"];
+  validation [label="validation/\ntests, schema, benchmarks"];
+  diagrams [label="diagrams/\nPNG + SVG figures"];
+  provenance [label="provenance/\nmanifest + SHA-256"];
+  root -> {report catalog schema src tests examples validation diagrams provenance};
+}

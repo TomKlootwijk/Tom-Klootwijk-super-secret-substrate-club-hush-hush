@@ -1,0 +1,38 @@
+{
+  "android_toolchain_basis": {
+    "agp": "8.13.2",
+    "agp_release_notes": "https://developer.android.com/build/releases/gradle-plugin",
+    "compile_sdk": 36,
+    "gradle": "8.13",
+    "min_sdk": 26,
+    "ndk": "29.0.14206865",
+    "ndk_revision_history": "https://developer.android.com/ndk/downloads/revision_history",
+    "target_api_requirements": "https://developer.android.com/google/play/requirements/target-sdk",
+    "target_sdk": 36
+  },
+  "attribution": {
+    "requester": "Tom Klootwijk",
+    "substrate_attribution_as_supplied": "Kees Klootwijk (KC edition)",
+    "verification": "not independently verified"
+  },
+  "device_target_basis": {
+    "assumptions": [
+      "120 Hz AMOLED",
+      "Dimensity 8400-Ultra",
+      "Mali-G720",
+      "LPDDR5X/UFS 4.0",
+      "12 GB memory configuration"
+    ],
+    "note": "Profile hints guide quality selection; physical-device performance was not measured in this release environment.",
+    "official_specs": "https://www.mi.com/global/product/poco-x7-pro/specs/",
+    "primary": "POCO X7 Pro 12 GB"
+  },
+  "immediate_baseline": {
+    "description": "Requester-approved 3.9 package used as the direct additive baseline.",
+    "filename": "UGTS_KC_Elizabeth_3_9_Package.zip",
+    "sha256": "952de2d10980a11ceb1beb2d2d7a759c63c57fe630eebc699f717c6580d10bac"
+  },
+  "privacy": "Attribution is requester supplied and is not proof of identity, rights or authorship.",
+  "release": "UGTS-KC 3.9.1 - Tom Klootwijk Signature Edition",
+  "schema_version": "3.9.1"
+}

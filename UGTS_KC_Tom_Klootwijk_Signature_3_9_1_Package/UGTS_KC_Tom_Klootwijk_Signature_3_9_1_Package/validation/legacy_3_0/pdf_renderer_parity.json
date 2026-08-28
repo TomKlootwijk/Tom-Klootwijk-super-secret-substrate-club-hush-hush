@@ -1,0 +1,137 @@
+{
+  "status": "PASS",
+  "input_pdf": "report/UGTS_KC_Two_Hands_3_0_Interactive_Graphics_Runtime.pdf",
+  "dpi": 150,
+  "engines": [
+    "pdftoppm",
+    "pdfium"
+  ],
+  "pages": 20,
+  "mapping": "numeric page-to-page",
+  "interpretation": "Raster differences are limited to normal renderer antialiasing and color-edge treatment; all pages were visually inspected in both render paths.",
+  "max_mean_abs_channel_diff": 5.844580715090117,
+  "max_pct_pixels_diff_gt20": 7.68713758445069,
+  "max_pct_pixels_diff_gt100": 2.1791103470644284,
+  "per_page": [
+    {
+      "page": 1,
+      "mean_abs_channel_diff": 1.8843933255969014,
+      "pct_pixels_diff_gt20": 3.0538692726743153,
+      "pct_pixels_diff_gt100": 0.48518087355527645
+    },
+    {
+      "page": 2,
+      "mean_abs_channel_diff": 4.4003911400395275,
+      "pct_pixels_diff_gt20": 6.2598485607204255,
+      "pct_pixels_diff_gt100": 1.545770367627534
+    },
+    {
+      "page": 3,
+      "mean_abs_channel_diff": 5.844580715090117,
+      "pct_pixels_diff_gt20": 7.68713758445069,
+      "pct_pixels_diff_gt100": 2.1791103470644284
+    },
+    {
+      "page": 4,
+      "mean_abs_channel_diff": 3.943693720595969,
+      "pct_pixels_diff_gt20": 5.42266921607524,
+      "pct_pixels_diff_gt100": 1.3959114518489797
+    },
+    {
+      "page": 5,
+      "mean_abs_channel_diff": 3.513818841917986,
+      "pct_pixels_diff_gt20": 5.253331397693955,
+      "pct_pixels_diff_gt100": 1.0225045642192774
+    },
+    {
+      "page": 6,
+      "mean_abs_channel_diff": 5.232950217621608,
+      "pct_pixels_diff_gt20": 7.026784409894915,
+      "pct_pixels_diff_gt100": 1.896023088012481
+    },
+    {
+      "page": 7,
+      "mean_abs_channel_diff": 3.7649072562281187,
+      "pct_pixels_diff_gt20": 5.355457813934215,
+      "pct_pixels_diff_gt100": 1.2506006760649309
+    },
+    {
+      "page": 8,
+      "mean_abs_channel_diff": 2.9497585197994165,
+      "pct_pixels_diff_gt20": 4.258437259097888,
+      "pct_pixels_diff_gt100": 1.0817682065719245
+    },
+    {
+      "page": 9,
+      "mean_abs_channel_diff": 5.318974074376944,
+      "pct_pixels_diff_gt20": 7.039785658566077,
+      "pct_pixels_diff_gt100": 2.1128637018919343
+    },
+    {
+      "page": 10,
+      "mean_abs_channel_diff": 2.823636147575351,
+      "pct_pixels_diff_gt20": 4.294914260669982,
+      "pct_pixels_diff_gt100": 0.8203650089079226
+    },
+    {
+      "page": 11,
+      "mean_abs_channel_diff": 4.644330245804762,
+      "pct_pixels_diff_gt20": 6.259343211832147,
+      "pct_pixels_diff_gt100": 1.699763956128366
+    },
+    {
+      "page": 12,
+      "mean_abs_channel_diff": 2.9151820894553286,
+      "pct_pixels_diff_gt20": 4.348665006059592,
+      "pct_pixels_diff_gt100": 0.9724290834716918
+    },
+    {
+      "page": 13,
+      "mean_abs_channel_diff": 4.517099475019073,
+      "pct_pixels_diff_gt20": 6.367395992307671,
+      "pct_pixels_diff_gt100": 1.6407759586238706
+    },
+    {
+      "page": 14,
+      "mean_abs_channel_diff": 3.162016078670265,
+      "pct_pixels_diff_gt20": 4.6187510164403776,
+      "pct_pixels_diff_gt100": 0.9699023390302998
+    },
+    {
+      "page": 15,
+      "mean_abs_channel_diff": 4.488763950309196,
+      "pct_pixels_diff_gt20": 6.488312199030282,
+      "pct_pixels_diff_gt100": 1.5058018646455162
+    },
+    {
+      "page": 16,
+      "mean_abs_channel_diff": 5.342738794960354,
+      "pct_pixels_diff_gt20": 6.968990873399077,
+      "pct_pixels_diff_gt100": 2.0676579467950313
+    },
+    {
+      "page": 17,
+      "mean_abs_channel_diff": 5.018205423404269,
+      "pct_pixels_diff_gt20": 7.0741034421609825,
+      "pct_pixels_diff_gt100": 1.7142812514643633
+    },
+    {
+      "page": 18,
+      "mean_abs_channel_diff": 4.751076163427993,
+      "pct_pixels_diff_gt20": 6.390733922784528,
+      "pct_pixels_diff_gt100": 1.6433945846813132
+    },
+    {
+      "page": 19,
+      "mean_abs_channel_diff": 4.2276439011586575,
+      "pct_pixels_diff_gt20": 5.552130413090557,
+      "pct_pixels_diff_gt100": 1.562952229828999
+    },
+    {
+      "page": 20,
+      "mean_abs_channel_diff": 4.385258391012019,
+      "pct_pixels_diff_gt20": 5.830807354572075,
+      "pct_pixels_diff_gt100": 1.6316796786348597
+    }
+  ]
+}

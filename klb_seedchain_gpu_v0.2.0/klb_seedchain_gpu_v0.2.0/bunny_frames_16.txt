@@ -1,0 +1,17 @@
+# Stable vertex order and identical vertex counts are required.
+bunny_frames_16/frame_0000.ply
+bunny_frames_16/frame_0001.ply
+bunny_frames_16/frame_0002.ply
+bunny_frames_16/frame_0003.ply
+bunny_frames_16/frame_0004.ply
+bunny_frames_16/frame_0005.ply
+bunny_frames_16/frame_0006.ply
+bunny_frames_16/frame_0007.ply
+bunny_frames_16/frame_0008.ply
+bunny_frames_16/frame_0009.ply
+bunny_frames_16/frame_0010.ply
+bunny_frames_16/frame_0011.ply
+bunny_frames_16/frame_0012.ply
+bunny_frames_16/frame_0013.ply
+bunny_frames_16/frame_0014.ply
+bunny_frames_16/frame_0015.ply

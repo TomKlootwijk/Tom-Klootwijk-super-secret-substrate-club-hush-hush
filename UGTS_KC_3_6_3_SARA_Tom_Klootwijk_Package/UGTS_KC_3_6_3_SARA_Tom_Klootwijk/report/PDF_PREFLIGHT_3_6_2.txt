@@ -1,0 +1,6 @@
+PDF: /mnt/data/ugts362_work/UGTS_KC_3_6_2_SCLP_Tom_Klootwijk/report/UGTS_KC_3_6_2_SCLP_Tom_Klootwijk.pdf
+Pages: 19
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False

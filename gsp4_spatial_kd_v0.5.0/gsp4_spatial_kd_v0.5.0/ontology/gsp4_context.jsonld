@@ -1,0 +1,48 @@
+{
+  "@context": {
+    "adjacent_to": "http://www.opengis.net/ont/geosparql#sfTouches",
+    "affects": "gsp4:affects",
+    "compatible_with": "gsp4:compatible_with",
+    "concept": "gsp4:concept",
+    "connected_to": "gsp4:connected_to",
+    "crossed_guard": "gsp4:crossed_guard",
+    "derived_from": "http://www.w3.org/ns/prov#wasDerivedFrom",
+    "descends_from": "gsp4:descends_from",
+    "event": "gsp4:event",
+    "geo": "http://www.opengis.net/ont/geosparql#",
+    "gsp4": "urn:ugts:gsp4:",
+    "has_property": "http://www.w3.org/ns/sosa/observedProperty",
+    "id": "@id",
+    "instance_of": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+    "latitude": {
+      "@id": "geo:lat",
+      "@type": "http://www.w3.org/2001/XMLSchema#double"
+    },
+    "lineage_state": "gsp4:lineage_state",
+    "located_in": "http://www.opengis.net/ont/geosparql#sfWithin",
+    "longitude": {
+      "@id": "geo:long",
+      "@type": "http://www.w3.org/2001/XMLSchema#double"
+    },
+    "made_by_sensor": "http://www.w3.org/ns/sosa/madeBySensor",
+    "near": "gsp4:near",
+    "observation": "gsp4:observation",
+    "observes": "http://www.w3.org/ns/sosa/observes",
+    "prov": "http://www.w3.org/ns/prov#",
+    "same_cell": "gsp4:same_cell",
+    "sensor": "gsp4:sensor",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "sosa": "http://www.w3.org/ns/sosa/",
+    "spatial_cell": "gsp4:spatial_cell",
+    "spatial_entity": "gsp4:spatial_entity",
+    "ssn": "http://www.w3.org/ns/ssn/",
+    "supersedes": "gsp4:supersedes",
+    "time": "http://www.w3.org/2006/time#",
+    "timestamp": {
+      "@id": "time:inXSDDateTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "transitioned_to": "gsp4:transitioned_to",
+    "type": "@type"
+  }
+}

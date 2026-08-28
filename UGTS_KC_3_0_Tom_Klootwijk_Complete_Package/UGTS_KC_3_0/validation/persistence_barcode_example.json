@@ -1,0 +1,38 @@
+[
+  {
+    "birth": 0.0,
+    "death": null,
+    "dimension": 0,
+    "representative": "0"
+  },
+  {
+    "birth": 0.05,
+    "death": 0.22,
+    "dimension": 0,
+    "representative": "1"
+  },
+  {
+    "birth": 0.15,
+    "death": 0.52,
+    "dimension": 0,
+    "representative": "2"
+  },
+  {
+    "birth": 0.18,
+    "death": 0.28,
+    "dimension": 0,
+    "representative": "3"
+  },
+  {
+    "birth": 0.34,
+    "death": 0.83,
+    "dimension": 0,
+    "representative": "4"
+  },
+  {
+    "birth": 0.4,
+    "death": 0.58,
+    "dimension": 0,
+    "representative": "5"
+  }
+]

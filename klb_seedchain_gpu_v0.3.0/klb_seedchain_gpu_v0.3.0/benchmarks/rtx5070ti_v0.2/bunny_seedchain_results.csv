@@ -1,0 +1,4 @@
+device,compute_capability,frame,mode,milliseconds,candidates_per_second,verified_events,event_yield,container_bytes,dense_float3_sequence_bytes,ratio_vs_float3
+"NVIDIA GeForce RTX 5070 Ti Laptop GPU",12.0,239,decode,0.0247252483368,1453857996.1,0,0,508856,103527360,203.451192479
+"NVIDIA GeForce RTX 5070 Ti Laptop GPU",12.0,239,query_seedchain,0.0267177600861,1345434642.88,2800,0.0778924527777,508856,103527360,203.451192479
+"NVIDIA GeForce RTX 5070 Ti Laptop GPU",12.0,239,query_dense_frame,0.0121088638306,2968651766.42,2800,0.0778924527777,508856,103527360,203.451192479

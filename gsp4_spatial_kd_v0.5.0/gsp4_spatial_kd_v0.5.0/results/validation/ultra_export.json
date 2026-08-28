@@ -1,0 +1,30 @@
+{
+  "entities": 228,
+  "format": "UGTS-ULTRA-EXPORT-1",
+  "graph_schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+  "relation_dictionary": {
+    "0": "located_in",
+    "1": "adjacent_to",
+    "10": "compatible_with",
+    "11": "crossed_guard",
+    "12": "transitioned_to",
+    "13": "same_cell",
+    "14": "connected_to",
+    "15": "derived_from",
+    "2": "near",
+    "3": "observes",
+    "4": "made_by_sensor",
+    "5": "has_property",
+    "6": "instance_of",
+    "7": "affects",
+    "8": "descends_from",
+    "9": "supersedes"
+  },
+  "relations": 16,
+  "score_import_format": "source_id<TAB>relation_name_or_id<TAB>target_id<TAB>probability[<TAB>weight]",
+  "triples": {
+    "test": 230,
+    "train": 785,
+    "valid": 290
+  }
+}

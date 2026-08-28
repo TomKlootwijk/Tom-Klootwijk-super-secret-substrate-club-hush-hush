@@ -1,0 +1,13 @@
+Test project C:/Users/Tom/Documents/TomKlootwijkVentureCorp/Klootwijk/klb_seedchain_gpu_v0.6.0_network_pruning/klb_seedchain_gpu_v0.6.0_network_pruning/b128
+    Start 1: klb_cpu_tests
+1/4 Test #1: klb_cpu_tests ....................   Passed    0.13 sec
+    Start 2: klb_orbit_tests
+2/4 Test #2: klb_orbit_tests ..................   Passed    0.05 sec
+    Start 3: klb_sgp4_tests
+3/4 Test #3: klb_sgp4_tests ...................   Passed    0.04 sec
+    Start 4: klb_network_tests
+4/4 Test #4: klb_network_tests ................   Passed    0.06 sec
+
+100% tests passed, 0 tests failed out of 4
+
+Total Test time (real) =   0.42 sec

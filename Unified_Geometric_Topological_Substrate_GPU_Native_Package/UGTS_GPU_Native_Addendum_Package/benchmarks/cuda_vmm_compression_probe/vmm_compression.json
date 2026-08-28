@@ -1,0 +1,14 @@
+{
+  "schema": "UGTS-CUDA-VMM-COMPRESSION-PROBE-1.0",
+  "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "device_ordinal": 0,
+  "cuda_driver_version": 13010,
+  "l2_bytes": 37748736,
+  "generic_compression_supported_attribute": true,
+  "compression_enum": {"none": 0, "generic": 1},
+  "modes": [
+    {"name": "non_compressible", "requested_compression": 0, "effective_compression": 0, "minimum_granularity_bytes": 2097152, "recommended_granularity_bytes": 2097152, "create_succeeded": true, "property_query_succeeded": true, "map_succeeded": true, "read_write_verified": true, "error": ""},
+    {"name": "generic_compressible", "requested_compression": 1, "effective_compression": 1, "minimum_granularity_bytes": 2097152, "recommended_granularity_bytes": 2097152, "create_succeeded": true, "property_query_succeeded": true, "map_succeeded": true, "read_write_verified": true, "error": ""}
+  ],
+  "scope_note": "The effective property verifies whether the driver granted the compressible allocation hint. It does not expose the achieved hardware compression ratio, L2 compressed bytes, DRAM traffic or compression counters."
+}

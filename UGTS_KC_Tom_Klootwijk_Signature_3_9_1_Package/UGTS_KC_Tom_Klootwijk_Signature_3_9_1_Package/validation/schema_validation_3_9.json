@@ -1,0 +1,28 @@
+{
+  "draft": "https://json-schema.org/draft/2020-12/schema",
+  "passed": true,
+  "projects": [
+    {
+      "error_count": 0,
+      "errors": [],
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/project.json"
+    },
+    {
+      "error_count": 0,
+      "errors": [],
+      "passed": true,
+      "path": "templates/blank_vector_game/project.json"
+    },
+    {
+      "error_count": 0,
+      "errors": [],
+      "passed": true,
+      "path": "templates/elizabeth_vector_quest/project.json"
+    }
+  ],
+  "schema": "ugts-kc-json-schema-validation-3.9",
+  "schema_id": "urn:ugts-kc:game-project:3.9",
+  "schema_path": "spec/game_project_schema_3_9.json",
+  "schema_well_formed": true
+}

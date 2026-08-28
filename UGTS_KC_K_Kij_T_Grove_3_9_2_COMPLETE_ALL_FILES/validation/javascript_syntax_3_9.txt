@@ -1,0 +1,3 @@
+Command: node --check /tmp/kc39_bundle/kc-runtime.js
+Result: PASS
+Output: (none)

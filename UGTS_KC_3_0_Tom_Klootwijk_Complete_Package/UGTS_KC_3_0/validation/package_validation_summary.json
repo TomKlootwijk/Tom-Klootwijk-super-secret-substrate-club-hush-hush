@@ -1,0 +1,13 @@
+{
+  "package": "UGTS-KC 3.0",
+  "tests_passed": 182,
+  "test_status": "OK",
+  "schema_status": "valid",
+  "examples_executed": 5,
+  "benchmark_boundary": "CPU reference only; nonportable and not a hardware claim",
+  "pdf_pages": 24,
+  "pdf_preflight_ok": true,
+  "pdf_sha256": "3182292742dfd2f3935eaef43772ec515df5020989959e3f179836f53986dc20",
+  "catalog_total": 360,
+  "catalog_v3_new": 103
+}

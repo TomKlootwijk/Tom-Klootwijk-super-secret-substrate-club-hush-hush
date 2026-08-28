@@ -1,0 +1,8 @@
+KSGP full-SGP4 versus external SP3 comparison
+samples: 6144
+epochs: 192
+RMS position difference: 56.795517649 km
+median position difference: 54.769401423 km
+p95 position difference: 60.827637054 km
+maximum position difference: 126.674718770 km
+Interpretation: combined model/element-age/frame/EOP difference; not pure SGP4 arithmetic error.

@@ -1,0 +1,106 @@
+#version 310 es
+precision highp float;
+precision highp int;
+
+#ifndef ENABLE_COUNTERS
+#define ENABLE_COUNTERS 1
+#endif
+
+layout(local_size_x = 256) in;
+
+// G32: 32-byte packed state record. Float fields use IEEE binary16 pairs.
+struct State32 {
+    uvec4 a;
+    uvec4 b;
+};
+
+// E16: 16-byte packed event output.
+layout(std430, binding = 0) readonly buffer StateBuffer {
+    State32 states[];
+};
+layout(std430, binding = 1) writeonly buffer EventBuffer {
+    uvec4 events[];
+};
+layout(std430, binding = 2) buffer CounterBuffer {
+    uint counters[4];
+};
+
+uint mix32(uint x) {
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= uint(states.length())) {
+        return;
+    }
+
+    State32 s = states[i];
+    vec2 xy = unpackHalf2x16(s.a.x);
+    vec2 zt = unpackHalf2x16(s.a.y);
+    vec2 axis_xy = unpackHalf2x16(s.a.z);
+    vec2 axis_z_radius = unpackHalf2x16(s.a.w);
+    vec2 cone_phase = unpackHalf2x16(s.b.x);
+    vec2 guard_confidence = unpackHalf2x16(s.b.y);
+
+    uint meta = s.b.z;
+    uint sheet = meta & 255u;
+    uint orientation = (meta >> 8) & 1u;
+    uint compatibility_mask = (meta >> 9) & 65535u;
+
+    vec3 position = vec3(xy, zt.x);
+    vec3 axis = normalize(vec3(axis_xy, axis_z_radius.x));
+    float radius = axis_z_radius.y;
+    float r = length(position);
+    float cosine_to_axis = (r > 1e-8)
+        ? dot(position / r, axis)
+        : 1.0;
+
+    bool in_support =
+        (r <= radius) &&
+        (cosine_to_axis >= cone_phase.x);
+    bool compatible =
+        ((compatibility_mask & 4u) != 0u) &&
+        (sheet == 1u) &&
+        (orientation == 0u);
+
+    float sdf = r - radius;
+    float guard = abs(sdf) - guard_confidence.x;
+    float confidence = exp2(-abs(sdf) * 32.0);
+    bool crossed = guard <= 0.0;
+    bool verified =
+        in_support && compatible && crossed &&
+        (confidence >= guard_confidence.y);
+
+#if ENABLE_COUNTERS
+    atomicAdd(counters[0], 1u);
+    if (in_support) {
+        atomicAdd(counters[1], 1u);
+    }
+    if (in_support && compatible) {
+        atomicAdd(counters[2], 1u);
+    }
+    if (verified) {
+        atomicAdd(counters[3], 1u);
+    }
+#endif
+
+    uint route = (orientation ^ (verified ? 1u : 0u)) & 1u;
+    uint state_flags =
+        (verified ? 1u : 0u) |
+        (route << 1) |
+        (sheet << 2) |
+        (in_support ? (1u << 10) : 0u) |
+        (compatible ? (1u << 11) : 0u);
+
+    events[i] = uvec4(
+        floatBitsToUint(sdf),
+        packHalf2x16(vec2(guard, confidence)),
+        state_flags,
+        mix32(s.b.w ^ i));
+}

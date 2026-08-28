@@ -1,0 +1,107 @@
+{
+  "bridge": {
+    "candidate_count": 126,
+    "declared_guard_epsilon_m": 25.0,
+    "exchange_sha256": "b0adf4f6b83f11bae4b6642bcd2ba5e68bc55914b06a982cce9ef2c105839506",
+    "format": "UGTS-SPATIAL-BRIDGE-1",
+    "g32_bytes": 4032,
+    "g32_max_position_error_m": 4.36455425116014,
+    "g32_max_scalar_absolute_error": 3.964625092146889,
+    "g32_precision_within_guard": true,
+    "g32_sha256": "9a4e5f695ea0dcd6b34cf3dbf054f289a31d2402b191c8161cf48ae906cadf2e",
+    "g64_bytes": 8064,
+    "g64_sha256": "94a14b7e0b5ed561d726491ce8cd5d387124af31ecf8510d5307ce04d36b1aa4",
+    "paths": {
+      "exchange": "examples/ugts_bridge/lelystad_near.exchange.json",
+      "g32": "examples/ugts_bridge/lelystad_near.g32.bin",
+      "g64": "examples/ugts_bridge/lelystad_near.g64.bin",
+      "manifest": "examples/ugts_bridge/lelystad_near.manifest.json"
+    },
+    "portable_contract": "SPIR-V/shader source plus ABI; driver caches remain vendor-specific"
+  },
+  "cpu_benchmark_boundary": "workload throughput only; not raw DRAM bandwidth and not a physical-GPU claim beyond the named device/run",
+  "deployment": {
+    "bytes": 1351748,
+    "file_count": 16,
+    "graph_schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+    "model_valid": true,
+    "novelty": {
+      "bytes": 8560,
+      "format": "UGNL3",
+      "record_bytes": 72,
+      "records": 118,
+      "terminal_hash": 4441500103174581316,
+      "valid": true
+    },
+    "path": "data/gsp4_flevoland_smoke.ugdeploy",
+    "valid": true
+  },
+  "format": "GSP4-PACKAGE-SUMMARY-1",
+  "graph": {
+    "bytes": 57545,
+    "edges": 1305,
+    "fixed_frame_padding": false,
+    "nodes": 228,
+    "observation_counts_per_window": [
+      15,
+      9,
+      12,
+      11,
+      14,
+      14,
+      11,
+      11
+    ],
+    "path": "data/flevoland_pilot.ugkg",
+    "schema_hash": "37cc2bf6620a97f61721584935f12e538ac8e29464888961253f274b8fdac9c4",
+    "sha256": "649ba082f664506c89e4bac0a0e3bdc6000feb9e1496d89835464cc2f379472b"
+  },
+  "model": {
+    "bytes": 1408503,
+    "parameters": 341459,
+    "path": "models/gsp4_flevoland_student_smoke.pt",
+    "role": "software-path smoke student; not production quality",
+    "sha256": "2340a7a7cc6c1af1463045e87088c0716a85fd98d297dda3636e177d26670048"
+  },
+  "name": "GSP4 Spatial Knowledge Distillation for UGTS-GN",
+  "novelty": {
+    "bytes": 8560,
+    "format": "UGNL3",
+    "record_bytes": 72,
+    "records": 118,
+    "terminal_hash": 4441500103174581316,
+    "valid": true
+  },
+  "physical_gpu_validation_completed": false,
+  "preparation_environment": {
+    "cuda_available": false,
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "torch": "2.10.0+cpu"
+  },
+  "target": "NVIDIA GeForce RTX 5070 Ti Laptop GPU, 12 GB GDDR7, sm_120",
+  "tests": {
+    "command": "PYTHONPATH=src python -m pytest -q",
+    "passed": 21
+  },
+  "training_smoke": {
+    "best_epoch": 6.0,
+    "best_validation_link_margin": 1.2818865776062012,
+    "device_cuda": 0.0,
+    "elapsed_s": 24.975600018999558,
+    "epochs_completed": 6.0,
+    "peak_cuda_memory_bytes": 0.0,
+    "test_link_accuracy": 0.5499999523162842,
+    "test_link_margin": 1.2461836338043213,
+    "test_teacher_cosine": 0.2011464238166809,
+    "validation_link_accuracy": 0.5582191944122314,
+    "validation_link_margin": 1.267534613609314,
+    "validation_teacher_cosine": 0.22103382647037506
+  },
+  "version": "0.5.0",
+  "wheel": {
+    "bytes": 99169,
+    "path": "dist/gsp4_ugts_spatial-0.5.0-py3-none-any.whl",
+    "sha256": "2270a96368cb926a3b4c7e04af28dc5266d41d9bd9b602f960142408df03e3f4"
+  }
+}

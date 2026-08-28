@@ -1,0 +1,9 @@
+{
+  "schema": "ugts-kc-test-summary-3.9.1",
+  "passed": true,
+  "tests": 276,
+  "seconds": 48.229,
+  "retained_tests": 225,
+  "new_tests": 51,
+  "returncode": 0
+}

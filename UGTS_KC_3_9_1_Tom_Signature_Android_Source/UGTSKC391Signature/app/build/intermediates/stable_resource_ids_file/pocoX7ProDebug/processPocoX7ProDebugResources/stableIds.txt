@@ -1,0 +1,2 @@
+nl.tomklootwijk.ugtskc.signature.pocox7pro:style/AppTheme = 0x7f020000
+nl.tomklootwijk.ugtskc.signature.pocox7pro:string/app_name = 0x7f010000

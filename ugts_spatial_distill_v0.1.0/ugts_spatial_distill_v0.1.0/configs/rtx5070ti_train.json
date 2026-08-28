@@ -1,0 +1,22 @@
+{
+  "hidden_dim": 256,
+  "heads": 8,
+  "layers": 4,
+  "memory_dim": 128,
+  "dropout": 0.1,
+  "epochs": 120,
+  "learning_rate": 0.001,
+  "weight_decay": 0.0001,
+  "patience": 15,
+  "grad_clip": 1.0,
+  "seed": 200678942,
+  "device": "cuda",
+  "amp": true,
+  "compile_model": false,
+  "threshold": 0.5,
+  "num_threads": 0,
+  "task_weight": 1.0,
+  "teacher_probability_weight": 0.5,
+  "teacher_embedding_weight": 0.25,
+  "confidence_margin_weight": 0.05
+}

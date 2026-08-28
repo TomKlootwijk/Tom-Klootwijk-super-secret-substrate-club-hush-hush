@@ -1,0 +1,13 @@
+{
+  "feature_dim": 32,
+  "num_node_types": 10,
+  "num_relations": 22,
+  "num_event_types": 8,
+  "hidden_dim": 64,
+  "heads": 4,
+  "layers": 2,
+  "memory_dim": 32,
+  "teacher_dim": 64,
+  "dropout": 0.1,
+  "max_distance_m": 100000.0
+}

@@ -1,0 +1,39 @@
+{
+  "build_file_count": 4,
+  "build_report_project_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+  "build_report_single_file": true,
+  "build_total_bytes": 140902,
+  "computed_project_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+  "external_network_references": [],
+  "html_parser_completed": true,
+  "missing_local_references": [],
+  "node_check_command": "node --check kc-runtime.js",
+  "node_check_output": "",
+  "node_check_passed": true,
+  "note": "JavaScript syntax was validated with Node.js. Browser execution is not claimed by this record.",
+  "passed": true,
+  "project_hash_equal": true,
+  "required_dom_ids": [
+    "kc-canvas",
+    "kc-project",
+    "kc-status",
+    "kc-touch"
+  ],
+  "runtime_feature_tokens": {
+    "animation_frame": true,
+    "canvas_2d": true,
+    "collision": true,
+    "fixed_step": true,
+    "gamepad": true,
+    "keyboard": true,
+    "local_save": true,
+    "particles": true,
+    "procedural_audio": true,
+    "touch_pointer": true
+  },
+  "schema": "ugts-kc-browser-build-validation-3.9",
+  "single_file_directory": "examples/elizabeth_vector_quest/dist",
+  "single_file_entrypoint": "examples/elizabeth_vector_quest/dist/index.html",
+  "single_file_size_bytes": 72161,
+  "split_bundle_runtime_bytes": 44516
+}

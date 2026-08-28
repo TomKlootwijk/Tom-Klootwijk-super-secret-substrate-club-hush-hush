@@ -1,0 +1,22 @@
+{
+  "hidden_dim": 64,
+  "heads": 4,
+  "layers": 2,
+  "memory_dim": 32,
+  "dropout": 0.1,
+  "epochs": 30,
+  "learning_rate": 0.002,
+  "weight_decay": 0.0001,
+  "patience": 8,
+  "grad_clip": 1.0,
+  "seed": 200678942,
+  "device": "auto",
+  "amp": true,
+  "compile_model": false,
+  "threshold": 0.5,
+  "num_threads": 0,
+  "task_weight": 1.0,
+  "teacher_probability_weight": 0.5,
+  "teacher_embedding_weight": 0.25,
+  "confidence_margin_weight": 0.05
+}

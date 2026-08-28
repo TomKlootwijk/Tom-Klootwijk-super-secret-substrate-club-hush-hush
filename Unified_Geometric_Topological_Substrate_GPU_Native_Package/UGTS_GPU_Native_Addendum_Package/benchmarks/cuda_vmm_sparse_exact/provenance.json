@@ -1,0 +1,88 @@
+{
+  "schema": "UGTS-CUDA-VMM-SPARSE-EXACT-PROVENANCE-1.0",
+  "date": "2026-08-15",
+  "device": {
+    "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "driver": "591.59",
+    "compute_capability": "12.0",
+    "l2_bytes": 37748736,
+    "multiprocessors": 46,
+    "occupancy_blocks_per_sm": 24
+  },
+  "toolchain": {
+    "cuda_compiler": "12.8.61",
+    "compute_sanitizer": "2025.1.0.0"
+  },
+  "artifacts": {
+    "source": {
+      "path": "benchmarks/cuda_vmm_sparse_exact/artifacts/bench.cu",
+      "bytes": 43304,
+      "sha256": "93FFA4524F519E05E740F0034C6EB139881C3781627A38C7CE9539CEA0EFCAEF"
+    },
+    "executable": {
+      "path": "benchmarks/cuda_vmm_sparse_exact/artifacts/bench.exe",
+      "bytes": 687104,
+      "sha256": "E4F685BB73046A4B4D4F79D634CDB211698FF9E2A2C13AA74CDAEED6884AA194"
+    },
+    "aggregator": {
+      "path": "benchmarks/cuda_vmm_sparse_exact/artifacts/aggregate.py",
+      "bytes": 10961,
+      "sha256": "8858D4A8CDD0D90407E9DBD4D9DA5B1572CCA5B0202056A7DB2FF48F91A73D54"
+    },
+    "summarizer": {
+      "path": "benchmarks/cuda_vmm_sparse_exact/artifacts/summarize.py",
+      "bytes": 8644,
+      "sha256": "5EA58CCA4CEF4829E2693C29A27A993AB1AE6E7B2E1C33F8CAFBE67ED9289DA2"
+    }
+  },
+  "corpora": [
+    {
+      "name": "main_sparse_content",
+      "aggregate": "benchmarks/cuda_vmm_compression_sparse_content_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "aggregate_sha256": "72C25C108C705FAE9438620AB6A9B3CCE305FB6327A035D3320B54BBFF8B5795",
+      "runs": 4,
+      "raw_rows": 1224,
+      "validated_payloads": 1297244160,
+      "timed_gpu_lookups": 442792673280,
+      "invalid_rows": 0
+    },
+    {
+      "name": "interpolation_exact_binary",
+      "aggregate": "benchmarks/cuda_vmm_sparse_interp_exact/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "aggregate_sha256": "B062EC9F3A29676F58396D61564E565EA8B6F6921B02C8FDC282D60D1D9704FE",
+      "runs": 4,
+      "raw_rows": 312,
+      "validated_payloads": 330670080,
+      "timed_gpu_lookups": 112868720640,
+      "invalid_rows": 0
+    },
+    {
+      "name": "format_threshold",
+      "aggregate": "benchmarks/cuda_vmm_compression_sparse_format_threshold_isolated/aggregate/cuda_vmm_compression_lut_aggregate.json",
+      "aggregate_sha256": "0176FBAF33126A036B3FACDF06F39D3E3130DCB9EEE5B64A049A13B96DC040EA",
+      "runs": 4,
+      "raw_rows": 336,
+      "validated_payloads": 356106240,
+      "timed_gpu_lookups": 121550929920,
+      "invalid_rows": 0
+    }
+  ],
+  "combined": {
+    "runs": 12,
+    "raw_rows": 1872,
+    "validated_rows": 1872,
+    "validated_payloads": 1984020480,
+    "timed_gpu_lookups": 677212323840,
+    "invalid_rows": 0,
+    "mismatches": 0
+  },
+  "summary": {
+    "path": "benchmarks/cuda_vmm_compression_sparse_summary/sparse_compression_thresholds.json",
+    "sha256": "FD1637A166B45FD8F6C7672B21B08CCC5D8399C85F551A5CA9D4114D3135A4FE",
+    "sparse_patterns": 16,
+    "retained_rate_fraction": 0.99,
+    "observed_cliff_exception_minimum": 411207,
+    "observed_cliff_exception_median": 460208.5,
+    "observed_cliff_exception_maximum": 478298
+  }
+}

@@ -1,0 +1,65 @@
+KLB SeedChain GPU 0.2.0 — RTX 5070 Ti Laptop quick path
+=========================================================
+
+Purpose
+-------
+Directly reconstruct and query a 240-frame, 65,536-point compressed seed chain.
+The included chain is under 1 MiB and requires no external download.
+
+Windows
+-------
+1. Install a current NVIDIA driver, CUDA Toolkit 12.8 or newer,
+   CMake 3.24+, and Visual Studio 2022 x64.
+2. Open an x64 Native Tools Command Prompt for VS 2022 in this directory.
+3. Build and test:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\build_windows.ps1
+
+4. Inspect and benchmark the included chain:
+
+   powershell -ExecutionPolicy Bypass -File .\scripts\demo_seedchain_windows.ps1
+
+5. The first run should keep CPU/GPU verification enabled. Lineage mismatches
+   must be zero. In --mode all, compressed and dense queries must agree on the
+   event count and on the exact sorted point/lineage event set.
+
+Linux
+-----
+   ./scripts/build_linux.sh
+   ./scripts/demo_seedchain_linux.sh
+
+Manual commands
+---------------
+   .\build\Release\klb_seedchain.exe inspect .\data\procedural_65536_240f.klsc
+
+   .\build\Release\klb_seedchain_bench.exe ^
+     .\data\procedural_65536_240f.klsc ^
+     --frame 239 --mode all --repeats 20 --csv seedchain_results.csv
+
+Small real scan
+---------------
+Manual download:
+   https://graphics.stanford.edu/pub/3Dscanrep/bunny.tar.gz
+
+After extraction:
+   .\build\Release\klb_seedchain.exe create-ply ^
+     .\bunny\reconstruction\bun_zipper.ply bunny_seedchain.klsc ^
+     --frames 240 --checkpoint 16
+
+Actual animation fitting
+------------------------
+Create frames.txt with one PLY path per line. Every frame must have the same
+vertex count and stable vertex order.
+
+   .\build\Release\klb_seedchain.exe fit-sequence ^
+     frames.txt capture.klsc --checkpoint 16 --residual-threshold 0.002
+
+The fitter validates reconstruction error by default.
+
+Read before interpreting results
+--------------------------------
+   README.md
+   docs\SEEDCHAIN_DEPLOYMENT.md
+   docs\FILE_FORMAT_KLSC1.md
+   docs\VALIDATION.md
+   AUTHORSHIP_NOTICE.md

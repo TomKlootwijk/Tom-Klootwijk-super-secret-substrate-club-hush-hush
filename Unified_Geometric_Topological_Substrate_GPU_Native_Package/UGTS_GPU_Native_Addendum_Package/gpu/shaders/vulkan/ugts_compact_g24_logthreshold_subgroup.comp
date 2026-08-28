@@ -1,0 +1,180 @@
+#version 450
+#extension GL_KHR_shader_subgroup_basic : require
+#extension GL_KHR_shader_subgroup_ballot : require
+
+#ifndef ENABLE_FULL_COUNTERS
+#define ENABLE_FULL_COUNTERS 0
+#endif
+#ifndef USE_THRESHOLD_LUT
+#define USE_THRESHOLD_LUT 1
+#endif
+
+layout(local_size_x = 256) in;
+
+// Six scalar words deliberately give the runtime array a 24-byte std430
+// stride. Time, phase, and the full compatibility mask are absent from this
+// fixed-query hot profile.
+struct State24 {
+    uint words[6];
+};
+
+layout(std430, binding = 0) readonly buffer StateBuffer {
+    State24 states[];
+};
+layout(std430, binding = 1) writeonly buffer CompactEventBuffer {
+    uvec4 events[];
+};
+layout(std430, binding = 2) buffer CounterBuffer {
+    uint counters[4];
+};
+
+// 64 binary16 log-domain distance thresholds, packed two per R32_UINT texel.
+#if USE_THRESHOLD_LUT
+layout(binding = 3) uniform usamplerBuffer confidence_threshold_lut;
+#endif
+
+shared uint subgroup_verified_counts[256];
+shared uint subgroup_verified_offsets[256];
+#if ENABLE_FULL_COUNTERS
+shared uint subgroup_candidate_counts[256];
+shared uint subgroup_support_counts[256];
+shared uint subgroup_compatible_counts[256];
+#endif
+shared uint workgroup_output_base;
+
+uint mix32(uint x) {
+    x ^= x >> 16;
+    x *= 0x7feb352du;
+    x ^= x >> 15;
+    x *= 0x846ca68bu;
+    x ^= x >> 16;
+    return x;
+}
+
+float threshold_from_code(uint code) {
+#if USE_THRESHOLD_LUT
+    vec2 pair = unpackHalf2x16(texelFetch(confidence_threshold_lut, int(code >> 1)).x);
+    return ((code & 1u) == 0u) ? pair.x : pair.y;
+#else
+    return float(code) * (0.125 / 63.0);
+#endif
+}
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    bool valid_candidate = i < uint(states.length());
+    bool in_support = false;
+    bool compatible = false;
+    bool verified = false;
+    uint sheet = 0u;
+    uint orientation = 0u;
+    uint lineage_seed = 0u;
+    float sdf = 0.0;
+    float guard = 0.0;
+
+    if (valid_candidate) {
+        State24 s = states[i];
+        vec2 xy = unpackHalf2x16(s.words[0]);
+        vec2 z_cone = unpackHalf2x16(s.words[1]);
+        vec2 axis_xy = unpackHalf2x16(s.words[2]);
+        vec2 axis_z_radius = unpackHalf2x16(s.words[3]);
+        float guard_epsilon = unpackHalf2x16(s.words[4]).x;
+        uint hot_meta = s.words[4] >> 16;
+        sheet = hot_meta & 255u;
+        orientation = (hot_meta >> 8) & 1u;
+        compatible = ((hot_meta >> 9) & 1u) != 0u;
+        uint confidence_code = (hot_meta >> 10) & 63u;
+        lineage_seed = s.words[5];
+
+        vec3 position = vec3(xy, z_cone.x);
+        vec3 axis = normalize(vec3(axis_xy, axis_z_radius.x));
+        float radius = axis_z_radius.y;
+        float r = length(position);
+        float cosine_to_axis = (r > 1e-8)
+            ? dot(position / r, axis)
+            : 1.0;
+
+        in_support =
+            (r <= radius) &&
+            (cosine_to_axis >= z_cone.y);
+
+        sdf = r - radius;
+        float distance = abs(sdf);
+        guard = distance - guard_epsilon;
+        verified =
+            in_support && compatible &&
+            (guard <= 0.0) &&
+            (distance <= threshold_from_code(confidence_code));
+    }
+
+    uvec4 verified_ballot = subgroupBallot(verified);
+    uint subgroup_rank = subgroupBallotExclusiveBitCount(verified_ballot);
+    uint subgroup_verified = subgroupBallotBitCount(verified_ballot);
+#if ENABLE_FULL_COUNTERS
+    uint subgroup_candidates = subgroupBallotBitCount(subgroupBallot(valid_candidate));
+    uint subgroup_support = subgroupBallotBitCount(subgroupBallot(in_support));
+    uint subgroup_compatible = subgroupBallotBitCount(subgroupBallot(in_support && compatible));
+#endif
+
+    if (subgroupElect()) {
+        subgroup_verified_counts[gl_SubgroupID] = subgroup_verified;
+#if ENABLE_FULL_COUNTERS
+        subgroup_candidate_counts[gl_SubgroupID] = subgroup_candidates;
+        subgroup_support_counts[gl_SubgroupID] = subgroup_support;
+        subgroup_compatible_counts[gl_SubgroupID] = subgroup_compatible;
+#endif
+    }
+    barrier();
+
+    if (gl_LocalInvocationIndex == 0u) {
+        uint verified_total = 0u;
+#if ENABLE_FULL_COUNTERS
+        uint candidate_total = 0u;
+        uint support_total = 0u;
+        uint compatible_total = 0u;
+#endif
+        for (uint subgroup_index = 0u; subgroup_index < gl_NumSubgroups; ++subgroup_index) {
+            subgroup_verified_offsets[subgroup_index] = verified_total;
+            verified_total += subgroup_verified_counts[subgroup_index];
+#if ENABLE_FULL_COUNTERS
+            candidate_total += subgroup_candidate_counts[subgroup_index];
+            support_total += subgroup_support_counts[subgroup_index];
+            compatible_total += subgroup_compatible_counts[subgroup_index];
+#endif
+        }
+#if ENABLE_FULL_COUNTERS
+        if (candidate_total != 0u) atomicAdd(counters[0], candidate_total);
+        if (support_total != 0u) atomicAdd(counters[1], support_total);
+        if (compatible_total != 0u) atomicAdd(counters[2], compatible_total);
+#endif
+        workgroup_output_base = (verified_total != 0u)
+            ? atomicAdd(counters[3], verified_total)
+            : 0u;
+    }
+    barrier();
+
+    if (!verified) {
+        return;
+    }
+
+    uint slot =
+        workgroup_output_base +
+        subgroup_verified_offsets[gl_SubgroupID] +
+        subgroup_rank;
+    uint route = (orientation ^ 1u) & 1u;
+    uint state_flags =
+        1u |
+        (route << 1) |
+        (sheet << 2) |
+        (1u << 10) |
+        (1u << 11);
+    float confidence = exp2(-abs(sdf) * 32.0);
+
+    if (slot < uint(events.length())) {
+        events[slot] = uvec4(
+            floatBitsToUint(sdf),
+            packHalf2x16(vec2(guard, confidence)),
+            state_flags,
+            mix32(lineage_seed ^ i));
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "source_id": "SRC-BEA-COURSE-CORRECTED-01",
+  "descriptive_name": "why does 19 in dutch sound like no neg moat.pdf",
+  "sha256": "7dc5894928bb3aa815824d35720a4a37a556fcc202c5a0f655dce46804f1f586",
+  "pages": 9,
+  "redistributed": false,
+  "admitted_page_ranges": [
+    {"pages": "1-2", "mechanisms": ["named pair", "four-cycle motif", "leet forms", "semantic residual to 19"]},
+    {"pages": "3-4", "mechanisms": ["left-aligned ASCII XOR witness", "repeated mask rows"]},
+    {"page": "5", "mechanisms": ["1D cell complex hinge", "zero-width pathways", "parity hinge"]}
+  ],
+  "normalization": "synthetic 1D cell-complex profile supplied by the course-correction prompt",
+  "context_exclusions": ["dialect escalation", "historical escalation", "physical entropy claims", "standard font topology"]
+}

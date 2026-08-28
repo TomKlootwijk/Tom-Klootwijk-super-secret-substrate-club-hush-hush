@@ -1,0 +1,14 @@
+{
+  "candidate_count": 126,
+  "declared_guard_epsilon_m": 25.0,
+  "exchange_sha256": "1e92b640865b6177b3b7cdb25f9f94d111abb272de46c15e2a63ceb6ff84f966",
+  "format": "UGTS-SPATIAL-BRIDGE-1",
+  "g32_bytes": 4032,
+  "g32_max_position_error_m": 4.36455425116014,
+  "g32_max_scalar_absolute_error": 3.964625092146889,
+  "g32_precision_within_guard": true,
+  "g32_sha256": "9a4e5f695ea0dcd6b34cf3dbf054f289a31d2402b191c8161cf48ae906cadf2e",
+  "g64_bytes": 8064,
+  "g64_sha256": "94a14b7e0b5ed561d726491ce8cd5d387124af31ecf8510d5307ce04d36b1aa4",
+  "portable_contract": "SPIR-V/shader source plus ABI; driver caches remain vendor-specific"
+}

@@ -1,0 +1,25 @@
+Format                      : KLOC1 v1
+Predictor                   : Kepler + compiled secular J2 rates (coarse)
+Reference epoch             : 2026-08-16T05:33:12.693024Z
+Source label                : CelesTrak GP OMM CSV / GPS-OPS
+Source bytes                : 4852
+Source FNV-1a64             : 0x56eb74ff9610d21b
+Container bytes             : 3809
+Orbit seeds                 : 32
+Hash-linked timeline nodes  : 7
+Timeline duration           : 604800.000000 s
+Timeline step               : 1.000000 s
+Timeline state samples      : 604801
+Equivalent dense float4     : 309658112 bytes
+Horizon-relative ratio      : 81296.432659x
+Terminal chain hash         : 0x2ccf05789110dcd6
+Payload hash                : 0x4b0bdd3e929c3d08
+Default elevation mask      : 9.999999 degrees
+
+Seed preview:
+  [0] NORAD 26407, PRN 22, route 4, a=26560.830078 km, e=0.011950, GPS BIIR-5  (PRN 22) | 2000-040A
+  [1] NORAD 27663, PRN 16, route 4, a=26560.898438 km, e=0.014916, GPS BIIR-8  (PRN 16) | 2003-005A
+  [2] NORAD 28190, PRN 19, route 5, a=26561.318359 km, e=0.011810, GPS BIIR-11 (PRN 19) | 2004-009A
+  [3] NORAD 28474, PRN 2, route 5, a=26560.792969 km, e=0.017099, GPS BIIR-13 (PRN 02) | 2004-045A
+  [4] NORAD 28874, PRN 17, route 5, a=26560.525391 km, e=0.012862, GPS BIIRM-1 (PRN 17) | 2005-038A
+  [5] NORAD 29486, PRN 31, route 2, a=26560.085938 km, e=0.010806, GPS BIIRM-2 (PRN 31) | 2006-042A

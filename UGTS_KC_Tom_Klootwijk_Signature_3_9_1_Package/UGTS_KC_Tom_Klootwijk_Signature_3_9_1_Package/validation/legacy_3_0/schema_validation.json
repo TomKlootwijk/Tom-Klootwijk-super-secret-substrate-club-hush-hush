@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "schema": "spec/production_substrate_schema.json",
+  "instance": "examples/kc_two_hands_definition.json",
+  "draft": "https://json-schema.org/draft/2020-12/schema",
+  "error_count": 0,
+  "errors": [],
+  "validator": "jsonschema Draft202012Validator"
+}

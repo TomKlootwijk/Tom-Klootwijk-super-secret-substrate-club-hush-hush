@@ -1,0 +1,732 @@
+[
+  {
+    "step_id": "sclp362:profile:packed-swept-cone-v1",
+    "kind": "sclp_profile",
+    "output": {
+      "title": "Swept-Cone Log-Polar Packing",
+      "rendering_authority": false,
+      "source_sha256": "7e29c1c800d905268f35084a6a4c7d9c1cfed50c926c63a8ec2c79021e32ab63",
+      "source_pages": 13,
+      "key_bits": {
+        "rho": 20,
+        "theta": 18,
+        "time": 14,
+        "phi": 12
+      },
+      "base_version": "3.6.1 BEA course-corrected"
+    }
+  },
+  {
+    "step_id": "sclp362:op:typed-symbols-v1",
+    "kind": "typed_symbol_contract",
+    "output": {
+      "T": "cone slant length",
+      "t": "linear continuous time",
+      "X": "declared modular time tick",
+      "phi": "periodic hinge/hoop angle in S1",
+      "delta_rho": "log-radius increment",
+      "epsilon_guard": "event guard margin",
+      "one_bit": "branch/jitter/predicate metadata",
+      "golden_ratio": "not used by this delta"
+    }
+  },
+  {
+    "step_id": "sclp362:op:cone-parameterize-v1",
+    "kind": "cone_parameterize",
+    "output": {
+      "slant_length": 2.0,
+      "half_angle_rad": 0.5235987755982988,
+      "height": 1.7320508075688774,
+      "base_radius": 0.9999999999999999,
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "apex": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "step_id": "sclp362:op:cone-relation-v1",
+    "kind": "cone_relation",
+    "output": {
+      "point": [
+        0.15,
+        0.0,
+        0.6
+      ],
+      "signed_distance": -0.1700961894323342,
+      "relation_class": -1,
+      "epsilon": 1e-12,
+      "exact_for": "finite right circular cone profile"
+    }
+  },
+  {
+    "step_id": "sclp362:op:paired-sphere-support-v1",
+    "kind": "paired_sphere_support",
+    "output": {
+      "left_sdf": -0.13768943743823392,
+      "right_sdf": -0.40857864376269054,
+      "left_in": true,
+      "right_in": true,
+      "overlap": true,
+      "admitted": true,
+      "mode": "union"
+    }
+  },
+  {
+    "step_id": "sclp362:op:logpolar-state-v1",
+    "kind": "logpolar_state",
+    "output": {
+      "rho": -1.8971199848858813,
+      "theta": 0.0,
+      "core": false,
+      "metric_scale": 0.0225,
+      "jacobian": [
+        [
+          0.15,
+          -0.0
+        ],
+        [
+          0.0,
+          0.15
+        ]
+      ],
+      "delta_r_exact": 0.00015007502500625125
+    }
+  },
+  {
+    "step_id": "sclp362:op:phase-clock-v1",
+    "kind": "phase_clock",
+    "output": {
+      "tick": 1920.0,
+      "reference_tick": 1135,
+      "period_ticks": 256,
+      "unit": "minute",
+      "phase_S1": 0.06640625,
+      "winding": 3,
+      "winding_parity": 1,
+      "note": "linear time is retained; only the phase is periodic"
+    }
+  },
+  {
+    "step_id": "sclp362:op:quantize-key-v1",
+    "kind": "quantize_key_fields",
+    "output": {
+      "rho": 949111,
+      "theta": 0,
+      "time": 1920,
+      "phi": 227
+    }
+  },
+  {
+    "step_id": "sclp362:op:contiguous-key-v1",
+    "kind": "pack_contiguous_key",
+    "output": {
+      "key_u64": 16696937288809578723,
+      "hex": "0xe7b77000007800e3",
+      "layout": "contiguous-fields"
+    }
+  },
+  {
+    "step_id": "sclp362:op:morton-key-v1",
+    "kind": "pack_morton_key",
+    "output": {
+      "key_u64": 9836490199748121227,
+      "hex": "0x88823bb88099128b",
+      "layout": "msb-round-robin-morton",
+      "schedule_prefix": [
+        "rho19",
+        "theta17",
+        "time13",
+        "phi11",
+        "rho18",
+        "theta16",
+        "time12",
+        "phi10",
+        "rho17",
+        "theta15",
+        "time11",
+        "phi9",
+        "rho16",
+        "theta14",
+        "time10",
+        "phi8"
+      ]
+    }
+  },
+  {
+    "step_id": "sclp362:op:prefix-refine-v1",
+    "kind": "radix_prefix_refinement",
+    "output": {
+      "depth": 12,
+      "prefix": 2184,
+      "prefix_bits": "100010001000",
+      "integer_bounds": {
+        "rho": [
+          917504,
+          1048575
+        ],
+        "theta": [
+          0,
+          32767
+        ],
+        "time": [
+          0,
+          2047
+        ],
+        "phi": [
+          0,
+          511
+        ]
+      },
+      "semantics": "each appended bit refines one scheduled coordinate interval"
+    }
+  },
+  {
+    "step_id": "sclp362:op:jitter-guard-v1",
+    "kind": "one_bit_jitter_guard",
+    "output": {
+      "bit": 1,
+      "offset": 0.0001,
+      "authoritative_residual": -0.1700961894323342,
+      "interval": [
+        -0.1701961894323342,
+        -0.16999618943233422
+      ],
+      "amplitude": 0.0001,
+      "guard_margin": 0.001,
+      "safe_under_margin": true,
+      "role": "bounded perturbation or route metadata; not complete state"
+    }
+  },
+  {
+    "step_id": "sclp362:op:source-twist-v0",
+    "kind": "source_bundle_twist",
+    "output": {
+      "profile": "source-half-turn-bundle-v0",
+      "rho": -19.75,
+      "theta": -2.8415926535897933,
+      "phi": -0.34906585039886595,
+      "orientation": -1,
+      "wrap_count": 1,
+      "base_non_orientable": false,
+      "source_formula_preserved": true
+    }
+  },
+  {
+    "step_id": "sclp362:op:klein-wrap-v1",
+    "kind": "klein_reflective_wrap",
+    "output": {
+      "profile": "klein-reflective-radial-gluing-v1",
+      "rho": -19.75,
+      "theta": 2.8415926535897933,
+      "phi": -0.34906585039886595,
+      "orientation": -1,
+      "wrap_count": 1,
+      "base_non_orientable": true,
+      "source_formula_preserved": false,
+      "tangent_signs": {
+        "dtheta": -1,
+        "dphi": -1
+      }
+    }
+  },
+  {
+    "step_id": "sclp362:op:shackle-release-v1",
+    "kind": "missing_shackle_release",
+    "output": {
+      "original_rank": 2,
+      "released_rank": 1,
+      "original_nullity": 1,
+      "released_nullity": 2,
+      "freedom_gain": 1,
+      "released_basis": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    }
+  },
+  {
+    "step_id": "sclp362:op:hinge-calculus-v1",
+    "kind": "hinge_calculus",
+    "output": {
+      "state": {
+        "phi": 0.3490658503988659,
+        "omega": 0.2,
+        "alpha": -0.05
+      },
+      "torque": 0.09453292519943295,
+      "reflected_state": {
+        "phi": -0.34906585039886595,
+        "omega": -0.2,
+        "alpha": 0.05
+      },
+      "reflected_torque": -0.09453292519943297,
+      "type_rule": "angular acceleration is not torque without a mechanical model"
+    }
+  },
+  {
+    "step_id": "sclp362:op:binary-branch-v1",
+    "kind": "binary_branch_select",
+    "output": {
+      "guard_value": -0.1700961894323342,
+      "threshold": 0.0,
+      "branch_bit": 0,
+      "classification": "deterministic binary branch; chaos not inferred"
+    }
+  },
+  {
+    "step_id": "sclp362:op:bounded-grammar-v1",
+    "kind": "bounded_binary_grammar",
+    "output": {
+      "depth": 4,
+      "symbol_count": 76,
+      "forward_count": 16,
+      "max_stack_depth": 4,
+      "grammar_state_word_12": 1058,
+      "symbols": [
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": -0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": -0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "PUSH",
+          "value": null
+        },
+        {
+          "kind": "TURN",
+          "value": 0.4363323129985824
+        },
+        {
+          "kind": "F",
+          "value": 0.0625
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        },
+        {
+          "kind": "POP",
+          "value": null
+        },
+        {
+          "kind": "JITTER",
+          "value": 0.00015007502500625125
+        }
+      ],
+      "branch_bits": [
+        1,
+        0,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "step_id": "sclp362:op:sweep-bound-v1",
+    "kind": "certified_cone_sweep",
+    "output": {
+      "sample_count": 65,
+      "sample_min": -0.296617088266467,
+      "lower_bound": -0.302476463266467,
+      "upper_bound": -0.296617088266467,
+      "lipschitz_error": 0.005859375,
+      "status": "certified-inside-witness"
+    }
+  },
+  {
+    "step_id": "sclp362:op:compression-audit-v1",
+    "kind": "compression_audit",
+    "output": {
+      "key_metrics": {
+        "bits": {
+          "rho": 20,
+          "theta": 18,
+          "time": 14,
+          "phi": 12
+        },
+        "capacities": {
+          "rho": 1048576,
+          "theta": 262144,
+          "time": 16384,
+          "phi": 4096
+        },
+        "total_states": 18446744073709551616,
+        "rho_step": 1.9073504518036383e-05,
+        "theta_step_rad": 2.3968449810713143e-05,
+        "phi_step_rad": 0.0015339807878856412,
+        "time_states": 16384,
+        "keys_per_64_byte_cache_line": 8
+      },
+      "source_width_metrics": [
+        {
+          "name": "coordinate-boundary-key",
+          "baseline_bits": 192,
+          "packed_bits": 64,
+          "ratio": 3.0,
+          "semantic_equivalence": false,
+          "qualification": "Nominal width ratio: six float32 values versus one quantized key; decode metadata and error differ."
+        },
+        {
+          "name": "sdf-sign-only",
+          "baseline_bits": 32,
+          "packed_bits": 1,
+          "ratio": 32.0,
+          "semantic_equivalence": false,
+          "qualification": "A sign bit does not preserve distance magnitude, uncertainty or a zero-state encoding by itself."
+        },
+        {
+          "name": "kinematic-state-word",
+          "baseline_bits": 512,
+          "packed_bits": 12,
+          "ratio": 42.666666666666664,
+          "semantic_equivalence": false,
+          "qualification": "A 12-bit state selector is not semantically equivalent to an arbitrary 4x4 float matrix."
+        }
+      ],
+      "finite_capacity": true,
+      "universal_O1_claim": false,
+      "infinite_detail_claim": false
+    }
+  },
+  {
+    "step_id": "sclp362:op:certificate-v1",
+    "kind": "integrated_sclp_certificate",
+    "output": {
+      "profile_id": "sclp362:profile:packed-swept-cone-v1",
+      "checks": {
+        "contiguous_roundtrip": true,
+        "morton_roundtrip": true,
+        "layouts_distinct": true,
+        "jitter_within_margin": true,
+        "freedom_gain_one": true,
+        "klein_base_non_orientable": true,
+        "grammar_bounded": true,
+        "sweep_interval_ordered": true
+      },
+      "valid": true,
+      "claim_level": "bounded-referential-geometric-topological-integration"
+    }
+  },
+  {
+    "step_id": "sclp362:schedule:ugts-handoff-v1",
+    "kind": "ugts_event_handoff",
+    "output": {
+      "sequence": [
+        "support",
+        "compatibility",
+        "guard",
+        "verified_event",
+        "transition",
+        "lineage"
+      ],
+      "support": true,
+      "compatibility": true,
+      "guard_interval": [
+        -0.1701961894323342,
+        -0.16999618943233422
+      ],
+      "guard_stable": true,
+      "verified_event": true,
+      "transition": {
+        "branch": 0,
+        "orientation": -1,
+        "grammar_state_word_12": 1058
+      },
+      "lineage": {
+        "morton_key_hex": "0x88823bb88099128b",
+        "wrap_count": 1,
+        "time_winding": 3
+      }
+    }
+  }
+]

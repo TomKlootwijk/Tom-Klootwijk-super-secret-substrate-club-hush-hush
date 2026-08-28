@@ -1,0 +1,18 @@
+{
+  "schema": "ugts-kc-schema-validation-3.9.1",
+  "passed": true,
+  "results": [
+    {
+      "path": "examples/tom_signature_arena_3d/project.json",
+      "status": "PASS"
+    },
+    {
+      "path": "templates/tom_signature_3d/project.json",
+      "status": "PASS"
+    },
+    {
+      "path": "templates/blank_mobile_3d/project.json",
+      "status": "PASS"
+    }
+  ]
+}

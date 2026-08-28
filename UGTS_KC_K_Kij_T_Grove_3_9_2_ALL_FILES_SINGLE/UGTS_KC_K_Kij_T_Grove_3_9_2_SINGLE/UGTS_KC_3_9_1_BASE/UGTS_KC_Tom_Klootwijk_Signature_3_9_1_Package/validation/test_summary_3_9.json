@@ -1,0 +1,12 @@
+{
+  "edition": "3.9 - KC - Elizabeth",
+  "elapsed_seconds": 2.979,
+  "new_3_9_tests": 108,
+  "passed": true,
+  "result": "OK",
+  "retained_legacy_tests": 117,
+  "runner": "python -m unittest discover -s tests -v",
+  "runtime_version": "3.9.0",
+  "schema": "ugts-kc-test-summary-3.9",
+  "test_count": 225
+}

@@ -1,0 +1,4 @@
+$ clang++ -std=c++20 -O2 -Wall -Wextra -Wpedantic -Werror -I ${PACKAGE_ROOT}/src/ugts_kc3/android_template/project/app/src/main/cpp ${PACKAGE_ROOT}/native/host_tests/native_core_tests.cpp ${PACKAGE_ROOT}/src/ugts_kc3/android_template/project/app/src/main/cpp/scene_pack.cpp ${PACKAGE_ROOT}/src/ugts_kc3/android_template/project/app/src/main/cpp/device_profile.cpp ${PACKAGE_ROOT}/src/ugts_kc3/android_template/project/app/src/main/cpp/adaptive_quality.cpp -o ${PACKAGE_ROOT}/native/host_tests/native_core_tests
+
+$ ${PACKAGE_ROOT}/native/host_tests/native_core_tests ${PACKAGE_ROOT}/examples/tom_signature_arena_3d/signature_scene.kc3d
+PASS native core: Tom Klootwijk Signature Arena 3D meshes=4 nodes=66 profile=poco_x7_pro_12gb quality=signature_ultra

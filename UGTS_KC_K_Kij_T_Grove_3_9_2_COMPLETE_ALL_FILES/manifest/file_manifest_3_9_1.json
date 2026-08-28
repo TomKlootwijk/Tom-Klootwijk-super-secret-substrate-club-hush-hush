@@ -1,0 +1,1351 @@
+{
+  "algorithm": "SHA-256",
+  "content_root_sha256": "2532173d38644d4b6f1b73dd42e8a3faf8b5096712488f6e41008489a28b0aa3",
+  "exclusion": "Files under manifest/ are excluded to avoid self-referential hashes.",
+  "file_count": 268,
+  "files": [
+    {
+      "bytes": 726,
+      "path": "CHECKSUMS_3_9_1.txt",
+      "sha256": "9b3282a9447da1319a0bb819908bde647f4fa960cc8aca5883fda3fcd1b681ac"
+    },
+    {
+      "bytes": 76,
+      "path": "MANIFEST.in",
+      "sha256": "4b18e620471feda4697765e21e9c539e8d0da0b5a87ed01b6d66bba6f5abc86c"
+    },
+    {
+      "bytes": 5499,
+      "path": "README.md",
+      "sha256": "ce7df57f275dfbe42e784c22ce1ac029f280be60068001e0f33fc70fc5541800"
+    },
+    {
+      "bytes": 1218,
+      "path": "android/UGTSKC391Signature/README.md",
+      "sha256": "ad142754914f4c58364db5b87239e3d9a788a6a9e2b504cb4ca5bb7ad9754456"
+    },
+    {
+      "bytes": 1659,
+      "path": "android/UGTSKC391Signature/app/build.gradle",
+      "sha256": "50b59fff9f9d52b1ff2a7a299230481fbe5309f25ed3dd4def25f5edf81318ec"
+    },
+    {
+      "bytes": 57,
+      "path": "android/UGTSKC391Signature/app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1553,
+      "path": "android/UGTSKC391Signature/app/src/main/AndroidManifest.xml",
+      "sha256": "317663eeba2db53959828583863cfe2dbaea62810e926e82a078241fdc723238"
+    },
+    {
+      "bytes": 160201,
+      "path": "android/UGTSKC391Signature/app/src/main/assets/project.json",
+      "sha256": "8d5bf4b9b2037fd0ee2065c3e8ddf3e47e001d9466b152314990069b0f1399f0"
+    },
+    {
+      "bytes": 15486,
+      "path": "android/UGTSKC391Signature/app/src/main/assets/scene-pack-inspection.json",
+      "sha256": "c31e2b8c6e9ced61cf8900932abac3dd605f9d94d4e5072063373754d4776582"
+    },
+    {
+      "bytes": 680,
+      "path": "android/UGTSKC391Signature/app/src/main/assets/shaders/scene.frag",
+      "sha256": "3ebd9bd3d65aa8c15f7981f9008692a4b605e792352778b1562cc8588b7deab9"
+    },
+    {
+      "bytes": 413,
+      "path": "android/UGTSKC391Signature/app/src/main/assets/shaders/scene.vert",
+      "sha256": "eb70f4a63997af001db413f85d163573df5f5d12840235c998d12c52e9e7d298"
+    },
+    {
+      "bytes": 21735,
+      "path": "android/UGTSKC391Signature/app/src/main/assets/signature_scene.kc3d",
+      "sha256": "485bb8a5ed7d4632577195dc0a889b4e6d3ea13ebc55482c5ea40761729ba437"
+    },
+    {
+      "bytes": 1021,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/CMakeLists.txt",
+      "sha256": "6ecdf9c937452bce624df3464074190dcc8cbbbc0ff0751e07070c1b6e26409c"
+    },
+    {
+      "bytes": 860,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 2770,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/device_profile.cpp",
+      "sha256": "03fe6f61f9d1aeca0b055715afa6bd8611927e65ec0f63a5d3950e95f4f964a8"
+    },
+    {
+      "bytes": 676,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 10395,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/engine.cpp",
+      "sha256": "19e560cb17d6d72c7cb10e919458cf038855d548703b93019565a935e367bc20"
+    },
+    {
+      "bytes": 1509,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/engine.hpp",
+      "sha256": "c6c07ce6b00f32b4fc1aee6af0084a04946b5ca79e79cd3559bcc29c5d69e413"
+    },
+    {
+      "bytes": 3792,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1612,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/main.cpp",
+      "sha256": "037b624cf9aac4bb04b56ba26394713ad6843592c48016d21fcc74367517e66f"
+    },
+    {
+      "bytes": 10051,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "bc961dfe22e0e2ca01b6f8da70d6cb7af9b1773243da62b7db032ceb4c6580c1"
+    },
+    {
+      "bytes": 1734,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "16159c9a2115b73e3d7c27a716c52b53d26a92ff6e024109b68cd828f22e04ba"
+    },
+    {
+      "bytes": 6240,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/scene_pack.cpp",
+      "sha256": "7bc46d2e9dbb65951396bdf11afce1087a3d7be01640dab4ddc74db89f69dff1"
+    },
+    {
+      "bytes": 2836,
+      "path": "android/UGTSKC391Signature/app/src/main/cpp/scene_pack.hpp",
+      "sha256": "1f44ddca087e5ffe396503c851e91e6ffb4797e28d9e586d878497247e2c724c"
+    },
+    {
+      "bytes": 134,
+      "path": "android/UGTSKC391Signature/app/src/main/res/values/strings.xml",
+      "sha256": "89fcc20706f981b9ca513f3afc605cff18cf529505dd17a45be36984e795d3a5"
+    },
+    {
+      "bytes": 766,
+      "path": "android/UGTSKC391Signature/app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 4996,
+      "path": "android/UGTSKC391Signature/build-report.json",
+      "sha256": "b560f59a9b7305eb78f02ffea544752a045b04034ea7bc0b923e3aed7408ab62"
+    },
+    {
+      "bytes": 74,
+      "path": "android/UGTSKC391Signature/build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 159,
+      "path": "android/UGTSKC391Signature/gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 336,
+      "path": "android/UGTSKC391Signature/settings.gradle",
+      "sha256": "4e5d4e490bdb0855a97d187f5272eb6378a04cfbfd34d0b3e08363ead750f4b7"
+    },
+    {
+      "bytes": 198258,
+      "path": "diagrams/architecture_3_0.png",
+      "sha256": "33f7117ee9bf5243de11fc1275d4d72b27d3c5a46ee640f6c93f0dd8d2d437d9"
+    },
+    {
+      "bytes": 114411,
+      "path": "diagrams/architecture_3_9_elizabeth.png",
+      "sha256": "2ffea45362fe3754c5113b89b54805bde33f6b6cef0842072876f1c1778ce1e4"
+    },
+    {
+      "bytes": 124251,
+      "path": "diagrams/event_commit_pipeline.png",
+      "sha256": "7a66dacfd8f3981178b90156e17cf1eeb843370ee7aa8933caec221695cfc2a8"
+    },
+    {
+      "bytes": 66233,
+      "path": "diagrams/game_tick_pipeline_3_9.png",
+      "sha256": "ebb8eaa8f68b4fda873f026277b86c61316b30a6a0707b4462c42028bd57c12c"
+    },
+    {
+      "bytes": 13294,
+      "path": "diagrams/generate_diagrams.py",
+      "sha256": "2d5993c8837bc7e311733bcb3b6667513210d86d3cb3baed1bb106d8a7ea171a"
+    },
+    {
+      "bytes": 136413,
+      "path": "diagrams/geometry_compiler_pipeline.png",
+      "sha256": "45e5621a5514bfa723d5505507140a83afe32b36425ac43af73f599c2140f7cc"
+    },
+    {
+      "bytes": 156133,
+      "path": "diagrams/interchange_targets.png",
+      "sha256": "06f463f418f9369a44307ed6b46778976f4e89e2c77b353cafbea338fafe88ff"
+    },
+    {
+      "bytes": 79676,
+      "path": "diagrams/project_to_game_pipeline_3_9.png",
+      "sha256": "0a6577d32e3b08bff65de42327db8e6ff1736531e50df554ef52265d5a5aaeab"
+    },
+    {
+      "bytes": 374764,
+      "path": "diagrams/sandbox_before_after.png",
+      "sha256": "dbf69bf0816d5004bfab3f299ec857de33d69724b7ffcba254e9176480bbfce6"
+    },
+    {
+      "bytes": 145853,
+      "path": "diagrams/scene_spatial_runtime.png",
+      "sha256": "b52cc83f18de5c4935b9e91119cd428530604be5e73399c9665f8b1186a78c85"
+    },
+    {
+      "bytes": 123891,
+      "path": "diagrams/two_hands_calculus.png",
+      "sha256": "7e236954b29a6a65110b29e178504052bd538812756b8881a87a5a5d57b7cbe3"
+    },
+    {
+      "bytes": 93959,
+      "path": "diagrams/validation_counts.png",
+      "sha256": "3e088c1d2b638052bd6961abb032a975de04ba15d4e06846c56908d08f41d4ed"
+    },
+    {
+      "bytes": 72407,
+      "path": "diagrams/validation_expansion_3_9.png",
+      "sha256": "70be3c4de548f86d0c95d19ed544b69822e071fd4e4ff7bb2112231b7e3ade6e"
+    },
+    {
+      "bytes": 107599,
+      "path": "dist/legacy_3_9/ugts_kc_elizabeth-3.9.0-py3-none-any.whl",
+      "sha256": "ae2ae0802efea3d7929e5e64edff685b118bfc387f672c049c27cdecfbac72fa"
+    },
+    {
+      "bytes": 111391,
+      "path": "dist/legacy_3_9/ugts_kc_elizabeth-3.9.0.tar.gz",
+      "sha256": "86d08297970e6ae48f775267b508bc2de0254fdb41a3ea5a43704ebb7ed46d8c"
+    },
+    {
+      "bytes": 149570,
+      "path": "dist/ugts_kc_signature-3.9.1-py3-none-any.whl",
+      "sha256": "03e0e4a0cba0f7e3d1a10d6441bfc8c5ff25cbf80da0eeeb193b5494b5fafc63"
+    },
+    {
+      "bytes": 668627,
+      "path": "dist/ugts_kc_signature-3.9.1.tar.gz",
+      "sha256": "df4811f203b12db9cb2a50c938a02f1568095c1d5be34d82ce18cd539d93ee95"
+    },
+    {
+      "bytes": 1678,
+      "path": "docs/ANDROID_NATIVE_GUIDE.md",
+      "sha256": "6e34ded807fbeb627678f9494b25581c0c5d972a4a3c440d1dc6741fbd9e7181"
+    },
+    {
+      "bytes": 2627,
+      "path": "docs/API_OVERVIEW.md",
+      "sha256": "33d41c205080e1ffa0dbd26eff1463d6f407731e4d032e072a163c7cf4af6181"
+    },
+    {
+      "bytes": 598,
+      "path": "docs/ATTRIBUTION_NOTICE.md",
+      "sha256": "28bf6a052457ece294073c22f79dc166aedb5d89d723794983110a312ed9e7aa"
+    },
+    {
+      "bytes": 913,
+      "path": "docs/BUILD_STATUS_3_9_1.md",
+      "sha256": "3a34651a182a990ecc8c03ce6a29ea2e81a501766d5ed4fd3c69353fdabd453f"
+    },
+    {
+      "bytes": 3219,
+      "path": "docs/CHANGELOG.md",
+      "sha256": "e5ff47b200653aeb1feace00ca2e5b24fa5a00a5418e618369c457013b1392b1"
+    },
+    {
+      "bytes": 2316,
+      "path": "docs/EVIDENCE_BOUNDARY.md",
+      "sha256": "bb325769b3c68a4b810261cd3cf9c7f597b2f64d01cc35aa778b0f8d83188872"
+    },
+    {
+      "bytes": 686,
+      "path": "docs/FOUR_D_ROADMAP.md",
+      "sha256": "3529c179cf46333ea402abe1c7359f429c3d1746578f09fe0e025079d3a23094"
+    },
+    {
+      "bytes": 5012,
+      "path": "docs/GAME_CREATION_GUIDE.md",
+      "sha256": "22db588a0b4193328b0f194269a1285f34b55adec4853b93c3a4cce1be9b5f43"
+    },
+    {
+      "bytes": 2766,
+      "path": "docs/GETTING_STARTED.md",
+      "sha256": "d59e32f282877bfaaee6c3b05dca41e04ab885b5d29c2d7132bea49ecc1a438b"
+    },
+    {
+      "bytes": 1917,
+      "path": "docs/HTML5_RUNTIME_GUIDE.md",
+      "sha256": "fdfb255e5d0eaf4813273945d4366d9e1ae98860a0550a0f2ea503a7339240e4"
+    },
+    {
+      "bytes": 1761,
+      "path": "docs/MIGRATION_3_0_TO_3_9.md",
+      "sha256": "7b8d6b94a1a6541c11c7e4783c3f7fb977c0f33baa807fbbd388026433f704ff"
+    },
+    {
+      "bytes": 636,
+      "path": "docs/MIGRATION_3_9_TO_3_9_1.md",
+      "sha256": "e24cba0e06727f26c8b6a92e3afb477b740a59ce83be88a222e4672632e8b879"
+    },
+    {
+      "bytes": 1032,
+      "path": "docs/MOBILE_3D_GUIDE.md",
+      "sha256": "53c802111f3553cde1b1713c2c131fa35492c89bdc6173e88061aafbbf4978b9"
+    },
+    {
+      "bytes": 1442,
+      "path": "docs/REFERENCES.md",
+      "sha256": "ca7daaf9989626c8712bde7baf9bd032a898cd1040506690c0e592fa15f93366"
+    },
+    {
+      "bytes": 947,
+      "path": "docs/RELEASE_NOTES_3_9.md",
+      "sha256": "5a208a723d7f3dfc2bdf3098324e3c398f7ab7d4dfbc6fd9758ad430c991426d"
+    },
+    {
+      "bytes": 1452,
+      "path": "docs/RELEASE_NOTES_3_9_1.md",
+      "sha256": "bd8297c041c03f6c784b361b673f90a77029971f985b75a6d2d027a7c767e710"
+    },
+    {
+      "bytes": 1059,
+      "path": "docs/ROADMAP.md",
+      "sha256": "314ba739fc248e7f1b87316426a987e70cf8e6352f923ab9fde204181c0ef42c"
+    },
+    {
+      "bytes": 479,
+      "path": "docs/SIGNATURE_EDITION.md",
+      "sha256": "e0694629a10ee8308d7bc37fe0d9f189b454e263a87e095089f9fb1ec935130d"
+    },
+    {
+      "bytes": 654,
+      "path": "examples/elizabeth_vector_quest/README.md",
+      "sha256": "54102a5a754cd639b6d3420dc34cd82e7029f6289356dc08f399169b08bca9c6"
+    },
+    {
+      "bytes": 1136,
+      "path": "examples/elizabeth_vector_quest/assets_svg/crystal.svg",
+      "sha256": "894048e62b523911f7faddc8651f81f4520a01ac4ca59c33dc28f4d5614541df"
+    },
+    {
+      "bytes": 1472,
+      "path": "examples/elizabeth_vector_quest/assets_svg/hazard_orb.svg",
+      "sha256": "53a87b12d78f50d7597bd42eb7173b413bdaf049b7badee84b216acf2aae5902"
+    },
+    {
+      "bytes": 1177,
+      "path": "examples/elizabeth_vector_quest/assets_svg/obstacle.svg",
+      "sha256": "7ec67f956c5863cdf1a71f6c52be20173a7f945d301b96b64e2613aabd7e833c"
+    },
+    {
+      "bytes": 1624,
+      "path": "examples/elizabeth_vector_quest/assets_svg/player_ship.svg",
+      "sha256": "5fc222b07ea0ddad373d446436c0a82d86a194ce11722f1e2a73e9a69234661b"
+    },
+    {
+      "bytes": 1146,
+      "path": "examples/elizabeth_vector_quest/assets_svg/portal.svg",
+      "sha256": "710143f886b0590b95d56c0e1113879b6677aefb7026e775b41c2003310d4bd8"
+    },
+    {
+      "bytes": 474,
+      "path": "examples/elizabeth_vector_quest/dist/README.txt",
+      "sha256": "b42e291e636d0e26c6f6291733a447568b3d52378ba2c262dbebb12fb99fbc45"
+    },
+    {
+      "bytes": 1002,
+      "path": "examples/elizabeth_vector_quest/dist/build-report.json",
+      "sha256": "661af9466e24951eda77ce56117694528cbc915bdb90468aeff153272978bc2c"
+    },
+    {
+      "bytes": 72161,
+      "path": "examples/elizabeth_vector_quest/dist/index.html",
+      "sha256": "417ca9cd80d28c83605025bea22792017ee7b457be202e2d663e880fbd73e6bc"
+    },
+    {
+      "bytes": 67265,
+      "path": "examples/elizabeth_vector_quest/dist/project.json",
+      "sha256": "b61cff0e70c70fe293d0923811fe05c6edf7c9fd68af29a1f749fc8d4c1310f8"
+    },
+    {
+      "bytes": 580,
+      "path": "examples/elizabeth_vector_quest/headless_smoke.py",
+      "sha256": "dc0da2c9c6232a56095b5a787c2714f1e8bbf4e310be8a3f5f581b890d5dc020"
+    },
+    {
+      "bytes": 67265,
+      "path": "examples/elizabeth_vector_quest/project.json",
+      "sha256": "b61cff0e70c70fe293d0923811fe05c6edf7c9fd68af29a1f749fc8d4c1310f8"
+    },
+    {
+      "bytes": 156215,
+      "path": "examples/elizabeth_vector_quest/screenshot.png",
+      "sha256": "8846af468e855de7c56f2cdefed598620c44dd93f2a9c9e0eaab48471a1a878e"
+    },
+    {
+      "bytes": 4337,
+      "path": "examples/kc_two_hands_definition.json",
+      "sha256": "b750a1facfe59d82d549be8628dbafc5e586cc5b50c55d75d1d63069a5b794a7"
+    },
+    {
+      "bytes": 314643,
+      "path": "examples/output/sandbox_after.svg",
+      "sha256": "789879ec1f602d373694a859bef03a51236afd20af935d251be81d9c60aab223"
+    },
+    {
+      "bytes": 314643,
+      "path": "examples/output/sandbox_before.svg",
+      "sha256": "031fcb742e7d4df3cba72311fa952d95708645e3f657c408d90dc311d0389411"
+    },
+    {
+      "bytes": 1080,
+      "path": "examples/output/sandbox_diagnostics.json",
+      "sha256": "700bf5c7bc86990ed736b57a36dfb11d16685562e815180f90be003238966904"
+    },
+    {
+      "bytes": 2208877,
+      "path": "examples/output/sandbox_replay.json",
+      "sha256": "6facdf01e836a8aa0664a377a5e556ecfe4e696a46bbb5ed75f3408882ab78c7"
+    },
+    {
+      "bytes": 139712,
+      "path": "examples/output/sandbox_scene.gltf",
+      "sha256": "97dcbed238751d42c3b2491959c494033b9c51289d2c9de4790c60340cc483f6"
+    },
+    {
+      "bytes": 892080,
+      "path": "examples/output/sandbox_scene.json",
+      "sha256": "daaef9fc8c1ee51928fabcfc6bb0f72e74fe3f873f458a8a31527b067758c6f3"
+    },
+    {
+      "bytes": 276965,
+      "path": "examples/output/sandbox_scene.usda",
+      "sha256": "306821d4a2658fbdf66a324dd0370286a9c59a0ee731ae0efd683f89ae4b298e"
+    },
+    {
+      "bytes": 443,
+      "path": "examples/output/sandbox_scene_audit.json",
+      "sha256": "72a50ade22f7afdcd1fcbbecf3e06ce6b484360d4786cc6a1a4831bb57c059c0"
+    },
+    {
+      "bytes": 1017,
+      "path": "examples/output/sandbox_summary.json",
+      "sha256": "d66a5948f7caa321538f118ecd25de6397f33fb9775a4aadc9929f51ba806acb"
+    },
+    {
+      "bytes": 434,
+      "path": "examples/tom_signature_arena_3d/README.md",
+      "sha256": "e31ee2ae370d01450c7fb107242feeae49099da955579c3891d3d4aba37834f2"
+    },
+    {
+      "bytes": 160201,
+      "path": "examples/tom_signature_arena_3d/project.json",
+      "sha256": "8d5bf4b9b2037fd0ee2065c3e8ddf3e47e001d9466b152314990069b0f1399f0"
+    },
+    {
+      "bytes": 15486,
+      "path": "examples/tom_signature_arena_3d/scene-pack-inspection.json",
+      "sha256": "c31e2b8c6e9ced61cf8900932abac3dd605f9d94d4e5072063373754d4776582"
+    },
+    {
+      "bytes": 61990,
+      "path": "examples/tom_signature_arena_3d/signature_scene.gltf",
+      "sha256": "b4e38f743b7b1f5c1c87613e44b93ce42b2c68098f0f171a070d8f97042f65df"
+    },
+    {
+      "bytes": 21735,
+      "path": "examples/tom_signature_arena_3d/signature_scene.kc3d",
+      "sha256": "485bb8a5ed7d4632577195dc0a889b4e6d3ea13ebc55482c5ea40761729ba437"
+    },
+    {
+      "bytes": 1069064,
+      "path": "examples/tom_signature_arena_3d/signature_scene_preview.svg",
+      "sha256": "fcf3b915473f17e3521c77fb1dbf3f8aa3317bdbc868cf0c49186858bb96d919"
+    },
+    {
+      "bytes": 5203,
+      "path": "examples/two_hands_sandbox.py",
+      "sha256": "ca5ee1c08ce860c56a1e68733f113e97fcd6bb69f67dd668b8b88929f56a372e"
+    },
+    {
+      "bytes": 1753,
+      "path": "native/host_tests/native_core_tests.cpp",
+      "sha256": "78201bb7c43d976f2560fda4053ed8ff198cb8e2b78addfdc9f4edc6ae6bf544"
+    },
+    {
+      "bytes": 932,
+      "path": "pyproject.toml",
+      "sha256": "b1af98587e947e04f02900f5bf42b39fce835712d894f4a7dc9bcb4b007ee834"
+    },
+    {
+      "bytes": 258,
+      "path": "report/LEGACY_REPORTS.md",
+      "sha256": "84fa9937d73fee0fa5fdfa9a0c88f4d228d17a308afaef386f748cd94a4904a1"
+    },
+    {
+      "bytes": 510944,
+      "path": "report/UGTS_KC_3_9_KC_Elizabeth_Vector_Game_Runtime.docx",
+      "sha256": "992b04a1226dad1aab96f7742bbc686b5bc3e0adb3ed3ddb049fb2a68b202ad1"
+    },
+    {
+      "bytes": 681130,
+      "path": "report/UGTS_KC_3_9_KC_Elizabeth_Vector_Game_Runtime.pdf",
+      "sha256": "d7ee3c91abf60e35b4b15fb296477974e45802c24e1fde618d683949bc1c7df2"
+    },
+    {
+      "bytes": 1294991,
+      "path": "report/legacy_3_0/UGTS_KC_Two_Hands_3_0_Interactive_Graphics_Runtime.docx",
+      "sha256": "2425794b909798c1099921bba891093c8ec5af93af361e2d858dc67bedc4ca79"
+    },
+    {
+      "bytes": 1740723,
+      "path": "report/legacy_3_0/UGTS_KC_Two_Hands_3_0_Interactive_Graphics_Runtime.pdf",
+      "sha256": "183ffa4e2bf29cfa0308687cd221529321598dbd69ef75c150abc0c64810f214"
+    },
+    {
+      "bytes": 483,
+      "path": "setup.py",
+      "sha256": "e34d6f323c524b97afa6d4e5552daab8b7d3587673f3e583bdaa7f68ebffb43f"
+    },
+    {
+      "bytes": 1686,
+      "path": "shaders/kc3_instance_records.wgsl",
+      "sha256": "953c730de35f8a75f4049f060eac29b9192764b7b498f0ae770ede99b6a023ad"
+    },
+    {
+      "bytes": 417,
+      "path": "shaders/kc3_procedural_preview.frag",
+      "sha256": "0a1cd78dee7afbd34e7f0c143308366eb3a55e75bb00552a685c6977fa2386f5"
+    },
+    {
+      "bytes": 476,
+      "path": "shaders/kc3_procedural_preview.vert",
+      "sha256": "de67b7bb9ab14a9fad20bd293ac02db0d736928d0f220dfeade8b04f76cb2ae7"
+    },
+    {
+      "bytes": 999,
+      "path": "signature/TOM_KLOOTWIJK_SIGNATURE_EDITION.json",
+      "sha256": "81119e243cbb0a3e336aa1b57be4946bdc585ea0a799e764a5fb06291a78d72b"
+    },
+    {
+      "bytes": 710,
+      "path": "spec/FOUR_D_CONTRACT_DRAFT.md",
+      "sha256": "35b5c31f40e2909a97363bc3a3c672bf2f48c065e9c5e5f080e968d39f045d82"
+    },
+    {
+      "bytes": 1398,
+      "path": "spec/GAME_PROJECT_AND_HTML5_CONTRACT.md",
+      "sha256": "307e18d92a7416de59e03e75ba5768f9ca670b928a78f9f73c24697bce2b3626"
+    },
+    {
+      "bytes": 1593,
+      "path": "spec/GAME_RUNTIME_CONTRACT.md",
+      "sha256": "00931865ce2b30fff4f231ffdb78f7f97d7c5629194c269df694859031fdf064"
+    },
+    {
+      "bytes": 1545,
+      "path": "spec/GRAPHICS_RUNTIME_ABI.md",
+      "sha256": "47a40763ab63d4a58260c6a81aad5c9e614ae0d952dc285c7270714649cbdab4"
+    },
+    {
+      "bytes": 1839,
+      "path": "spec/HAND_INTERACTION_CONTRACT.md",
+      "sha256": "7d87dc1a7f9d3d6493be6962d00e41e0ab11f6a70d63f9b394dbd5bf1cd77fa3"
+    },
+    {
+      "bytes": 1282,
+      "path": "spec/INPUT_ANIMATION_TILEMAP_AUDIO_CONTRACT.md",
+      "sha256": "58ef198f8173aead03cf42282f367f3986c3c9d877db7ccc644a2e19dff0037a"
+    },
+    {
+      "bytes": 1428,
+      "path": "spec/MOBILE_3D_AND_ANDROID_CONTRACT.md",
+      "sha256": "3268c8e4199a0f5f1afd7cfde84239f14d5063ad2bb2278e2eb6144c3289f845"
+    },
+    {
+      "bytes": 832,
+      "path": "spec/NATIVE_SCENE_PACK_3_9_1.md",
+      "sha256": "04db3dc9204d633e3719b66f310311388b1be5301e2f3a09444124570f4a14f5"
+    },
+    {
+      "bytes": 2445,
+      "path": "spec/PRODUCTION_RELEASE_DEFINITION.md",
+      "sha256": "e14a3d288996b8e159a0cb9651830b685c0b93bc5e3ca23e009ebb36479c223b"
+    },
+    {
+      "bytes": 1819,
+      "path": "spec/SCENE_AND_ASSET_CONTRACT.md",
+      "sha256": "06e97d4bd3a0f4e65c149beca5859801474efaacf521b988c476d7d8035c35bc"
+    },
+    {
+      "bytes": 1253,
+      "path": "spec/STANDARDS_TARGETS.md",
+      "sha256": "d509480998a1ceeaf07114f3e60905c581ac9e4882e226a55bb7542a9f22fe8a"
+    },
+    {
+      "bytes": 1224,
+      "path": "spec/VECTOR_ASSET_2D_CONTRACT.md",
+      "sha256": "83d4796b0bd154ae9ca343db85e0c4ebb444869cf4a7647d2531275186da4323"
+    },
+    {
+      "bytes": 35152,
+      "path": "spec/engineering_catalog_M198_M329.csv",
+      "sha256": "e6fef9f419f60e2af0acefb21d431473173f04e253ecc95596ccc0697067c4e1"
+    },
+    {
+      "bytes": 55752,
+      "path": "spec/engineering_catalog_M198_M329.json",
+      "sha256": "22bebced43db20cd87d7c8b6adf4129d5d3a9fecad7eb70389d8b2539bfc53a4"
+    },
+    {
+      "bytes": 49385,
+      "path": "spec/engineering_catalog_M198_M389.csv",
+      "sha256": "1a10ff0989ea6697556939f26d98462d8f48bd2ea6e668de27ac6693d8281d6c"
+    },
+    {
+      "bytes": 79327,
+      "path": "spec/engineering_catalog_M198_M389.json",
+      "sha256": "c834db93a84db328e481befa79505b23a08fcfb26098bfa789699037e25d2489"
+    },
+    {
+      "bytes": 64343,
+      "path": "spec/engineering_catalog_M198_M449.csv",
+      "sha256": "45d22f5f639aaff4401ff2910ce2e2f961282c2dea64d0ec6dd995d9e50a3607"
+    },
+    {
+      "bytes": 103600,
+      "path": "spec/engineering_catalog_M198_M449.json",
+      "sha256": "b0f8ac6d393d76f3e2a02000b036c36657317ef9d4e4c9e8e2cc10ac979b23d9"
+    },
+    {
+      "bytes": 5226,
+      "path": "spec/game_project_schema_3_9.json",
+      "sha256": "7aaa9a18fa7eb68d82a91cf2a3b85b77a2d3a7ed4fe6e4aa5a9a555bb5b5358a"
+    },
+    {
+      "bytes": 15813,
+      "path": "spec/kc2_mechanisms_M198_M257.csv",
+      "sha256": "000471ecfec66f963f48a247d8327445a39d978ce49a5e5db6b7fb66fd862bed"
+    },
+    {
+      "bytes": 25236,
+      "path": "spec/kc2_mechanisms_M198_M257.json",
+      "sha256": "a7e9ce323457a7a580e5762e63e7e95aab9ed0888996f86200b8d8d0ba512633"
+    },
+    {
+      "bytes": 663,
+      "path": "spec/kc2_source_basis.json",
+      "sha256": "da12f96acb09ee1c7968c076e37fe9d26762540ba33573139649eb9427122b16"
+    },
+    {
+      "bytes": 15021,
+      "path": "spec/kc391_mechanisms_M390_M449.csv",
+      "sha256": "91ba2f27e51bd38bdb2465bcef591ea3d390df02df38aacf4d137118c0ed8da8"
+    },
+    {
+      "bytes": 24393,
+      "path": "spec/kc391_mechanisms_M390_M449.json",
+      "sha256": "da75fd76b526acaef7408a4c275c6da20e64762609ce8951450b42224c34d6fc"
+    },
+    {
+      "bytes": 14296,
+      "path": "spec/kc39_mechanisms_M330_M389.csv",
+      "sha256": "348b3043e9dedbd917e077663a429b078590ceb48bb8072cd117de999d9cddb5"
+    },
+    {
+      "bytes": 23696,
+      "path": "spec/kc39_mechanisms_M330_M389.json",
+      "sha256": "fb993a55201fad3a2933b7d9a2b9482205fe4396e9c1853a0525da2fc24d42e5"
+    },
+    {
+      "bytes": 19402,
+      "path": "spec/kc3_mechanisms_M258_M329.csv",
+      "sha256": "f1b0448f2cdac6d726f05d88bd732c467c48d387b946d14185094fa22c41aaef"
+    },
+    {
+      "bytes": 30648,
+      "path": "spec/kc3_mechanisms_M258_M329.json",
+      "sha256": "c5fabc93643323aad4f14e045f24e5be0fb9d5343b5d3c9898114b94316acb52"
+    },
+    {
+      "bytes": 11671,
+      "path": "spec/mobile_3d_project_schema_3_9_1.json",
+      "sha256": "1e25c6d38fc3f620766b11b96c40de6f90b3712fca70e929fd1e262aa200bc80"
+    },
+    {
+      "bytes": 9083,
+      "path": "spec/production_substrate_schema.json",
+      "sha256": "f3c110ddeee85e16dc0f70871bf65030934807cad8b42ebde56840c013b8a462"
+    },
+    {
+      "bytes": 1197,
+      "path": "spec/source_basis.json",
+      "sha256": "d17cdf54ab230dd84a1cafdcb5539dbe68aef0ed89c16823a05db525e4d1853a"
+    },
+    {
+      "bytes": 828,
+      "path": "spec/source_basis_3_9.json",
+      "sha256": "abe42baa42fcf45e46e844f38003b8dbace4f807523d222846787f0debf33c96"
+    },
+    {
+      "bytes": 1515,
+      "path": "spec/source_basis_3_9_1.json",
+      "sha256": "497b47d6c40a0c321ee55ee3ef2bdb0a7646a1ecf2210261e1a4f456c8b967ec"
+    },
+    {
+      "bytes": 242,
+      "path": "src/ugts_kc/__init__.py",
+      "sha256": "777c0250134499a53b65ede4ab1c75a1f44b398fc27d48ca57c3119354d48e57"
+    },
+    {
+      "bytes": 2253,
+      "path": "src/ugts_kc/dynamics.py",
+      "sha256": "f72b9f2b87864095d632a36cb712f8439f5c5c561b2f55717a9d66371cf22dcf"
+    },
+    {
+      "bytes": 1259,
+      "path": "src/ugts_kc/events.py",
+      "sha256": "066ab51e6ec25dd7d78d433d1a033beb32cd96450d49fd03ea27307c131bc14e"
+    },
+    {
+      "bytes": 2098,
+      "path": "src/ugts_kc/fields.py",
+      "sha256": "0f5faa9793e20ff4277733b7ea2a7458382a2c39757bf8a01ca8857d24104888"
+    },
+    {
+      "bytes": 7144,
+      "path": "src/ugts_kc/kinematics.py",
+      "sha256": "0a96fb2d9ca1e7432984a40cf164ff0a47b85269217413cdc425698a5daf4964"
+    },
+    {
+      "bytes": 1736,
+      "path": "src/ugts_kc/mathutil.py",
+      "sha256": "8a9570a872b5b26b235a58b990b1656325cd3555598f3e5fdd739686205da41c"
+    },
+    {
+      "bytes": 6130,
+      "path": "src/ugts_kc/patterns.py",
+      "sha256": "27ba2e8234ee2b44b7931077302cd774f27332b92c44fd11ccb33a3f5095e3e7"
+    },
+    {
+      "bytes": 0,
+      "path": "src/ugts_kc/py.typed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2330,
+      "path": "src/ugts_kc/topology.py",
+      "sha256": "bc54a558ba5e15e560827f5799ce68cd9c808c9a387c5a83f97f4b565ace315d"
+    },
+    {
+      "bytes": 982,
+      "path": "src/ugts_kc3/__init__.py",
+      "sha256": "07cdb2ffbdf2502f9f2de720b8ef4651d7807295b7dab0f468241a5fd2d28206"
+    },
+    {
+      "bytes": 48,
+      "path": "src/ugts_kc3/__main__.py",
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "bytes": 80,
+      "path": "src/ugts_kc3/android_template/__init__.py",
+      "sha256": "8a21f0a947e574a01fab97e6bbeb7fcd4a5239fb953b472728c39a6c3579284f"
+    },
+    {
+      "bytes": 1218,
+      "path": "src/ugts_kc3/android_template/project/README.md",
+      "sha256": "ad142754914f4c58364db5b87239e3d9a788a6a9e2b504cb4ca5bb7ad9754456"
+    },
+    {
+      "bytes": 1671,
+      "path": "src/ugts_kc3/android_template/project/app/build.gradle",
+      "sha256": "e3d54a24807eb6c1f9483bc74dbc46189de4071afb9324aec95d2d74f022d4cc"
+    },
+    {
+      "bytes": 57,
+      "path": "src/ugts_kc3/android_template/project/app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1553,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/AndroidManifest.xml",
+      "sha256": "317663eeba2db53959828583863cfe2dbaea62810e926e82a078241fdc723238"
+    },
+    {
+      "bytes": 680,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.frag",
+      "sha256": "3ebd9bd3d65aa8c15f7981f9008692a4b605e792352778b1562cc8588b7deab9"
+    },
+    {
+      "bytes": 413,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.vert",
+      "sha256": "eb70f4a63997af001db413f85d163573df5f5d12840235c998d12c52e9e7d298"
+    },
+    {
+      "bytes": 1021,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/CMakeLists.txt",
+      "sha256": "6ecdf9c937452bce624df3464074190dcc8cbbbc0ff0751e07070c1b6e26409c"
+    },
+    {
+      "bytes": 860,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 2770,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/device_profile.cpp",
+      "sha256": "03fe6f61f9d1aeca0b055715afa6bd8611927e65ec0f63a5d3950e95f4f964a8"
+    },
+    {
+      "bytes": 676,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 10395,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/engine.cpp",
+      "sha256": "19e560cb17d6d72c7cb10e919458cf038855d548703b93019565a935e367bc20"
+    },
+    {
+      "bytes": 1509,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/engine.hpp",
+      "sha256": "c6c07ce6b00f32b4fc1aee6af0084a04946b5ca79e79cd3559bcc29c5d69e413"
+    },
+    {
+      "bytes": 3792,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1612,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/main.cpp",
+      "sha256": "037b624cf9aac4bb04b56ba26394713ad6843592c48016d21fcc74367517e66f"
+    },
+    {
+      "bytes": 10051,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "bc961dfe22e0e2ca01b6f8da70d6cb7af9b1773243da62b7db032ceb4c6580c1"
+    },
+    {
+      "bytes": 1734,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "16159c9a2115b73e3d7c27a716c52b53d26a92ff6e024109b68cd828f22e04ba"
+    },
+    {
+      "bytes": 6240,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/scene_pack.cpp",
+      "sha256": "7bc46d2e9dbb65951396bdf11afce1087a3d7be01640dab4ddc74db89f69dff1"
+    },
+    {
+      "bytes": 2836,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/cpp/scene_pack.hpp",
+      "sha256": "1f44ddca087e5ffe396503c851e91e6ffb4797e28d9e586d878497247e2c724c"
+    },
+    {
+      "bytes": 115,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/res/values/strings.xml",
+      "sha256": "c735dced679258b2f7f1edc55bd91fff1e6f4117148cb047df107a0d804cb795"
+    },
+    {
+      "bytes": 766,
+      "path": "src/ugts_kc3/android_template/project/app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 74,
+      "path": "src/ugts_kc3/android_template/project/build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 159,
+      "path": "src/ugts_kc3/android_template/project/gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 336,
+      "path": "src/ugts_kc3/android_template/project/settings.gradle",
+      "sha256": "4e5d4e490bdb0855a97d187f5272eb6378a04cfbfd34d0b3e08363ead750f4b7"
+    },
+    {
+      "bytes": 15218,
+      "path": "src/ugts_kc3/androidexport.py",
+      "sha256": "db97c1717a9187e5b9f49257d7e1eb7891e290b0bd0927b3da646c3cd277cdbb"
+    },
+    {
+      "bytes": 14440,
+      "path": "src/ugts_kc3/animation.py",
+      "sha256": "1ac3f57def50425db355334153222b1a4b6abe758e36fd4cd24ede55613fa886"
+    },
+    {
+      "bytes": 8740,
+      "path": "src/ugts_kc3/audio.py",
+      "sha256": "05ef71adba10bfb062d29de69825c7aee2f32524095c96c6d9c963b1b7503731"
+    },
+    {
+      "bytes": 12088,
+      "path": "src/ugts_kc3/cli.py",
+      "sha256": "3454481b466a2b809f9e3c88da93b411be163c2728d5d21bbb65e9064f1ad8aa"
+    },
+    {
+      "bytes": 20794,
+      "path": "src/ugts_kc3/collision2d.py",
+      "sha256": "5b3697fc40557cd5ccc3fabb2b987a47230b015b92cad8548c925dca30700087"
+    },
+    {
+      "bytes": 4252,
+      "path": "src/ugts_kc3/diagnostics.py",
+      "sha256": "82618ec982b9fa5cf1b260d9e1f4fd65ccba0292227d9b1a239f7f06f193ba50"
+    },
+    {
+      "bytes": 9336,
+      "path": "src/ugts_kc3/export.py",
+      "sha256": "74bcca3e0ed8015c7b8b430c82f1de548fd6f1beb1953ea03c64c896c6f59464"
+    },
+    {
+      "bytes": 43569,
+      "path": "src/ugts_kc3/game.py",
+      "sha256": "30ec82be94e2187ce166ae5f975c7af0623573dc90493870b3f3ba39db746e83"
+    },
+    {
+      "bytes": 11013,
+      "path": "src/ugts_kc3/game_input.py",
+      "sha256": "674063a08598bba3b237b95a1a0873bcc0fb7620e99e804aa96e89d44e2cfceb"
+    },
+    {
+      "bytes": 17785,
+      "path": "src/ugts_kc3/geometry.py",
+      "sha256": "8a439e7e816643037011f8cd8132415c90a9a2766ad9bae92e303b504570aeb8"
+    },
+    {
+      "bytes": 9135,
+      "path": "src/ugts_kc3/hands.py",
+      "sha256": "0ac044e33295360d1601858bdd411902bc6d145440d926f28ec011c615d25d18"
+    },
+    {
+      "bytes": 7646,
+      "path": "src/ugts_kc3/materials.py",
+      "sha256": "71973922bd3d8f71b43307fa8ac7211ecef79530e9d0fde1bef9997b0d1c1bde"
+    },
+    {
+      "bytes": 7364,
+      "path": "src/ugts_kc3/math3d.py",
+      "sha256": "50fb9b4c791e245382dc4b476a98a78cbaa138cedbac351f61f601183ab2593b"
+    },
+    {
+      "bytes": 51463,
+      "path": "src/ugts_kc3/mobile3d.py",
+      "sha256": "b726be5c391d070b7e321c6e49657c3714255caec3a9a0c6da9dc498966e48a8"
+    },
+    {
+      "bytes": 18156,
+      "path": "src/ugts_kc3/project.py",
+      "sha256": "92e3f550755a659f8cbf2432dd5adf16726af0b48efd695f118b1fe38acc49f1"
+    },
+    {
+      "bytes": 0,
+      "path": "src/ugts_kc3/py.typed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5866,
+      "path": "src/ugts_kc3/render.py",
+      "sha256": "d699baf68a7ad415817abdd3d6a2ce585b723a23aa65163572393ef648ca8e86"
+    },
+    {
+      "bytes": 6175,
+      "path": "src/ugts_kc3/replay.py",
+      "sha256": "dd9b5b5e831d2e8a9665719d25db8ad5a1424a975d32cc10caa73a7e6d03f915"
+    },
+    {
+      "bytes": 9514,
+      "path": "src/ugts_kc3/runtime.py",
+      "sha256": "005bb734d197d0fe3fedbc1955ad57c48272e12abaeb0a6d5816d7d297728603"
+    },
+    {
+      "bytes": 12343,
+      "path": "src/ugts_kc3/scene.py",
+      "sha256": "9efb96f62fe1508424d562152520a955c4ea60421ccf93d228dcd6e67232fc50"
+    },
+    {
+      "bytes": 8652,
+      "path": "src/ugts_kc3/spatial.py",
+      "sha256": "8015bc1be164776052d8a86988b862f9d8817071861ab3337c0e3d54292f73e9"
+    },
+    {
+      "bytes": 19476,
+      "path": "src/ugts_kc3/templates.py",
+      "sha256": "5cdb468d29878d01679eff1e5c8a71a924169ddd2d6b65b01172fc7d27ecec81"
+    },
+    {
+      "bytes": 9912,
+      "path": "src/ugts_kc3/templates3d.py",
+      "sha256": "bc67745a7d2f5bff82caf8d9ff3427e373d5f41e71204c3d4c3da9ec69a9fabb"
+    },
+    {
+      "bytes": 14687,
+      "path": "src/ugts_kc3/tilemap.py",
+      "sha256": "16be7fbf39967bebcb325efa68a4f61d004e42c97553fc0efaad333e5c0da29d"
+    },
+    {
+      "bytes": 24647,
+      "path": "src/ugts_kc3/vector2d.py",
+      "sha256": "919dd60a6470c5e5e78b667acd0f990b89c049553b83c20e361e49f9bd13edd1"
+    },
+    {
+      "bytes": 352,
+      "path": "src/ugts_kc3/version.py",
+      "sha256": "d1fe6e1db32a350fe4a46cd70e15100b6f9dd34a81e30a0f28b6b13b5a6b99cf"
+    },
+    {
+      "bytes": 50868,
+      "path": "src/ugts_kc3/webexport.py",
+      "sha256": "1fc336488addc7533c181854c7e66fb6ae12bc0fd75c9c07189690fdb7f785a1"
+    },
+    {
+      "bytes": 90,
+      "path": "templates/blank_mobile_3d/README.md",
+      "sha256": "b8a553320bc6bb61add0fe13be5362b29590aeaa9321c1777adccec8b3c6cbce"
+    },
+    {
+      "bytes": 70576,
+      "path": "templates/blank_mobile_3d/project.json",
+      "sha256": "67c53a7b1bfc86ca509650cdd96845bf8ee92871101d416f152c8f676b9609f9"
+    },
+    {
+      "bytes": 238,
+      "path": "templates/blank_vector_game/README.md",
+      "sha256": "0d45bb9ed3bf317e6aa94632da2db1e4290487bac373299e33e010648237d5d1"
+    },
+    {
+      "bytes": 23263,
+      "path": "templates/blank_vector_game/project.json",
+      "sha256": "503367cd7b55d228cc09a44e16d8bfda8dd0bcb166f1074f4cdf48ea07c710c3"
+    },
+    {
+      "bytes": 89,
+      "path": "templates/elizabeth_vector_quest/README.md",
+      "sha256": "06bea733276bb502fc6b678a6d8748a08c0c679de039e97b286c6b85b0042b74"
+    },
+    {
+      "bytes": 67265,
+      "path": "templates/elizabeth_vector_quest/project.json",
+      "sha256": "b61cff0e70c70fe293d0923811fe05c6edf7c9fd68af29a1f749fc8d4c1310f8"
+    },
+    {
+      "bytes": 136,
+      "path": "templates/tom_signature_3d/README.md",
+      "sha256": "4cce07b46e2332df862c991b175fdb953772d17f8ad3105ba2f3185e6ee69651"
+    },
+    {
+      "bytes": 160201,
+      "path": "templates/tom_signature_3d/project.json",
+      "sha256": "8d5bf4b9b2037fd0ee2065c3e8ddf3e47e001d9466b152314990069b0f1399f0"
+    },
+    {
+      "bytes": 7975,
+      "path": "tests/test_ugts_kc.py",
+      "sha256": "333469826f0ad93521856af942ccefd8a3eea77b590e2aea196b9b3cd7c617ce"
+    },
+    {
+      "bytes": 20084,
+      "path": "tests/test_ugts_kc3.py",
+      "sha256": "006d5a13fbb409569deb1bf7c85126591f42b74d80b57d2c01cf02c878c722a8"
+    },
+    {
+      "bytes": 30470,
+      "path": "tests/test_ugts_kc39.py",
+      "sha256": "4bbf7678f9f5335e3e8084f58e8c818d65bdc5e3498f0764c99e3f92040363ca"
+    },
+    {
+      "bytes": 17049,
+      "path": "tests/test_ugts_kc391.py",
+      "sha256": "a1a0cf99c42282f4530a0c4dd81fdf682b6174f92bd50f2043b2ac6936e63cf2"
+    },
+    {
+      "bytes": 1118,
+      "path": "validation/README.md",
+      "sha256": "b28b645416bc3d97b5676e9e7c1f566d70736be1d7d978fd9f7431d2eb524a26"
+    },
+    {
+      "bytes": 18963,
+      "path": "validation/android_source_validation_3_9_1.json",
+      "sha256": "820ca7f4e4f7a61f5dd1c916fd7bebe002c08254b6633cb7cd0ae0bc683213c6"
+    },
+    {
+      "bytes": 1501,
+      "path": "validation/asset_parse_validation_3_9.json",
+      "sha256": "7f66336065c5b2a7e4c1537e9d028f9985f50ab811c49e26e67e0ea83295b25b"
+    },
+    {
+      "bytes": 1307,
+      "path": "validation/browser_build_validation_3_9.json",
+      "sha256": "c65c3c8b47d1f5fd34050f57fa8923500f699879a51fe9037ca72c714a63970c"
+    },
+    {
+      "bytes": 287,
+      "path": "validation/browser_regression_3_9_1.json",
+      "sha256": "921c55f838842020c7ce686e4fd4acab157ae8d4ca5e722bc46da2182c9711d5"
+    },
+    {
+      "bytes": 544,
+      "path": "validation/catalog_validation_3_9.json",
+      "sha256": "4a0a2bc6b762d1d775b24f3ddd149055d5be0e6fedb314c8ad7efca67d7696d3"
+    },
+    {
+      "bytes": 1244,
+      "path": "validation/cli_smoke_3_9.txt",
+      "sha256": "da939faa84949d7d8ce7b80c25bd6587501ce6972a16d859a0d819b16ea738f6"
+    },
+    {
+      "bytes": 64,
+      "path": "validation/compileall_3_9.txt",
+      "sha256": "f36144b286ca767c63e910edc5b11364ca1b1955c16cc4c441d7b0a10543f120"
+    },
+    {
+      "bytes": 16,
+      "path": "validation/compileall_3_9_1.txt",
+      "sha256": "973ed2a2950562422f7b020a70220236f32bef40caaa997dd698e42dbbc6c2a5"
+    },
+    {
+      "bytes": 691,
+      "path": "validation/distribution_validation_3_9.json",
+      "sha256": "d8fc1977d1f4f67f96b55fd7860584e64020fca7dd032f19d039e4d3429ac2ee"
+    },
+    {
+      "bytes": 1072,
+      "path": "validation/distribution_validation_3_9_1.json",
+      "sha256": "6209305e9c4325f58b30b92a8d0551670333336e4c8892bc75bcb84367327558"
+    },
+    {
+      "bytes": 2834,
+      "path": "validation/docx_a11y_audit_3_9.json",
+      "sha256": "6a13f189d460ba3a9491fd7fcd7b55e8943b6280f65cdc65ed61733ee8f455aa"
+    },
+    {
+      "bytes": 84,
+      "path": "validation/docx_a11y_audit_3_9.txt",
+      "sha256": "3c395e9163a8720ae97cbc3859e30c04bcf10c64547c325c42a42dcacfa7c652"
+    },
+    {
+      "bytes": 19077,
+      "path": "validation/file_manifest_3_9.csv",
+      "sha256": "6f3481347714130bb7d84a90021d60e852791fe4b5749579c3cdc830510855aa"
+    },
+    {
+      "bytes": 81,
+      "path": "validation/javascript_syntax_3_9.txt",
+      "sha256": "e223a0334995f21b75ac5af84d559b0673b4660746be0ded26195f49480109df"
+    },
+    {
+      "bytes": 29,
+      "path": "validation/javascript_syntax_3_9_1.txt",
+      "sha256": "49dd1453474d757358e8dd6766ae5dd2de8dac2fb993b725538f66cc1390b888"
+    },
+    {
+      "bytes": 1389,
+      "path": "validation/legacy_3_0/artifact_validation.json",
+      "sha256": "9daf22703e8b0ec95165f275f24719709ebba28dcf6e0572388fc24372bfd518"
+    },
+    {
+      "bytes": 157,
+      "path": "validation/legacy_3_0/catalog_counts.json",
+      "sha256": "961649034bfca7eca0e4027bf6b9f03bc8fa1697a3776a3b391bf29bdc09353e"
+    },
+    {
+      "bytes": 275,
+      "path": "validation/legacy_3_0/catalog_validation.json",
+      "sha256": "1308549d2f243a2f168623bcd74218b811803ab7c503b2e6cf5c5131bb4a40be"
+    },
+    {
+      "bytes": 2879,
+      "path": "validation/legacy_3_0/docx_a11y_audit.json",
+      "sha256": "a10c5609afdac0e970b2816dc4031de92e1e838f677e570149d43bd8df0d0002"
+    },
+    {
+      "bytes": 120,
+      "path": "validation/legacy_3_0/docx_a11y_audit.txt",
+      "sha256": "4d58168908ddc078c13e665ab3cf21b63a64e2f155e57f76efdbe1b4292935e4"
+    },
+    {
+      "bytes": 8658,
+      "path": "validation/legacy_3_0/file_manifest.csv",
+      "sha256": "cdfcf6e297bafdffd2ae969892ea83430bffc0333c12e3cb30905452388b1dc7"
+    },
+    {
+      "bytes": 8269,
+      "path": "validation/legacy_3_0/manifest.sha256",
+      "sha256": "fb718641a6bef5bc692b4cc43b325be355e1059bab855bf57bd513e4b3a92ace"
+    },
+    {
+      "bytes": 658,
+      "path": "validation/legacy_3_0/pdf_fonts.txt",
+      "sha256": "f4151ffd26d3986f92466176e6e94ac13240181001356b691c1b7af14f3bd407"
+    },
+    {
+      "bytes": 1860,
+      "path": "validation/legacy_3_0/pdf_images.txt",
+      "sha256": "b08565ba54db73ebc69688135924857fb6a43cf65eae09126930010dd8fcf5af"
+    },
+    {
+      "bytes": 833,
+      "path": "validation/legacy_3_0/pdf_info.txt",
+      "sha256": "c0401f2740dbbccb11c09ad1d9de59b23c14c1606248ddf68ed7c19479db0226"
+    },
+    {
+      "bytes": 2447,
+      "path": "validation/legacy_3_0/pdf_inspect.json",
+      "sha256": "c5450350aad9c0535b7ea22f12c9f7f0a544a9f80777a4d649d7d233eceedd7c"
+    },
+    {
+      "bytes": 271,
+      "path": "validation/legacy_3_0/pdf_preflight.json",
+      "sha256": "5b70aaaa081e7cd2b9e5960a5814c55e9cb18dd8c144b744bd5fdcfd649cb52c"
+    },
+    {
+      "bytes": 4151,
+      "path": "validation/legacy_3_0/pdf_renderer_parity.json",
+      "sha256": "081220992d7c90d9e17644d508a65a2e8a92ebb4528157a1f7f7e92f9a2fe12c"
+    },
+    {
+      "bytes": 1498,
+      "path": "validation/legacy_3_0/release_summary.json",
+      "sha256": "da16b895f278dc78d7628ef5e46a44e61834b95409fcab8a3bb28aea3e34a2a2"
+    },
+    {
+      "bytes": 1017,
+      "path": "validation/legacy_3_0/sandbox_run.txt",
+      "sha256": "d66a5948f7caa321538f118ecd25de6397f33fb9775a4aadc9929f51ba806acb"
+    },
+    {
+      "bytes": 276,
+      "path": "validation/legacy_3_0/schema_validation.json",
+      "sha256": "2585e4ca9b71f085ece40fe471226a303c7f83156d72bc3d862583a8ec890486"
+    },
+    {
+      "bytes": 1478,
+      "path": "validation/legacy_3_0/source_hash_validation.json",
+      "sha256": "8efe9d0741bacdda91d2309a1385d59a85bfbb06f233b2e11f7bc369c059ba6f"
+    },
+    {
+      "bytes": 9539,
+      "path": "validation/legacy_3_0/test_results.txt",
+      "sha256": "8fab4ab2cf35be8742bf4f30f3b1d7fb8a32262b8d661fed5e4cddf3cd2e2d57"
+    },
+    {
+      "bytes": 254,
+      "path": "validation/legacy_3_0/test_summary.json",
+      "sha256": "7ced2d5f1fe7a58cc41ebb4faeb48d9726c1a7d68f592a90b5a6a4db95a62132"
+    },
+    {
+      "bytes": 16540,
+      "path": "validation/manifest_3_9.sha256",
+      "sha256": "a11b6a8e475636b0e67396aaae5ed9d3098b3d671d10d3a55ed750c2f31271ae"
+    },
+    {
+      "bytes": 256,
+      "path": "validation/native_host_validation_3_9_1.json",
+      "sha256": "bb35e587d9b349a73ee702d233deddd1a05f25315f953e36790e6e265cd8f1db"
+    },
+    {
+      "bytes": 753,
+      "path": "validation/native_host_validation_3_9_1.txt",
+      "sha256": "cde6eb01f937ca01b46b7824ea68ea06bc55fe595f58ddb7666fad8d5c2c7846"
+    },
+    {
+      "bytes": 1438,
+      "path": "validation/package_build_3_9.txt",
+      "sha256": "f056e2d52d20bc2771ff736970959ec2953e626188dfb74268fc00b8dbecfd93"
+    },
+    {
+      "bytes": 207,
+      "path": "validation/package_safety_3_9_1.json",
+      "sha256": "269fa64eda71379191964dc008260e19261f53cc6e62416bfa7e017f2989d6a6"
+    },
+    {
+      "bytes": 2343,
+      "path": "validation/pdf_inspect_3_9.json",
+      "sha256": "59152efcb8b9907243daa4869ebbd874a432b48df70258e86dcb9a51dc3aa330"
+    },
+    {
+      "bytes": 225,
+      "path": "validation/pdf_preflight_3_9.json",
+      "sha256": "2ade464911a290dce5283cd95193b2c0e9b48ca0320c500650bb93629a5694df"
+    },
+    {
+      "bytes": 2477,
+      "path": "validation/project_validation_3_9.json",
+      "sha256": "abc96db615173d1cc2b7bffed1d54e8d5ba824d7f8f2fef78c5ae0a3f0f6afd3"
+    },
+    {
+      "bytes": 386,
+      "path": "validation/python_distributions_3_9_1.json",
+      "sha256": "6b0612bcdd9dec622e6431eb400e79dc87fd4e521df89e3294b7243408263eb9"
+    },
+    {
+      "bytes": 2840,
+      "path": "validation/release_summary_3_9.json",
+      "sha256": "b5f6f2e216d3f17a002f3530634822edcf3842745b6544642634056e1520e9fa"
+    },
+    {
+      "bytes": 698,
+      "path": "validation/schema_validation_3_9.json",
+      "sha256": "736d78b1fe68c96933b042534558283036c9127e3ed1f728658594100396279d"
+    },
+    {
+      "bytes": 370,
+      "path": "validation/schema_validation_3_9_1.json",
+      "sha256": "df62f9cc3d91e5c1a4debf780de4103adec65d22eb9f0bdcf9b21ac2982c09a7"
+    },
+    {
+      "bytes": 684,
+      "path": "validation/source_metrics_3_9.json",
+      "sha256": "a96c85940f8cc95ad248fa59f2cd77caec980a05fd258e59fa53f43553154ecd"
+    },
+    {
+      "bytes": 18971,
+      "path": "validation/test_results_3_9.txt",
+      "sha256": "40e2ffb9cbe5ae74b4317ac6094b9677e83757ee1f6d07e7dadf5e9dfa0d86ad"
+    },
+    {
+      "bytes": 23047,
+      "path": "validation/test_results_3_9_1.txt",
+      "sha256": "88869ff7de3952285f22b30fb169614eb60d95752fb1aa87a7b5f6f5b0551a4e"
+    },
+    {
+      "bytes": 306,
+      "path": "validation/test_summary_3_9.json",
+      "sha256": "2ca738e690eef8784bead88cec7735235602e58980455d0101b271b21ab7b15d"
+    },
+    {
+      "bytes": 163,
+      "path": "validation/test_summary_3_9_1.json",
+      "sha256": "7c3c5699bfecf7d2c87aba198d5538d24893d2c45d1bd7171ce02a318229171f"
+    }
+  ],
+  "release": "UGTS-KC 3.9.1 - Tom Klootwijk Signature Edition",
+  "schema": "ugts-kc-release-manifest-3.9.1",
+  "total_bytes": 14778362
+}

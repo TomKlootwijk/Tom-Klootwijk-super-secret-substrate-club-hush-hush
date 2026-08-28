@@ -1,0 +1,233 @@
+{
+  "schema_version": "3.6.0",
+  "substrate_id": "ugts:kc:3.6:example:nl-number-hinge",
+  "definition_order": [
+    "def:number-literal-v1",
+    "event:sdf-zero-v1",
+    "op:binary-radix-v1",
+    "op:active-bits-v1",
+    "op:nl-lexeme-v1",
+    "op:syllable-pulse-v1",
+    "geom:pulse-polygon-v1",
+    "op:count-compare-v1",
+    "schedule:canonical-3-6",
+    "topo:mobius-wrap-v1",
+    "topo:nl-en-hinge-v1"
+  ],
+  "traces": {
+    "number:19": [
+      {
+        "step_id": "op:binary-radix-v1",
+        "kind": "radix_encode",
+        "output": {
+          "base": 2,
+          "numeral": "10011",
+          "digit_count": 5
+        }
+      },
+      {
+        "step_id": "op:active-bits-v1",
+        "kind": "active_bit_filter",
+        "output": {
+          "positions_lsb0": [
+            0,
+            1,
+            4
+          ],
+          "count": 3
+        }
+      },
+      {
+        "step_id": "op:nl-lexeme-v1",
+        "kind": "nl_number_lexeme",
+        "output": {
+          "value": 19,
+          "orthography": "negentien",
+          "pronunciation_segments": [
+            "ne",
+            "gen",
+            "tien"
+          ],
+          "morphemes": [
+            "negen",
+            "tien"
+          ],
+          "syllable_count": 3,
+          "place_order": [
+            10,
+            9
+          ],
+          "spoken_order": [
+            9,
+            "tien"
+          ],
+          "hinge_kind": "teen_suffix",
+          "hinge_count": 1,
+          "binary": "10011",
+          "popcount": 3,
+          "pulse_match": true
+        }
+      },
+      {
+        "step_id": "op:syllable-pulse-v1",
+        "kind": "syllable_pulse",
+        "output": {
+          "segments": [
+            "ne",
+            "gen",
+            "tien"
+          ],
+          "pulses": [
+            1,
+            1,
+            1
+          ],
+          "count": 3
+        }
+      },
+      {
+        "step_id": "op:count-compare-v1",
+        "kind": "feature_count_compare",
+        "output": {
+          "left_count": 3,
+          "right_count": 3,
+          "equal": true,
+          "semantics": "feature-count coincidence; no numeric identity"
+        }
+      },
+      {
+        "step_id": "geom:pulse-polygon-v1",
+        "kind": "regular_polygon_embedding",
+        "output": {
+          "vertex_count": 3,
+          "points": [
+            [
+              6.123233995736766e-17,
+              1.0
+            ],
+            [
+              -0.8660254037844388,
+              -0.4999999999999997
+            ],
+            [
+              0.8660254037844384,
+              -0.5000000000000004
+            ]
+          ]
+        }
+      }
+    ],
+    "number:23": [
+      {
+        "step_id": "op:binary-radix-v1",
+        "kind": "radix_encode",
+        "output": {
+          "base": 2,
+          "numeral": "10111",
+          "digit_count": 5
+        }
+      },
+      {
+        "step_id": "op:active-bits-v1",
+        "kind": "active_bit_filter",
+        "output": {
+          "positions_lsb0": [
+            0,
+            1,
+            2,
+            4
+          ],
+          "count": 4
+        }
+      },
+      {
+        "step_id": "op:nl-lexeme-v1",
+        "kind": "nl_number_lexeme",
+        "output": {
+          "value": 23,
+          "orthography": "drieëntwintig",
+          "pronunciation_segments": [
+            "drie",
+            "en",
+            "twin",
+            "tig"
+          ],
+          "morphemes": [
+            "drie",
+            "en",
+            "twintig"
+          ],
+          "syllable_count": 4,
+          "place_order": [
+            20,
+            3
+          ],
+          "spoken_order": [
+            3,
+            "en",
+            20
+          ],
+          "hinge_kind": "en_connector",
+          "hinge_count": 1,
+          "binary": "10111",
+          "popcount": 4,
+          "pulse_match": true
+        }
+      },
+      {
+        "step_id": "op:syllable-pulse-v1",
+        "kind": "syllable_pulse",
+        "output": {
+          "segments": [
+            "drie",
+            "en",
+            "twin",
+            "tig"
+          ],
+          "pulses": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "count": 4
+        }
+      },
+      {
+        "step_id": "op:count-compare-v1",
+        "kind": "feature_count_compare",
+        "output": {
+          "left_count": 4,
+          "right_count": 4,
+          "equal": true,
+          "semantics": "feature-count coincidence; no numeric identity"
+        }
+      },
+      {
+        "step_id": "geom:pulse-polygon-v1",
+        "kind": "regular_polygon_embedding",
+        "output": {
+          "vertex_count": 4,
+          "points": [
+            [
+              6.123233995736766e-17,
+              1.0
+            ],
+            [
+              -1.0,
+              1.2246467991473532e-16
+            ],
+            [
+              -1.8369701987210297e-16,
+              -1.0
+            ],
+            [
+              1.0,
+              -2.4492935982947064e-16
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

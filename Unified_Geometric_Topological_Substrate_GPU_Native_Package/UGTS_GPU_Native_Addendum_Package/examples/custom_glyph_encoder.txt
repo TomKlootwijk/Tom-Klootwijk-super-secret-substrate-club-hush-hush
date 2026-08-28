@@ -1,0 +1,9 @@
+STANDARD
+100% = 1 = 1 << 0
+
+CUSTOM GLYPH ENCODER v1 (source-defined, not ordinary arithmetic)
+"100" + terminal-open percent anatomy -> 100100_2
+(1 << 5) | (1 << 2) = 32 + 4 = 36
+
+EARLIER CUSTOM VARIANT v0
+100101_2 = 37

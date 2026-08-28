@@ -1,0 +1,21 @@
+id,name,pipeline,rule
+P36-01,Radix threshold ladder,number -> thresholds,Use b^k boundaries as discrete scale events or shell indices.
+P36-02,Active-bit pulse simplex,integer -> set-bit pulses -> polygon,Embed sparse active positions as a chosen simplex or regular polygon while retaining bit positions as metadata.
+P36-03,Pascal parity mask,"(n,k) -> C(n,k) mod 2",Generate a Sierpinski occupancy mask with exact parity tests; do not claim generic power-of-two rows are all odd.
+P36-04,Dutch teen suffix hinge,13..19 -> unit-root + tien,Represent morphological order separately from decimal place order.
+P36-05,Dutch en-order hinge,21..99 non-multiple tens -> unit + en + tens,Insert a connector node and perform a two-component semantic transposition.
+P36-06,Cut-open boundary graph,closed edge -> cut port pair,Change a loop constraint into an open path with explicit endpoint identity.
+P36-07,Loop-to-leg morph,closed arc -> diagonal segment,Interpolate curve controls while separately recording the topology event.
+P36-08,Split-oval antisymmetry,single loop -> two branches,Use a fixed center node and opposite signed displacement fields.
+P36-09,Overlap-lens domain,"A,B -> A intersection B","Treat overlap as geometry, tolerance, blend or join domain only after semantics are declared."
+P36-10,SDF-zero event,f(x(t)) -> root -> transition,Promote a boundary crossing from sampling detail to event semantics.
+P36-11,Cone support gate,"position,axis,radius,angle -> admit/reject",Prune by radial and angular support before relation solving.
+P36-12,Nested-shell relevance,radius -> interval index,"Use concentric intervals as local multiscale support, not global identity."
+P36-13,Mobius orientation wrap,boundary crossing -> coordinate wrap + orientation flip,Implement non-orientability as an explicit quotient map.
+P36-14,Klein sheet wrap,boundary crossing -> wrap + orientation and sheet update,Keep projected self-intersection distinct from state coupling.
+P36-15,Hourglass route table,guard locus + quadrant + parity -> branch,Route through a finite four-sector table.
+P36-16,Log-polar bitmask,"Cartesian point -> core flag, rho, theta -> sector bit",Use a compact local admission mask with explicit dimensions and singular core.
+P36-17,Golden-angle schedule,index -> low-regularity angular sample,Use as a sample schedule only; no zero-aliasing or zero-cost claim.
+P36-18,Bounded grammar recursion,seed + productions + budgets -> definition graph,"Stop on depth, symbol, expression or cycle limits."
+P36-19,Event-latched field morph,continuous alpha + discrete topology state,Keep visual interpolation and committed topology state separate.
+P36-20,Content-addressed definition graph,canonical records -> hashes -> dependency DAG,Make the substrate carry and verify its own operator definitions.

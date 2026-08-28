@@ -1,0 +1,116 @@
+{
+  "pdf": "C:\\Users\\Tom\\Documents\\TomKlootwijkVentureCorp\\Klootwijk\\UGTS_KC_3_6_3_SARA_Tom_Klootwijk_Package\\UGTS_KC_3_6_3_SARA_Tom_Klootwijk\\output\\pdf\\SARA_3_6_3_Defensive_Red_Team_Audit_2026-08-18.pdf",
+  "sha256": "11a2260b5e60282820443f291caf355821cdb49b4f6c24bf33f876493ad66ef8",
+  "bytes": 138393,
+  "pages": 16,
+  "encrypted": false,
+  "empty_pages": [],
+  "text_blocks_outside_media_box": [],
+  "missing_expected_headings": [],
+  "non_ascii_extracted_characters": [],
+  "visual_inspection": {
+    "rendered_pages": 16,
+    "pages_inspected": 16,
+    "clipping_or_overflow_found": false,
+    "unreadable_or_broken_layout_found": false
+  },
+  "page_details": [
+    {
+      "page": 1,
+      "text_characters": 557,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 2,
+      "text_characters": 1943,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 3,
+      "text_characters": 1560,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 4,
+      "text_characters": 1391,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 5,
+      "text_characters": 1644,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 6,
+      "text_characters": 1664,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 7,
+      "text_characters": 1468,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 8,
+      "text_characters": 1720,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 9,
+      "text_characters": 1552,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 10,
+      "text_characters": 1635,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 11,
+      "text_characters": 1217,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 12,
+      "text_characters": 1172,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 13,
+      "text_characters": 1964,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 14,
+      "text_characters": 2014,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 15,
+      "text_characters": 1766,
+      "links": 0,
+      "annotations": 0
+    },
+    {
+      "page": 16,
+      "text_characters": 1436,
+      "links": 0,
+      "annotations": 0
+    }
+  ],
+  "pass": true
+}

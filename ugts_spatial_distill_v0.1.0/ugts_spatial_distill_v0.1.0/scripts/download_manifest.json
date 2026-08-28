@@ -1,0 +1,28 @@
+{
+  "snapshot_date": "2026-08-16",
+  "downloads": [
+    {
+      "name": "Qwen3 Embedding 0.6B GGUF Q8_0",
+      "repository": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B-GGUF",
+      "filename": "Qwen3-Embedding-0.6B-Q8_0.gguf",
+      "listed_size": "639 MB",
+      "purpose": "offline multilingual teacher embeddings",
+      "bundled": false
+    },
+    {
+      "name": "GeoNames Netherlands",
+      "url": "https://download.geonames.org/export/dump/NL.zip",
+      "listed_size": "709 KiB",
+      "purpose": "small real place/feature pilot",
+      "bundled": false
+    },
+    {
+      "name": "Geofabrik Flevoland OpenStreetMap PBF",
+      "url": "https://download.geofabrik.de/europe/netherlands/flevoland-latest.osm.pbf",
+      "listed_size": "approximately 34.5 MB in August 2026",
+      "purpose": "roads, buildings, amenities and spatial topology",
+      "bundled": false,
+      "requires_optional_python_package": "osmium"
+    }
+  ]
+}

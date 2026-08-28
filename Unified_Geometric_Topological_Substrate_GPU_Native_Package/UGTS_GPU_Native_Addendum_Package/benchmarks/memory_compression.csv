@@ -1,0 +1,5 @@
+configuration,candidates,bytes,mib,relative_to_g64_dense,retention
+G64_E32 dense,1048576,100663296,96.0,1.0,all states + dense outputs
+G32_E16 dense,1048576,50331648,48.0,0.5,all packed states + dense outputs
+G32 state + compact E16 novelty log,1048576,34352480,32.761077880859375,0.34126122792561847,all packed states + verified events only
+G32 compact E16 novelty log only,1048576,798048,0.761077880859375,0.007927894592285156,verified events only; state must be rebuildable

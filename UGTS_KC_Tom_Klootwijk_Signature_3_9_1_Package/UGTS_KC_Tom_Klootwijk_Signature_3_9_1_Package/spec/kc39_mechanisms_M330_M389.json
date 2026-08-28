@@ -1,0 +1,548 @@
+{
+  "schema_version": "3.9.0",
+  "baseline_mechanism_count": 329,
+  "added_mechanism_count": 60,
+  "extended_total": 389,
+  "mechanisms": [
+    {
+      "id": "M330",
+      "domain": "Vector art",
+      "mechanism": "Serializable vector asset record",
+      "definition": "A vector asset groups stable identity, logical size, pivot, paths, gradients and metadata in a JSON-compatible record.",
+      "formula": "asset=(id,size,pivot,paths,gradients,metadata)",
+      "integration": "Shared authoring record for Python, SVG and browser Canvas output.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M331",
+      "domain": "Vector art",
+      "mechanism": "Typed path command grammar",
+      "definition": "Path geometry is expressed by move, line, quadratic, cubic and close commands with fixed arity.",
+      "formula": "cmd in {M2,L2,Q4,C6,Z0}",
+      "integration": "Provides a small deterministic interchange grammar.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M332",
+      "domain": "Vector art",
+      "mechanism": "Builder sequencing guard",
+      "definition": "Drawing commands are rejected until a subpath has an explicit move command.",
+      "formula": "draw => has_current_point",
+      "integration": "Prevents malformed path state during procedural authoring.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M333",
+      "domain": "Vector art",
+      "mechanism": "Named gradient resources",
+      "definition": "Paint strings may reference validated linear or radial gradients local to an asset.",
+      "formula": "paint=\"@\"+gradient_id",
+      "integration": "Avoids duplicated color-stop data across paths.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M334",
+      "domain": "Vector art",
+      "mechanism": "Adaptive quadratic flattening",
+      "definition": "Quadratic segments recursively subdivide until midpoint deviation is within tolerance.",
+      "formula": "err(mid, chord)<=epsilon",
+      "integration": "Produces inspection/collision-ready polylines from vector curves.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M335",
+      "domain": "Vector art",
+      "mechanism": "Adaptive cubic flattening",
+      "definition": "Cubic segments recursively subdivide against a caller-selected geometric tolerance.",
+      "formula": "max control deviation<=epsilon",
+      "integration": "Supports deterministic curve approximation without third-party geometry libraries.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M336",
+      "domain": "Vector art",
+      "mechanism": "Parametric primitive factories",
+      "definition": "Rectangles, rounded rectangles, circles, polygons and stars compile to the common path/asset record.",
+      "formula": "primitive(params)->VectorAsset2D",
+      "integration": "Speeds practical game-asset creation and template generation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M337",
+      "domain": "Vector art",
+      "mechanism": "Deterministic SVG materialization",
+      "definition": "An asset is written as stable SVG path/defs records with logical viewBox and optional background.",
+      "formula": "svg=emit(canonical(asset))",
+      "integration": "Provides portable inspection and artwork interchange.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M338",
+      "domain": "Collision and physics",
+      "mechanism": "AABB shape contract",
+      "definition": "An axis-aligned box stores finite minimum/maximum corners and exposes bounds/translation operations.",
+      "formula": "A=[xmin,xmax]x[ymin,ymax]",
+      "integration": "Base collider, camera bound and tile collision primitive.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M339",
+      "domain": "Collision and physics",
+      "mechanism": "Circle shape contract",
+      "definition": "A circle stores finite center and positive radius with exact AABB bounds.",
+      "formula": "||x-c||<=r",
+      "integration": "Compact player, pickup and hazard collider.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M340",
+      "domain": "Collision and physics",
+      "mechanism": "Convex SAT manifold",
+      "definition": "Convex polygons are tested on edge-normal axes and return minimum-overlap normals.",
+      "formula": "overlap=min_axes interval_overlap",
+      "integration": "Provides penetration and direction for convex response.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M341",
+      "domain": "Collision and physics",
+      "mechanism": "Mixed-shape manifold dispatch",
+      "definition": "AABB, circle and convex polygon pairs dispatch to typed narrow-phase routines with normal reversal as needed.",
+      "formula": "manifold=collide(shape_a,shape_b)",
+      "integration": "Keeps gameplay collision code shape-agnostic.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M342",
+      "domain": "Collision and physics",
+      "mechanism": "Layer and mask filtering",
+      "definition": "Two colliders interact only when each layer is accepted by the other mask.",
+      "formula": "(La & Mb)!=0 and (Lb & Ma)!=0",
+      "integration": "Separates players, world, pickups, hazards and custom groups.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M343",
+      "domain": "Collision and physics",
+      "mechanism": "Sensor contact semantics",
+      "definition": "Sensor colliders create lifecycle contacts but skip positional and impulse resolution.",
+      "formula": "sensor => event and not solve",
+      "integration": "Supports pickups, triggers and non-blocking zones.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M344",
+      "domain": "Collision and physics",
+      "mechanism": "Swept AABB time of impact",
+      "definition": "A moving AABB computes slab entry/exit times against a static target over a displacement.",
+      "formula": "t_enter=max(axis entries)",
+      "integration": "Offers a continuous query for fast box motion.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M345",
+      "domain": "Collision and physics",
+      "mechanism": "Spatial-hash broad phase",
+      "definition": "Shape bounds are inserted into deterministic fixed-size cells for query and candidate-pair generation.",
+      "formula": "cell=floor(position/cell_size)",
+      "integration": "Reduces all-pairs collision work for 2D scenes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M346",
+      "domain": "Input",
+      "mechanism": "Action-oriented input map",
+      "definition": "Gameplay reads named scalar actions rather than raw device events.",
+      "formula": "action=sum(binding samples)",
+      "integration": "Decouples game logic from keyboard/gamepad/touch details.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M347",
+      "domain": "Input",
+      "mechanism": "Multi-device binding record",
+      "definition": "Bindings cover keys, pointer buttons/axes, gamepad buttons/axes and touch axes.",
+      "formula": "binding=(kind,code,scale,device)",
+      "integration": "One project supports desktop, controller and mobile controls.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M348",
+      "domain": "Input",
+      "mechanism": "Deadzone and clamp response",
+      "definition": "Resolved action values apply signed deadzone remapping and optional unit-range clamping.",
+      "formula": "v=0 if |v|<d else remap(v)",
+      "integration": "Prevents drift while retaining analog control.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M349",
+      "domain": "Input",
+      "mechanism": "Action edge classification",
+      "definition": "Current and previous values classify down, pressed and released states by action threshold.",
+      "formula": "pressed=|v_t|>=q and |v_t-1|<q",
+      "integration": "Provides deterministic button-edge gameplay.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M350",
+      "domain": "Input",
+      "mechanism": "Normalized movement vector",
+      "definition": "Two scalar actions form a vector whose magnitude is capped at one.",
+      "formula": "u=v/max(1,||v||)",
+      "integration": "Prevents faster diagonal movement.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M351",
+      "domain": "Input",
+      "mechanism": "Input frame recording",
+      "definition": "Resolved frames serialize with values, prior values, thresholds, pointer position and frame index.",
+      "formula": "log=[InputFrame_t]",
+      "integration": "Supports reproducible tests and replay-oriented tooling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M352",
+      "domain": "Animation",
+      "mechanism": "Strict keyframe track ordering",
+      "definition": "Track key times must be finite and strictly increasing.",
+      "formula": "t_i<t_i+1",
+      "integration": "Eliminates ambiguous interpolation intervals.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M353",
+      "domain": "Animation",
+      "mechanism": "Named easing functions",
+      "definition": "Interpolation uses validated linear, smooth, polynomial, sine, back and bounce easing curves.",
+      "formula": "value=lerp(a,b,ease(t))",
+      "integration": "Gives reusable motion profiles without code generation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M354",
+      "domain": "Animation",
+      "mechanism": "Once, loop and ping-pong clocks",
+      "definition": "Clip-local time maps global playback time through declared boundary behavior.",
+      "formula": "tau=map_mode(t,duration)",
+      "integration": "Supports repeated and reversible animation deterministically.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M355",
+      "domain": "Animation",
+      "mechanism": "Sample-map crossfade",
+      "definition": "Two clip samples blend common property paths and preserve one-sided properties.",
+      "formula": "sample=(1-alpha)A+alpha B",
+      "integration": "Allows smooth animation transitions.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M356",
+      "domain": "Animation",
+      "mechanism": "Predicate transition state machine",
+      "definition": "Ordered predicates choose state transitions with optional crossfade durations.",
+      "formula": "state_next=first_true(transitions)",
+      "integration": "Separates gameplay parameters from clip selection.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M357",
+      "domain": "Animation",
+      "mechanism": "Nested property-path application",
+      "definition": "Sample keys address nested mappings through dot-separated paths.",
+      "formula": "set(target,path,value)",
+      "integration": "Connects generic clips to serialized component records.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M358",
+      "domain": "Tilemaps",
+      "mechanism": "Named tile definition registry",
+      "definition": "Tile IDs map to stable name, solidity, movement cost and metadata.",
+      "formula": "tile_id->definition",
+      "integration": "Centralizes gameplay meaning for map cells.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M359",
+      "domain": "Tilemaps",
+      "mechanism": "Layered fixed-grid map",
+      "definition": "Multiple same-sized layers store tile IDs over shared origin and tile size.",
+      "formula": "map=(W,H,s,origin,layers)",
+      "integration": "Supports collision, decoration and gameplay overlays.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M360",
+      "domain": "Tilemaps",
+      "mechanism": "ASCII map import",
+      "definition": "Characters map to tile IDs while rectangularity and unknown symbols are validated.",
+      "formula": "char_grid + legend -> TileLayer",
+      "integration": "Makes small level prototypes easy to author and diff.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M361",
+      "domain": "Tilemaps",
+      "mechanism": "World/grid coordinate conversion",
+      "definition": "Map origin and tile size define reversible cell-center/world transformations.",
+      "formula": "world=origin+(cell+0.5)*size",
+      "integration": "Connects pathfinding and entity placement.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M362",
+      "domain": "Tilemaps",
+      "mechanism": "Cost-aware A-star pathfinding",
+      "definition": "A* searches non-solid cells with optional diagonals and tile movement costs.",
+      "formula": "f(n)=g(n)+h(n)",
+      "integration": "Provides dependency-free navigation for grid games.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M363",
+      "domain": "Tilemaps",
+      "mechanism": "Merged solid collision rectangles",
+      "definition": "Contiguous compatible solid cells merge into maximal axis-aligned rectangles.",
+      "formula": "solid cells -> disjoint AABBs",
+      "integration": "Reduces collider count for tile-based levels.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M364",
+      "domain": "Procedural audio",
+      "mechanism": "Equal-tempered note parser",
+      "definition": "Scientific note names map to frequency relative to configurable A4.",
+      "formula": "f=440*2^((midi-69)/12)",
+      "integration": "Enables musical cue authoring without sampled assets.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M365",
+      "domain": "Procedural audio",
+      "mechanism": "ADSR envelope record",
+      "definition": "Attack, decay, sustain and release values are validated as finite non-negative controls.",
+      "formula": "gain(t)=ADSR(t)",
+      "integration": "Shapes Web Audio oscillator cues.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M366",
+      "domain": "Procedural audio",
+      "mechanism": "Serializable sound cue",
+      "definition": "A cue combines waveform, frequency/sweep, duration, volume, noise and envelope.",
+      "formula": "cue=(osc,f0,f1,T,V,N,env)",
+      "integration": "Creates compact effects with no network assets.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M367",
+      "domain": "Procedural audio",
+      "mechanism": "Beat sequence scheduler",
+      "definition": "Cue references are placed at beats under a declared BPM and sequence length.",
+      "formula": "time=60*beat/BPM",
+      "integration": "Provides lightweight procedural music loops.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M368",
+      "domain": "Procedural audio",
+      "mechanism": "Cross-reference audio bank",
+      "definition": "Cue and sequence IDs are unique and sequence cue references are validated.",
+      "formula": "forall note: cue_id in bank",
+      "integration": "Prevents broken browser audio references.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M369",
+      "domain": "Game world",
+      "mechanism": "Entity/component composition",
+      "definition": "Entities combine stable IDs, tags, active state, metadata and typed or custom components.",
+      "formula": "entity=(id,tags,components,active,meta)",
+      "integration": "Provides data-driven scene/gameplay composition.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M370",
+      "domain": "Game world",
+      "mechanism": "Fixed-step deterministic clock",
+      "definition": "World time advances only by a declared positive fixed delta.",
+      "formula": "tick<-tick+1; time=tick*dt",
+      "integration": "Supports repeatable headless simulation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M371",
+      "domain": "Game world",
+      "mechanism": "Ordered extensible system phases",
+      "definition": "Custom systems register in named phases with priority and stable-name ordering.",
+      "formula": "order=(phase,priority,name)",
+      "integration": "Allows project-specific gameplay without modifying core integration.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M372",
+      "domain": "Game world",
+      "mechanism": "Dynamic, kinematic and static bodies",
+      "definition": "Body type controls inverse mass and integration while retaining common velocity/material records.",
+      "formula": "inv_mass=1/m if dynamic else 0",
+      "integration": "Supports players, moving hazards and level geometry.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M373",
+      "domain": "Game world",
+      "mechanism": "Collision lifecycle events",
+      "definition": "Current and prior contact sets produce enter, stay and exit events with ordered pair IDs.",
+      "formula": "enter=C_t\\C_t-1; exit=C_t-1\\C_t",
+      "integration": "Provides deterministic triggers and gameplay hooks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M374",
+      "domain": "Game world",
+      "mechanism": "Action-driven player controller and dash",
+      "definition": "Movement actions set velocity and an edge-triggered dash applies duration/cooldown state.",
+      "formula": "v=speed*u or dash_speed*d",
+      "integration": "Provides a ready-to-use arcade controller.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M375",
+      "domain": "Game world",
+      "mechanism": "Health, hazard cooldown and knockback",
+      "definition": "Hazards apply bounded damage and directional knockback subject to per-target cooldown.",
+      "formula": "H<-max(0,H-D); v<-v+k*n",
+      "integration": "Implements reusable damage interactions.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M376",
+      "domain": "Game world",
+      "mechanism": "Collectible state transaction",
+      "definition": "Sensor contact increments a declared state key, emits an event and may defer entity destruction.",
+      "formula": "state[k]<-state[k]+points",
+      "integration": "Implements score/items without unsafe mutation during collision iteration.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M377",
+      "domain": "Game world",
+      "mechanism": "Lifetime, bounds and camera services",
+      "definition": "Components provide timed despawn, clamp/bounce/wrap constraints and smoothed bounded following.",
+      "formula": "x_cam<-lerp_exp(x_cam,x_target,dt)",
+      "integration": "Covers common 2D game-loop utilities.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M378",
+      "domain": "Game world",
+      "mechanism": "Canonical snapshot, hash and save/load",
+      "definition": "World state serializes with schema and canonical numeric normalization for stable SHA-256 identity.",
+      "formula": "h=SHA256(canonical(snapshot_without_events))",
+      "integration": "Supports regression tests, persistence and divergence checks.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M379",
+      "domain": "Project and export",
+      "mechanism": "Versioned game-project schema",
+      "definition": "Project records declare the `ugts-kc-game-project-3.9` schema and runtime metadata.",
+      "formula": "project=(meta,display,input,assets,audio,maps,scenes,build)",
+      "integration": "Creates one source of truth for tools and runtimes.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M380",
+      "domain": "Project and export",
+      "mechanism": "Aggregated cross-reference validation",
+      "definition": "Validation collects independent structural and asset/audio/tilemap reference issues with paths.",
+      "formula": "report=(issues,metrics,passed)",
+      "integration": "Improves actionable authoring feedback.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M381",
+      "domain": "Project and export",
+      "mechanism": "Scene-to-world instantiation",
+      "definition": "A scene deep-copies initial state and reconstructs entity components into a fresh world.",
+      "formula": "instantiate(scene)->GameWorld",
+      "integration": "Connects editable project data to simulation.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M382",
+      "domain": "Project and export",
+      "mechanism": "Canonical project content hash",
+      "definition": "Sorted normalized project JSON is hashed for reproducible build identity.",
+      "formula": "h_project=SHA256(canonical(project))",
+      "integration": "Links source project to build reports.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M383",
+      "domain": "Project and export",
+      "mechanism": "Project scaffolding command",
+      "definition": "CLI templates create blank or full game projects with optional immediate browser build.",
+      "formula": "ugts-kc new|demo",
+      "integration": "Reduces setup friction for practical use.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M384",
+      "domain": "Project and export",
+      "mechanism": "Headless simulation command",
+      "definition": "CLI simulation feeds declared action values for a selected step count and reports state hash.",
+      "formula": "ugts-kc simulate project --steps N",
+      "integration": "Supports CI smoke tests without a browser.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M385",
+      "domain": "Project and export",
+      "mechanism": "Batch vector SVG export",
+      "definition": "Every project vector asset can be materialized to an individual SVG file.",
+      "formula": "ugts-kc export-svg",
+      "integration": "Supports art review and external tooling.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M386",
+      "domain": "Project and export",
+      "mechanism": "Single-file HTML5 build",
+      "definition": "Project data, CSS and runtime JavaScript can be emitted into one offline-playable HTML file.",
+      "formula": "build(project)->index.html",
+      "integration": "Enables frictionless sharing and static hosting.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M387",
+      "domain": "Project and export",
+      "mechanism": "Split JavaScript bundle build",
+      "definition": "The same exporter may emit runtime JavaScript as a separate file while retaining build hashes.",
+      "formula": "single_file=false -> kc-runtime.js",
+      "integration": "Supports stricter hosting and debugging workflows.",
+      "validation": "Implemented + tested"
+    },
+    {
+      "id": "M388",
+      "domain": "Project and export",
+      "mechanism": "Canvas vector presentation runtime",
+      "definition": "Browser paths, gradients, transforms, camera and z-order are rendered directly from project records.",
+      "formula": "frame=Canvas2D(project,world,camera)",
+      "integration": "Turns authored vector assets into live game visuals.",
+      "validation": "Implemented + syntax-validated"
+    },
+    {
+      "id": "M389",
+      "domain": "Project and export",
+      "mechanism": "Browser gameplay shell",
+      "definition": "The generated runtime integrates fixed-step play, keyboard/gamepad/touch, audio, particles, HUD, pause/restart, local saves and diagnostics.",
+      "formula": "HTML5Game=simulation+presentation+I/O",
+      "integration": "Provides an actually playable dependency-free deployment target.",
+      "validation": "Implemented + tested/syntax-validated"
+    }
+  ]
+}

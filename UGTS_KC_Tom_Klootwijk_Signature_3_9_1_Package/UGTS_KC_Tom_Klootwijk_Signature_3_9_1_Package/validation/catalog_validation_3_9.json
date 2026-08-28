@@ -1,0 +1,21 @@
+{
+  "baseline_mechanism_count": 197,
+  "cataloged_additions_count": 192,
+  "combined_contiguous": true,
+  "combined_first_id": "M198",
+  "combined_last_id": "M389",
+  "combined_unique": true,
+  "declared_extended_total": 389,
+  "kc2_additions": 60,
+  "kc39_additions": 60,
+  "kc39_contiguous": true,
+  "kc39_count": 60,
+  "kc39_first_id": "M330",
+  "kc39_last_id": "M389",
+  "kc39_unique": true,
+  "kc3_additions": 72,
+  "missing_fields": [],
+  "passed": true,
+  "required_fields_complete": true,
+  "schema": "ugts-kc-catalog-validation-3.9"
+}

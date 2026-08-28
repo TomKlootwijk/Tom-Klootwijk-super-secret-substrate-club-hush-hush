@@ -1,0 +1,24 @@
+{
+  "file": {
+    "pair_active_vs_pair_all": 1.5695216117658672,
+    "pair_support_vs_pair_all": 0.9933028831489699,
+    "grouped_all_vs_pair_all": 2.4226259751119534,
+    "grouped_active_vs_pair_active": 1.5364616841733831,
+    "grouped_active_vs_grouped_all": 0.9954115260606283,
+    "dense_query_vs_grouped_active": 37.51830126989924,
+    "dense_end_to_end_ms": 52.56619161,
+    "dense_end_to_end_vs_grouped_active": 1.0729293689267516,
+    "dense_queries_break_even": 0.9301664819121919
+  },
+  "laptop": {
+    "pair_active_vs_pair_all": 2.5002053426223805,
+    "pair_support_vs_pair_all": 1.3619460794153815,
+    "grouped_all_vs_pair_all": 11.309482233956944,
+    "grouped_active_vs_pair_active": 5.3212212366401435,
+    "grouped_active_vs_grouped_all": 1.176370897438381,
+    "dense_query_vs_grouped_active": 5.565471131787687,
+    "dense_end_to_end_ms": 804.520599366,
+    "dense_end_to_end_vs_grouped_active": 1.0073027510130006,
+    "dense_queries_break_even": 0.9911622277211812
+  }
+}

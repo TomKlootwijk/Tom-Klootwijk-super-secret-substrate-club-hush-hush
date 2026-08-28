@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "projects": [
+    {
+      "content_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+      "headless_120_tick_hash": "8e8b33466cd3a99679181d3f99774db0b6aef69b19a952ef6bf224ed74c430c3",
+      "headless_entity_count": 26,
+      "headless_ticks": 120,
+      "issues": [],
+      "metrics": {
+        "action_count": 8,
+        "audio_cue_count": 7,
+        "entity_count": 26,
+        "scene_count": 1,
+        "tilemap_count": 0,
+        "vector_asset_count": 5
+      },
+      "passed": true,
+      "path": "examples/elizabeth_vector_quest/project.json",
+      "project_id": "kc.elizabeth.vector-quest",
+      "roundtrip_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+      "roundtrip_hash_equal": true,
+      "title": "Elizabeth's Vector Garden"
+    },
+    {
+      "content_hash": "6e667f98559a2521c7ef10d92b88e070b13656bb025deaa8b066ccad15c04cc2",
+      "headless_120_tick_hash": "b76c249d58f54b6c8e578aa5a6691d50d593292c43f3dd395c2abf8ce9927810",
+      "headless_entity_count": 2,
+      "headless_ticks": 120,
+      "issues": [],
+      "metrics": {
+        "action_count": 8,
+        "audio_cue_count": 7,
+        "entity_count": 2,
+        "scene_count": 1,
+        "tilemap_count": 0,
+        "vector_asset_count": 3
+      },
+      "passed": true,
+      "path": "templates/blank_vector_game/project.json",
+      "project_id": "game.my-kc-elizabeth-game",
+      "roundtrip_hash": "6e667f98559a2521c7ef10d92b88e070b13656bb025deaa8b066ccad15c04cc2",
+      "roundtrip_hash_equal": true,
+      "title": "My KC Elizabeth Game"
+    },
+    {
+      "content_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+      "headless_120_tick_hash": "8e8b33466cd3a99679181d3f99774db0b6aef69b19a952ef6bf224ed74c430c3",
+      "headless_entity_count": 26,
+      "headless_ticks": 120,
+      "issues": [],
+      "metrics": {
+        "action_count": 8,
+        "audio_cue_count": 7,
+        "entity_count": 26,
+        "scene_count": 1,
+        "tilemap_count": 0,
+        "vector_asset_count": 5
+      },
+      "passed": true,
+      "path": "templates/elizabeth_vector_quest/project.json",
+      "project_id": "kc.elizabeth.vector-quest",
+      "roundtrip_hash": "99cfbdf321add0ada377355f2d84ad97c60470e6f266170d5a928d5d2329f467",
+      "roundtrip_hash_equal": true,
+      "title": "Elizabeth's Vector Garden"
+    }
+  ],
+  "runtime_version": "3.9.0",
+  "schema": "ugts-kc-project-validation-3.9"
+}

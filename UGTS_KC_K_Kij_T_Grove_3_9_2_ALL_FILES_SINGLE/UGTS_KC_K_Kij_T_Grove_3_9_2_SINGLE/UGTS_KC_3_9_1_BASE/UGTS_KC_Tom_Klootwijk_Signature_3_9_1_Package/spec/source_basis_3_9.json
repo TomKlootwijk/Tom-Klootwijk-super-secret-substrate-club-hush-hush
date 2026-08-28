@@ -1,0 +1,18 @@
+{
+  "schema_version": "3.9.0",
+  "release": "UGTS-KC 3.9 - KC Elizabeth Edition",
+  "immediate_baseline": {
+    "filename": "UGTS_KC_Two_Hands_3_0_Package(1).zip",
+    "sha256": "624f9af1236ea6a0a637758516ed974238ad92b324949f690f0fcc169d9f7866",
+    "redistributed_as_legacy_content": true,
+    "description": "Requester-supplied UGTS-KC Two Hands 3.0 package used as the direct upgrade baseline."
+  },
+  "attribution": {
+    "requester": "Tom Klootwijk",
+    "requester_supplied_identifier": "NL200678942",
+    "requester_supplied_date_of_birth": "1990-07-10",
+    "substrate_attribution_as_supplied": "Kees Klootwijk (KC edition)",
+    "verification": "not independently verified"
+  },
+  "privacy": "Attribution fields are included because the requester explicitly requested them. They are not proof of identity or rights."
+}

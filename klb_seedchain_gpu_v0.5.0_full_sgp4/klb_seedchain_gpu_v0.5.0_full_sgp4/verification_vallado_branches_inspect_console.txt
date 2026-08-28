@@ -1,0 +1,34 @@
+Format                      : KSGP1 v1
+Predictor                   : full Vallado/CSSI SGP4 + SDP4 deep-space
+Reference epoch             : 2006-06-25T07:58:18.143616Z
+Reference frame             : TEME; GMST TEME->PEF query conversion
+Gravity constants           : WGS-72
+Source label                : CelesTrak OMM CSV / full SGP4
+Source bytes                : 1003
+Source FNV-1a64             : 0x4ec18cdd53dc206e
+Container bytes             : 1325
+Compact mean-element seeds  : 5 x 128 bytes
+Compiled coefficient state  : 7120 bytes (load-time, not stored)
+Hash-linked timeline nodes  : 4
+Timeline duration           : 86400.000000 s
+Timeline step               : 60.000000 s
+Timeline state samples      : 1441
+Equivalent dense float4     : 115280 bytes
+Equivalent dense pos+vel    : 345840 bytes
+Ratio vs dense float4       : 87.003774x
+Ratio vs dense pos+vel      : 261.011321x
+Near-Earth records          : 1
+Deep-space non-resonant     : 2
+Synchronous resonance       : 1
+Half-day resonance          : 1
+Default DUT1                : 0.000000 s
+Default elevation mask      : 10.000000 degrees
+Terminal chain hash         : 0xd31f6ff4722d0efa
+Payload hash                : 0x8721ae8973260a24
+
+Seed preview:
+  [0] NORAD 5, PRN 0, route 5, branch near/irez=0, e=0.185967, n=10.824192 rev/day, VALLADO 00005 NEAR
+  [1] NORAD 4632, PRN 0, route 4, branch deep/irez=0, e=0.145051, n=1.202320 rev/day, VALLADO 04632 DEEP NONRESONANT
+  [2] NORAD 8195, PRN 0, route 4, branch deep/irez=2, e=0.687715, n=2.004914 rev/day, VALLADO 08195 HALF-DAY
+  [3] NORAD 14128, PRN 0, route 0, branch deep/irez=1, e=0.001156, n=0.988701 rev/day, VALLADO 14128 SYNCHRONOUS
+  [4] NORAD 28129, PRN 0, route 5, branch deep/irez=0, e=0.004851, n=2.005628 rev/day, VALLADO 28129 GPS-LIKE
