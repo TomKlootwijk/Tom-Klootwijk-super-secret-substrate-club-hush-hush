@@ -1,0 +1,14 @@
+CMake Warning in C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/.cxx/RelWithDebInfo/46y2o221/arm64-v8a/CMakeFiles/CMakeTmp/CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/.cxx/RelWithDebInfo/46y2o221/arm64-v8a/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_3ed4a.dir/./
+
+  has 250 characters.  The maximum full path to an object file is 250
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    CMakeCCompilerABI.c.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+

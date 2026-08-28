@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app"
+    name=":app"
+    type="APP"
+    maven="UGTSKCBayerDirect:app:unspecified"
+    agpVersion="8.13.2"
+    buildFolder="build"
+    bootClassPath="C:\Users\Tom\AppData\Local\Android\Sdk\platforms\android-36\android.jar;C:\Users\Tom\AppData\Local\Android\Sdk\build-tools\35.0.0\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-36"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

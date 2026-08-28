@@ -1,0 +1,4 @@
+digest=447aa0bccdb8438db6dd2ebec314f815bf8e12dcf33c6ac77e075fba52d4af71
+block_bytes=1562
+apk_bytes=9438
+cert_sha256=f100337d7c5fe902714c6d942fe48ce71300aa98aae4c27a6386bd0511f561f7

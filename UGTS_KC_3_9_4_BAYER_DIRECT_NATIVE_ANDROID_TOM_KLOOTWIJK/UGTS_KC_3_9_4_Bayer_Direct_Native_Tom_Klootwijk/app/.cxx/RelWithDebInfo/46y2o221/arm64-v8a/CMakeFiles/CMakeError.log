@@ -1,0 +1,111 @@
+The C compiler identification could not be found in "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/.cxx/RelWithDebInfo/46y2o221/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe 
+Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;-Oz;-flto;-ffunction-sections;-fdata-sections;-fvisibility=hidden;-fomit-frame-pointer;-fno-stack-protector;-fno-unwind-tables;-fno-asynchronous-unwind-tables
+Id flags:  
+
+The output was:
+1
+lld: error: unable to find library -lssp_nonshared
+lld: error: unable to find library -lssp
+lld: error: unable to find library -lmingw32
+lld: error: unable to find library -lgcc
+lld: error: unable to find library -lgcc_eh
+lld: error: unable to find library -lmoldname
+lld: error: unable to find library -lmingwex
+lld: error: unable to find library -lmsvcrt
+lld: error: unable to find library -ladvapi32
+lld: error: unable to find library -lshell32
+lld: error: unable to find library -luser32
+lld: error: unable to find library -lkernel32
+lld: error: unable to find library -lmingw32
+lld: error: unable to find library -lgcc
+lld: error: unable to find library -lgcc_eh
+lld: error: unable to find library -lmoldname
+lld: error: unable to find library -lmingwex
+lld: error: unable to find library -lmsvcrt
+lld: error: unable to find library -lkernel32
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+The C compiler identification could not be found in "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/.cxx/RelWithDebInfo/46y2o221/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o"
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe 
+Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;-Oz;-flto;-ffunction-sections;-fdata-sections;-fvisibility=hidden;-fomit-frame-pointer;-fno-stack-protector;-fno-unwind-tables;-fno-asynchronous-unwind-tables
+Id flags: -Aa 
+
+The output was:
+1
+clang: warning: argument unused during compilation: '-Aa' [-Wunused-command-line-argument]
+lld: error: unable to find library -lssp_nonshared
+lld: error: unable to find library -lssp
+lld: error: unable to find library -lmingw32
+lld: error: unable to find library -lgcc
+lld: error: unable to find library -lgcc_eh
+lld: error: unable to find library -lmoldname
+lld: error: unable to find library -lmingwex
+lld: error: unable to find library -lmsvcrt
+lld: error: unable to find library -ladvapi32
+lld: error: unable to find library -lshell32
+lld: error: unable to find library -luser32
+lld: error: unable to find library -lkernel32
+lld: error: unable to find library -lmingw32
+lld: error: unable to find library -lgcc
+lld: error: unable to find library -lgcc_eh
+lld: error: unable to find library -lmoldname
+lld: error: unable to find library -lmingwex
+lld: error: unable to find library -lmsvcrt
+lld: error: unable to find library -lkernel32
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe 
+Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;-Oz;-flto;-ffunction-sections;-fdata-sections;-fvisibility=hidden;-fomit-frame-pointer;-fno-stack-protector;-fno-unwind-tables;-fno-asynchronous-unwind-tables
+Id flags: -D__CLASSIC_C__ 
+
+The output was:
+1
+CMakeCCompilerId.c:774:5: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C23 [-Wdeprecated-non-prototype]
+  774 | int main(argc, argv) int argc; char *argv[];
+      |     ^
+1 warning generated.
+lld: error: unable to find library -lssp_nonshared
+lld: error: unable to find library -lssp
+lld: error: unable to find library -lmingw32
+lld: error: unable to find library -lgcc
+lld: error: unable to find library -lgcc_eh
+lld: error: unable to find library -lmoldname
+lld: error: unable to find library -lmingwex
+lld: error: unable to find library -lmsvcrt
+lld: error: unable to find library -ladvapi32
+lld: error: unable to find library -lshell32
+lld: error: unable to find library -luser32
+lld: error: unable to find library -lkernel32
+lld: error: unable to find library -lmingw32
+lld: error: unable to find library -lgcc
+lld: error: unable to find library -lgcc_eh
+lld: error: unable to find library -lmoldname
+lld: error: unable to find library -lmingwex
+lld: error: unable to find library -lmsvcrt
+lld: error: unable to find library -lkernel32
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe 
+Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;-Oz;-flto;-ffunction-sections;-fdata-sections;-fvisibility=hidden;-fomit-frame-pointer;-fno-stack-protector;-fno-unwind-tables;-fno-asynchronous-unwind-tables
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+ld.lld: error: cannot open crt0.o: No such file or directory
+ld.lld: error: cannot open C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/21/lib/arm-arm-none-eabi/libclang_rt.builtins.a: No such file or directory
+ld.lld: error: unable to find library -lc
+clang: error: ld.lld command failed with exit code 1 (use -v to see invocation)
+
+
+The C compiler identification could not be found in "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/.cxx/RelWithDebInfo/46y2o221/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o"
+

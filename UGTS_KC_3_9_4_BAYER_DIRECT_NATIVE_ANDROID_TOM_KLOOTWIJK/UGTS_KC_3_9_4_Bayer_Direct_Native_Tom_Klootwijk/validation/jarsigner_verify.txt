@@ -1,0 +1,55 @@
+
+s        337 Fri Aug 28 16:00:52 UTC 2026 META-INF/MANIFEST.MF
+
+      >>> Signer
+      X.509, C=NL, O=Tom Klootwijk Signature Edition, CN=UGTS-KC 3.9.4 Bayer Direct Test Build
+      Signature algorithm: SHA256withRSA, 2048-bit key
+      [certificate is valid from 8/27/26, 4:00?PM to 8/25/36, 4:00?PM]
+      [Invalid certificate chain: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+
+         499 Fri Aug 28 16:00:52 UTC 2026 META-INF/UGTSKC39.SF
+        1525 Fri Aug 28 16:00:52 UTC 2026 META-INF/UGTSKC39.RSA
+sm      2980 Fri Aug 28 16:00:26 UTC 2026 AndroidManifest.xml
+
+      >>> Signer
+      X.509, C=NL, O=Tom Klootwijk Signature Edition, CN=UGTS-KC 3.9.4 Bayer Direct Test Build
+      Signature algorithm: SHA256withRSA, 2048-bit key
+      [certificate is valid from 8/27/26, 4:00?PM to 8/25/36, 4:00?PM]
+      [Invalid certificate chain: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+
+sm       864 Fri Aug 28 16:00:26 UTC 2026 resources.arsc
+
+      >>> Signer
+      X.509, C=NL, O=Tom Klootwijk Signature Edition, CN=UGTS-KC 3.9.4 Bayer Direct Test Build
+      Signature algorithm: SHA256withRSA, 2048-bit key
+      [certificate is valid from 8/27/26, 4:00?PM to 8/25/36, 4:00?PM]
+      [Invalid certificate chain: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+
+sm      6656 Fri Aug 28 16:00:24 UTC 2026 lib/arm64-v8a/libugts_kc_bayer.so
+
+      >>> Signer
+      X.509, C=NL, O=Tom Klootwijk Signature Edition, CN=UGTS-KC 3.9.4 Bayer Direct Test Build
+      Signature algorithm: SHA256withRSA, 2048-bit key
+      [certificate is valid from 8/27/26, 4:00?PM to 8/25/36, 4:00?PM]
+      [Invalid certificate chain: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+
+           0 Fri Aug 28 16:00:24 UTC 2026 lib/
+           0 Fri Aug 28 16:00:24 UTC 2026 lib/arm64-v8a/
+
+  s = signature was verified 
+  m = entry is listed in manifest
+  k = at least one certificate was found in keystore
+
+- Signed by "C=NL, O=Tom Klootwijk Signature Edition, CN=UGTS-KC 3.9.4 Bayer Direct Test Build"
+    Digest algorithm: SHA-256
+    Signature algorithm: SHA256withRSA, 2048-bit key
+
+jar verified.
+
+Warning: 
+This jar contains entries whose certificate chain is invalid. Reason: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+This jar contains entries whose signer certificate is self-signed.
+This jar contains signatures that do not include a timestamp. Without a timestamp, users may not be able to validate this jar after any of the signer certificates expire (as early as 2036-08-25).
+POSIX file permission and/or symlink attributes detected. These attributes are ignored when signing and are not protected by the signature.
+
+The signer certificate will expire on 2036-08-25.

@@ -1,0 +1,22 @@
+Title:           UGTS-KC 3.9.4 Bayer Direct Native Edition
+Subject:         Tiny native Android application using direct integer fields and Bayer ordered dithering
+Keywords:        
+Author:          Tom Klootwijk Signature Edition
+Creator:         (unspecified)
+Producer:        ReportLab PDF Library - (opensource)
+CreationDate:    Fri Aug 28 16:16:29 2026 UTC
+ModDate:         Fri Aug 28 16:16:29 2026 UTC
+Custom Metadata: no
+Metadata Stream: no
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           15
+Encrypted:       no
+Page size:       595.276 x 841.89 pts (A4)
+Page rot:        0
+File size:       515688 bytes
+Optimized:       no
+PDF version:     1.4

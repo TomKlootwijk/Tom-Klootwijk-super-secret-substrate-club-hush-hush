@@ -1,0 +1,37 @@
+{
+  "schema": "ugts-kc-bayer-direct-profile-3.9.4",
+  "profile_id": "bayer-direct-rgb565-480p30-v1",
+  "version": "3.9.4",
+  "package_id": "nl.tomklootwijk.ugtskc.bayer.poco",
+  "abi": ["arm64-v8a"],
+  "min_sdk": 26,
+  "target_sdk": 36,
+  "display": {
+    "api": "ANativeWindow CPU lock/post",
+    "requested_format": "RGB565",
+    "landscape_reference_width": 480,
+    "height_policy": "physical-aspect-derived, aligned-to-8, clamped-160..320",
+    "nominal_hz": 30,
+    "compositor_scaling": true
+  },
+  "quantizer": {
+    "family": "ordered_dither",
+    "matrix": "Bayer 8x8",
+    "threshold_states": 64,
+    "palette_levels": 4
+  },
+  "hot_path": {
+    "numeric": "integer-only",
+    "frame_history": false,
+    "assets": false,
+    "textures": false,
+    "meshes": false,
+    "shaders": false,
+    "opengl_es": false,
+    "vulkan": false,
+    "ray_tracing": false,
+    "ray_marching": false,
+    "geometry_rasterization": false
+  },
+  "evidence_boundary": "Pixel posting and Android compositor scaling remain downstream display operations. No physical-device performance, power, or thermal result is claimed."
+}

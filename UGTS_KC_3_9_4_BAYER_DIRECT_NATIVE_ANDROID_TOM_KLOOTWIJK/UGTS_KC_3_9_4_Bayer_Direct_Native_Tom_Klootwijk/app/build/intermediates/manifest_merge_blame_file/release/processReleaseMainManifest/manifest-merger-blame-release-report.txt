@@ -1,0 +1,59 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="nl.tomklootwijk.ugtskc.bayer.poco"
+4    android:versionCode="394"
+5    android:versionName="3.9.4-bayer-direct-v001" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="36" />
+10
+11    <application
+11-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:3:5-25:19
+12        android:allowBackup="false"
+12-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:4:9-36
+13        android:extractNativeLibs="true"
+13-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:5:9-41
+14        android:fullBackupContent="false"
+14-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:6:9-42
+15        android:hasCode="false"
+15-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:7:9-32
+16        android:label="@string/app_name"
+16-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:8:9-41
+17        android:theme="@style/AppTheme" >
+17-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:9:9-40
+18        <activity
+18-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:10:9-24:20
+19            android:name="android.app.NativeActivity"
+19-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:11:13-54
+20            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode|density"
+20-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:12:13-121
+21            android:exported="true"
+21-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:13:13-36
+22            android:launchMode="singleTask"
+22-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:14:13-44
+23            android:resizeableActivity="true"
+23-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:15:13-46
+24            android:screenOrientation="sensorLandscape" >
+24-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:16:13-56
+25            <meta-data
+25-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:17:13-19:49
+26                android:name="android.app.lib_name"
+26-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:18:17-52
+27                android:value="ugts_kc_bayer" />
+27-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:19:17-46
+28
+29            <intent-filter>
+29-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:20:13-23:29
+30                <action android:name="android.intent.action.MAIN" />
+30-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:21:17-69
+30-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:21:25-66
+31
+32                <category android:name="android.intent.category.LAUNCHER" />
+32-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:22:17-77
+32-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\app\src\main\AndroidManifest.xml:22:27-74
+33            </intent-filter>
+34        </activity>
+35    </application>
+36
+37</manifest>

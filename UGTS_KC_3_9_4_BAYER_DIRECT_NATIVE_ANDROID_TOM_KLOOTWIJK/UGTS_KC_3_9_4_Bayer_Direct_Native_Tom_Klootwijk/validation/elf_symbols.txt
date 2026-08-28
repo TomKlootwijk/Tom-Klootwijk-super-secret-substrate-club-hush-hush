@@ -1,0 +1,16 @@
+
+Symbol table '.dynsym' contains 13 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeActivity_setWindowFlags
+     2: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_acquire
+     3: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_getWidth
+     4: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_release
+     5: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_getHeight
+     6: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_setBuffersGeometry
+     7: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_lock
+     8: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ANativeWindow_unlockAndPost
+     9: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND pthread_create
+    10: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND pthread_join
+    11: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND usleep
+    12: 0000000000004620   156 FUNC    GLOBAL DEFAULT    6 ANativeActivity_onCreate

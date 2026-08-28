@@ -1,0 +1,18 @@
+
+Dynamic section at offset 0x13d0 contains 15 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libandroid.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libugts_kc_bayer.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000017 (JMPREL)             0x490
+ 0x0000000000000002 (PLTRELSZ)           264 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x94c0
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x200
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x358
+ 0x000000000000000a (STRSZ)              305 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x338
+ 0x0000000000000000 (NULL)               0x0

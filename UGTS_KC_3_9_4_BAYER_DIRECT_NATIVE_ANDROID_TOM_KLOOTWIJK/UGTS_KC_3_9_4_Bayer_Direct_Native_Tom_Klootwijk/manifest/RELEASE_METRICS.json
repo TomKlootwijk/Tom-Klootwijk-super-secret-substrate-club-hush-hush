@@ -1,0 +1,165 @@
+{
+  "release": {
+    "name": "UGTS-KC 3.9.4 Bayer Direct Native Edition",
+    "version": "3.9.4",
+    "date": "2026-08-28",
+    "package_id": "nl.tomklootwijk.ugtskc.bayer.poco",
+    "version_code": 394,
+    "version_name": "3.9.4-bayer-direct-v001"
+  },
+  "android": {
+    "abi": [
+      "arm64-v8a"
+    ],
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "native_activity": true,
+    "physical_device_tested": false,
+    "test_signed": true,
+    "signatures": [
+      "v1",
+      "v2"
+    ]
+  },
+  "hot_path": {
+    "display_api": "ANativeWindow lock/write/post",
+    "requested_format": "RGB565",
+    "reference_lattice": [
+      480,
+      216
+    ],
+    "nominal_hz": 30,
+    "bayer_matrix": "8x8 permutation 0..63",
+    "palette_levels": 4,
+    "integer_only": true,
+    "ray_tracing": false,
+    "ray_marching": false,
+    "graphics_api_rasterizer": false,
+    "opengl_es": false,
+    "vulkan": false,
+    "assets": false,
+    "dex": false
+  },
+  "artifacts": {
+    "apk": {
+      "path": "dist/UGTS_KC_Bayer_Direct_3_9_4_arm64-v8a.apk",
+      "bytes": 9438,
+      "sha256": "eab84e326f52261bf34119c7d488bf4d4e6e1636cb24bfefa495d9250d4c09e3",
+      "entries": [
+        "META-INF/MANIFEST.MF",
+        "META-INF/UGTSKC39.SF",
+        "META-INF/UGTSKC39.RSA",
+        "AndroidManifest.xml",
+        "resources.arsc",
+        "lib/",
+        "lib/arm64-v8a/",
+        "lib/arm64-v8a/libugts_kc_bayer.so"
+      ]
+    },
+    "native_library": {
+      "path": "validation/freestanding_build/libugts_kc_bayer.so",
+      "bytes": 6656,
+      "sha256": "bbcff3d2ca84df6ee0ab839122aaf4c19787d094e343576657e65cb69c7f3482",
+      "dt_needed": [
+        "libandroid.so",
+        "libc.so"
+      ]
+    },
+    "pdf": {
+      "path": "report/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk.pdf",
+      "bytes": 515688,
+      "sha256": "c2d42ea0e337a0fc2eef46a320019ecb9ee03001d611e37b0be94a3dd0a29cc9",
+      "pages": 15
+    }
+  },
+  "supplied_3_9_2_baseline": {
+    "apk": {
+      "bytes": 1040086,
+      "sha256": "79d0e93b10ba57e33a49e8c1338009a3b4fa92f952c864d609bbf8ffcb816cab"
+    },
+    "native_library": {
+      "bytes": 992256,
+      "sha256": "4f6db887f371b4e99744135cdac0035dff60c12135de815c4009dea7f7ee4c20"
+    }
+  },
+  "compression": {
+    "apk_ratio": 110.20194956558593,
+    "apk_reduction_percent": 99.09257503706425,
+    "native_library_ratio": 149.07692307692307,
+    "native_library_reduction_percent": 99.32920536635706
+  },
+  "frame_budget": {
+    "reference_pixels": 103680,
+    "rgb565_bytes_per_frame": 207360,
+    "rgb565_mib_per_second_at_30hz": 5.9326171875
+  },
+  "host_reference_benchmark": {
+    "context": "x86_64 Linux host reference only; not an Android device benchmark",
+    "runs": [
+      {
+        "width": 480,
+        "height": 216,
+        "frames": 600,
+        "seconds": 0.89155675,
+        "fps": 672.98,
+        "mpix_s": 69.775,
+        "crc32": "9f8347c1"
+      },
+      {
+        "width": 480,
+        "height": 216,
+        "frames": 600,
+        "seconds": 0.87454184,
+        "fps": 686.074,
+        "mpix_s": 71.132,
+        "crc32": "9f8347c1"
+      },
+      {
+        "width": 480,
+        "height": 216,
+        "frames": 600,
+        "seconds": 0.881595309,
+        "fps": 680.584,
+        "mpix_s": 70.563,
+        "crc32": "9f8347c1"
+      },
+      {
+        "width": 480,
+        "height": 216,
+        "frames": 600,
+        "seconds": 0.884857923,
+        "fps": 678.075,
+        "mpix_s": 70.303,
+        "crc32": "9f8347c1"
+      },
+      {
+        "width": 480,
+        "height": 216,
+        "frames": 600,
+        "seconds": 0.893260792,
+        "fps": 671.696,
+        "mpix_s": 69.641,
+        "crc32": "9f8347c1"
+      }
+    ],
+    "median_mpix_s": 70.303,
+    "min_mpix_s": 69.641,
+    "max_mpix_s": 71.132,
+    "median_fps_at_480x216": 678.075
+  },
+  "validation": {
+    "tests_passed": 11,
+    "tests_failed": 0,
+    "apk_v1_verified": true,
+    "apk_v2_verified": true,
+    "apk_zip_test": true,
+    "pdf_preflight": true,
+    "target_phone_install_pending": true
+  },
+  "mechanisms": {
+    "delta": "M610-M629",
+    "delta_count": 20,
+    "combined_range": "M001-M629"
+  },
+  "evidence_boundary": "Host metrics and package inspections do not establish target-phone installation, sustained timing, power, thermal behavior, memory footprint, or compositor format selection."
+}

@@ -1,0 +1,6 @@
+PDF: report/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk.pdf
+Pages: 15
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False

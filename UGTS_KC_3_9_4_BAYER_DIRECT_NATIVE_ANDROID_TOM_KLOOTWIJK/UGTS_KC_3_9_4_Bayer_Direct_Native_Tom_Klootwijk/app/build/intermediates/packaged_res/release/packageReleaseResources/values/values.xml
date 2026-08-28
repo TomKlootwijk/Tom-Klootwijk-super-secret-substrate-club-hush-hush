@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">K-Kij-T / Bayer 3.9.4</string>
+    <style name="AppTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#26B5A9</item>
+        <item name="android:windowBackground">#000409</item>
+        <item name="android:navigationBarColor">#000409</item>
+        <item name="android:statusBarColor">#000409</item>
+    </style>
+</resources>

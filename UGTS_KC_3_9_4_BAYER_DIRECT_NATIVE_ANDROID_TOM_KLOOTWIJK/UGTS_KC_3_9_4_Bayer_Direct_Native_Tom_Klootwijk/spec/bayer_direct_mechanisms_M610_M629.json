@@ -1,0 +1,162 @@
+[
+  {
+    "id": "M610",
+    "domain": "Profile",
+    "mechanism": "Bayer Direct presentation profile",
+    "formal_definition": "A versioned downstream display profile maps deterministic integer field samples to a finite RGB565 surface without scene, mesh, texture, shader, ray, or camera state.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented and tested"
+  },
+  {
+    "id": "M611",
+    "domain": "Display",
+    "mechanism": "Direct ANativeWindow buffer post",
+    "formal_definition": "Lock the next native window buffer, write bounded samples, and unlock/post; no EGL, OpenGL ES, Vulkan, or Java canvas API is imported.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "ELF import audit PASS"
+  },
+  {
+    "id": "M612",
+    "domain": "Packing",
+    "mechanism": "RGB565 hot buffer",
+    "formal_definition": "Use 16 bits per sample with 5/6/5 color channels, halving byte traffic relative to RGBA8888 for the requested internal surface.",
+    "disposition": "RETAIN/BOUND",
+    "validation": "Runtime fallback to RGBA8888 included"
+  },
+  {
+    "id": "M613",
+    "domain": "Resolution",
+    "mechanism": "480-class internal lattice",
+    "formal_definition": "Request width 480 in landscape and derive height from physical aspect, align to 8, and clamp to 160..320. Portrait applies the symmetric rule.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "M614",
+    "domain": "Display",
+    "mechanism": "Compositor scale handoff",
+    "formal_definition": "Let the Android compositor scale the finite internal buffer to the physical window; internal sample count remains independent of panel pixel count.",
+    "disposition": "BOUND",
+    "validation": "Requires device verification"
+  },
+  {
+    "id": "M615",
+    "domain": "Quantization",
+    "mechanism": "Exact Bayer 8x8 permutation",
+    "formal_definition": "Use the standard 64-threshold ordered matrix containing every integer 0..63 exactly once.",
+    "disposition": "RETAIN",
+    "validation": "Permutation unit test PASS"
+  },
+  {
+    "id": "M616",
+    "domain": "Quantization",
+    "mechanism": "Four-level palette projection",
+    "formal_definition": "Compute k=min(3,floor((4L+4B8)/256)) and index one of four RGB565 palette entries.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented and deterministic"
+  },
+  {
+    "id": "M617",
+    "domain": "Numeric",
+    "mechanism": "Integer-only field evaluator",
+    "formal_definition": "The APK hot core uses 32-bit integer arithmetic, bounded division, bitwise hashes, triangular waves, and approximate norms; no float/double functions occur.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Source audit PASS"
+  },
+  {
+    "id": "M618",
+    "domain": "Persistence",
+    "mechanism": "Seed-tick reconstructible frame",
+    "formal_definition": "A frame is reconstructed from seed, tick, mode, palette, width, height, and profile version; no prior image is authoritative.",
+    "disposition": "TRANSLATE",
+    "validation": "CRC regression evidence"
+  },
+  {
+    "id": "M619",
+    "domain": "Field",
+    "mechanism": "Four bounded procedural programs",
+    "formal_definition": "Grove, shell, Kij lattice, and SCLP cone/shell modes are finite closed loops over the output lattice and auto-cycle every 450 ticks.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Implemented"
+  },
+  {
+    "id": "M620",
+    "domain": "Compression",
+    "mechanism": "No geometry materialization",
+    "formal_definition": "The installable APK contains no scene pack, mesh, index buffer, material, texture, font, or artwork asset.",
+    "disposition": "CORRECTED",
+    "validation": "APK entry audit PASS"
+  },
+  {
+    "id": "M621",
+    "domain": "Query",
+    "mechanism": "No ray traversal or ray marching",
+    "formal_definition": "No ray origin, ray direction, intersection loop, sphere-trace step, depth hierarchy, or acceleration structure is present in the app hot path.",
+    "disposition": "EXCLUDED",
+    "validation": "Source and symbol scan PASS"
+  },
+  {
+    "id": "M622",
+    "domain": "Display",
+    "mechanism": "No graphics-API raster backend",
+    "formal_definition": "No triangle pipeline or graphics API is linked. Pixel samples are direct field queries; the unavoidable display buffer and system compositor remain downstream.",
+    "disposition": "CORRECTED/BOUND",
+    "validation": "ELF needs only libandroid and libc"
+  },
+  {
+    "id": "M623",
+    "domain": "ABI",
+    "mechanism": "Single arm64-v8a target",
+    "formal_definition": "Ship only the 64-bit ARM ABI used by the requested modern Android target; other ABIs are source-build options, not bundled payload.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "APK audit PASS"
+  },
+  {
+    "id": "M624",
+    "domain": "Build",
+    "mechanism": "Size-first native optimization",
+    "formal_definition": "Compile with -Oz, LTO, hidden visibility, section GC, no build ID, no unwind tables, and stripped symbols.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "6,656-byte shared object"
+  },
+  {
+    "id": "M625",
+    "domain": "Packaging",
+    "mechanism": "Zero asset and DEX payload",
+    "formal_definition": "The APK carries only binary manifest, resource table, one arm64 shared object, and v1/v2 signature records.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "9,438-byte APK"
+  },
+  {
+    "id": "M626",
+    "domain": "Timing",
+    "mechanism": "30 Hz paced production and idle wait",
+    "formal_definition": "Post at a nominal 33,333 microsecond cadence; paused or unfocused state waits 50,000 microseconds and produces no frame.",
+    "disposition": "BOUND",
+    "validation": "Physical pacing measurement pending"
+  },
+  {
+    "id": "M627",
+    "domain": "Lifecycle",
+    "mechanism": "Native window ownership protocol",
+    "formal_definition": "Acquire on window creation, stop/join producer before release on destruction, and restart after recreation.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Static lifecycle implementation"
+  },
+  {
+    "id": "M628",
+    "domain": "Validation",
+    "mechanism": "Deterministic frame CRC",
+    "formal_definition": "CRC32 over RGB565 samples provides a regression checksum for fixed input state; it is not cryptographic identity.",
+    "disposition": "ENGINEERING-DERIVED",
+    "validation": "Four mode CRC tests PASS"
+  },
+  {
+    "id": "M629",
+    "domain": "Governance",
+    "mechanism": "Compression and performance evidence boundary",
+    "formal_definition": "Report exact package and host-reference metrics, but require named-device install, thermal, power, p50/p95/p99, and buffer-format evidence before promoting mobile performance claims.",
+    "disposition": "RETAIN/CORRECTED",
+    "validation": "Boundary enforced in report"
+  }
+]

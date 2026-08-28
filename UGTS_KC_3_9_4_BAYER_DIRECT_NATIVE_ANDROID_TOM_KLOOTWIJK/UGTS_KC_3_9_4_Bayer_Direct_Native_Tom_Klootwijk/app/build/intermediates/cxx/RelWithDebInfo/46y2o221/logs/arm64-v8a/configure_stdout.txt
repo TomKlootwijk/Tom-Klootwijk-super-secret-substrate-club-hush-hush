@@ -1,0 +1,9 @@
+-- The C compiler identification is Clang 21.0.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Users/Tom/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/.cxx/RelWithDebInfo/46y2o221/arm64-v8a

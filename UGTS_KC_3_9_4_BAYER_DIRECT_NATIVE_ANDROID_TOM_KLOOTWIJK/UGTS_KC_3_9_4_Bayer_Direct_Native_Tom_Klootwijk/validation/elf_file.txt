@@ -1,0 +1,1 @@
+validation/freestanding_build/libugts_kc_bayer.so: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, stripped

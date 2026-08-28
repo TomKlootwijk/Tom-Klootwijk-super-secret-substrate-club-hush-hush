@@ -1,0 +1,13 @@
+Archive:  dist/UGTS_KC_Bayer_Direct_3_9_4_arm64-v8a.apk
+ Length   Method    Size  Cmpr    Date    Time   CRC-32   Name
+--------  ------  ------- ---- ---------- ----- --------  ----
+     337  Defl:N      259  23% 2026-08-28 16:00 fed39974  META-INF/MANIFEST.MF
+     499  Defl:N      355  29% 2026-08-28 16:00 b4629314  META-INF/UGTSKC39.SF
+    1525  Defl:N     1196  22% 2026-08-28 16:00 e6658371  META-INF/UGTSKC39.RSA
+    2980  Defl:N     1080  64% 2026-08-28 16:00 c7661111  AndroidManifest.xml
+     864  Defl:N      291  66% 2026-08-28 16:00 2d3a2887  resources.arsc
+       0  Stored        0   0% 2026-08-28 16:00 00000000  lib/
+       0  Stored        0   0% 2026-08-28 16:00 00000000  lib/arm64-v8a/
+    6656  Defl:N     3679  45% 2026-08-28 16:00 3bc056c7  lib/arm64-v8a/libugts_kc_bayer.so
+--------          -------  ---                            -------
+   12861             6860  47%                            8 files

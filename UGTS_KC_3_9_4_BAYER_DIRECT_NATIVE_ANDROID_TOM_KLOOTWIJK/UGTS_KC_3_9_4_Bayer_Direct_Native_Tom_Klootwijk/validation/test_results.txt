@@ -1,0 +1,16 @@
+test_07_apk_size_budget (test_release.ApkTests.test_07_apk_size_budget) ... ok
+test_08_apk_contains_no_assets_dex_or_shaders (test_release.ApkTests.test_08_apk_contains_no_assets_dex_or_shaders) ... ok
+test_09_manifest_identity_and_no_feature_elements (test_release.ApkTests.test_09_manifest_identity_and_no_feature_elements) ... ok
+test_10_v1_jar_signature_verifies (test_release.ApkTests.test_10_v1_jar_signature_verifies) ... ok
+test_11_v2_signature_verifies (test_release.ApkTests.test_11_v2_signature_verifies) ... ok
+test_01_bayer_matrix_is_exact_permutation (test_release.BayerCoreTests.test_01_bayer_matrix_is_exact_permutation) ... ok
+test_02_four_deterministic_mode_crcs (test_release.BayerCoreTests.test_02_four_deterministic_mode_crcs) ... ok
+test_03_no_floating_point_in_hot_core (test_release.BayerCoreTests.test_03_no_floating_point_in_hot_core) ... ok
+test_04_arm64_shared_object_is_tiny (test_release.NativeBinaryTests.test_04_arm64_shared_object_is_tiny) ... ok
+test_05_only_android_and_libc_are_needed (test_release.NativeBinaryTests.test_05_only_android_and_libc_are_needed) ... ok
+test_06_native_activity_entry_is_exported (test_release.NativeBinaryTests.test_06_native_activity_entry_is_exported) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 1.024s
+
+OK

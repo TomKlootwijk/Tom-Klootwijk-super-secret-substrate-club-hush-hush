@@ -1,0 +1,4 @@
+# ninja log v5
+1	229	8096401632938196	CMakeFiles/ugts_kc_bayer.dir/native_main.c.o	97a2b96c0e940db9
+8	235	8096401632938196	CMakeFiles/ugts_kc_bayer.dir/bayer_core.c.o	78f8b1f3dcb95221
+236	749	8096401638163091	C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK/UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk/app/build/intermediates/cxx/RelWithDebInfo/46y2o221/obj/arm64-v8a/libugts_kc_bayer.so	bf2af810b6395a9

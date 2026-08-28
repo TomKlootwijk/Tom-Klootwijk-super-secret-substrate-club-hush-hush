@@ -1,0 +1,5 @@
+width=480 height=216 frames=600 seconds=0.891556750 fps=672.980 mpix_s=69.775 crc32=9f8347c1
+width=480 height=216 frames=600 seconds=0.874541840 fps=686.074 mpix_s=71.132 crc32=9f8347c1
+width=480 height=216 frames=600 seconds=0.881595309 fps=680.584 mpix_s=70.563 crc32=9f8347c1
+width=480 height=216 frames=600 seconds=0.884857923 fps=678.075 mpix_s=70.303 crc32=9f8347c1
+width=480 height=216 frames=600 seconds=0.893260792 fps=671.696 mpix_s=69.641 crc32=9f8347c1

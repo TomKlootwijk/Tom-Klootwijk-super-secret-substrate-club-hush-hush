@@ -1,0 +1,45 @@
+{
+    "logs": [
+        {
+            "outputFile": "nl.tomklootwijk.ugtskc.bayer.poco.app-mergeReleaseResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endLines": "10",
+                        "endColumns": "12",
+                        "endOffsets": "571"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "114",
+                        "endLines": "12",
+                        "endColumns": "12",
+                        "endOffsets": "669"
+                    }
+                },
+                {
+                    "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_3_9_4_BAYER_DIRECT_NATIVE_ANDROID_TOM_KLOOTWIJK\\UGTS_KC_3_9_4_Bayer_Direct_Native_Tom_Klootwijk\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "58",
+                        "endOffsets": "70"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "58",
+                        "endOffsets": "109"
+                    }
+                }
+            ]
+        }
+    ]
+}

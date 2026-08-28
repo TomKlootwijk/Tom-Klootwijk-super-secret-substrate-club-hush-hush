@@ -1,0 +1,55 @@
+0x3 8 2980 2980
+chunk 0x1 off 8 hs 28 sz 1852
+strings 47 ['theme', 'label', 'name', 'hasCode', 'exported', 'launchMode', 'screenOrientation', 'configChanges', 'value', 'minSdkVersion', 'versionCode', 'versionName', 'targetSdkVersion', 'allowBackup', 'glEsVersion', 'required', 'extractNativeLibs', 'fullBackupContent', 'resizeableActivity', 'compileSdkVersion', 'compileSdkVersionCodename', '16', '3.9.4-bayer-direct-v001', 'action', 'activity', 'android', 'android.app.NativeActivity', 'android.app.lib_name', 'android.hardware.gamepad', 'android.hardware.touchscreen', 'android.hardware.vulkan.level', 'android.hardware.vulkan.version', 'android.intent.action.MAIN', 'android.intent.category.LAUNCHER', 'application', 'category', 'http://schemas.android.com/apk/res/android', 'intent-filter', 'manifest', 'meta-data', 'nl.tomklootwijk.ugtskc.bayer.poco', 'package', 'platformBuildVersionCode', 'platformBuildVersionName', 'ugts_kc_bayer', 'uses-feature', 'uses-sdk']
+chunk 0x180 off 1860 hs 8 sz 92
+chunk 0x100 off 1952 hs 16 sz 24
+chunk 0x102 off 1976 hs 16 sz 176
+ START manifest line 2 attrs 7 astart 20 asize 20
+  attr 0 off 2012 ns 36 name versionCode raw 4294967295 type 0x10 data 0x18a str 
+  attr 1 off 2032 ns 36 name versionName raw 3.9.4-bayer-direct-v001 type 0x3 data 0x16 str 3.9.4-bayer-direct-v001
+  attr 2 off 2052 ns 36 name compileSdkVersion raw 4294967295 type 0x10 data 0x24 str 
+  attr 3 off 2072 ns 36 name compileSdkVersionCodename raw 16 type 0x3 data 0x15 str 16
+  attr 4 off 2092 ns 4294967295 name package raw nl.tomklootwijk.ugtskc.bayer.poco type 0x3 data 0x28 str nl.tomklootwijk.ugtskc.bayer.poco
+  attr 5 off 2112 ns 4294967295 name platformBuildVersionCode raw 4294967295 type 0x10 data 0x24 str 
+  attr 6 off 2132 ns 4294967295 name platformBuildVersionName raw 4294967295 type 0x10 data 0x10 str 
+chunk 0x102 off 2152 hs 16 sz 76
+ START uses-sdk line 7 attrs 2 astart 20 asize 20
+  attr 0 off 2188 ns 36 name minSdkVersion raw 4294967295 type 0x10 data 0x1a str 
+  attr 1 off 2208 ns 36 name targetSdkVersion raw 4294967295 type 0x10 data 0x24 str 
+chunk 0x103 off 2228 hs 16 sz 24
+chunk 0x102 off 2252 hs 16 sz 156
+ START application line 27 attrs 6 astart 20 asize 20
+  attr 0 off 2288 ns 36 name theme raw 4294967295 type 0x1 data 0x7f020000 str 
+  attr 1 off 2308 ns 36 name label raw 4294967295 type 0x1 data 0x7f010000 str 
+  attr 2 off 2328 ns 36 name hasCode raw 4294967295 type 0x12 data 0x0 str 
+  attr 3 off 2348 ns 36 name allowBackup raw 4294967295 type 0x12 data 0x0 str 
+  attr 4 off 2368 ns 36 name extractNativeLibs raw 4294967295 type 0x12 data 0xffffffff str 
+  attr 5 off 2388 ns 36 name fullBackupContent raw 4294967295 type 0x12 data 0x0 str 
+chunk 0x102 off 2408 hs 16 sz 156
+ START activity line 34 attrs 6 astart 20 asize 20
+  attr 0 off 2444 ns 36 name name raw android.app.NativeActivity type 0x3 data 0x1a str android.app.NativeActivity
+  attr 1 off 2464 ns 36 name exported raw 4294967295 type 0x12 data 0xffffffff str 
+  attr 2 off 2484 ns 36 name launchMode raw 4294967295 type 0x10 data 0x2 str 
+  attr 3 off 2504 ns 36 name screenOrientation raw 4294967295 type 0x10 data 0x6 str 
+  attr 4 off 2524 ns 36 name configChanges raw 4294967295 type 0x11 data 0x1fa0 str 
+  attr 5 off 2544 ns 36 name resizeableActivity raw 4294967295 type 0x12 data 0xffffffff str 
+chunk 0x102 off 2564 hs 16 sz 76
+ START meta-data line 41 attrs 2 astart 20 asize 20
+  attr 0 off 2600 ns 36 name name raw android.app.lib_name type 0x3 data 0x1b str android.app.lib_name
+  attr 1 off 2620 ns 36 name value raw ugts_kc_bayer type 0x3 data 0x2c str ugts_kc_bayer
+chunk 0x103 off 2640 hs 16 sz 24
+chunk 0x102 off 2664 hs 16 sz 36
+ START intent-filter line 45 attrs 0 astart 20 asize 20
+chunk 0x102 off 2700 hs 16 sz 56
+ START action line 46 attrs 1 astart 20 asize 20
+  attr 0 off 2736 ns 36 name name raw android.intent.action.MAIN type 0x3 data 0x20 str android.intent.action.MAIN
+chunk 0x103 off 2756 hs 16 sz 24
+chunk 0x102 off 2780 hs 16 sz 56
+ START category line 48 attrs 1 astart 20 asize 20
+  attr 0 off 2816 ns 36 name name raw android.intent.category.LAUNCHER type 0x3 data 0x21 str android.intent.category.LAUNCHER
+chunk 0x103 off 2836 hs 16 sz 24
+chunk 0x103 off 2860 hs 16 sz 24
+chunk 0x103 off 2884 hs 16 sz 24
+chunk 0x103 off 2908 hs 16 sz 24
+chunk 0x103 off 2932 hs 16 sz 24
+chunk 0x101 off 2956 hs 16 sz 24
