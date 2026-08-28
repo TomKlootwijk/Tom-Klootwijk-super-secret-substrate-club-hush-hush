@@ -237,7 +237,7 @@ final class Camera2Controller {
             Surface localPreviewSurface = new Surface(texture);
             synchronized (this) {
                 if (previewSurface != null) {
-                    previewSurface.close();
+                    previewSurface.release();
                 }
                 previewSurface = localPreviewSurface;
             }
@@ -305,7 +305,7 @@ final class Camera2Controller {
             imageReader = null;
         }
         if (previewSurface != null) {
-            previewSurface.close();
+            previewSurface.release();
             previewSurface = null;
         }
     }
