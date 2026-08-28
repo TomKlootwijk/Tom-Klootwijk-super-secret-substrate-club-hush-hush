@@ -1,0 +1,117 @@
+{
+  "android_build": {
+    "apk_in_release": false,
+    "attempted": false,
+    "build_command": "./tools/build_android.sh",
+    "reason": "Android SDK Platform 36 was unavailable; no unbuilt APK is presented as validated output"
+  },
+  "artifacts": {
+    "gradle_bootstrap_jar_bytes": 8044,
+    "gradle_bootstrap_jar_sha256": "a445fdc6af828fb6e6dc2765d89973ba0e3f770d499a09e8615e08523ec2b11f",
+    "sample_scan_bytes": 2500,
+    "sample_scan_sha256": "ff7efb7163ed815cc953b8f4ce03f00e05338918f26479a20c5103b0cc518d0c"
+  },
+  "checks": [
+    {
+      "command": [
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/tools/run_host_tests.sh"
+      ],
+      "elapsed_seconds": 2.1477,
+      "name": "core_host_tests",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "UGTS 3.9.4.1 host core self-test: PASS (8465 assertions)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/tools/compile_android_stubs.py"
+      ],
+      "elapsed_seconds": 4.0805,
+      "name": "android_shell_stub_compile",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "Android shell stub compile: PASS (14 class files)\n"
+    },
+    {
+      "command": [
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/gradlew",
+        "--bootstrap-self-test"
+      ],
+      "elapsed_seconds": 0.0362,
+      "name": "gradle_bootstrap_self_test",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "UGTS verified Gradle bootstrap: PASS\nproperties=/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/gradle/wrapper/gradle-wrapper.properties\ndistributionUrl=https://services.gradle.org/distributions/gradle-8.13-bin.zip\ndistributionSha256Sum=20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78\n"
+    },
+    {
+      "command": [
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/tools/test_bootstrap_local.sh"
+      ],
+      "elapsed_seconds": 1.961,
+      "name": "gradle_bootstrap_local_integration",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "UGTS local bootstrap download/hash/extract/execute test: PASS\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/tools/verify_android_source.py"
+      ],
+      "elapsed_seconds": 0.9705,
+      "name": "android_source_policy",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "{\n  \"app_java_files\": 9,\n  \"camera_api\": \"Camera2\",\n  \"core_java_files\": 25,\n  \"dependency_lines\": [\n    \"implementation project(':core')\"\n  ],\n  \"document_export\": \"ACTION_CREATE_DOCUMENT\",\n  \"errors\": [],\n  \"external_android_runtime_dependencies\": 0,\n  \"manifest_permissions\": [\n    \"android.permission.CAMERA\"\n  ],\n  \"network_permission\": false,\n  \"status\": \"PASS\"\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/tools/ugts_scan_tool.py",
+        "/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/samples/synthetic_codec_sample.ugtsscan",
+        "--summary-only"
+      ],
+      "elapsed_seconds": 0.9406,
+      "name": "sample_scan_verification",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "{\n  \"decoded_voxels\": 240,\n  \"file\": \"/mnt/data/work_ugts3941/UGTS_AtlasSLAM_3941/samples/synthetic_codec_sample.ugtsscan\",\n  \"file_sha256\": \"ff7efb7163ed815cc953b8f4ce03f00e05338918f26479a20c5103b0cc518d0c\",\n  \"verification_errors\": [],\n  \"voxel_size\": 0.02\n}\n"
+    },
+    {
+      "count": 8,
+      "errors": [],
+      "name": "python_source_syntax",
+      "status": "PASS"
+    },
+    {
+      "count": 3,
+      "errors": [],
+      "name": "json_parse",
+      "status": "PASS"
+    }
+  ],
+  "environment": {
+    "android_sdk": {
+      "available": false,
+      "reason": "No Android SDK Platform 36 was available in the packaging environment"
+    },
+    "java": "openjdk version \"21.0.11\" 2026-04-21",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "physical_device_validation": {
+    "attempted": false,
+    "reason": "No physical target device was attached to the packaging environment",
+    "target": "POCO X7 Pro 12 GB RAM edition"
+  },
+  "release": "3.9.4.1",
+  "schema": "ugts.android-validation/3.9.4.1",
+  "status": "PASS"
+}

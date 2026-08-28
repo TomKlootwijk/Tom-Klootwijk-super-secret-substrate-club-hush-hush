@@ -1,0 +1,39 @@
+{
+  "schema": "ugts.device-profile/1",
+  "profile_id": "poco-x7-pro-12gb-atlas-3941",
+  "target": "POCO X7 Pro, 12 GB RAM edition",
+  "status": "source-configured; physical-device measurements pending",
+  "operation": {
+    "camera_api": "platform-camera2",
+    "camera_analysis_long_edge_px": 640,
+    "normal_analysis_fps": 15,
+    "warm_analysis_fps": 10,
+    "hot_analysis_fps": 6,
+    "max_features": 1100,
+    "max_active_voxels": 260000,
+    "keyframe_min_interval_ms": 360,
+    "semi_dense_pixel_step": 6,
+    "keyframe_image_persistence": false,
+    "network_required_at_runtime": false,
+    "external_android_runtime_libraries": 0
+  },
+  "accuracy_policy": {
+    "metric_scale_requires_anchor": true,
+    "intrinsics_source_preference": [
+      "camera2_factory_intrinsic_calibration",
+      "camera2_physical_metadata_estimate",
+      "declared_fallback"
+    ],
+    "minimum_visual_inliers": 24,
+    "minimum_keyframe_parallax_degrees": 1.0,
+    "unknown_is_not_free_space": true,
+    "loop_closure_commit": "deferred_without_geometric_bundle_adjustment"
+  },
+  "storage_policy": {
+    "authoritative_geometry": "quantized_voxel_centres",
+    "coordinate_delta_encoding": "zigzag-varint",
+    "container": "zip-deflate-level-3",
+    "default_keyframe_images": "omitted",
+    "optional_interchange": ["PLY via desktop decoder"]
+  }
+}

@@ -1,0 +1,15 @@
+UGTS-KC 3.9.4.1 validation
+Overall: PASS
+
+PASS  core_host_tests
+PASS  android_shell_stub_compile
+PASS  gradle_bootstrap_self_test
+PASS  gradle_bootstrap_local_integration
+PASS  android_source_policy
+PASS  sample_scan_verification
+PASS  python_source_syntax
+PASS  json_parse
+
+Android APK build: NOT ATTEMPTED (SDK Platform 36 unavailable)
+Physical POCO validation: NOT ATTEMPTED
+These two boundaries are explicit and are not counted as failed host checks.

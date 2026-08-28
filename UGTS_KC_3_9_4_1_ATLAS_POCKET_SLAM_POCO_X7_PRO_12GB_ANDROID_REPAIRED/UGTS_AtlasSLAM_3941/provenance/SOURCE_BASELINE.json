@@ -1,0 +1,19 @@
+{
+  "schema": "ugts.release-provenance/1",
+  "release": "3.9.4.1",
+  "immediate_android_baseline": {
+    "filename": "UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES - Tom Klootwijk(1).zip",
+    "sha256": "2d0197bb4526ca994eb67f68985ebd349fb91f52f562870b97f01d03023f8944",
+    "treatment": "referenced and inspected; not nested in repaired archive"
+  },
+  "atlas_substrate_baseline": {
+    "filename": "UGTS_KC_3_9_3_KC_ATLAS_POCKET_SPATIAL_LEDGER_COMPLETE_FILES.zip",
+    "sha256": "6de52824edfd8ef92367d15d601f7d6b463ec9b4be52825ae930406ff2b9517e",
+    "treatment": "contracts selectively retained; full archive not nested"
+  },
+  "superseded_broken_handoff": {
+    "filename": "UGTS_KC_3_9_4_KC_ATLAS_POCKET_SLAM_POCO_X7_PRO_12GB_COMPLETE_ANDROID.zip",
+    "sha256": "d34cfd17db8cc90b5ffad4267dbccf20383bfaf92e2cd3f1b464964fab967ea3",
+    "treatment": "superseded by 3.9.4.1"
+  }
+}
