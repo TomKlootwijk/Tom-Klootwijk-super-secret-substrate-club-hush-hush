@@ -1,0 +1,13 @@
+{
+  "schema": "ugts-kc-native-session-summary-4.1",
+  "profile": "poco_x7_pro_12gb_seed",
+  "session_seed": "0xb0971b904c2732ea",
+  "frames_seen": 8328,
+  "keyframes_stored": 348,
+  "events_committed": 8702,
+  "rejected_proposals": 0,
+  "raw_input_bytes": 7675084800,
+  "stored_bytes": 805002,
+  "state_hash": "f232762e774fdb5c1f49ac83fd63849bd1b8c463474d3cc49c4c5cff83810fa2",
+  "raw_images_retained": false
+}

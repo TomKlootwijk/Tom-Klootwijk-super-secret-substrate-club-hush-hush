@@ -1,0 +1,87 @@
+{
+  "schema": "ugts-kc-poco-x7-pro-device-performance-1",
+  "measured_at": "2026-08-28T20:31:23+02:00",
+  "device": {
+    "manufacturer": "Xiaomi",
+    "model": "2412DPC0AG",
+    "codename": "rodin",
+    "os": "Android 16 / HyperOS 3.0",
+    "build": "OS3.0.301.0.WOJEUXM",
+    "abi": "arm64-v8a",
+    "ram_reported_mb": 11312,
+    "gpu": "Mali-G720 MC7",
+    "display_physical_pixels": [1220, 2712],
+    "display_active_hz": 60.0
+  },
+  "app": {
+    "package": "nl.tomklootwijk.ugtskc.spatial.poco",
+    "version_code": 410,
+    "version_name": "4.1.0-poco-x7-pro-seed",
+    "profile": "poco_x7_pro_12gb_seed",
+    "apk_bytes": 1215025,
+    "apk_sha256": "b9e870520c72ab3c07c0980e6cf688644954e6d05a2d883425125b2ec637e0a0",
+    "signing": "Android debug certificate, APK Signature Scheme v2",
+    "cold_launch_ms": 328
+  },
+  "capture": {
+    "duration_seconds": 361.576803098,
+    "camera_id": "0",
+    "camera_format": "YUV_420_888",
+    "camera_pixels": [1280, 720],
+    "camera_requested_fps": 30,
+    "analysis_pixels": [160, 90],
+    "processed_frames": 8328,
+    "effective_processed_fps": 23.032451,
+    "camera_overwritten_frames": 2529,
+    "camera_arrival_fps_estimate": 30.026816,
+    "camera_overwrite_percent": 23.293728,
+    "keyframes_stored": 348,
+    "events_committed": 8702,
+    "rejected_proposals": 0
+  },
+  "latency_us": {
+    "processing": {"p50": 1355, "p95": 3289, "p99": 6368, "max": 26646, "samples": 8328},
+    "camera_timestamp_to_processing_complete": {"p50": 106739, "p95": 118541, "p99": 122921, "max": 153678, "samples": 8328},
+    "render_including_vsync_wait": {"p50": 15684, "p95": 22266, "p99": 25364, "max": 31848, "samples": 5439}
+  },
+  "resources": {
+    "cpu_average_percent_of_one_core": 52.0,
+    "cpu_normalized_percent_of_eight_logical_cores": 6.5,
+    "idle_pss_mib": 109.205,
+    "peak_pss_mib": 112.969,
+    "idle_rss_mib": 237.239,
+    "peak_rss_mib": 241.826,
+    "pss_growth_mib": 3.764,
+    "rss_growth_mib": 4.587,
+    "thermal_status_max": 0,
+    "soc_temperature_c_range": [47.3, 48.6],
+    "skin_temperature_c_range": [36.9, 37.0]
+  },
+  "storage": {
+    "session_bytes": 805002,
+    "session_sha256": "076d8f772e30f9d1c53be26c986003acee9a1cf5af1541f6aff2e67fdb36155e",
+    "raw_input_bytes_observed": 7675084800,
+    "bytes_per_minute": 133581.91,
+    "projected_mib_per_hour": 7.6436,
+    "observed_raw_input_to_ledger_ratio": 9534.24,
+    "raw_images_retained": false,
+    "header_crc_ok": true,
+    "chunk_crc_ok": true,
+    "sha256_chain_ok": true,
+    "complete": true
+  },
+  "battery": {
+    "valid_discharge_measurement": false,
+    "reason": "USB powered and charging throughout",
+    "level_start_percent": 99,
+    "level_end_percent": 99,
+    "charge_counter_change_uah_during_monitored_300_seconds": 29000
+  },
+  "limitations": [
+    "One device, one approximately six-minute uncontrolled scene; no calibrated motion, low-light, or 15/30-minute run.",
+    "CPU excludes camera ISP and GPU power; render timing includes eglSwapBuffers/vsync wait.",
+    "The raw-input-to-ledger ratio is not image compression because raw images are intentionally discarded.",
+    "Zero rejected proposals is not an accuracy result and no false/missed-event ground truth was collected.",
+    "Battery drain cannot be inferred while the handset is USB powered and charging."
+  ]
+}
