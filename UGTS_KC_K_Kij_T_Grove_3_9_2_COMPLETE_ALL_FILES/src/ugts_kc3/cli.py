@@ -26,7 +26,11 @@ from .templates import (
     elizabeth_vector_quest_project,
     first_steps_project,
 )
-from .templates3d import blank_mobile3d_project, tom_signature_arena_project
+from .templates3d import (
+    blank_mobile3d_project,
+    first_steps_mobile3d_project,
+    tom_signature_arena_project,
+)
 from .vector2d import write_vector_svg
 from .version import __codename__, __edition__, __version__
 from .packed_kinematics import (
@@ -36,6 +40,16 @@ from .packed_kinematics import (
     unpack_ecs_document,
 )
 from .webexport import build_html5
+
+
+def _positive_step_count(value: str) -> int:
+    try:
+        count = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("steps must be a whole number") from exc
+    if count < 1:
+        raise argparse.ArgumentTypeError("steps must be at least 1")
+    return count
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -73,7 +87,7 @@ def _parser() -> argparse.ArgumentParser:
     simulate = sub.add_parser("simulate", help="run a headless deterministic 2D simulation")
     simulate.add_argument("project", type=Path)
     simulate.add_argument("--scene")
-    simulate.add_argument("--steps", type=int, default=120)
+    simulate.add_argument("--steps", type=_positive_step_count, default=120)
     simulate.add_argument("--move-x", type=float, default=0.0)
     simulate.add_argument("--move-y", type=float, default=0.0)
     simulate.add_argument("--dash-at", type=int, default=-1)
@@ -91,8 +105,12 @@ def _parser() -> argparse.ArgumentParser:
     new3d = sub.add_parser("new-3d", help="create a mobile 3D project")
     new3d.add_argument("directory", type=Path)
     new3d.add_argument("--title", default="My UGTS-KC Mobile 3D Game")
-    new3d.add_argument("--author", default="Tom Klootwijk")
-    new3d.add_argument("--template", choices=("blank", "signature-arena"), default="blank")
+    new3d.add_argument("--author", default="")
+    new3d.add_argument(
+        "--template",
+        choices=("first-steps", "blank", "signature-arena"),
+        default="first-steps",
+    )
     new3d.add_argument("--android", action="store_true", help="also materialize the native Android project")
     new3d.add_argument("--profile", default="auto")
 
@@ -102,7 +120,7 @@ def _parser() -> argparse.ArgumentParser:
 
     simulate3d = sub.add_parser("simulate-3d", help="run deterministic 3D arcade simulation")
     simulate3d.add_argument("project", type=Path)
-    simulate3d.add_argument("--steps", type=int, default=240)
+    simulate3d.add_argument("--steps", type=_positive_step_count, default=240)
     simulate3d.add_argument("--move-x", type=float, default=0.0)
     simulate3d.add_argument("--move-z", type=float, default=-1.0)
     simulate3d.add_argument("--jump-at", type=int, default=-1)
@@ -299,7 +317,7 @@ def main(argv: list[str] | None = None) -> int:
                 frame = project.input_map.frame_from_actions(values, previous)
                 world.step(frame)
                 previous = frame
-            summary = {"schema": "ugts-kc-headless-summary-3.9.1", "dimension": "2D", "steps": args.steps, "tick": world.tick, "time": world.time, "entities": len(world.entities), "state": world.state, "events": len(world.events), "state_hash": world.state_hash()}
+            summary = {"schema": "ugts-kc-headless-summary-3.9.2", "dimension": "2D", "steps": args.steps, "tick": world.tick, "time": world.time, "entities": len(world.entities), "state": world.state, "events": len(world.events), "state_hash": world.state_hash()}
             print(json.dumps(summary, indent=2, sort_keys=True) if args.as_json else "\n".join(f"{k}: {v}" for k, v in summary.items()))
             return 0
 
@@ -319,7 +337,12 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.command == "new-3d":
-            project = tom_signature_arena_project(args.author) if args.template == "signature-arena" else blank_mobile3d_project(args.title, args.author)
+            if args.template == "signature-arena":
+                project = tom_signature_arena_project(args.author)
+            elif args.template == "blank":
+                project = blank_mobile3d_project(args.title, args.author)
+            else:
+                project = first_steps_mobile3d_project(args.title, args.author)
             args.directory.mkdir(parents=True, exist_ok=True)
             path = project.write(args.directory / "project.json")
             print(path)
@@ -337,7 +360,7 @@ def main(argv: list[str] | None = None) -> int:
             for step in range(args.steps):
                 frame = InputFrame3D(args.move_x, args.move_z, jump=(step == args.jump_at))
                 world.step(frame)
-            summary = {"schema": "ugts-kc-headless-summary-3.9.1", "dimension": "3D", "steps": args.steps, "tick": world.tick, "time": world.time, "entities": len(world.entities), "state": world.state, "events": len(world.events), "state_hash": world.state_hash()}
+            summary = {"schema": "ugts-kc-headless-summary-3.9.2", "dimension": "3D", "steps": args.steps, "tick": world.tick, "time": world.time, "entities": len(world.entities), "state": world.state, "events": len(world.events), "state_hash": world.state_hash()}
             print(json.dumps(summary, indent=2, sort_keys=True) if args.as_json else "\n".join(f"{k}: {v}" for k, v in summary.items()))
             return 0
 

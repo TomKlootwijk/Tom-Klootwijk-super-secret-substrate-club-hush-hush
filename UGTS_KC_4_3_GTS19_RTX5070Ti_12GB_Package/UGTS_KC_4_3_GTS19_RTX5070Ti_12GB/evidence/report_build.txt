@@ -1,0 +1,2 @@
+/mnt/data/UGTS_KC_4_3_GTS19_RTX5070Ti_12GB/report/build_report.py:811: SyntaxWarning: invalid escape sequence '\.'
+validation marker missing; refusing to build report

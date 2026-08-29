@@ -14,6 +14,7 @@ constexpr std::uint32_t MaxGraphs=256,MaxBindings=4096,MaxNodes=8192;
 constexpr std::uint32_t MaxNodesPerGraph=1024,MaxInputs=65535,MaxFlows=65535;
 constexpr std::uint32_t MaxValues=65535,MaxStrings=65535,MaxState=4096;
 constexpr std::size_t MaxStringBytes=1024u*1024u,MaxPackBytes=8u*1024u*1024u;
+constexpr std::uint32_t WorldBinding=0xffffffffu;
 
 class Reader {
 public:
@@ -200,7 +201,9 @@ void GraphVm::load(const std::vector<std::uint8_t>& bytes,std::size_t sceneNodeC
     std::uint32_t previousScene=0,previousBindingGraph=0;
     for (std::uint32_t i=0;i<bindingCount;++i) {
         Binding binding; binding.graph=r.u32(); binding.sceneNode=r.u32();
-        require(binding.graph<graphCount && binding.sceneNode<sceneNodeCount,"KCVG binding reference invalid");
+        require(binding.graph<graphCount &&
+                (binding.sceneNode==WorldBinding || binding.sceneNode<sceneNodeCount),
+                "KCVG binding reference invalid");
         if (i>0) {
             const bool ordered=binding.sceneNode>previousScene ||
                 (binding.sceneNode==previousScene && strings_[graphs_[previousBindingGraph].id]<strings_[graphs_[binding.graph].id]);
@@ -249,7 +252,9 @@ void GraphVm::load(const std::vector<std::uint8_t>& bytes,std::size_t sceneNodeC
 void GraphVm::ready(std::vector<NodeData>& nodes) {
     eventCount_=issueCount_=0; std::size_t totalSteps=0; const GraphInputFrame input{};
     for (auto& binding:bindings_) {
-        if (!binding.enabled || binding.sceneNode>=nodes.size() || !nodes[binding.sceneNode].alive) continue;
+        const bool world=binding.sceneNode==WorldBinding;
+        if (!binding.enabled || (!world && (binding.sceneNode>=nodes.size() ||
+            !nodes[binding.sceneNode].alive || !nodes[binding.sceneNode].active))) continue;
         if (totalSteps>=MaxTotalSteps) {
             binding.enabled=false; recordIssue(GraphVmError::TotalStepLimit,binding.graph,0); break;
         }
@@ -260,7 +265,9 @@ void GraphVm::ready(std::vector<NodeData>& nodes) {
 void GraphVm::tick(float dt,std::uint64_t tick,const GraphInputFrame& input,std::vector<NodeData>& nodes) {
     eventCount_=issueCount_=0; std::size_t totalSteps=0;
     for (auto& binding:bindings_) {
-        if (!binding.enabled || binding.sceneNode>=nodes.size() || !nodes[binding.sceneNode].alive) continue;
+        const bool world=binding.sceneNode==WorldBinding;
+        if (!binding.enabled || (!world && (binding.sceneNode>=nodes.size() ||
+            !nodes[binding.sceneNode].alive || !nodes[binding.sceneNode].active))) continue;
         if (totalSteps>=MaxTotalSteps) {
             binding.enabled=false; recordIssue(GraphVmError::TotalStepLimit,binding.graph,0); break;
         }
@@ -364,11 +371,14 @@ bool GraphVm::boolValue(const Value& value,bool& result) const {
 }
 
 std::int32_t GraphVm::entityValue(const Value& value,bool emptyUsesBound) const {
-    if (value.tag==ValueTag::Null) return emptyUsesBound?static_cast<std::int32_t>(currentBound_):-1;
+    const auto boundEntity=[&]() -> std::int32_t {
+        return currentBound_==WorldBinding?-1:static_cast<std::int32_t>(currentBound_);
+    };
+    if (value.tag==ValueTag::Null) return emptyUsesBound?boundEntity():-1;
     if (value.tag==ValueTag::Entity) return value.index<currentNodes_->size()?static_cast<std::int32_t>(value.index):-2;
     if (value.tag!=ValueTag::String || value.index>=strings_.size()) return -2;
     const auto& id=strings_[value.index];
-    if (id.empty()) return emptyUsesBound?static_cast<std::int32_t>(currentBound_):-1;
+    if (id.empty()) return emptyUsesBound?boundEntity():-1;
     for (std::size_t i=0;i<currentNodes_->size();++i) if ((*currentNodes_)[i].id==id) return static_cast<std::int32_t>(i);
     return -2;
 }
@@ -428,7 +438,11 @@ bool GraphVm::writeComponent(std::int32_t entity,std::string_view component,std:
         target={value.vector[0],value.vector[1],value.vector[2]}; return true;
     };
     if (field=="position" || field=="translation") return setVec(node.translation);
-    if (field=="scale") return setVec(node.scale);
+    if (field=="scale") {
+        if (value.tag!=ValueTag::Vec3 || std::abs(value.vector[0])<=1.0e-8f ||
+            std::abs(value.vector[1])<=1.0e-8f || std::abs(value.vector[2])<=1.0e-8f) return false;
+        node.scale={value.vector[0],value.vector[1],value.vector[2]}; return true;
+    }
     if (field=="rotation") {
         if (value.tag!=ValueTag::Vec4) return false;
         const Quat q{value.vector[0],value.vector[1],value.vector[2],value.vector[3]};
@@ -440,7 +454,10 @@ bool GraphVm::writeComponent(std::int32_t entity,std::string_view component,std:
     const auto group=field.substr(0,dot),part=field.substr(dot+1); int index=0; float item=0;
     if (!numberValue(value,item)) return false;
     if ((group=="position" || group=="translation") && fieldIndex3(part,index)) { setVec3At(node.translation,index,item); return true; }
-    if (group=="scale" && fieldIndex3(part,index)) { setVec3At(node.scale,index,item); return true; }
+    if (group=="scale" && fieldIndex3(part,index)) {
+        if (std::abs(item)<=1.0e-8f) return false;
+        setVec3At(node.scale,index,item); return true;
+    }
     if (group=="rotation" && fieldIndex4(part,index)) {
         auto q=node.rotation; setQuatAt(q,index,item);
         const float magnitude=std::sqrt(q.w*q.w+q.x*q.x+q.y*q.y+q.z*q.z);
@@ -505,7 +522,11 @@ bool GraphVm::executeNode(std::uint16_t local,bool queued,std::size_t depth,std:
     auto& output=outputs_[local];
     auto number=[](float value) { Value result; result.tag=ValueTag::Number; result.number=value; return result; };
     auto boolean=[](bool value) { Value result; result.tag=ValueTag::Boolean; result.index=value?1u:0u; return result; };
-    auto entity=[&]() { Value result; result.tag=ValueTag::Entity; result.index=currentBound_; return result; };
+    auto entity=[&]() {
+        Value result;
+        if (currentBound_!=WorldBinding) { result.tag=ValueTag::Entity; result.index=currentBound_; }
+        return result;
+    };
     switch (node.opcode) {
         case 1: output[0]=entity(); flowMask=1; return true;
         case 2: output[0]=number(currentDt_); output[1]=number(static_cast<float>(currentTick_)); output[2]=entity(); flowMask=1; return true;

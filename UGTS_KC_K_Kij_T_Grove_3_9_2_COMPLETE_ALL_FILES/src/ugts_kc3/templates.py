@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import replace
 import math
+import unicodedata
 from pathlib import Path
 from typing import Iterable
 
@@ -330,8 +331,12 @@ def elizabeth_vector_quest_project(author: str = "Tom Klootwijk") -> GameProject
 
 
 def blank_vector_game_project(title: str = "My KC Elizabeth Game", author: str = "") -> GameProject:
-    project_id = "game." + "".join(character.lower() if character.isalnum() else "-" for character in title).strip("-")
-    project_id = project_id[:64] or "game.kc-elizabeth"
+    ascii_title = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode("ascii")
+    slug = "".join(
+        character.lower() if character.isascii() and character.isalnum() else "-"
+        for character in ascii_title
+    ).strip("-")
+    project_id = ("game." + slug)[:64] if slug else "game.kc-elizabeth"
     assets = VectorLibrary((_player_asset(), _crystal_asset(), _obstacle_asset()))
     scene = GameSceneSpec(
         "main",

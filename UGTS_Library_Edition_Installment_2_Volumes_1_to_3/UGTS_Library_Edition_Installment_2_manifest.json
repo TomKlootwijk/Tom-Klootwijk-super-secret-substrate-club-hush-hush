@@ -1,0 +1,51 @@
+{
+  "schema": "ugts-library-installment-2-manifest",
+  "edition": "2026-08-29",
+  "files": [
+    {
+      "filename": "UGTS_Library_Edition_Shelf_Update_Through_4_2_v0.2.pdf",
+      "bytes": 371778,
+      "sha256": "e6e6db631e51ee3cd761a7805d8dec3eec8d7a7e217d4c6f605c987e8173adf4"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Shelf_Update_Through_4_2_v0.2.docx",
+      "bytes": 230782,
+      "sha256": "e4fb9c05128bcc6d257b72de9d82dc99d2dbe18ff9b6d0d76cca880fffdf21a2"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Volume_1_The_Six_Big_Questions_v0.1.pdf",
+      "bytes": 377060,
+      "sha256": "b88c41708af4bcda6d6ebf26fdf7136c75864a7bd5d18d94aff9c4b5b350ec2b"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Volume_1_The_Six_Big_Questions_v0.1.docx",
+      "bytes": 216698,
+      "sha256": "cc846e2574a10e768b0b0ee517c3cb1f0e107d7d9ed72abf4320ac0f3d69877b"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Volume_2_Shapes_Paths_Fields_and_Motion_v0.1.pdf",
+      "bytes": 450557,
+      "sha256": "26d693ec5fd14e0acf29c9ed411ac0d6844b76bf89a7d4fdf6f963c7116a44e5"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Volume_2_Shapes_Paths_Fields_and_Motion_v0.1.docx",
+      "bytes": 326699,
+      "sha256": "e40361022f5cb96b5f24a3fac4c30f0bd3abd8ae4861b4fdaba57341715fb817"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Volume_3_Identity_Rules_Memory_and_Replay_v0.1.pdf",
+      "bytes": 625650,
+      "sha256": "e4b87631c309b9e4c3796999f958d63743d71619fe0e34383944a90c4273e54a"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Volume_3_Identity_Rules_Memory_and_Replay_v0.1.docx",
+      "bytes": 463598,
+      "sha256": "38e8bc77922b8f4d23b350a9266acd5460d38d99405e35030a9eef0b2c3f8e6c"
+    },
+    {
+      "filename": "UGTS_Library_Edition_Installment_2_README.txt",
+      "bytes": 680,
+      "sha256": "193968514c7c9d229a4849a9854d1ee36eb9b2afd3ef19c8a73a3ecf09fbb218"
+    }
+  ]
+}

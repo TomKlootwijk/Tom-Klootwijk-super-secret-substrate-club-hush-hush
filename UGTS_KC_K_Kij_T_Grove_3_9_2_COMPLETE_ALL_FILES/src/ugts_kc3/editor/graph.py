@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import copy
 import json
 import uuid
 from typing import Any, Mapping
@@ -173,6 +174,7 @@ class GraphNode(QGraphicsObject):
         self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
         self.setCursor(Qt.CursorShape.OpenHandCursor)
         self.setToolTip(template.description)
+        self._press_position = QPointF()
         self._position_ports()
 
     def _position_ports(self) -> None:
@@ -237,6 +239,7 @@ class GraphNode(QGraphicsObject):
         return super().itemChange(change, value)
 
     def mousePressEvent(self, event) -> None:  # type: ignore[override]
+        self._press_position = QPointF(self.pos())
         self.setCursor(Qt.CursorShape.ClosedHandCursor)
         super().mousePressEvent(event)
 
@@ -244,7 +247,7 @@ class GraphNode(QGraphicsObject):
         super().mouseReleaseEvent(event)
         self.setCursor(Qt.CursorShape.OpenHandCursor)
         scene = self.scene()
-        if isinstance(scene, VisualGraphScene):
+        if isinstance(scene, VisualGraphScene) and self.pos() != self._press_position:
             scene.notify_edited()
 
 
@@ -295,6 +298,7 @@ class VisualGraphScene(QGraphicsScene):
         self._connecting_port: GraphPort | None = None
         self._temporary: QGraphicsPathItem | None = None
         self._loading = False
+        self._graph_metadata: dict[str, Any] = {}
 
     def drawBackground(self, painter: QPainter, rect: QRectF) -> None:  # type: ignore[override]
         painter.fillRect(rect, QColor("#0b1320"))
@@ -321,6 +325,10 @@ class VisualGraphScene(QGraphicsScene):
         try:
             self.clear_graph()
             self.setProperty("graph_id", str(data.get("id", "scene_logic")))
+            raw_metadata = data.get("metadata", {})
+            self._graph_metadata = copy.deepcopy(
+                dict(raw_metadata) if isinstance(raw_metadata, Mapping) else {}
+            )
             for raw in data.get("nodes", []):
                 if not isinstance(raw, Mapping):
                     continue
@@ -488,7 +496,7 @@ class VisualGraphScene(QGraphicsScene):
                 }
                 for edge in self.connections
             ],
-            "metadata": {"editor": "ugts-studio"},
+            "metadata": {**copy.deepcopy(self._graph_metadata), "editor": "ugts-studio"},
         }
         return VisualGraph.from_dict(graph).to_dict()
 
@@ -835,9 +843,22 @@ class GraphPage(QWidget):
         if self._project_kind == "3d" and key == "action.set_component":
             properties = {"entity": None, "component": "transform", "field": "translation", "value": [0, 0, 0]}
         node = self.graph_scene.add_node(
-            template, center - QPointF(105, 50) + offset, properties=properties
+            template,
+            center - QPointF(105, 50) + offset,
+            properties=properties,
+            notify=False,
         )
-        self.view.centerOn(node)
+        node_id = node.node_id
+        # The main window records the edit through QUndoStack. Its synchronous
+        # redo reloads this scene, so the original QGraphicsObject may already
+        # be deleted when notify_edited returns. Reacquire the persisted node
+        # before selecting or centering it.
+        self.graph_scene.notify_edited()
+        persisted = self.graph_scene.nodes.get(node_id)
+        if persisted is not None:
+            self.graph_scene.clearSelection()
+            persisted.setSelected(True)
+            self.view.centerOn(persisted)
         self.helpRequested.emit(f"Added “{template.title}”. Drag its dots to connect it.")
 
     def _selection_changed(self) -> None:

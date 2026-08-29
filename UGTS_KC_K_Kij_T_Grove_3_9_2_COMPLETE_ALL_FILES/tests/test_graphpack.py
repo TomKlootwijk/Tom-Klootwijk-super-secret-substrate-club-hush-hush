@@ -131,6 +131,25 @@ class GraphPackTests(unittest.TestCase):
         _attach(project, graph)
         with self.assertRaisesRegex(GraphPackError, "action.apply_force"):
             compile_graph_pack_bytes(project)
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "existing"
+            output.mkdir()
+            marker = output / "keep.txt"
+            marker.write_text("untouched", encoding="utf-8")
+            with self.assertRaisesRegex(GraphPackError, "action.apply_force"):
+                build_android_project(project, output, clean=True)
+            self.assertEqual(marker.read_text("utf-8"), "untouched")
+
+        project = blank_mobile3d_project()
+        _attach(
+            project,
+            VisualGraph(
+                "input",
+                (GraphNode("pressed", "event.input_pressed", {"action": "custom_unmapped_action"}),),
+            ),
+        )
+        with self.assertRaisesRegex(GraphPackError, "not available in the Android template"):
+            compile_graph_pack_bytes(project)
 
     def test_rejects_nonempty_event_payload_and_event_object_link(self):
         project = blank_mobile3d_project()
@@ -159,6 +178,12 @@ class GraphPackTests(unittest.TestCase):
         project = blank_mobile3d_project()
         _player(project).metadata["visual_graph"] = "missing"
         with self.assertRaisesRegex(ValueError, "missing"):
+            compile_graph_pack_bytes(project)
+
+        project = blank_mobile3d_project()
+        project.metadata["visual_graphs"] = [VisualGraph("world", (GraphNode("tick", "event.tick"),)).to_dict()]
+        project.metadata["world_graphs"] = "world"
+        with self.assertRaisesRegex(GraphPackError, "world_graphs"):
             compile_graph_pack_bytes(project)
 
     def test_inspector_rejects_damage(self):

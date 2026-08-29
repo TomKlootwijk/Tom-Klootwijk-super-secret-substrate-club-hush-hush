@@ -27,6 +27,7 @@ _POSE_MAGIC = b"UGPL1"
 _ARCHIVE_MAGIC = b"UGECS1"
 _LUT_MAGIC = b"UGLUT2"
 _LUT_MAGIC_V1 = b"UGLUT1"
+_MAX_ARCHIVE_BYTES = 256 * 1024 * 1024
 
 
 def _finite(value: float, label: str) -> float:
@@ -181,9 +182,13 @@ class PackedKinematicComponent:
     profile_id: str = "default"
 
     def validate(self) -> None:
-        if not 0 <= int(self.pose_word) < (1 << 64):
+        if isinstance(self.pose_word, bool) or not isinstance(self.pose_word, int):
+            raise TypeError("packed pose must be an integer unsigned 64-bit word")
+        if not 0 <= self.pose_word < (1 << 64):
             raise ValueError("packed pose must be an unsigned 64-bit integer")
-        if not 0 <= int(self.motion_word) < (1 << 64):
+        if isinstance(self.motion_word, bool) or not isinstance(self.motion_word, int):
+            raise TypeError("packed motion must be an integer unsigned 64-bit word")
+        if not 0 <= self.motion_word < (1 << 64):
             raise ValueError("packed motion must be an unsigned 64-bit integer")
         if not self.profile_id:
             raise ValueError("packed kinematic profile id is required")
@@ -200,7 +205,9 @@ class PackedKinematicComponent:
     def from_dict(cls, data: Mapping[str, Any]) -> "PackedKinematicComponent":
         def word(name: str) -> int:
             value = data.get(name, "0")
-            return int(value, 16) if isinstance(value, str) else int(value)
+            if isinstance(value, bool) or not isinstance(value, (str, int)):
+                raise TypeError(f"packed {name} must be hexadecimal text or an integer")
+            return int(value, 16) if isinstance(value, str) else value
 
         component = cls(word("pose"), word("motion"), str(data.get("profile", "default")))
         component.validate()
@@ -448,6 +455,20 @@ def attach_packed_kinematics(
         raise ValueError(
             "packed kinematic components reference unknown profiles: " + ", ".join(missing)
         )
+    lut_registry = dict(luts or {})
+    if lut is not None:
+        lut_registry.setdefault("default", lut)
+    # Authoritative transforms must already match packed pose before ready
+    # graphs run; advancing time remains the pre-physics system's job.
+    for entity in entities:
+        packed = entity.components["packed_kinematic"]
+        selected = codec_registry[packed.profile_id]
+        selected_lut = lut_registry.get(packed.profile_id)
+        transform = entity.components.get("transform")
+        if transform is not None:
+            state = selected.cartesian_state(packed, selected_lut)
+            transform.position = state["position"]
+            transform.rotation = state["pose"].heading
     world.add_system(
         make_packed_kinematic_system(lut=lut, codecs=codec_registry, luts=luts),
         phase="pre_physics",
@@ -493,8 +514,20 @@ class PolarLookupTable:
         )
 
     def __post_init__(self) -> None:
+        if not 16 <= int(self.resolution) <= 65535:
+            raise ValueError("polar lookup resolution must be between 16 and 65535")
         if len(self.sine) != self.resolution or len(self.cosine) != self.resolution or len(self.radii) != self.resolution:
             raise ValueError("polar lookup arrays must match the declared resolution")
+        if not all(
+            math.isfinite(value)
+            for values in (self.sine, self.cosine, self.radii)
+            for value in values
+        ):
+            raise ValueError("polar lookup samples must be finite")
+        if any(radius <= 0 for radius in self.radii):
+            raise ValueError("polar lookup radius samples must be positive")
+        if any(math.hypot(sine, cosine) <= 1.0e-9 for sine, cosine in zip(self.sine, self.cosine)):
+            raise ValueError("polar lookup direction samples must be nonzero")
 
     def sin_cos(self, theta: float) -> tuple[float, float]:
         coordinate = (_finite(theta, "angle") % TAU) * self.resolution / TAU
@@ -581,6 +614,8 @@ def pack_ecs_document(document: Mapping[str, Any], level: int = 9) -> bytes:
     if not 0 <= int(level) <= 9:
         raise ValueError("DEFLATE level must be between 0 and 9")
     raw = canonical_document_bytes(document)
+    if len(raw) > _MAX_ARCHIVE_BYTES:
+        raise ValueError("ECS document exceeds the 256 MiB packed-format safety limit")
     compressed = zlib.compress(raw, int(level))
     checksum = binascii.crc32(raw) & 0xFFFFFFFF
     return _ARCHIVE_MAGIC + struct.pack("<II", len(raw), checksum) + compressed
@@ -594,10 +629,19 @@ def unpack_ecs_document(data: bytes) -> dict[str, Any]:
     raw_length, expected_checksum = struct.unpack(
         "<II", data[len(_ARCHIVE_MAGIC):header_size]
     )
+    if raw_length > _MAX_ARCHIVE_BYTES:
+        raise ValueError("packed ECS document exceeds the 256 MiB safety limit")
     try:
-        raw = zlib.decompress(data[header_size:])
+        decompressor = zlib.decompressobj()
+        raw = decompressor.decompress(data[header_size:], raw_length + 1)
     except zlib.error as exc:
         raise ValueError(f"packed ECS document is corrupt: {exc}") from exc
+    if len(raw) > raw_length:
+        raise ValueError("packed ECS document expands beyond its declared length")
+    if not decompressor.eof:
+        raise ValueError("packed ECS document has a truncated or oversized DEFLATE stream")
+    if decompressor.unused_data or decompressor.unconsumed_tail:
+        raise ValueError("packed ECS document has trailing bytes after its DEFLATE stream")
     if len(raw) != raw_length:
         raise ValueError(
             f"packed ECS length mismatch: decoded {len(raw)}, expected {raw_length}"

@@ -69,10 +69,17 @@ def visual_graph_binding_ids(raw: Any, label: str = "visual graph binding") -> t
     if raw is None:
         return ()
     if isinstance(raw, str):
-        return (raw,)
-    if isinstance(raw, (list, tuple)) and all(isinstance(item, str) for item in raw):
-        return tuple(raw)
-    raise TypeError(f"{label} must be text or a list of text graph ids")
+        values = (raw,)
+    elif isinstance(raw, (list, tuple)) and all(isinstance(item, str) for item in raw):
+        values = tuple(raw)
+    else:
+        raise TypeError(f"{label} must be text or a list of text graph ids")
+    normalized = tuple(value.strip() for value in values)
+    if any(not value for value in normalized):
+        raise ValueError(f"{label} cannot contain an empty graph id")
+    if len(normalized) != len(set(normalized)):
+        raise ValueError(f"{label} cannot contain the same graph id more than once")
+    return normalized
 
 
 def _normalize_json_numbers(value: Any) -> Any:
@@ -429,7 +436,7 @@ class GameProject:
                             f"scene {scene_id} references unknown world visual graph {graph_id}",
                             f"scenes.{scene_id}.rules.world_graphs",
                         ))
-            except TypeError as exc:
+            except (TypeError, ValueError) as exc:
                 issues.append(ProjectIssue(
                     "error", "visual_graph.binding_type", str(exc),
                     f"scenes.{scene_id}.rules.world_graphs",
@@ -451,7 +458,7 @@ class GameProject:
                                 f"entity {entity.id} references unknown visual graph {graph_id}",
                                 f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
                             ))
-                except TypeError as exc:
+                except (TypeError, ValueError) as exc:
                     issues.append(ProjectIssue(
                         "error", "visual_graph.binding_type", str(exc),
                         f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",

@@ -5,10 +5,11 @@ from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
-from .project import GameProject
+from .project import GameProject, visual_graph_binding_ids, visual_graphs_from_rules
 from .version import __codename__, __version__
+from .visual_graph import BUILTIN_NODE_REGISTRY, PortDirection, PortKind
 
 
 @dataclass(frozen=True)
@@ -36,6 +37,147 @@ class Html5BuildResult:
 def _safe_script_json(data: dict[str, Any]) -> str:
     text = json.dumps(data, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
     return text.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+
+
+_WEB_VISUAL_GRAPH_NODE_TYPES = frozenset({
+    "event.ready",
+    "event.tick",
+    "event.input_pressed",
+    "flow.branch",
+    "value.constant",
+    "value.state",
+    "value.component",
+    "math.add",
+    "math.subtract",
+    "math.multiply",
+    "math.divide",
+    "compare",
+    "action.set_state",
+    "action.set_component",
+    "action.emit_event",
+    "action.apply_force",
+    "action.set_active",
+    "action.despawn",
+})
+
+
+def _plain_json(value: Any) -> Any:
+    """Turn frozen graph mappings/tuples back into ordinary JSON containers."""
+    if isinstance(value, Mapping):
+        return {str(key): _plain_json(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_plain_json(item) for item in value]
+    return value
+
+
+def _compile_web_visual_graphs(project: GameProject) -> dict[str, Any]:
+    """Compile validated scene graphs into a deterministic browser execution plan.
+
+    Keeping this step on the authoring side means an HTML5 build fails loudly if
+    a future/custom node has no browser executor.  The runtime never guesses or
+    silently skips authored logic.
+    """
+    scene_plans: dict[str, Any] = {}
+    graph_count = 0
+    binding_count = 0
+    for scene_id, scene in sorted(project.scenes.items()):
+        compiled_graphs: dict[str, Any] = {}
+        graphs = visual_graphs_from_rules(scene.rules)
+        for graph in graphs:
+            graph.validate(BUILTIN_NODE_REGISTRY)
+            unsupported = sorted({node.type for node in graph.nodes} - _WEB_VISUAL_GRAPH_NODE_TYPES)
+            if unsupported:
+                names = ", ".join(unsupported)
+                raise ValueError(
+                    f"HTML5 visual graph {graph.id!r} in scene {scene_id!r} uses "
+                    f"unsupported node type(s): {names}"
+                )
+
+            nodes = {node.id: node for node in graph.nodes}
+            order = graph.data_order(BUILTIN_NODE_REGISTRY)
+            rank = {node_id: index for index, node_id in enumerate(order)}
+            incoming: dict[str, dict[str, list[str]]] = {}
+            outgoing: dict[tuple[str, str], list[list[str]]] = {}
+            for link in graph.links:
+                source_definition = BUILTIN_NODE_REGISTRY.definition(nodes[link.source_node].type)
+                source_port = source_definition.port(PortDirection.OUTPUT, link.source_port)
+                if source_port is not None and source_port.kind is PortKind.DATA:
+                    incoming.setdefault(link.target_node, {})[link.target_port] = [
+                        link.source_node,
+                        link.source_port,
+                    ]
+                else:
+                    outgoing.setdefault((link.source_node, link.source_port), []).append([
+                        link.target_node,
+                        link.target_port,
+                    ])
+            outgoing_document: dict[str, dict[str, list[list[str]]]] = {}
+            for (node_id, port_name), links in sorted(outgoing.items()):
+                outgoing_document.setdefault(node_id, {})[port_name] = sorted(
+                    links,
+                    key=lambda link: (rank.get(link[0], 0), link[0], link[1]),
+                )
+
+            roots: dict[str, list[str]] = {"ready": [], "tick": [], "input_pressed": []}
+            node_documents: list[dict[str, Any]] = []
+            for node in graph.nodes:
+                definition = BUILTIN_NODE_REGISTRY.definition(node.type)
+                properties = _plain_json(definition.default_properties)
+                properties.update(node.to_dict()["properties"])
+                node_documents.append({
+                    "id": node.id,
+                    "type": node.type,
+                    "properties": properties,
+                    "data_only": definition.is_data_node,
+                })
+                if definition.event is not None:
+                    roots.setdefault(definition.event, []).append(node.id)
+                    # Python's GraphRuntime polls Input Pressed nodes during Tick.
+                    if definition.event == "input_pressed":
+                        roots["tick"].append(node.id)
+            for trigger in roots:
+                roots[trigger].sort(key=lambda node_id: (rank[node_id], node_id))
+
+            compiled_graphs[graph.id] = {
+                "id": graph.id,
+                "max_steps": 1024,
+                "nodes": node_documents,
+                "incoming_data": {
+                    node_id: dict(sorted(ports.items()))
+                    for node_id, ports in sorted(incoming.items())
+                },
+                "outgoing_flow": outgoing_document,
+                "roots": roots,
+            }
+        bindings: list[dict[str, str | None]] = []
+        graph_ids = set(compiled_graphs)
+        for entity in scene.entities:
+            for graph_id in visual_graph_binding_ids(
+                entity.metadata.get("visual_graph"),
+                f"entity {entity.id} visual_graph binding",
+            ):
+                if graph_id not in graph_ids:
+                    raise ValueError(
+                        f"HTML5 scene {scene_id!r} entity {entity.id!r} binds missing visual graph {graph_id!r}"
+                    )
+                bindings.append({"graph": graph_id, "entity": entity.id})
+        for graph_id in visual_graph_binding_ids(
+            scene.rules.get("world_graphs"), f"scene {scene_id} world_graphs"
+        ):
+            if graph_id not in graph_ids:
+                raise ValueError(
+                    f"HTML5 scene {scene_id!r} binds missing world visual graph {graph_id!r}"
+                )
+            bindings.append({"graph": graph_id, "entity": None})
+        graph_count += len(compiled_graphs)
+        binding_count += len(bindings)
+        scene_plans[scene_id] = {"graphs": compiled_graphs, "bindings": bindings}
+    return {
+        "schema": "ugts-kc-web-visual-graph-1",
+        "graph_count": graph_count,
+        "binding_count": binding_count,
+        "scenes": scene_plans,
+    }
 
 
 _RUNTIME_JS = r'''(() => {
@@ -89,6 +231,10 @@ let state = Object.create(null);
 let camera = {position: [baseWidth / 2, baseHeight / 2], zoom: 1, rotation: 0, follow_entity: null, follow_smoothing: 8};
 let worldSize = [baseWidth, baseHeight];
 let sceneRules = Object.create(null);
+let visualGraphScenePlan = {graphs: {}, bindings: []};
+let visualGraphPlans = new Map();
+let visualGraphBindings = [];
+let pendingGraphDespawns = new Set();
 const assets = PROJECT.vector_assets || {};
 const audioCues = new Map(((PROJECT.audio && PROJECT.audio.cues) || []).map(cue => [cue.id, cue]));
 const audioSequences = new Map(((PROJECT.audio && PROJECT.audio.sequences) || []).map(sequence => [sequence.id, sequence]));
@@ -107,6 +253,266 @@ function emit(kind, source = null, target = null, payload = {}) {
   eventLog.push(event);
   if (eventLog.length > 512) eventLog.shift();
   return event;
+}
+
+function configureVisualGraphs() {
+  const runtime = PROJECT.web_visual_graph_runtime || {};
+  visualGraphScenePlan = runtime.scenes?.[scene.id] || {graphs: {}, bindings: []};
+  visualGraphPlans = new Map();
+  for (const [graphId, document] of Object.entries(visualGraphScenePlan.graphs || {})) {
+    const plan = {...document};
+    plan._nodes = new Map((plan.nodes || []).map(node => [node.id, node]));
+    visualGraphPlans.set(graphId, plan);
+  }
+  visualGraphBindings = (visualGraphScenePlan.bindings || []).map(binding => ({
+    graph: binding.graph,
+    entity: binding.entity == null ? null : String(binding.entity),
+  }));
+  pendingGraphDespawns = new Set();
+}
+
+function graphError(binding, graph, nodeId, message) {
+  const owner = binding.entity == null ? "world" : `entity ${binding.entity}`;
+  return new Error(`Visual graph ${graph.id} (${owner}), node ${nodeId}: ${message}`);
+}
+
+function graphEntity(binding, value) {
+  let entityId = value;
+  if (entityId && typeof entityId === "object" && "id" in entityId) entityId = entityId.id;
+  if (entityId == null || entityId === "") entityId = binding.entity;
+  if (entityId == null || String(entityId).length === 0) throw new Error("no entity was supplied; bind the graph or set its entity input");
+  const resolved = String(entityId);
+  const entity = entityMap.get(resolved);
+  if (!entity) throw new Error(`entity ${resolved} does not exist`);
+  return entity;
+}
+
+function graphReadField(value, path, fallback) {
+  if (!path) return value;
+  let current = value;
+  try {
+    for (const part of String(path).split(".")) {
+      if (!part || part.startsWith("_")) throw new Error("component field names cannot be empty or private");
+      if (Array.isArray(current) && /^\d+$/.test(part)) current = current[Number(part)];
+      else if (current !== null && typeof current === "object" && Object.prototype.hasOwnProperty.call(current, part)) current = current[part];
+      else return fallback;
+    }
+    return current;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("private")) throw error;
+    return fallback;
+  }
+}
+
+function graphWriteField(value, path, newValue) {
+  const parts = String(path).split(".");
+  if (!parts.length || parts.some(part => !part || part.startsWith("_"))) throw new Error("component field names cannot be empty or private");
+  let current = value;
+  for (const part of parts.slice(0, -1)) {
+    if (Array.isArray(current) && /^\d+$/.test(part)) current = current[Number(part)];
+    else if (current !== null && typeof current === "object" && Object.prototype.hasOwnProperty.call(current, part)) current = current[part];
+    else throw new Error(`component field ${path} does not exist`);
+  }
+  const last = parts[parts.length - 1];
+  if (Array.isArray(current) && /^\d+$/.test(last)) {
+    const index = Number(last);
+    if (index < 0 || index >= current.length) throw new Error(`component field ${path} does not exist`);
+    current[index] = deepClone(newValue);
+  } else if (current !== null && typeof current === "object") {
+    current[last] = deepClone(newValue);
+  } else throw new Error(`component field ${path} cannot be changed`);
+}
+
+function graphValuesEqual(a, b) {
+  const numericA = typeof a === "number" || typeof a === "boolean";
+  const numericB = typeof b === "number" || typeof b === "boolean";
+  if (numericA && numericB) return Number(a) === Number(b);
+  if (Array.isArray(a) || Array.isArray(b)) return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((value, index) => graphValuesEqual(value, b[index]));
+  if (a !== null && b !== null && typeof a === "object" && typeof b === "object") {
+    const keysA = Object.keys(a).sort(); const keysB = Object.keys(b).sort();
+    return keysA.length === keysB.length && keysA.every((key, index) => key === keysB[index] && graphValuesEqual(a[key], b[key]));
+  }
+  return a === b;
+}
+
+function graphOrderedValues(a, b) {
+  if ((typeof a === "number" || typeof a === "boolean") && (typeof b === "number" || typeof b === "boolean")) return [Number(a), Number(b)];
+  if (typeof a === "string" && typeof b === "string") return [a, b];
+  throw new Error("ordered comparisons need two numbers or two strings");
+}
+
+function graphComparison(operator, a, b) {
+  const operation = String(operator ?? "equal").toLowerCase().replaceAll(" ", "_");
+  if (["equal", "eq", "=="].includes(operation)) return graphValuesEqual(a, b);
+  if (["not_equal", "ne", "!="].includes(operation)) return !graphValuesEqual(a, b);
+  const orderedOperations = new Set(["less", "lt", "<", "less_equal", "lte", "<=", "greater", "gt", ">", "greater_equal", "gte", ">="]);
+  if (!orderedOperations.has(operation)) throw new Error(`unknown comparison ${operation}`);
+  const [left, right] = graphOrderedValues(a, b);
+  if (["less", "lt", "<"].includes(operation)) return left < right;
+  if (["less_equal", "lte", "<="].includes(operation)) return left <= right;
+  if (["greater", "gt", ">"].includes(operation)) return left > right;
+  if (["greater_equal", "gte", ">="].includes(operation)) return left >= right;
+  throw new Error(`unknown comparison ${operation}`);
+}
+
+function despawnGraphEntity(entityId, defer) {
+  const id = String(entityId);
+  if (!entityMap.has(id)) throw new Error(`entity ${id} does not exist`);
+  if (defer) { pendingGraphDespawns.add(id); return; }
+  entityMap.delete(id);
+  entities = entities.filter(entity => entity.id !== id);
+  contacts = new Set([...contacts].filter(key => !key.split("|").includes(id)));
+  emit("entity_despawned", id);
+}
+
+function flushGraphDespawns() {
+  for (const entityId of [...pendingGraphDespawns].sort()) {
+    if (entityMap.has(entityId)) despawnGraphEntity(entityId, false);
+  }
+  pendingGraphDespawns.clear();
+}
+
+function executeGraphNode(binding, graph, node, inputs, run) {
+  const entityOutput = binding.entity;
+  switch (node.type) {
+    case "event.ready": return {values: {entity: entityOutput}, flow: ["out"]};
+    case "event.tick": return {values: {dt: run.dt, tick, entity: entityOutput}, flow: ["out"]};
+    case "event.input_pressed": {
+      const action = String(inputs.action);
+      return {values: {action, value: actionValue(action), entity: entityOutput}, flow: actionPressed(action) ? ["out"] : []};
+    }
+    case "flow.branch": {
+      if (typeof inputs.condition !== "boolean") throw new Error("condition must be boolean");
+      return {values: {}, flow: [inputs.condition ? "true" : "false"]};
+    }
+    case "value.constant": return {values: {value: deepClone(node.properties.value)}, flow: []};
+    case "value.state": {
+      const key = String(inputs.key);
+      const value = Object.prototype.hasOwnProperty.call(state, key) ? state[key] : inputs.default;
+      return {values: {value}, flow: []};
+    }
+    case "value.component": {
+      const entity = graphEntity(binding, inputs.entity);
+      const name = String(inputs.component);
+      const found = component(entity, name);
+      const value = found == null ? inputs.default : graphReadField(found, String(inputs.field || ""), inputs.default);
+      return {values: {value}, flow: []};
+    }
+    case "math.add":
+    case "math.subtract":
+    case "math.multiply":
+    case "math.divide": {
+      const a = inputs.a; const b = inputs.b;
+      if (typeof a !== "number" || typeof b !== "number" || !Number.isFinite(a) || !Number.isFinite(b)) throw new Error("math inputs must be finite numbers");
+      if (node.type === "math.divide" && b === 0) throw new Error("cannot divide by zero");
+      let result = node.type === "math.add" ? a + b : node.type === "math.subtract" ? a - b : node.type === "math.multiply" ? a * b : a / b;
+      if (!Number.isFinite(result)) throw new Error("math result is not finite");
+      return {values: {result}, flow: []};
+    }
+    case "compare": return {values: {result: graphComparison(inputs.operator, inputs.a, inputs.b)}, flow: []};
+    case "action.set_state": {
+      const key = String(inputs.key);
+      if (!key) throw new Error("state key cannot be empty");
+      state[key] = deepClone(inputs.value);
+      return {values: {}, flow: ["out"]};
+    }
+    case "action.set_component": {
+      const entity = graphEntity(binding, inputs.entity);
+      const name = String(inputs.component);
+      const field = String(inputs.field || "");
+      if (!field) entity.components[name] = deepClone(inputs.value);
+      else {
+        if (!Object.prototype.hasOwnProperty.call(entity.components, name)) throw new Error(`entity ${entity.id} lacks component ${name}`);
+        const updated = deepClone(entity.components[name]);
+        graphWriteField(updated, field, inputs.value);
+        entity.components[name] = updated;
+      }
+      return {values: {}, flow: ["out"]};
+    }
+    case "action.emit_event": {
+      const source = inputs.source == null || inputs.source === "" ? binding.entity : String(inputs.source);
+      const target = inputs.target == null || inputs.target === "" ? null : String(inputs.target);
+      const payload = inputs.payload ?? {};
+      if (payload === null || typeof payload !== "object" || Array.isArray(payload)) throw new Error("event payload must be an object");
+      const event = emit(String(inputs.kind), source, target, deepClone(payload));
+      return {values: {event}, flow: ["out"]};
+    }
+    case "action.apply_force": {
+      const entity = graphEntity(binding, inputs.entity);
+      const body = component(entity, "body");
+      const force = inputs.force;
+      if (!body) throw new Error(`entity ${entity.id} lacks component body`);
+      if (!Array.isArray(force) || force.length !== 2 || !force.every(value => typeof value === "number" && Number.isFinite(value))) throw new Error("force must be a two-number vector");
+      body.force = [(body.force?.[0] || 0) + force[0], (body.force?.[1] || 0) + force[1]];
+      return {values: {}, flow: ["out"]};
+    }
+    case "action.set_active": {
+      if (typeof inputs.active !== "boolean") throw new Error("active must be boolean");
+      graphEntity(binding, inputs.entity).active = inputs.active;
+      return {values: {}, flow: ["out"]};
+    }
+    case "action.despawn": {
+      const entity = graphEntity(binding, inputs.entity);
+      despawnGraphEntity(entity.id, run.deferDespawns);
+      return {values: {}, flow: ["out"]};
+    }
+    default: throw new Error(`unsupported browser node type ${node.type}`);
+  }
+}
+
+function evaluateGraphNode(binding, graph, nodeId, flowInput, run, dataCache, stack = []) {
+  if (dataCache.has(nodeId)) return dataCache.get(nodeId);
+  const node = graph._nodes.get(nodeId);
+  if (!node) throw graphError(binding, graph, nodeId, "node does not exist");
+  if (run.steps >= run.maxSteps) throw graphError(binding, graph, nodeId, `reached the ${run.maxSteps}-step safety limit`);
+  if (stack.includes(nodeId)) throw graphError(binding, graph, nodeId, "a data link recursively requested this node");
+  const inputs = deepClone(node.properties || {});
+  const linkedInputs = graph.incoming_data?.[nodeId] || {};
+  for (const [port, source] of Object.entries(linkedInputs)) {
+    const [sourceId, sourcePort] = source;
+    const sourceNode = graph._nodes.get(sourceId);
+    let values;
+    if (run.lastOutputs.has(sourceId)) values = run.lastOutputs.get(sourceId);
+    else if (sourceNode?.data_only) values = evaluateGraphNode(binding, graph, sourceId, null, run, dataCache, [...stack, nodeId]).values;
+    else throw graphError(binding, graph, nodeId, `input ${port} reads ${sourceId}.${sourcePort} before that flow node ran`);
+    if (!Object.prototype.hasOwnProperty.call(values, sourcePort)) throw graphError(binding, graph, nodeId, `source ${sourceId}.${sourcePort} produced no value`);
+    inputs[port] = values[sourcePort];
+  }
+  run.steps += 1;
+  let outcome;
+  try { outcome = executeGraphNode(binding, graph, node, inputs, run); }
+  catch (error) { throw graphError(binding, graph, nodeId, error instanceof Error ? error.message : String(error)); }
+  if (node.data_only) dataCache.set(nodeId, outcome);
+  return outcome;
+}
+
+function dispatchVisualGraph(binding, trigger, dt, deferDespawns) {
+  const graph = visualGraphPlans.get(binding.graph);
+  if (!graph) throw new Error(`Visual graph binding references missing graph ${binding.graph}`);
+  const run = {dt, deferDespawns, maxSteps: graph.max_steps || 1024, steps: 0, lastOutputs: new Map()};
+  const queue = (graph.roots?.[trigger] || []).map(nodeId => [nodeId, null]);
+  while (queue.length) {
+    const [nodeId, flowInput] = queue.shift();
+    const outcome = evaluateGraphNode(binding, graph, nodeId, flowInput, run, new Map());
+    run.lastOutputs.set(nodeId, outcome.values);
+    for (const flowPort of outcome.flow) {
+      const links = graph.outgoing_flow?.[nodeId]?.[flowPort] || [];
+      if (queue.length + links.length > run.maxSteps) throw graphError(binding, graph, nodeId, `flow queue reached the ${run.maxSteps}-step safety limit`);
+      for (const link of links) queue.push(link);
+    }
+  }
+  return run.steps;
+}
+
+function runVisualGraphs(trigger, dt = 0) {
+  const deferDespawns = trigger === "tick";
+  for (const binding of visualGraphBindings) {
+    if (binding.entity != null) {
+      const owner = entityMap.get(binding.entity);
+      if (!owner || owner.active === false) continue;
+    }
+    dispatchVisualGraph(binding, trigger, dt, deferDespawns);
+  }
 }
 
 function resizeCanvas() {
@@ -340,11 +746,6 @@ function resetScene() {
   state.best_score = Number(localStorage.getItem(`${PROJECT.metadata.id}:best`) || 0);
   worldSize = scene.world_size || [baseWidth, baseHeight];
   sceneRules = scene.rules || {};
-  const cameraEntity = entities.find(entity => component(entity, "camera"));
-  camera = cameraEntity ? component(cameraEntity, "camera") : {position: [worldSize[0] / 2, worldSize[1] / 2], zoom: 1, rotation: 0, follow_entity: sceneRules.player_id || null, follow_smoothing: 8};
-  camera.position = camera.position || [worldSize[0] / 2, worldSize[1] / 2];
-  camera.zoom = camera.zoom || 1;
-  camera.rotation = camera.rotation || 0;
   contacts = new Set();
   particles = [];
   eventLog = [];
@@ -356,6 +757,13 @@ function resetScene() {
   musicClock = null;
   previousActions = Object.create(null);
   currentActions = Object.create(null);
+  configureVisualGraphs();
+  runVisualGraphs("ready", 0);
+  const cameraEntity = entities.find(entity => entity.active !== false && component(entity, "camera"));
+  camera = cameraEntity ? component(cameraEntity, "camera") : {position: [worldSize[0] / 2, worldSize[1] / 2], zoom: 1, rotation: 0, follow_entity: sceneRules.player_id || null, follow_smoothing: 8};
+  camera.position = camera.position || [worldSize[0] / 2, worldSize[1] / 2];
+  camera.zoom = camera.zoom || 1;
+  camera.rotation = camera.rotation || 0;
   updateStatus("Ready");
 }
 
@@ -709,9 +1117,11 @@ function update(dt) {
     applyBounds();
     collisionStep();
     updateHealth(dt);
+    runVisualGraphs("tick", dt);
     updateCamera(dt);
     scheduleMusic(dt);
     checkGameState();
+    flushGraphDespawns();
     gameTime += dt;
     tick += 1;
   }
@@ -1032,11 +1442,18 @@ window.KCGame = {
   codename: CODENAME,
   project: PROJECT,
   state: () => deepClone(state),
+  entities: () => deepClone(entities),
   events: () => deepClone(eventLog),
   pause: value => { paused = value == null ? !paused : !!value; },
   restart: resetScene,
   save: saveGame,
   load: loadGame,
+  step: count => {
+    const steps = count == null ? 1 : Number(count);
+    if (!Number.isInteger(steps) || steps < 1 || steps > 600) throw new Error("step count must be an integer from 1 to 600");
+    for (let index = 0; index < steps; index += 1) update(fixedDt);
+    return deepClone(state);
+  },
   playCue,
   setDebug: value => { debug = !!value; },
 };
@@ -1087,6 +1504,7 @@ def build_html5(
 ) -> Html5BuildResult:
     """Build a browser-playable Canvas game with no external dependencies."""
     report = project.validate()
+    graph_runtime = _compile_web_visual_graphs(project)
     output = Path(output_dir)
     if clean and output.exists():
         for child in output.iterdir():
@@ -1100,6 +1518,7 @@ def build_html5(
         single_file = bool(project.build.get("single_file", True))
     runtime = _RUNTIME_JS.replace("__KC_VERSION__", __version__).replace("__KC_CODENAME__", __codename__)
     project_dict = project.to_dict()
+    project_dict["web_visual_graph_runtime"] = graph_runtime
     project_json = _safe_script_json(project_dict)
     title = project.metadata.title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
     if single_file:
@@ -1131,6 +1550,12 @@ def build_html5(
         "project_version": project.metadata.version,
         "project_hash": project.content_hash(),
         "single_file": single_file,
+        "visual_graph_runtime": {
+            "schema": graph_runtime["schema"],
+            "graph_count": graph_runtime["graph_count"],
+            "binding_count": graph_runtime["binding_count"],
+            "supported_node_types": sorted(_WEB_VISUAL_GRAPH_NODE_TYPES),
+        },
         "files": [{"name": path.name, "bytes": path.stat().st_size, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()} for path in files],
         "validation": report.to_dict(),
         "warnings": list(warnings),

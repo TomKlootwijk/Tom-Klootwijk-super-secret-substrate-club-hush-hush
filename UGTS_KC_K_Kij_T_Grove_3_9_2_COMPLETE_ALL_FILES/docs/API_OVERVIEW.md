@@ -1,4 +1,4 @@
-# KC Elizabeth 3.9 API Overview
+# UGTS-KC Grove 3.9.2 API Overview
 
 ## Vector authoring - `ugts_kc3.vector2d`
 
@@ -40,7 +40,7 @@ Runtime records and services: `GameEvent`, `GameEntity`, `GameWorld`, `component
 
 ## Templates and CLI
 
-`blank_vector_game_project`, `elizabeth_vector_quest_project`, `write_template`, `python -m ugts_kc3` and installed command `ugts-kc`.
+`first_steps_project`, `blank_vector_game_project`, `elizabeth_vector_quest_project`, `write_template`, `python -m ugts_kc3` and installed command `ugts-kc`.
 
 The package root re-exports the retained KC 3.0 APIs and all 3.9 APIs for concise exploratory use. Production code may prefer module-qualified imports.
 
@@ -48,6 +48,11 @@ The package root re-exports the retained KC 3.0 APIs and all 3.9 APIs for concis
 
 - `mobile3d`: project/assets/nodes/camera/light/world records, primitives, device profiles,
   adaptive quality and deterministic `GameWorld3D`.
-- `templates3d`: blank and Tom Signature Arena projects.
-- `androidexport`: KC3D391 compiler/inspector, glTF adapter and native Android source builder.
-- CLI: `new-3d`, `validate-3d`, `simulate-3d`, `pack-3d`, `export-gltf3d`, `build-android`.
+- `templates3d`: phone-ready First Steps, blank and Tom Signature Arena projects.
+- `visual_graph`: typed graph records, registry, validation and bounded desktop runtime.
+- `packed_kinematics`: compact log-polar pose/motion components, shared LUTs and UGECS1 files.
+- `polarpack`: sparse `KCPK392` compiler/inspector for native Mobile3D packed components.
+- `androidexport` / `androidbuild`: KC3D392 compiler/inspector, graph pack, glTF adapter,
+  native Android source builder, Gradle APK build and owner-device ADB installation.
+- CLI: `editor`, `new-3d`, `validate-3d`, `simulate-3d`, `pack-3d`, `export-gltf3d`,
+  `build-android`, `android-devices`, `pack-ecs`, `unpack-ecs`, `make-polar-lut`.

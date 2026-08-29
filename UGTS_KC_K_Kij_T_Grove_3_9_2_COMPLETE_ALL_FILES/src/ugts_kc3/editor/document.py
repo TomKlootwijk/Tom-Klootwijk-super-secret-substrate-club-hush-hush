@@ -12,7 +12,9 @@ import copy
 import json
 import math
 from pathlib import Path
+import re
 from typing import Any, Mapping
+import unicodedata
 
 from PySide6.QtCore import QObject, Signal
 
@@ -30,6 +32,12 @@ from ..visual_graph import VisualGraph
 
 GRAPHS_KEY = "visual_graphs"
 BINDING_KEY = "visual_graph"
+
+
+def friendly_rule_name(value: str) -> str:
+    """Turn an internal rule key into a short phrase for learner messages."""
+
+    return value.replace("_", " ").replace("-", " ").strip().casefold()
 
 
 @dataclass(frozen=True)
@@ -84,6 +92,7 @@ class EditorDocument(QObject):
     selectionChanged = Signal(object)
     transformChanged = Signal(object)
     graphChanged = Signal()
+    structureChanged = Signal()
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -246,6 +255,274 @@ class EditorDocument(QObject):
             return next((entity for entity in scene.entities if entity.id == selection.object_id), None)
         return next((node for node in self.project.nodes if node.id == selection.object_id), None)
 
+    def scene_objects(
+        self, scene_id: str | None = None
+    ) -> tuple[EntitySpec, ...] | tuple[Node3DRecord, ...]:
+        """Return the editable records for one scene without changing the project."""
+
+        if isinstance(self.project, GameProject):
+            scene = self.scene(scene_id)
+            return () if scene is None else scene.entities
+        if isinstance(self.project, Mobile3DProject):
+            return self.project.nodes
+        return ()
+
+    @staticmethod
+    def _friendly_id_base(label: str, fallback: str = "new_object") -> str:
+        ascii_label = unicodedata.normalize("NFKD", str(label)).encode("ascii", "ignore").decode("ascii")
+        base = re.sub(r"[^a-z0-9]+", "_", ascii_label.casefold()).strip("_")
+        if not base:
+            base = fallback
+        if not base[0].isalpha():
+            base = f"object_{base}"
+        return base[:56].rstrip("_") or fallback
+
+    def collision_free_object_id(self, label: str, scene_id: str | None = None) -> str:
+        """Make a readable, stable id that cannot collide in the active scene."""
+
+        base = self._friendly_id_base(label)
+        used = {record.id for record in self.scene_objects(scene_id)}
+        if base not in used:
+            return base
+        suffix = 2
+        while f"{base}_{suffix}" in used:
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def new_object_record(self) -> EntitySpec | Node3DRecord:
+        """Create a small visible object that uses resources already in the project."""
+
+        if isinstance(self.project, GameProject):
+            scene = self.scene()
+            if scene is None:
+                raise ValueError("Choose a 2D scene before adding an object.")
+            count = len(scene.entities)
+            width, height = scene.world_size
+            position = (
+                width * 0.5 + ((count % 5) - 2) * 28.0,
+                height * 0.5 + (((count // 5) % 5) - 2) * 28.0,
+            )
+            components: dict[str, dict[str, Any]] = {
+                "transform": {
+                    "position": [float(position[0]), float(position[1])],
+                    "rotation": 0.0,
+                    "scale": [1.0, 1.0],
+                }
+            }
+            asset_id = next(iter(sorted(self.project.vector_assets.assets)), None)
+            if asset_id is not None:
+                components["vector_renderer"] = {
+                    "asset_id": asset_id,
+                    "z_index": 0,
+                    "visible": True,
+                    "opacity": 1.0,
+                }
+            record = EntitySpec(
+                self.collision_free_object_id("new_object"),
+                components,
+                frozenset({"new_object"}),
+                True,
+                {"description": "A new object made in UGTS Studio"},
+            )
+            record.validate()
+            return record
+
+        if isinstance(self.project, Mobile3DProject):
+            mesh_id = next(
+                (key for key in ("cube", "sphere", "pyramid") if key in self.project.meshes),
+                next(iter(sorted(self.project.meshes)), ""),
+            )
+            material_id = next(
+                (key for key in ("accent", "default", "player") if key in self.project.materials),
+                next(iter(sorted(self.project.materials)), ""),
+            )
+            if not mesh_id or not material_id:
+                raise ValueError(
+                    "This 3D project needs at least one mesh and material before an object can be added."
+                )
+            count = len(self.project.nodes)
+            record = Node3DRecord(
+                self.collision_free_object_id("new_object"),
+                mesh_id,
+                material_id,
+                Transform3DRecord(
+                    (((count % 5) - 2) * 1.5, 1.0, ((count // 5) % 5) * -1.5)
+                ),
+                tags=("new_object",),
+                metadata={"description": "A new object made in UGTS Studio"},
+            )
+            record.validate()
+            return record
+        raise RuntimeError("Open a project before adding an object.")
+
+    def duplicate_object_record(
+        self, selection: SelectionRef | None = None
+    ) -> EntitySpec | Node3DRecord:
+        """Deep-copy one selected record, changing only its id and placement."""
+
+        selection = selection or self.selection
+        source = self.entity(selection)
+        if source is None:
+            raise ValueError("Choose an object in the Scene Tree before making a copy.")
+        new_id = self.collision_free_object_id(f"{source.id}_copy", selection.scene_id if selection else None)
+        if isinstance(source, EntitySpec):
+            components = copy.deepcopy({name: dict(value) for name, value in source.components.items()})
+            transform = components.get("transform")
+            if isinstance(transform, Mapping):
+                updated_transform = copy.deepcopy(dict(transform))
+                position = updated_transform.get("position", (0.0, 0.0))
+                updated_transform["position"] = [float(position[0]) + 32.0, float(position[1]) + 32.0]
+                components["transform"] = updated_transform
+            record = replace(
+                source,
+                id=new_id,
+                components=components,
+                metadata=copy.deepcopy(dict(source.metadata)),
+            )
+            record.validate()
+            return record
+        if isinstance(source, Node3DRecord):
+            x, y, z = source.transform.translation
+            record = replace(
+                source,
+                id=new_id,
+                transform=replace(source.transform, translation=(x + 1.0, y, z + 1.0)),
+                metadata=copy.deepcopy(source.metadata),
+            )
+            record.validate()
+            return record
+        raise ValueError("Only 2D entities and 3D objects can be copied.")
+
+    @staticmethod
+    def _contains_entity_reference(value: Any, object_id: str) -> bool:
+        if not isinstance(value, Mapping):
+            return False
+        for key, child in value.items():
+            normalized_key = str(key).casefold()
+            if (
+                normalized_key.endswith(("_entity", "_entity_id"))
+                or normalized_key in {"follow_entity", "target_entity", "owner_entity"}
+            ) and child == object_id:
+                return True
+            if isinstance(child, Mapping) and EditorDocument._contains_entity_reference(child, object_id):
+                return True
+            if isinstance(child, (list, tuple)) and any(
+                isinstance(item, Mapping)
+                and EditorDocument._contains_entity_reference(item, object_id)
+                for item in child
+            ):
+                return True
+        return False
+
+    def deletion_problem(self, selection: SelectionRef | None = None) -> str | None:
+        """Explain why a selected record must remain, or return ``None``."""
+
+        selection = selection or self.selection
+        source = self.entity(selection)
+        if source is None or selection is None:
+            return "Choose an object in the Scene Tree before deleting it."
+        records = self.scene_objects(selection.scene_id)
+        if len(records) <= 1:
+            return "Keep at least one object in the scene so there is always something to edit."
+        if isinstance(source, EntitySpec):
+            scene = self.scene(selection.scene_id)
+            if scene is None:
+                return "Choose a 2D scene before deleting an object."
+            for key, value in scene.rules.items():
+                normalized_key = str(key).casefold()
+                if value == source.id and (normalized_key.endswith("_id") or normalized_key == "player"):
+                    return (
+                        f"{source.id} is the scene's {friendly_rule_name(str(key))}. "
+                        "Choose a different object in the scene rules before deleting it."
+                    )
+            for other in scene.entities:
+                if other.id != source.id and self._contains_entity_reference(other.components, source.id):
+                    return (
+                        f"{other.id} still points to {source.id}. Change that reference before deleting it."
+                    )
+        return None
+
+    def replace_scene_objects(
+        self,
+        records: tuple[EntitySpec, ...] | tuple[Node3DRecord, ...],
+        selection: SelectionRef | None,
+        scene_id: str | None = None,
+    ) -> None:
+        """Apply one validated object-list snapshot and notify every editor surface."""
+
+        snapshot = copy.deepcopy(tuple(records))
+        if isinstance(self.project, GameProject):
+            key = scene_id or self.current_scene_id or ""
+            scene = self.project.scenes.get(key)
+            if scene is None or not all(isinstance(record, EntitySpec) for record in snapshot):
+                raise ValueError("The 2D scene object list is not valid.")
+            candidate = replace(scene, entities=snapshot)
+            candidate.validate()
+            self.project.scenes[key] = candidate
+        elif isinstance(self.project, Mobile3DProject):
+            if not all(isinstance(record, Node3DRecord) for record in snapshot):
+                raise ValueError("The 3D scene object list is not valid.")
+            ids = [record.id for record in snapshot]
+            if len(ids) != len(set(ids)):
+                raise ValueError("Every 3D object needs a unique name.")
+            for record in snapshot:
+                record.validate()
+                if record.mesh_id not in self.project.meshes:
+                    raise ValueError(f"{record.id} uses a missing mesh: {record.mesh_id}")
+                if record.material_id not in self.project.materials:
+                    raise ValueError(f"{record.id} uses a missing material: {record.material_id}")
+            self.project.nodes = snapshot
+        else:
+            raise RuntimeError("Open a project before editing its scene.")
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
+        self.set_selection(selection)
+
+    def record_with_resource(
+        self,
+        selection: SelectionRef,
+        resource_kind: str,
+        resource_id: str,
+    ) -> EntitySpec | Node3DRecord:
+        """Return one validated record with an existing visual resource selected."""
+
+        selected = self.entity(selection)
+        resource_id = str(resource_id).strip()
+        if not resource_id:
+            raise ValueError("Choose a project resource first.")
+        if isinstance(self.project, GameProject) and isinstance(selected, EntitySpec):
+            if resource_kind != "vector_asset":
+                raise ValueError("A 2D object can only choose a vector picture here.")
+            if resource_id not in self.project.vector_assets.assets:
+                raise ValueError(f"That vector picture is not in this project: {resource_id}")
+            components = copy.deepcopy(
+                {name: dict(value) for name, value in selected.components.items()}
+            )
+            renderer = components.get("vector_renderer")
+            if not isinstance(renderer, Mapping):
+                raise ValueError(f"{selected.id} does not have a picture to change.")
+            updated_renderer = copy.deepcopy(dict(renderer))
+            updated_renderer["asset_id"] = resource_id
+            components["vector_renderer"] = updated_renderer
+            updated = replace(selected, components=components)
+            updated.validate()
+            return updated
+        if isinstance(self.project, Mobile3DProject) and isinstance(selected, Node3DRecord):
+            if resource_kind == "mesh":
+                if resource_id not in self.project.meshes:
+                    raise ValueError(f"That 3D shape is not in this project: {resource_id}")
+                updated = replace(selected, mesh_id=resource_id)
+            elif resource_kind == "material":
+                if resource_id not in self.project.materials:
+                    raise ValueError(f"That material is not in this project: {resource_id}")
+                updated = replace(selected, material_id=resource_id)
+            else:
+                raise ValueError("A 3D object can only choose a shape or material here.")
+            updated.validate()
+            return updated
+        raise ValueError("Choose a scene object before changing its appearance.")
+
     def transform(self, selection: SelectionRef | None = None) -> dict[str, Any] | None:
         selected = self.entity(selection)
         if isinstance(selected, EntitySpec):
@@ -380,6 +657,11 @@ class EditorDocument(QObject):
             if scene is None:
                 return
             rules = copy.deepcopy(dict(scene.rules))
+            existing_graph_ids = {
+                str(item.get("id")) for item in rules.get(GRAPHS_KEY, [])
+                if isinstance(item, Mapping) and item.get("id") is not None
+            }
+            should_bind = graph_id not in existing_graph_ids
             graphs = [
                 copy.deepcopy(dict(item)) for item in rules.get(GRAPHS_KEY, [])
                 if isinstance(item, Mapping) and item.get("id") != graph_id
@@ -388,12 +670,12 @@ class EditorDocument(QObject):
             rules[GRAPHS_KEY] = graphs
             rules.pop(BINDING_KEY, None)
             binding_id = None
-            if self.selection is not None and self.selection.scene_id in (None, scene.id):
+            if should_bind and self.selection is not None and self.selection.scene_id in (None, scene.id):
                 binding_id = self.selection.object_id
-            if binding_id is None:
+            if should_bind and binding_id is None:
                 wanted = str(scene.rules.get("player_id", ""))
                 binding_id = wanted if any(item.id == wanted for item in scene.entities) else None
-            if binding_id is None:
+            if should_bind and binding_id is None:
                 binding_id = next((item.id for item in scene.entities if "transform" in item.components), None)
             entities: list[EntitySpec] = []
             for entity in scene.entities:
@@ -405,6 +687,11 @@ class EditorDocument(QObject):
             self.project.scenes[scene.id] = replace(scene, rules=rules, entities=tuple(entities))
         elif isinstance(self.project, Mobile3DProject):
             metadata = copy.deepcopy(self.project.metadata)
+            existing_graph_ids = {
+                str(item.get("id")) for item in metadata.get(GRAPHS_KEY, [])
+                if isinstance(item, Mapping) and item.get("id") is not None
+            }
+            should_bind = graph_id not in existing_graph_ids
             graphs = [
                 copy.deepcopy(dict(item)) for item in metadata.get(GRAPHS_KEY, [])
                 if isinstance(item, Mapping) and item.get("id") != graph_id
@@ -413,10 +700,10 @@ class EditorDocument(QObject):
             metadata[GRAPHS_KEY] = graphs
             metadata.pop(BINDING_KEY, None)
             self.project.metadata = metadata
-            binding_id = self.selection.object_id if self.selection is not None else None
-            if binding_id is None:
+            binding_id = self.selection.object_id if should_bind and self.selection is not None else None
+            if should_bind and binding_id is None:
                 binding_id = next((node.id for node in self.project.nodes if "player" in node.tags), None)
-            if binding_id is None and self.project.nodes:
+            if should_bind and binding_id is None and self.project.nodes:
                 binding_id = self.project.nodes[0].id
             nodes: list[Node3DRecord] = []
             for node in self.project.nodes:
@@ -474,12 +761,13 @@ class EditorDocument(QObject):
                         "rotation": transform.rotation,
                         "scale": transform.scale,
                     }
+            state["__world__"] = copy.deepcopy(self._runtime_world.state)
             return state, events
         frame3d = InputFrame3D(
             float(right) - float(left),
             float(down) - float(up),
-            jump="space" in pressed_keys,
-            action="enter" in pressed_keys,
+            jump=bool({"space", "j"} & pressed_keys),
+            action=bool({"space", "enter", "shift"} & pressed_keys),
         )
         events = self._runtime_world.step(frame3d)
         state = {
@@ -491,6 +779,7 @@ class EditorDocument(QObject):
             for entity_id, entity in self._runtime_world.entities.items()
             if entity.alive
         }
+        state["__world__"] = copy.deepcopy(self._runtime_world.state)
         return state, events
 
 

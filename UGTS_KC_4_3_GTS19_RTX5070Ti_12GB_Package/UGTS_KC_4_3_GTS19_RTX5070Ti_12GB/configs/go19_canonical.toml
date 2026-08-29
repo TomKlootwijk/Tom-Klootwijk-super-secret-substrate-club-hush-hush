@@ -1,0 +1,26 @@
+[identity]
+profile_id = "UGTS-GO19-AREA-PSK-K7.5-v1"
+format_version = 1
+
+[rules]
+size = 19
+komi2 = 15
+scoring = "area"
+superko = "positional_superko"
+allow_suicide = false
+passes_to_end = 2
+initial_player = "black"
+
+[proof]
+objective = "black_score2_at_least_threshold2"
+threshold2 = 1
+arithmetic = "saturating_uint64"
+state_equality = "collision_checked_complete_repetition_context"
+terminal_statuses = ["PROVEN", "DISPROVEN", "UNKNOWN"]
+
+[serialization]
+board = "2bit-row-major"
+point_order = "row-major-top-left"
+integer_endianness = "little"
+canonical_json = "utf8-sorted-keys-no-insignificant-whitespace"
+file_digest = "sha256"

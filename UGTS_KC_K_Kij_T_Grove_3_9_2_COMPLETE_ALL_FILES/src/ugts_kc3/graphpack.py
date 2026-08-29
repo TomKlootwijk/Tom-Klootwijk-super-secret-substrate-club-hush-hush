@@ -28,6 +28,9 @@ GRAPH_PACK_MAGIC = b"KCVG001\0"
 GRAPH_PACK_ENDIAN = 0x01020304
 GRAPH_PACK_VERSION = 1
 GRAPH_PACK_ASSET = "visual_graphs.kcvg"
+# Reserved scene-node index for a graph attached to the world rather than to
+# one scene object.  Existing node-bound KCVG001 packs remain byte-compatible.
+WORLD_GRAPH_BINDING = 0xFFFFFFFF
 
 MAX_GRAPHS = 256
 MAX_BINDINGS = 4096
@@ -308,13 +311,13 @@ def _graphs_from_project(project: Mobile3DProject) -> tuple[VisualGraph, ...]:
     return tuple(sorted(result, key=lambda graph: graph.id))
 
 
-def _binding_ids(value: Any, node_id: str) -> tuple[str, ...]:
+def _binding_ids(value: Any, label: str) -> tuple[str, ...]:
     if value is None:
         return ()
     if isinstance(value, str):
         graph_id = value.strip()
         if not graph_id:
-            raise GraphPackError(f"scene node {node_id!r} has an empty visual_graph binding")
+            raise GraphPackError(f"{label} has an empty graph binding")
         return (graph_id,)
     if isinstance(value, Mapping):
         if value.get("enabled", True) is False:
@@ -322,16 +325,16 @@ def _binding_ids(value: Any, node_id: str) -> tuple[str, ...]:
         choices = [value[key] for key in ("graph", "graph_id", "id") if key in value]
         if len(choices) != 1:
             raise GraphPackError(
-                f"scene node {node_id!r} visual_graph mapping needs exactly one graph id"
+                f"{label} mapping needs exactly one graph id"
             )
-        return _binding_ids(choices[0], node_id)
+        return _binding_ids(choices[0], label)
     if isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray)):
         result: list[str] = []
         for item in value:
-            result.extend(_binding_ids(item, node_id))
+            result.extend(_binding_ids(item, label))
         return tuple(result)
     raise GraphPackError(
-        f"scene node {node_id!r} visual_graph binding must be a graph id, not {type(value).__name__}"
+        f"{label} binding must be a graph id, not {type(value).__name__}"
     )
 
 
@@ -340,10 +343,19 @@ def _bindings_from_project(
 ) -> tuple[tuple[int, str], ...]:
     result: list[tuple[int, str]] = []
     seen: set[tuple[int, str]] = set()
+    for graph_id in _binding_ids(project.metadata.get("world_graphs"), "project world_graphs"):
+        if graph_id not in graph_ids:
+            raise GraphPackError(f"project world_graphs binds missing visual graph {graph_id!r}")
+        pair = (WORLD_GRAPH_BINDING, graph_id)
+        if pair in seen:
+            raise GraphPackError(f"project world_graphs binds visual graph {graph_id!r} more than once")
+        seen.add(pair)
+        result.append(pair)
     for node_index, scene_node in enumerate(project.nodes):
         if "visual_graph" not in scene_node.metadata:
             continue
-        for graph_id in _binding_ids(scene_node.metadata.get("visual_graph"), scene_node.id):
+        label = f"scene node {scene_node.id!r} visual_graph"
+        for graph_id in _binding_ids(scene_node.metadata.get("visual_graph"), label):
             if graph_id not in graph_ids:
                 raise GraphPackError(
                     f"scene node {scene_node.id!r} binds missing visual graph {graph_id!r}"
@@ -380,6 +392,15 @@ _COMPARE_ALIASES = {
     "greater": "greater", "gt": "greater", ">": "greater",
     "greater_equal": "greater_equal", "gte": "greater_equal", ">=": "greater_equal",
 }
+
+ANDROID_INPUT_ACTIONS = frozenset({
+    "jump", "accept", "ui_accept",
+    "dash", "action", "cancel", "ui_cancel",
+    "move_x", "move_z", "look_x", "look_y",
+    "move_left", "left", "move_right", "right",
+    "move_forward", "move_up", "up",
+    "move_back", "move_down", "down",
+})
 
 
 def _component_result_tag(component: str, field: str) -> int:
@@ -497,15 +518,21 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
                 literal = _ValueSpec(VALUE_NULL)
             else:
                 try:
-                    literal = _value_spec(raw, f"visual graph {graph.id!r} node {node.id!r} input {name!r}")
+                    literal = _value_spec(raw, f"input {name!r}")
                 except GraphPackError as error:
                     raise _fail(graph.id, node, str(error)) from error
             input_specs.append(_InputSpec(literal=literal))
 
         by_name = dict(zip(input_names, input_specs))
         if node.type == "event.input_pressed":
-            if not _literal_text(graph.id, node, "action", by_name["action"]).strip():
-                raise _fail(graph.id, node, "input action must not be empty")
+            action = _literal_text(graph.id, node, "action", by_name["action"])
+            if action not in ANDROID_INPUT_ACTIONS:
+                raise _fail(
+                    graph.id,
+                    node,
+                    f"input action {action!r} is not available in the Android template; "
+                    f"use one of {', '.join(sorted(ANDROID_INPUT_ACTIONS))}",
+                )
         if node.type in {"value.state", "action.set_state"}:
             key = _literal_text(graph.id, node, "key", by_name["key"])
             if not key:
@@ -539,6 +566,14 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
                         f"{component}.{field or '<whole>'} needs {VALUE_TAG_NAMES[expected_tag]}, "
                         f"not {VALUE_TAG_NAMES[value.literal.tag]}",
                     )
+                if value.literal is not None and component == "transform":
+                    literal = value.literal
+                    if field == "scale" and any(abs(item) <= 1e-8 for item in literal.payload):
+                        raise _fail(graph.id, node, "transform.scale components must be non-zero")
+                    if field.startswith("scale.") and abs(float(literal.payload)) <= 1e-8:
+                        raise _fail(graph.id, node, "transform.scale components must be non-zero")
+                    if field == "rotation" and math.sqrt(sum(item * item for item in literal.payload)) <= 1e-8:
+                        raise _fail(graph.id, node, "transform.rotation quaternion must be non-zero")
         if node.type == "action.emit_event":
             if by_name["payload"].source_node is not None:
                 raise _fail(graph.id, node, "Android emit_event payload cannot be connected")
@@ -842,7 +877,12 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
         if previous_binding is not None and current <= previous_binding:
             raise GraphPackError("visual-graph bindings are not canonical")
         previous_binding = current
-        bindings.append({"graph": current[1], "scene_node_index": scene_node})
+        is_world = scene_node == WORLD_GRAPH_BINDING
+        bindings.append({
+            "graph": current[1],
+            "scope": "world" if is_world else "node",
+            "scene_node_index": None if is_world else scene_node,
+        })
 
     nodes = []
     expected_input = expected_flow = 0
@@ -904,6 +944,7 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
         "value_count": value_count,
         "graph_count": graph_count,
         "binding_count": binding_count,
+        "world_binding_count": sum(item["scope"] == "world" for item in bindings),
         "node_count": node_count,
         "input_count": input_count,
         "flow_target_count": flow_count,
@@ -915,6 +956,7 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
 
 
 __all__ = [
+    "ANDROID_INPUT_ACTIONS",
     "GRAPH_MAX_STEPS",
     "GRAPH_PACK_ASSET",
     "GRAPH_PACK_ENDIAN",
@@ -922,6 +964,7 @@ __all__ = [
     "GRAPH_PACK_VERSION",
     "GraphPackError",
     "NODE_OPCODES",
+    "WORLD_GRAPH_BINDING",
     "compile_graph_pack_bytes",
     "inspect_graph_pack",
     "write_graph_pack",

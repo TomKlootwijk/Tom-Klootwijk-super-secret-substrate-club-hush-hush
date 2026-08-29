@@ -6,6 +6,7 @@ separate downstream adapter implemented by :mod:`ugts_kc3.androidexport`.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import copy
 import hashlib
 import json
 import math
@@ -14,7 +15,17 @@ from typing import Any, Callable, Mapping, Sequence
 
 from .geometry import Mesh
 from .materials import PBRMaterial
-from .packed_kinematics import pack_ecs_document, unpack_ecs_document
+from .packed_kinematics import (
+    PackedKinematicComponent,
+    pack_ecs_document,
+    unpack_ecs_document,
+)
+from .polarpack import (
+    PolarPackError,
+    PolarProjectSpec,
+    collect_polar_project_spec,
+    quantized_profile_lut,
+)
 from .math3d import (
     EPS, add, compose_trs, cross, dot, norm, normalize, quat_from_axis_angle,
     quat_mul, quat_normalize, scale as vscale, sub,
@@ -70,6 +81,23 @@ def visual_graphs_from_metadata(metadata: Mapping[str, Any]) -> tuple[VisualGrap
     return tuple(sorted(graphs, key=lambda graph: graph.id))
 
 
+def visual_graph_binding_ids(raw: Any, label: str = "visual graph binding") -> tuple[str, ...]:
+    if raw is None:
+        return ()
+    if isinstance(raw, str):
+        values = (raw,)
+    elif isinstance(raw, (list, tuple)) and all(isinstance(item, str) for item in raw):
+        values = tuple(raw)
+    else:
+        raise TypeError(f"{label} must be text or a list of text graph ids")
+    normalized = tuple(value.strip() for value in values)
+    if any(not value for value in normalized):
+        raise ValueError(f"{label} cannot contain an empty graph id")
+    if len(normalized) != len(set(normalized)):
+        raise ValueError(f"{label} cannot contain the same graph id more than once")
+    return normalized
+
+
 def _normalized_json(value: Any) -> Any:
     """Normalize numerically equivalent JSON values before hashing."""
     if isinstance(value, bool) or value is None or isinstance(value, str):
@@ -92,6 +120,21 @@ def _canonical(value: Any) -> bytes:
         _normalized_json(value), sort_keys=True, separators=(",", ":"),
         ensure_ascii=True, allow_nan=False,
     ).encode("utf-8")
+
+
+def initial_state_from_metadata(metadata: Mapping[str, Any]) -> dict[str, Any]:
+    """Validate and detach the JSON state seeded into a new 3D world."""
+    raw = metadata.get("initial_state", {})
+    if raw is None:
+        return {}
+    if not isinstance(raw, Mapping):
+        raise TypeError("metadata.initial_state must be an object")
+    if any(not isinstance(key, str) or not key.strip() for key in raw):
+        raise ValueError("metadata.initial_state keys must be nonempty text")
+    # Reuse the content-hash normalizer to reject NaN/infinity and values that
+    # cannot cross the JSON authoring/runtime boundary.
+    _canonical(raw)
+    return copy.deepcopy(dict(raw))
 
 
 def _values(value: Sequence[float], count: int, label: str) -> tuple[float, ...]:
@@ -753,7 +796,7 @@ class Mobile3DProject:
     start_quality: str = "balanced"
     background: Color4 = (0.018, 0.03, 0.055, 1.0)
     schema: str = MOBILE3D_SCHEMA
-    edition: str = "3.9.1 - Tom Klootwijk Signature Edition"
+    edition: str = "3.9.2 - K-Kij-T / Grove — Tom Klootwijk Signature Edition"
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def validate(self, raise_on_error: bool = True) -> ProjectValidation3D:
@@ -766,6 +809,11 @@ class Mobile3DProject:
             error("schema.unsupported", "schema", f"expected {MOBILE3D_SCHEMA}")
         if not self.id or not self.title:
             error("project.identity", "id/title", "project id and title required")
+        initial_state_count = 0
+        try:
+            initial_state_count = len(initial_state_from_metadata(self.metadata))
+        except (TypeError, ValueError) as exc:
+            error("state.initial_invalid", "metadata.initial_state", str(exc))
         for label, value in (
             ("camera", self.camera), ("light", self.light), ("world", self.world)
         ):
@@ -820,17 +868,15 @@ class Mobile3DProject:
             raw_binding = node.metadata.get("visual_graph")
             if raw_binding is None:
                 continue
-            if isinstance(raw_binding, str):
-                bindings = (raw_binding,)
-            elif isinstance(raw_binding, (list, tuple)) and all(
-                isinstance(item, str) for item in raw_binding
-            ):
-                bindings = tuple(raw_binding)
-            else:
+            try:
+                bindings = visual_graph_binding_ids(
+                    raw_binding, f"node {node.id} visual_graph binding"
+                )
+            except (TypeError, ValueError) as exc:
                 error(
                     "graph.binding_type",
                     f"nodes[{index}].metadata.visual_graph",
-                    "binding must be a graph id or list of graph ids",
+                    str(exc),
                 )
                 continue
             binding_count += len(bindings)
@@ -842,24 +888,41 @@ class Mobile3DProject:
                         graph_id,
                     )
         raw_world_bindings = self.metadata.get("world_graphs", ())
-        if isinstance(raw_world_bindings, str):
-            world_bindings = (raw_world_bindings,)
-        elif isinstance(raw_world_bindings, (list, tuple)) and all(
-            isinstance(item, str) for item in raw_world_bindings
-        ):
-            world_bindings = tuple(raw_world_bindings)
-        else:
+        try:
+            world_bindings = visual_graph_binding_ids(
+                raw_world_bindings, "metadata.world_graphs"
+            )
+        except (TypeError, ValueError) as exc:
             world_bindings = ()
-            if raw_world_bindings not in (None, ()):
-                error(
-                    "graph.world_binding_type",
-                    "metadata.world_graphs",
-                    "world bindings must be a graph id or list of graph ids",
-                )
+            error(
+                "graph.world_binding_type",
+                "metadata.world_graphs",
+                str(exc),
+            )
         binding_count += len(world_bindings)
         for graph_id in world_bindings:
             if graph_id not in graph_ids:
                 error("graph.binding_unknown", "metadata.world_graphs", graph_id)
+        polar_profile_count = 0
+        polar_component_count = 0
+        try:
+            polar_spec = collect_polar_project_spec(self)
+            polar_profile_count = len(polar_spec.profiles)
+            polar_component_count = len(polar_spec.components)
+            # Validate the exact binary16-roundtripped table used by both the
+            # desktop preview and native exporter, not merely its source range.
+            for profile in polar_spec.profiles:
+                quantized_profile_lut(profile)
+        except PolarPackError as exc:
+            error("packed_kinematic.invalid", "metadata.packed_kinematic_profiles", str(exc))
+        else:
+            for item in polar_spec.components:
+                if self.nodes[item.node_index].dynamic:
+                    error(
+                        "packed_kinematic.dynamic_conflict",
+                        f"nodes[{item.node_index}].dynamic",
+                        "packed kinematics are transform-authoritative; use a static node so physics does not overwrite them",
+                    )
         quality_ids: set[str] = set()
         for index, tier in enumerate(self.quality_tiers):
             try:
@@ -899,6 +962,9 @@ class Mobile3DProject:
             "target_profile_count": len(self.target_profiles),
             "visual_graph_count": len(graphs),
             "visual_graph_binding_count": binding_count,
+            "packed_kinematic_profile_count": polar_profile_count,
+            "packed_kinematic_component_count": polar_component_count,
+            "initial_state_key_count": initial_state_count,
         }
         report = ProjectValidation3D(not issues, tuple(issues), metrics)
         if raise_on_error and not report.passed:
@@ -955,7 +1021,7 @@ class Mobile3DProject:
             str(data.get("schema", MOBILE3D_SCHEMA)),
             str(
                 data.get(
-                    "edition", "3.9.1 - Tom Klootwijk Signature Edition"
+                    "edition", "3.9.2 - K-Kij-T / Grove — Tom Klootwijk Signature Edition"
                 )
             ),
             dict(data.get("metadata", {})),
@@ -1141,6 +1207,47 @@ class TransformComponent3D:
         self.scale = _values(self.scale, 3, "transform scale")
 
 
+class Vector3Value3D(list[float]):
+    """Mutable JSON-like Vec3 view used by portable graph component aliases."""
+
+    def __init__(self, values: Sequence[float]):
+        super().__init__(_values(values, 3, "vector component"))
+
+    @property
+    def x(self) -> float:
+        return self[0]
+
+    @x.setter
+    def x(self, value: float) -> None:
+        self[0] = _finite_component_value(value)
+
+    @property
+    def y(self) -> float:
+        return self[1]
+
+    @y.setter
+    def y(self, value: float) -> None:
+        self[1] = _finite_component_value(value)
+
+    @property
+    def z(self) -> float:
+        return self[2]
+
+    @z.setter
+    def z(self, value: float) -> None:
+        self[2] = _finite_component_value(value)
+
+    def validate(self) -> None:
+        self[:] = _values(self, 3, "vector component")
+
+
+def _finite_component_value(value: float) -> float:
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError("vector component must be finite")
+    return result
+
+
 @dataclass
 class BodyComponent3D:
     velocity: Vec3
@@ -1227,8 +1334,70 @@ class EntityState3D:
             "tags": list(self.tags), "grounded": self.grounded,
             "alive": self.alive, "active": self.active,
             "metadata": self.metadata,
-            "extra_components": self.extra_components,
+            "extra_components": {
+                name: value.to_dict() if hasattr(value, "to_dict") else value
+                for name, value in sorted(self.extra_components.items())
+            },
         }
+
+
+def _compose_packed_kinematic_3d(
+    entity: EntityState3D,
+    component: PackedKinematicComponent,
+    codec,
+    lut,
+) -> None:
+    state = codec.cartesian_state(component, lut)
+    x, z = state["position"]
+    entity.position = (x, entity.position[1], z)
+    entity.rotation = quat_from_axis_angle((0.0, 1.0, 0.0), state["pose"].heading)
+
+
+def attach_packed_kinematics_3d(
+    world: "GameWorld3D", spec: PolarProjectSpec
+) -> bool:
+    """Attach the sparse transform-authoritative polar system to a 3D world.
+
+    Initial composition happens before Ready graphs.  Fixed-step advancement is
+    priority -100 in pre-physics, matching Android's polar -> graph -> gameplay
+    ordering while leaving authored Y, scale and all non-transform components.
+    """
+    if not spec.components:
+        return False
+    profiles = {profile.id: profile.codec for profile in spec.profiles}
+    luts = {profile.id: quantized_profile_lut(profile) for profile in spec.profiles}
+    for item in spec.components:
+        entity = world.require(item.node_id)
+        packed = PackedKinematicComponent(
+            item.component.pose_word,
+            item.component.motion_word,
+            item.component.profile_id,
+        )
+        entity.extra_components["packed_kinematic"] = packed
+        _compose_packed_kinematic_3d(
+            entity, packed, profiles[packed.profile_id], luts[packed.profile_id]
+        )
+
+    def packed_polar_kinematics_3d(
+        target_world: "GameWorld3D", dt: float, input_frame: InputFrame3D
+    ) -> None:
+        del input_frame
+        for entity in target_world.query("packed_kinematic"):
+            packed = entity.extra_components["packed_kinematic"]
+            codec = profiles[packed.profile_id]
+            advanced = codec.advance(packed, dt)
+            entity.extra_components["packed_kinematic"] = advanced
+            _compose_packed_kinematic_3d(
+                entity, advanced, codec, luts[advanced.profile_id]
+            )
+
+    world.add_system(
+        packed_polar_kinematics_3d,
+        phase="pre_physics",
+        priority=-100,
+        name="packed_polar_kinematics_3d",
+    )
+    return True
 
 
 @dataclass(frozen=True)
@@ -1284,21 +1453,18 @@ class GameWorld3D:
     @classmethod
     def from_project(cls, project: Mobile3DProject) -> "GameWorld3D":
         world = cls(project.world)
+        world.state.update(initial_state_from_metadata(project.metadata))
         for node in project.nodes:
             world.spawn(EntityState3D.from_node(node))
+        attach_packed_kinematics_3d(world, collect_polar_project_spec(project))
         graphs = {graph.id: graph for graph in visual_graphs_from_metadata(project.metadata)}
 
-        def binding_ids(raw: Any) -> tuple[str, ...]:
-            if raw is None:
-                return ()
-            return (raw,) if isinstance(raw, str) else tuple(raw)
-
-        for graph_id in binding_ids(project.metadata.get("world_graphs")):
+        for graph_id in visual_graph_binding_ids(project.metadata.get("world_graphs")):
             world.visual_graph_bindings.append(
                 attach_graph(world, graphs[graph_id], phase="pre_physics")
             )
         for node in project.nodes:
-            for graph_id in binding_ids(node.metadata.get("visual_graph")):
+            for graph_id in visual_graph_binding_ids(node.metadata.get("visual_graph")):
                 world.visual_graph_bindings.append(
                     attach_graph(
                         world,
@@ -1332,6 +1498,7 @@ class GameWorld3D:
             BodyComponent3D: "body",
             ColliderComponent3D: "collider",
             RenderComponent3D: "render",
+            PackedKinematicComponent: "packed_kinematic",
         }
         return names.get(component_or_name, component_or_name.__name__.lower())
 
@@ -1355,6 +1522,14 @@ class GameWorld3D:
                 entity.mass,
                 entity.restitution,
             )
+        if name == "velocity":
+            return Vector3Value3D(entity.velocity)
+        if name == "angular_velocity":
+            return Vector3Value3D(entity.angular_velocity)
+        if name == "alive":
+            return entity.alive
+        if name == "active":
+            return entity.active
         if name == "collider":
             return ColliderComponent3D(
                 entity.collider.shape,
@@ -1411,6 +1586,18 @@ class GameWorld3D:
             entity.mass = value.mass
             entity.restitution = value.restitution
             return
+        if component_name in {"velocity", "angular_velocity"}:
+            value = tuple(Vector3Value3D(component))
+            if component_name == "velocity":
+                entity.velocity = value
+            else:
+                entity.angular_velocity = value
+            return
+        if component_name in {"alive", "active"}:
+            if not isinstance(component, bool):
+                raise TypeError(f"{component_name} component must be a boolean")
+            setattr(entity, component_name, component)
+            return
         if component_name == "collider":
             value = component if isinstance(component, ColliderComponent3D) else ColliderComponent3D(
                 str(component.get("shape", entity.collider.shape)),
@@ -1437,7 +1624,10 @@ class GameWorld3D:
 
     def remove_component(self, entity_id: str, component_or_name: type | str) -> Any:
         name = self._component_key(component_or_name)
-        if name in {"transform", "body", "collider", "render", "entity"}:
+        if name in {
+            "transform", "body", "velocity", "angular_velocity", "alive", "active",
+            "collider", "render", "entity",
+        }:
             raise ValueError(f"built-in 3D component {name} cannot be removed from the compatibility record")
         return self.require(entity_id).extra_components.pop(name)
 
@@ -1449,7 +1639,10 @@ class GameWorld3D:
     ) -> tuple[EntityState3D, ...]:
         names = tuple(self._component_key(item) for item in component_types)
         required_tags = set(tags)
-        builtins = {"transform", "body", "collider", "render", "entity"}
+        builtins = {
+            "transform", "body", "velocity", "angular_velocity", "alive", "active",
+            "collider", "render", "entity",
+        }
         return tuple(
             entity
             for entity_id in sorted(self.entities)
@@ -1692,7 +1885,6 @@ class GameWorld3D:
         for _ in range(steps):
             frame = current_frame.with_previous(self._previous_input_frame)
             self._run_systems("input", frame)
-            self.tick += 1
             self._player(frame)
             self._run_systems("pre_physics", frame)
             self._integrate()
@@ -1702,6 +1894,7 @@ class GameWorld3D:
             self._gameplay()
             self._run_systems("update", frame)
             self._run_systems("late", frame)
+            self.tick += 1
             self.time = self.tick * self.settings.fixed_dt
             self._previous_input_frame = current_frame
         return tuple(self.events[start:])

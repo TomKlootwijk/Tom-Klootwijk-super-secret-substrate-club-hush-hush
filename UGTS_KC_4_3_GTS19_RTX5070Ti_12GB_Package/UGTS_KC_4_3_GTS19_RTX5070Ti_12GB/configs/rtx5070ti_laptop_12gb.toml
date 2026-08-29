@@ -1,0 +1,40 @@
+[device]
+label = "RTX 5070 Ti Laptop 12GB user target"
+cuda_architecture = "native"
+query_free_vram_at_runtime = true
+never_allocate_from_nominal_vram = true
+
+[memory]
+reserve_fraction_of_free = 0.18
+transposition_cache_fraction_of_usable = 0.46
+frontier_fraction_of_usable = 0.23
+batch_workspace_fraction_of_usable = 0.16
+proof_staging_fraction_of_usable = 0.08
+optional_heuristic_fraction_of_usable = 0.07
+allocation_failure_policy = "halve_batch_or_cache_then_retry"
+
+[batch]
+initial_states = 65536
+minimum_states = 256
+maximum_states = 1048576
+adaptive = true
+watchdog_friendly_kernel_target_ms = 100
+
+[host]
+auto_size_transposition_store = true
+minimum_os_reserve_gib = 4
+nvme_segment_mib = 256
+checkpoint_interval_seconds = 900
+write_ahead_log = true
+
+[search]
+algorithm = "dfpn-threshold"
+threshold2 = 1
+deterministic_tie_break = true
+full_history_state_identity = true
+symmetry = "D4-full-history"
+heuristic_may_order_only = true
+
+[claim]
+allow_solved_label_without_independent_certificate_verification = false
+resource_exhaustion_status = "UNKNOWN"

@@ -1,0 +1,15 @@
+{
+  "cpu_count": 5,
+  "machine": "x86_64",
+  "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+  "processor": "",
+  "purpose": "configuration evidence only; not a proof result",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "tools": {
+    "c++": "/usr/bin/c++",
+    "cmake": "/usr/bin/cmake",
+    "git": "/usr/bin/git",
+    "nvcc": null,
+    "nvidia-smi": null
+  }
+}

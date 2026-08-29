@@ -1,6 +1,7 @@
 from dataclasses import replace
 import math
 from pathlib import Path
+import struct
 import tempfile
 import unittest
 
@@ -89,6 +90,10 @@ class PackedKinematicsTests(unittest.TestCase):
         damaged[-1] ^= 0xFF
         with self.assertRaises(ValueError):
             unpack_ecs_document(bytes(damaged))
+        with self.assertRaises(ValueError):
+            unpack_ecs_document(packed + b"trailing")
+        with self.assertRaises(ValueError):
+            unpack_ecs_document(packed + packed)
 
     def test_component_roundtrips_through_the_existing_ecs_snapshot(self):
         codec = PackedKinematicCodec()
@@ -109,6 +114,8 @@ class PackedKinematicsTests(unittest.TestCase):
         world = GameWorld(fixed_dt=0.1)
         world.spawn("orbit", components={"transform": Transform2D(), "packed_kinematic": packed})
         self.assertTrue(attach_packed_kinematics(world, codec))
+        transform = world.require("orbit", "transform")
+        self.assertAlmostEqual(math.hypot(*transform.position), 2.0, places=3)
         world.step()
         transform = world.require("orbit", "transform")
         self.assertAlmostEqual(math.hypot(*transform.position), 2.0, places=3)
@@ -162,6 +169,26 @@ class PackedKinematicsTests(unittest.TestCase):
         self.assertTrue(
             any(issue.code == "packed_kinematic.profile_unknown" for issue in report.issues)
         )
+
+    def test_packed_words_and_lut_headers_reject_ambiguous_values(self):
+        from ugts_kc3.packed_kinematics import PackedKinematicComponent
+
+        with self.assertRaises(TypeError):
+            PackedKinematicComponent(1.5).validate()
+        with self.assertRaises(TypeError):
+            PackedKinematicComponent(True).validate()
+        binary = bytearray(PolarLookupTable.generate().to_bytes())
+        binary[6:8] = struct.pack("<H", 0)
+        with self.assertRaises(ValueError):
+            PolarLookupTable.from_bytes(bytes(binary))
+        with self.assertRaises(ValueError):
+            PolarLookupTable(
+                LogPolarProfile(),
+                16,
+                (float("nan"),) * 16,
+                (1.0,) * 16,
+                (1.0,) * 16,
+            )
 
 
 if __name__ == "__main__":

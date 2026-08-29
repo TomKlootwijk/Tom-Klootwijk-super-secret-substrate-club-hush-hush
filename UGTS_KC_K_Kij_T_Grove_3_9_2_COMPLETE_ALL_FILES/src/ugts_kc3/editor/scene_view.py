@@ -125,9 +125,9 @@ class EntityGraphicsItem(QGraphicsItemGroup):
 
     def mousePressEvent(self, event) -> None:  # type: ignore[override]
         self._press_position = QPointF(self.pos())
-        self._on_selected(self.object_id)
         self.setCursor(Qt.CursorShape.ClosedHandCursor)
         super().mousePressEvent(event)
+        self._on_selected(self.object_id)
 
     def mouseReleaseEvent(self, event) -> None:  # type: ignore[override]
         super().mouseReleaseEvent(event)
@@ -255,6 +255,7 @@ class SceneViewport(QGraphicsView):
         self._panning = False
         self._pan_origin = QPointF()
         self._mesh_items: dict[str, ProjectedMeshItem] = {}
+        self._mesh_runtime_transforms: dict[str, tuple[Any, ...]] = {}
         self.pressed_keys: set[str] = set()
         self.scene().selectionChanged.connect(self._scene_selection_changed)
 
@@ -289,7 +290,34 @@ class SceneViewport(QGraphicsView):
         if object_id == self._selected_id:
             return
         self._selected_id = object_id
-        self.refresh(keep_view=True)
+        # Selection must not rebuild/clear the scene from inside an item's mouse
+        # handler: Qt would delete the very C++ object still processing the click.
+        self._rendering = True
+        try:
+            for item in self.scene().items():
+                item_id = item.data(0)
+                if not isinstance(item_id, str):
+                    continue
+                selected = item_id == object_id
+                if item.isSelected() != selected:
+                    item.setSelected(selected)
+                if isinstance(item, ProjectedMeshItem):
+                    item.selected = selected
+                if isinstance(item, EntityGraphicsItem):
+                    for child in tuple(item.childItems()):
+                        if child.data(2) == "selection_guide":
+                            self.scene().removeItem(child)
+                    if selected and self._document is not None:
+                        scene_record = self._document.scene()
+                        entity = None if scene_record is None else next(
+                            (value for value in scene_record.entities if value.id == item.object_id),
+                            None,
+                        )
+                        if entity is not None:
+                            self._add_2d_selection_guides(item, entity)
+                item.update()
+        finally:
+            self._rendering = False
 
     def refresh(self, keep_view: bool = True) -> None:
         transform = QTransform(self.transform())
@@ -298,6 +326,7 @@ class SceneViewport(QGraphicsView):
         try:
             self.scene().clear()
             self._mesh_items.clear()
+            self._mesh_runtime_transforms.clear()
             if self._document is None or self._document.project is None:
                 self._render_empty()
             elif isinstance(self._document.project, GameProject):
@@ -362,13 +391,16 @@ class SceneViewport(QGraphicsView):
             transform = self._runtime_state.get(entity.id) if self._runtime_state else None
             transform = transform or entity.components.get("transform")
             renderer = entity.components.get("vector_renderer")
-            if not isinstance(transform, Mapping) or not isinstance(renderer, Mapping):
+            if not isinstance(transform, Mapping):
+                continue
+            if not isinstance(renderer, Mapping):
+                self._add_missing_asset(entity, transform, "has no vector art yet")
                 continue
             if renderer.get("visible", True) is False:
                 continue
             asset = project.vector_assets.assets.get(str(renderer.get("asset_id", "")))
             if asset is None:
-                self._add_missing_asset(entity, transform)
+                self._add_missing_asset(entity, transform, "uses a missing vector asset")
                 continue
             item = self._vector_item(entity, asset, renderer)
             position = transform.get("position", (0, 0))
@@ -393,6 +425,46 @@ class SceneViewport(QGraphicsView):
         label.setPos(18, 16)
         label.setZValue(100000)
         self.scene().addItem(label)
+
+        world_state = dict(scene_record.initial_state)
+        if self._runtime_state and isinstance(self._runtime_state.get("__world__"), Mapping):
+            world_state.update(self._runtime_state["__world__"])
+        score = world_state.get("score", 0)
+        target = scene_record.rules.get("score_to_win")
+        score_text = f"Score  {score}" if not target else f"Crystals  {score} / {target}"
+        hud = QGraphicsSimpleTextItem(score_text)
+        hud.setBrush(QColor("#f5fbff"))
+        hud_font = hud.font()
+        hud_font.setPointSizeF(15)
+        hud_font.setBold(True)
+        hud.setFont(hud_font)
+        hud.setPos(20, 44)
+        hud.setZValue(100001)
+        self.scene().addItem(hud)
+        replacements = {
+            "{score}": str(score),
+            "{target}": str(target or 0),
+            "{health}": str(world_state.get("health", "-")),
+            "{best}": str(world_state.get("best_score", 0)),
+        }
+        for record in scene_record.ui:
+            if record.get("type") != "text":
+                continue
+            text = str(record.get("text", ""))
+            for source, value in replacements.items():
+                text = text.replace(source, value)
+            item = QGraphicsSimpleTextItem(text)
+            color = _color(record.get("color"), "#dce8f5")
+            item.setBrush(color if color.isValid() else QColor("#dce8f5"))
+            position = record.get("position", (0, 0))
+            item.setPos(float(position[0]), float(position[1]))
+            if record.get("align") == "center":
+                item.setX(item.x() - item.boundingRect().width() * 0.5)
+            elif record.get("align") == "right":
+                item.setX(item.x() - item.boundingRect().width())
+            item.setOpacity(float(record.get("opacity", 1.0)))
+            item.setZValue(100001)
+            self.scene().addItem(item)
 
     def _add_2d_grid(self, width: float, height: float) -> None:
         target_lines = 30
@@ -457,16 +529,32 @@ class SceneViewport(QGraphicsView):
             group.setGraphicsEffect(effect)
         return group
 
-    def _add_missing_asset(self, entity: EntitySpec, transform: Mapping[str, Any]) -> None:
+    def _add_missing_asset(
+        self, entity: EntitySpec, transform: Mapping[str, Any], reason: str
+    ) -> None:
         position = transform.get("position", (0, 0))
-        item = QGraphicsRectItem(-20, -20, 40, 40)
+        scale = transform.get("scale", (1, 1))
+        item = EntityGraphicsItem(
+            entity.id, self.selectionRequested.emit, self.entityMoved.emit
+        )
+        marker = QGraphicsRectItem(-20, -20, 40, 40)
+        marker.setBrush(QColor(248, 113, 113, 55))
+        marker.setPen(QPen(QColor("#f87171"), 3, Qt.PenStyle.DashLine))
+        marker.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
+        item.addToGroup(marker)
+        plus = QGraphicsSimpleTextItem("+", item)
+        plus.setBrush(QColor("#fca5a5"))
+        plus.setPos(-plus.boundingRect().width() * 0.5, -plus.boundingRect().height() * 0.55)
+        plus.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
         item.setPos(float(position[0]), float(position[1]))
-        item.setBrush(QColor(248, 113, 113, 55))
-        item.setPen(QPen(QColor("#f87171"), 3, Qt.PenStyle.DashLine))
-        item.setData(0, entity.id)
-        item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
-        item.setToolTip(f"{_friendly_name(entity.id)} uses a missing vector asset")
+        item.setRotation(math.degrees(float(transform.get("rotation", 0.0))))
+        item.setTransform(QTransform.fromScale(float(scale[0]), float(scale[1])))
+        item.setSelected(entity.id == self._selected_id)
+        item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, not self._playing)
+        item.setToolTip(f"{_friendly_name(entity.id)} {reason}\nClick to select · drag to move")
         self.scene().addItem(item)
+        if entity.id == self._selected_id:
+            self._add_2d_selection_guides(item, entity)
 
     def _add_2d_selection_guides(self, item: EntityGraphicsItem, entity: EntitySpec) -> None:
         outline = QGraphicsRectItem(item.boundingRect().adjusted(-6, -6, 6, 6), item)
@@ -474,11 +562,13 @@ class SceneViewport(QGraphicsView):
         outline.setPen(QPen(QColor("#57d4ff"), 2, Qt.PenStyle.DashLine))
         outline.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
         outline.setZValue(1000)
+        outline.setData(2, "selection_guide")
         label = QGraphicsSimpleTextItem(_friendly_name(entity.id), item)
         label.setBrush(QColor("#e6f7ff"))
         label.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIgnoresTransformations, True)
         label.setPos(item.boundingRect().left(), item.boundingRect().top() - 27)
         label.setZValue(1001)
+        label.setData(2, "selection_guide")
 
     def _render_3d(self, project: Mobile3DProject) -> None:
         width, height = 1280.0, 720.0
@@ -508,6 +598,16 @@ class SceneViewport(QGraphicsView):
             item.setZValue(-average_depth)
             self.scene().addItem(item)
             self._mesh_items[node.id] = item
+            transform = runtime or {
+                "translation": node.transform.translation,
+                "rotation": node.transform.rotation,
+                "scale": node.transform.scale,
+            }
+            self._mesh_runtime_transforms[node.id] = (
+                tuple(transform.get("translation", node.transform.translation)),
+                tuple(transform.get("rotation", node.transform.rotation)),
+                tuple(transform.get("scale", node.transform.scale)),
+            )
         if self._selected_id:
             self._add_3d_gizmo(projector, project, self._selected_id)
 
@@ -568,26 +668,33 @@ class SceneViewport(QGraphicsView):
         self, project: Mobile3DProject, state: Mapping[str, Mapping[str, Any]]
     ) -> None:
         projector = _PerspectiveProjector(project, 1280.0, 720.0)
-        animated_ids = {
-            node.id for node in project.nodes if node.dynamic or "player" in node.tags
-        }
-        animated_ids.update(node_id for node_id in self._mesh_items if node_id not in state)
         for node in project.nodes:
-            if node.id not in animated_ids:
+            runtime = state.get(node.id)
+            if runtime is None:
+                previous = self._mesh_items.pop(node.id, None)
+                self._mesh_runtime_transforms.pop(node.id, None)
+                if previous is not None and previous.scene() is self.scene():
+                    self.scene().removeItem(previous)
+                continue
+            signature = (
+                tuple(runtime.get("translation", node.transform.translation)),
+                tuple(runtime.get("rotation", node.transform.rotation)),
+                tuple(runtime.get("scale", node.transform.scale)),
+            )
+            if self._mesh_runtime_transforms.get(node.id) == signature:
                 continue
             previous = self._mesh_items.pop(node.id, None)
             if previous is not None and previous.scene() is self.scene():
                 self.scene().removeItem(previous)
-            runtime = state.get(node.id)
-            if runtime is None:
-                continue
             faces = self._project_node_faces(project, node, projector, runtime)
             if not faces:
+                self._mesh_runtime_transforms[node.id] = signature
                 continue
             item = ProjectedMeshItem(node.id, faces, node.id == self._selected_id)
             item.setZValue(-sum(face[0] for face in faces) / len(faces))
             self.scene().addItem(item)
             self._mesh_items[node.id] = item
+            self._mesh_runtime_transforms[node.id] = signature
 
     def _add_3d_grid(self, projector: _PerspectiveProjector, project: Mobile3DProject) -> None:
         floor = project.world.floor_y
@@ -690,6 +797,7 @@ class SceneViewport(QGraphicsView):
             Qt.Key.Key_Left: "left", Qt.Key.Key_Right: "right",
             Qt.Key.Key_Up: "up", Qt.Key.Key_Down: "down",
             Qt.Key.Key_Space: "space", Qt.Key.Key_Return: "enter", Qt.Key.Key_Enter: "enter",
+            Qt.Key.Key_Shift: "shift", Qt.Key.Key_J: "j",
         }.get(Qt.Key(key))
 
     def keyPressEvent(self, event) -> None:  # type: ignore[override]

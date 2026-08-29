@@ -18,6 +18,11 @@ from .graphpack import (
     inspect_graph_pack,
 )
 from .mobile3d import Mobile3DProject, tag_mask
+from .polarpack import (
+    POLAR_PACK_ASSET,
+    compile_polar_pack_bytes,
+    inspect_polar_pack,
+)
 
 # Grove emits KC3D392.  The native reader accepts both 3.9.1 and 3.9.2 packs,
 # while inspection remains backward compatible with existing Signature assets.
@@ -350,6 +355,7 @@ class AndroidProjectBuild:
     project_hash: str
     profile_hint: str
     graph_pack: Path | None = None
+    polar_pack: Path | None = None
 
 
 def _file_digest(path: Path) -> str:
@@ -390,6 +396,11 @@ def build_android_project(
     graph_inspection = (
         inspect_graph_pack(graph_pack_data) if graph_pack_data else None
     )
+    polar_pack_data = compile_polar_pack_bytes(project)
+    polar_inspection = (
+        inspect_polar_pack(polar_pack_data, node_count=len(project.nodes))
+        if polar_pack_data else None
+    )
     output_dir = Path(output_dir)
     template = Path(__file__).with_name("android_template") / "project"
     if not template.exists():
@@ -426,6 +437,10 @@ def build_android_project(
     if graph_pack_data:
         graph_pack = assets / GRAPH_PACK_ASSET
         graph_pack.write_bytes(graph_pack_data)
+    polar_pack = None
+    if polar_pack_data:
+        polar_pack = assets / POLAR_PACK_ASSET
+        polar_pack.write_bytes(polar_pack_data)
     inspection = inspect_scene_pack(scene_pack)
     (evidence_dir / "scene-pack-inspection.json").write_text(
         json.dumps(inspection, indent=2, sort_keys=True) + "\n",
@@ -443,6 +458,7 @@ def build_android_project(
         "application_id": android_application_id(project.id),
         "authoring_assets_packaged": include_authoring_assets,
         "visual_graph_runtime": graph_inspection,
+        "packed_kinematic_runtime": polar_inspection,
         "compile_sdk": 36,
         "target_sdk": 36,
         "min_sdk": 26,
@@ -467,7 +483,7 @@ def build_android_project(
     return AndroidProjectBuild(
         output_dir, project_file, scene_pack, report_path, len(files),
         sum(path.stat().st_size for path in files), project.content_hash(),
-        profile_hint, graph_pack,
+        profile_hint, graph_pack, polar_pack,
     )
 
 

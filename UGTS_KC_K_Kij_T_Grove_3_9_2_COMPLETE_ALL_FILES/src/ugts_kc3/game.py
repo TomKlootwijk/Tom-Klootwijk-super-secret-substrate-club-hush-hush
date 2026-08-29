@@ -553,6 +553,8 @@ class GameWorld:
     def add_component(self, entity_id: str, component: Any, name: str | None = None, replace_existing: bool = False) -> None:
         entity = self.entities[entity_id]
         component_key = name or component_name(component)
+        if isinstance(component, Mapping):
+            component = component_from_dict(component_key, component)
         if component_key in entity.components and not replace_existing:
             raise ValueError(f"entity {entity_id} already has component {component_key}")
         validate = getattr(component, "validate", None)

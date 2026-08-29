@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ugts:go:checkpoint-manifest:v1",
+  "title": "UGTS GTS-19 checkpoint manifest",
+  "type": "object",
+  "required": ["format", "rules_digest", "root_digest", "status", "segments", "manifest_sha256"],
+  "properties": {
+    "format": {"const": "UGTS-GTS19-CHECKPOINT-v1"},
+    "rules_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "root_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "status": {"enum": ["PROVEN", "DISPROVEN", "UNKNOWN"]},
+    "threshold2": {"type": "integer"},
+    "proof_number": {"type": "integer", "minimum": 0},
+    "disproof_number": {"type": "integer", "minimum": 0},
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": {"type": "string"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

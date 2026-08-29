@@ -10,6 +10,10 @@ The Grove engine work now includes an optional PySide6 desktop editor, determini
 runtime, compact log-polar ECS components and direct APK build/install tooling. Core simulation and
 build commands remain dependency-free; Qt is only needed for the editor.
 
+UGTS Studio can add, copy, delete, select and move 2D entities or 3D nodes with undo/redo. The
+Inspector can assign the project's existing 2D pictures, 3D shapes and materials. Logic Blocks are
+editable typed data, not generated source hidden behind the GUI.
+
 ```powershell
 python -m pip install -e ".[editor]"
 python -m ugts_kc3 editor
@@ -18,6 +22,9 @@ ugts-studio
 
 # A child-friendly first project with one readable logic graph
 python -m ugts_kc3 new games\my_first_game --title "My First Game"
+
+# The same gentle idea in a phone-ready 3D project
+python -m ugts_kc3 new-3d games\my_first_phone_game --title "My First Phone Game"
 ```
 
 Start with [`docs/FIRST_10_MINUTES.md`](docs/FIRST_10_MINUTES.md). Technical decisions and honest
@@ -25,7 +32,7 @@ boundaries are in [`docs/ENGINE_ARCHITECTURE.md`](docs/ENGINE_ARCHITECTURE.md).
 
 PCG is future TODO only.
 
-# UGTS-KC 3.9.1 — Tom Klootwijk Signature Edition
+## Retained 3.9.1 substrate — Tom Klootwijk Signature Edition
 ## Vector Art, Deterministic 2D/3D Game Runtime and Native Android Source Target
 
 UGTS-KC 3.9.1 is an additive upgrade of the supplied KC Elizabeth 3.9 archive. It preserves the
@@ -39,12 +46,13 @@ Android C++ source project.
 2D authoring:
 vector assets + input + scene project
 -> deterministic 2D game world
+-> bounded visual-graph VM
 -> self-contained Canvas/Web Audio HTML5 build
 
 3D/mobile authoring:
 meshes + materials + tagged nodes + camera/light/world
 -> deterministic 3D arcade oracle
--> glTF or compact KC3D391 scene pack
+-> glTF or compact KC3D392 scene pack
 -> Android NativeActivity + C++20 + EGL/OpenGL ES 3.0
 -> POCO signature / high / balanced / compatibility quality policy
 ```
@@ -77,10 +85,12 @@ PYTHONPATH=src python -m ugts_kc3 simulate-3d   examples/tom_signature_arena_3d/
 
 # Compile/inspect the native scene and regenerate Android source
 PYTHONPATH=src python -m ugts_kc3 pack-3d   examples/tom_signature_arena_3d/project.json   build/signature_scene.kc3d --inspect
-PYTHONPATH=src python -m ugts_kc3 build-android   examples/tom_signature_arena_3d/project.json   build/UGTSKC391Signature
+PYTHONPATH=src python -m ugts_kc3 build-android   examples/tom_signature_arena_3d/project.json   build/UGTSKCKKijTGrove --apk
 ```
 
-Open `android/UGTSKC391Signature` in Android Studio. The checked-in native project contains a
+The desktop editor can produce a Poco debug APK directly, optionally installing it when exactly one
+authorized ADB device is connected. You can still open `android/UGTSKCKKijTGrove` in Android Studio.
+The checked-in native project contains a
 66-node interactive arena, `NativeActivity` lifecycle, fixed-step movement/gameplay, touch,
 keyboard and gamepad input, camera orbit/pinch, asset-loaded GLSL ES 3 shaders, depth/culling,
 dynamic-resolution framebuffer, high-refresh request and adaptive quality controller.
@@ -109,23 +119,27 @@ print(world.state_hash())
 
 ## Validation status
 
-- **276 automated Python tests pass**, including all 225 retained tests and 51 new 3.9.1 tests.
+- The retained and new automated Python tests pass; the current count is reported by the verification command rather than frozen in this document.
 - Python source compilation and mobile-project JSON Schema validation pass.
-- The Python scene-pack compiler and independent C++ parser agree on the checked-in KC3D391 pack.
+- The Python scene-pack compiler and independent C++ parser agree on the KC3D392 format-1 pack.
 - The host-native parser, POCO selector and adaptive-quality controller compile and execute.
 - The Android source tree, manifest, Gradle/CMake configuration, shaders and asset references pass
   static release checks.
 - Wheel/source distributions build and install in a fresh environment.
-- The retained HTML5 runtime still passes JavaScript syntax validation.
+- The HTML5 runtime executes the full current 18-block graph vocabulary and passes headless JavaScript runtime checks.
+- The 352-test regression suite, native pointer-ID gesture harness and editor 2D/3D authoring smoke pass.
+- The actual child-friendly first-steps project compiles from this repository's long Windows path
+  to a 1,351,488-byte ARM64 Poco debug APK. Its native graph and packed log-polar assets are 308 and
+  914 bytes respectively.
 
 Captured evidence is under `validation/`.
 
 ## Package layout
 
 - `src/ugts_kc3/mobile3d.py` — mobile-3D records, device policy and deterministic oracle.
-- `src/ugts_kc3/androidexport.py` — KC3D391 compiler/inspector and Android source exporter.
+- `src/ugts_kc3/androidexport.py` — KC3D392 compiler/inspector and Android source exporter.
 - `src/ugts_kc3/android_template/` — packaged NativeActivity/GLES3 template.
-- `android/UGTSKC391Signature/` — generated Android Studio source project.
+- `android/UGTSKCKKijTGrove/` — generated Android Studio source project.
 - `examples/tom_signature_arena_3d/` — editable project, native pack and glTF.
 - `examples/elizabeth_vector_quest/` — retained 2D browser game.
 - `spec/` — schemas, contracts and mechanism catalogs through M449.
@@ -136,10 +150,10 @@ Captured evidence is under `validation/`.
 
 ## Evidence boundary
 
-This archive does **not** claim an Android APK/AAB was compiled, signed, installed or profiled on a
-physical POCO X7 Pro. It supplies the complete native source project and validates its portable C++
-core, but the release environment did not include an Android SDK/NDK installation or physical
-device. Vulkan is a future backend hook. 4D is a design-contract TODO only.
+An ARM64 POCO-targeted APK has been compiled with the local Android SDK/NDK; its SHA-256 is
+`954ECB28E41F79C752151D7D9F9B21BD793106D8AA0DEE5923DD3CD5F069AE96`. No physical POCO X7 Pro is
+connected, so installation, device compatibility, sustained 120 Hz performance, thermal behavior
+and profiling remain unverified. Vulkan is a future backend hook. 4D is a design-contract TODO only.
 
 ## Attribution
 

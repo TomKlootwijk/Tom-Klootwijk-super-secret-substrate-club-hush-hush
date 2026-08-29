@@ -1,0 +1,35 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "cpu-release",
+      "displayName": "CPU Release",
+      "generator": "Ninja",
+      "sourceDir": "${sourceDir}/cpp",
+      "binaryDir": "${sourceDir}/build-cpu",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "UGTS_ENABLE_CUDA": "OFF"
+      }
+    },
+    {
+      "name": "cuda-native-release",
+      "displayName": "CUDA Native Release",
+      "generator": "Ninja",
+      "sourceDir": "${sourceDir}/cpp",
+      "binaryDir": "${sourceDir}/build-cuda",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "UGTS_ENABLE_CUDA": "ON",
+        "CMAKE_CUDA_ARCHITECTURES": "native"
+      }
+    }
+  ],
+  "buildPresets": [
+    {"name": "cpu-release", "configurePreset": "cpu-release"},
+    {"name": "cuda-native-release", "configurePreset": "cuda-native-release"}
+  ],
+  "testPresets": [
+    {"name": "cpu-release", "configurePreset": "cpu-release", "output": {"outputOnFailure": true}}
+  ]
+}

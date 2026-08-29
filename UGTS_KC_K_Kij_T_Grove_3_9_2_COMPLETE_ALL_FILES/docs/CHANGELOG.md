@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.9.2 - K-Kij-T / Grove Creation Engine
+
+- Adds a dockable PySide6 desktop editor with editable 2D/3D scenes, inspectors, real runtime preview,
+  friendly project checks and direct web, glTF, Android source, Poco APK and ADB-install builds.
+- Adds typed, serializable Logic Blocks with deterministic ordering and bounded desktop execution.
+- Executes the full current 18-block vocabulary in HTML5 exports and a deliberately validated native
+  subset through compact `KCVG001` Android bytecode.
+- Adds a phone-ready beginner template whose graph runs in both the desktop oracle and Android VM.
+- Adds pointer-ID-aware two-thumb Android controls with density-scaled tap detection and a native
+  host gesture harness; Space now has the same beginner jump/dash meaning as the editor preview.
+- Adds undoable scene add/copy/delete and 2D picture or 3D shape/material assignment in the Inspector.
+- Fixes synchronous Add Block reloading so a new logic block stays selected and Undo remains reliable.
+- Adds composable desktop 3D ECS access plus compact log-polar pose/motion components, shared binary16
+  LUTs and checksummed `UGECS1` deployment files.
+- Adds a native Poco ARM64 Gradle/NDK build path. Physical-phone frame pacing and thermals remain unverified.
+
 ## 3.9.1 - Tom Klootwijk Signature Native Android and Mobile-3D Edition
 
 - Preserves the complete 3.9 vector/2D/browser release and all retained APIs.

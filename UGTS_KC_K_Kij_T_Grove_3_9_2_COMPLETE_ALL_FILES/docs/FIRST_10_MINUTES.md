@@ -19,18 +19,18 @@ python -m ugts_kc3 editor
 ugts-studio
 ```
 
-Choose **My First Game** on the welcome screen. The starter has a player, one crystal and a tiny
+Choose **Start a Simple 2D Game** on the welcome screen. The starter has a player, one crystal and a tiny
 logic graph. It is deliberately small enough to understand in one sitting.
 
 ## 2. Learn the five places
 
-- **Objects** lists the things in the current scene.
+- **Scene Tree** lists the things in the current scene.
 - **Scene** is where you select and move them.
-- **Inspector** changes the selected object's position, rotation and size.
-- **Logic** connects readable blocks instead of asking you to type code.
-- **Output** explains validation and builds in ordinary language.
+- **Inspector** changes position, rotation and size, plus existing pictures, shapes and materials.
+- **Logic Blocks** connects readable blocks instead of asking you to type code.
+- **Output & Builds** explains validation and builds in ordinary language.
 
-If a panel feels distracting, close it. You can restore the default layout from the View menu.
+If a panel feels distracting, close it. The **View** menu can reopen each panel.
 
 ## 3. Press Play first
 
@@ -42,7 +42,7 @@ secretly rewrite your scene.
 
 ## 4. Change one block
 
-Open **Logic**, select the yellow **A Value** block and change `1` to `2`. Press Play again. Each dash
+Open **Logic Blocks**, select the yellow **A Value** block and change `1` to `2`. Press Play again. Each dash
 now adds two. That is a complete first program:
 
 ```text
@@ -58,12 +58,32 @@ Block colors have a stable meaning:
 - Pink changes the game.
 - Green moves or pushes an object.
 
-Connections are checked before they run. A bad connection names the exact block and socket to fix.
+Connections are checked before they run. The editor explains incompatible dots immediately; **Check
+Project** reports the exact saved graph/node problem before a build.
 Graphs also have a step limit, so an accidental loop stops with an explanation instead of freezing.
 
 ## 5. Save, then make an Android build
 
-Save the project. For the 3D Grove example, generate and compile a direct-device Poco build with:
+Save the project. The simple starter above builds for 2D/HTML5. For Android, choose **Start a Mobile
+3D Game**. That phone-ready lesson uses the same event/value/action idea: Space increments Score and
+makes the player grow. The orbiting goal is driven by a compact two-word log-polar ECS component and
+a shared sub-kilobyte lookup asset. Both behaviors preview in the editor and run in the native phone
+player. Its supported Logic Blocks compile into bounded native graph bytecode.
+
+Use **+ Add**, **Copy** and **Delete** above the Scene Tree to construct the scene. Every structural
+change supports Undo; essential referenced objects are guarded with an explanation instead of being
+silently broken. Select an object and use **Appearance** in the Inspector to choose one of the
+project's vector pictures, 3D shapes or materials; those choices also support Undo and Redo.
+
+On a phone, hold or drag the left side to move and tap it to jump. Drag the right side to look and
+tap it to dash—even while the left thumb stays down. Pinch changes camera distance. Touch roles follow
+pointer IDs, so the order in which a child puts their thumbs down does not swap the controls.
+
+In **Output & Builds**, choose **Poco X7 Pro APK (Debug)** for a directly installable file. Choose
+**Poco APK + Install** only after the phone is connected, USB debugging is enabled, and its authorization
+prompt has been accepted. Android Studio remains an optional advanced target, not a beginner requirement.
+
+Generate and compile a direct-device Poco build with:
 
 ```powershell
 python -m ugts_kc3 build-android examples\grove_k_kij_t_3d\project.json build\MyAndroidGame --apk

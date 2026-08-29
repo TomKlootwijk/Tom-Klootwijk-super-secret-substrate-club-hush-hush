@@ -1,10 +1,15 @@
 import unittest
 
 from ugts_kc3.game_input import InputFrame
-from ugts_kc3.templates import first_steps_project
+from ugts_kc3.templates import blank_vector_game_project, first_steps_project
 
 
 class FirstStepsTests(unittest.TestCase):
+    def test_unicode_child_name_gets_a_valid_ascii_project_id(self):
+        project = blank_vector_game_project("Zoë haar spel")
+        self.assertEqual(project.metadata.id, "game.zoe-haar-spel")
+        self.assertTrue(project.validate(raise_on_error=False).passed)
+
     def test_starter_is_valid_and_space_graph_counts_dash_edges(self):
         project = first_steps_project("Lina's First Game", "Lina")
         report = project.validate(raise_on_error=False)

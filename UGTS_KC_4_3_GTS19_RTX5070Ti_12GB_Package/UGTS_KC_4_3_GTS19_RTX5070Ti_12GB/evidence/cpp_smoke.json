@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "board_size": 5,
+  "initial_legal_including_pass": 26,
+  "black_bitplane_words": 1,
+  "white_bitplane_words": 1,
+  "board_digest_diagnostic": "13ec3a41581b6108f80bb90fa03493a7",
+  "score2_if_scored_now": -1
+}

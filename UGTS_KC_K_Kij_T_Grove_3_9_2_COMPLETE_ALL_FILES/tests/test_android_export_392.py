@@ -34,6 +34,20 @@ class AndroidExport392Tests(unittest.TestCase):
             self.assertTrue(
                 (result.output_dir / "gradle/wrapper/gradle-wrapper.jar").is_file()
             )
+            cmake = (
+                result.output_dir / "app/src/main/cpp/CMakeLists.txt"
+            ).read_text("utf-8")
+            self.assertIn("set(CMAKE_OBJECT_PATH_MAX 160)", cmake)
+            self.assertIn("configure_file(", cmake)
+            self.assertIn(
+                '"${CMAKE_CURRENT_BINARY_DIR}/android_native_app_glue.c"',
+                cmake,
+            )
+            self.assertNotIn(
+                "add_library(native_app_glue STATIC\n"
+                "    ${ANDROID_NDK}/sources/android/native_app_glue/",
+                cmake,
+            )
             gradle = (result.output_dir / "app/build.gradle").read_text("utf-8")
             self.assertNotIn("__APPLICATION_ID__", gradle)
 

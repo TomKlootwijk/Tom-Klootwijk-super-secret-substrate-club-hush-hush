@@ -29,7 +29,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..project import GameProject
+from ..mobile3d import Mobile3DProject, Node3DRecord
+from ..project import EntitySpec, GameProject
 from .document import (
     EditorDocument,
     SelectionRef,
@@ -55,6 +56,7 @@ class InspectorPanel(QWidget):
     """Friendly transform editor with optional, summarized advanced details."""
 
     transformEdited = Signal(object)
+    resourceEdited = Signal(str, str)
     messageRequested = Signal(str)
 
     def __init__(self, parent=None) -> None:
@@ -109,6 +111,34 @@ class InspectorPanel(QWidget):
         root.addWidget(self.transform_box)
         self.transform_box.hide()
 
+        self.appearance_box = QGroupBox("Appearance")
+        appearance_layout = QVBoxLayout(self.appearance_box)
+        appearance_layout.setContentsMargins(8, 12, 8, 8)
+        self.appearance_stack = QStackedWidget()
+        appearance_layout.addWidget(self.appearance_stack)
+        self.appearance2d_widget = QWidget()
+        appearance2d = QFormLayout(self.appearance2d_widget)
+        appearance2d.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.vector_asset_combo = QComboBox()
+        self.vector_asset_combo.setObjectName("VectorAssetCombo")
+        self.vector_asset_combo.setToolTip("Choose one of this project's existing vector pictures")
+        appearance2d.addRow("Picture", self.vector_asset_combo)
+        self.appearance3d_widget = QWidget()
+        appearance3d = QFormLayout(self.appearance3d_widget)
+        appearance3d.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.mesh_combo = QComboBox()
+        self.mesh_combo.setObjectName("MeshCombo")
+        self.mesh_combo.setToolTip("Choose one of this project's existing 3D shapes")
+        self.material_combo = QComboBox()
+        self.material_combo.setObjectName("MaterialCombo")
+        self.material_combo.setToolTip("Choose one of this project's existing materials")
+        appearance3d.addRow("Shape", self.mesh_combo)
+        appearance3d.addRow("Material", self.material_combo)
+        self.appearance_stack.addWidget(self.appearance2d_widget)
+        self.appearance_stack.addWidget(self.appearance3d_widget)
+        root.addWidget(self.appearance_box)
+        self.appearance_box.hide()
+
         self.quick_info = QLabel()
         self.quick_info.setObjectName("MutedLabel")
         self.quick_info.setWordWrap(True)
@@ -131,6 +161,9 @@ class InspectorPanel(QWidget):
             self.sx3, self.sy3, self.sz3,
         ):
             widget.editingFinished.connect(self._emit_transform)
+        self.vector_asset_combo.currentIndexChanged.connect(self._emit_vector_asset)
+        self.mesh_combo.currentIndexChanged.connect(self._emit_mesh)
+        self.material_combo.currentIndexChanged.connect(self._emit_material)
 
     def clear(self) -> None:
         self._selection = None
@@ -138,6 +171,10 @@ class InspectorPanel(QWidget):
         self.title.setText("Nothing selected")
         self.subtitle.setText("Click an object in the scene or Scene Tree.")
         self.transform_box.hide()
+        self.appearance_box.hide()
+        self.vector_asset_combo.clear()
+        self.mesh_combo.clear()
+        self.material_combo.clear()
         self.quick_info.clear()
         self.details.clear()
 
@@ -155,6 +192,8 @@ class InspectorPanel(QWidget):
             tags = details.get("tags", [])
             components = details.get("components", {})
             role_names = list(components) if isinstance(components, Mapping) else []
+            selected = document.entity(selection)
+            self._set_appearance(document, selected)
             if tags:
                 self.quick_info.setText("Tags: " + ", ".join(friendly(str(tag)) for tag in tags))
             elif role_names:
@@ -190,6 +229,68 @@ class InspectorPanel(QWidget):
                     widget.setValue(float(value))
         finally:
             self._updating = False
+
+    @staticmethod
+    def _fill_resource_combo(combo: QComboBox, resource_ids: list[str], current_id: str) -> None:
+        combo.clear()
+        for resource_id in sorted(resource_ids, key=lambda value: friendly(value).casefold()):
+            combo.addItem(friendly(resource_id), resource_id)
+            combo.setItemData(
+                combo.count() - 1,
+                f"Project resource: {resource_id}",
+                Qt.ItemDataRole.ToolTipRole,
+            )
+        current_index = combo.findData(current_id)
+        combo.setCurrentIndex(current_index)
+
+    def _set_appearance(
+        self,
+        document: EditorDocument,
+        selected: EntitySpec | Node3DRecord | None,
+    ) -> None:
+        self.appearance_box.hide()
+        self.vector_asset_combo.clear()
+        self.mesh_combo.clear()
+        self.material_combo.clear()
+        if isinstance(document.project, GameProject) and isinstance(selected, EntitySpec):
+            renderer = selected.components.get("vector_renderer")
+            if not isinstance(renderer, Mapping):
+                return
+            self._fill_resource_combo(
+                self.vector_asset_combo,
+                list(document.project.vector_assets.assets),
+                str(renderer.get("asset_id", "")),
+            )
+            if self.vector_asset_combo.count():
+                self.appearance_stack.setCurrentWidget(self.appearance2d_widget)
+                self.appearance_box.show()
+            return
+        if isinstance(document.project, Mobile3DProject) and isinstance(selected, Node3DRecord):
+            self._fill_resource_combo(
+                self.mesh_combo, list(document.project.meshes), selected.mesh_id
+            )
+            self._fill_resource_combo(
+                self.material_combo, list(document.project.materials), selected.material_id
+            )
+            if self.mesh_combo.count() and self.material_combo.count():
+                self.appearance_stack.setCurrentWidget(self.appearance3d_widget)
+                self.appearance_box.show()
+
+    def _emit_resource(self, resource_kind: str, combo: QComboBox) -> None:
+        if self._updating or self._selection is None or combo.currentIndex() < 0:
+            return
+        resource_id = combo.currentData()
+        if isinstance(resource_id, str) and resource_id:
+            self.resourceEdited.emit(resource_kind, resource_id)
+
+    def _emit_vector_asset(self) -> None:
+        self._emit_resource("vector_asset", self.vector_asset_combo)
+
+    def _emit_mesh(self) -> None:
+        self._emit_resource("mesh", self.mesh_combo)
+
+    def _emit_material(self) -> None:
+        self._emit_resource("material", self.material_combo)
 
     def _emit_transform(self) -> None:
         if self._updating or self._selection is None:
@@ -255,11 +356,31 @@ class InspectorPanel(QWidget):
 class HierarchyPanel(QWidget):
     selectionRequested = Signal(object)
     sceneRequested = Signal(str)
+    addRequested = Signal()
+    duplicateRequested = Signal()
+    deleteRequested = Signal()
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
+        self._has_document = False
+        self._authoring_enabled = True
+        self._selection: SelectionRef | None = None
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
+        controls = QHBoxLayout()
+        controls.setSpacing(5)
+        self.add_button = QPushButton("+ Add")
+        self.add_button.setObjectName("SceneAddButton")
+        self.add_button.setToolTip("Add a new object to this scene")
+        self.duplicate_button = QPushButton("Copy")
+        self.duplicate_button.setObjectName("SceneDuplicateButton")
+        self.duplicate_button.setToolTip("Duplicate the selected object, including its settings")
+        self.delete_button = QPushButton("Delete")
+        self.delete_button.setObjectName("SceneDeleteButton")
+        self.delete_button.setToolTip("Delete the selected object when the scene can safely lose it")
+        controls.addWidget(self.add_button)
+        controls.addWidget(self.duplicate_button)
+        controls.addWidget(self.delete_button)
         self.search = QLineEdit()
         self.search.setPlaceholderText("Find an object…")
         self.search.setClearButtonEnabled(True)
@@ -268,12 +389,20 @@ class HierarchyPanel(QWidget):
         self.tree.setRootIsDecorated(True)
         self.tree.setAlternatingRowColors(False)
         self.tree.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        layout.addLayout(controls)
         layout.addWidget(self.search)
         layout.addWidget(self.tree, 1)
+        self.add_button.clicked.connect(self.addRequested)
+        self.duplicate_button.clicked.connect(self.duplicateRequested)
+        self.delete_button.clicked.connect(self.deleteRequested)
         self.search.textChanged.connect(self._filter)
         self.tree.currentItemChanged.connect(self._current_changed)
+        self._update_authoring_buttons()
 
     def set_document(self, document: EditorDocument | None) -> None:
+        self._has_document = document is not None and document.project is not None
+        self._selection = None if document is None else document.selection
+        self._update_authoring_buttons()
         blocker = QSignalBlocker(self.tree)
         self.tree.clear()
         if document is None or document.project is None:
@@ -320,7 +449,11 @@ class HierarchyPanel(QWidget):
         del blocker
 
     def set_selection(self, selection: SelectionRef | None) -> None:
+        self._selection = selection
+        self._update_authoring_buttons()
         blocker = QSignalBlocker(self.tree)
+        self.tree.clearSelection()
+        self.tree.setCurrentItem(None)
         iterator = QTreeWidgetItemIterator(self.tree)
         while iterator.value():
             item = iterator.value()
@@ -330,6 +463,17 @@ class HierarchyPanel(QWidget):
                 break
             iterator += 1
         del blocker
+
+    def set_authoring_enabled(self, enabled: bool) -> None:
+        self._authoring_enabled = bool(enabled)
+        self._update_authoring_buttons()
+
+    def _update_authoring_buttons(self) -> None:
+        can_add = self._has_document and self._authoring_enabled
+        can_edit_selection = can_add and self._selection is not None
+        self.add_button.setEnabled(can_add)
+        self.duplicate_button.setEnabled(can_edit_selection)
+        self.delete_button.setEnabled(can_edit_selection)
 
     def _current_changed(self, current: QTreeWidgetItem | None, previous=None) -> None:
         if current is None:
@@ -487,6 +631,8 @@ class BuildOutputPanel(QWidget):
         if kind == "2d":
             self.target.addItem("Web / HTML5", "html5")
         elif kind == "3d":
+            self.target.addItem("Poco X7 Pro APK (Debug)", "android-apk")
+            self.target.addItem("Poco APK + Install", "android-install")
             self.target.addItem("Android Studio Project", "android")
             self.target.addItem("glTF 3D Preview", "gltf")
         else:

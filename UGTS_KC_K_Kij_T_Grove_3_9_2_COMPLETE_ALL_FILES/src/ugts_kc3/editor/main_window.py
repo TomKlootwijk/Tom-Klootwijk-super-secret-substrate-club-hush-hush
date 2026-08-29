@@ -27,11 +27,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..androidbuild import build_apk, install_apk
 from ..androidexport import build_android_project, write_mobile3d_gltf
+from ..graphpack import GraphPackError, compile_graph_pack_bytes
 from ..mobile3d import Mobile3DProject
 from ..project import GameProject
 from ..templates import first_steps_project
-from ..templates3d import blank_mobile3d_project
+from ..templates3d import first_steps_mobile3d_project
 from ..webexport import build_html5
 from .document import EditorDocument, SelectionRef
 from .graph import GraphPage
@@ -75,16 +77,74 @@ class TransformCommand(QUndoCommand):
         self.selection = selection
         self.before = copy.deepcopy(dict(before))
         self.after = copy.deepcopy(dict(after))
+        self.before_dirty = document.is_dirty
 
     def undo(self) -> None:
         self.document.set_transform(self.selection, self.before)
+        self.document.set_dirty(self.before_dirty)
 
     def redo(self) -> None:
         self.document.set_transform(self.selection, self.after)
 
 
+class GraphCommand(QUndoCommand):
+    def __init__(
+        self,
+        document: EditorDocument,
+        before: Mapping[str, Any],
+        after: Mapping[str, Any],
+    ) -> None:
+        super().__init__("Edit logic blocks")
+        self.document = document
+        self.before = copy.deepcopy(dict(before))
+        self.after = copy.deepcopy(dict(after))
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.set_graph_data(self.before)
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.set_graph_data(self.after)
+
+
+class SceneObjectsCommand(QUndoCommand):
+    """Undoable replacement of only one scene's entity/node records."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before: tuple[Any, ...],
+        after: tuple[Any, ...],
+        before_selection: SelectionRef | None,
+        after_selection: SelectionRef | None,
+        scene_id: str | None,
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before = copy.deepcopy(before)
+        self.after = copy.deepcopy(after)
+        self.before_selection = before_selection
+        self.after_selection = after_selection
+        self.scene_id = scene_id
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_scene_objects(
+            self.before, self.before_selection, self.scene_id
+        )
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_scene_objects(
+            self.after, self.after_selection, self.scene_id
+        )
+
+
 class BuildWorker(QObject):
     finished = Signal(object)
+    partial = Signal(object)
     failed = Signal(str)
 
     def __init__(self, project: GameProject | Mobile3DProject, target: str, destination: Path) -> None:
@@ -100,10 +160,23 @@ class BuildWorker(QObject):
                 result = build_html5(self.project, self.destination, clean=True)
                 summary = f"Web game built: {len(result.files)} files, {result.total_bytes / 1024:.1f} KiB"
                 folder = result.output_dir
-            elif self.target == "android" and isinstance(self.project, Mobile3DProject):
+            elif self.target in {"android", "android-apk", "android-install"} and isinstance(self.project, Mobile3DProject):
                 result = build_android_project(self.project, self.destination, clean=True)
-                summary = f"Android project built: {result.file_count} files, {result.total_bytes / 1024:.1f} KiB"
-                folder = result.output_dir
+                if self.target == "android":
+                    summary = f"Android project built: {result.file_count} files, {result.total_bytes / 1024:.1f} KiB"
+                    folder = result.output_dir
+                else:
+                    compiled = build_apk(result.output_dir, "poco-debug")
+                    size_mib = compiled.apk.stat().st_size / (1024 * 1024)
+                    summary = f"Poco X7 Pro APK built: {compiled.apk.name} ({size_mib:.2f} MiB)"
+                    folder = compiled.apk.parent
+                    if self.target == "android-install":
+                        try:
+                            installed = install_apk(compiled.apk)
+                            summary += f" and installed on {installed.serial}"
+                        except Exception as exc:
+                            self.partial.emit((summary, str(exc), folder))
+                            return
             elif self.target == "gltf" and isinstance(self.project, Mobile3DProject):
                 write_mobile3d_gltf(self.project, self.destination)
                 summary = f"3D preview exported: {self.destination.name}"
@@ -337,13 +410,17 @@ class EditorMainWindow(QMainWindow):
         self.focus_button.clicked.connect(self.viewport.focus_selection)
         self.hierarchy.selectionRequested.connect(self.document.set_selection)
         self.hierarchy.sceneRequested.connect(self.document.set_current_scene)
+        self.hierarchy.addRequested.connect(self._add_scene_object)
+        self.hierarchy.duplicateRequested.connect(self._duplicate_scene_object)
+        self.hierarchy.deleteRequested.connect(self._delete_scene_object)
         self.viewport.selectionRequested.connect(self._viewport_selected)
         self.viewport.entityMoved.connect(self._viewport_moved)
         self.viewport.mouseScenePosition.connect(
             lambda x, y: self.status_message.setText(f"Scene position  X {x:.1f}   Y {y:.1f}")
         )
         self.inspector.transformEdited.connect(self._inspector_transform_edited)
-        self.graph_page.graphEdited.connect(self.document.set_graph_data)
+        self.inspector.resourceEdited.connect(self._inspector_resource_edited)
+        self.graph_page.graphEdited.connect(self._graph_edited)
         self.graph_page.helpRequested.connect(self._gentle_message)
         self.build_output.buildRequested.connect(self._build_requested)
         self.editor_tabs.currentChanged.connect(self._tab_changed)
@@ -352,6 +429,8 @@ class EditorMainWindow(QMainWindow):
         self.document.sceneChanged.connect(self._scene_changed)
         self.document.selectionChanged.connect(self._selection_changed)
         self.document.transformChanged.connect(self._transform_changed)
+        self.document.graphChanged.connect(self._graph_changed)
+        self.document.structureChanged.connect(self._structure_changed)
 
     def _show_welcome_state(self) -> None:
         self.central_stack.setCurrentWidget(self.welcome)
@@ -425,8 +504,10 @@ class EditorMainWindow(QMainWindow):
         try:
             self.stop()
             self.undo_stack.clear()
-            self.document.create(blank_mobile3d_project())
-            self._gentle_message("Your new mobile 3D game is ready. Select an object to begin.")
+            self.document.create(first_steps_mobile3d_project())
+            self._gentle_message(
+                "Your first mobile game is ready. Press Play, move, and use Space to dash and grow."
+            )
         except Exception as exc:
             QMessageBox.warning(self, "Could not start the 3D project", str(exc))
 
@@ -519,6 +600,123 @@ class EditorMainWindow(QMainWindow):
             if str(wanted.get("id", "")) != current_graph_id:
                 self.graph_page.load_data(wanted)
 
+    def _selection_for_record(self, object_id: str) -> SelectionRef:
+        kind = "entity" if self.document.kind == "2d" else "node"
+        scene_id = self.document.current_scene_id if self.document.kind == "2d" else None
+        return SelectionRef(kind, object_id, scene_id)
+
+    def _scene_edit_error(self, message: str) -> None:
+        self.build_output.append(f"Scene edit paused: {message}", "warning")
+        self._gentle_message(message)
+        QMessageBox.information(self, "That object needs to stay for now", message)
+
+    def _add_scene_object(self) -> None:
+        if not self.document.is_loaded or self._playing:
+            return
+        try:
+            scene_id = self.document.current_scene_id if self.document.kind == "2d" else None
+            before = tuple(self.document.scene_objects(scene_id))
+            record = self.document.new_object_record()
+            after = before + (record,)
+            selection = self._selection_for_record(record.id)
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    f"Add {friendly(record.id)}",
+                    before,
+                    after,
+                    self.document.selection,
+                    selection,
+                    scene_id,
+                )
+            )
+            self._gentle_message(f"Added {friendly(record.id)}. Use the Inspector to place it.")
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _duplicate_scene_object(self) -> None:
+        if not self.document.is_loaded or self._playing:
+            return
+        try:
+            source_selection = self.document.selection
+            if source_selection is None:
+                raise ValueError("Choose an object in the Scene Tree before making a copy.")
+            scene_id = self.document.current_scene_id if self.document.kind == "2d" else None
+            before = tuple(self.document.scene_objects(scene_id))
+            source_index = next(
+                index for index, record in enumerate(before)
+                if record.id == source_selection.object_id
+            )
+            record = self.document.duplicate_object_record(source_selection)
+            after = before[: source_index + 1] + (record,) + before[source_index + 1 :]
+            selection = self._selection_for_record(record.id)
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    f"Duplicate {friendly(source_selection.object_id)}",
+                    before,
+                    after,
+                    source_selection,
+                    selection,
+                    scene_id,
+                )
+            )
+            self._gentle_message(f"Made {friendly(record.id)} and selected the copy.")
+        except Exception as exc:
+            self._scene_edit_error(str(exc) or "That object is no longer in the scene.")
+
+    def _delete_scene_object(self) -> None:
+        if not self.document.is_loaded or self._playing:
+            return
+        try:
+            selection = self.document.selection
+            problem = self.document.deletion_problem(selection)
+            if problem:
+                raise ValueError(problem)
+            assert selection is not None
+            scene_id = self.document.current_scene_id if self.document.kind == "2d" else None
+            before = tuple(self.document.scene_objects(scene_id))
+            source_index = next(
+                index for index, record in enumerate(before)
+                if record.id == selection.object_id
+            )
+            after = before[:source_index] + before[source_index + 1 :]
+            neighbor = after[min(source_index, len(after) - 1)]
+            after_selection = self._selection_for_record(neighbor.id)
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    f"Delete {friendly(selection.object_id)}",
+                    before,
+                    after,
+                    selection,
+                    after_selection,
+                    scene_id,
+                )
+            )
+            self._gentle_message(
+                f"Deleted {friendly(selection.object_id)}. Undo brings it straight back."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc) or "That object is no longer in the scene.")
+
+    def _structure_changed(self) -> None:
+        self.hierarchy.set_document(self.document)
+        self.hierarchy.set_selection(self.document.selection)
+        self.viewport.refresh(keep_view=True)
+        self.assets_project.set_document(self.document)
+        self.inspector.set_selection(self.document, self.document.selection)
+
+    def _graph_edited(self, graph: Mapping[str, Any]) -> None:
+        before = self.document.graph_data()
+        after = dict(graph)
+        if before == after:
+            return
+        self.undo_stack.push(GraphCommand(self.document, before, after))
+
+    def _graph_changed(self) -> None:
+        self.graph_page.load_data(self.document.graph_data())
+
     def _viewport_selected(self, object_id: str) -> None:
         kind = "entity" if self.document.kind == "2d" else "node"
         self.document.set_selection(SelectionRef(kind, object_id, self.document.current_scene_id))
@@ -544,6 +742,47 @@ class EditorMainWindow(QMainWindow):
             return
         self.undo_stack.push(TransformCommand(self.document, selection, before, transform))
 
+    def _inspector_resource_edited(self, resource_kind: str, resource_id: str) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        try:
+            scene_id = self.document.current_scene_id if self.document.kind == "2d" else None
+            before = tuple(self.document.scene_objects(scene_id))
+            index = next(
+                item_index for item_index, record in enumerate(before)
+                if record.id == selection.object_id
+            )
+            updated = self.document.record_with_resource(
+                selection, resource_kind, resource_id
+            )
+            if updated == before[index]:
+                return
+            after = before[:index] + (updated,) + before[index + 1 :]
+            resource_name = {
+                "vector_asset": "picture",
+                "mesh": "shape",
+                "material": "material",
+            }.get(resource_kind, "appearance")
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    f"Change {friendly(selection.object_id)} {resource_name}",
+                    before,
+                    after,
+                    selection,
+                    selection,
+                    scene_id,
+                )
+            )
+            self._gentle_message(
+                f"Changed {friendly(selection.object_id)} {resource_name} to {friendly(resource_id)}."
+            )
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Appearance change paused: {exc}", "warning")
+            self._gentle_message(str(exc))
+
     def _transform_changed(self, selection: SelectionRef) -> None:
         self.viewport.refresh(keep_view=True)
         if selection == self.document.selection:
@@ -566,6 +805,7 @@ class EditorMainWindow(QMainWindow):
         self.editor_tabs.setCurrentIndex(0)
         self.editor_tabs.setTabEnabled(1, False)
         self.inspector.setEnabled(False)
+        self.hierarchy.set_authoring_enabled(False)
         self.viewport.set_playing(True)
         self.viewport.setFocus()
         self.play_action.setEnabled(False)
@@ -583,6 +823,9 @@ class EditorMainWindow(QMainWindow):
         try:
             state, events = self.document.step_play(self.viewport.pressed_keys)
             self.viewport.set_runtime_state(state)
+            world_state = state.get("__world__", {})
+            if "score" in world_state:
+                self.status_message.setText(f"Playing — Score {world_state['score']}")
             for event in events:
                 kind = getattr(event, "kind", "event")
                 if kind in {"collected", "goal", "damaged", "entity_defeated"}:
@@ -608,6 +851,7 @@ class EditorMainWindow(QMainWindow):
         self.viewport.set_runtime_state(None)
         self.editor_tabs.setTabEnabled(1, True)
         self.inspector.setEnabled(True)
+        self.hierarchy.set_authoring_enabled(True)
         self.play_action.setEnabled(True)
         self.stop_action.setEnabled(False)
         self.save_action.setEnabled(True)
@@ -621,21 +865,42 @@ class EditorMainWindow(QMainWindow):
         try:
             report = self.document.validate()
             issues = tuple(getattr(report, "issues", ()))
-            if report.passed and not issues:
+            android_graph_error: str | None = None
+            if report.passed and isinstance(self.document.project, Mobile3DProject):
+                try:
+                    compile_graph_pack_bytes(self.document.project)
+                except GraphPackError as exc:
+                    android_graph_error = str(exc)
+            if report.passed and not issues and android_graph_error is None:
                 self.build_output.append("Project check passed — everything is ready.", "good")
                 self._gentle_message("Project check passed.")
             else:
-                tone = "warning" if report.passed else "error"
+                tone = "warning" if report.passed and android_graph_error is None else "error"
+                finding_count = len(issues) + int(android_graph_error is not None)
                 self.build_output.append(
-                    f"Project check found {len(issues)} item(s) to review.", tone
+                    f"Project check found {finding_count} item(s) to review.", tone
                 )
                 for issue in issues[:12]:
                     message = getattr(issue, "message", str(issue))
                     path = getattr(issue, "path", "")
                     self.build_output.append(f"{message}" + (f" ({path})" if path else ""), tone)
+                if android_graph_error is not None:
+                    self.build_output.append(
+                        "Android build cannot use these Logic Blocks yet: "
+                        f"{android_graph_error}",
+                        "error",
+                    )
                 self.output_dock.raise_()
-                self._gentle_message("The project is safe; review the friendly messages below.")
+                self._gentle_message(
+                    "Review the messages below before building for Android."
+                    if android_graph_error is not None
+                    else "The project is safe; review the friendly messages below."
+                )
             self.assets_project.set_document(self.document)
+            if android_graph_error is not None:
+                self.assets_project.project_status.setText(
+                    "Needs attention · Android Logic Blocks"
+                )
         except Exception as exc:
             self.build_output.append(f"Project check paused: {exc}", "error")
 
@@ -687,8 +952,10 @@ class EditorMainWindow(QMainWindow):
         worker.moveToThread(thread)
         thread.started.connect(worker.run)
         worker.finished.connect(self._build_finished)
+        worker.partial.connect(self._build_partial)
         worker.failed.connect(self._build_failed)
         worker.finished.connect(thread.quit)
+        worker.partial.connect(thread.quit)
         worker.failed.connect(thread.quit)
         thread.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
@@ -712,6 +979,18 @@ class EditorMainWindow(QMainWindow):
         self.build_output.append(f"Build stopped: {message}", "error")
         self.output_dock.raise_()
         self._gentle_message("Nothing in your source project was changed.")
+
+    @Slot(object)
+    def _build_partial(self, result: object) -> None:
+        summary, install_error, folder = result  # type: ignore[misc]
+        self.build_output.set_busy(False)
+        self.build_output.set_build_path(folder)
+        self.build_output.append(str(summary), "good")
+        self.build_output.append(
+            f"APK install did not finish: {install_error}", "warning"
+        )
+        self.output_dock.raise_()
+        self._gentle_message("The APK is ready. Connect a phone, then try Install again.")
 
     @Slot()
     def _build_thread_cleared(self) -> None:
@@ -755,4 +1034,9 @@ class EditorMainWindow(QMainWindow):
             event.ignore()
 
 
-__all__ = ["EditorMainWindow", "TransformCommand"]
+__all__ = [
+    "EditorMainWindow",
+    "GraphCommand",
+    "SceneObjectsCommand",
+    "TransformCommand",
+]

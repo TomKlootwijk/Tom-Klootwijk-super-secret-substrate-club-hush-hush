@@ -242,6 +242,31 @@ class VisualGraphExecutionTests(unittest.TestCase):
         self.assertIn("divide by zero", str(caught.exception))
         self.assertEqual(caught.exception.trace[-1].status, "error")
 
+    def test_whole_typed_component_replacement_is_normalized(self):
+        world = GameWorld()
+        world.spawn("actor", components=(Transform2D(), Body2D(gravity_scale=0)), emit_event=False)
+        graph = VisualGraph(
+            "replace-body",
+            (
+                GraphNode("ready", "event.ready"),
+                GraphNode(
+                    "replace",
+                    "action.set_component",
+                    {
+                        "component": "body",
+                        "field": "",
+                        "value": {"body_type": "dynamic", "mass": 2, "gravity_scale": 0},
+                    },
+                ),
+            ),
+            (link("ready", "out", "replace", "in"),),
+        )
+        GraphRuntime(graph).ready(world, entity_id="actor")
+        body = world.require("actor", Body2D)
+        self.assertIsInstance(body, Body2D)
+        self.assertEqual(body.mass, 2)
+        world.step()
+
     def test_attach_runs_ready_and_fixed_tick(self):
         graph = VisualGraph(
             "bound",

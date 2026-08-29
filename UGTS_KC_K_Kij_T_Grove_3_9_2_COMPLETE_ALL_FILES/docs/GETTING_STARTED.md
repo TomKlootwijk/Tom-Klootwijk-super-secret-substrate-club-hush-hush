@@ -86,7 +86,7 @@ See `docs/GAME_CREATION_GUIDE.md` for project structure and gameplay composition
 
 ```bash
 PYTHONPATH=src python -m ugts_kc3 validate-3d   examples/tom_signature_arena_3d/project.json
-PYTHONPATH=src python -m ugts_kc3 build-android   examples/tom_signature_arena_3d/project.json   build/UGTSKC391Signature
+PYTHONPATH=src python -m ugts_kc3 build-android examples/tom_signature_arena_3d/project.json build/UGTSKCKKijTGrove --apk
 ```
 
 Open the generated directory in Android Studio. See `docs/ANDROID_NATIVE_GUIDE.md`.

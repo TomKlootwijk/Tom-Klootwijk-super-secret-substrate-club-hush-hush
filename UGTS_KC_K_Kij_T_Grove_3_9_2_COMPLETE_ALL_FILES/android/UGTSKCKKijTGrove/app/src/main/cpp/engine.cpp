@@ -4,6 +4,7 @@
 #include <dlfcn.h>
 #include <sys/system_properties.h>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdio>
 #include <fstream>
@@ -28,6 +29,15 @@ std::uint32_t ramMb() {
     std::string key,unit; std::uint64_t kb=0;
     if (file>>key>>kb>>unit) return static_cast<std::uint32_t>(kb/1024);
     return 4096;
+}
+float touchDensityScale(const android_app* app) {
+    if (!app || !app->config) return 1.0f;
+    const auto density=AConfiguration_getDensity(app->config);
+    // Android reserves 0xfffe/0xffff for ANY/NONE. Treat those, zero, and
+    // implausible vendor values as the mdpi fallback instead of creating an
+    // enormous tap radius.
+    if (density<72 || density>1000) return 1.0f;
+    return clamp(static_cast<float>(density)/160.0f,0.75f,4.0f);
 }
 } // namespace
 
@@ -287,61 +297,78 @@ int Engine::handleInput(AInputEvent* event) {
     if (type==AINPUT_EVENT_TYPE_KEY) {
         const int key=AKeyEvent_getKeyCode(event);
         const bool down=AKeyEvent_getAction(event)!=AKEY_EVENT_ACTION_UP;
+        const bool repeated=down && AKeyEvent_getRepeatCount(event)>0;
         if (key==AKEYCODE_W || key==AKEYCODE_DPAD_UP) moveZ_=down?-1.0f:0.0f;
         else if (key==AKEYCODE_S || key==AKEYCODE_DPAD_DOWN) moveZ_=down?1.0f:0.0f;
         else if (key==AKEYCODE_A || key==AKEYCODE_DPAD_LEFT) moveX_=down?-1.0f:0.0f;
         else if (key==AKEYCODE_D || key==AKEYCODE_DPAD_RIGHT) moveX_=down?1.0f:0.0f;
-        else if ((key==AKEYCODE_SPACE || key==AKEYCODE_BUTTON_A) && down) jump_=true;
-        else if ((key==AKEYCODE_SHIFT_LEFT || key==AKEYCODE_SHIFT_RIGHT || key==AKEYCODE_BUTTON_B) && down) dash_=true;
+        else if (key==AKEYCODE_SPACE) {
+            if (down && !repeated) { jump_=true; dash_=true; }
+        }
+        else if (key==AKEYCODE_J || key==AKEYCODE_BUTTON_A) { if (down && !repeated) jump_=true; }
+        else if (key==AKEYCODE_ENTER || key==AKEYCODE_SHIFT_LEFT ||
+                key==AKEYCODE_SHIFT_RIGHT || key==AKEYCODE_BUTTON_B) {
+            if (down && !repeated) dash_=true;
+        }
         else return 0;
         return 1;
     }
     if (type!=AINPUT_EVENT_TYPE_MOTION) return 0;
     const int source=AInputEvent_getSource(event);
-    if (source&AINPUT_SOURCE_JOYSTICK) {
+    if ((source&AINPUT_SOURCE_JOYSTICK)==AINPUT_SOURCE_JOYSTICK) {
         moveX_=AMotionEvent_getAxisValue(event,AMOTION_EVENT_AXIS_X,0);
         moveZ_=AMotionEvent_getAxisValue(event,AMOTION_EVENT_AXIS_Y,0);
         lookX_=AMotionEvent_getAxisValue(event,AMOTION_EVENT_AXIS_Z,0);
         lookY_=AMotionEvent_getAxisValue(event,AMOTION_EVENT_AXIS_RZ,0);
         return 1;
     }
-    const int action=AMotionEvent_getAction(event)&AMOTION_EVENT_ACTION_MASK;
-    const float x=AMotionEvent_getX(event,0), y=AMotionEvent_getY(event,0);
-    if (action==AMOTION_EVENT_ACTION_DOWN) {
-        touchStartX_=lastTouchX_=x; touchStartY_=lastTouchY_=y;
-        touchMove_=x<renderer_.width()*0.45f; touchLook_=!touchMove_;
-        return 1;
+    const int rawAction=AMotionEvent_getAction(event);
+    const int maskedAction=rawAction&AMOTION_EVENT_ACTION_MASK;
+    TouchAction touchAction;
+    switch (maskedAction) {
+        case AMOTION_EVENT_ACTION_DOWN: touchAction=TouchAction::Down; break;
+        case AMOTION_EVENT_ACTION_POINTER_DOWN: touchAction=TouchAction::PointerDown; break;
+        case AMOTION_EVENT_ACTION_MOVE: touchAction=TouchAction::Move; break;
+        case AMOTION_EVENT_ACTION_POINTER_UP: touchAction=TouchAction::PointerUp; break;
+        case AMOTION_EVENT_ACTION_UP: touchAction=TouchAction::Up; break;
+        case AMOTION_EVENT_ACTION_CANCEL: touchAction=TouchAction::Cancel; break;
+        default: return 0;
     }
-    if (action==AMOTION_EVENT_ACTION_MOVE) {
-        if (touchMove_) {
-            const float radius=std::max(80.0f,renderer_.width()*0.12f);
-            moveX_=clamp((x-touchStartX_)/radius,-1,1);
-            moveZ_=clamp((y-touchStartY_)/radius,-1,1);
-        } else if (touchLook_) {
-            yaw_-=(x-lastTouchX_)*0.006f;
-            pitch_=clamp(pitch_-(y-lastTouchY_)*0.006f,-0.05f,1.25f);
-        }
-        if (AMotionEvent_getPointerCount(event)>=2) {
-            const float x1=AMotionEvent_getX(event,1), y1=AMotionEvent_getY(event,1);
-            const float spacing=std::hypot(x1-x,y1-y);
-            static float previousSpacing=spacing;
-            distance_=clamp(distance_-(spacing-previousSpacing)*0.02f,5.0f,30.0f);
-            previousSpacing=spacing;
-        }
-        lastTouchX_=x; lastTouchY_=y;
-        return 1;
+
+    const auto pointerCount=static_cast<std::size_t>(AMotionEvent_getPointerCount(event));
+    std::array<TouchPoint,TouchRouter::MaxPointers> points{};
+    if (pointerCount>points.size()) return 0;
+    for (std::size_t i=0;i<pointerCount;++i) {
+        points[i]={
+            AMotionEvent_getPointerId(event,i),
+            AMotionEvent_getX(event,i),
+            AMotionEvent_getY(event,i),
+        };
     }
-    if (action==AMOTION_EVENT_ACTION_UP || action==AMOTION_EVENT_ACTION_CANCEL) {
-        const bool tap=action==AMOTION_EVENT_ACTION_UP && std::hypot(x-touchStartX_,y-touchStartY_)<32.0f;
-        if (tap) {
-            if (touchMove_) jump_=true;
-            else if (touchLook_) dash_=true;
-        }
-        if (touchMove_) moveX_=moveZ_=0;
-        touchMove_=touchLook_=false;
-        return 1;
+    std::int32_t changedId=-1;
+    if (touchAction!=TouchAction::Move && touchAction!=TouchAction::Cancel) {
+        const auto actionIndex=static_cast<std::size_t>(
+            (rawAction&AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)>>AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT
+        );
+        if (actionIndex>=pointerCount) return 0;
+        changedId=points[actionIndex].id;
     }
-    return 0;
+    touchRouter_.setViewport(
+        static_cast<float>(renderer_.width()),static_cast<float>(renderer_.height()),
+        touchDensityScale(app_)
+    );
+    const auto update=touchRouter_.handle(TouchEvent{
+        touchAction,changedId,std::span<const TouchPoint>(points.data(),pointerCount)
+    });
+    moveX_=update.moveX;
+    moveZ_=update.moveZ;
+    yaw_-=update.lookDeltaX*0.006f;
+    pitch_=clamp(pitch_-update.lookDeltaY*0.006f,-0.05f,1.25f);
+    distance_=clamp(distance_-update.zoomDelta*0.02f,5.0f,30.0f);
+    if (update.jumpPressed) jump_=true;
+    if (update.dashPressed) dash_=true;
+    if (update.cancelled) jump_=dash_=false;
+    return 1;
 }
 
 } // namespace kc

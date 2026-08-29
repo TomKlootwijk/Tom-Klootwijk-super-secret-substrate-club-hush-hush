@@ -91,6 +91,25 @@ class ProjectVisualGraphTests(unittest.TestCase):
         despawned_world.step(pressed)
         self.assertEqual(despawned_world.state["score"], 0)
 
+    def test_duplicate_graph_bindings_are_rejected(self):
+        project = first_steps_project()
+        scene = project.scenes[project.start_scene]
+        project.scenes[scene.id] = replace(
+            scene,
+            entities=tuple(
+                replace(
+                    entity,
+                    metadata={"visual_graph": ["dash_counter", "dash_counter"]},
+                )
+                if "player" in entity.tags
+                else entity
+                for entity in scene.entities
+            ),
+        )
+        report = project.validate(raise_on_error=False)
+        self.assertFalse(report.passed)
+        self.assertTrue(any(issue.code == "visual_graph.binding_type" for issue in report.issues))
+
 
 if __name__ == "__main__":
     unittest.main()

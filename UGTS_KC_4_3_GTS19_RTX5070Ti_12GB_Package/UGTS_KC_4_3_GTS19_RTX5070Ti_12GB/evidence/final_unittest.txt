@@ -1,0 +1,14 @@
+test_tamper_is_detected (test_certificate.CertificateTests.test_tamper_is_detected) ... ok
+test_tiny_certificate_recomputes (test_certificate.CertificateTests.test_tiny_certificate_recomputes) ... ok
+test_19x19_board_is_91_bytes (test_codec.CodecTests.test_19x19_board_is_91_bytes) ... ok
+test_move_stream_round_trip (test_codec.CodecTests.test_move_stream_round_trip) ... ok
+test_varints_round_trip (test_codec.CodecTests.test_varints_round_trip) ... ok
+test_capture_single_stone (test_engine.EngineTests.test_capture_single_stone) ... ok
+test_coordinate_round_trip (test_engine.EngineTests.test_coordinate_round_trip) ... ok
+test_empty_area_is_neutral (test_engine.EngineTests.test_empty_area_is_neutral) ... ok
+test_positional_superko_rejects_seen_board (test_engine.EngineTests.test_positional_superko_rejects_seen_board) ... ok
+test_suicide_is_illegal (test_engine.EngineTests.test_suicide_is_illegal) ... ok
+test_two_passes_terminate (test_engine.EngineTests.test_two_passes_terminate) ... ok
+test_deterministic_rerun (test_exact.ExactSolverTests.test_deterministic_rerun) ... ERROR
+test_empty_1x1_with_half_point_komi_is_white_win (test_exact.ExactSolverTests.test_empty_1x1_with_half_point_komi_is_white_win) ... ok
+test_empty_2x2_fixture_matches_kc42 (test_exact.ExactSolverTests.test_empty_2x2_fixture_matches_kc42) ... 

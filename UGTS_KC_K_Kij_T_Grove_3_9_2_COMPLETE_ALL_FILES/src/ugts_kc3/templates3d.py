@@ -1,6 +1,7 @@
-"""Practical mobile-3D templates for UGTS-KC 3.9.1 Signature Edition."""
+"""Practical mobile-3D templates for UGTS-KC 3.9.2 Grove Edition."""
 from __future__ import annotations
 
+from dataclasses import replace
 import math
 
 from .math3d import quat_from_axis_angle
@@ -10,6 +11,14 @@ from .mobile3d import (
     Node3DRecord, QualityTier3D, Transform3DRecord, World3DSettings,
     cube_mesh3d, plane_mesh3d, pyramid_mesh3d, uv_sphere_mesh3d,
 )
+from .packed_kinematics import (
+    LogPolarProfile,
+    MotionRange,
+    PackedKinematicCodec,
+    PolarMotion,
+    PolarPose,
+)
+from .visual_graph import GraphLink, GraphNode, VisualGraph
 
 
 def signature_quality_tiers() -> tuple[QualityTier3D, ...]:
@@ -97,6 +106,108 @@ def blank_mobile3d_project(
         start_quality="balanced",
         metadata={"template": "blank-mobile-3d", "signature_edition": True},
     )
+
+
+def first_steps_mobile3d_project(
+    title: str = "My First UGTS Mobile Game", author: str = ""
+) -> Mobile3DProject:
+    """A phone-ready lesson where one small graph counts and animates dashes."""
+    project = blank_mobile3d_project(title, author)
+    graph = VisualGraph(
+        "dash_lesson",
+        (
+            GraphNode("when_dash", "event.input_pressed", {"action": "dash"}, (0, 80)),
+            GraphNode("current_score", "value.state", {"key": "score", "default": 0}, (0, 250)),
+            GraphNode("one", "value.constant", {"value": 1}, (0, 390)),
+            GraphNode("add_one", "math.add", {}, (260, 260)),
+            GraphNode("save_score", "action.set_state", {"key": "score"}, (520, 80)),
+            GraphNode(
+                "grow_player",
+                "action.set_component",
+                {
+                    "component": "transform",
+                    "field": "scale",
+                    "value": [1.35, 1.35, 1.35],
+                },
+                (520, 250),
+            ),
+        ),
+        (
+            GraphLink("when_dash", "out", "save_score", "in"),
+            GraphLink("when_dash", "out", "grow_player", "in"),
+            GraphLink("current_score", "value", "add_one", "a"),
+            GraphLink("one", "value", "add_one", "b"),
+            GraphLink("add_one", "result", "save_score", "value"),
+        ),
+        {
+            "title": "Dash, count, and grow",
+            "lesson": "The dash event fans out to a score action and a visible component change.",
+            "beginner": True,
+            "android_supported": True,
+        },
+    )
+    orbit_profile = LogPolarProfile(
+        r0=1.0, rho_min=-3.0, rho_max=3.0, core_radius=1.0e-5
+    )
+    orbit_motion = MotionRange(
+        rho_velocity=1.0,
+        theta_velocity=2.0,
+        rho_acceleration=2.0,
+        theta_acceleration=2.0,
+    )
+    orbit_codec = PackedKinematicCodec(orbit_profile, orbit_motion)
+    orbit_component = orbit_codec.component(
+        PolarPose(math.log(5.0), math.tau * 0.75, 0, 0.0),
+        PolarMotion(theta_velocity=0.35),
+        profile_id="lesson_orbit",
+    )
+    project.nodes = tuple(
+        replace(
+            node,
+            metadata={
+                **node.metadata,
+                "visual_graph": graph.id,
+                "description": "This player owns the beginner dash graph.",
+            },
+        )
+        if node.id == "player"
+        else replace(
+            node,
+            metadata={
+                **node.metadata,
+                "packed_kinematic": orbit_component.to_dict(),
+                "description": "A compact two-word log-polar component moves this goal.",
+            },
+        )
+        if node.id == "goal"
+        else node
+        for node in project.nodes
+    )
+    project.metadata = {
+        **project.metadata,
+        "template": "first-steps-mobile-3d",
+        "visual_graphs": [graph.to_dict()],
+        "initial_state": {"score": 0},
+        "packed_kinematic_profiles": {
+            "lesson_orbit": {
+                "profile": orbit_profile.to_dict(),
+                "motion_range": orbit_motion.to_dict(),
+                "lut_resolution": 128,
+            }
+        },
+        "lesson": {
+            "title": "Your first phone game",
+            "steps": [
+                "Press Play and move with WASD or the arrow keys.",
+                "Press Space to dash; Score increases and the player grows.",
+                "Open Logic Blocks and change the number 1 or the scale vector.",
+                "The orbiting goal uses a two-word log-polar ECS component and one shared tiny LUT.",
+                "Build Poco X7 Pro APK when you are ready to try it on the phone.",
+            ],
+        },
+    }
+    project.validate()
+    return project
 
 
 def tom_signature_arena_project(

@@ -127,7 +127,13 @@ def _find_gradle_command(project_dir: Path) -> tuple[str, ...]:
     else:
         wrapper = project_dir / "gradlew"
         if wrapper.is_file():
-            return (str(wrapper),)
+            if os.access(wrapper, os.X_OK):
+                return (str(wrapper),)
+            shell = shutil.which("sh")
+            if shell:
+                # Wheel/sdist extraction does not reliably retain the executable
+                # bit, but Gradle's wrapper is still a regular POSIX shell script.
+                return (str(Path(shell).resolve()), str(wrapper))
     gradle = shutil.which("gradle")
     if gradle:
         return (str(Path(gradle).resolve()),)
@@ -293,4 +299,3 @@ def install_apk(
     if not re.search(r"(?m)^Success\s*$", output):
         raise RuntimeError(f"ADB did not report a successful install:\n{output}")
     return AndroidInstallResult(apk, serial, output)
-

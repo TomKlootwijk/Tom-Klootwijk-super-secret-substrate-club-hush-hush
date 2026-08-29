@@ -4,6 +4,7 @@
 #include "grove_tuning.hpp"
 #include "device_profile.hpp"
 #include "renderer_gles3.hpp"
+#include "touch_router.hpp"
 #include <android/input.h>
 #include <android_native_app_glue.h>
 #include <chrono>
@@ -56,8 +57,7 @@ private:
     float moveX_=0,moveZ_=0,lookX_=0,lookY_=0;
     bool jump_=false;
     bool dash_=false;
-    bool touchMove_=false,touchLook_=false;
-    float touchStartX_=0,touchStartY_=0,lastTouchX_=0,lastTouchY_=0;
+    TouchRouter touchRouter_;
     int score_=0;
     bool groundedLast_=false;
     Vec3 dashDirection_{};

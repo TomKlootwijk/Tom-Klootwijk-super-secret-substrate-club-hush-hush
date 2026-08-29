@@ -1,0 +1,28 @@
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/native_app_glue.dir/./
+
+  has 197 characters.  The maximum full path to an object file is 160
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    android_native_app_glue.c.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/./
+
+  has 196 characters.  The maximum full path to an object file is 160
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    polar_kinematics.cpp.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+

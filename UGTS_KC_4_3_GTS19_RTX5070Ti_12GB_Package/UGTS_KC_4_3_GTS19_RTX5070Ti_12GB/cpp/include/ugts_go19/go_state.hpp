@@ -1,0 +1,57 @@
+#pragma once
+
+#include <cstdint>
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
+
+namespace ugts_go19 {
+
+constexpr std::uint8_t kEmpty = 0;
+constexpr std::uint8_t kBlack = 1;
+constexpr std::uint8_t kWhite = 2;
+constexpr int kPass = -1;
+
+struct Rules {
+  int size = 19;
+  int komi2 = 15;
+  bool allow_suicide = false;
+  int passes_to_end = 2;
+};
+
+struct State {
+  int size = 19;
+  std::vector<std::uint8_t> board;
+  std::uint8_t to_play = kBlack;
+  int passes = 0;
+  std::vector<std::vector<std::uint8_t>> seen_boards;
+  std::optional<std::vector<std::uint8_t>> previous_board;
+  std::uint64_t ply = 0;
+
+  static State Initial(const Rules& rules);
+  [[nodiscard]] bool Terminal(const Rules& rules) const;
+};
+
+struct ApplyResult {
+  State state;
+  int captured = 0;
+  int self_captured = 0;
+};
+
+[[nodiscard]] std::uint8_t Other(std::uint8_t color);
+[[nodiscard]] std::vector<int> Neighbors(int point, int size);
+[[nodiscard]] std::pair<std::vector<int>, std::vector<int>> GroupAndLiberties(
+    const std::vector<std::uint8_t>& board, int start, int size);
+[[nodiscard]] ApplyResult ApplyMove(const State& state, int move,
+                                    const Rules& rules);
+[[nodiscard]] bool IsLegal(const State& state, int move, const Rules& rules);
+[[nodiscard]] std::vector<int> LegalMoves(const State& state,
+                                          const Rules& rules,
+                                          bool include_pass = true);
+[[nodiscard]] int AreaScore2(const State& state, const Rules& rules);
+[[nodiscard]] std::vector<std::uint64_t> PackBlackBitplane(const State& state);
+[[nodiscard]] std::vector<std::uint64_t> PackWhiteBitplane(const State& state);
+[[nodiscard]] std::string BoardDigestHex(const State& state);
+
+}  // namespace ugts_go19
