@@ -15,7 +15,7 @@
   commits exactly one undoable transform edit; Preview cancels transient drags safely.
 - Adds metadata-titled **World Logic** entries to 2D and 3D Scene Trees, with exact graph editing,
   undo/redo context and owner-safe whole-scene Logic Trails.
-- Executes the full current 24-block vocabulary in HTML5 and compact `KCVG001` Android bytecode,
+- Executes the full current 25-block vocabulary in HTML5 and compact `KCVG001` Android bytecode,
   including sparse world graphs, Apply Force and Trigger Enter/Exit with bounded sensor context.
 - Adds the pure **Repeatable Random Number** Logic Block as append-only KCVG opcode 21. Its bounded
   binary32-canonicalized World/Pick inputs, range/result and existing SplitMix64 compatibility schedule have exact
@@ -33,15 +33,22 @@
   nearest-tag filters, tie and nullable outputs, then applies an inclusive source-aligned binary32
   GSP4 cone. A Vector4 stores explicit world-axis X/Y/Z plus minimum cosine; runtime normalization
   uses no trigonometry and ignores Origin rotation and scale.
-- Adds a phone-ready beginner template whose six graphs run in the desktop oracle, browser VM where
+- Adds **When Message Heard** under Events as append-only KCVG opcode 25. A saved exact portable
+  message name selects the receiver; source, optional target and bound entity are outputs. Existing
+  message sends enter a 64-event, non-reentrant FIFO with breadth-first nesting, deterministic
+  broadcast/target routing and a 16,384-node-step outer-batch limit.
+- Adds a phone-ready beginner template whose seven graphs run in the desktop oracle, browser VM where
   applicable, and native Android VM.
 - Adds **World Logic → Find the Goal** to that template: explicit Player origin, Goal tag, 9 m radius
   and `nearby_goal` world-state result.
 - Adds **World Logic → Count the Timer Rings** to that template: a repeating one-second timer writes
   `timer_rings`.
 - Adds **World Logic → Find the Goal Ahead** to that template: 3D Forward plus Normal width writes
-  `goal_ahead`. First Steps now contains six graphs, 23 nodes and six bindings including three world
-  bindings.
+  `goal_ahead`.
+- Adds **World Logic → Hear the Dash Message** to that template: the Dash graph sends
+  `player.dashed`, and the separate `message_lesson` graph receives it and writes
+  `heard_message=true`. First Steps now contains seven graphs, 27 nodes and seven bindings including
+  four world bindings.
 - Extends the Mobile 3D beginner template with **Crystal Garden**: one authored static object and an
   undoable deterministic **Populate Area** recipe. Groups allow 2–256 objects, with 64 groups and
   1,024 population objects per project.
@@ -60,25 +67,31 @@
 - Fixes synchronous Add Block reloading so a new logic block stays selected and Undo remains reliable.
 - Adds composable desktop 3D ECS access plus compact log-polar pose/motion components, shared binary16
   LUTs and checksummed `UGECS1` deployment files.
-- The full suite passes 483 tests plus 87 subtests in 59.77 seconds. Focused opcode-24 verification
-  passes 14 tests plus 25 subtests; targeted Ruff, launcher/editor smokes and all native-host targets
-  pass. First Steps emits a 1,085-byte KCVG with SHA-256
-  `2c5c6edb0c804da7fb2b6edab8c6beab12ccd2dac8b4e743d03c6194aff4af27`, a 914-byte KCPK with
-  SHA-256 `8a45ddbf874d918cedaeb0161e80fef3314c2c2b0b21a45da90e22a18c4dd313`, and a 60-byte KCSP with
-  SHA-256 `e95bde225571ab5f6eac3b9c04cb1bd332a0c95c740b377ac2dee30460dd2fd1`, totaling 2,059 compact
-  sidecar bytes. Fresh execution sets `goal_ahead=true`; state SHA-256 is
-  `71df205686c92c217c3b1e23ad00929a331d07b5bb43e64d27023ec17d490a9c`.
-- Adds a native Poco ARM64 Gradle/NDK build path. The canonical opcode-24 APK is locally built and
-  inspected at 1,460,361 bytes with SHA-256
-  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`; package/version/SDK/GLES,
-  ARM64-only, debug-certificate v2 signing and embedded current sidecars are verified. ADB reported
-  zero devices, so it has no fresh install/profile evidence. The preceding 1,443,529-byte opcode-23
-  build is preserved as `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk` with SHA-256
-  `C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`. The preserved 1,441,929-byte opcode-22
-  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk` retains the
-  120.23-FPS/10.118-ms-p95 30-second Poco result, and a still earlier
-  APK retains the 64.9-second idle result. Interaction-heavy/unplugged/long-duration/fallback-tier
-  and opcode-24 device evidence remain open.
+- Focused opcode-25 desktop, browser, compact-pack, editor and native-host checks pass, along with
+  targeted Ruff; the full suite is green: 510 passed, 100 subtests passed in 66.69s. First Steps emits a
+  1,265-byte KCVG with SHA-256
+  `363EED6B1054CE0809F57FDF934755670F40D1273EEC92BA3720CC7B9E80BB3B`, a 914-byte KCPK with
+  SHA-256 `8A45DDBF874D918CEDAEB0161E80FEF3314C2C2B0B21A45DA90E22A18C4DD313`, and a 60-byte KCSP with
+  SHA-256 `E95BDE225571AB5F6EAC3B9C04CB1BD332A0C95C740B377AC2DEE30460DD2FD1`, totaling 2,239 compact
+  sidecar bytes. Fresh idle execution has state SHA-256
+  `a1256e5e78e621f8a4ca75b896797ec4d96fbfce06d67b0e912359b3dc273b24`; dash/message execution sets
+  `heard_message=true` and `score=1`.
+- Adds a native Poco ARM64 Gradle/NDK build path. The post-audit canonical opcode-25 APK is locally
+  built and inspected at 1,451,149 bytes with SHA-256
+  `1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`; the canonical,
+  `message-op25` and `message-op25-audit-fixed` paths are byte-identical and contain the unchanged
+  current sidecars. The Poco disconnected before final installation, so this `1003…` build has no
+  install, launch or profile claim. The last physically verified pre-audit APK is preserved as
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with
+  SHA-256 `FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`.
+  Xiaomi `2412DPC0AG` / `rodin` installed and cold-launched it; the pulled base APK hash-matches it,
+  and its 30-second profile reports 120.12 effective FPS, 8.372/10.183/12.641 ms p50/p95/p99,
+  thermal status 0 and no crashes or warnings. The capture is
+  `validation/device/opcode25-message-poco-profile.json`. The preceding opcode-24 artifact remains
+  preserved at the `cone-op24` path with SHA-256
+  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`; the opcode-23 and opcode-22
+  artifacts retain their historical evidence. Interaction-heavy/touch, unplugged, long-duration,
+  explicit fallback-rate, representative lower-tier and first post-audit device runs remain open.
 - Keeps Populate Area honest and decorative: unsafe transform/collider/gameplay/graph/movement
   ownership is rejected; copies have no such semantics. Desktop presentation is capped at 64
   generated copies per group and 256 globally, while browser Mobile 3D, overlap avoidance, per-copy

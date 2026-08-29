@@ -1,0 +1,3 @@
+src/ugts_chess/resources/*.tb.gz binary
+src/ugts_chess/resources/*.tb.json text eol=lf
+validation/endgame/*-partition-lemma-head.json text eol=lf

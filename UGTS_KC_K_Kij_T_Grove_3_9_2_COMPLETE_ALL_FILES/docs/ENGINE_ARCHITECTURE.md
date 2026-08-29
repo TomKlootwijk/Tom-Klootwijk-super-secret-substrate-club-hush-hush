@@ -97,7 +97,7 @@ It also includes a bounded world-axis radial/angular sensing query.
 Arbitrary Python or native code is not embedded in a learner project.
 
 Android exports an optional `visual_graphs.kcvg` (`KCVG001`) asset. Its native VM supports the full
-current 24-block Mobile 3D authoring vocabulary, including sparse node bindings, world bindings,
+current 25-block Mobile 3D authoring vocabulary, including sparse node bindings, world bindings,
 2D-XZ or 3D-XYZ Apply Force, and Trigger Enter/Exit. Ready/tick/input/trigger roots, branches, values,
 state/components, scalar math/comparisons, bounded event logging, activation and despawn retain the
 same step/lifecycle rules as desktop. It still deliberately rejects mapping/nonempty event payloads,
@@ -143,6 +143,21 @@ inclusively with the saved minimum cosine. This is the source-aligned GSP4 cone:
 has cosine zero, runtime trigonometry is never used, and Origin rotation and scale are deliberately
 irrelevant. The editor writes exact world-axis/width presets, but dynamic Vector4 links remain valid.
 
+Opcode 25 is the append-only **When Message Heard** event root (`event.message`). Its exact portable
+message ID is a saved literal rather than a dynamic input; outputs expose source, optional target and
+the binding's entity before the flow continues. Existing **Send a Game Message** actions enqueue into
+one per-world non-reentrant FIFO. Broadcast delivery visits active entity bindings by canonical scene
+index then graph ID and visits world bindings last; targeted delivery reaches the target owner's
+bindings plus world bindings. Nested sends are breadth-first, all Ready handlers finish before
+Ready-time delivery, and the queue itself is not serialized. Each outer Ready/update/trigger batch
+admits at most 64 queued events and 16,384 total initial-handler/message-handler node steps, failing
+explicitly with `EventLimit` or `TotalStepLimit`.
+
+The Mobile 3D First Steps project contains seven graphs, 27 nodes and seven bindings including four
+world bindings. Its World Logic → **Hear the Dash Message** lesson is a real cross-graph path: the
+Dash graph sends `player.dashed`, the separate `message_lesson` graph receives it, and World Logic
+stores `heard_message=true`.
+
 Trigger areas are non-physical sensor colliders. Desktop and native select the first active player,
 perform matching scale-aware sphere/box overlap tests, emit exits before enters in deterministic sensor
 order, and dispatch each transition to world graphs plus graphs bound to that sensor. The event roots
@@ -153,9 +168,10 @@ sensor node, and **Use as Trigger** edits the selected node's Sphere/Radius or B
 The same replacement command provides Undo/Redo and normal project save/load.
 
 HTML5 exports for retained 2D projects precompile graph plans too. The browser VM executes the full
-current 24-block vocabulary, including Repeatable Random Number, Find Nearby Object, Find Object Ahead, When Timer
-Rings and Trigger Enter/Exit sensor/player context. It preserves
+current 25-block vocabulary, including Repeatable Random Number, Find Nearby Object, Find Object Ahead,
+When Timer Rings, When Message Heard and Trigger Enter/Exit sensor/player context. It preserves
 entity/world binding ownership, sorts flow deterministically and enforces a 1,024-step ceiling.
+Message outer batches additionally share the portable 64-event and 16,384-total-node-step ceilings.
 Browser exports fail at build time if a future custom block has no browser implementation; logic is
 never silently dropped. There is no browser Mobile 3D player, so Mobile 3D graph execution and
 Populate Area currently have desktop/native Android paths, not browser parity.
@@ -239,13 +255,26 @@ Generated projects pin Gradle 8.13 by wrapper checksum, SDK/target 36, minimum S
 CMake 3.22.1. The Poco X7 Pro flavor is ARM64 and selects the Mali-oriented adaptive profile. A
 universal flavor retains ARM64, ARMv7 and x86_64 fallback profiles.
 
-Model names and RAM are only hints. The canonical opcode-24 Poco APK is locally built and inspected:
-1,460,361 bytes, SHA-256
-`917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`, package
+Model names and RAM are only hints. The post-audit canonical opcode-25 Poco APK is locally built and
+inspected at `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk`: 1,451,149 bytes, SHA-256
+`1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`, package
 `org.ugts.games.my_mobile_3d_game.pocox7pro`, version 392 / `3.9.2-poco-x7-pro`, minimum SDK 26,
 target/compile SDK 36, GLES 3.0, ARM64-only, debug-certificate signed and APK Signature Scheme v2
-verified. Its embedded KCVG/KCPK/KCSP assets hash-match the current source sidecars. ADB reported zero
-devices, so there is no fresh install, launch or profile claim for that build.
+verified. Its `message-op25-debug` and `message-op25-audit-fixed-debug` copies are byte-identical, and
+their embedded KCVG/KCPK/KCSP assets hash-match the current source sidecars. The Poco disconnected
+before final installation, so this `1003…` APK has no install, launch, installed-byte hash match or
+physical profile claim.
+
+The last physically verified pre-audit opcode-25 APK is preserved at the
+`message-op25-pre-audit-debug` path: 1,449,653 bytes with SHA-256
+`FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`. Xiaomi `2412DPC0AG` /
+`rodin` installed and cold-launched it; the pulled 1,449,653-byte base APK has the same SHA-256. Its
+30-second profile measured 120.12 effective FPS, 8.372/10.183/12.641 ms p50/p95/p99, thermal status
+0 and no crashes or warnings; the capture is `validation/device/opcode25-message-poco-profile.json`.
+
+The preceding opcode-24 APK is preserved as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-cone-op24-debug.apk`, 1,460,361 bytes with SHA-256
+`917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`.
 
 The preceding opcode-23 APK is preserved as
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
@@ -259,4 +288,5 @@ the preserved 1,441,929-byte opcode-22
 APK retains a separate 64.9-second idle baseline. Interaction-heavy/touch, unplugged and
 long-duration thermal runs, explicit 60/90 Hz fallbacks and representative lower-tier devices remain
 required; neither historical short baseline is a general performance guarantee or opcode-24 device
-evidence.
+evidence. Those older results do not replace the opcode-25 physical snapshot or the pending
+first post-audit device verification.

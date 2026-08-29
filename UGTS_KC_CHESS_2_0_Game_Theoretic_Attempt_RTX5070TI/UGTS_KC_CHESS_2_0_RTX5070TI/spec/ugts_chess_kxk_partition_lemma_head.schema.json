@@ -43,7 +43,7 @@
       "const": "fide-classical-2023-claims-as-actions-v2"
     },
     "base_game_profile": {
-      "const": "orthodox-kxk-checkmate-stalemate-infinite-play-draw-1.0"
+      "const": "orthodox-kxk-white-strong-canonical-no-castling-no-ep-no-counters-no-history-infinite-play-draw-1.0"
     },
     "source_schema": {
       "const": "ugts-kc-chess-kxk-tablebase-1.0"
@@ -108,11 +108,13 @@
     "legal_transition_count": {
       "type": "integer",
       "minimum": 0,
+      "maximum": 134217728,
       "not": {"type": "boolean"}
     },
     "capture_draw_exit_count": {
       "type": "integer",
       "minimum": 0,
+      "maximum": 134217728,
       "not": {"type": "boolean"}
     },
     "max_rank": {

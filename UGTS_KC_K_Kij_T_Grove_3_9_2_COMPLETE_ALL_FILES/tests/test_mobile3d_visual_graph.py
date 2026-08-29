@@ -47,6 +47,46 @@ class Mobile3DVisualGraphTests(unittest.TestCase):
         world.step(held)
         self.assertEqual(world.state["score"], 2)
 
+    def test_fixed_senders_use_scene_graph_then_world_order(self):
+        def sender(graph_id, message):
+            return VisualGraph(
+                graph_id,
+                (
+                    GraphNode("tick", "event.tick"),
+                    GraphNode("send", "action.emit_event", {"kind": message}),
+                ),
+                (GraphLink("tick", "out", "send", "in"),),
+            )
+
+        graphs = (
+            sender("z_floor", "floor_z"),
+            sender("a_floor", "floor_a"),
+            sender("m_player", "player_m"),
+            sender("m_world", "world_m"),
+        )
+        project = blank_mobile3d_project()
+        project.nodes = tuple(
+            replace(node, metadata={**node.metadata, "visual_graph": ["z_floor", "a_floor"]})
+            if node.id == "floor"
+            else replace(node, metadata={**node.metadata, "visual_graph": "m_player"})
+            if node.id == "player"
+            else node
+            for node in project.nodes
+        )
+        project.metadata = {
+            **project.metadata,
+            "visual_graphs": [graph.to_dict() for graph in reversed(graphs)],
+            "world_graphs": ["m_world"],
+        }
+
+        world = project.instantiate_world()
+        world.step()
+        markers = {"floor_a", "floor_z", "player_m", "world_m"}
+        self.assertEqual(
+            [event.kind for event in world.events if event.kind in markers],
+            ["floor_a", "floor_z", "player_m", "world_m"],
+        )
+
     def test_phone_first_steps_template_runs_visible_beginner_graph(self):
         project = first_steps_mobile3d_project("A Child's First Phone Game", "Learner")
         report = project.validate(raise_on_error=False)

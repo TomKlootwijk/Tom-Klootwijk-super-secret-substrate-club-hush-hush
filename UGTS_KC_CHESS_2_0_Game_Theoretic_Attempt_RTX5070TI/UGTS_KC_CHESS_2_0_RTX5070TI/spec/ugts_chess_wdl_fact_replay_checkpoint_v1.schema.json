@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-chess-wdl-fact-replay-checkpoint-1.0.schema.json",
+  "title": "UGTS Chess authenticated WDL fact replay checkpoint 1.0",
+  "description": "Strict transport schema for a checkpoint body or independently retained checkpoint head. Runtime verification must authenticate the exact body with an independently retained head, require the embedded ProofDAG head as an exact live prefix, and hash the exact raw fact-journal prefix. Schema validity or a locally recomputed hash alone is not proof authority. This version does not validate a live suffix.",
+  "oneOf": [
+    {"$ref": "#/$defs/checkpoint"},
+    {"$ref": "#/$defs/checkpoint_head"}
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nonnegative_integer": {
+      "type": "integer",
+      "minimum": 0,
+      "not": {"type": "boolean"}
+    },
+    "positive_integer": {
+      "type": "integer",
+      "minimum": 1,
+      "not": {"type": "boolean"}
+    },
+    "fact_journal_head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "rule_profile_id",
+        "record_count",
+        "head_content_sha256",
+        "file_size"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-wdl-fact-journal-head-2.0"},
+        "rule_profile_id": {"const": "fide-classical-2023-claims-as-actions-v2"},
+        "record_count": {"$ref": "#/$defs/nonnegative_integer"},
+        "head_content_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "file_size": {"$ref": "#/$defs/positive_integer"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"record_count": {"const": 0}},
+            "required": ["record_count"]
+          },
+          "then": {
+            "properties": {"head_content_sha256": {"type": "null"}}
+          },
+          "else": {
+            "properties": {"head_content_sha256": {"$ref": "#/$defs/sha256"}}
+          }
+        }
+      ]
+    },
+    "proof_dag_head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "rule_profile_id",
+        "frontier_record_count",
+        "sqlite_edge_count",
+        "sqlite_node_count",
+        "frontier_size",
+        "last_frontier_content_sha256",
+        "frontier_manifest_sha256"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-proof-dag-head-1.0"},
+        "rule_profile_id": {"const": "fide-classical-2023-claims-as-actions-v2"},
+        "frontier_record_count": {"$ref": "#/$defs/nonnegative_integer"},
+        "sqlite_edge_count": {"$ref": "#/$defs/nonnegative_integer"},
+        "sqlite_node_count": {"$ref": "#/$defs/nonnegative_integer"},
+        "frontier_size": {"$ref": "#/$defs/positive_integer"},
+        "last_frontier_content_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "frontier_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"frontier_record_count": {"const": 0}},
+            "required": ["frontier_record_count"]
+          },
+          "then": {
+            "properties": {
+              "sqlite_edge_count": {"const": 0},
+              "sqlite_node_count": {"const": 0},
+              "last_frontier_content_sha256": {"type": "null"}
+            }
+          },
+          "else": {
+            "properties": {"last_frontier_content_sha256": {"$ref": "#/$defs/sha256"}}
+          }
+        }
+      ]
+    },
+    "fact_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "record_index",
+        "content_sha256",
+        "kind",
+        "node_sha256",
+        "first_frontier_content_sha256",
+        "claimed_wdl",
+        "proof_height",
+        "evidence_sha256"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-wdl-fact-replay-summary-1.0"},
+        "record_index": {"$ref": "#/$defs/nonnegative_integer"},
+        "content_sha256": {"$ref": "#/$defs/sha256"},
+        "kind": {"enum": ["seed", "derivation"]},
+        "node_sha256": {"$ref": "#/$defs/sha256"},
+        "first_frontier_content_sha256": {"$ref": "#/$defs/sha256"},
+        "claimed_wdl": {"enum": ["win", "draw", "loss"]},
+        "proof_height": {"$ref": "#/$defs/nonnegative_integer"},
+        "evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "builder_profile",
+        "rule_profile_id",
+        "fact_journal_head",
+        "proof_dag_head",
+        "journal_prefix_sha256",
+        "fact_state_manifest_sha256",
+        "facts"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-wdl-fact-replay-checkpoint-1.0"},
+        "builder_profile": {"const": "ugts-chess-wdl-fact-replay-checkpoint-full-stable-builder-1.0"},
+        "rule_profile_id": {"const": "fide-classical-2023-claims-as-actions-v2"},
+        "fact_journal_head": {"$ref": "#/$defs/fact_journal_head"},
+        "proof_dag_head": {"$ref": "#/$defs/proof_dag_head"},
+        "journal_prefix_sha256": {"$ref": "#/$defs/sha256"},
+        "fact_state_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "facts": {
+          "type": "array",
+          "maxItems": 1000000,
+          "items": {"$ref": "#/$defs/fact_summary"}
+        }
+      }
+    },
+    "checkpoint_head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "rule_profile_id",
+        "checkpoint_size",
+        "checkpoint_sha256",
+        "journal_prefix_sha256",
+        "fact_state_manifest_sha256",
+        "fact_journal_head",
+        "proof_dag_head"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-wdl-fact-replay-checkpoint-head-1.0"},
+        "rule_profile_id": {"const": "fide-classical-2023-claims-as-actions-v2"},
+        "checkpoint_size": {
+          "allOf": [
+            {"$ref": "#/$defs/positive_integer"},
+            {"maximum": 268435456}
+          ]
+        },
+        "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "journal_prefix_sha256": {"$ref": "#/$defs/sha256"},
+        "fact_state_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "fact_journal_head": {"$ref": "#/$defs/fact_journal_head"},
+        "proof_dag_head": {"$ref": "#/$defs/proof_dag_head"}
+      }
+    }
+  }
+}

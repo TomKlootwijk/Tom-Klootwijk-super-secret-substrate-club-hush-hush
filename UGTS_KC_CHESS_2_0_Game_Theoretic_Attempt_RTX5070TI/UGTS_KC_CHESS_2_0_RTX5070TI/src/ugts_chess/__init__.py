@@ -98,6 +98,20 @@ from .endgame_fact_adapter import (
     EndgameTablebaseError,
     append_bundled_endgame_fact,
 )
+from .kxk_partition_lemma import (
+    KXK_BASE_GAME_PROFILE,
+    KXK_PARTITION_LEMMA_HEAD_SCHEMA,
+    KXK_PARTITION_LEMMA_VERIFIER_PROFILE,
+    KXKPartitionLemmaError,
+    KXKPartitionLemmaHead,
+    KXKPartitionLemmaHeadMismatchError,
+    KXKPartitionLemmaIntegrityError,
+    KXKPartitionLemmaSourceChangedError,
+    KXKPartitionLemmaVerification,
+    clear_kxk_partition_lemma_cache,
+    verify_bundled_kxk_partition,
+    verify_kxk_partition_files,
+)
 
 __all__ = [
     "BLACK", "WHITE", "Move", "Position", "START_FEN",
@@ -139,6 +153,13 @@ __all__ = [
     "CampaignFactProjectionVerification", "CampaignWDLFactProjection",
     "create_campaign_fact_projection", "parse_campaign_fact_projection",
     "verify_campaign_fact_projection",
+    "KXK_BASE_GAME_PROFILE", "KXK_PARTITION_LEMMA_HEAD_SCHEMA",
+    "KXK_PARTITION_LEMMA_VERIFIER_PROFILE", "KXKPartitionLemmaError",
+    "KXKPartitionLemmaHead", "KXKPartitionLemmaHeadMismatchError",
+    "KXKPartitionLemmaIntegrityError",
+    "KXKPartitionLemmaSourceChangedError",
+    "KXKPartitionLemmaVerification", "clear_kxk_partition_lemma_cache",
+    "verify_bundled_kxk_partition", "verify_kxk_partition_files",
 ]
 
 __version__ = "2.0.0"

@@ -113,7 +113,7 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
         self.assertIsNone(message.trace[0].outputs["target"])
         self.assertEqual(
             document.logic_traces(),
-            (repeatable, find_goal, find_goal_ahead, snapshot, message),
+            (repeatable, find_goal_ahead, find_goal, snapshot, message),
         )
         self.assertIs(changes[-1], message)
         with self.assertRaises(FrozenInstanceError):
@@ -132,7 +132,7 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
         self.assertIsInstance(new_repeatable, LogicTraceSnapshot)
         self.assertIs(
             changes[-1],
-            document.logic_trace("find_goal_ahead_lesson", None),
+            document.logic_trace("find_goal_lesson", None),
         )
 
     def test_trigger_trace_is_harvested_in_the_transition_frame(self) -> None:

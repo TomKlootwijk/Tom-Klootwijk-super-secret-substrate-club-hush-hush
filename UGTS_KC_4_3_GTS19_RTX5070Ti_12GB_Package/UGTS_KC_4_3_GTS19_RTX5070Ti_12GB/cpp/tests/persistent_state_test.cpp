@@ -150,14 +150,14 @@ void TestPackedBoardsAllSizesAndMalformedInputs() {
     short_cells.pop_back();
     RequireThrows<std::invalid_argument>(
         [&] { static_cast<void>(PackBoardExact(size, short_cells)); },
-        "does not match", "short packed board accepted at size " +
-                              std::to_string(size));
+        "does not match",
+        "short packed board accepted at size " + std::to_string(size));
     std::vector<std::uint8_t> invalid_cells = cells;
     invalid_cells[invalid_cells.size() / 2U] = 3U;
     RequireThrows<std::invalid_argument>(
         [&] { static_cast<void>(PackBoardExact(size, invalid_cells)); },
-        "invalid point", "invalid packed point accepted at size " +
-                             std::to_string(size));
+        "invalid point",
+        "invalid packed point accepted at size " + std::to_string(size));
 
     PackedBoard overlap = packed;
     overlap.black[0] |= 1U;
@@ -174,16 +174,16 @@ void TestPackedBoardsAllSizesAndMalformedInputs() {
       dirty_tail.black[words - 1U] |= 1ULL << tail_bits;
       RequireThrows<std::invalid_argument>(
           [&] { static_cast<void>(arena.InternBoard(dirty_tail)); },
-          "tail bits", "dirty packed tail accepted at size " +
-                           std::to_string(size));
+          "tail bits",
+          "dirty packed tail accepted at size " + std::to_string(size));
     }
     if (words < packed.black.size()) {
       PackedBoard dirty_word = packed;
       dirty_word.white[words] = 1U;
       RequireThrows<std::invalid_argument>(
           [&] { static_cast<void>(arena.InternBoard(dirty_word)); },
-          "unused words", "dirty unused word accepted at size " +
-                              std::to_string(size));
+          "unused words",
+          "dirty unused word accepted at size " + std::to_string(size));
     }
   }
   Require(arena.Metrics().board_records == 19U,
@@ -199,7 +199,7 @@ void TestPackedBoardsAllSizesAndMalformedInputs() {
 
 void TestFixedSeedFlatParityAllSizes() {
   std::mt19937_64 randomizer(0x19C0FFEEBADC0DEULL);
-  for (int size : {1, 2, 3, 5, 9, 19}) {
+  for (int size = 1; size <= 19; ++size) {
     const Rules rules = TestRules(size);
     PersistentStateArena arena;
     PersistentStateHandle persistent = arena.Initial(rules);
@@ -259,8 +259,7 @@ void TestCaptureSuicideKoSnapbackAndPoisonedPsk() {
 
   State multi_capture;
   multi_capture.size = 3;
-  multi_capture.board = {kBlack, kWhite, kBlack, kWhite, 0,
-                         0,      kBlack, 0,      0};
+  multi_capture.board = {kBlack, kWhite, kBlack, kWhite, 0, 0, kBlack, 0, 0};
   multi_capture.to_play = kBlack;
   multi_capture.seen_boards = {multi_capture.board};
   const PersistentStateHandle persistent_multi_capture =
@@ -268,9 +267,9 @@ void TestCaptureSuicideKoSnapbackAndPoisonedPsk() {
   const auto persistent_multi_result =
       arena.ApplyMove(persistent_multi_capture, 4, rules);
   const auto flat_multi_result = ApplyMove(multi_capture, 4, rules);
-  Require(persistent_multi_result.captured == 2 &&
-              flat_multi_result.captured == 2,
-          "simultaneous capture of two distinct groups did not capture both");
+  Require(
+      persistent_multi_result.captured == 2 && flat_multi_result.captured == 2,
+      "simultaneous capture of two distinct groups did not capture both");
   RequireParity(arena, persistent_multi_result.state, flat_multi_result.state,
                 rules, "simultaneous distinct-group capture");
 
@@ -503,6 +502,34 @@ void TestStructuralSharingMetricsAndOnePassRankPlacement() {
       rank_arena.HistoryMemberCount(moved_view.history), moved_view.passes);
   Require(moved_rank == passed_rank + 1U,
           "regular move after one pass did not place rank at 2(H+1)");
+
+  // With a noncanonical three-pass threshold, H=1/passes=2 is nonterminal,
+  // but a legal placement produces H=2/passes=0 at the same rank. The native
+  // persistent slice rejects that profile instead of admitting a non-acyclic
+  // placement edge.
+  Rules three_pass_rules = rules;
+  three_pass_rules.passes_to_end = 3;
+  State h1_passes2 = State::Initial(three_pass_rules);
+  h1_passes2 = ApplyMove(h1_passes2, kPass, three_pass_rules).state;
+  h1_passes2 = ApplyMove(h1_passes2, kPass, three_pass_rules).state;
+  const State h2_passes0 = ApplyMove(h1_passes2, 0, three_pass_rules).state;
+  Require(h1_passes2.seen_boards.size() == 1U && h1_passes2.passes == 2 &&
+              h2_passes0.seen_boards.size() == 2U && h2_passes0.passes == 0 &&
+              CheckedPersistentRank(1U, 2U) == CheckedPersistentRank(2U, 0U),
+          "three-pass rank-collision regression fixture changed");
+  PersistentStateArena rejected_profile_arena;
+  RequireThrows<std::invalid_argument>(
+      [&] {
+        static_cast<void>(
+            rejected_profile_arena.ImportLegacy(h1_passes2, three_pass_rules));
+      },
+      "exactly two passes",
+      "rank-nonmonotonic three-pass adapter input was accepted");
+  const auto rejected_metrics = rejected_profile_arena.Metrics();
+  Require(rejected_metrics.board_records == 0U &&
+              rejected_metrics.history_nodes == 0U &&
+              rejected_metrics.state_records == 0U,
+          "unsupported rules mutated the arena before rejection");
 }
 
 void TestSemanticEqualityDistinctions() {
@@ -551,16 +578,23 @@ void TestSemanticEqualityDistinctions() {
   different_suicide.allow_suicide = true;
   RequireThrows<std::invalid_argument>(
       [&] {
-        static_cast<void>(arena.ExactStateEqual(
-            base, rules, arena, base, different_suicide));
+        static_cast<void>(
+            arena.ExactStateEqual(base, rules, arena, base, different_suicide));
       },
       "suicide to be illegal", "suicide-enabled profile was accepted");
+  PersistentStateArena unsupported_profile_arena;
+  RequireThrows<std::invalid_argument>(
+      [&] {
+        static_cast<void>(unsupported_profile_arena.Initial(different_suicide));
+      },
+      "suicide to be illegal",
+      "suicide-enabled initial persistent state was accepted");
   Rules different_terminal = rules;
   different_terminal.passes_to_end = 3;
   RequireThrows<std::invalid_argument>(
       [&] {
-        static_cast<void>(arena.ExactStateEqual(
-            base, rules, arena, base, different_terminal));
+        static_cast<void>(arena.ExactStateEqual(base, rules, arena, base,
+                                                different_terminal));
       },
       "exactly two passes", "three-pass profile was accepted");
 }

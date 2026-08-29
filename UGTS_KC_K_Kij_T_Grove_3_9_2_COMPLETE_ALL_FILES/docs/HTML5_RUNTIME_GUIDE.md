@@ -16,7 +16,7 @@ Every build includes:
 
 The generated game includes a fixed-step accumulator, Canvas vector rendering, gradients, transform/camera handling, broad-phase and narrow-phase collision, player controller, hazards, collectibles, particles, procedural audio/music, HUD, keyboard/gamepad/touch input, pause/restart/mute, local save/load, best score and F3 diagnostics.
 
-The retained 2D browser VM executes the full current 24-block vocabulary. **Find Nearby Object** uses
+The retained 2D browser VM executes the full current 25-block vocabulary. **Find Nearby Object** uses
 the same explicit/bound origin, five portable tags, inclusive radius, active/alive nearest selection
 and deterministic object-ID tie-break as desktop and native opcode 22. This parity covers the graph
 operation; there is still no Mobile 3D browser player.
@@ -35,6 +35,14 @@ restart reset it. The block rings at most once per update and exposes count, rem
 seconds and bound entity. Browser save data does not serialize a timer clock or suspended graph, so a
 restart begins the timer lifecycle again. Headless parity fixtures cover desktop, browser, KCVG and
 native Android behavior.
+
+**When Message Heard** is append-only opcode 25 and follows the same portable message contract. Its
+saved receiver name is an exact short ID; Source, optional Target and bound Entity are data outputs.
+**Send a Game Message** enters one non-reentrant FIFO. Broadcasts visit active entity bindings in
+canonical scene/graph order before world bindings, targeted sends reach the target owner's bindings
+plus world bindings, and nested sends wait breadth-first. Ready handlers all finish before Ready-time
+messages drain. The browser rejects the 65th queued event with `EventLimit` and caps the whole outer
+batch at 16,384 initial-handler/message-handler node steps with `TotalStepLimit`; no queue is saved.
 
 ## Browser persistence
 

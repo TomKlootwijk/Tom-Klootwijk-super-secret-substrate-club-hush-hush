@@ -23,6 +23,7 @@ from ..game_input import InputFrame
 from ..mobile3d import (
     Collider3DRecord,
     InputFrame3D,
+    Material3DRecord,
     Mesh3DRecord,
     Mobile3DProject,
     Node3DRecord,
@@ -74,6 +75,52 @@ _STUDIO_MOVEMENT_RANGE = MotionRange(
 _STUDIO_MOVEMENT_LUT_RESOLUTION = 128
 _SPIRAL_LOG_RATE = 0.2
 _CURRENT_GRAPH_SELECTION = object()
+
+MATERIAL_LOOK_CHOICES = (
+    ("Custom", "custom"),
+    ("Matte", "matte"),
+    ("Toy Plastic", "toy_plastic"),
+    ("Metal", "metal"),
+    ("Crystal Glow", "crystal_glow"),
+)
+_MATERIAL_LOOK_SURFACE = {
+    "matte": (0.0, 0.875),
+    "toy_plastic": (0.0, 0.3125),
+    "metal": (1.0, 0.21875),
+    "crystal_glow": (0.125, 0.1875),
+}
+
+
+def _material_look_emissive(
+    material: Material3DRecord, look: str
+) -> tuple[float, float, float]:
+    if look == "crystal_glow":
+        return (
+            float(material.base_color[0]) * 0.25,
+            float(material.base_color[1]) * 0.25,
+            float(material.base_color[2]) * 0.25,
+        )
+    return (0.0, 0.0, 0.0)
+
+
+def classify_material_look(material: Material3DRecord | None) -> str:
+    """Infer an Inspector look from ordinary material values only."""
+
+    if material is None:
+        return "custom"
+
+    def same(left: float, right: float) -> bool:
+        return math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=1.0e-9)
+
+    for look, (metallic, roughness) in _MATERIAL_LOOK_SURFACE.items():
+        emissive = _material_look_emissive(material, look)
+        if (
+            same(material.metallic, metallic)
+            and same(material.roughness, roughness)
+            and all(same(value, expected) for value, expected in zip(material.emissive, emissive))
+        ):
+            return look
+    return "custom"
 
 
 def studio_movement_profile_config() -> dict[str, Any]:
@@ -423,6 +470,20 @@ class EditorDocument(QObject):
             raise ValueError("Import 3D Shape is available in mobile 3D projects.")
         base = self._friendly_id_base(label, "imported_shape")
         used = set(self.project.meshes)
+        if base not in used:
+            return base
+        suffix = 2
+        while f"{base}_{suffix}" in used:
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def collision_free_material_id(self, label: str) -> str:
+        """Make a readable deterministic material id without overwriting one."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Material looks are available in mobile 3D projects.")
+        base = self._friendly_id_base(label, "material")
+        used = set(self.project.materials)
         if base not in used:
             return base
         suffix = 2
@@ -1127,6 +1188,99 @@ class EditorDocument(QObject):
             updated.validate()
             return updated
         raise ValueError("Choose a scene object before changing its appearance.")
+
+    def material_resources(self) -> dict[str, Material3DRecord]:
+        """Return a detached snapshot of the current 3D material resources."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return {}
+        return copy.deepcopy(self.project.materials)
+
+    def material_look_key(self, selection: SelectionRef | None = None) -> str:
+        """Classify one selected material for Inspector presentation."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return "custom"
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return "custom"
+        return classify_material_look(self.project.materials.get(selected.material_id))
+
+    def material_look_snapshot(
+        self,
+        selection: SelectionRef,
+        look: str,
+    ) -> tuple[tuple[Node3DRecord, ...], dict[str, Material3DRecord]]:
+        """Build node/material snapshots for one safe, clone-aware look edit."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Material looks are available in mobile 3D projects.")
+        look = str(look)
+        if look == "custom":
+            return copy.deepcopy(self.project.nodes), self.material_resources()
+        if look not in _MATERIAL_LOOK_SURFACE:
+            raise ValueError("Choose Custom, Matte, Toy Plastic, Metal, or Crystal Glow.")
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            raise ValueError("Choose a 3D object before changing its Material Look.")
+        source = self.project.materials.get(selected.material_id)
+        if source is None:
+            raise ValueError(f"{selected.id} uses a missing material: {selected.material_id}")
+        if classify_material_look(source) == look:
+            return copy.deepcopy(self.project.nodes), self.material_resources()
+
+        metallic, roughness = _MATERIAL_LOOK_SURFACE[look]
+        updated_material = replace(
+            source,
+            metallic=metallic,
+            roughness=roughness,
+            emissive=_material_look_emissive(source, look),
+        )
+        materials = self.material_resources()
+        nodes = copy.deepcopy(self.project.nodes)
+        shared = any(
+            node.id != selected.id and node.material_id == selected.material_id
+            for node in self.project.nodes
+        )
+        if shared:
+            clone_id = self.collision_free_material_id(f"{source.id}_{look}")
+            updated_material = replace(updated_material, id=clone_id)
+            updated_node = replace(selected, material_id=clone_id)
+            nodes = tuple(
+                updated_node if node.id == selected.id else node for node in nodes
+            )
+            materials[clone_id] = updated_material
+        else:
+            materials[source.id] = updated_material
+
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = nodes
+        candidate.materials = materials
+        candidate.validate()
+        return nodes, materials
+
+    def replace_material_look(
+        self,
+        nodes: tuple[Node3DRecord, ...],
+        materials: Mapping[str, Material3DRecord],
+        selection: SelectionRef | None,
+    ) -> None:
+        """Apply one validated node/material snapshot and refresh editor views."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before changing Material Looks.")
+        snapshot_nodes = copy.deepcopy(tuple(nodes))
+        snapshot_materials = copy.deepcopy(dict(materials))
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = snapshot_nodes
+        candidate.materials = snapshot_materials
+        candidate.validate()
+        self.project.nodes = snapshot_nodes
+        self.project.materials = snapshot_materials
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
+        self.set_selection(selection)
 
     def trigger_area_state(
         self, selection: SelectionRef | None = None
@@ -2022,7 +2176,9 @@ __all__ = [
     "EditorDocument",
     "GRAPHS_KEY",
     "LogicTraceSnapshot",
+    "MATERIAL_LOOK_CHOICES",
     "SelectionRef",
+    "classify_material_look",
     "euler_degrees_to_quaternion",
     "quaternion_to_euler_degrees",
 ]

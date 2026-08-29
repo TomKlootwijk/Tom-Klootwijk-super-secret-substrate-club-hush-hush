@@ -124,6 +124,8 @@ struct PersistentArenaMetrics {
 
 // Single-writer, in-memory validation foundation for complete
 // positional-superko states. Its vectors/maps have no configured memory bound.
+// Rule-bearing operations require suicide-illegal play and exactly two passes
+// to terminate, which is the rank-safe profile supported by this sibling path.
 // This class intentionally has no disk, paging, checkpoint, or proof status
 // behavior. Allocation failure is not transactional: after std::bad_alloc or
 // std::length_error escapes a mutating call, discard the whole arena and every

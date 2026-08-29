@@ -41,7 +41,7 @@ def run_memcheck(
     target_unique_corpus_slots: int,
     batch_states: int,
     seed: int,
-) -> tuple[dict[str, object], str]:
+) -> tuple[dict[str, object], str, str]:
     command = [
         str(sanitizer),
         "--tool",
@@ -56,6 +56,7 @@ def run_memcheck(
         "--seed",
         str(seed),
     ]
+    runner_sha256_before = scale.file_sha256(runner)
     process = subprocess.run(
         command,
         text=True,
@@ -63,6 +64,9 @@ def run_memcheck(
         timeout=3_600,
         check=False,
     )
+    runner_sha256_after = scale.file_sha256(runner)
+    if runner_sha256_after != runner_sha256_before:
+        raise RuntimeError("memcheck scale runner executable changed during execution")
     if process.returncode != 0:
         raise RuntimeError(
             f"scale memcheck failed with {process.returncode}: {process.stderr.strip()}"
@@ -91,7 +95,7 @@ def run_memcheck(
     transcript_without_result = " ".join(
         line for line in combined.splitlines() if line.strip() != json_lines[0]
     )
-    return validated, transcript_without_result
+    return validated, transcript_without_result, runner_sha256_before
 
 
 def build_evidence(
@@ -102,7 +106,7 @@ def build_evidence(
     batch_states: int,
     seed: int,
 ) -> dict[str, object]:
-    result, transcript = run_memcheck(
+    result, transcript, runner_executable_sha256 = run_memcheck(
         sanitizer,
         runner,
         target_unique_corpus_slots=target_unique_corpus_slots,
@@ -150,6 +154,7 @@ def build_evidence(
                 "total_cpp_cuda_cpu_recomputed_point_slots_across_modes"
             ],
         },
+        "memcheck_scale_runner_executable_sha256": runner_executable_sha256,
         "root_status": "UNKNOWN",
         "sanitizer": sanitizer_version(sanitizer),
         "sanitizer_transcript_sha256": __import__("hashlib")

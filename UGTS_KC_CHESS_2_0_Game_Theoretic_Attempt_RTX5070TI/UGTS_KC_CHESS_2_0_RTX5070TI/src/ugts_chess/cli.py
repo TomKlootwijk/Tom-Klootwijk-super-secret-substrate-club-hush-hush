@@ -76,6 +76,7 @@ def cmd_info(_: argparse.Namespace) -> int:
                 "proof-carrying bounded mate and WDL search",
                 "independent WDL certificate-bundle verifier",
                 "exact compressed KQK and KRK DTM tablebases",
+                "independent complete KQK/KRK ranked-partition replay verifier",
                 "hash-chained initial-position proof campaign with 20 root obligations",
                 "64-byte position / 16-bit move CUDA proposal protocol",
                 "C++20 legal kernel and generic CPU/CUDA retrograde fixed point",

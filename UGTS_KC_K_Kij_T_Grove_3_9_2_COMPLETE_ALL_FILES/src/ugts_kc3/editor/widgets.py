@@ -36,6 +36,7 @@ from ..mobile3d import Mobile3DProject, Node3DRecord
 from ..project import EntitySpec, GameProject
 from .document import (
     EditorDocument,
+    MATERIAL_LOOK_CHOICES,
     SelectionRef,
     euler_degrees_to_quaternion,
     quaternion_to_euler_degrees,
@@ -60,6 +61,7 @@ class InspectorPanel(QWidget):
 
     transformEdited = Signal(object)
     resourceEdited = Signal(str, str)
+    materialLookEdited = Signal(str)
     movementPatternEdited = Signal(object)
     triggerAreaEdited = Signal(object)
     populationEdited = Signal(object)
@@ -158,8 +160,17 @@ class InspectorPanel(QWidget):
         self.material_combo = QComboBox()
         self.material_combo.setObjectName("MaterialCombo")
         self.material_combo.setToolTip("Choose one of this project's existing materials")
+        self.material_look_combo = QComboBox()
+        self.material_look_combo.setObjectName("MaterialLookCombo")
+        self.material_look_combo.setToolTip(
+            "Choose a ready-made surface style. It keeps this object's colour; "
+            "Custom leaves the material exactly as it is."
+        )
+        for label, look in MATERIAL_LOOK_CHOICES:
+            self.material_look_combo.addItem(label, look)
         appearance3d.addRow("Shape", self.mesh_combo)
         appearance3d.addRow("Material", self.material_combo)
+        appearance3d.addRow("Material Look", self.material_look_combo)
         self.appearance_stack.addWidget(self.appearance2d_widget)
         self.appearance_stack.addWidget(self.appearance3d_widget)
         root.addWidget(self.appearance_box)
@@ -357,6 +368,7 @@ class InspectorPanel(QWidget):
         self.vector_asset_combo.currentIndexChanged.connect(self._emit_vector_asset)
         self.mesh_combo.currentIndexChanged.connect(self._emit_mesh)
         self.material_combo.currentIndexChanged.connect(self._emit_material)
+        self.material_look_combo.currentIndexChanged.connect(self._emit_material_look)
         self.trigger_enabled.toggled.connect(self._trigger_area_changed)
         self.trigger_shape.currentIndexChanged.connect(self._trigger_area_changed)
         for widget in (
@@ -402,6 +414,9 @@ class InspectorPanel(QWidget):
         self.vector_asset_combo.clear()
         self.mesh_combo.clear()
         self.material_combo.clear()
+        self.material_look_combo.setCurrentIndex(
+            max(0, self.material_look_combo.findData("custom"))
+        )
         self._trigger_values.clear()
         self._trigger_display_values.clear()
         self.movement_pattern_combo.clear()
@@ -525,6 +540,9 @@ class InspectorPanel(QWidget):
         self.vector_asset_combo.clear()
         self.mesh_combo.clear()
         self.material_combo.clear()
+        self.material_look_combo.setCurrentIndex(
+            max(0, self.material_look_combo.findData("custom"))
+        )
         if isinstance(document.project, GameProject) and isinstance(selected, EntitySpec):
             renderer = selected.components.get("vector_renderer")
             if not isinstance(renderer, Mapping):
@@ -545,6 +563,10 @@ class InspectorPanel(QWidget):
             self._fill_resource_combo(
                 self.material_combo, list(document.project.materials), selected.material_id
             )
+            look_index = self.material_look_combo.findData(
+                document.material_look_key()
+            )
+            self.material_look_combo.setCurrentIndex(max(0, look_index))
             if self.mesh_combo.count() and self.material_combo.count():
                 self.appearance_stack.setCurrentWidget(self.appearance3d_widget)
                 self.appearance_box.show()
@@ -950,6 +972,13 @@ class InspectorPanel(QWidget):
 
     def _emit_material(self) -> None:
         self._emit_resource("material", self.material_combo)
+
+    def _emit_material_look(self) -> None:
+        if self._updating or self._selection is None:
+            return
+        look = self.material_look_combo.currentData()
+        if isinstance(look, str):
+            self.materialLookEdited.emit(look)
 
     def _emit_transform(self) -> None:
         if self._updating or self._selection is None:

@@ -11,8 +11,9 @@ PYTHONPATH=src python -m ugts_kc3 build-android examples/tom_signature_arena_3d/
 
 `android/UGTSKCKKijTGrove` is a retained earlier signature-arena source snapshot. It remains useful
 as historical source, but it does not contain the latest optional graph VM, packed-kinematics or
-population modules and must not be used to inspect opcodes 23–24 or reproduce the current First Steps
-APK. Generate a fresh project from the packaged template for the authoritative timer/cone runtime.
+population modules and must not be used to inspect opcodes 23–25 or reproduce the current First Steps
+APK. Generate a fresh project from the packaged template for the authoritative timer/cone/message
+runtime.
 
 ## Toolchain baseline
 
@@ -52,14 +53,14 @@ badges and **Last Run** show execution order, values, selected flow and errors w
 read-only; Stop retains the latest display. That snapshot is nonserialized presentation state and
 adds zero bytes to `KCVG001`, `KC3D392`, the APK or any other export.
 
-## Logic ownership and opcodes 22–24
+## Logic ownership and opcodes 22–25
 
 The Logic Blocks workspace follows the selected owner. An unbound 2D/3D object shows a transient
 blank graph; its first meaningful edit creates and binds the graph in one Undo command, and Undo
 removes both. Objects with several intentional bindings receive an exact graph chooser. Populate Area
 prototypes cannot own Logic Blocks and must have the recipe turned off before graph creation.
 
-The compact native vocabulary now contains 24 blocks. `KCVG001` opcode 22 is **Find Nearby Object**:
+The compact native vocabulary now contains 25 blocks. `KCVG001` opcode 22 is **Find Nearby Object**:
 an origin object, one of the portable tags `player`, `collectible`, `goal`, `decorative` or `hazard`,
 and a finite non-negative inclusive radius. Native C++ excludes the origin and dead/inactive
 candidates, chooses the nearest active/alive match, and uses object ID to break an exact-distance tie
@@ -84,14 +85,27 @@ binary32 GSP4 schedule, then applies an inclusive cosine comparison. It uses no 
 not read Origin rotation or scale. Found/entity/distance, filtering, nearest selection and UTF-8 tie
 behavior remain identical to opcode 22.
 
+Append-only opcode 25 is **When Message Heard**. Its `message` is a saved literal portable ID rather
+than a linked input; matching is exact. The root exposes source, optional target and bound entity,
+then its flow output. Existing opcode-15 sends enter one per-world, non-reentrant FIFO. Broadcasts
+visit active entity bindings by canonical scene index then graph ID and world bindings last;
+targeted sends visit the target owner's bindings plus world bindings. Nested sends are breadth-first,
+all Ready handlers finish before Ready-time delivery, and no queue state is serialized. Native and
+portable runtimes reject the 65th queued event with `EventLimit` and cap the whole outer batch—initial
+handlers plus message handlers—at 16,384 node steps with `TotalStepLimit`.
+
 First Steps demonstrates opcode 23 in **World Logic → Count the Timer Rings**, where a repeating
 one-second timer stores its count as `timer_rings`, and opcode 24 in **Find the Goal Ahead**, where
-3D Forward with Normal width stores `goal_ahead`. The current source exports six graphs, 23 nodes and
-six bindings including three world bindings. Its 1,085-byte KCVG has SHA-256
-`2c5c6edb0c804da7fb2b6edab8c6beab12ccd2dac8b4e743d03c6194aff4af27`; the 914-byte KCPK
-(`8a45ddbf874d918cedaeb0161e80fef3314c2c2b0b21a45da90e22a18c4dd313`) and 60-byte KCSP
-(`e95bde225571ab5f6eac3b9c04cb1bd332a0c95c740b377ac2dee30460dd2fd1`) bring the compact sidecar
-total to 2,059 bytes.
+3D Forward with Normal width stores `goal_ahead`. It demonstrates opcode 25 in World Logic → **Hear
+the Dash Message**: the Dash graph sends `player.dashed`, and the separate `message_lesson` graph
+receives it and stores `heard_message=true`. The current source exports seven graphs, 27 nodes and
+seven bindings including four world bindings. Its 1,265-byte KCVG has SHA-256
+`363EED6B1054CE0809F57FDF934755670F40D1273EEC92BA3720CC7B9E80BB3B`; the 914-byte KCPK
+(`8A45DDBF874D918CEDAEB0161E80FEF3314C2C2B0B21A45DA90E22A18C4DD313`) and 60-byte KCSP
+(`E95BDE225571AB5F6EAC3B9C04CB1BD332A0C95C740B377AC2DEE30460DD2FD1`) bring the compact sidecar
+total to 2,239 bytes. Fresh idle execution has state SHA-256
+`a1256e5e78e621f8a4ca75b896797ec4d96fbfce06d67b0e912359b3dc273b24`; dash/message execution sets
+`heard_message=true` and `score=1`.
 
 ## Populate Area / KCSP392
 
@@ -197,13 +211,28 @@ After deployment, leave the game running and the screen on, then choose **Check 
 does not freeze, and reports frame cadence, PSS memory, available GPU temperature, crash lines and
 warnings in Output. CLI JSON retains additional available RSS, battery and thermal fields.
 
-The canonical opcode-24 APK is locally built and inspected at 1,460,361 bytes with SHA-256
-`917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`. `aapt` and `apksigner`
+The post-audit canonical opcode-25 APK is locally built and inspected at
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk`: 1,451,149 bytes with SHA-256
+`1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`. The
+`message-op25-debug` and `message-op25-audit-fixed-debug` copies are byte-identical. `aapt` and `apksigner`
 verify package `org.ugts.games.my_mobile_3d_game.pocox7pro`, version 392 /
 `3.9.2-poco-x7-pro`, minimum SDK 26, target/compile SDK 36, GLES 3.0, ARM64-only native code, a debug
-certificate and APK Signature Scheme v2; embedded KCVG/KCPK/KCSP hashes match the source sidecars.
-ADB reported zero devices, so this opcode-24 APK has not been freshly installed, cold-launched or
-profiled.
+certificate and APK Signature Scheme v2; embedded KCVG/KCPK/KCSP hashes match the current source
+sidecars. The Poco disconnected before final installation, so this `1003…` APK has no install, launch,
+installed-byte hash match or physical profile claim.
+
+The last physically verified pre-audit opcode-25 APK is preserved explicitly as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with
+SHA-256 `FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`. Xiaomi
+`2412DPC0AG` / `rodin` installed and cold-launched it. The pulled
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-message-op25-base.apk` is also 1,449,653 bytes and
+has the exact same SHA-256. Its 30-second profile collected 756 intervals at 120.12 effective FPS,
+8.372/10.183/12.641 ms p50/p95/p99, thermal status 0 and no crash lines or warnings; the capture is
+`validation/device/opcode25-message-poco-profile.json`. That physical evidence belongs only to FBCB.
+
+The preceding opcode-24 build is preserved as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-cone-op24-debug.apk`, 1,460,361 bytes with SHA-256
+`917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`.
 
 The preceding opcode-23 build is preserved as
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
@@ -213,6 +242,7 @@ The preserved 1,441,929-byte opcode-22
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk` owns the earlier Poco cold-launch,
 hash-match and 30-second result: 120.23 effective FPS, 10.118 ms p95, 132,590–138,573 KiB PSS,
 44.634–45.511 °C GPU temperature, thermal status 0 and no crash lines or warnings. The retained
-64.9-second Poco idle baseline belongs to a still earlier 3.9.2 APK. A fresh opcode-24 device run,
-interaction-heavy/touch, unplugged battery, long-duration thermal, 60/90 Hz fallback and
-representative lower-tier runs remain open.
+64.9-second Poco idle baseline belongs to a still earlier 3.9.2 APK. Those older results remain
+historical and do not replace the opcode-25 snapshot. Interaction-heavy/touch, unplugged battery,
+long-duration thermal, 60/90 Hz fallback and representative lower-tier testing remain open, as does
+the first device install/profile of the post-audit APK.

@@ -1,0 +1,56 @@
+CMake Warning in C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/CMakeTmp/CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_e96f8.dir/./
+
+  has 254 characters.  The maximum full path to an object file is 250
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    CMakeCCompilerABI.c.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/CMakeTmp/CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_fb16b.dir/./
+
+  has 254 characters.  The maximum full path to an object file is 250
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    CMakeCXXCompilerABI.cpp.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/native_app_glue.dir/./
+
+  has 239 characters.  The maximum full path to an object file is 160
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    android_native_app_glue.c.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/./
+
+  has 238 characters.  The maximum full path to an object file is 160
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    trigger_area.cpp.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+

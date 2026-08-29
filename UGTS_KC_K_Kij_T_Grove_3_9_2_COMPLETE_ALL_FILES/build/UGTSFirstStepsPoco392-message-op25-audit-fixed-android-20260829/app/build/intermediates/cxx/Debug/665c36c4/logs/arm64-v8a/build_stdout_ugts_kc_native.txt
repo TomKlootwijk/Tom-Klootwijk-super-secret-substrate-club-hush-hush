@@ -1,0 +1,401 @@
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+ninja: Entering directory `C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829\app\.cxx\Debug\665c36c4\arm64-v8a'
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running C-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+Make...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-r-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+unning CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMa-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+ke...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-run-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-audit-fixed-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a
+ning CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...
+[0/1] Re-running CMake...

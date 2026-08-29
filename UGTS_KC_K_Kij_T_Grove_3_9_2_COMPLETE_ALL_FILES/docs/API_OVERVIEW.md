@@ -52,9 +52,11 @@ The package root re-exports the retained KC 3.0 APIs and all 3.9 APIs for concis
   the world-bound **Find the Goal** graph (`Player` origin, `goal` tag, 9 m radius, `nearby_goal`
   state result) and **Count the Timer Rings** (a repeating one-second world timer writing
   `timer_rings`), plus **Find the Goal Ahead** (saved 3D Forward world axis, Normal width,
-  `goal_ahead` state result).
+  `goal_ahead` state result) and **Hear the Dash Message** (the Dash graph sends `player.dashed` to
+  the separate `message_lesson` world graph, which writes `heard_message=true`). First Steps has
+  seven graphs, 27 nodes and seven bindings including four world bindings.
 - `visual_graph`: typed graph records, registry, validation and bounded desktop runtime. The current
-  24-block registry includes `query.nearest_tag` / **Find Nearby Object** with an explicit origin,
+  25-block registry includes `query.nearest_tag` / **Find Nearby Object** with an explicit origin,
   five portable gameplay tags, inclusive-radius nearest selection, active/alive filtering and a
   deterministic ID tie-break. `query.nearest_in_cone` / **Find Object Ahead** preserves that contract
   and adds a required Vector4 of world-axis X/Y/Z plus minimum cosine. Its finite nonzero axis and
@@ -64,11 +66,15 @@ The package root re-exports the retained KC 3.0 APIs and all 3.9 APIs for concis
   `seconds` (finite positive binary32 through 86,400, default 1) and `repeat` (boolean, default true),
   plus `count`, `remaining` and `entity` outputs. Timer progress is a binding-local active fixed-step
   count reset by Ready/restart; inactive entity ownership pauses that binding while the world runs,
-  and no suspended execution state is serialized.
+  and no suspended execution state is serialized. `event.message` / **When Message Heard** stores an
+  exact portable message name and exposes source, optional target and bound entity. Message sends use
+  a non-reentrant FIFO with deterministic target/broadcast routing, breadth-first nesting, a 64-event
+  cap and a 16,384-total-node-step outer-batch cap; no queue state is serialized.
 - `graphpack`: compact `KCVG001` graph compilation and inspection; **Find Nearby Object** remains
   append-only opcode 22, **When Timer Rings** is append-only opcode 23, and **Find Object Ahead** is
-  append-only opcode 24. All follow the same deterministic contracts in the native VM; a timer emits
-  at most one ring per update.
+  append-only opcode 24. **When Message Heard** is append-only opcode 25. All follow the same
+  deterministic contracts in the native VM; a timer emits at most one ring per update and message
+  receiver names remain saved literals rather than linked inputs.
 - `packed_kinematics`: compact log-polar pose/motion components, shared LUTs and UGECS1 files.
 - `polarpack`: sparse `KCPK392` compiler/inspector for native Mobile3D packed components.
 - `scatter` / `scatterpack`: validated deterministic decorative population recipes, generated transform
@@ -93,6 +99,10 @@ literals, and editor validation agrees with desktop, retained web, graph-pack an
 property editor writes exact Direction and Width presets: 2D insertion starts at world Right (+X),
 3D at world Forward (-Z), and Normal uses the binary32 cosine of 45 degrees. These saved values do not
 follow later Origin rotation.
+
+The editor exposes **When Message Heard** as an Events root whose **Message** property defaults to
+`graph_event` and accepts only portable saved identifiers. Its flow output is followed by Source,
+Target and Entity data outputs; the receiver name is deliberately not connectable at runtime.
 
 The GUI exposes the same phone profiler as **Check Phone** (`Ctrl+Shift+P`): a background 30-second
 check of a running deployed game with the screen on. It does not mutate project/game settings or

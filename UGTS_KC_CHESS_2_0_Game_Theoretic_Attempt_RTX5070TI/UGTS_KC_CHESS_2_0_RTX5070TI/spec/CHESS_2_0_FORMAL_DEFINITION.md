@@ -56,4 +56,4 @@ CUDA may expand move proposals and iterate monotone fixed-point candidates. It m
 
 ## Current exact scope
 
-Exact legality/perft, bounded mate and WDL results, replay, KQK/KRK tablebases, root-shard generation and finite demonstration fixed points are implemented and tested. Full dead-position coverage, external all-material tablebases and the initial-position proof remain promotion gates.
+Exact legality/perft, bounded mate and WDL results, replay, KQK/KRK tablebases, root-shard generation and finite demonstration fixed points are implemented and tested. The complete bundled KQK/KRK white-strong canonical no-castling/no-history partitions also reproduce independently verified source-bound heads after full rule-oracle graph replay. Those heads are not v2 WDL facts: state lifting, authenticated lemma membership and an explicit v3 migration remain promotion gates, as do full dead-position coverage, broader endgames and the initial-position proof.

@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
     QGraphicsView,
 )
 
+from ..materials import shade_pbr_lite
 from ..math3d import compose_trs, transform_point
 from ..mobile3d import Mobile3DProject, Node3DRecord
 from ..project import EntitySpec, GameProject
@@ -899,8 +900,8 @@ class SceneViewport(QGraphicsView):
         material = project.materials.get(node.material_id)
         if mesh is None or material is None:
             return []
+        pbr_material = material.to_pbr()
         world_vertices = [transform_point(matrix, vertex) for vertex in mesh.vertices]
-        light_direction = _normalized(tuple(-value for value in project.light.direction))
         faces: list[tuple[float, QPolygonF, QColor]] = []
         for ia, ib, ic in mesh.triangles:
             points3d = (world_vertices[ia], world_vertices[ib], world_vertices[ic])
@@ -913,15 +914,18 @@ class SceneViewport(QGraphicsView):
                 continue
             screen_points = [point[0] for point in projected if point is not None]
             depth = sum(point[1] for point in projected if point is not None) / 3.0
-            diffuse = max(0.0, _dot(normal, light_direction))
-            brightness = min(1.7, project.light.ambient + diffuse * project.light.intensity)
-            base_color = material.base_color
-            emissive = material.emissive
+            shaded = shade_pbr_lite(
+                pbr_material,
+                normal,
+                project.light.direction,
+                _sub(project.camera.position, center),
+                project.light.color,
+                project.light.intensity,
+                project.light.ambient,
+            )
             color = QColor.fromRgbF(
-                min(1.0, base_color[0] * brightness * project.light.color[0] + emissive[0]),
-                min(1.0, base_color[1] * brightness * project.light.color[1] + emissive[1]),
-                min(1.0, base_color[2] * brightness * project.light.color[2] + emissive[2]),
-                min(1.0, base_color[3]),
+                *(min(1.0, max(0.0, value)) for value in shaded),
+                min(1.0, max(0.0, material.base_color[3])),
             )
             faces.append((depth, QPolygonF(screen_points), color))
         return faces

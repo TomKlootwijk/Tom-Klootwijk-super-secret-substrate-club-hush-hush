@@ -41,6 +41,13 @@ def is_sha256(value: object) -> bool:
     )
 
 
+def require_sha256_attestation(label: str, value: object) -> str:
+    if not is_sha256(value):
+        raise SystemExit(f"{label} is missing or malformed")
+    assert isinstance(value, str)
+    return value
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--quick", action="store_true")
@@ -357,6 +364,10 @@ def main() -> int:
     scale_production_pins = scale.pop("production_source_sha256", None)
     scale_gate_pins = scale.pop("gate_source_sha256", None)
     scale_reference_pins = scale.pop("reference_source_sha256", None)
+    require_sha256_attestation(
+        "CUDA scale runner executable SHA-256",
+        scale.pop("scale_runner_executable_sha256", None),
+    )
     scale_modes = scale.pop("modes", None)
     companion = scale.pop("cross_language_companion", None)
     expected_scale = {
@@ -366,7 +377,7 @@ def main() -> int:
         "compiler": {"cuda": "NVCC-12.8.61", "host": "MSVC-194435221"},
         "corpus_entries": 27_716,
         "corpus_sha256": (
-            "d16452fa831cebb63f75148066206f27463f9b6feda1c3ffe638a0db1404cc17"
+            "515841557eb7abc055ba41e6d6d4e6f5e020c1779f31c6c2947671124e46d0d1"
         ),
         "cuda_driver_version": 13_010,
         "cuda_runtime_version": 12_080,
@@ -444,15 +455,17 @@ def main() -> int:
     )
     expected_scale_mode = {
         "adapter_batch_calls": 1_737,
+        "capture_slots": 283_758,
+        "captured_stones": 857_069,
         "compared_child_words": 18_650_596,
-        "globally_legal_children": 1_554_345,
+        "globally_legal_children": 1_553_936,
         "high_water_requested_device_bytes": 585_700,
         "local_candidates": 1_554_347,
         "maximum_capture": 360,
         "occupied_slots": 8_375_988,
         "point_slots": 10_000_303,
         "result_sha256": (
-            "57169519603a80e5461629f274386976b5385d361d089ae4418ba79f9bf4165c"
+            "9fe1962ed876017f312a3602f74f1af23076294377ac0dae094bad26662930e1"
         ),
         "semantic_state_visits": 27_716,
         "slots_by_board_size": {
@@ -472,13 +485,14 @@ def main() -> int:
             "capture-fixture-19x19": 361,
             "ko-psk-fixture": 59,
             "pass-metadata-fixture": 9,
-            "randomized-ordinal-dense-19x19": 9_444_121,
+            "randomized-ordinal-dense-19x19": 9_296_472,
+            "randomized-ordinal-psk-19x19": 147_649,
             "suicide-fixture": 9,
             "suicide-fixture-19x19": 361,
             "word-tail-fixture-19x19": 361,
         },
         "suicide_slots": 69_968,
-        "superko_rejections": 2,
+        "superko_rejections": 411,
     }
     if type(scale_modes) is not dict or set(scale_modes) != {
         "default",
@@ -520,11 +534,15 @@ def main() -> int:
     sanitizer_transcript_sha256 = scale_sanitizer.pop(
         "sanitizer_transcript_sha256", None
     )
+    require_sha256_attestation(
+        "CUDA memcheck scale runner executable SHA-256",
+        scale_sanitizer.pop("memcheck_scale_runner_executable_sha256", None),
+    )
     expected_scale_sanitizer = {
         "batch_state_limit": 8,
         "compute_capability": "12.0",
         "corpus_sha256": (
-            "1e1561886d3e761972cd1df3e6cf23af5e12515f7a26e1beab9e90a599a8f305"
+            "077360dda6924d29f6d47e2d3361248eb368b8cd1159d960b2152f898ba720bf"
         ),
         "device_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
         "error_exitcode": 99,
@@ -541,7 +559,7 @@ def main() -> int:
             "exit_code": 0,
             "mismatches": 0,
             "result_sha256": (
-                "7fc5bf5ba416b464647e5f3034c98ca08bbb3df40a1a5d14449ad46a426ec563"
+                "da2a44d03024f8374d438341003de5f970cdd9cb52060d6206bd8aeca5b109c7"
             ),
             "stream_modes": ["default", "nondefault"],
             "target_unique_corpus_point_slots": 50_000,

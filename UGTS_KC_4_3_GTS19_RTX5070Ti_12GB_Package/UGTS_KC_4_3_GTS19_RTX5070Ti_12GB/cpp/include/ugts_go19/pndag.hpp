@@ -15,6 +15,9 @@
 namespace ugts_go19 {
 
 class NativePNDAGCheckpointCodec;
+#if defined(UGTS_GO19_ENABLE_PNDAG_TEST_ACCESS)
+class ProofNumberDAGTestAccess;
+#endif
 
 constexpr std::uint64_t kProofInfinity =
     std::numeric_limits<std::uint64_t>::max();
@@ -104,7 +107,9 @@ class ProofNumberDAG {
 
  private:
   friend class NativePNDAGCheckpointCodec;
+#if defined(UGTS_GO19_ENABLE_PNDAG_TEST_ACCESS)
   friend class ProofNumberDAGTestAccess;
+#endif
 
   struct Node {
     std::size_t node_id = 0;

@@ -77,6 +77,8 @@ struct Aggregate {
   std::uint64_t superko_rejections = 0;
   std::uint64_t globally_legal_children = 0;
   std::uint64_t compared_child_words = 0;
+  std::uint64_t capture_slots = 0;
+  std::uint64_t captured_stones = 0;
   std::uint64_t batch_calls = 0;
   std::uint64_t high_water_requested_device_bytes = 0;
   std::uint64_t minimum_free_device_bytes_before_batch =
@@ -348,9 +350,28 @@ std::vector<CorpusEntry> BuildCorpus(std::uint64_t seed,
       throw std::runtime_error("randomized state ordinal encoding overflow");
     }
     AddEntry(&corpus, "random-ordinal-dense-" + std::to_string(index),
-             "randomized-ordinal-dense-19x19", rules19,
-             ExplicitState(rules19, std::move(board),
-                           (random.Next() & 1U) == 0U ? kBlack : kWhite));
+             index % 64U == 0U ? "randomized-ordinal-psk-19x19"
+                               : "randomized-ordinal-dense-19x19",
+             rules19,
+             [&] {
+               auto state = ExplicitState(
+                   rules19, std::move(board),
+                   (random.Next() & 1U) == 0U ? kBlack : kWhite);
+               if (index % 64U != 0U) return state;
+               for (int move = 0; move < 361; ++move) {
+                 try {
+                   const auto child =
+                       ugts_go19::ApplyMove(state, move, rules19).state.board;
+                   state.seen_boards.push_back(child);
+                   static_cast<void>(
+                       ugts_go19::CanonicalStateJson(state, rules19));
+                   return state;
+                 } catch (const ugts_go19::IllegalMove&) {
+                 }
+               }
+               throw std::runtime_error(
+                   "randomized PSK state has no poisonable local child");
+             }());
   }
 
   std::set<std::string> exact_states;
@@ -512,6 +533,10 @@ void CheckBatchInvariants(
         ++candidates;
         aggregate->maximum_capture =
             std::max(aggregate->maximum_capture, slot.captured);
+        if (slot.captured != 0U) {
+          ++aggregate->capture_slots;
+          aggregate->captured_stones += slot.captured;
+        }
         if (slot.superko_rejected) {
           ++superko;
         } else {
@@ -701,6 +726,8 @@ bool SameExactTotals(const Aggregate& left, const Aggregate& right) {
          left.superko_rejections == right.superko_rejections &&
          left.globally_legal_children == right.globally_legal_children &&
          left.compared_child_words == right.compared_child_words &&
+         left.capture_slots == right.capture_slots &&
+         left.captured_stones == right.captured_stones &&
          left.batch_calls == right.batch_calls &&
          left.maximum_capture == right.maximum_capture &&
          left.slots_by_board_size == right.slots_by_board_size &&
@@ -792,6 +819,8 @@ std::string CudaCompiler() {
 void PrintMode(std::string_view name, const Aggregate& aggregate) {
   std::cout << '"' << name << "\":{\"adapter_batch_calls\":"
             << aggregate.batch_calls
+            << ",\"capture_slots\":" << aggregate.capture_slots
+            << ",\"captured_stones\":" << aggregate.captured_stones
             << ",\"compared_child_words\":"
             << aggregate.compared_child_words
             << ",\"elapsed_seconds\":" << std::fixed

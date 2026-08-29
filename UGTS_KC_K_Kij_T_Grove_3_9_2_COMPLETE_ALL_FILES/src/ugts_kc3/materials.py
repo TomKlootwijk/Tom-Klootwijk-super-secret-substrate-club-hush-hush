@@ -118,12 +118,73 @@ def shade_lambert(
     """Small deterministic preview shader; not a full production BRDF."""
     material.validate()
     n = normalize(normal)
-    l = normalize(scale(light_direction, -1.0))
-    ndotl = max(0.0, dot(n, l))
+    light = normalize(scale(light_direction, -1.0))
+    ndotl = max(0.0, dot(n, light))
     diffuse_weight = (1.0 - material.metallic) * (ambient + light_intensity * ndotl)
     base = material.base_color[:3]
     return tuple(
         max(0.0, base[i] * diffuse_weight * light_color[i] + material.emissive[i])
+        for i in range(3)
+    )  # type: ignore[return-value]
+
+
+def shade_pbr_lite(
+    material: PBRMaterial,
+    normal: Vec3,
+    light_direction: Vec3,
+    view_direction: Vec3,
+    light_color: Color3 = (1.0, 1.0, 1.0),
+    light_intensity: float = 1.0,
+    ambient: float = 0.08,
+) -> Color3:
+    """Deterministic multiply-only PBR-lite shading shared by compact previews."""
+    material.validate()
+    n = normalize(normal)
+    light = normalize(scale(light_direction, -1.0))
+    view = normalize(view_direction)
+    halfway = normalize(add(light, view))
+
+    ndotl = clamp(dot(n, light), 0.0, 1.0)
+    ndotv = clamp(dot(n, view), 0.0, 1.0)
+    ndoth = clamp(dot(n, halfway), 0.0, 1.0)
+    smooth = 1.0 - material.roughness
+
+    one_minus_ndotv = 1.0 - ndotv
+    one_minus_ndotv2 = one_minus_ndotv * one_minus_ndotv
+    rim = one_minus_ndotv2 * one_minus_ndotv2
+    fresnel = rim * one_minus_ndotv
+
+    ndoth2 = ndoth * ndoth
+    broad = ndoth2 * ndoth2
+    ndoth8 = broad * broad
+    sharp = ndoth8 * ndoth8
+    smooth2 = smooth * smooth
+    lobe = broad * (1.0 - smooth2) + sharp * smooth2
+
+    diffuse_scale = (1.0 - material.metallic) * (
+        ambient
+        + light_intensity
+        * ndotl
+        * (0.65 + 0.35 * material.roughness)
+    )
+    spec_scale = (
+        light_intensity
+        * ndotl
+        * lobe
+        * (0.25 + 1.75 * smooth)
+    )
+    rim_scale = rim * (0.03 + 0.07 * smooth)
+    base = material.base_color[:3]
+    f0 = tuple(
+        (1.0 - material.metallic) * 0.04 + material.metallic * value
+        for value in base
+    )
+    spec_color = tuple(value + (1.0 - value) * fresnel for value in f0)
+    return tuple(
+        light_color[i]
+        * (base[i] * diffuse_scale + spec_color[i] * spec_scale)
+        + f0[i] * rim_scale
+        + material.emissive[i]
         for i in range(3)
     )  # type: ignore[return-value]
 

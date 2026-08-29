@@ -40,7 +40,8 @@ KXK_PARTITION_LEMMA_VERIFIER_PROFILE: Final = (
     "ugts-chess-kxk-ranked-partition-full-replay-1.0"
 )
 KXK_BASE_GAME_PROFILE: Final = (
-    "orthodox-kxk-checkmate-stalemate-infinite-play-draw-1.0"
+    "orthodox-kxk-white-strong-canonical-no-castling-no-ep-no-counters-"
+    "no-history-infinite-play-draw-1.0"
 )
 KXK_SOURCE_SCHEMA: Final = "ugts-kc-chess-kxk-tablebase-1.0"
 
@@ -63,8 +64,10 @@ _OUTCOME_NAMES: Final = {
 
 MAX_TRANSPORT_BYTES: Final = 4 * 1024 * 1024
 MAX_METADATA_BYTES: Final = 64 * 1024
+MAX_KXK_PARTITION_LEMMA_HEAD_BYTES: Final = 64 * 1024
 MAX_RANK: Final = 255
 MAX_LEGAL_SUCCESSORS: Final = 256
+MAX_LEGAL_TRANSITIONS: Final = ADDRESS_COUNT * MAX_LEGAL_SUCCESSORS
 
 _SEMANTICS: Final = (
     "Outcome is from the side-to-move perspective; DTM counts plies to "
@@ -294,10 +297,12 @@ class KXKPartitionLemmaHead:
         _require_int(
             self.legal_transition_count,
             label="legal_transition_count",
+            maximum=MAX_LEGAL_TRANSITIONS,
         )
         exits = _require_int(
             self.capture_draw_exit_count,
             label="capture_draw_exit_count",
+            maximum=MAX_LEGAL_TRANSITIONS,
         )
         if exits > self.legal_transition_count:
             raise ValueError("KXK lemma head has more exits than legal transitions")
@@ -346,6 +351,11 @@ class KXKPartitionLemmaHead:
     ) -> "KXKPartitionLemmaHead":
         if not isinstance(value, (bytes, bytearray, memoryview)):
             raise TypeError("KXK lemma head must be bytes-like")
+        byte_size = value.nbytes if isinstance(value, memoryview) else len(value)
+        if not 0 < byte_size <= MAX_KXK_PARTITION_LEMMA_HEAD_BYTES:
+            raise ValueError(
+                "KXK lemma head byte size is outside the supported range"
+            )
         snapshot = bytes(value)
         try:
             raw = json.loads(snapshot)
@@ -509,12 +519,31 @@ def _stable_snapshot(path: str | Path, *, maximum: int, label: str) -> _FileSnap
 
 def _confirm_snapshot(snapshot: _FileSnapshot, *, label: str) -> None:
     try:
+        with snapshot.path.open("rb", buffering=0) as stream:
+            before = _identity(os.fstat(stream.fileno()))
+            try:
+                content = _read_bounded(
+                    stream,
+                    maximum=len(snapshot.content),
+                    label=label,
+                )
+            except KXKPartitionLemmaIntegrityError as exc:
+                raise KXKPartitionLemmaSourceChangedError(
+                    f"{label} grew after its exact capture"
+                ) from exc
+            after = _identity(os.fstat(stream.fileno()))
         current = _identity(os.stat(snapshot.path))
     except OSError as exc:
         raise KXKPartitionLemmaSourceChangedError(
             f"cannot rebind {label} path after capture: {exc}"
         ) from exc
-    if current != snapshot.identity:
+    if (
+        before != after
+        or after != snapshot.identity
+        or current != snapshot.identity
+        or content != snapshot.content
+        or hashlib.sha256(content).hexdigest() != snapshot.sha256
+    ):
         raise KXKPartitionLemmaSourceChangedError(
             f"{label} path no longer names the captured immutable source"
         )
@@ -562,9 +591,11 @@ def _strict_metadata(
         "fifty_move_boundary": _FIFTY_MOVE_BOUNDARY,
     }
     for key, expected in expected_scalars.items():
-        if decoded.get(key) != expected or (
-            isinstance(expected, int) and isinstance(decoded.get(key), bool)
-        ):
+        actual = decoded.get(key)
+        if (
+            isinstance(expected, int)
+            and (type(actual) is not int or actual != expected)
+        ) or (not isinstance(expected, int) and actual != expected):
             raise KXKPartitionLemmaIntegrityError(
                 f"KXK metadata field {key!r} is not canonical"
             )
@@ -620,6 +651,10 @@ def _decode_transport(transport: bytes, *, piece: str) -> bytes:
     ):
         raise KXKPartitionLemmaIntegrityError(
             "KXK transport is truncated, concatenated, or has the wrong decoded size"
+        )
+    if decoded[9:12] != b"\x00\x00\x00":
+        raise KXKPartitionLemmaIntegrityError(
+            "KXK decoded header reserved bytes are nonzero"
         )
     try:
         magic, piece_code, count = _HEADER.unpack(decoded[: _HEADER.size])
@@ -1051,6 +1086,8 @@ __all__ = [
     "KXK_BASE_GAME_PROFILE",
     "KXK_PARTITION_LEMMA_HEAD_SCHEMA",
     "KXK_PARTITION_LEMMA_VERIFIER_PROFILE",
+    "MAX_KXK_PARTITION_LEMMA_HEAD_BYTES",
+    "MAX_LEGAL_TRANSITIONS",
     "KXKPartitionLemmaError",
     "KXKPartitionLemmaHead",
     "KXKPartitionLemmaHeadMismatchError",

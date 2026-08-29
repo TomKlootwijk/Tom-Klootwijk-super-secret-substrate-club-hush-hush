@@ -105,6 +105,14 @@ It never emits more than one ring in an update or hides a suspended program in t
 same block settings and behavior are checked in the editor, desktop Play, retained HTML5 and native
 Android; its compact encoding is append-only opcode 23.
 
+**When Message Heard** starts a graph when another graph uses **Send a Game Message** with the exact
+same saved name. Message names are short portable IDs such as `player.dashed`; matching is exact, not
+fuzzy. The receiver exposes who sent it, an optional target and its own bound entity. Broadcasts reach
+active object logic in stable scene/graph order and then World Logic; targeted messages reach the
+target owner's logic plus World Logic. A message sent while another is being heard waits in the same
+bounded queue, so nested conversations are breadth-first instead of re-entering a graph. Its compact
+encoding is append-only opcode 25.
+
 Mobile 3D also has **Trigger Enter** and **Trigger Exit** event blocks. They run once when the active
 player crosses a sensor area's edge and provide friendly `Sensor`, `Player` and bound `Entity` values.
 The same roots run in desktop Play and the native Android player without adding a collision push.
@@ -135,6 +143,12 @@ Origin rotation.
 Still under **World Logic**, open **Count the Timer Rings**. Its repeating one-second **When Timer
 Rings** block sends **Count** straight into **Set World State** as `timer_rings`. This is the readable
 way to teach “once every second”; you do not need to connect Every Frame to a hand-built counter.
+
+Open **Hear the Dash Message** next. The separate Dash graph sends `player.dashed`; this World Logic
+`message_lesson` graph receives that exact name with **When Message Heard** and writes
+`heard_message=true`. Press Play and dash to watch the message cross between graphs in Logic Trail.
+Together, First Steps contains seven graphs, 27 nodes and seven bindings including four World Logic
+bindings.
 
 Select a non-dynamic Mobile 3D object and find **Movement Pattern** in the Inspector. Choose **Off**,
 **Orbit**, **Spiral Out** or **Spiral In**, then set a radius, turn speed and start angle. The editor
@@ -202,18 +216,33 @@ project. It clears only SurfaceFlinger's diagnostic latency history between samp
 disconnected phone, a game that is not running, or a screen with no active game surface produces a
 plain-language stop message rather than a partial success.
 
-The current opcode-24 APK has been built and inspected locally, but ADB reported zero connected
-devices, so it has not yet been freshly installed, launched or profiled. It is 1,460,361 bytes with
-SHA-256 `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`; local inspection verifies
-the expected package/SDK/GLES/ARM64/debug-v2-signing metadata and exact embedded current sidecars.
-The preceding opcode-23 build remains preserved as
+The post-audit canonical opcode-25 APK is locally built and inspected at
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk`: 1,451,149 bytes with SHA-256
+`1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`. The `message-op25-debug`
+and `message-op25-audit-fixed-debug` copies are byte-identical and contain the same current compact
+assets. The Poco disconnected before final installation, so this post-audit build has not been
+installed, opened or profiled on the phone yet.
+
+The last physically verified pre-audit opcode-25 APK is preserved as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with SHA-256
+`FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`. Xiaomi `2412DPC0AG` /
+`rodin` installed and cold-launched it; the pulled 1,449,653-byte base APK has the exact same hash.
+Its bounded 30-second read-only profile measured 120.12 effective FPS, 8.372/10.183/12.641 ms
+p50/p95/p99, thermal status 0 and no crashes or warnings; the capture is
+`validation/device/opcode25-message-poco-profile.json`. That evidence belongs only to FBCB, not the
+newer `1003…` APK.
+
+The preceding opcode-24 build remains preserved as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-cone-op24-debug.apk`, 1,460,361 bytes with SHA-256
+`917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`. The opcode-23 build remains at
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
 `C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`.
 The preserved 1,441,929-byte opcode-22
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk`—not this timer-capable build—owns the
 120.23 effective FPS, 10.118 ms p95, thermal-status-0 30-second baseline. A still earlier APK owns the
-64.9-second idle baseline. Neither short baseline replaces a fresh opcode-24 device run or
-interaction-heavy/touch, unplugged, long-duration and fallback-tier testing.
+64.9-second idle baseline. These historical baselines do not replace the opcode-25 evidence above.
+Interaction-heavy/touch, unplugged, long-duration, explicit fallback-rate and lower-tier testing
+remain open, as does the first device install/check of the post-audit build.
 
 Generate and compile a direct-device Poco build with:
 

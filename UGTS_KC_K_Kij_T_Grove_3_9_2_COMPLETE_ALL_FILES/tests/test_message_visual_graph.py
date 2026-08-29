@@ -281,7 +281,7 @@ class MessageVisualGraphTests(unittest.TestCase):
             ["start", "nested", "b_done", "c_done"],
         )
 
-    def test_legacy_eager_ready_defers_message_delivery_to_outer_tick(self) -> None:
+    def test_direct_attach_finishes_one_ready_batch_immediately(self) -> None:
         world = GameWorld()
         listener = VisualGraph(
             "listener",
@@ -303,13 +303,114 @@ class MessageVisualGraphTests(unittest.TestCase):
             ),
             (_link("ready", "out", "send", "in"),),
         )
+        attach_graph(world, listener, run_ready=False)
         attach_graph(world, sender)
-        # This listener registers after the sender's eager Ready already queued
-        # the message.  Delivery still waits for the one world-level late drain.
-        attach_graph(world, listener)
-        self.assertNotIn("heard", world.state)
-        world.step()
         self.assertTrue(world.state["heard"])
+
+    def test_fixed_senders_use_scene_graph_then_world_order(self) -> None:
+        world = GameWorld()
+        world.spawn("scene_b", emit_event=False)
+        world.spawn("scene_a", emit_event=False)
+
+        def sender(graph_id: str, message: str) -> VisualGraph:
+            return VisualGraph(
+                graph_id,
+                (
+                    GraphNode("tick", "event.tick"),
+                    GraphNode("send", "action.emit_event", {"kind": message}),
+                ),
+                (_link("tick", "out", "send", "in"),),
+            )
+
+        bindings = (
+            attach_graph(world, sender("m_world", "world_m"), run_ready=False),
+            attach_graph(
+                world,
+                sender("m_scene_a", "scene_a_m"),
+                entity_id="scene_a",
+                run_ready=False,
+            ),
+            attach_graph(
+                world,
+                sender("z_scene_b", "scene_b_z"),
+                entity_id="scene_b",
+                run_ready=False,
+            ),
+            attach_graph(
+                world,
+                sender("a_scene_b", "scene_b_a"),
+                entity_id="scene_b",
+                run_ready=False,
+            ),
+        )
+        run_ready_batch(bindings)
+        world.step()
+        self.assertEqual(
+            [event.kind for event in world.events],
+            ["scene_b_a", "scene_b_z", "scene_a_m", "world_m"],
+        )
+
+    def test_trigger_senders_are_canonical_and_reserved_messages_do_not_reenter(self) -> None:
+        world = GameWorld()
+        world.spawn("sensor", emit_event=False)
+        world.spawn("player", emit_event=False)
+
+        def trigger_sender(graph_id: str, marker: str) -> VisualGraph:
+            return VisualGraph(
+                graph_id,
+                (
+                    GraphNode("entered", "event.trigger_enter"),
+                    GraphNode("mark", "action.emit_event", {"kind": marker}),
+                ),
+                (_link("entered", "out", "mark", "in"),),
+            )
+
+        attach_graph(
+            world,
+            trigger_sender("z_sensor", "sensor_z"),
+            entity_id="sensor",
+            run_ready=False,
+        )
+        attach_graph(
+            world,
+            trigger_sender("a_sensor", "sensor_a"),
+            entity_id="sensor",
+            run_ready=False,
+        )
+        attach_graph(
+            world,
+            trigger_sender("m_world", "world_m"),
+            run_ready=False,
+        )
+        world.emit("trigger_enter", source="sensor", target="player")
+        self.assertEqual(
+            [event.kind for event in world.events],
+            ["trigger_enter", "sensor_a", "sensor_z", "world_m"],
+        )
+        world.step()
+
+        ordinary_events = []
+        world.on("trigger_enter", ordinary_events.append)
+        synthetic = VisualGraph(
+            "synthetic",
+            (
+                GraphNode("ready", "event.ready"),
+                GraphNode(
+                    "send",
+                    "action.emit_event",
+                    {
+                        "kind": "trigger_enter",
+                        "source": "sensor",
+                        "target": "player",
+                    },
+                ),
+            ),
+            (_link("ready", "out", "send", "in"),),
+        )
+        start = len(world.events)
+        attach_graph(world, synthetic)
+        self.assertEqual([event.kind for event in world.events[start:]], ["trigger_enter"])
+        self.assertEqual(len(ordinary_events), 1)
 
     def test_tick_messages_run_after_every_graph_tick_root(self) -> None:
         world = GameWorld()

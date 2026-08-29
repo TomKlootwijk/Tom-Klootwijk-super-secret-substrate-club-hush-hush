@@ -41,7 +41,7 @@ from ..androidexport import (
     write_mobile3d_gltf,
 )
 from ..graphpack import GraphPackError, compile_graph_pack_bytes
-from ..mobile3d import Mesh3DRecord, Mobile3DProject
+from ..mobile3d import Material3DRecord, Mesh3DRecord, Mobile3DProject
 from ..project import GameProject
 from ..templates import first_steps_project
 from ..templates3d import first_steps_mobile3d_project
@@ -233,6 +233,40 @@ class MeshResourcesCommand(QUndoCommand):
 
     def redo(self) -> None:
         self.document.replace_mesh_resources(self.after)
+
+
+class MaterialLookCommand(QUndoCommand):
+    """One undoable material edit, including any safe clone and node rebind."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before_nodes: tuple[Any, ...],
+        after_nodes: tuple[Any, ...],
+        before_materials: Mapping[str, Material3DRecord],
+        after_materials: Mapping[str, Material3DRecord],
+        selection: SelectionRef,
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before_nodes = copy.deepcopy(before_nodes)
+        self.after_nodes = copy.deepcopy(after_nodes)
+        self.before_materials = copy.deepcopy(dict(before_materials))
+        self.after_materials = copy.deepcopy(dict(after_materials))
+        self.selection = selection
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_material_look(
+            self.before_nodes, self.before_materials, self.selection
+        )
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_material_look(
+            self.after_nodes, self.after_materials, self.selection
+        )
 
 
 class MovementPatternCommand(QUndoCommand):
@@ -636,6 +670,7 @@ class EditorMainWindow(QMainWindow):
         )
         self.inspector.transformEdited.connect(self._inspector_transform_edited)
         self.inspector.resourceEdited.connect(self._inspector_resource_edited)
+        self.inspector.materialLookEdited.connect(self._inspector_material_look_edited)
         self.inspector.triggerAreaEdited.connect(self._inspector_trigger_area_edited)
         self.inspector.populationEdited.connect(self._inspector_population_edited)
         self.inspector.movementPatternEdited.connect(self._inspector_movement_pattern_edited)
@@ -1206,6 +1241,56 @@ class EditorMainWindow(QMainWindow):
             self.build_output.append(f"Appearance change paused: {exc}", "warning")
             self._gentle_message(str(exc))
 
+    def _inspector_material_look_edited(self, look: str) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        if look == "custom":
+            # Custom describes values that do not match a preset. Selecting it
+            # never rewrites an already classified material.
+            self.inspector.set_selection(self.document, selection)
+            return
+        try:
+            before_nodes = tuple(self.document.scene_objects())
+            before_materials = self.document.material_resources()
+            after_nodes, after_materials = self.document.material_look_snapshot(
+                selection, look
+            )
+            before_node_data = [record.to_dict() for record in before_nodes]
+            after_node_data = [record.to_dict() for record in after_nodes]
+            before_material_data = {
+                key: material.to_dict() for key, material in before_materials.items()
+            }
+            after_material_data = {
+                key: material.to_dict() for key, material in after_materials.items()
+            }
+            if (
+                before_node_data == after_node_data
+                and before_material_data == after_material_data
+            ):
+                self.inspector.set_selection(self.document, selection)
+                return
+            look_name = friendly(look)
+            self.undo_stack.push(
+                MaterialLookCommand(
+                    self.document,
+                    f"Set {friendly(selection.object_id)} Material Look to {look_name}",
+                    before_nodes,
+                    after_nodes,
+                    before_materials,
+                    after_materials,
+                    selection,
+                )
+            )
+            self._gentle_message(
+                f"{friendly(selection.object_id)} now uses {look_name}. "
+                "Its colour stays the same, and Undo restores the previous material."
+            )
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Material Look change paused: {exc}", "warning")
+            self._gentle_message(str(exc))
+
     def _inspector_trigger_area_edited(self, values: Mapping[str, Any]) -> None:
         selection = self.document.selection
         if selection is None or self._playing:
@@ -1751,6 +1836,7 @@ class EditorMainWindow(QMainWindow):
 __all__ = [
     "EditorMainWindow",
     "GraphCommand",
+    "MaterialLookCommand",
     "PhoneProfileWorker",
     "SceneObjectsCommand",
     "TransformCommand",

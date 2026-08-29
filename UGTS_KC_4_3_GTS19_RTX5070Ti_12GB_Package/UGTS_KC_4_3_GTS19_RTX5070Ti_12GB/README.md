@@ -136,10 +136,12 @@ complete corpus on a nondefault stream for 20,000,606 total C++/CUDA checks.
 The unique breadth includes 554,496 slots from reachable full-history 19×19
 campaign snapshots and 9,444,121 from deterministic randomized 19×19 boards
 with injective ordinal bytes. Canonical state bytes independently reject any
-duplicate. Every slot—including occupied, suicide, local candidate, and exact
-PSK cases—was CPU-recomputed inside the production adapter; both modes had the
-same result digest and zero mismatches. The measured adapter-plus-validation
-rates were 155,493 and 165,556 slots/s on this laptop. These are hardware-
+duplicate; 409 randomized states additionally poison an exact local child,
+bringing each mode to 411 exact PSK rejections. Every slot—including occupied,
+suicide, local candidate, capture, and PSK cases—was CPU-recomputed inside the
+production adapter; both modes had the same result digest and zero mismatches.
+The measured adapter-plus-validation rates were 157,735 and 197,008 slots/s on
+this laptop. These are hardware-
 specific, non-proof C++/CUDA measurements: Python was not run over the 10m
 corpus, and proof-path integration and the unrestricted 19×19 result remain
 open.

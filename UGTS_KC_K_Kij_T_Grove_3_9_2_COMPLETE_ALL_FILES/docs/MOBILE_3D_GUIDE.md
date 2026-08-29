@@ -29,8 +29,16 @@ counter. Save a positive **Seconds** value through 86,400 on the block (default 
 an inactive owner while the world continues, and resets at Ready/restart. It produces at most one
 ring per update plus Count, Remaining and Entity outputs; no timer clock or suspended graph is saved.
 First Steps demonstrates it in **World Logic → Count the Timer Rings**, writing the one-second repeat
-count to `timer_rings`. The current starter contains six graphs, 23 nodes and six bindings,
-including three world bindings, and the timer and cone query have
+count to `timer_rings`.
+
+**When Message Heard** receives an exact saved portable message name and exposes source, optional
+target and bound entity. **Send a Game Message** uses a bounded non-reentrant FIFO: broadcasts visit
+active object bindings in canonical scene/graph order before World Logic, targeted sends reach the
+target owner plus World Logic, and nested sends wait breadth-first. First Steps demonstrates this in
+World Logic → **Hear the Dash Message**: the Dash graph sends `player.dashed`, and the separate
+`message_lesson` graph receives it and writes `heard_message=true`. The current starter contains
+seven graphs, 27 nodes and seven bindings, including four world bindings. The timer, cone query and
+message event have
 editor/desktop/retained-web/KCVG/native parity.
 
 Logic Blocks follows the selected node. An unbound node shows a blank graph until its first edit

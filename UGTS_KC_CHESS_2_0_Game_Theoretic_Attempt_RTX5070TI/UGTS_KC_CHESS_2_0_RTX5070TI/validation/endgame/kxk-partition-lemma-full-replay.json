@@ -1,0 +1,30 @@
+{
+  "schema": "ugts-chess-kxk-partition-lemma-full-replay-witness-1.0",
+  "captured_on": "2026-08-29",
+  "device_scope": "CPU canonical Python rule oracle; no GPU result is trusted or used",
+  "authority_note": "Timings and retained heads are witnesses only. A consumer must fully replay the exact source bytes or use the process-local cache populated by a prior complete replay; this file and the retained JSON files are never WDL promotion sources.",
+  "timing_provenance": "Historical timings from successful full replays of the same source commitments, graph loop, and rule oracle before parser/source hardening; they are not timings of the finalized verifier.",
+  "head_hash_provenance": "Heads were deterministically reconstructed from those completed replay metrics after the base-game profile was renamed to state the already-used canonical Position subdomain explicitly.",
+  "base_game_profile": "orthodox-kxk-white-strong-canonical-no-castling-no-ep-no-counters-no-history-infinite-play-draw-1.0",
+  "head_artifact_encoding": "canonical head bytes followed by exactly one LF",
+  "runs": [
+    {
+      "piece": "Q",
+      "historical_replay_elapsed_seconds": 91.02125250000972,
+      "head_sha256": "48f8e342a23be6448f922eaa2014040f862133f61ab6f93a7428d7e0e4ce9dac",
+      "head_file": "kqk-partition-lemma-head.json",
+      "canonical_head_bytes": 1005,
+      "raw_file_bytes": 1006,
+      "raw_file_sha256": "12269b92d8d32649154b267d03f99be924585cd0bc0b8a6540161abcbde9aa35"
+    },
+    {
+      "piece": "R",
+      "historical_replay_elapsed_seconds": 91.31270020001102,
+      "head_sha256": "00534bf1dca4cbd1ea42308509fc8b94363a3747cf2ec4b19227dc64be5a2b43",
+      "head_file": "krk-partition-lemma-head.json",
+      "canonical_head_bytes": 1004,
+      "raw_file_bytes": 1005,
+      "raw_file_sha256": "2d355dd1232f6e75e494774e15ef0f2a4c18d5b9aa1761efc131b17b559f5372"
+    }
+  ]
+}

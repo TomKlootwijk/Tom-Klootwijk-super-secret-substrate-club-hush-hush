@@ -60,8 +60,9 @@ states once on each of the default and nondefault streams. It reports the second
 traversal separately rather than doubling the unique count. The primary corpus
 contains 554,496 reachable full-history campaign slots and 9,444,121 randomized
 ordinal-injective 19×19 slots. Both stream modes produced the same result digest
-with zero mismatch; the measured 155,493/165,556 slots/s are hardware-specific,
-non-proof C++/CUDA results and do not claim Python coverage over the 10m corpus.
+with 411 exact PSK rejections and zero mismatch; the measured 157,735/197,008
+slots/s are hardware-specific, non-proof C++/CUDA results and do not claim
+Python coverage over the 10m corpus.
 
 This boundary is still not wired into proof search and establishes no solved-
 result claim. The dense 19×19 device representation uses 36,606 bytes per input

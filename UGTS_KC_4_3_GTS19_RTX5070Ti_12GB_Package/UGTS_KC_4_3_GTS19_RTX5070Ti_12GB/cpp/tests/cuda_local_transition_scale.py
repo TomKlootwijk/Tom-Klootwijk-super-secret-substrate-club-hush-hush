@@ -45,6 +45,8 @@ def validate_mode(mode: object, label: str) -> dict[str, Any]:
         raise AssertionError(f"{label} mode is not an object")
     integer_fields = (
         "adapter_batch_calls",
+        "capture_slots",
+        "captured_stones",
         "compared_child_words",
         "globally_legal_children",
         "high_water_requested_device_bytes",
@@ -105,6 +107,7 @@ def validate_mode(mode: object, label: str) -> dict[str, Any]:
         "capture-fixture-19x19",
         "ko-psk-fixture",
         "randomized-ordinal-dense-19x19",
+        "randomized-ordinal-psk-19x19",
         "suicide-fixture-19x19",
         "word-tail-fixture-19x19",
     }
@@ -256,6 +259,7 @@ def run_runner(
         "--seed",
         str(seed),
     ]
+    runner_sha256_before = file_sha256(runner)
     process = subprocess.run(
         command,
         text=True,
@@ -263,6 +267,9 @@ def run_runner(
         timeout=7_200,
         check=False,
     )
+    runner_sha256_after = file_sha256(runner)
+    if runner_sha256_after != runner_sha256_before:
+        raise RuntimeError("scale runner executable changed during execution")
     if process.returncode != 0:
         raise RuntimeError(
             f"scale runner failed with {process.returncode}: {process.stderr.strip()}"
@@ -271,12 +278,14 @@ def run_runner(
         decoded = json.loads(process.stdout)
     except json.JSONDecodeError as error:
         raise AssertionError("scale runner emitted invalid JSON") from error
-    return validate_result(
+    result = validate_result(
         decoded,
         target_unique_corpus_slots=target_unique_corpus_slots,
         batch_states=batch_states,
         seed=seed,
     )
+    result["scale_runner_executable_sha256"] = runner_sha256_before
+    return result
 
 
 def add_provenance(result: dict[str, Any]) -> dict[str, Any]:

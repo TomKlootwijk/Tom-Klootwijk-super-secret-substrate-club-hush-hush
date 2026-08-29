@@ -4,11 +4,10 @@ Actual native Android source, C++ runtime, shaders, KC3D392 scene, Python packag
 
 ## Verified in current source on 29 August 2026
 
-- The full suite passes 483 tests plus 87 subtests in 59.77 seconds. Focused opcode-24 verification
-  passes 14 tests plus 25 subtests across registry/runtime, compact pack, retained browser, native
-  host/Android fixtures, editor authoring and First Steps integration. Targeted Ruff,
-  launcher/editor smokes and all native-host build targets also pass.
-- The built-in vocabulary now contains 24 blocks. **When Timer Rings** is append-only `KCVG001`
+- Focused opcode-25 registry/runtime, compact-pack, retained-browser, native-host/Android, editor and
+  First Steps checks pass, along with targeted Ruff. The full suite is green: 510 passed, 100
+  subtests passed in 66.69s.
+- The built-in vocabulary now contains 25 blocks. **When Timer Rings** is append-only `KCVG001`
   opcode 23. **Seconds** is a saved finite positive binary32 literal no greater than 86,400 and
   defaults to 1; **Repeat** is a saved boolean literal and defaults to true. Each graph binding owns
   its active fixed-step count. An inactive entity pauses only its binding while the world continues,
@@ -23,36 +22,69 @@ Actual native Android source, C++ runtime, shaders, KC3D392 scene, Python packag
   explicit world-axis X/Y/Z and minimum cosine. The finite nonzero axis is normalized with the shared
   float32 schedule; candidate direction uses the source-aligned clamped distance denominator. There
   is no runtime trigonometry, and Origin rotation/scale are deliberately irrelevant.
+- **When Message Heard** is append-only opcode 25. Its saved literal message name is exact and
+  portable; outputs expose source, optional target and bound entity. Opcode 15 sends enter a bounded,
+  non-reentrant FIFO with breadth-first nested delivery. Broadcasts visit active entity bindings by
+  canonical scene index then graph ID and world bindings last; a target reaches that owner plus world
+  logic. Ready handlers register and finish before delivery. The cap is 64 events and 16,384 total
+  outer-root/handler steps, with explicit `EventLimit`/`TotalStepLimit`; no payload or queue is serialized.
 - The offscreen UGTS Studio smoke run covers 2D/3D selection-owned graph authoring, appearance,
   Undo/Redo, live score and Poco build targets. Check Phone remains nonblocking and refuses a missing
   device, stopped game or inactive surface without mutating project or device/game settings.
-- The child-friendly Mobile 3D source exports six visual graphs with 23 nodes and six bindings,
-  including three world bindings. `visual_graphs.kcvg` is 1,085 bytes with SHA-256
-  `2c5c6edb0c804da7fb2b6edab8c6beab12ccd2dac8b4e743d03c6194aff4af27`. **Find the Goal** explicitly
+- The child-friendly Mobile 3D source exports seven visual graphs with 27 nodes and seven bindings,
+  including four world bindings. `visual_graphs.kcvg` is 1,265 bytes with SHA-256
+  `363EED6B1054CE0809F57FDF934755670F40D1273EEC92BA3720CC7B9E80BB3B`. **Find the Goal** explicitly
   searches from Player for Goal within 9 m and stores `found` as `nearby_goal`; **Count the Timer
   Rings** stores a repeating one-second timer's count as `timer_rings`; **Find the Goal Ahead** stores
-  `goal_ahead=true` in the verified fresh run. Its state SHA-256 is
-  `71df205686c92c217c3b1e23ad00929a331d07b5bb43e64d27023ec17d490a9c`.
+  `goal_ahead=true`; the **First Steps** editor tab adds World Logic → **Hear the Dash Message**.
+  The Dash graph sends `player.dashed`, and the separate `message_lesson` world graph receives it.
+  Verified idle state has SHA-256
+  `a1256e5e78e621f8a4ca75b896797ec4d96fbfce06d67b0e912359b3dc273b24`, while the dash/message path
+  sets `heard_message=true` and `score=1`.
 - The same source emits a 914-byte packed log-polar kinematics asset with SHA-256
-  `8a45ddbf874d918cedaeb0161e80fef3314c2c2b0b21a45da90e22a18c4dd313` and a 60-byte `KCSP392`
-  asset with SHA-256 `e95bde225571ab5f6eac3b9c04cb1bd332a0c95c740b377ac2dee30460dd2fd1`, representing a recipe
+  `8A45DDBF874D918CEDAEB0161E80FEF3314C2C2B0B21A45DA90E22A18C4DD313` and a 60-byte `KCSP392`
+  asset with SHA-256 `E95BDE225571AB5F6EAC3B9C04CB1BD332A0C95C740B377AC2DEE30460DD2FD1`, representing a recipe
   for one authored crystal plus 17 deterministic render-only copies. The three compact sidecars total
-  2,059 bytes.
+  2,239 bytes.
 - Native touch routing keeps left/right roles by pointer ID, so holding movement while tapping dash
   remains independent of Android pointer-array order. Cancel, drag-not-tap, look and pinch paths are
   covered by the host harness.
-- The canonical `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk` is the new opcode-24 artifact:
-  1,460,361 bytes with SHA-256
-  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`. Local `aapt`/`apksigner`
+- The post-audit canonical opcode-25 APK is locally built and inspected at 1,451,149 bytes with
+  SHA-256 `1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`. The canonical
+  `Poco-X7-Pro-debug`, `message-op25-debug` and `message-op25-audit-fixed-debug` paths are
+  byte-identical. Package/version/SDK/GLES, ARM64-only native code, debug-certificate v2 signing and
+  the unchanged embedded KCVG/KCPK/KCSP assets verify. The Poco disconnected before final
+  installation, so no install, launch, installed-byte hash match or profile is claimed for this
+  `1003…` build.
+- The last physically verified pre-audit opcode-25 artifact is preserved explicitly at
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with SHA-256
+  `FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`. Local `aapt`/`apksigner`
   inspection verifies package `org.ugts.games.my_mobile_3d_game.pocox7pro`, version 392 /
   `3.9.2-poco-x7-pro`, minimum SDK 26, target/compile SDK 36, GLES 3.0, ARM64-only native code, a
-  debug certificate and APK Signature Scheme v2. Embedded KCVG/KCPK/KCSP sizes and hashes match the
-  current source sidecars exactly. ADB reported zero devices, so no install, cold launch, installed
-  hash match or profile is claimed for this APK.
+  debug certificate and APK Signature Scheme v2. Embedded KCVG/KCPK/KCSP sizes and hashes match
+  that build's sidecars exactly.
+- The preceding opcode-24 artifact is preserved at
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-cone-op24-debug.apk`: 1,460,361 bytes, SHA-256
+  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`.
 - The preceding opcode-23 artifact is preserved as
   `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`: 1,443,529 bytes, SHA-256
   `C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`. It is not the current source
   artifact and has no fresh physical-device evidence.
+
+## Physically verified pre-audit opcode-25 artifact
+
+- Xiaomi model `2412DPC0AG` / codename `rodin` installed and cold-launched the 1,449,653-byte
+  opcode-25 APK above. The pulled
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-message-op25-base.apk` has the exact same
+  SHA-256 `FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`, proving the installed
+  bytes match that preserved artifact.
+- The verified idle state SHA-256 is
+  `a1256e5e78e621f8a4ca75b896797ec4d96fbfce06d67b0e912359b3dc273b24`; exercising dash/message
+  behavior records `heard_message=true` and `score=1`.
+- Its bounded 30-second read-only profile collected 756 frame intervals at 120.12 effective FPS:
+  8.372 ms p50, 10.183 ms p95 and 12.641 ms p99. Android thermal status remained 0; the crash buffer
+  was empty and the profiler emitted no warnings. The complete capture is
+  `validation/device/opcode25-message-poco-profile.json`.
 
 ## Preceding installed opcode-22 artifact evidence
 
@@ -95,13 +127,15 @@ Actual native Android source, C++ runtime, shaders, KC3D392 scene, Python packag
   editor smoke. That installed copy also generated its Android source as 51 files / 306,288
   bytes with project digest prefix `38205fd7148b`.
 
-## Remaining device boundary
+## Remaining release and device boundary
 
-The current opcode-24 APK is locally built and inspected, but its physical-device steps remain open.
-The 30-second result above is a short baseline for the exact preceding opcode-22 APK, not a general
-device guarantee or evidence for **When Timer Rings** or **Find Object Ahead**. The prior 64.9-second idle baseline remains
-separate evidence for its exact still-earlier APK and workload. A fresh opcode-24 install, cold
-launch, installed hash match and profile remain unverified, alongside
-interaction-heavy/touch frame pacing, unplugged battery drain, long-duration thermal equilibrium,
-explicit 60/90 Hz fallback behavior and representative lower-tier hardware. Vulkan is not
-implemented; the demonstrated Android renderer is GLES3.
+The post-audit canonical APK is locally built, inspected and hash-identified, but has no device run
+because the Poco disconnected immediately before final installation. The exact pre-audit FBCB APK
+has the successful install, cold launch, pulled-byte hash match and short 30-second Poco profile.
+Neither short profile is a general device guarantee. A first post-audit install/hash/profile,
+interaction-heavy/touch frame pacing, unplugged battery drain, long-duration thermal
+equilibrium, explicit 60/90 Hz fallback behavior and representative lower-tier hardware remain open.
+
+UGTS is also not yet a complete Godot-like engine. The current editor, ECS, typed graphs and native
+GLES path are useful working slices, but reusable scene/prefab and animation workflows, richer
+physics/content pipelines, production signing/distribution and Vulkan remain incomplete.

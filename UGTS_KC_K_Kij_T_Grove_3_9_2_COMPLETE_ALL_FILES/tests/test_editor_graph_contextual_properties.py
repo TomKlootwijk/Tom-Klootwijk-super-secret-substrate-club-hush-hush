@@ -204,6 +204,26 @@ class ContextualGraphPropertyTests(unittest.TestCase):
         event_kind.lineEdit().editingFinished.emit()
         self.assertEqual(message.properties["kind"], "boss_awake")
 
+        sender_choices = {
+            event_kind.itemData(index) for index in range(event_kind.count())
+        }
+        self.assertIn("collision_enter", sender_choices)
+
+        receiver = GraphNode(
+            "receiver",
+            TEMPLATE_BY_KEY["event.message"],
+            {"message": "player.dashed"},
+        )
+        panel.set_node(receiver)
+        received_message = panel.editor_for("message")
+        self.assertIsInstance(received_message, QComboBox)
+        receiver_choices = {
+            received_message.itemData(index)
+            for index in range(received_message.count())
+        }
+        self.assertEqual(receiver_choices, {"graph_event", "player.dashed"})
+        self.assertNotIn("collision_enter", receiver_choices)
+
         state = GraphNode(
             "state", TEMPLATE_BY_KEY["value.state"], {"key": "my_custom_score", "default": 0}
         )

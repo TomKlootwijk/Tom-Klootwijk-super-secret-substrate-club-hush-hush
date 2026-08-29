@@ -97,11 +97,12 @@ user-specified RTX 5070 Ti Laptop GPU with 12 GB VRAM.
   nondefault streams, for 20,000,606 total C++/CUDA CPU-authority checks and zero
   mismatches. The unique corpus includes 554,496 reachable full-history campaign
   slots and 9,444,121 ordinal-injective randomized 19×19 slots; canonical bytes
-  independently reject duplicates. Target-laptop adapter-plus-validation rates
-  were 155,493/165,556 slots/s, and a 257,516-slot complete-corpus structural run
-  passed Compute Sanitizer memcheck. These are hardware-specific non-proof
-  results, not Python coverage over all 10m slots, proof-path integration, or a
-  solved claim.
+  independently reject duplicates. The corpus exercises 283,758 capture slots,
+  857,069 captured stones, and 411 exact PSK rejections per mode. Target-laptop
+  adapter-plus-validation rates were 157,735/197,008 slots/s, and 257,516 slot
+  visits across two modes (128,758 unique corpus slots) passed Compute Sanitizer
+  memcheck. These are hardware-specific non-proof results, not Python coverage
+  over all 10m slots, proof-path integration, or a solved claim.
 - Acceptance is fail closed on Windows native-command failures and validates the
   canonical `UNKNOWN` preflight envelope before printing success.
 

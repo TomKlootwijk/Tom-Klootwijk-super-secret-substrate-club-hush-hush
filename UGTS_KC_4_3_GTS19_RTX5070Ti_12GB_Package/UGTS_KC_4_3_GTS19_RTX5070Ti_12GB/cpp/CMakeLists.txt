@@ -3,19 +3,27 @@ project(ugts_go19 LANGUAGES CXX)
 
 option(UGTS_ENABLE_CUDA "Build optional CUDA accelerator scaffolding" OFF)
 
-add_library(ugts_go_core STATIC
+set(UGTS_GO_CORE_SOURCES
   src/go_state.cpp
   src/persistent_state.cpp
   src/pndag.cpp
   src/pndag_checkpoint.cpp
   src/sha256.cpp)
-target_include_directories(ugts_go_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_compile_features(ugts_go_core PUBLIC cxx_std_17)
-if(MSVC)
-  target_compile_options(ugts_go_core PRIVATE /W4 /permissive-)
-else()
-  target_compile_options(ugts_go_core PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
-endif()
+
+function(ugts_configure_core target_name)
+  target_include_directories(${target_name}
+                             PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_compile_features(${target_name} PUBLIC cxx_std_17)
+  if(MSVC)
+    target_compile_options(${target_name} PRIVATE /W4 /permissive-)
+  else()
+    target_compile_options(${target_name}
+                           PRIVATE -Wall -Wextra -Wpedantic -Wconversion)
+  endif()
+endfunction()
+
+add_library(ugts_go_core STATIC ${UGTS_GO_CORE_SOURCES})
+ugts_configure_core(ugts_go_core)
 
 add_executable(ugts_go19_smoke src/main.cpp)
 target_link_libraries(ugts_go19_smoke PRIVATE ugts_go_core)
@@ -40,8 +48,18 @@ if(BUILD_TESTING)
   add_test(NAME ugts_go_persistent_state_tests
            COMMAND ugts_go_persistent_state_tests)
 
+  # Compile the white-box PNDAG tests against a self-contained core variant.
+  # Every translation unit in this executable therefore sees the same class
+  # definition, while production consumers never receive test friendship.
+  # A friend declaration has no object-layout or ABI effect.
+  add_library(ugts_go_pndag_test_core STATIC ${UGTS_GO_CORE_SOURCES})
+  ugts_configure_core(ugts_go_pndag_test_core)
+  target_compile_definitions(
+    ugts_go_pndag_test_core
+    PUBLIC UGTS_GO19_ENABLE_PNDAG_TEST_ACCESS=1)
+
   add_executable(ugts_go_pndag_tests tests/pndag_test.cpp)
-  target_link_libraries(ugts_go_pndag_tests PRIVATE ugts_go_core)
+  target_link_libraries(ugts_go_pndag_tests PRIVATE ugts_go_pndag_test_core)
   add_test(NAME ugts_go_pndag_tests COMMAND ugts_go_pndag_tests)
 
   add_executable(ugts_go_pndag_checkpoint_tests

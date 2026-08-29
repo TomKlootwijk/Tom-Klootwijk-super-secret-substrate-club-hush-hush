@@ -28,11 +28,17 @@
   with an inactive owner, resets on Ready/restart, rings at most once per update and exposes count,
   remaining time and entity with no serialized or suspended execution state. Editor authoring,
   desktop, HTML5 and native Android have matching behavior.
-- **Find Object Ahead** completes the current 24-block vocabulary under Sensing as append-only opcode
-  24. It keeps the nearest-tag filters, tie-break and nullable outputs, then applies an inclusive
+- **Find Object Ahead** adds append-only opcode 24 under Sensing. It keeps the nearest-tag filters,
+  tie-break and nullable outputs, then applies an inclusive
   source-aligned binary32 GSP4 cone. Its Vector4 stores explicit world-axis X/Y/Z plus minimum cosine;
   the runtime normalizes that axis without trigonometry and deliberately ignores Origin rotation and
   scale. Desktop, HTML5, compact pack and native Android share the schedule.
+- **When Message Heard** completes the current 25-block vocabulary under Events as append-only opcode
+  25. Its receiver stores one exact portable message name and exposes source, optional target and
+  bound entity. **Send a Game Message** enters a bounded non-reentrant FIFO: nested sends are
+  breadth-first, broadcasts visit active entity bindings by canonical scene index then graph ID with
+  world logic last, and targeted sends reach the target owner plus world logic. Ready handlers finish
+  before delivery; 64 queued events and 16,384 total node steps bound each outer batch.
 - Mobile 3D **Movement Pattern** controls provide Off, Orbit, Spiral Out and Spiral In through readable
   radius, turn-speed and start-angle fields.
 - Trigger Enter and Trigger Exit Logic Block roots run with sensor/player context in desktop,
@@ -49,8 +55,10 @@
 - Its fifth graph, **World Logic → Count the Timer Rings**, stores a repeating one-second timer's
   count as `timer_rings`.
 - Its sixth graph, **World Logic → Find the Goal Ahead**, uses the saved 3D Forward world axis and
-  Normal width and stores `goal_ahead`; First Steps now has six graphs, 23 nodes and six bindings
-  including three world bindings.
+  Normal width and stores `goal_ahead`.
+- Its seventh graph, **World Logic → Hear the Dash Message**, receives `player.dashed` from the Dash
+  graph and stores `heard_message=true`. First Steps now has seven graphs, 27 nodes and seven bindings
+  including four world bindings.
 - Optional `KCSP392` population data uses one 24-byte header plus 36 bytes per group. glTF bakes its
   deterministic copies; native GLES regenerates the same prefix and renders it with instancing.
 
@@ -73,24 +81,36 @@
   world graphs, and rounds authored transforms to the native binary32 schedule before scatter math.
   GLES startup now fails closed after any EGL/shader error, and nonuniformly scaled instances use an
   inverse-transpose normal matrix.
-- The full suite passes 483 tests plus 87 subtests in 59.77 seconds. Focused opcode-24 verification
-  passes 14 tests plus 25 subtests; targeted Ruff, launcher/editor smokes and all native-host targets
-  pass. First Steps emits a 1,085-byte `KCVG001` pack with SHA-256
-  `2c5c6edb0c804da7fb2b6edab8c6beab12ccd2dac8b4e743d03c6194aff4af27`, alongside a 914-byte
-  `KCPK392` (`8a45ddbf874d918cedaeb0161e80fef3314c2c2b0b21a45da90e22a18c4dd313`) and 60-byte
-  `KCSP392` (`e95bde225571ab5f6eac3b9c04cb1bd332a0c95c740b377ac2dee30460dd2fd1`), 2,059 bytes combined.
-  Fresh execution sets `goal_ahead=true` and has state SHA-256
-  `71df205686c92c217c3b1e23ad00929a331d07b5bb43e64d27023ec17d490a9c`.
-- The canonical opcode-24 Poco APK is locally built and inspected at 1,460,361 bytes with SHA-256
-  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`. Its package/version/SDK/GLES,
-  ARM64-only native code, debug-certificate v2 signing and embedded source-matching sidecars verify;
-  ADB reported zero devices, so no fresh install, launch or profile is claimed.
+- Focused opcode-25 desktop, browser, compact-pack, editor and native-host checks pass, along with
+  targeted Ruff; the full suite is green: 510 passed, 100 subtests passed in 66.69s. First Steps emits a
+  1,265-byte `KCVG001` pack with SHA-256
+  `363EED6B1054CE0809F57FDF934755670F40D1273EEC92BA3720CC7B9E80BB3B`, alongside the unchanged
+  914-byte `KCPK392` (`8A45DDBF874D918CEDAEB0161E80FEF3314C2C2B0B21A45DA90E22A18C4DD313`) and 60-byte
+  `KCSP392` (`E95BDE225571AB5F6EAC3B9C04CB1BD332A0C95C740B377AC2DEE30460DD2FD1`), 2,239 bytes combined.
+  Fresh idle execution has state SHA-256
+  `a1256e5e78e621f8a4ca75b896797ec4d96fbfce06d67b0e912359b3dc273b24`; the dash/message path sets
+  `heard_message=true` and `score=1`.
+- The post-audit canonical opcode-25 APK is locally built and inspected at 1,451,149 bytes with
+  SHA-256 `1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`. The canonical
+  `Poco-X7-Pro-debug`, `message-op25` and `message-op25-audit-fixed` paths are byte-identical;
+  package/version/SDK/GLES, ARM64-only native code, debug-certificate v2 signing and the unchanged
+  embedded KCVG/KCPK/KCSP assets verify. The Poco disconnected before final installation, so no
+  install, launch or profile is claimed for this `1003…` build.
+- The last physically verified pre-audit opcode-25 Poco APK is preserved as
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with
+  SHA-256 `FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`.
+- The preceding opcode-24 build is preserved as
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-cone-op24-debug.apk`, 1,460,361 bytes with SHA-256
+  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`.
 - The preceding opcode-23 build is preserved as
   `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
   `C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`.
-- Device evidence now distinguishes the retained 64.9-second idle Poco baseline from the later
-  1,441,929-byte opcode-22 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk`. That most
-  recently installed artifact cold-launches, hash-matches and
-  has a retained 30-second baseline at 120.23 effective FPS, 10.118 ms p95, thermal status 0 and no
-  crash lines or warnings, but it precedes **When Timer Rings** and **Find Object Ahead**. A fresh opcode-24 physical-device
-  run, plus interaction-heavy, unplugged, long-duration and fallback-tier runs, remains open.
+- Xiaomi `2412DPC0AG` / `rodin` installed and cold-launched the pre-audit opcode-25 APK. Its pulled
+  1,449,653-byte base APK hash-matches FBCB exactly; a 30-second read-only profile measured 120.12
+  effective FPS, 8.372/10.183/12.641 ms p50/p95/p99, thermal status 0 and no crashes or warnings.
+  The capture is `validation/device/opcode25-message-poco-profile.json`. Interaction-heavy/touch,
+  unplugged, long-duration, explicit fallback-rate and lower-tier tests remain open, as does a first
+  install/profile of the locally verified post-audit build.
+- Earlier evidence remains historical: the 1,441,929-byte opcode-22 installed artifact has its
+  retained 120.23-FPS/10.118-ms-p95 30-second result, and a still earlier APK retains the 64.9-second
+  idle baseline. Neither substitutes for the opcode-25 snapshot or outstanding post-audit device run.

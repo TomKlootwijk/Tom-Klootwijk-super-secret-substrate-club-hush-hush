@@ -12,6 +12,10 @@
 #include <utility>
 #include <vector>
 
+#if !defined(UGTS_GO19_ENABLE_PNDAG_TEST_ACCESS)
+#error "PNDAG white-box tests require the isolated test-access core variant"
+#endif
+
 namespace ugts_go19 {
 
 // Defined only in this test translation unit. Friendship permits narrowly

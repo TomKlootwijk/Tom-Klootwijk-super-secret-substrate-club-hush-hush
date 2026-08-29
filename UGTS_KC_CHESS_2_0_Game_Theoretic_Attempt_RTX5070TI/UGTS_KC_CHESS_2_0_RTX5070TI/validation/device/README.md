@@ -20,6 +20,11 @@ bytes). The active power plan was Balanced. CUDA 12.8.61 compiled real
   task, so this file is not new device or timing evidence.
 - `campaign-verify.json`: valid campaign, 20 obligations, 0 verified,
   classical root `UNKNOWN`.
+- `../endgame/`: independently retained KQK/KRK canonical no-rights/no-history
+  ranked-partition heads. Complete CPU rule-oracle replays covered all 524,288
+  addresses and 4,891,672/4,469,208 legal transitions in about 91.02/91.31
+  seconds. The heads are source-bound evidence only; they do not promote a v2
+  fact or change the classical root.
 - `campaign-snapshot.json`: portable event/job checkpoint whose SHA-256 is
   recorded as
   `0dc3ef0dfef1068d3d0d7814c8e6dabbcf17bfb46002396aeba6e0f963e28383`
@@ -41,8 +46,10 @@ bytes). The active power plan was Balanced. CUDA 12.8.61 compiled real
   131,072 positions. Native-timer p50 was about 1.434 million positions/s on
   CUDA versus 0.329 million on CPU (4.35× for this large-batch microbenchmark).
   Exclusive GPU access was not enforced, concurrent workloads were not
-  monitored by the runner, and another project thread was using shared compute;
-  treat this timing as contention-affected.
+  monitored by the runner, and another Go-solving task was using shared
+  compute. That contention probably distorted the timing, although this runner
+  did not independently isolate causality; treat the result as
+  contention-affected rather than a clean benchmark.
 - The two retained v2 qualification records were freshly replayed again before
   the compact fact-journal integration, including a fresh device probe and fresh
   execution of every retained batch. Both passed. This replay was slow under

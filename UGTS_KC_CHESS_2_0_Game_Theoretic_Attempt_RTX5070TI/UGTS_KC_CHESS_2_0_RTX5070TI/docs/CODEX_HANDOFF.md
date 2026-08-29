@@ -41,7 +41,11 @@ and forces an authority replay on retry. The bounded deterministic expander now
 uses one initial and one final full replay around an incremental, fact-aware
 exact scheduler, and each parent is appended under one frontier sync/SQLite
 transaction. A conservative KQK/KRK-to-v2 seed adapter never promotes a bare
-probe. Externally retainable ProofDAG prefix commitments are implemented. A
+probe. The complete bundled KQK/KRK canonical no-rights/no-history ranked
+partitions also have independent rule-oracle full-replay heads, but those heads
+deliberately cannot promote v2 facts until an authenticated v3 cycle-lemma
+authority, state-lifting rule and membership path exist. Externally retainable
+ProofDAG prefix commitments are implemented. A
 standalone canonical campaign fact-projection receipt now fully replays and
 cross-binds the exact DAG/fact prefixes for one obligation, but campaign 2.0
 remains certificate-only. Authenticated indexed fact replay,
@@ -60,7 +64,7 @@ integration boundaries.
 7. Propagate verified child facts only through independently reconstructed complete legal-action coverage; never close residual `UNKNOWN` as `DRAW`.
 8. Replace copied child subtrees with compact derivation facts bound to prior audited v2 records. Implemented: major-v2 journal, v1 migration, strict derivation verifier and compact one-hop propagation.
 9. Add a deterministic monotone worklist rebuilt from audited DAG/fact heads; local quiescence must never be reported as a classical solve. Implemented for the materialized local DAG.
-10. Integrate external endgame partitions through an adapter whose results are rechecked and profile-labeled. Implemented conservatively for bundled KQK/KRK finite certificates; broader external partitions and authenticated cycle lemmas remain open.
+10. Integrate external endgame partitions through an adapter whose results are rechecked and profile-labeled. Implemented conservatively for bundled KQK/KRK finite certificates; the complete bundled partitions also reproduce independently replayed source-bound heads. Broader external partitions and v3-authenticated cycle-lemma membership remain open.
 11. Project compact facts into campaign evidence only through replayed,
     cross-bound DAG/fact prefix receipts. Implemented as a standalone receipt;
     ledger promotion requires an explicit campaign-3.0 migration.

@@ -110,11 +110,16 @@ Gate: independent process verifies fixtures after resume.
 - [x] Encode fixed-slot children without race-dependent ordering (bounded slice).
 - [x] CPU-recompute every point, including GPU rejects, and fail on mismatch.
 - [x] Retain exact-superko, pass, metadata, and proof authority on CPU initially.
+- [x] Cross the 10-million-slot unique-breadth gate through the production
+      adapter (10,000,303 exact-distinct corpus slots per stream mode, zero
+      mismatch; C++/CUDA scale coverage with a retained smaller Python gate).
 - [ ] Auto-size memory from `cudaMemGetInfo`.
 
-The current v1 evidence is 25,281 unique point slots and 50,562 comparisons
-across two parity modes, zero differences. Gate remains: 10 million
-randomized/adversarial child comparisons, zero differences.
+The cross-language v1 evidence remains 25,281 unique point slots and 50,562
+comparisons across two parity modes. The separate scale evidence covers
+10,000,303 exact-distinct randomized/adversarial corpus slots once on each of
+two stream modes, zero differences. It does not claim Python comparison over all
+10 million slots or proof-path integration.
 
 ## M5 — Proof-safe reductions
 

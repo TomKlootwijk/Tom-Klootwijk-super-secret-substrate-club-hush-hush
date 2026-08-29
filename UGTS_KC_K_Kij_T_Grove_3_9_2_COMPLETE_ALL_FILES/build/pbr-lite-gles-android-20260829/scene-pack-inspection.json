@@ -1,0 +1,188 @@
+{
+  "author": "",
+  "byte_length": 10095,
+  "format_version": 1,
+  "material_count": 3,
+  "materials": [
+    "accent",
+    "floor",
+    "player"
+  ],
+  "mesh_count": 3,
+  "meshes": [
+    {
+      "id": "cube",
+      "index_count": 36,
+      "vertex_count": 24
+    },
+    {
+      "id": "floor",
+      "index_count": 6,
+      "vertex_count": 4
+    },
+    {
+      "id": "sphere",
+      "index_count": 864,
+      "vertex_count": 187
+    }
+  ],
+  "node_count": 3,
+  "nodes": [
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "floor",
+      "material_index": 1,
+      "mesh_index": 1,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 1,
+      "dynamic": true,
+      "id": "player",
+      "material_index": 2,
+      "mesh_index": 2,
+      "sensor": false,
+      "tag_mask": 1
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "goal",
+      "material_index": 0,
+      "mesh_index": 0,
+      "sensor": true,
+      "tag_mask": 4
+    }
+  ],
+  "project_hash": "ff9299fc4121d5bd3d0b827f19d1af75b3aa4f8814e64b3f023dd799710b8a41",
+  "project_id": "my_mobile_3d_game",
+  "qualities": [
+    {
+      "id": "signature_ultra",
+      "max_visible_nodes": 1024,
+      "render_scale": 1.0,
+      "target_fps": 120
+    },
+    {
+      "id": "high",
+      "max_visible_nodes": 720,
+      "render_scale": 0.9200000166893005,
+      "target_fps": 90
+    },
+    {
+      "id": "balanced",
+      "max_visible_nodes": 480,
+      "render_scale": 0.8199999928474426,
+      "target_fps": 60
+    },
+    {
+      "id": "safe",
+      "max_visible_nodes": 280,
+      "render_scale": 0.6800000071525574,
+      "target_fps": 60
+    },
+    {
+      "id": "thermal",
+      "max_visible_nodes": 160,
+      "render_scale": 0.550000011920929,
+      "target_fps": 45
+    }
+  ],
+  "quality_count": 5,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
+  "sha256": "02c9ef8c4d7bed4a87d53f6523e2744e9eb825ad967b173917129f7b83eb77c9",
+  "start_quality": "balanced",
+  "target_count": 4,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "signature_ultra",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB Signature Target",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    },
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "high",
+      "device_hints": [],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [],
+      "id": "android_high",
+      "label": "High-end Android",
+      "memory_floor_mb": 7168,
+      "min_sdk": 26,
+      "target_refresh_hz": 90,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    },
+    {
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "balanced",
+      "device_hints": [],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [],
+      "id": "android_balanced",
+      "label": "Mainstream Android",
+      "memory_floor_mb": 3584,
+      "min_sdk": 26,
+      "target_refresh_hz": 60,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    },
+    {
+      "abis": [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86_64"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "safe",
+      "device_hints": [],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [],
+      "id": "android_compat",
+      "label": "Compatibility Android",
+      "memory_floor_mb": 2048,
+      "min_sdk": 26,
+      "target_refresh_hz": 60,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "PBR Lite Verify"
+}
