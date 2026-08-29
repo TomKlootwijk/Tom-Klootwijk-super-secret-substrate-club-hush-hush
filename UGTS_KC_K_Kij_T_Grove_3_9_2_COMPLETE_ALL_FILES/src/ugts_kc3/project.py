@@ -16,6 +16,7 @@ from .game_input import InputMap
 from .tilemap import TileMap
 from .vector2d import VectorLibrary
 from .version import __codename__, __game_project_schema__, __version__
+from .packed_kinematics import attach_packed_kinematics
 
 _PROJECT_ID_RE = re.compile(r"^[a-z][a-z0-9._-]*$")
 
@@ -374,6 +375,7 @@ class GameProject:
             entity.active = spec.active
             for name, data in spec.components.items():
                 world.add_component(spec.id, component_from_dict(name, data), name)
+        attach_packed_kinematics(world)
         return world
 
     def to_dict(self) -> dict[str, Any]:

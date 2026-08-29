@@ -32,6 +32,7 @@ from .collision2d import (
     sub2,
 )
 from .game_input import InputFrame
+from .packed_kinematics import PackedKinematicComponent
 
 Vec2 = tuple[float, float]
 
@@ -349,6 +350,7 @@ _COMPONENT_NAMES: dict[type, str] = {
     PlayerController2D: "player_controller",
     Collectible2D: "collectible",
     Hazard2D: "hazard",
+    PackedKinematicComponent: "packed_kinematic",
 }
 _COMPONENT_TYPES = {name: kind for kind, name in _COMPONENT_NAMES.items()}
 
@@ -381,6 +383,8 @@ def _encode_value(value: Any) -> Any:
 
 
 def component_to_dict(component: Any) -> dict[str, Any]:
+    if isinstance(component, PackedKinematicComponent):
+        return component.to_dict()
     if isinstance(component, Collider2D):
         return {
             "shape": _shape_to_dict(component.shape),
@@ -399,6 +403,8 @@ def component_to_dict(component: Any) -> dict[str, Any]:
 
 
 def component_from_dict(name: str, data: Mapping[str, Any]) -> Any:
+    if name == "packed_kinematic":
+        return PackedKinematicComponent.from_dict(data)
     if name == "transform":
         return Transform2D(tuple(data.get("position", (0, 0))), float(data.get("rotation", 0)), tuple(data.get("scale", (1, 1))))
     if name == "body":
