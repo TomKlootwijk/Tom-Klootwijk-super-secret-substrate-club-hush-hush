@@ -5,6 +5,7 @@ option(UGTS_ENABLE_CUDA "Build optional CUDA accelerator scaffolding" OFF)
 
 add_library(ugts_go_core STATIC
   src/go_state.cpp
+  src/persistent_state.cpp
   src/pndag.cpp
   src/pndag_checkpoint.cpp
   src/sha256.cpp)
@@ -32,6 +33,12 @@ if(BUILD_TESTING)
   add_executable(ugts_go_core_tests tests/go_state_test.cpp)
   target_link_libraries(ugts_go_core_tests PRIVATE ugts_go_core)
   add_test(NAME ugts_go_core_tests COMMAND ugts_go_core_tests)
+
+  add_executable(ugts_go_persistent_state_tests
+                 tests/persistent_state_test.cpp)
+  target_link_libraries(ugts_go_persistent_state_tests PRIVATE ugts_go_core)
+  add_test(NAME ugts_go_persistent_state_tests
+           COMMAND ugts_go_persistent_state_tests)
 
   add_executable(ugts_go_pndag_tests tests/pndag_test.cpp)
   target_link_libraries(ugts_go_pndag_tests PRIVATE ugts_go_core)
@@ -127,6 +134,16 @@ if(UGTS_ENABLE_CUDA)
       ugts_go_cuda_local_transition_guards
       PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
+    add_executable(ugts_go_cuda_local_transition_scale
+                   tests/cuda_local_transition_scale.cu)
+    target_link_libraries(ugts_go_cuda_local_transition_scale
+                          PRIVATE ugts_go_cuda)
+    target_compile_features(ugts_go_cuda_local_transition_scale
+                            PRIVATE cuda_std_17)
+    set_target_properties(
+      ugts_go_cuda_local_transition_scale
+      PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
     add_test(
       NAME ugts_go_cuda_local_transition_parity
       COMMAND ${Python3_EXECUTABLE}
@@ -146,5 +163,19 @@ if(UGTS_ENABLE_CUDA)
       ugts_go_cuda_local_transition_guards
       PROPERTIES
         TIMEOUT 300)
+
+    # Structural coverage runs the complete deterministic corpus through both
+    # stream modes. The explicit 10m campaign remains an operator command so a
+    # normal CTest invocation cannot accidentally spend campaign-scale time.
+    add_test(
+      NAME ugts_go_cuda_local_transition_scale_structural
+      COMMAND $<TARGET_FILE:ugts_go_cuda_local_transition_scale>
+              --target-unique-corpus-slots 50000
+              --batch-states 8
+              --seed 88442398638062)
+    set_tests_properties(
+      ugts_go_cuda_local_transition_scale_structural
+      PROPERTIES
+        TIMEOUT 900)
   endif()
 endif()

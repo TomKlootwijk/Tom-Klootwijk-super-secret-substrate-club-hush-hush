@@ -23,14 +23,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-import hashlib
 import heapq
 import math
 import time
 from typing import Iterable
 
 from .game_state import HistoryContext, RULE_PROFILE_ID, automatic_status
-from .hashing import canonical_json_bytes
 from .move import Move
 from .position import Position
 from .proof_dag import (
@@ -41,13 +39,20 @@ from .proof_dag import (
     ProofDAGIntegrityError,
     node_identity_sha256,
 )
+from .proof_dag_commitment import (
+    PROOF_DAG_HEAD_SCHEMA,
+    PROOF_DAG_MANIFEST_SCHEMA,
+    ProofDAGHead,
+    advance_proof_dag_manifest,
+    proof_dag_manifest_seed,
+)
 from .rules import apply_move, legal_moves
 from .wdl_fact_journal import FactJournalHead, WDLFactJournal
 
 
 EXPANSION_SCHEMA = "ugts-chess-deterministic-dag-expansion-1.0"
-EXPANSION_HEAD_SCHEMA = "ugts-chess-dag-expansion-head-1.0"
-EXPANSION_MANIFEST_SCHEMA = "ugts-chess-dag-expansion-manifest-1.0"
+EXPANSION_HEAD_SCHEMA = PROOF_DAG_HEAD_SCHEMA
+EXPANSION_MANIFEST_SCHEMA = PROOF_DAG_MANIFEST_SCHEMA
 _MAX_STABLE_SNAPSHOT_ATTEMPTS = 8
 
 
@@ -117,53 +122,7 @@ class ExpansionLimits:
             object.__setattr__(self, "max_seconds", normalized)
 
 
-@dataclass(frozen=True, slots=True)
-class ExpansionDAGHead:
-    """Full ordered commitment to one audited ProofDAG prefix."""
-
-    rule_profile_id: str
-    frontier_record_count: int
-    sqlite_edge_count: int
-    sqlite_node_count: int
-    frontier_size: int
-    last_frontier_content_sha256: str | None
-    frontier_manifest_sha256: str
-
-    def __post_init__(self) -> None:
-        if self.rule_profile_id != RULE_PROFILE_ID:
-            raise ValueError("expansion DAG head rule profile is not canonical")
-        records = _require_count(
-            self.frontier_record_count,
-            label="frontier_record_count",
-        )
-        edges = _require_count(self.sqlite_edge_count, label="sqlite_edge_count")
-        nodes = _require_count(self.sqlite_node_count, label="sqlite_node_count")
-        size = _require_count(self.frontier_size, label="frontier_size")
-        if records != edges:
-            raise ValueError("expansion DAG head frontier and edge counts differ")
-        if nodes > edges:
-            raise ValueError("expansion DAG head has more nodes than occurrences")
-        if size == 0:
-            raise ValueError("expansion DAG head size must include the frontier header")
-        if records == 0:
-            if self.last_frontier_content_sha256 is not None:
-                raise ValueError("empty expansion DAG head may not name a last record")
-        elif not _is_sha256_hex(self.last_frontier_content_sha256):
-            raise ValueError("non-empty expansion DAG head needs a record SHA-256")
-        if not _is_sha256_hex(self.frontier_manifest_sha256):
-            raise ValueError("expansion DAG head needs a manifest SHA-256")
-
-    def record(self) -> dict[str, object]:
-        return {
-            "schema": EXPANSION_HEAD_SCHEMA,
-            "rule_profile_id": self.rule_profile_id,
-            "frontier_record_count": self.frontier_record_count,
-            "sqlite_edge_count": self.sqlite_edge_count,
-            "sqlite_node_count": self.sqlite_node_count,
-            "frontier_size": self.frontier_size,
-            "last_frontier_content_sha256": self.last_frontier_content_sha256,
-            "frontier_manifest_sha256": self.frontier_manifest_sha256,
-        }
+ExpansionDAGHead = ProofDAGHead
 
 
 @dataclass(frozen=True, slots=True)
@@ -211,6 +170,12 @@ class ExpansionReport:
     def eligible_materialized_edge_closure(self) -> bool:
         """Whether no unverified non-terminal is missing a legal move edge."""
 
+        return self.eligible_edge_closure
+
+    @property
+    def eligible_edge_closure(self) -> bool:
+        """Whether expansion-eligible move-edge work is locally closed."""
+
         return not self.eligible_incomplete_parent_node_sha256s
 
     @property
@@ -224,6 +189,12 @@ class ExpansionReport:
         """True only when the final audited DAG contains no materialised node."""
 
         return self.dag_head_after.sqlite_node_count == 0
+
+    @property
+    def empty_dag(self) -> bool:
+        """Short explicit alias for :attr:`materialized_dag_empty`."""
+
+        return self.materialized_dag_empty
 
     @property
     def chess_solved(self) -> bool:
@@ -283,35 +254,6 @@ def _move_uci(edge: DAGEdge) -> str:
             "outgoing expansion edge does not carry one canonical move action"
         )
     return action["uci"]
-
-
-def _manifest_seed() -> bytes:
-    return hashlib.sha256(
-        EXPANSION_MANIFEST_SCHEMA.encode("ascii") + b"\x00seed\x00"
-    ).digest()
-
-
-def _manifest_record(edge: DAGEdge) -> bytes:
-    return canonical_json_bytes(
-        {
-            "frontier_record_index": edge.frontier_record_index,
-            "frontier_content_sha256": edge.frontier_content_sha256,
-            "parent_frontier_content_sha256": edge.parent_frontier_content_sha256,
-            "parent_node_sha256": edge.parent_node_sha256,
-            "child_node_sha256": edge.child_node_sha256,
-        }
-    )
-
-
-def _advance_manifest(previous: bytes, record: bytes) -> bytes:
-    if len(previous) != hashlib.sha256().digest_size:
-        raise ValueError("ordered manifest predecessor must be one SHA-256 digest")
-    digest = hashlib.sha256()
-    digest.update(EXPANSION_MANIFEST_SCHEMA.encode("ascii") + b"\x00step\x00")
-    digest.update(previous)
-    digest.update(len(record).to_bytes(8, "big"))
-    digest.update(record)
-    return digest.digest()
 
 
 def _derive_child_identity(
@@ -444,7 +386,7 @@ def _materialization_snapshot(dag: ProofDAG) -> _MaterializationSnapshot:
         ):
             continue
 
-        manifest = _manifest_seed()
+        manifest = proof_dag_manifest_seed()
         last_sha256: str | None = None
         last_end = 0
         for ordinal, edge in enumerate(edges):
@@ -452,7 +394,7 @@ def _materialization_snapshot(dag: ProofDAG) -> _MaterializationSnapshot:
                 raise ProofDAGIntegrityError(
                     "frontier edge ordinals are not contiguous from zero"
                 )
-            manifest = _advance_manifest(manifest, _manifest_record(edge))
+            manifest = advance_proof_dag_manifest(manifest, edge)
             last_sha256 = edge.frontier_content_sha256
             last_end = edge.frame_end_offset
         if edges and last_end != after.frontier_size:
@@ -864,9 +806,9 @@ def expand_proof_dag(
                 raise ExpansionConcurrentMutationError(
                     "move batch returned a noncontiguous or substituted edge"
                 )
-            expected_manifest = _advance_manifest(
+            expected_manifest = advance_proof_dag_manifest(
                 expected_manifest,
-                _manifest_record(edge),
+                edge,
             )
             next_record_index += 1
             next_frame_offset = edge.frame_end_offset

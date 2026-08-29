@@ -289,9 +289,33 @@ std::size_t RunNegativeChecks() {
   return checks;
 }
 
+bool SameState(const ugts_go19::State &left, const ugts_go19::State &right) {
+  return left.size == right.size && left.board == right.board &&
+         left.to_play == right.to_play && left.passes == right.passes &&
+         left.seen_boards == right.seen_boards &&
+         left.previous_board == right.previous_board && left.ply == right.ply;
+}
+
+bool SameApplyResult(const ugts_go19::ApplyResult &left,
+                     const ugts_go19::ApplyResult &right) {
+  return SameState(left.state, right.state) && left.captured == right.captured &&
+         left.self_captured == right.self_captured;
+}
+
+bool SameStats(const ugts_go19::cuda::VerifiedExpansionStats &left,
+               const ugts_go19::cuda::VerifiedExpansionStats &right) {
+  return left.states == right.states && left.point_slots == right.point_slots &&
+         left.occupied == right.occupied && left.suicides == right.suicides &&
+         left.local_candidates == right.local_candidates &&
+         left.superko_rejections == right.superko_rejections &&
+         left.globally_legal_children == right.globally_legal_children &&
+         left.compared_child_words == right.compared_child_words;
+}
+
 bool SameBatch(const ugts_go19::cuda::VerifiedExpansionBatch &left,
                const ugts_go19::cuda::VerifiedExpansionBatch &right) {
-  if (left.slots.size() != right.slots.size() ||
+  if (!SameStats(left.stats, right.stats) ||
+      left.slots.size() != right.slots.size() ||
       left.legal_children.size() != right.legal_children.size()) {
     return false;
   }
@@ -304,6 +328,14 @@ bool SameBatch(const ugts_go19::cuda::VerifiedExpansionBatch &left,
         a.local_child_board != b.local_child_board ||
         a.superko_rejected != b.superko_rejected ||
         a.globally_legal != b.globally_legal) {
+      return false;
+    }
+  }
+  for (std::size_t index = 0; index < left.legal_children.size(); ++index) {
+    const auto &a = left.legal_children[index];
+    const auto &b = right.legal_children[index];
+    if (a.parent_index != b.parent_index || a.move != b.move ||
+        !SameApplyResult(a.result, b.result)) {
       return false;
     }
   }

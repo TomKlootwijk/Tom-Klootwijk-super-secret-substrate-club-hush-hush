@@ -96,8 +96,11 @@ Exit criterion: independent verifier accepts every fixture.
   CPU-recompute every point and retain CPU exact PSK/pass/metadata authority
   (25,281 unique slots, 50,562 across two parity modes, zero mismatches).
 - Benchmark the occupancy primitive under campaign-shaped batches.
-- Scale the differential gate from this bounded slice to 10,000,000 adversarial
-  and randomized point slots and measure campaign-shaped throughput.
+- [done, bounded] Scale the production adapter boundary to 10,000,000 unique-
+  corpus adversarial/randomized point slots: 10,000,303 slots from 27,716 exact-
+  distinct states per stream mode, zero mismatches, with hardware-specific
+  adapter-plus-validation throughput recorded. Python coverage remains the
+  separate 25,281-slot cross-language gate.
 - Integrate verified batches into the proof coordinator only after that gate;
   migrate superko from CPU only with collision-safe exact lookup.
 

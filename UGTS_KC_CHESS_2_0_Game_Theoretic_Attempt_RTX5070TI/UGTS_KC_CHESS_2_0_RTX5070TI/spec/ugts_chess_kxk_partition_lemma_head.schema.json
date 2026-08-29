@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-chess-kxk-partition-lemma-head.schema.json",
+  "title": "UGTS Chess independently replayed KXK partition lemma head",
+  "description": "Strict transport schema for a canonical head emitted only after complete ranked-partition replay. Runtime replay additionally enforces all cross-field count equations, exact source bytes, canonical legal transitions, terminal semantics, and WDL/rank equations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "verifier_profile",
+    "rules_profile_id",
+    "base_game_profile",
+    "source_schema",
+    "piece",
+    "material",
+    "address_bits",
+    "address_count",
+    "transport_size",
+    "transport_sha256",
+    "metadata_size",
+    "metadata_sha256",
+    "decoded_size",
+    "decoded_sha256",
+    "valid_positions",
+    "invalid_positions",
+    "win_positions",
+    "loss_positions",
+    "draw_positions",
+    "initial_checkmates",
+    "initial_stalemates",
+    "legal_transition_count",
+    "capture_draw_exit_count",
+    "max_rank"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ugts-chess-kxk-ranked-partition-lemma-head-1.0"
+    },
+    "verifier_profile": {
+      "const": "ugts-chess-kxk-ranked-partition-full-replay-1.0"
+    },
+    "rules_profile_id": {
+      "const": "fide-classical-2023-claims-as-actions-v2"
+    },
+    "base_game_profile": {
+      "const": "orthodox-kxk-checkmate-stalemate-infinite-play-draw-1.0"
+    },
+    "source_schema": {
+      "const": "ugts-kc-chess-kxk-tablebase-1.0"
+    },
+    "piece": {
+      "enum": ["Q", "R"]
+    },
+    "material": {
+      "enum": ["KQK", "KRK"]
+    },
+    "address_bits": {
+      "const": 19
+    },
+    "address_count": {
+      "const": 524288
+    },
+    "transport_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4194304,
+      "not": {"type": "boolean"}
+    },
+    "transport_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "metadata_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65536,
+      "not": {"type": "boolean"}
+    },
+    "metadata_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "decoded_size": {
+      "const": 1048592
+    },
+    "decoded_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "valid_positions": {
+      "$ref": "#/$defs/address_count"
+    },
+    "invalid_positions": {
+      "$ref": "#/$defs/address_count"
+    },
+    "win_positions": {
+      "$ref": "#/$defs/address_count"
+    },
+    "loss_positions": {
+      "$ref": "#/$defs/address_count"
+    },
+    "draw_positions": {
+      "$ref": "#/$defs/address_count"
+    },
+    "initial_checkmates": {
+      "$ref": "#/$defs/address_count"
+    },
+    "initial_stalemates": {
+      "$ref": "#/$defs/address_count"
+    },
+    "legal_transition_count": {
+      "type": "integer",
+      "minimum": 0,
+      "not": {"type": "boolean"}
+    },
+    "capture_draw_exit_count": {
+      "type": "integer",
+      "minimum": 0,
+      "not": {"type": "boolean"}
+    },
+    "max_rank": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255,
+      "not": {"type": "boolean"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"piece": {"const": "Q"}},
+        "required": ["piece"]
+      },
+      "then": {
+        "properties": {"material": {"const": "KQK"}}
+      },
+      "else": {
+        "properties": {"material": {"const": "KRK"}}
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "address_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 524288,
+      "not": {"type": "boolean"}
+    }
+  }
+}

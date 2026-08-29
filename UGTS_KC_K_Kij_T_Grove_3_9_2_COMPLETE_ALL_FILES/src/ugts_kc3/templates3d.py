@@ -111,7 +111,7 @@ def blank_mobile3d_project(
 def first_steps_mobile3d_project(
     title: str = "My First UGTS Mobile Game", author: str = ""
 ) -> Mobile3DProject:
-    """A phone-ready lesson with input, timer, sensing and Trigger Area logic."""
+    """A phone-ready lesson with input, messages, sensing and Trigger Area logic."""
     project = blank_mobile3d_project(title, author)
     graph = VisualGraph(
         "dash_lesson",
@@ -131,17 +131,27 @@ def first_steps_mobile3d_project(
                 },
                 (520, 250),
             ),
+            GraphNode(
+                "send_dash_message",
+                "action.emit_event",
+                {"kind": "player.dashed", "payload": {}},
+                (520, 420),
+            ),
         ),
         (
             GraphLink("when_dash", "out", "save_score", "in"),
             GraphLink("when_dash", "out", "grow_player", "in"),
+            GraphLink("when_dash", "out", "send_dash_message", "in"),
             GraphLink("current_score", "value", "add_one", "a"),
             GraphLink("one", "value", "add_one", "b"),
             GraphLink("add_one", "result", "save_score", "value"),
         ),
         {
             "title": "Dash, count, and grow",
-            "lesson": "The dash event fans out to a score action and a visible component change.",
+            "lesson": (
+                "The dash event fans out to score, growth, and Send a Game Message. "
+                "A world graph hears that message only after this flow finishes."
+            ),
             "beginner": True,
             "android_supported": True,
         },
@@ -319,6 +329,42 @@ def first_steps_mobile3d_project(
             "android_supported": True,
         },
     )
+    message_graph = VisualGraph(
+        "message_lesson",
+        (
+            GraphNode(
+                "when_dash_message",
+                "event.message",
+                {"message": "player.dashed"},
+                (0, 80),
+            ),
+            GraphNode(
+                "heard",
+                "value.constant",
+                {"value": True},
+                (0, 230),
+            ),
+            GraphNode(
+                "remember_message",
+                "action.set_state",
+                {"key": "heard_message"},
+                (360, 80),
+            ),
+        ),
+        (
+            GraphLink("when_dash_message", "out", "remember_message", "in"),
+            GraphLink("heard", "value", "remember_message", "value"),
+        ),
+        {
+            "title": "Hear the Dash Message",
+            "lesson": (
+                "When Message Heard listens for the exact player.dashed name and "
+                "runs after the sending graph has finished."
+            ),
+            "beginner": True,
+            "android_supported": True,
+        },
+    )
     orbit_profile = LogPolarProfile(
         r0=1.0, rho_min=-3.0, rho_max=3.0, core_radius=1.0e-5
     )
@@ -404,11 +450,13 @@ def first_steps_mobile3d_project(
             nearby_goal_graph.to_dict(),
             ahead_goal_graph.to_dict(),
             timer_graph.to_dict(),
+            message_graph.to_dict(),
         ],
         "world_graphs": [
             nearby_goal_graph.id,
             ahead_goal_graph.id,
             timer_graph.id,
+            message_graph.id,
         ],
         "initial_state": {
             "score": 0,
@@ -417,6 +465,7 @@ def first_steps_mobile3d_project(
             "nearby_goal": False,
             "goal_ahead": False,
             "timer_rings": 0,
+            "heard_message": False,
         },
         "packed_kinematic_profiles": {
             "lesson_orbit": {
@@ -438,6 +487,7 @@ def first_steps_mobile3d_project(
                 "Select World Logic, open Find the Goal, and change its Search distance; it uses the ECS instead of a long object list.",
                 "Open Find the Goal Ahead and choose Facing and View width; the compact cone uses exact phone-safe numbers instead of hidden trigonometry.",
                 "In World Logic, open Count the Timer Rings; When Timer Rings replaces a difficult Every Frame counter and works identically on phone.",
+                "Press Space, then open World Logic → Hear the Dash Message; Send a Game Message and When Message Heard connect graphs without interrupting either flow.",
                 "Use Deploy to Phone when you are ready; UGTS builds, installs, and opens it.",
             ],
         },

@@ -128,14 +128,30 @@ covered 124 states and 25,281 unique point slots across sizes 1, 2, 3, 5, 9,
 and 19; the default/nondefault parity modes made 50,562 Python/C++/CUDA point
 comparisons with zero mismatches. Low-level dual-stream guards crossed the
 524,280-candidate production grid capacity with 524,533 exact slot comparisons,
-and Compute Sanitizer memcheck, racecheck, and initcheck were clean. This is a
-bounded pre-superko transition slice, not the still-open 10,000,000-slot M4
-gate, a throughput result, a proof-path integration, or a 19×19 solution.
+and Compute Sanitizer memcheck, racecheck, and initcheck were clean.
+
+The follow-on scale gate traversed 10,000,303 point slots from 27,716 exact-
+distinct semantic states once on the default stream, then traversed the same
+complete corpus on a nondefault stream for 20,000,606 total C++/CUDA checks.
+The unique breadth includes 554,496 slots from reachable full-history 19×19
+campaign snapshots and 9,444,121 from deterministic randomized 19×19 boards
+with injective ordinal bytes. Canonical state bytes independently reject any
+duplicate. Every slot—including occupied, suicide, local candidate, and exact
+PSK cases—was CPU-recomputed inside the production adapter; both modes had the
+same result digest and zero mismatches. The measured adapter-plus-validation
+rates were 155,493 and 165,556 slots/s on this laptop. These are hardware-
+specific, non-proof C++/CUDA measurements: Python was not run over the 10m
+corpus, and proof-path integration and the unrestricted 19×19 result remain
+open.
+
 The target-run summary is archived at
 `evidence/local_m4_cuda_empty_mask_parity.json`, and the source-pinned memcheck
 result is `evidence/local_m4_cuda_compute_sanitizer.json`. The local-transition
 counterparts are `evidence/local_m4_cuda_local_transition_parity.json` and
-`evidence/local_m4_cuda_local_transition_compute_sanitizer.json`.
+`evidence/local_m4_cuda_local_transition_compute_sanitizer.json`. Scale evidence
+is `evidence/local_m4_cuda_local_transition_scale_10m.json`; its complete-corpus
+representative memcheck is
+`evidence/local_m4_cuda_local_transition_scale_sanitizer.json`.
 
 Rerun the bounded parity gates with:
 
@@ -147,6 +163,12 @@ python cpp/tests/cuda_local_transition_parity.py \
   --evaluator build-cuda/ugts_go_cuda_local_transition_eval \
   --guard-evaluator build-cuda/ugts_go_cuda_local_transition_guards \
   --output evidence/local_m4_cuda_local_transition_parity.json
+python cpp/tests/cuda_local_transition_scale.py \
+  --runner build-cuda/ugts_go_cuda_local_transition_scale \
+  --target-unique-corpus-slots 10000000 \
+  --batch-states 16 \
+  --seed 88442398638062 \
+  --output evidence/local_m4_cuda_local_transition_scale_10m.json
 ```
 
 ## Laptop-safe memory policy
@@ -229,8 +251,9 @@ Read these files in order:
 Then run `codex/acceptance.sh`. Python/C++ transition parity is complete. The
 current priorities are to turn the audited bounded native full-snapshot restart
 into resource-bounded live-DAG paging, add an independent certificate verifier,
-and build a full CUDA legal-child batch checked against both exact CPU
-references. None may convert a resource stop into a solved claim.
+and integrate verified CUDA batches into the proof coordinator without moving
+exact PSK or truth authority to the GPU. None may convert a resource stop into a
+solved claim.
 
 ## Proof-status vocabulary
 

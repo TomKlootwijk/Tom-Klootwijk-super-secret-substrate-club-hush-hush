@@ -71,7 +71,7 @@
     "cpp/cuda/packed_kernels.cu": "791d6ad286e648b9f4e6ef97e24741ebbc51b569714ca963563f4d295f7549dd",
     "cpp/cuda/packed_kernels.cuh": "991f4d114f8496e77918569ed0cf9310c8da7acc7647a6b974980c41c6b97d12",
     "cpp/include/ugts_go19/cuda_verified_expander.hpp": "6f047a79612c82c231a7ffd4ca47562a094afbc11f9944d574a490f806b7b3e5",
-    "cpp/tests/cuda_local_transition_eval.cu": "5719053935f7aaf8b368e22f417f15f9cfaf9e5638e234a2d1506b22027bc6c4",
+    "cpp/tests/cuda_local_transition_eval.cu": "da74e23d927ac2101716a7cae43b61ee5c8af72082ec0ffb2f0d6df57523f67e",
     "cpp/tests/cuda_local_transition_guards.cu": "2878fa314fff7dd503a8a090231a9b679712bbd2dce3c6dc7900b5a59c18fd37",
     "cpp/tests/cuda_local_transition_parity.py": "7e03af812200bc8b6407be5d395d1ad8a7ac24f799337a570b6d4522db008fa7"
   }

@@ -87,7 +87,7 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
         self.assertEqual(snapshot.key, ("dash_lesson", "player"))
         self.assertEqual(snapshot.trigger, "tick")
         self.assertTrue(snapshot.completed)
-        self.assertEqual(snapshot.steps, 6)
+        self.assertEqual(snapshot.steps, 7)
         self.assertEqual(
             tuple(entry.node_id for entry in snapshot.trace),
             (
@@ -97,14 +97,25 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
                 "one",
                 "add_one",
                 "save_score",
+                "send_dash_message",
             ),
         )
         self.assertIs(document.latest_logic_trace("dash_lesson"), snapshot)
+        message = document.logic_trace("message_lesson", None)
+        self.assertIsInstance(message, LogicTraceSnapshot)
+        assert message is not None
+        self.assertEqual(message.trigger, "message")
+        self.assertEqual(
+            tuple(entry.node_id for entry in message.trace),
+            ("when_dash_message", "heard", "remember_message"),
+        )
+        self.assertEqual(message.trace[0].outputs["source"], "player")
+        self.assertIsNone(message.trace[0].outputs["target"])
         self.assertEqual(
             document.logic_traces(),
-            (find_goal, find_goal_ahead, repeatable, snapshot),
+            (repeatable, find_goal, find_goal_ahead, snapshot, message),
         )
-        self.assertIs(changes[-1], snapshot)
+        self.assertIs(changes[-1], message)
         with self.assertRaises(FrozenInstanceError):
             snapshot.trigger = "changed"  # type: ignore[misc]
 
@@ -119,7 +130,10 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
         self.assertIsNone(document.logic_trace("dash_lesson", "player"))
         new_repeatable = document.logic_trace("repeatable_number_lesson", "floor")
         self.assertIsInstance(new_repeatable, LogicTraceSnapshot)
-        self.assertIs(changes[-1], new_repeatable)
+        self.assertIs(
+            changes[-1],
+            document.logic_trace("find_goal_ahead_lesson", None),
+        )
 
     def test_trigger_trace_is_harvested_in_the_transition_frame(self) -> None:
         project = first_steps_mobile3d_project()

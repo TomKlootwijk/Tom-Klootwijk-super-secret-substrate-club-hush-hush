@@ -51,6 +51,14 @@ add_executable(
 target_include_directories(timer_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
 add_executable(
+    message_graph_vm_tests
+    message_graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+)
+target_include_directories(message_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
     trigger_area_tests
     trigger_area_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/trigger_area.cpp"
@@ -70,6 +78,7 @@ if(MSVC)
     target_compile_options(nearest_tag_graph_vm_tests PRIVATE /W4 /permissive-)
     target_compile_options(nearest_in_cone_graph_vm_tests PRIVATE /W4 /permissive-)
     target_compile_options(timer_graph_vm_tests PRIVATE /W4 /permissive-)
+    target_compile_options(message_graph_vm_tests PRIVATE /W4 /permissive-)
     target_compile_options(trigger_area_tests PRIVATE /W4 /permissive-)
     target_compile_options(scatter_population_tests PRIVATE /W4 /permissive-)
 else()
@@ -78,6 +87,7 @@ else()
     target_compile_options(nearest_tag_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(nearest_in_cone_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(timer_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(message_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(trigger_area_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(scatter_population_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()

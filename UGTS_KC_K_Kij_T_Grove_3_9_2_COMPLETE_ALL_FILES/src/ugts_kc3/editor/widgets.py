@@ -1271,8 +1271,41 @@ class AssetsProjectPanel(QTabWidget):
         form.addRow("Objects", self.project_objects)
         form.addRow("Main target", self.project_target)
         form.addRow("Health", self.project_status)
+        self.lesson_scroll = QScrollArea()
+        self.lesson_scroll.setObjectName("FirstStepsScrollArea")
+        self.lesson_scroll.setWidgetResizable(True)
+        self.lesson_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        self.lesson_scroll.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+        lesson_content = QWidget()
+        lesson_layout = QVBoxLayout(lesson_content)
+        lesson_layout.setContentsMargins(12, 12, 12, 12)
+        lesson_layout.setSpacing(10)
+        self.lesson_title = QLabel()
+        self.lesson_title.setObjectName("PanelTitle")
+        self.lesson_title.setTextFormat(Qt.TextFormat.PlainText)
+        self.lesson_title.setWordWrap(True)
+        self.lesson_intro = QLabel("Try one step at a time. You can come back here whenever you like.")
+        self.lesson_intro.setObjectName("MutedLabel")
+        self.lesson_intro.setWordWrap(True)
+        self.lesson_steps = QLabel()
+        self.lesson_steps.setObjectName("FirstStepsList")
+        self.lesson_steps.setTextFormat(Qt.TextFormat.PlainText)
+        self.lesson_steps.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        self.lesson_steps.setWordWrap(True)
+        lesson_layout.addWidget(self.lesson_title)
+        lesson_layout.addWidget(self.lesson_intro)
+        lesson_layout.addWidget(self.lesson_steps)
+        lesson_layout.addStretch(1)
+        self.lesson_scroll.setWidget(lesson_content)
         self.addTab(self.assets, "Resources")
         self.addTab(self.summary, "Project")
+        self.lesson_tab_index = self.addTab(self.lesson_scroll, "First Steps")
+        self._has_lesson = False
+        self.setTabVisible(self.lesson_tab_index, False)
 
     @staticmethod
     def _category(name: str, count: int, parent: QTreeWidgetItem | None = None) -> QTreeWidgetItem:
@@ -1282,8 +1315,74 @@ class AssetsProjectPanel(QTabWidget):
             parent.addChild(item)
         return item
 
+    @staticmethod
+    def _validated_lesson(value: object) -> tuple[str, tuple[str, ...]] | None:
+        if not isinstance(value, Mapping):
+            return None
+        raw_title = value.get("title")
+        raw_steps = value.get("steps")
+        if not isinstance(raw_title, str) or not raw_title.strip():
+            return None
+        if not isinstance(raw_steps, Sequence) or isinstance(raw_steps, (str, bytes)):
+            return None
+        steps: list[str] = []
+        for raw_step in raw_steps:
+            if not isinstance(raw_step, str) or not raw_step.strip():
+                return None
+            steps.append(raw_step.strip())
+        if not steps:
+            return None
+        return raw_title.strip(), tuple(steps)
+
+    @classmethod
+    def _document_lesson(
+        cls, document: EditorDocument | None
+    ) -> tuple[str, tuple[str, ...]] | None:
+        if document is None or document.project is None:
+            return None
+        project = document.project
+        if isinstance(project, GameProject):
+            scene_id = document.current_scene_id or project.start_scene
+            scene = project.scenes.get(scene_id)
+            source = scene.rules if scene is not None else None
+        else:
+            source = project.metadata
+        if not isinstance(source, Mapping):
+            return None
+        return cls._validated_lesson(source.get("lesson"))
+
+    def clear_lesson(self) -> None:
+        was_current = self.currentIndex() == self.lesson_tab_index
+        self._has_lesson = False
+        self.lesson_title.clear()
+        self.lesson_steps.clear()
+        self.setTabVisible(self.lesson_tab_index, False)
+        if was_current:
+            self.setCurrentIndex(0)
+
+    def refresh_lesson(self, document: EditorDocument | None) -> bool:
+        lesson = self._document_lesson(document)
+        if lesson is None:
+            self.clear_lesson()
+            return False
+        title, steps = lesson
+        self.lesson_title.setText(title)
+        self.lesson_steps.setText(
+            "\n\n".join(f"{index}. {step}" for index, step in enumerate(steps, 1))
+        )
+        self._has_lesson = True
+        self.setTabVisible(self.lesson_tab_index, True)
+        return True
+
+    def show_lesson(self) -> bool:
+        if not self._has_lesson:
+            return False
+        self.setCurrentIndex(self.lesson_tab_index)
+        return True
+
     def set_document(self, document: EditorDocument | None) -> None:
         self.assets.clear()
+        self.refresh_lesson(document)
         if document is None or document.project is None:
             self.assets.addTopLevelItem(QTreeWidgetItem(["Open a project to see resources", ""]))
             self.project_name.setText("No project")

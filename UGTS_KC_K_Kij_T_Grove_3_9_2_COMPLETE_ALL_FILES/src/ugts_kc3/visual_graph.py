@@ -14,6 +14,7 @@ from enum import Enum
 import hashlib
 import json
 import math
+import re
 from typing import Any, Callable, ClassVar, Iterable, Iterator, Mapping, MutableMapping, Sequence
 
 from .scatter import ScatterError, f32, repeatable_number
@@ -30,6 +31,17 @@ PORTABLE_QUERY_TAGS = (
     "hazard",
 )
 _PORTABLE_QUERY_TAG_SET = frozenset(PORTABLE_QUERY_TAGS)
+
+# Saved message names are deliberately a tiny ASCII identifier.  The same
+# literal contract is checked again by the Android graph-pack compiler and
+# inspector so desktop-authored graphs cannot change meaning after deployment.
+PORTABLE_MESSAGE_PATTERN = r"[a-z][a-z0-9_.-]{0,63}"
+GRAPH_MESSAGE_MAX_EVENTS = 64
+GRAPH_MESSAGE_MAX_STEPS = 16384
+
+
+def _is_portable_message(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(PORTABLE_MESSAGE_PATTERN, value) is not None
 
 
 class FrozenDict(Mapping[str, Any]):
@@ -712,6 +724,32 @@ def _validation_issues(graph: VisualGraph, registry: NodeRegistry) -> tuple[Grap
                     )
                 )
 
+        if node.type == "event.message":
+            indexes = incoming_data.get((node.id, "message"), ())
+            if indexes:
+                issues.append(
+                    GraphValidationIssue(
+                        "message_literal_only",
+                        "When Message Heard Message must be saved on the block, not connected from another block.",
+                        node.id,
+                        indexes[0],
+                    )
+                )
+            else:
+                port = definition.port(PortDirection.INPUT, "message")
+                assert port is not None
+                supplied, literal = _node_property(
+                    definition, node, "message", port
+                )
+                if supplied and _value_matches_type(literal, "string") and not _is_portable_message(literal):
+                    issues.append(
+                        GraphValidationIssue(
+                            "message_name",
+                            "When Message Heard Message must start with a lowercase letter, use only lowercase letters, digits, dot, underscore, or hyphen, and be at most 64 characters.",
+                            node.id,
+                        )
+                    )
+
         if node.type == "event.timer":
             for name, label in (("seconds", "Seconds"), ("repeat", "Repeat")):
                 indexes = incoming_data.get((node.id, name), ())
@@ -986,6 +1024,35 @@ class GraphStepLimitError(GraphExecutionError):
         )
 
 
+class GraphEventLimitError(GraphExecutionError):
+    """A queued message cascade exceeded its deterministic event budget."""
+
+    code = "EventLimit"
+
+    def __init__(self, limit: int = GRAPH_MESSAGE_MAX_EVENTS):
+        self.limit = int(limit)
+        super().__init__(
+            f"Visual graph message dispatch stopped with EventLimit after {limit} queued events. Check for messages that keep sending one another."
+        )
+
+
+class GraphTotalStepLimitError(GraphExecutionError):
+    """All graph handlers in one queued message drain exhausted their budget."""
+
+    code = "TotalStepLimit"
+
+    def __init__(
+        self,
+        limit: int = GRAPH_MESSAGE_MAX_STEPS,
+        trace: Sequence[TraceEntry] = (),
+    ):
+        self.limit = int(limit)
+        super().__init__(
+            f"Visual graph message dispatch stopped with TotalStepLimit after {limit} node steps.",
+            trace,
+        )
+
+
 class GraphNodeExecutionError(GraphExecutionError):
     def __init__(self, node: GraphNode, reason: str, trace: Sequence[TraceEntry]):
         self.node_id = node.id
@@ -1034,6 +1101,45 @@ class GraphRuntime:
         # runtime can still be shared safely by multiple entity owners.
         self._active_step = 0
 
+    def _trigger_roots(
+        self,
+        trigger: str,
+        payload: Mapping[str, Any] | None = None,
+    ) -> tuple[str, ...]:
+        roots: list[str] = []
+        message = None if payload is None else payload.get("message")
+        for node in self.graph.nodes:
+            definition = self.registry.definition(node.type)
+            event = definition.event
+            if event != trigger and not (
+                trigger == "tick" and event in {"input_pressed", "timer"}
+            ):
+                continue
+            if event == "message":
+                port = definition.port(PortDirection.INPUT, "message")
+                assert port is not None
+                _, saved_message = _node_property(
+                    definition,
+                    node,
+                    "message",
+                    port,
+                )
+                if saved_message != message:
+                    continue
+            roots.append(node.id)
+        return tuple(
+            sorted(roots, key=lambda item: (self._rank[item], item))
+        )
+
+    def has_trigger(
+        self,
+        trigger: str,
+        payload: Mapping[str, Any] | None = None,
+    ) -> bool:
+        """Whether this runtime has at least one root for this exact dispatch."""
+
+        return bool(self._trigger_roots(str(trigger), payload))
+
     def execute(self, trigger: str, context: GraphContext, *, max_steps: int | None = None) -> ExecutionResult:
         """Dispatch ``ready``, ``tick``, input, or another registered event."""
 
@@ -1050,14 +1156,7 @@ class GraphRuntime:
             context = replace(context, active_step=self._active_step)
         state = _RunState(trigger_name, context.for_event(trigger_name), limit)
         queue: deque[tuple[str, str | None]] = deque()
-        roots = []
-        for node in self.graph.nodes:
-            event = self.registry.definition(node.type).event
-            if event == trigger_name or (
-                trigger_name == "tick" and event in {"input_pressed", "timer"}
-            ):
-                roots.append(node.id)
-        for node_id in sorted(roots, key=lambda item: (self._rank[item], item)):
+        for node_id in self._trigger_roots(trigger_name, state.context.payload):
             queue.append((node_id, None))
         try:
             while queue:
@@ -1081,8 +1180,19 @@ class GraphRuntime:
     dispatch = execute
     run = execute
 
-    def ready(self, world: Any, *, entity_id: str | None = None, payload: Mapping[str, Any] | None = None) -> ExecutionResult:
-        return self.execute("ready", GraphContext(world, entity_id, dt=0.0, payload=payload or {}))
+    def ready(
+        self,
+        world: Any,
+        *,
+        entity_id: str | None = None,
+        payload: Mapping[str, Any] | None = None,
+        max_steps: int | None = None,
+    ) -> ExecutionResult:
+        return self.execute(
+            "ready",
+            GraphContext(world, entity_id, dt=0.0, payload=payload or {}),
+            max_steps=max_steps,
+        )
 
     def tick(
         self,
@@ -1093,6 +1203,7 @@ class GraphRuntime:
         entity_id: str | None = None,
         payload: Mapping[str, Any] | None = None,
         active_step: int | None = None,
+        max_steps: int | None = None,
     ) -> ExecutionResult:
         step_dt = float(getattr(world, "fixed_dt", 0.0) if dt is None else dt)
         if active_step is None:
@@ -1116,6 +1227,7 @@ class GraphRuntime:
                 payload=payload or {},
                 active_step=step,
             ),
+            max_steps=max_steps,
         )
 
     def event(
@@ -1127,11 +1239,13 @@ class GraphRuntime:
         input_frame: Any = None,
         dt: float = 0.0,
         payload: Mapping[str, Any] | None = None,
+        max_steps: int | None = None,
     ) -> ExecutionResult:
         """Dispatch a named world event with an explicit, immutable payload."""
         return self.execute(
             trigger,
             GraphContext(world, entity_id, input_frame, dt, payload=payload or {}),
+            max_steps=max_steps,
         )
 
     def _evaluate(
@@ -1213,6 +1327,198 @@ class GraphRuntime:
             raise GraphNodeExecutionError(node, str(error), state.trace) from error
 
 
+@dataclass(frozen=True, slots=True)
+class _QueuedGraphMessage:
+    message: str
+    source: str | None
+    target: str | None
+
+
+@dataclass(slots=True)
+class _GraphMessageDispatcher:
+    """Per-world, transient FIFO for graph-to-graph messages.
+
+    The dispatcher is runtime state only: graph JSON and KCVG packs contain no
+    queue or payload.  An outer graph finishes before this FIFO drains, and any
+    nested sends are appended behind all recipients of the current message.
+    """
+
+    world: Any
+    bindings: list[GraphBinding] = field(default_factory=list)
+    queue: deque[_QueuedGraphMessage] = field(default_factory=deque)
+    dispatch_depth: int = 0
+    defer_depth: int = 0
+    draining: bool = False
+    pending_steps: int = 0
+    enqueued_events: int = 0
+    late_system_installed: bool = False
+
+    def register(self, binding: GraphBinding) -> None:
+        if not any(existing is binding for existing in self.bindings):
+            self.bindings.append(binding)
+
+    def enqueue(
+        self,
+        message: str,
+        source: str | None,
+        target: str | None,
+    ) -> None:
+        if self.enqueued_events >= GRAPH_MESSAGE_MAX_EVENTS:
+            self.abort_batch()
+            raise GraphEventLimitError()
+        self.queue.append(_QueuedGraphMessage(message, source, target))
+        self.enqueued_events += 1
+
+    def ensure_late_drain(self) -> None:
+        if self.late_system_installed:
+            return
+        self.late_system_installed = True
+        try:
+            self.world.add_system(
+                self._late_drain,
+                phase="late",
+                priority=(1 << 63) - 1,
+                name="visual_graph:message_drain",
+            )
+        except Exception:
+            self.late_system_installed = False
+            raise
+
+    def _late_drain(self, world: Any, dt: float, input_frame: Any) -> None:
+        del world, dt, input_frame
+        self.drain()
+
+    def abort_batch(self) -> None:
+        self.queue.clear()
+        self.pending_steps = 0
+        self.enqueued_events = 0
+
+    def step_limit(
+        self,
+        runtime: GraphRuntime,
+        trigger: str,
+        payload: Mapping[str, Any] | None = None,
+    ) -> int:
+        remaining = GRAPH_MESSAGE_MAX_STEPS - self.pending_steps
+        if remaining < 1:
+            if runtime.has_trigger(trigger, payload):
+                self.abort_batch()
+                raise GraphTotalStepLimitError()
+            return 1
+        return min(runtime.max_steps, remaining)
+
+    def record(self, result: ExecutionResult) -> None:
+        self.pending_steps += result.steps
+        if self.pending_steps > GRAPH_MESSAGE_MAX_STEPS:
+            self.abort_batch()
+            raise GraphTotalStepLimitError(trace=result.trace)
+
+    def begin_dispatch(self) -> None:
+        self.dispatch_depth += 1
+
+    def end_dispatch(self, *, drain_messages: bool = True) -> None:
+        if self.dispatch_depth < 1:
+            raise RuntimeError("visual graph message dispatch depth is unbalanced")
+        self.dispatch_depth -= 1
+        if drain_messages:
+            self.drain()
+
+    def _binding_order(self) -> tuple[GraphBinding, ...]:
+        entities = getattr(self.world, "entities", {})
+        entity_indexes = (
+            {str(entity_id): index for index, entity_id in enumerate(entities)}
+            if isinstance(entities, Mapping)
+            else {}
+        )
+        world_index = len(entity_indexes)
+
+        def key(binding: GraphBinding) -> tuple[int, bytes]:
+            index = (
+                world_index
+                if binding.entity_id is None
+                else entity_indexes.get(binding.entity_id, world_index + 1)
+            )
+            return index, binding.runtime.graph.id.encode("utf-8")
+
+        return tuple(sorted(self.bindings, key=key))
+
+    @staticmethod
+    def _accepts(binding: GraphBinding, target: str | None) -> bool:
+        if not binding.owner_is_active():
+            return False
+        return target is None or binding.entity_id is None or binding.entity_id == target
+
+    def drain(self) -> None:
+        if (
+            self.draining
+            or self.dispatch_depth
+            or self.defer_depth
+        ):
+            return
+        self.draining = True
+        completed = False
+        try:
+            while self.queue:
+                queued = self.queue.popleft()
+                payload = {
+                    "message": queued.message,
+                    "source": queued.source,
+                    "target": queued.target,
+                }
+                for binding in self._binding_order():
+                    if (
+                        not self._accepts(binding, queued.target)
+                        or not binding.runtime.has_trigger("message", payload)
+                    ):
+                        continue
+                    handler_limit = self.step_limit(
+                        binding.runtime,
+                        "message",
+                        payload,
+                    )
+                    try:
+                        result = binding._dispatch_message(
+                            queued,
+                            max_steps=handler_limit,
+                        )
+                    except GraphStepLimitError as error:
+                        if handler_limit < binding.runtime.max_steps:
+                            raise GraphTotalStepLimitError(
+                                trace=error.trace
+                            ) from error
+                        raise
+                    self.record(result)
+            completed = True
+        except Exception:
+            # A failed cascade cannot leak stale messages into a later frame.
+            self.abort_batch()
+            raise
+        finally:
+            self.draining = False
+            if completed:
+                self.pending_steps = 0
+                self.enqueued_events = 0
+
+
+_GRAPH_MESSAGE_DISPATCHER_ATTRIBUTE = "_ugts_graph_message_dispatcher"
+
+
+def _message_dispatcher(
+    world: Any,
+    *,
+    create: bool = True,
+) -> _GraphMessageDispatcher | None:
+    dispatcher = getattr(world, _GRAPH_MESSAGE_DISPATCHER_ATTRIBUTE, None)
+    if dispatcher is None and create:
+        dispatcher = _GraphMessageDispatcher(world)
+        setattr(world, _GRAPH_MESSAGE_DISPATCHER_ATTRIBUTE, dispatcher)
+    if dispatcher is not None and not isinstance(dispatcher, _GraphMessageDispatcher):
+        raise TypeError(
+            f"world attribute {_GRAPH_MESSAGE_DISPATCHER_ATTRIBUTE!r} is reserved for visual graphs"
+        )
+    return dispatcher
+
+
 @dataclass(slots=True)
 class GraphBinding:
     """A graph registered as a normal ``GameWorld`` update system."""
@@ -1227,9 +1533,30 @@ class GraphBinding:
     last_input_frame: Any = None
     active_step: int = 0
 
-    def run_ready(self) -> ExecutionResult:
+    def run_ready(self, *, drain_messages: bool = True) -> ExecutionResult:
         self.active_step = 0
-        self.ready_result = self.runtime.ready(self.world, entity_id=self.entity_id)
+        dispatcher = _message_dispatcher(self.world)
+        assert dispatcher is not None
+        limit = dispatcher.step_limit(self.runtime, "ready")
+        dispatcher.begin_dispatch()
+        try:
+            try:
+                self.ready_result = self.runtime.ready(
+                    self.world,
+                    entity_id=self.entity_id,
+                    max_steps=limit,
+                )
+            except GraphStepLimitError as error:
+                dispatcher.abort_batch()
+                if limit < self.runtime.max_steps:
+                    raise GraphTotalStepLimitError(trace=error.trace) from error
+                raise
+            dispatcher.record(self.ready_result)
+        except Exception:
+            dispatcher.abort_batch()
+            raise
+        finally:
+            dispatcher.end_dispatch(drain_messages=drain_messages)
         return self.ready_result
 
     def owner_is_active(self) -> bool:
@@ -1247,16 +1574,36 @@ class GraphBinding:
         )
 
     def update(self, world: Any, dt: float, input_frame: Any) -> None:
+        dispatcher = _message_dispatcher(self.world)
+        assert dispatcher is not None
         if self.owner_is_active():
             self.active_step += 1
             self.last_input_frame = input_frame
-            self.last_result = self.runtime.tick(
-                world,
-                dt,
-                input_frame,
-                entity_id=self.entity_id,
-                active_step=self.active_step,
-            )
+            limit = dispatcher.step_limit(self.runtime, "tick")
+            dispatcher.begin_dispatch()
+            try:
+                try:
+                    self.last_result = self.runtime.tick(
+                        world,
+                        dt,
+                        input_frame,
+                        entity_id=self.entity_id,
+                        active_step=self.active_step,
+                        max_steps=limit,
+                    )
+                except GraphStepLimitError as error:
+                    dispatcher.abort_batch()
+                    if limit < self.runtime.max_steps:
+                        raise GraphTotalStepLimitError(
+                            trace=error.trace
+                        ) from error
+                    raise
+                dispatcher.record(self.last_result)
+            except Exception:
+                dispatcher.abort_batch()
+                raise
+            finally:
+                dispatcher.end_dispatch(drain_messages=False)
 
     def handle_trigger(self, event: Any) -> None:
         """Dispatch player/sensor transitions to world or matching sensor graphs."""
@@ -1274,14 +1621,57 @@ class GraphBinding:
         payload.update({"sensor": None if sensor is None else str(sensor), "player": None if player is None else str(player)})
         settings = getattr(self.world, "settings", None)
         dt = float(getattr(settings, "fixed_dt", getattr(self.world, "fixed_dt", 0.0)))
+        dispatcher = _message_dispatcher(self.world)
+        assert dispatcher is not None
+        limit = dispatcher.step_limit(self.runtime, trigger, payload)
+        dispatcher.begin_dispatch()
+        try:
+            try:
+                self.last_result = self.runtime.event(
+                    trigger,
+                    self.world,
+                    entity_id=self.entity_id,
+                    input_frame=self.last_input_frame,
+                    dt=dt,
+                    payload=payload,
+                    max_steps=limit,
+                )
+            except GraphStepLimitError as error:
+                dispatcher.abort_batch()
+                if limit < self.runtime.max_steps:
+                    raise GraphTotalStepLimitError(trace=error.trace) from error
+                raise
+            dispatcher.record(self.last_result)
+        except Exception:
+            dispatcher.abort_batch()
+            raise
+        finally:
+            dispatcher.end_dispatch(drain_messages=False)
+
+    def _dispatch_message(
+        self,
+        queued: _QueuedGraphMessage,
+        *,
+        max_steps: int,
+    ) -> ExecutionResult:
+        settings = getattr(self.world, "settings", None)
+        dt = float(
+            getattr(settings, "fixed_dt", getattr(self.world, "fixed_dt", 0.0))
+        )
         self.last_result = self.runtime.event(
-            trigger,
+            "message",
             self.world,
             entity_id=self.entity_id,
             input_frame=self.last_input_frame,
             dt=dt,
-            payload=payload,
+            payload={
+                "message": queued.message,
+                "source": queued.source,
+                "target": queued.target,
+            },
+            max_steps=max_steps,
         )
+        return self.last_result
 
 
 def attach_graph(
@@ -1303,13 +1693,57 @@ def attach_graph(
     runtime = graph if isinstance(graph, GraphRuntime) else GraphRuntime(graph, registry, max_steps=max_steps)
     binding_name = name or f"visual_graph:{runtime.graph.id}:{entity_id or 'world'}"
     binding = GraphBinding(runtime, world, entity_id, phase, binding_name)
+    dispatcher = _message_dispatcher(world)
+    assert dispatcher is not None
+    dispatcher.register(binding)
+    dispatcher.ensure_late_drain()
     world.add_system(binding.update, phase=phase, priority=int(priority), name=binding_name)
     if hasattr(world, "on"):
         world.on("trigger_enter", binding.handle_trigger)
         world.on("trigger_exit", binding.handle_trigger)
     if run_ready:
-        binding.run_ready()
+        # Preserve the established eager Ready actions for a single attachment,
+        # but do not route its messages before later bindings can register.
+        binding.run_ready(drain_messages=False)
     return binding
+
+
+def run_ready_batch(
+    bindings: Iterable[GraphBinding],
+) -> tuple[ExecutionResult, ...]:
+    """Run one canonical Ready batch, then drain all messages it emitted.
+
+    Every binding is registered before the first Ready handler.  Entity-bound
+    graphs run by scene insertion index then graph id; world graphs run last.
+    """
+
+    items = tuple(bindings)
+    if not items:
+        return ()
+    world = items[0].world
+    if any(binding.world is not world for binding in items):
+        raise ValueError("a Ready batch can contain bindings from only one world")
+    dispatcher = _message_dispatcher(world)
+    assert dispatcher is not None
+    for binding in items:
+        dispatcher.register(binding)
+    ordered = tuple(
+        binding
+        for binding in dispatcher._binding_order()
+        if any(binding is item for item in items)
+    )
+    dispatcher.defer_depth += 1
+    completed = False
+    try:
+        results = tuple(binding.run_ready() for binding in ordered)
+        completed = True
+    finally:
+        dispatcher.defer_depth -= 1
+        if completed:
+            dispatcher.drain()
+        else:
+            dispatcher.abort_batch()
+    return results
 
 
 def _in_flow(name: str = "in", description: str = "Runs this node when a flow arrives.") -> PortDefinition:
@@ -1647,6 +2081,22 @@ def _event_ready(context: GraphContext, node: GraphNode, inputs: Mapping[str, An
     return NodeResult({"entity": context.entity_id}, ("out",))
 
 
+def _event_message(
+    context: GraphContext,
+    node: GraphNode,
+    inputs: Mapping[str, Any],
+) -> NodeResult:
+    source = context.payload.get("source")
+    target = context.payload.get("target")
+    outputs = {
+        "source": None if source is None else str(source),
+        "target": None if target is None else str(target),
+        "entity": context.entity_id,
+    }
+    heard = context.payload.get("message") == inputs["message"]
+    return NodeResult(outputs, ("out",) if heard else ())
+
+
 def _event_tick(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
     return NodeResult({"dt": context.dt, "tick": int(getattr(context.world, "tick", 0)), "entity": context.entity_id}, ("out",))
 
@@ -1856,7 +2306,16 @@ def _emit_event(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any
     payload = inputs.get("payload") or {}
     if not isinstance(payload, Mapping):
         raise TypeError("event payload must be a mapping")
-    event = context.world.emit(str(inputs["kind"]), source=source, target=target, payload=_thaw(payload))
+    message = str(inputs["kind"])
+    event = context.world.emit(
+        message,
+        source=source,
+        target=target,
+        payload=_thaw(payload),
+    )
+    dispatcher = _message_dispatcher(context.world, create=False)
+    if dispatcher is not None:
+        dispatcher.enqueue(message, source, target)
     return NodeResult({"event": event}, ("out",))
 
 
@@ -1883,6 +2342,22 @@ def create_builtin_registry() -> NodeRegistry:
         NodeDefinition(
             "event.ready", "Ready", "Events", "Runs once when this graph binding is attached.",
             (_out_flow(), _out_data("entity", "entity", "The bound entity id, if any.")), _event_ready, event="ready",
+        ),
+        NodeDefinition(
+            "event.message",
+            "When Message Heard",
+            "Events",
+            "Runs after another graph sends the exact saved message name.",
+            (
+                _in_data("message", "string", required=True),
+                _out_flow(),
+                _out_data("source", "entity", "The sending entity, or null for a world graph."),
+                _out_data("target", "entity", "The addressed entity, or null for a broadcast."),
+                _out_data("entity", "entity", "This graph's bound entity, if any."),
+            ),
+            _event_message,
+            {"message": "graph_event"},
+            event="message",
         ),
         NodeDefinition(
             "event.tick", "Tick", "Events", "Runs on every fixed GameWorld update.",
@@ -2057,12 +2532,14 @@ __all__ = [
     "GraphBinding",
     "GraphContext",
     "GraphCycleError",
+    "GraphEventLimitError",
     "GraphExecutionError",
     "GraphLink",
     "GraphNode",
     "GraphNodeExecutionError",
     "GraphRuntime",
     "GraphStepLimitError",
+    "GraphTotalStepLimitError",
     "GraphValidationError",
     "GraphValidationIssue",
     "NO_DEFAULT",
@@ -2073,8 +2550,12 @@ __all__ = [
     "PortDirection",
     "PortKind",
     "PORTABLE_QUERY_TAGS",
+    "PORTABLE_MESSAGE_PATTERN",
+    "GRAPH_MESSAGE_MAX_EVENTS",
+    "GRAPH_MESSAGE_MAX_STEPS",
     "TraceEntry",
     "VisualGraph",
     "attach_graph",
     "create_builtin_registry",
+    "run_ready_batch",
 ]

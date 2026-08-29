@@ -21,19 +21,22 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from enum import Enum
-import hashlib
 import heapq
 import math
 import time
 from typing import Callable
 
-from .game_state import RULE_PROFILE_ID, automatic_status
-from .hashing import canonical_json_bytes
+from .game_state import automatic_status
 from .proof_dag import (
-    DAGAuditReport,
     DAGNode,
     ProofDAG,
     ProofDAGIntegrityError,
+)
+from .proof_dag_commitment import (
+    PROOF_DAG_MANIFEST_SCHEMA,
+    ProofDAGConcurrentMutationError,
+    ProofDAGHead,
+    audit_proof_dag_head,
 )
 from .wdl_fact_journal import FactEntry, FactJournalHead, WDLFactJournal
 from .wdl_fact_propagation import (
@@ -43,16 +46,8 @@ from .wdl_fact_propagation import (
 
 
 WORKLIST_SCHEMA = "ugts-chess-deterministic-wdl-worklist-1.0"
-DAG_MANIFEST_SCHEMA = "ugts-chess-proof-dag-ordered-manifest-1.0"
+DAG_MANIFEST_SCHEMA = PROOF_DAG_MANIFEST_SCHEMA
 _MAX_STABLE_SNAPSHOT_ATTEMPTS = 8
-
-
-def _is_sha256_hex(value: object) -> bool:
-    return (
-        isinstance(value, str)
-        and len(value) == 64
-        and all(character in "0123456789abcdef" for character in value)
-    )
 
 
 def _require_count(value: object, *, label: str) -> int:
@@ -61,59 +56,7 @@ def _require_count(value: object, *, label: str) -> int:
     return value
 
 
-@dataclass(frozen=True, slots=True)
-class DAGHead:
-    """Strict identity for one fully audited, materialised ProofDAG prefix.
-
-    Frontier payload hashes are not themselves chained.  The manifest digest
-    therefore commits to every ordered occurrence and its validated graph
-    identities; count, size, and last-record hash alone would not bind an
-    earlier same-size rewrite.
-    """
-
-    rule_profile_id: str
-    frontier_record_count: int
-    sqlite_edge_count: int
-    sqlite_node_count: int
-    frontier_size: int
-    last_frontier_content_sha256: str | None
-    frontier_manifest_sha256: str
-
-    def __post_init__(self) -> None:
-        if self.rule_profile_id != RULE_PROFILE_ID:
-            raise ValueError("DAG head rule profile is not canonical")
-        record_count = _require_count(
-            self.frontier_record_count,
-            label="frontier_record_count",
-        )
-        edge_count = _require_count(self.sqlite_edge_count, label="sqlite_edge_count")
-        node_count = _require_count(self.sqlite_node_count, label="sqlite_node_count")
-        frontier_size = _require_count(self.frontier_size, label="frontier_size")
-        if record_count != edge_count:
-            raise ValueError("DAG head frontier and SQLite edge counts differ")
-        if node_count > edge_count:
-            raise ValueError("DAG head has more nodes than frontier occurrences")
-        if frontier_size == 0:
-            raise ValueError("DAG head frontier size must include its header")
-        if record_count == 0:
-            if self.last_frontier_content_sha256 is not None:
-                raise ValueError("empty DAG head may not name a last frontier record")
-        elif not _is_sha256_hex(self.last_frontier_content_sha256):
-            raise ValueError("non-empty DAG head needs a lowercase SHA-256 record id")
-        if not _is_sha256_hex(self.frontier_manifest_sha256):
-            raise ValueError("DAG head needs a lowercase SHA-256 manifest id")
-
-    def record(self) -> dict[str, object]:
-        return {
-            "schema": WORKLIST_SCHEMA,
-            "rule_profile_id": self.rule_profile_id,
-            "frontier_record_count": self.frontier_record_count,
-            "sqlite_edge_count": self.sqlite_edge_count,
-            "sqlite_node_count": self.sqlite_node_count,
-            "frontier_size": self.frontier_size,
-            "last_frontier_content_sha256": self.last_frontier_content_sha256,
-            "frontier_manifest_sha256": self.frontier_manifest_sha256,
-        }
+DAGHead = ProofDAGHead
 
 
 @dataclass(frozen=True, slots=True)
@@ -242,72 +185,15 @@ class WorklistReentrancyError(RuntimeError):
     """Raised when an observer tries to drive its own active worklist."""
 
 
-def _head_from_audit(
-    dag: ProofDAG,
-    audit: DAGAuditReport,
-    *,
-    last_frontier_content_sha256: str | None,
-    frontier_manifest_sha256: str,
-) -> DAGHead:
-    audit.require_valid()
-    return DAGHead(
-        rule_profile_id=dag.rule_profile_id,
-        frontier_record_count=audit.frontier_record_count,
-        sqlite_edge_count=audit.sqlite_edge_count,
-        sqlite_node_count=audit.sqlite_node_count,
-        frontier_size=audit.frontier_size,
-        last_frontier_content_sha256=last_frontier_content_sha256,
-        frontier_manifest_sha256=frontier_manifest_sha256,
-    )
-
-
 def _snapshot_dag_head(dag: ProofDAG) -> DAGHead:
-    """Obtain one stable audited DAG head without relying on private SQLite."""
+    """Obtain the canonical stable audited ProofDAG head."""
 
-    for _ in range(_MAX_STABLE_SNAPSHOT_ATTEMPTS):
-        before = dag.audit().require_valid()
-        last_sha256: str | None = None
-        edge_count = 0
-        last_frame_end = 0
-        manifest = hashlib.sha256()
-        manifest.update(DAG_MANIFEST_SCHEMA.encode("ascii") + b"\x00")
-        for edge in dag.iter_edges():
-            if edge.frontier_record_index != edge_count:
-                raise ProofDAGIntegrityError(
-                    "frontier edge ordinals are not contiguous from zero"
-                )
-            manifest_record = canonical_json_bytes(
-                {
-                    "frontier_record_index": edge.frontier_record_index,
-                    "frontier_content_sha256": edge.frontier_content_sha256,
-                    "parent_frontier_content_sha256": (
-                        edge.parent_frontier_content_sha256
-                    ),
-                    "parent_node_sha256": edge.parent_node_sha256,
-                    "child_node_sha256": edge.child_node_sha256,
-                }
-            )
-            manifest.update(len(manifest_record).to_bytes(8, "big"))
-            manifest.update(manifest_record)
-            edge_count += 1
-            last_sha256 = edge.frontier_content_sha256
-            last_frame_end = edge.frame_end_offset
-        after = dag.audit().require_valid()
-        if before != after or edge_count != after.frontier_record_count:
-            continue
-        if edge_count and last_frame_end != after.frontier_size:
-            raise ProofDAGIntegrityError(
-                "last frontier edge does not end at the audited DAG boundary"
-            )
-        return _head_from_audit(
-            dag,
-            after,
-            last_frontier_content_sha256=last_sha256,
-            frontier_manifest_sha256=manifest.hexdigest(),
-        )
-    raise WorklistConcurrentMutationError(
-        "proof DAG changed repeatedly while capturing an audited head"
-    )
+    try:
+        return audit_proof_dag_head(dag)
+    except ProofDAGConcurrentMutationError as exc:
+        raise WorklistConcurrentMutationError(
+            "proof DAG changed repeatedly while capturing an audited head"
+        ) from exc
 
 
 def _stable_fact_snapshot(

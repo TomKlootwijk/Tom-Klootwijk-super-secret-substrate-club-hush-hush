@@ -3,6 +3,7 @@
 #include "ugts_go19/sha256.hpp"
 
 #include <algorithm>
+#include <exception>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
@@ -10,6 +11,10 @@
 
 namespace ugts_go19 {
 namespace {
+
+constexpr std::uint64_t kPropagationProcessedBit = UINT64_C(1) << 63U;
+constexpr std::uint64_t kMaximumPropagationEpoch =
+    kPropagationProcessedBit - 1U;
 
 std::uint64_t SaturatingAdd(std::uint64_t left, std::uint64_t right) {
   if (left > kProofInfinity - right) return kProofInfinity;
@@ -39,6 +44,14 @@ std::uint64_t CheckedSize(std::size_t value, const char* label) {
     throw std::overflow_error(std::string(label) + " exceeds uint64");
   }
   return static_cast<std::uint64_t>(value);
+}
+
+void CheckedMetricAdd(std::uint64_t& total, std::uint64_t amount,
+                      const char* label) {
+  if (total > kProofInfinity - amount) {
+    throw std::overflow_error(std::string(label) + " exceeds uint64");
+  }
+  total += amount;
 }
 
 }  // namespace
@@ -246,55 +259,74 @@ void ProofNumberDAG::ExpandNode(std::size_t node_id) {
   }
 }
 
-void ProofNumberDAG::RecomputeAll() {
-  // Process only ranks that actually occur.  This stays allocation-free after
-  // an expansion commits graph facts, even when a caller supplies a large but
-  // sparse 19x19 PSK history.  Every edge has a strictly greater rank, so all
-  // children at the next selected rank have already been recomputed. Terminal
-  // values are rederived from exact area score and threshold, while open leaves
-  // always reset to (1, 1). This makes deserialized caches non-authoritative.
+ProofNumberDAG::ProofNumbers ProofNumberDAG::EvaluateNode(
+    std::size_t node_id) const {
+  const Node& node = CheckedNode(node_id);
+  if (node.expansion == NodeExpansion::kUnexpanded) {
+    return ProofNumbers{1, 1, 0};
+  }
+  if (node.expansion == NodeExpansion::kTerminal) {
+    const bool proven = AreaScore2(node.state, rules_) >= threshold2_;
+    return ProofNumbers{proven ? 0 : kProofInfinity,
+                        proven ? kProofInfinity : 0, 0};
+  }
+  if (node.children.empty()) {
+    throw std::invalid_argument("expanded node has no complete edge set");
+  }
+
+  const bool black_or_node = node.state.to_play == kBlack;
+  std::uint64_t proof = black_or_node ? kProofInfinity : 0;
+  std::uint64_t disproof = black_or_node ? 0 : kProofInfinity;
+  for (const auto& edge : node.children) {
+    const Node& child = CheckedNode(edge.second);
+    if (child.rank <= node.rank) {
+      throw std::invalid_argument("edge violates strict PSK rank ordering");
+    }
+    if (black_or_node) {
+      proof = std::min(proof, child.proof);
+      disproof = SaturatingAdd(disproof, child.disproof);
+    } else {
+      proof = SaturatingAdd(proof, child.proof);
+      disproof = std::min(disproof, child.disproof);
+    }
+  }
+  if (proof == 0 && disproof == 0) {
+    throw std::invalid_argument("proof and disproof cannot both be zero");
+  }
+  return ProofNumbers{proof, disproof,
+                      CheckedSize(node.children.size(), "child edge scan")};
+}
+
+ProofPropagationMetrics ProofNumberDAG::RecomputeAll() {
+  // Process only ranks that actually occur, including when a caller supplies a
+  // large but sparse 19x19 PSK history. Every edge has a strictly greater rank,
+  // so all children at the next selected rank have already been recomputed.
+  // Terminal values are rederived from exact area score and threshold, while
+  // open leaves always reset to (1, 1). This makes deserialized caches
+  // non-authoritative. AreaScore2 may allocate temporary board traversal state;
+  // caches remain poisoned if that or any other oracle operation fails.
+  if (full_recompute_passes_ != kProofInfinity) {
+    full_recompute_passes_ += 1;
+  }
+  caches_valid_ = false;
+  ProofPropagationMetrics metrics;
   std::uint64_t maximum_rank = 0;
   for (const auto& node : nodes_) maximum_rank = std::max(maximum_rank, node.rank);
   std::uint64_t rank = maximum_rank;
   while (true) {
     for (Node& node : nodes_) {
       if (node.rank != rank) continue;
-      if (node.expansion == NodeExpansion::kUnexpanded) {
-        node.proof = 1;
-        node.disproof = 1;
-        continue;
+      const ProofNumbers recomputed = EvaluateNode(node.node_id);
+      CheckedMetricAdd(metrics.nodes_recomputed, 1, "recomputed node count");
+      CheckedMetricAdd(metrics.child_edges_scanned,
+                       recomputed.child_edges_scanned,
+                       "recomputed child edge count");
+      if (node.proof != recomputed.proof ||
+          node.disproof != recomputed.disproof) {
+        CheckedMetricAdd(metrics.nodes_changed, 1, "changed node count");
       }
-      if (node.expansion == NodeExpansion::kTerminal) {
-        const bool proven = AreaScore2(node.state, rules_) >= threshold2_;
-        node.proof = proven ? 0 : kProofInfinity;
-        node.disproof = proven ? kProofInfinity : 0;
-        continue;
-      }
-      if (node.children.empty()) {
-        throw std::invalid_argument("expanded node has no complete edge set");
-      }
-
-      const bool black_or_node = node.state.to_play == kBlack;
-      std::uint64_t proof = black_or_node ? kProofInfinity : 0;
-      std::uint64_t disproof = black_or_node ? 0 : kProofInfinity;
-      for (const auto& edge : node.children) {
-        const Node& child = CheckedNode(edge.second);
-        if (child.rank <= node.rank) {
-          throw std::invalid_argument("edge violates strict PSK rank ordering");
-        }
-        if (black_or_node) {
-          proof = std::min(proof, child.proof);
-          disproof = SaturatingAdd(disproof, child.disproof);
-        } else {
-          proof = SaturatingAdd(proof, child.proof);
-          disproof = std::min(disproof, child.disproof);
-        }
-      }
-      if (proof == 0 && disproof == 0) {
-        throw std::invalid_argument("proof and disproof cannot both be zero");
-      }
-      node.proof = proof;
-      node.disproof = disproof;
+      node.proof = recomputed.proof;
+      node.disproof = recomputed.disproof;
     }
     bool found_lower_rank = false;
     std::uint64_t next_rank = 0;
@@ -307,6 +339,154 @@ void ProofNumberDAG::RecomputeAll() {
     }
     if (!found_lower_rank) break;
     rank = next_rank;
+  }
+  caches_valid_ = true;
+  return metrics;
+}
+
+void ProofNumberDAG::RequireCachesValid() const {
+  if (!caches_valid_) {
+    throw std::logic_error(
+        "proof caches are invalid after a failed exact recomputation");
+  }
+}
+
+ProofPropagationMetrics ProofNumberDAG::PropagateFrom(
+    std::size_t node_id,
+    std::vector<PropagationWorkItem> propagation_heap) {
+  if (node_id >= nodes_.size()) {
+    throw std::out_of_range("proof DAG node ID is out of range");
+  }
+
+  // Epoch zero is reserved for untouched nodes and the high bit marks a popped
+  // node. The reset path is reachable only after 2^63-1 propagation passes and
+  // does not affect proof data.
+  if (propagation_epoch_ == kMaximumPropagationEpoch) {
+    for (Node& node : nodes_) {
+      node.propagation_stamp = 0;
+    }
+    propagation_epoch_ = 1;
+  } else {
+    propagation_epoch_ += 1;
+  }
+  const std::uint64_t epoch = propagation_epoch_;
+  ProofPropagationMetrics metrics;
+
+  // std::push_heap/pop_heap make the greatest semantic rank authoritative.
+  // Equal-rank nodes are visited by ascending stable node ID.
+  const auto lower_priority = [](const PropagationWorkItem& left,
+                                 const PropagationWorkItem& right) {
+    if (left.rank != right.rank) return left.rank < right.rank;
+    return left.node_id > right.node_id;
+  };
+  const auto enqueue = [&](std::size_t queued_id) {
+    Node& queued = nodes_.at(queued_id);
+    if (queued.propagation_stamp == epoch) {
+      CheckedMetricAdd(metrics.duplicate_queue_suppressions, 1,
+                       "duplicate queue suppression count");
+      return;
+    }
+    if (queued.propagation_stamp ==
+        (epoch | kPropagationProcessedBit)) {
+      throw std::logic_error(
+          "strict rank propagation attempted to revisit a processed node");
+    }
+    if (propagation_heap.size() == propagation_heap.capacity()) {
+      throw std::length_error(
+          "preallocated propagation heap capacity was exceeded");
+    }
+    queued.propagation_stamp = epoch;
+    propagation_heap.push_back(
+        PropagationWorkItem{queued.rank, queued_id});
+    std::push_heap(propagation_heap.begin(), propagation_heap.end(),
+                   lower_priority);
+    CheckedMetricAdd(metrics.queue_insertions, 1,
+                     "propagation queue insertion count");
+  };
+
+  enqueue(node_id);
+  bool have_previous = false;
+  PropagationWorkItem previous;
+  while (!propagation_heap.empty()) {
+    std::pop_heap(propagation_heap.begin(), propagation_heap.end(),
+                  lower_priority);
+    const PropagationWorkItem item = propagation_heap.back();
+    propagation_heap.pop_back();
+    Node& node = nodes_.at(item.node_id);
+    if (node.rank != item.rank || node.propagation_stamp != epoch) {
+      throw std::logic_error("incremental propagation heap was corrupted");
+    }
+    if (have_previous) {
+      if (previous.rank < item.rank ||
+          (previous.rank == item.rank && previous.node_id > item.node_id)) {
+        throw std::logic_error(
+            "incremental propagation order is not deterministic");
+      }
+      CheckedMetricAdd(metrics.rank_order_checks, 1,
+                       "propagation rank order check count");
+    }
+    previous = item;
+    have_previous = true;
+    node.propagation_stamp = epoch | kPropagationProcessedBit;
+
+    const ProofNumbers recomputed = EvaluateNode(item.node_id);
+    CheckedMetricAdd(metrics.nodes_recomputed, 1,
+                     "propagated node count");
+    CheckedMetricAdd(metrics.child_edges_scanned,
+                     recomputed.child_edges_scanned,
+                     "propagated child edge count");
+    if (node.proof == recomputed.proof &&
+        node.disproof == recomputed.disproof) {
+      continue;
+    }
+
+    node.proof = recomputed.proof;
+    node.disproof = recomputed.disproof;
+    CheckedMetricAdd(metrics.nodes_changed, 1,
+                     "propagated changed node count");
+    for (const std::size_t parent_id : node.parents) {
+      const Node& parent = CheckedNode(parent_id);
+      if (parent.rank >= node.rank) {
+        throw std::invalid_argument(
+            "reverse edge violates strict PSK rank ordering");
+      }
+      enqueue(parent_id);
+    }
+  }
+  return metrics;
+}
+
+void ProofNumberDAG::ExpandNodeAndPropagate(std::size_t node_id) {
+  RequireCachesValid();
+
+  // Every affected ancestor already exists before child generation.  Reserve
+  // its worst-case queue capacity before graph publication, so propagation
+  // itself cannot allocate after caches become stale.
+  std::vector<PropagationWorkItem> propagation_heap;
+  propagation_heap.reserve(nodes_.size());
+
+  ExpandNode(node_id);
+  caches_valid_ = false;
+  last_completed_propagation_epoch_ = 0;
+  try {
+    ProofPropagationMetrics metrics =
+        PropagateFrom(node_id, std::move(propagation_heap));
+    last_incremental_propagation_metrics_ = metrics;
+    last_completed_propagation_epoch_ = propagation_epoch_;
+    caches_valid_ = true;
+  } catch (...) {
+    const std::exception_ptr propagation_error = std::current_exception();
+    // The graph expansion is already exact and committed. If the full oracle
+    // repair succeeds, callers may safely resume after observing the original
+    // failure. It may itself allocate while rescoring terminal nodes; if it
+    // fails, caches stay poisoned and no result/hash API may expose them.
+    try {
+      static_cast<void>(RecomputeAll());
+    } catch (...) {
+      caches_valid_ = false;
+      throw;
+    }
+    std::rethrow_exception(propagation_error);
   }
 }
 
@@ -377,14 +557,13 @@ ProofStatus ProofNumberDAG::Status(std::uint64_t proof,
 
 ProofNumberDAGResult ProofNumberDAG::Advance(
     std::uint64_t additional_expansions) {
-  RecomputeAll();
+  RequireCachesValid();
   std::uint64_t expanded = 0;
   while (nodes_[root_id_].proof != 0 && nodes_[root_id_].disproof != 0 &&
          expanded < additional_expansions) {
     const std::size_t frontier = SelectMostProving();
-    ExpandNode(frontier);
+    ExpandNodeAndPropagate(frontier);
     expanded += 1;
-    RecomputeAll();
   }
 
   const Node& root = nodes_[root_id_];
@@ -442,9 +621,10 @@ std::uint64_t ProofNumberDAG::RankFor(std::size_t node_id) const {
 }
 
 void ProofNumberDAG::ExpandNodeForAudit(std::size_t node_id) {
-  RecomputeAll();
+  static_cast<void>(RecomputeAll());
   ExpandNode(node_id);
-  RecomputeAll();
+  caches_valid_ = false;
+  static_cast<void>(RecomputeAll());
 }
 
 std::uint64_t ProofNumberDAG::node_count() const {
@@ -464,6 +644,7 @@ std::uint64_t ProofNumberDAG::edge_count() const {
 }
 
 std::string ProofNumberDAG::GraphSha256() const {
+  RequireCachesValid();
   std::string payload = "UGTS-CPP-PNDAG-GRAPH-v1;";
   AppendSignedScalar(payload, threshold2_);
   AppendScalar(payload, committed_expansions_);

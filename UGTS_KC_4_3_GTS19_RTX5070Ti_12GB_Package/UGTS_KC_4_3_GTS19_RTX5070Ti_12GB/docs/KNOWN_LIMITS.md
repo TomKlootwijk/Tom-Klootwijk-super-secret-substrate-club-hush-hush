@@ -15,12 +15,16 @@
   33,606,586 input-immutability comparisons, 320 canary checks, and 12 negative
   checks. It crosses the real grid-stride cap, tests permitted input aliasing and
   pre-enqueued dual streams, and passes Compute Sanitizer with zero
-  mismatches/errors. This is functional parity evidence, not a performance
-  benchmark or 19×19 certificate. The additional local-transition v1 gate covers
-  only 25,281 unique point slots (50,562 across default/nondefault parity modes),
-  not the planned 10,000,000-slot M4 gate. Its dense 19×19 output costs 36,606
-  device bytes per state, rejects an over-budget batch rather than resizing it,
-  and has no production proof-coordinator integration or throughput result.
+  mismatches/errors. This is functional parity evidence, not a 19×19
+  certificate. The cross-language local-transition v1 gate covers 25,281 unique
+  point slots (50,562 across default/nondefault parity modes). A separate
+  C++/CUDA breadth gate now covers 10,000,303 slots from 27,716 exact-distinct
+  states once per stream mode, including 554,496 reachable campaign-shaped and
+  9,444,121 ordinal-injective randomized 19×19 slots, with zero mismatches. Its
+  measured 155,493/165,556 slots/s are hardware-specific and non-proof; Python
+  was not run across that 10m corpus. The dense 19×19 output costs 36,606 device
+  bytes per state, rejects an over-budget batch rather than resizing it, and
+  still has no production proof-coordinator integration.
 - The C++ reference currently pins positional superko and area scoring. It now
   shares a canonical semantic-state object with Python, but does not implement
   the Python engine's optional simple-ko, situational-superko, or no-superko

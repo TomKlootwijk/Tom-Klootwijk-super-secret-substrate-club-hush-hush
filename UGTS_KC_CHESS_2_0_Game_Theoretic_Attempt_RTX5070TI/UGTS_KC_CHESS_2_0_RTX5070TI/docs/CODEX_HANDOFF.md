@@ -37,12 +37,17 @@ and compact v2 propagation paths are independently replayed. A deterministic,
 restart-reconstructed local worklist is implemented and explicitly reports
 stable emptiness as local quiescence, never as solving chess. An interrupted
 propagation or parent-scheduling step invalidates its reconstructible RAM state
-and forces an authority replay on retry. Scalable frontier expansion and
-indexed replay are the next integration boundary. A bounded deterministic
-expander and a conservative KQK/KRK-to-v2 seed adapter now exist; the former
-now batches each parent under one frontier sync/SQLite transaction but still
-needs an incremental fact-aware scheduler, and the latter never promotes a bare
-probe.
+and forces an authority replay on retry. The bounded deterministic expander now
+uses one initial and one final full replay around an incremental, fact-aware
+exact scheduler, and each parent is appended under one frontier sync/SQLite
+transaction. A conservative KQK/KRK-to-v2 seed adapter never promotes a bare
+probe. Externally retainable ProofDAG prefix commitments are implemented. A
+standalone canonical campaign fact-projection receipt now fully replays and
+cross-binds the exact DAG/fact prefixes for one obligation, but campaign 2.0
+remains certificate-only. Authenticated indexed fact replay,
+distributed/storage-efficient scheduling, broader endgame partitions and the
+explicit campaign-3.0 promotion/checker/event migration are the next
+integration boundaries.
 
 1. Make the CUDA build pass without changing the host oracle.
 2. Differential-test every CUDA-generated move list against `ugts_chess.rules.legal_moves` on all packaged fixtures and a seeded random legal corpus.
@@ -56,8 +61,11 @@ probe.
 8. Replace copied child subtrees with compact derivation facts bound to prior audited v2 records. Implemented: major-v2 journal, v1 migration, strict derivation verifier and compact one-hop propagation.
 9. Add a deterministic monotone worklist rebuilt from audited DAG/fact heads; local quiescence must never be reported as a classical solve. Implemented for the materialized local DAG.
 10. Integrate external endgame partitions through an adapter whose results are rechecked and profile-labeled. Implemented conservatively for bundled KQK/KRK finite certificates; broader external partitions and authenticated cycle lemmas remain open.
-11. Implement complete dead-position certificates or keep affected nodes UNKNOWN.
-12. Close root shards independently; merge only verifier-accepted certificates.
+11. Project compact facts into campaign evidence only through replayed,
+    cross-bound DAG/fact prefix receipts. Implemented as a standalone receipt;
+    ledger promotion requires an explicit campaign-3.0 migration.
+12. Implement complete dead-position certificates or keep affected nodes UNKNOWN.
+13. Close root shards independently; merge only verifier-accepted certificates.
 
 The journals are correctness-first: every access currently replays the complete
 chain, and seed facts replay their embedded certificates. V2 compact derivations
@@ -65,18 +73,19 @@ remove repeated child-subtree copies but do not yet remove the linear replay
 cost. The worklist is reconstructible and deterministic, but it does not yet
 expand the chess state space or provide thread-safe/distributed scheduling;
 its elapsed-time bound is cooperative between full audited operations.
-Detecting a
-clean rollback to an earlier valid suffix requires an
-externally retained head commitment; the API can check it, but an adjacent file
-is not an independent witness. Hardlink aliases remain outside the path-derived
-writer-lock guarantee.
+Detecting a clean rollback to an earlier valid suffix requires an externally
+retained head commitment; the ProofDAG and fact/overlay APIs can check one, but
+an adjacent file is not an independent witness. Hardlink aliases remain outside
+the path-derived writer-lock guarantee.
 
 The deterministic expander defaults to one parent and materializes only move
-edges; claim actions remain in the proof semantics. Explicit unbounded
-traversal is operationally dangerous. The current v2 linear fact chain cannot
-support a trust-bearing sublinear sidecar on fresh open; that requires an
-externally anchored authenticated checkpoint/Merkle format rather than a local
-cache being promoted to authority.
+edges; claim actions remain in the proof semantics. Its full scans are constant
+per invocation, not per parent, but its exact scheduler still holds O(total
+materialized nodes) RAM and accepts only a point-in-time single-handle snapshot.
+Explicit unbounded traversal is operationally dangerous. The current v2 linear
+fact chain cannot support a trust-bearing sublinear sidecar on fresh open; that
+requires an externally anchored authenticated checkpoint/Merkle format rather
+than a local cache being promoted to authority.
 
 ## Required device evidence
 

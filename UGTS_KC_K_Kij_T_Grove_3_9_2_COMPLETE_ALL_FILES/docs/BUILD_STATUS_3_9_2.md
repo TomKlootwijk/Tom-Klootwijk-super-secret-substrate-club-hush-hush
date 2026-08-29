@@ -100,7 +100,7 @@ Actual native Android source, C++ runtime, shaders, KC3D392 scene, Python packag
 The current opcode-24 APK is locally built and inspected, but its physical-device steps remain open.
 The 30-second result above is a short baseline for the exact preceding opcode-22 APK, not a general
 device guarantee or evidence for **When Timer Rings** or **Find Object Ahead**. The prior 64.9-second idle baseline remains
-separate evidence for its exact still-earlier APK and workload. A fresh timer-capable install, cold
+separate evidence for its exact still-earlier APK and workload. A fresh opcode-24 install, cold
 launch, installed hash match and profile remain unverified, alongside
 interaction-heavy/touch frame pacing, unplugged battery drain, long-duration thermal equilibrium,
 explicit 60/90 Hz fallback behavior and representative lower-tier hardware. Vulkan is not

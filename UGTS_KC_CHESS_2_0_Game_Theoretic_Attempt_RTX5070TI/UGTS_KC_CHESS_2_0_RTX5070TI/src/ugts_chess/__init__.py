@@ -29,6 +29,29 @@ from .proof_dag import (
     MAX_MOVE_APPEND_BATCH_BYTES,
     node_identity_sha256,
 )
+from .proof_dag_commitment import (
+    PROOF_DAG_HEAD_SCHEMA,
+    PROOF_DAG_MANIFEST_SCHEMA,
+    ProofDAGCommitmentError,
+    ProofDAGConcurrentMutationError,
+    ProofDAGHead,
+    ProofDAGHeadMismatchError,
+    ProofDAGRollbackError,
+    audit_proof_dag_head,
+    require_external_dag_head,
+)
+from .campaign_fact_projection import (
+    CAMPAIGN_FACT_PROJECTION_SCHEMA,
+    MAX_CAMPAIGN_FACT_PROJECTION_BYTES,
+    CampaignFactProjectionAuthorityError,
+    CampaignFactProjectionError,
+    CampaignFactProjectionMismatchError,
+    CampaignFactProjectionVerification,
+    CampaignWDLFactProjection,
+    create_campaign_fact_projection,
+    parse_campaign_fact_projection,
+    verify_campaign_fact_projection,
+)
 from .wdl_propagation import (
     WDLPropagationResult,
     propagate_wdl_one_hop,
@@ -105,6 +128,17 @@ __all__ = [
     "DAGMoveAppendRequest", "DAGMoveBatchAppendResult",
     "MAX_MOVE_APPEND_BATCH", "MAX_MOVE_APPEND_BATCH_BYTES",
     "node_identity_sha256",
+    "PROOF_DAG_HEAD_SCHEMA", "PROOF_DAG_MANIFEST_SCHEMA",
+    "ProofDAGCommitmentError", "ProofDAGConcurrentMutationError",
+    "ProofDAGHead", "ProofDAGHeadMismatchError", "ProofDAGRollbackError",
+    "audit_proof_dag_head", "require_external_dag_head",
+    "CAMPAIGN_FACT_PROJECTION_SCHEMA",
+    "MAX_CAMPAIGN_FACT_PROJECTION_BYTES",
+    "CampaignFactProjectionAuthorityError", "CampaignFactProjectionError",
+    "CampaignFactProjectionMismatchError",
+    "CampaignFactProjectionVerification", "CampaignWDLFactProjection",
+    "create_campaign_fact_projection", "parse_campaign_fact_projection",
+    "verify_campaign_fact_projection",
 ]
 
 __version__ = "2.0.0"

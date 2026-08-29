@@ -20,7 +20,12 @@ from ugts_chess.proof_dag_commitment import (
     audit_proof_dag_head,
     require_external_dag_head,
 )
-from ugts_chess.wdl_expansion import _snapshot_dag_head as expansion_dag_head
+from ugts_chess.wdl_expansion import (
+    ExpansionDAGHead,
+    ExpansionLimits,
+    expand_proof_dag,
+)
+from ugts_chess.wdl_worklist import DAGHead
 
 
 CHECKMATE_FEN = "7k/6Q1/6K1/8/8/8/8/8 b - - 0 1"
@@ -111,7 +116,19 @@ class ProofDAGCommitmentTests(unittest.TestCase):
         self.append_move(dag, root, "a2a3")
 
         committed = audit_proof_dag_head(dag)
-        expansion = expansion_dag_head(dag)
+        expansion = expand_proof_dag(
+            dag,
+            ExpansionLimits(max_parents=0),
+        ).dag_head_after
+
+        self.assertIs(ExpansionDAGHead, ProofDAGHead)
+        self.assertIs(DAGHead, ProofDAGHead)
+        self.assertEqual(expansion, committed)
+        self.assertEqual(
+            ProofDAGHead.from_bytes(expansion.canonical_bytes()),
+            committed,
+        )
+        self.assertEqual(require_external_dag_head(dag, expansion), committed)
 
         for field in (
             "rule_profile_id",

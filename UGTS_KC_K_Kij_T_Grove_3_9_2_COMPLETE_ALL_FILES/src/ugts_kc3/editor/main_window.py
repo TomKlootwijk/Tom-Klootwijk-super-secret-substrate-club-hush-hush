@@ -762,6 +762,9 @@ class EditorMainWindow(QMainWindow):
             self.stop()
             self.undo_stack.clear()
             self.document.create(first_steps_project())
+            if self.assets_project.show_lesson():
+                self.assets_dock.show()
+                self.assets_dock.raise_()
             self._gentle_message(
                 "Your first game is ready. Press Play, move with WASD, and dash with Space to count points."
             )
@@ -775,6 +778,9 @@ class EditorMainWindow(QMainWindow):
             self.stop()
             self.undo_stack.clear()
             self.document.create(first_steps_mobile3d_project())
+            if self.assets_project.show_lesson():
+                self.assets_dock.show()
+                self.assets_dock.raise_()
             self._gentle_message(
                 "Your first mobile game is ready. Press Play, move, and use Space to dash and grow."
             )
@@ -859,6 +865,7 @@ class EditorMainWindow(QMainWindow):
     def _scene_changed(self, scene_id: str) -> None:
         self._active_graph_id = None
         self.hierarchy.set_document(self.document)
+        self.assets_project.refresh_lesson(self.document)
         self.viewport.refresh(keep_view=False)
         self._load_graph_context()
         self._refresh_logic_trace()

@@ -11,13 +11,17 @@ from dataclasses import dataclass
 import hashlib
 import math
 from pathlib import Path
+import re
 import struct
 from typing import Any, Mapping, Sequence
 
 from .mobile3d import Mobile3DProject
 from .visual_graph import (
     BUILTIN_NODE_REGISTRY,
+    GRAPH_MESSAGE_MAX_EVENTS,
+    GRAPH_MESSAGE_MAX_STEPS,
     GraphNode,
+    PORTABLE_MESSAGE_PATTERN,
     PORTABLE_QUERY_TAGS,
     PortDirection,
     PortKind,
@@ -46,6 +50,8 @@ MAX_STATE_KEYS = 4096
 MAX_STRING_BYTES = 1024 * 1024
 MAX_PACK_BYTES = 8 * 1024 * 1024
 GRAPH_MAX_STEPS = 1024
+GRAPH_MAX_EVENTS = GRAPH_MESSAGE_MAX_EVENTS
+GRAPH_MAX_TOTAL_STEPS = GRAPH_MESSAGE_MAX_STEPS
 
 
 class GraphPackError(ValueError):
@@ -78,6 +84,7 @@ NODE_OPCODES: dict[str, int] = {
     "query.nearest_tag": 22,
     "event.timer": 23,
     "query.nearest_in_cone": 24,
+    "event.message": 25,
 }
 OPCODE_TYPES = {opcode: type_id for type_id, opcode in NODE_OPCODES.items()}
 
@@ -88,6 +95,7 @@ NODE_INPUTS: dict[str, tuple[str, ...]] = {
     "event.trigger_enter": (),
     "event.trigger_exit": (),
     "event.timer": ("seconds", "repeat"),
+    "event.message": ("message",),
     "flow.branch": ("condition",),
     # Constant's saved value is an internal VM input even though it is an output
     # property in the editor registry.
@@ -117,6 +125,7 @@ NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
     "event.trigger_enter": ("sensor", "player", "entity"),
     "event.trigger_exit": ("sensor", "player", "entity"),
     "event.timer": ("count", "remaining", "entity"),
+    "event.message": ("source", "target", "entity"),
     "flow.branch": (),
     "value.constant": ("value",),
     "value.seeded_number": ("value",),
@@ -146,6 +155,7 @@ NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
     "event.trigger_enter": ("out",),
     "event.trigger_exit": ("out",),
     "event.timer": ("out",),
+    "event.message": ("out",),
     "flow.branch": ("true", "false"),
     "value.constant": (),
     "value.seeded_number": (),
@@ -564,6 +574,27 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
                     node,
                     f"input action {action!r} is not available in the Android template; "
                     f"use one of {', '.join(sorted(ANDROID_INPUT_ACTIONS))}",
+                )
+        if node.type == "event.message":
+            message = by_name["message"]
+            if message.source_node is not None or message.literal is None:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "When Message Heard Message must be saved on the block, not connected",
+                )
+            if (
+                message.literal.tag != VALUE_STRING
+                or re.fullmatch(
+                    PORTABLE_MESSAGE_PATTERN,
+                    str(message.literal.payload),
+                )
+                is None
+            ):
+                raise _fail(
+                    graph.id,
+                    node,
+                    "When Message Heard Message must start with a lowercase letter, use only lowercase letters, digits, dot, underscore, or hyphen, and be at most 64 characters",
                 )
         if node.type == "event.timer":
             seconds = by_name["seconds"]
@@ -1068,6 +1099,20 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
                         raise GraphPackError("visual-graph source output ordinal is invalid")
                 else:
                     raise GraphPackError("visual-graph input token kind is reserved")
+            if type_id == "event.message":
+                token = node_tokens[0]
+                if token >> 30 != 0:
+                    raise GraphPackError(
+                        "When Message Heard Message must be a packed literal, not a link"
+                    )
+                message_tag, message = values[token & 0xFFFF]
+                if (
+                    message_tag != VALUE_STRING
+                    or re.fullmatch(PORTABLE_MESSAGE_PATTERN, str(message)) is None
+                ):
+                    raise GraphPackError(
+                        "When Message Heard Message is not a portable message name"
+                    )
             if type_id == "event.timer":
                 if any(token >> 30 != 0 for token in node_tokens):
                     raise GraphPackError(
@@ -1112,7 +1157,9 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
 
 __all__ = [
     "ANDROID_INPUT_ACTIONS",
+    "GRAPH_MAX_EVENTS",
     "GRAPH_MAX_STEPS",
+    "GRAPH_MAX_TOTAL_STEPS",
     "GRAPH_PACK_ASSET",
     "GRAPH_PACK_ENDIAN",
     "GRAPH_PACK_MAGIC",

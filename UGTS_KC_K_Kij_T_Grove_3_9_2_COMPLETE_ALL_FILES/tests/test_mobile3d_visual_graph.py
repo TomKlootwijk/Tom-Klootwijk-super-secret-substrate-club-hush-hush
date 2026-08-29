@@ -68,6 +68,7 @@ class Mobile3DVisualGraphTests(unittest.TestCase):
         goal_before = world.require("goal").position
         world.step(InputFrame3D(action=True))
         self.assertEqual(world.state["score"], 1)
+        self.assertIs(world.state["heard_message"], True)
         self.assertEqual(world.require("player").scale, (1.35, 1.35, 1.35))
         self.assertNotEqual(world.require("goal").position, goal_before)
         player = world.require("player")
@@ -83,16 +84,17 @@ class Mobile3DVisualGraphTests(unittest.TestCase):
         self.assertEqual(
             packed["graphs"],
             [
-                {"id": "dash_lesson", "node_count": 6, "max_steps": 1024},
+                {"id": "dash_lesson", "node_count": 7, "max_steps": 1024},
                 {"id": "find_goal_ahead_lesson", "node_count": 3, "max_steps": 1024},
                 {"id": "find_goal_lesson", "node_count": 3, "max_steps": 1024},
                 {"id": "goal_area_lesson", "node_count": 6, "max_steps": 1024},
+                {"id": "message_lesson", "node_count": 3, "max_steps": 1024},
                 {"id": "repeatable_number_lesson", "node_count": 3, "max_steps": 1024},
                 {"id": "timer_lesson", "node_count": 2, "max_steps": 1024},
             ],
         )
-        self.assertEqual(packed["binding_count"], 6)
-        self.assertEqual(packed["world_binding_count"], 3)
+        self.assertEqual(packed["binding_count"], 7)
+        self.assertEqual(packed["world_binding_count"], 4)
         polar = inspect_polar_pack(
             compile_polar_pack_bytes(project), node_count=len(project.nodes)
         )

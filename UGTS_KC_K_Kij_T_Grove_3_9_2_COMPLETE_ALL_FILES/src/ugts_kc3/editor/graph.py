@@ -4,11 +4,19 @@ from __future__ import annotations
 from dataclasses import dataclass
 import copy
 import json
+import re
 import uuid
 from typing import Any, Iterable, Mapping
 
-from PySide6.QtCore import QPointF, QRectF, Qt, Signal
-from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
+from PySide6.QtCore import QPointF, QRectF, QRegularExpression, Qt, Signal
+from PySide6.QtGui import (
+    QBrush,
+    QColor,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QRegularExpressionValidator,
+)
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QCheckBox,
@@ -36,6 +44,9 @@ from ..visual_graph import BUILTIN_NODE_REGISTRY, PortDirection, PortKind, Visua
 from .document import GraphAuthoringContext
 
 
+_MESSAGE_ID_RE = re.compile(r"^[a-z][a-z0-9_.-]{0,63}$")
+
+
 @dataclass(frozen=True)
 class NodeTemplate:
     key: str
@@ -53,6 +64,7 @@ _FRIENDLY_NODE_NAMES = {
     "event.tick": ("Every Frame", "Events"),
     "event.input_pressed": ("When Button Pressed", "Events"),
     "event.timer": ("When Timer Rings", "Events"),
+    "event.message": ("When Message Heard", "Events"),
     "flow.branch": ("If This Is True", "Choices"),
     "value.constant": ("A Value", "Values"),
     "value.seeded_number": ("Repeatable Random Number", "Values"),
@@ -73,6 +85,10 @@ _FRIENDLY_NODE_DESCRIPTIONS = {
         "Waits for the saved number of seconds, then starts the connected blocks. "
         "Turn Repeat on to ring again and again while this object is active."
     ),
+    "event.message": (
+        "Starts the connected blocks after Send a Game Message uses this exact name. "
+        "Messages wait their turn, so one block cannot interrupt another halfway through."
+    ),
     "query.nearest_in_cone": (
         "Finds the nearest chosen kind of object in a saved facing direction. "
         "Facing and View width use the same compact values on desktop, web, and phone."
@@ -80,6 +96,7 @@ _FRIENDLY_NODE_DESCRIPTIONS = {
 }
 _LITERAL_ONLY_INPUTS = {
     "event.timer": frozenset({"seconds", "repeat"}),
+    "event.message": frozenset({"message"}),
 }
 _CATEGORY_COLORS = {
     "Events": "#5ac8fa", "Choices": "#c792ea", "Values": "#f6c85f",
@@ -195,12 +212,12 @@ _COMPONENT_FIELDS = {
 }
 _EVENT_CHOICES = {
     "2d": (
-        "graph_event", "dash", "collision_enter", "collision_stay", "collision_exit",
+        "graph_event", "player.dashed", "dash", "collision_enter", "collision_stay", "collision_exit",
         "collected", "damaged", "entity_defeated", "lifetime_expired",
         "entity_spawned", "entity_despawned",
     ),
     "3d": (
-        "graph_event", "jump", "floor_contact", "bounds_contact", "collision",
+        "graph_event", "player.dashed", "jump", "floor_contact", "bounds_contact", "collision",
         "collected", "goal",
     ),
 }
@@ -216,6 +233,7 @@ _PROPERTY_LABELS = {
     "force": "Push amount",
     "key": "Game value name",
     "kind": "Message name",
+    "message": "Message name",
     "largest": "Largest",
     "operator": "Compare using",
     "origin": "Search from",
@@ -1293,7 +1311,10 @@ class NodePropertiesPanel(QWidget):
                 f"Choose a setting that belongs to {self._friendly_value(component)}.",
             )
 
-        if node.template.key == "action.emit_event" and key == "kind":
+        if (
+            (node.template.key == "action.emit_event" and key == "kind")
+            or (node.template.key == "event.message" and key == "message")
+        ):
             event_values = _EVENT_CHOICES.get(
                 self.project_kind or "", _EVENT_CHOICES["2d"]
             )
@@ -1345,6 +1366,16 @@ class NodePropertiesPanel(QWidget):
             )
         )
         if spec.editable and combo.lineEdit() is not None:
+            if self.node is not None and self.node.template.key in {
+                "action.emit_event",
+                "event.message",
+            }:
+                combo.lineEdit().setMaxLength(64)
+                combo.lineEdit().setValidator(
+                    QRegularExpressionValidator(
+                        QRegularExpression("[a-z][a-z0-9_.-]{0,63}"), combo
+                    )
+                )
             combo.lineEdit().editingFinished.connect(
                 lambda property_key=key, editor=combo: self._choice_changed(
                     property_key, editor, custom_text=True
@@ -1491,6 +1522,8 @@ class NodePropertiesPanel(QWidget):
                 hint = "View-only while the game is running. Stop it to change this block."
             elif node.template.key == "event.timer":
                 hint = "Choose when it rings and whether it starts waiting again after each ring."
+            elif node.template.key == "event.message":
+                hint = "Use the exact same name in Send a Game Message and this listening block."
             elif node.template.key == "query.nearest_in_cone":
                 hint = "Choose what to find, how far to look, and the saved Facing and View width."
             else:
@@ -1566,6 +1599,19 @@ class NodePropertiesPanel(QWidget):
                 self._updating = True
                 combo.setCurrentText(self._display(original))
                 combo.setToolTip("This value cannot be empty; the previous value was kept")
+                self._updating = False
+                return
+            elif (
+                self.node.template.key in {"action.emit_event", "event.message"}
+                and key in {"kind", "message"}
+                and (not isinstance(parsed, str) or _MESSAGE_ID_RE.fullmatch(parsed) is None)
+            ):
+                self._updating = True
+                combo.setCurrentText(self._display(original))
+                combo.setToolTip(
+                    "Use 1–64 lowercase letters, numbers, dots, dashes, or underscores; "
+                    "the first character must be a letter."
+                )
                 self._updating = False
                 return
         else:

@@ -52,6 +52,18 @@ struct ProofNumberDAGResult {
   std::string graph_sha256;
 };
 
+// Proof-cache work performed by one propagation/recomputation pass.  These
+// counters are diagnostic only: they are deliberately absent from graph and
+// checkpoint serialization and can never influence proof selection.
+struct ProofPropagationMetrics {
+  std::uint64_t nodes_recomputed = 0;
+  std::uint64_t nodes_changed = 0;
+  std::uint64_t child_edges_scanned = 0;
+  std::uint64_t queue_insertions = 0;
+  std::uint64_t duplicate_queue_suppressions = 0;
+  std::uint64_t rank_order_checks = 0;
+};
+
 // An exact in-memory proof-number DAG for 1x1 through 19x19 area-scored
 // positional-superko games with two-pass ending.  Advance() is explicitly
 // bounded by committed node expansions; an unfinished bounded advance always
@@ -92,6 +104,7 @@ class ProofNumberDAG {
 
  private:
   friend class NativePNDAGCheckpointCodec;
+  friend class ProofNumberDAGTestAccess;
 
   struct Node {
     std::size_t node_id = 0;
@@ -103,6 +116,21 @@ class ProofNumberDAG {
     std::set<std::size_t> parents;
     std::uint64_t proof = 1;
     std::uint64_t disproof = 1;
+
+    // Transient duplicate-suppression state for incremental propagation.
+    // It is not proof-authoritative and is never serialized or hashed.
+    std::uint64_t propagation_stamp = 0;
+  };
+
+  struct ProofNumbers {
+    std::uint64_t proof = 1;
+    std::uint64_t disproof = 1;
+    std::uint64_t child_edges_scanned = 0;
+  };
+
+  struct PropagationWorkItem {
+    std::uint64_t rank = 0;
+    std::size_t node_id = 0;
   };
 
   struct CanonicalChild {
@@ -118,7 +146,13 @@ class ProofNumberDAG {
       const State& state) const;
   void InitializeLeaf(Node& node) const;
   void ExpandNode(std::size_t node_id);
-  void RecomputeAll();
+  void ExpandNodeAndPropagate(std::size_t node_id);
+  [[nodiscard]] ProofNumbers EvaluateNode(std::size_t node_id) const;
+  [[nodiscard]] ProofPropagationMetrics PropagateFrom(
+      std::size_t node_id,
+      std::vector<PropagationWorkItem> propagation_heap);
+  ProofPropagationMetrics RecomputeAll();
+  void RequireCachesValid() const;
   [[nodiscard]] std::size_t SelectMostProving() const;
   [[nodiscard]] static ProofStatus Status(std::uint64_t proof,
                                           std::uint64_t disproof);
@@ -129,6 +163,11 @@ class ProofNumberDAG {
   std::size_t root_id_ = 0;
   std::uint64_t committed_expansions_ = 0;
   std::vector<Node> nodes_;
+  bool caches_valid_ = false;
+  std::uint64_t propagation_epoch_ = 0;
+  std::uint64_t last_completed_propagation_epoch_ = 0;
+  std::uint64_t full_recompute_passes_ = 0;
+  ProofPropagationMetrics last_incremental_propagation_metrics_;
 
   // Exact canonical bytes are the authority.  This intentionally uses an
   // ordered comparison tree rather than a hash index, so no hash collision can

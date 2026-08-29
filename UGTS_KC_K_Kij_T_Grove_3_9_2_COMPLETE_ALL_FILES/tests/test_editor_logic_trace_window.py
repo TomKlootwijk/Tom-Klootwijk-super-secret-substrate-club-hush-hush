@@ -44,15 +44,15 @@ class EditorLogicTraceWindowTests(unittest.TestCase):
         self.window._play_frame()
         self.window.viewport.pressed_keys.discard("space")
 
-        self.assertEqual(self.window.graph_page.trace_count, 6)
+        self.assertEqual(self.window.graph_page.trace_count, 7)
         self.assertEqual(
             self.window.editor_tabs.tabText(self.window._logic_tab_index),
-            "Logic Blocks • 6 ran",
+            "Logic Blocks • 7 ran",
         )
-        self.assertEqual(self.window.graph_page.trace_list.topLevelItemCount(), 6)
+        self.assertEqual(self.window.graph_page.trace_list.topLevelItemCount(), 7)
 
         self.window.editor_tabs.setCurrentIndex(self.window._logic_tab_index)
-        self.assertEqual(self.window.graph_page.trace_count, 6)
+        self.assertEqual(self.window.graph_page.trace_count, 7)
 
         self.window.document.set_selection(SelectionRef("node", "goal"))
         self.assertEqual(self.window.graph_page.trace_count, 0)
@@ -61,14 +61,14 @@ class EditorLogicTraceWindowTests(unittest.TestCase):
             "Logic Blocks",
         )
         self.window.document.set_selection(SelectionRef("node", "player"))
-        self.assertEqual(self.window.graph_page.trace_count, 6)
+        self.assertEqual(self.window.graph_page.trace_count, 7)
         self.window.stop()
 
         self.assertFalse(self.window.graph_page.read_only)
-        self.assertEqual(self.window.graph_page.trace_count, 6)
+        self.assertEqual(self.window.graph_page.trace_count, 7)
         self.assertEqual(
             self.window.editor_tabs.tabText(self.window._logic_tab_index),
-            "Logic Blocks • 6 ran",
+            "Logic Blocks • 7 ran",
         )
 
     def test_new_preview_clears_previous_trail(self) -> None:
@@ -78,7 +78,7 @@ class EditorLogicTraceWindowTests(unittest.TestCase):
         self.window._play_frame()
         self.window.viewport.pressed_keys.discard("space")
         self.window.stop()
-        self.assertEqual(self.window.graph_page.trace_count, 6)
+        self.assertEqual(self.window.graph_page.trace_count, 7)
 
         self.window.play()
         self.window.play_timer.stop()

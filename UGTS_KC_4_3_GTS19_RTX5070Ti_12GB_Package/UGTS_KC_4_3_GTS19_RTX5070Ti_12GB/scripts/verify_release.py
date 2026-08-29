@@ -33,6 +33,14 @@ def validate_source_pins(
             raise SystemExit(f"{label} source mismatch: {relative}")
 
 
+def is_sha256(value: object) -> bool:
+    return (
+        type(value) is str
+        and len(value) == 64
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--quick", action="store_true")
@@ -77,8 +85,12 @@ def main() -> int:
         "cpp/tests/cuda_local_transition_eval.cu",
         "cpp/tests/cuda_local_transition_guards.cu",
         "cpp/tests/cuda_local_transition_parity.py",
+        "cpp/tests/cuda_local_transition_scale.cu",
+        "cpp/tests/cuda_local_transition_scale.py",
+        "cpp/tests/cuda_local_transition_scale_sanitizer.py",
         "schemas/pndag_checkpoint.schema.json",
         "schemas/native_pndag_checkpoint_v1.md",
+        "schemas/cuda_local_transition_scale_v1.md",
         "schemas/persistent_pndag_checkpoint.schema.json",
         "schemas/persistent_pndag_compact_checkpoint.schema.json",
         "scripts/parity_gate.py",
@@ -91,6 +103,8 @@ def main() -> int:
         "evidence/local_m4_cuda_compute_sanitizer.json",
         "evidence/local_m4_cuda_local_transition_parity.json",
         "evidence/local_m4_cuda_local_transition_compute_sanitizer.json",
+        "evidence/local_m4_cuda_local_transition_scale_10m.json",
+        "evidence/local_m4_cuda_local_transition_scale_sanitizer.json",
         "codex/AGENTS.md",
     ]
     missing = [item for item in required if not (ROOT / item).is_file()]
@@ -335,6 +349,227 @@ def main() -> int:
             "cpp/tests/cuda_local_transition_eval.cu",
             "cpp/tests/cuda_local_transition_guards.cu",
             "cpp/tests/cuda_local_transition_parity.py",
+        ),
+    )
+
+    scale_path = ROOT / "evidence" / "local_m4_cuda_local_transition_scale_10m.json"
+    scale = json.loads(scale_path.read_text(encoding="utf-8"))
+    scale_production_pins = scale.pop("production_source_sha256", None)
+    scale_gate_pins = scale.pop("gate_source_sha256", None)
+    scale_reference_pins = scale.pop("reference_source_sha256", None)
+    scale_modes = scale.pop("modes", None)
+    companion = scale.pop("cross_language_companion", None)
+    expected_scale = {
+        "additional_stream_mode_recomputed_point_slots": 10_000_303,
+        "batch_state_limit": 16,
+        "build_configuration": "Release",
+        "compiler": {"cuda": "NVCC-12.8.61", "host": "MSVC-194435221"},
+        "corpus_entries": 27_716,
+        "corpus_sha256": (
+            "d16452fa831cebb63f75148066206f27463f9b6feda1c3ffe638a0db1404cc17"
+        ),
+        "cuda_driver_version": 13_010,
+        "cuda_runtime_version": 12_080,
+        "device": {
+            "compute_capability": "12.0",
+            "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+            "total_global_memory_bytes": 12_820_480_000,
+        },
+        "evidence_publication": (
+            "same-directory temporary file, fsync, atomic replace"
+        ),
+        "format": "ugts-go19-cuda-local-transition-scale-v1",
+        "measurement_label": (
+            "hardware-specific non-proof end-to-end adapter verification and "
+            "summary consumption"
+        ),
+        "mismatches": 0,
+        "negative_fail_closed_checks": 7,
+        "python_compared_point_slots": 0,
+        "primary_unique_mode_cpp_cuda_cpu_recomputed_point_slots": 10_000_303,
+        "root_status": "UNKNOWN",
+        "scope": (
+            "C++/CUDA pre-superko local point transitions; CPU ApplyMove "
+            "authority; no proof-search integration"
+        ),
+        "seed": 88_442_398_638_062,
+        "stream_modes": ["default", "nondefault"],
+        "target_unique_corpus_point_slots": 10_000_000,
+        "total_cpp_cuda_cpu_recomputed_point_slots_across_modes": 20_000_606,
+        "unique_corpus_point_slots": 10_000_303,
+        "unique_semantic_states": 27_716,
+    }
+    if scale != expected_scale:
+        raise SystemExit("CUDA local-transition 10m scale evidence is invalid")
+    if (
+        type(companion) is not dict
+        or companion.get("evidence")
+        != "evidence/local_m4_cuda_local_transition_parity.json"
+        or companion.get("scope")
+        != (
+            "retained 25k Python/C++/CUDA exact comparison; not included in "
+            "the 10m count"
+        )
+        or companion.get("sha256") != sha256(transition_path)
+    ):
+        raise SystemExit("CUDA scale companion evidence pin is invalid")
+    validate_source_pins(
+        "CUDA local-transition 10m production evidence",
+        scale_production_pins,
+        (
+            "cpp/cuda/packed_kernels.cu",
+            "cpp/cuda/packed_kernels.cuh",
+            "cpp/cuda/cuda_verified_expander.cu",
+            "cpp/include/ugts_go19/cuda_verified_expander.hpp",
+        ),
+    )
+    validate_source_pins(
+        "CUDA local-transition 10m gate evidence",
+        scale_gate_pins,
+        (
+            "cpp/CMakeLists.txt",
+            "cpp/tests/cuda_local_transition_scale.cu",
+            "cpp/tests/cuda_local_transition_scale.py",
+        ),
+    )
+    validate_source_pins(
+        "CUDA local-transition 10m reference evidence",
+        scale_reference_pins,
+        (
+            "cpp/include/ugts_go19/go_state.hpp",
+            "cpp/include/ugts_go19/sha256.hpp",
+            "cpp/src/go_state.cpp",
+            "cpp/src/sha256.cpp",
+        ),
+    )
+    expected_scale_mode = {
+        "adapter_batch_calls": 1_737,
+        "compared_child_words": 18_650_596,
+        "globally_legal_children": 1_554_345,
+        "high_water_requested_device_bytes": 585_700,
+        "local_candidates": 1_554_347,
+        "maximum_capture": 360,
+        "occupied_slots": 8_375_988,
+        "point_slots": 10_000_303,
+        "result_sha256": (
+            "57169519603a80e5461629f274386976b5385d361d089ae4418ba79f9bf4165c"
+        ),
+        "semantic_state_visits": 27_716,
+        "slots_by_board_size": {
+            "1": 1,
+            "2": 4,
+            "3": 81,
+            "5": 75,
+            "9": 81,
+            "19": 10_000_061,
+        },
+        "slots_by_category": {
+            "adversarial-19x19": 361,
+            "adversarial-medium": 81,
+            "adversarial-small": 23,
+            "campaign-shaped-19x19": 554_496,
+            "capture-fixture": 61,
+            "capture-fixture-19x19": 361,
+            "ko-psk-fixture": 59,
+            "pass-metadata-fixture": 9,
+            "randomized-ordinal-dense-19x19": 9_444_121,
+            "suicide-fixture": 9,
+            "suicide-fixture-19x19": 361,
+            "word-tail-fixture-19x19": 361,
+        },
+        "suicide_slots": 69_968,
+        "superko_rejections": 2,
+    }
+    if type(scale_modes) is not dict or set(scale_modes) != {
+        "default",
+        "nondefault",
+    }:
+        raise SystemExit("CUDA scale stream-mode evidence is malformed")
+    for mode_name in ("default", "nondefault"):
+        mode = scale_modes[mode_name]
+        if type(mode) is not dict:
+            raise SystemExit(f"CUDA scale {mode_name} mode is malformed")
+        elapsed = mode.pop("elapsed_seconds", None)
+        throughput = mode.pop("slots_per_second", None)
+        minimum_free = mode.pop("minimum_free_device_bytes_before_batch", None)
+        minimum_budget = mode.pop("minimum_adapter_workspace_budget_bytes", None)
+        if mode != expected_scale_mode:
+            raise SystemExit(f"CUDA scale {mode_name} exact counters are invalid")
+        if (
+            type(elapsed) not in {int, float}
+            or isinstance(elapsed, bool)
+            or elapsed <= 0
+            or type(throughput) not in {int, float}
+            or isinstance(throughput, bool)
+            or throughput <= 0
+            or type(minimum_free) is not int
+            or minimum_free <= 0
+            or type(minimum_budget) is not int
+            or minimum_budget < expected_scale_mode["high_water_requested_device_bytes"]
+        ):
+            raise SystemExit(f"CUDA scale {mode_name} resource/timing data is invalid")
+        measured = expected_scale_mode["point_slots"] / elapsed
+        if abs(measured - throughput) > 1.0:
+            raise SystemExit(f"CUDA scale {mode_name} throughput is inconsistent")
+
+    scale_sanitizer_path = (
+        ROOT / "evidence" / "local_m4_cuda_local_transition_scale_sanitizer.json"
+    )
+    scale_sanitizer = json.loads(scale_sanitizer_path.read_text(encoding="utf-8"))
+    scale_sanitizer_pins = scale_sanitizer.pop("source_sha256", None)
+    sanitizer_transcript_sha256 = scale_sanitizer.pop(
+        "sanitizer_transcript_sha256", None
+    )
+    expected_scale_sanitizer = {
+        "batch_state_limit": 8,
+        "compute_capability": "12.0",
+        "corpus_sha256": (
+            "1e1561886d3e761972cd1df3e6cf23af5e12515f7a26e1beab9e90a599a8f305"
+        ),
+        "device_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+        "error_exitcode": 99,
+        "format": "ugts-go19-cuda-local-transition-scale-sanitizer-v1",
+        "limitations": [
+            "bounded representative memcheck, not a sanitizer run over all 10m slots",
+            "the 10m count is C++/CUDA with CPU ApplyMove authority, not Python comparison",
+            "the local transition slice is not integrated into proof search",
+            "zero sanitizer errors do not establish the unrestricted 19x19 result",
+        ],
+        "memcheck": {
+            "adapter_batch_calls_across_modes": 102,
+            "error_summary": 0,
+            "exit_code": 0,
+            "mismatches": 0,
+            "result_sha256": (
+                "7fc5bf5ba416b464647e5f3034c98ca08bbb3df40a1a5d14449ad46a426ec563"
+            ),
+            "stream_modes": ["default", "nondefault"],
+            "target_unique_corpus_point_slots": 50_000,
+            "unique_corpus_point_slots": 128_758,
+            "verified_point_slots_across_modes": 257_516,
+        },
+        "root_status": "UNKNOWN",
+        "sanitizer": (
+            "NVIDIA (R) Compute Sanitizer Copyright (c) 2020-2025 NVIDIA "
+            "Corporation Version 2025.1.0.0 (build 35351055) (public-release)"
+        ),
+        "seed": 88_442_398_638_062,
+    }
+    if scale_sanitizer != expected_scale_sanitizer or not is_sha256(
+        sanitizer_transcript_sha256
+    ):
+        raise SystemExit("CUDA scale sanitizer evidence is invalid")
+    validate_source_pins(
+        "CUDA local-transition scale sanitizer evidence",
+        scale_sanitizer_pins,
+        (
+            "cpp/cuda/packed_kernels.cu",
+            "cpp/cuda/packed_kernels.cuh",
+            "cpp/cuda/cuda_verified_expander.cu",
+            "cpp/include/ugts_go19/cuda_verified_expander.hpp",
+            "cpp/tests/cuda_local_transition_scale.cu",
+            "cpp/tests/cuda_local_transition_scale.py",
+            "cpp/tests/cuda_local_transition_scale_sanitizer.py",
         ),
     )
 

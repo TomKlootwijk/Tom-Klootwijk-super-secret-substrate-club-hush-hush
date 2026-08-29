@@ -104,7 +104,13 @@
   authority on CPU. The bounded target-GPU v1 gate covered 25,281 unique slots
   (50,562 across default/nondefault parity modes) plus 524,533 low-level
   grid-stride candidates with zero mismatches; memcheck, racecheck, and initcheck
-  were clean. This is not the 10-million-slot M4 gate or a proof-path result.
+  were clean.
+- Added an explicit C++/CUDA unique-breadth scale gate over the same production
+  adapter. The target run covered 10,000,303 slots from 27,716 exact-distinct
+  semantic states once per stream mode with zero mismatches, including 554,496
+  reachable full-history campaign slots and 9,444,121 ordinal-injective
+  randomized 19×19 slots. Python remains the separate 25,281-slot cross-language
+  oracle gate. The scale result is hardware-specific and not a proof-path result.
 
 ### Foundational package
 

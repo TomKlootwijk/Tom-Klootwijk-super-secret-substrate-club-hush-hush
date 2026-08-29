@@ -37,7 +37,7 @@ from .scatter import (
     scatter_instance_id,
     scatter_instances,
 )
-from .visual_graph import VisualGraph, attach_graph
+from .visual_graph import VisualGraph, attach_graph, run_ready_batch
 
 Vec3 = tuple[float, float, float]
 Quat = tuple[float, float, float, float]
@@ -1676,10 +1676,6 @@ class GameWorld3D:
         attach_packed_kinematics_3d(world, collect_polar_project_spec(project))
         graphs = {graph.id: graph for graph in visual_graphs_from_metadata(project.metadata)}
 
-        for graph_id in visual_graph_binding_ids(project.metadata.get("world_graphs")):
-            world.visual_graph_bindings.append(
-                attach_graph(world, graphs[graph_id], phase="pre_physics")
-            )
         for node in project.nodes:
             for graph_id in visual_graph_binding_ids(node.metadata.get("visual_graph")):
                 world.visual_graph_bindings.append(
@@ -1688,8 +1684,19 @@ class GameWorld3D:
                         graphs[graph_id],
                         entity_id=node.id,
                         phase="pre_physics",
+                        run_ready=False,
                     )
                 )
+        for graph_id in visual_graph_binding_ids(project.metadata.get("world_graphs")):
+            world.visual_graph_bindings.append(
+                attach_graph(
+                    world,
+                    graphs[graph_id],
+                    phase="pre_physics",
+                    run_ready=False,
+                )
+            )
+        run_ready_batch(world.visual_graph_bindings)
         return world
 
     def spawn(self, entity: EntityState3D) -> None:

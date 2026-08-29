@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{16506A81-0446-3A58-85B2-FEE215DC6F12}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\native\host_tests\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe "-SC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests" "-BC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25" --check-stamp-file "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeCXXCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeRCCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCXXInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeGenericSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeRCInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe "-SC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests" "-BC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25" --check-stamp-file "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeCXXCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeRCCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCXXInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeGenericSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeRCInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe "-SC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests" "-BC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25" --check-stamp-file "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeCXXCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeRCCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCXXInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeGenericSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeRCInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe "-SC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests" "-BC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25" --check-stamp-file "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-message-op25/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeCXXCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeRCCompiler.cmake;C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\4.3.2\CMakeSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCXXInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeCommonLanguageInclude.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeGenericSystem.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeInitializeConfigs.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeLanguageInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeRCInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\CMakeSystemSpecificInitialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Compiler\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Linker\MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-Initialize.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows-MSVC.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\Windows.cmake;C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\share\cmake-4.3\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\ZERO_CHECK.vcxproj">
+      <Project>{AB431F4B-7651-3D03-9231-4BD572E4278B}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\graph_vm_tests.vcxproj">
+      <Project>{EC6F355C-934B-35AC-8517-1A411DE344A7}</Project>
+      <Name>graph_vm_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\message_graph_vm_tests.vcxproj">
+      <Project>{8BD5B533-CB4A-3122-932D-46786205E53E}</Project>
+      <Name>message_graph_vm_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\nearest_in_cone_graph_vm_tests.vcxproj">
+      <Project>{0A7E97C8-043E-3A6B-9108-85057C5271B3}</Project>
+      <Name>nearest_in_cone_graph_vm_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\nearest_tag_graph_vm_tests.vcxproj">
+      <Project>{E2DA226F-8696-3F64-9EDE-C17D454D62BF}</Project>
+      <Name>nearest_tag_graph_vm_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\scatter_population_tests.vcxproj">
+      <Project>{FFE67674-A8DE-34F4-B98C-FF7BD1E4D889}</Project>
+      <Name>scatter_population_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\timer_graph_vm_tests.vcxproj">
+      <Project>{10AD49C8-2F3D-30C4-9F2A-D4EC51F4F349}</Project>
+      <Name>timer_graph_vm_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\touch_router_tests.vcxproj">
+      <Project>{161904B2-3EA6-305E-A335-1BBD03B2FB2D}</Project>
+      <Name>touch_router_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-host-message-op25\trigger_area_tests.vcxproj">
+      <Project>{89F178F6-C082-3DBF-A2B2-053DE27E85C0}</Project>
+      <Name>trigger_area_tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

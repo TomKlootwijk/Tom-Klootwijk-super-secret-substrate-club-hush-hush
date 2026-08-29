@@ -8,7 +8,7 @@ import json
 import math
 from pathlib import Path
 import re
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Iterable, Mapping
 
 from .audio import AudioBank
 from .game import GameWorld, component_from_dict
@@ -22,7 +22,7 @@ from .packed_kinematics import (
     packed_kinematic_codecs_from_dict,
     unpack_ecs_document,
 )
-from .visual_graph import VisualGraph, attach_graph
+from .visual_graph import VisualGraph, attach_graph, run_ready_batch
 
 _PROJECT_ID_RE = re.compile(r"^[a-z][a-z0-9._-]*$")
 
@@ -535,6 +535,7 @@ class GameProject:
                     graphs[str(graph_id)],
                     entity_id=spec.id,
                     name=f"visual_graph:{scene.id}:{spec.id}:{graph_id}",
+                    run_ready=False,
                 ))
         for graph_id in visual_graph_binding_ids(
             scene.rules.get("world_graphs"), f"scene {scene.id} world_graphs"
@@ -543,7 +544,9 @@ class GameProject:
                 world,
                 graphs[str(graph_id)],
                 name=f"visual_graph:{scene.id}:world:{graph_id}",
+                run_ready=False,
             ))
+        run_ready_batch(bindings)
         world.visual_graph_bindings = bindings
         return world
 

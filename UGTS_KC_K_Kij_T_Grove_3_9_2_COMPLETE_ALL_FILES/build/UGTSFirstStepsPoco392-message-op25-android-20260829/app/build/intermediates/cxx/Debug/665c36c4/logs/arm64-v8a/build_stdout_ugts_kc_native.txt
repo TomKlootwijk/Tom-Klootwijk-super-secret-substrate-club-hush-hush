@@ -1,0 +1,24 @@
+ninja: Entering directory `C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\UGTSFirstStepsPoco392-message-op25-android-20260829\app\.cxx\Debug\665c36c4\arm64-v8a'
+[1/16] Building C object CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o
+[2/16] Linking C static library libnative_app_glue.a
+[3/16] Building CXX object CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o
+[4/16] Building CXX object CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o
+[5/16] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o
+[6/16] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o
+[7/16] Building CXX object CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o
+[8/16] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o
+[9/16] Building CXX object CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o
+[10/16] Building CXX object CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o
+[11/16] Building CXX object CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o
+[12/16] Building CXX object CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o
+[13/16] Building CXX object CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o
+[14/16] Building CXX object CMakeFiles/ugts_kc_native.dir/main.cpp.o
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-android-20260829/app/src/main/cpp/main.cpp:24:5: warning: 'app_dummy' is deprecated: Calls to app_dummy are no longer necessary. See https://github.com/android-ndk/ndk/issues/381. [-Wdeprecated-declarations]
+   24 |     app_dummy();
+      |     ^
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-android-20260829/app/.cxx/Debug/665c36c4/arm64-v8a/android_native_app_glue.h:340:5: note: 'app_dummy' has been explicitly marked deprecated here
+  340 |     deprecated("Calls to app_dummy are no longer necessary. See "
+      |     ^
+1 warning generated.
+[15/16] Building CXX object CMakeFiles/ugts_kc_native.dir/engine.cpp.o
+[16/16] Linking CXX shared library "C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\UGTSFirstStepsPoco392-message-op25-android-20260829\app\build\intermediates\cxx\Debug\665c36c4\obj\arm64-v8a\libugts_kc_native.so"

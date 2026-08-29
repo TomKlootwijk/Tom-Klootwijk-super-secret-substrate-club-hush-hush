@@ -618,6 +618,7 @@ class WDLExpansionTests(unittest.TestCase):
             (verified.node.node_sha256,),
         )
         self.assertTrue(report.eligible_materialized_edge_closure)
+        self.assertTrue(report.eligible_edge_closure)
         self.assertFalse(report.local_materialized_edge_closure)
         self.assertFalse(report.all_materialized_nonterminal_parents_complete)
         self.assertFalse(report.materialized_dag_empty)
@@ -694,6 +695,7 @@ class WDLExpansionTests(unittest.TestCase):
         empty = self.make_dag("empty")
         empty_report = expand_proof_dag(empty)
         self.assertTrue(empty_report.materialized_dag_empty)
+        self.assertTrue(empty_report.empty_dag)
         self.assertTrue(empty_report.local_materialized_edge_closure)
         self.assertTrue(empty_report.eligible_materialized_edge_closure)
         self.assertEqual(empty_report.dag_head_before.frontier_record_count, 0)
@@ -729,6 +731,86 @@ class WDLExpansionTests(unittest.TestCase):
                 self.assertEqual(report.edges_appended, 1)
                 self.assertEqual(len(dag.outgoing_edges(root.node.node_sha256)), 1)
                 self.assertFalse(report.chess_solved)
+
+    def test_17_append_after_batch_result_is_detected_then_resumes(self) -> None:
+        dag = self.make_dag("after-result-movement")
+        root = self.append_root(dag, Position.initial())
+        moves = legal_moves(root.node.position)
+        original_batch = dag.append_moves_batch
+        original_move = dag.append_move
+
+        def append_batch_then_interleave(requests):
+            result = original_batch(requests)
+            injected_move = moves[1]
+            injected_child = apply_move(root.node.position, injected_move)
+            original_move(
+                injected_child,
+                root.node.history.push(injected_child),
+                parent_frontier_content_sha256=root.edge.frontier_content_sha256,
+                uci=injected_move.uci(),
+                lineage={"injected_after_batch": True},
+            )
+            return result
+
+        with mock.patch.object(
+            dag,
+            "append_moves_batch",
+            side_effect=append_batch_then_interleave,
+        ):
+            with self.assertRaisesRegex(
+                ExpansionConcurrentMutationError,
+                "authority moved",
+            ):
+                expand_proof_dag(dag, ExpansionLimits(max_edges=1))
+
+        recovered = expand_proof_dag(dag, ExpansionLimits(max_parents=1))
+        self.assertEqual(recovered.stop_reason, ExpansionStopReason.PARENT_LIMIT)
+        action_counts = Counter(
+            edge.action["uci"]
+            for edge in dag.outgoing_edges(root.node.node_sha256)
+        )
+        self.assertEqual(action_counts, Counter(move.uci() for move in moves))
+        self.assertTrue(dag.audit().valid)
+
+    def test_18_zero_limit_still_rejects_movement_during_final_snapshot(self) -> None:
+        dag = self.make_dag("zero-final-movement")
+        self.append_root(dag, Position.initial())
+        original_audit = dag.audit
+        audit_calls = 0
+
+        def move_before_final_audit():
+            nonlocal audit_calls
+            audit_calls += 1
+            if audit_calls == 3:
+                self.append_root(dag, Position.from_fen(CHECKMATE_FEN))
+            return original_audit()
+
+        with mock.patch.object(
+            dag,
+            "audit",
+            side_effect=move_before_final_audit,
+        ):
+            with self.assertRaisesRegex(
+                ExpansionConcurrentMutationError,
+                "authority moved",
+            ):
+                expand_proof_dag(dag, ExpansionLimits(max_parents=0))
+
+        self.assertEqual(audit_calls, 4)
+        self.assertTrue(dag.audit().valid)
+
+    def test_19_fact_journal_must_be_open_and_bound_to_exact_dag_handle(self) -> None:
+        dag = self.make_dag("journal-binding-target")
+        self.append_root(dag, Position.initial())
+        other = self.make_dag("journal-binding-other")
+        journal = WDLFactJournal(self.root / "journal-binding.facts", other)
+        with self.assertRaisesRegex(ValueError, "exact ProofDAG handle"):
+            expand_proof_dag(dag, journal=journal)
+        journal.close()
+        with self.assertRaisesRegex(TypeError, "open WDLFactJournal"):
+            expand_proof_dag(dag, journal=journal)
+        with self.assertRaisesRegex(TypeError, "open WDLFactJournal"):
+            expand_proof_dag(dag, journal=object())  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

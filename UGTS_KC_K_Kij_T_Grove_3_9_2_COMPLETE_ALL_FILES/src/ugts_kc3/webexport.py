@@ -46,6 +46,7 @@ _WEB_VISUAL_GRAPH_NODE_TYPES = frozenset({
     "event.trigger_enter",
     "event.trigger_exit",
     "event.timer",
+    "event.message",
     "flow.branch",
     "value.constant",
     "value.seeded_number",
@@ -158,18 +159,20 @@ def _compile_web_visual_graphs(project: GameProject) -> dict[str, Any]:
         bindings: list[dict[str, str | None]] = []
         graph_ids = set(compiled_graphs)
         for entity in scene.entities:
-            for graph_id in visual_graph_binding_ids(
+            graph_bindings = visual_graph_binding_ids(
                 entity.metadata.get("visual_graph"),
                 f"entity {entity.id} visual_graph binding",
-            ):
+            )
+            for graph_id in sorted(graph_bindings):
                 if graph_id not in graph_ids:
                     raise ValueError(
                         f"HTML5 scene {scene_id!r} entity {entity.id!r} binds missing visual graph {graph_id!r}"
                     )
                 bindings.append({"graph": graph_id, "entity": entity.id})
-        for graph_id in visual_graph_binding_ids(
+        world_bindings = visual_graph_binding_ids(
             scene.rules.get("world_graphs"), f"scene {scene_id} world_graphs"
-        ):
+        )
+        for graph_id in sorted(world_bindings):
             if graph_id not in graph_ids:
                 raise ValueError(
                     f"HTML5 scene {scene_id!r} binds missing world visual graph {graph_id!r}"
@@ -242,6 +245,10 @@ let visualGraphScenePlan = {graphs: {}, bindings: []};
 let visualGraphPlans = new Map();
 let visualGraphBindings = [];
 let pendingGraphDespawns = new Set();
+let pendingGraphMessages = [];
+let visualGraphBatch = null;
+const GRAPH_BATCH_MAX_STEPS = 16384;
+const GRAPH_MESSAGE_MAX_EVENTS = 64;
 const assets = PROJECT.vector_assets || {};
 const audioCues = new Map(((PROJECT.audio && PROJECT.audio.cues) || []).map(cue => [cue.id, cue]));
 const audioSequences = new Map(((PROJECT.audio && PROJECT.audio.sequences) || []).map(sequence => [sequence.id, sequence]));
@@ -277,11 +284,98 @@ function configureVisualGraphs() {
     active_step: 0,
   }));
   pendingGraphDespawns = new Set();
+  pendingGraphMessages = [];
+  visualGraphBatch = null;
 }
 
 function graphError(binding, graph, nodeId, message) {
   const owner = binding.entity == null ? "world" : `entity ${binding.entity}`;
   return new Error(`Visual graph ${graph.id} (${owner}), node ${nodeId}: ${message}`);
+}
+
+function graphBatchStep(binding, graph, nodeId) {
+  if (visualGraphBatch === null) return;
+  if (visualGraphBatch.steps >= GRAPH_BATCH_MAX_STEPS) {
+    throw graphError(
+      binding,
+      graph,
+      nodeId,
+      `Visual graph message dispatch stopped with TotalStepLimit after ${GRAPH_BATCH_MAX_STEPS} node steps`,
+    );
+  }
+  visualGraphBatch.steps += 1;
+}
+
+function graphEventLimitError() {
+  return new Error(
+    `Visual graph message dispatch stopped with EventLimit after ${GRAPH_MESSAGE_MAX_EVENTS} queued events. Check for messages that keep sending one another.`,
+  );
+}
+
+function queueGraphMessage(message, source, target) {
+  if (typeof message !== "string") throw new Error("event message must be text");
+  if (visualGraphBatch === null) throw new Error("messages need an outer graph batch");
+  if (visualGraphBatch.queuedEvents >= GRAPH_MESSAGE_MAX_EVENTS) {
+    throw graphEventLimitError();
+  }
+  visualGraphBatch.queuedEvents += 1;
+  pendingGraphMessages.push({message, source, target});
+}
+
+function visualGraphBindingIsActive(binding) {
+  if (binding.entity == null) return true;
+  const owner = entityMap.get(binding.entity);
+  return !!owner && owner.alive !== false && owner.active !== false;
+}
+
+function drainGraphMessages() {
+  if (visualGraphBatch === null) throw new Error("message dispatch needs an outer graph batch");
+  while (pendingGraphMessages.length) {
+    if (visualGraphBatch.events >= GRAPH_MESSAGE_MAX_EVENTS) {
+      throw graphEventLimitError();
+    }
+    const message = pendingGraphMessages.shift();
+    visualGraphBatch.events += 1;
+    for (const binding of visualGraphBindings) {
+      if (!visualGraphBindingIsActive(binding)) continue;
+      if (
+        message.target != null
+        && binding.entity != null
+        && binding.entity !== message.target
+      ) continue;
+      dispatchVisualGraph(
+        binding,
+        "message",
+        visualGraphBatch.dt,
+        visualGraphBatch.deferDespawns,
+        {message},
+      );
+    }
+  }
+}
+
+function runVisualGraphBatch(label, dt, deferDespawns, callback) {
+  if (visualGraphBatch !== null) throw new Error("visual graph batches cannot be nested");
+  visualGraphBatch = {
+    label,
+    dt,
+    deferDespawns,
+    steps: 0,
+    events: 0,
+    queuedEvents: 0,
+  };
+  try {
+    callback();
+    drainGraphMessages();
+  } catch (error) {
+    pendingGraphMessages = [];
+    const message = error instanceof Error ? error.message : String(error);
+    updateStatus(`Logic stopped: ${message}`);
+    console.error(error);
+    throw error;
+  } finally {
+    visualGraphBatch = null;
+  }
 }
 
 function graphEntity(binding, value) {
@@ -592,6 +686,19 @@ function executeGraphNode(binding, graph, node, inputs, run) {
     case "event.trigger_enter":
     case "event.trigger_exit":
       return {values: {sensor: run.triggerSensor, player: run.triggerPlayer, entity: entityOutput}, flow: ["out"]};
+    case "event.message": {
+      if (typeof inputs.message !== "string") throw new Error("When Message needs a saved text message");
+      const received = run.triggerMessage;
+      const matches = received !== null && inputs.message === received.message;
+      return {
+        values: {
+          source: received?.source ?? null,
+          target: received?.target ?? null,
+          entity: entityOutput,
+        },
+        flow: matches ? ["out"] : [],
+      };
+    }
     case "flow.branch": {
       if (typeof inputs.condition !== "boolean") throw new Error("condition must be boolean");
       return {values: {}, flow: [inputs.condition ? "true" : "false"]};
@@ -644,11 +751,13 @@ function executeGraphNode(binding, graph, node, inputs, run) {
       return {values: {}, flow: ["out"]};
     }
     case "action.emit_event": {
+      if (typeof inputs.kind !== "string") throw new Error("event kind must be text");
       const source = inputs.source == null || inputs.source === "" ? binding.entity : String(inputs.source);
       const target = inputs.target == null || inputs.target === "" ? null : String(inputs.target);
       const payload = inputs.payload ?? {};
       if (payload === null || typeof payload !== "object" || Array.isArray(payload)) throw new Error("event payload must be an object");
-      const event = emit(String(inputs.kind), source, target, deepClone(payload));
+      const event = emit(inputs.kind, source, target, deepClone(payload));
+      queueGraphMessage(inputs.kind, source, target);
       return {values: {event}, flow: ["out"]};
     }
     case "action.apply_force": {
@@ -692,6 +801,7 @@ function evaluateGraphNode(binding, graph, nodeId, flowInput, run, dataCache, st
     if (!Object.prototype.hasOwnProperty.call(values, sourcePort)) throw graphError(binding, graph, nodeId, `source ${sourceId}.${sourcePort} produced no value`);
     inputs[port] = values[sourcePort];
   }
+  graphBatchStep(binding, graph, nodeId);
   run.steps += 1;
   let outcome;
   try { outcome = executeGraphNode(binding, graph, node, inputs, run); }
@@ -711,9 +821,17 @@ function dispatchVisualGraph(binding, trigger, dt, deferDespawns, triggerContext
     lastOutputs: new Map(),
     triggerSensor: triggerContext?.sensor ?? null,
     triggerPlayer: triggerContext?.player ?? null,
+    triggerMessage: triggerContext?.message ?? null,
     activeStep: binding.active_step,
   };
-  const queue = (graph.roots?.[trigger] || []).map(nodeId => [nodeId, null]);
+  let roots = graph.roots?.[trigger] || [];
+  if (trigger === "message") {
+    const message = triggerContext?.message?.message;
+    roots = roots.filter(
+      nodeId => graph._nodes.get(nodeId)?.properties?.message === message,
+    );
+  }
+  const queue = roots.map(nodeId => [nodeId, null]);
   while (queue.length) {
     const [nodeId, flowInput] = queue.shift();
     const outcome = evaluateGraphNode(binding, graph, nodeId, flowInput, run, new Map());
@@ -731,10 +849,7 @@ function runVisualGraphs(trigger, dt = 0) {
   const deferDespawns = trigger === "tick";
   for (const binding of visualGraphBindings) {
     if (trigger === "ready") binding.active_step = 0;
-    if (binding.entity != null) {
-      const owner = entityMap.get(binding.entity);
-      if (!owner || owner.active === false) continue;
-    }
+    if (!visualGraphBindingIsActive(binding)) continue;
     if (trigger === "tick") binding.active_step += 1;
     dispatchVisualGraph(binding, trigger, dt, deferDespawns);
   }
@@ -744,10 +859,7 @@ function runTriggerVisualGraphs(trigger, sensor, player, dt = fixedDt) {
   const context = {sensor: String(sensor), player: String(player)};
   for (const binding of visualGraphBindings) {
     if (binding.entity != null && binding.entity !== context.sensor) continue;
-    if (binding.entity != null) {
-      const owner = entityMap.get(binding.entity);
-      if (!owner || owner.active === false) continue;
-    }
+    if (!visualGraphBindingIsActive(binding)) continue;
     dispatchVisualGraph(binding, trigger, dt, true, context);
   }
 }
@@ -996,7 +1108,7 @@ function resetScene() {
   previousActions = Object.create(null);
   currentActions = Object.create(null);
   configureVisualGraphs();
-  runVisualGraphs("ready", 0);
+  runVisualGraphBatch("Ready", 0, false, () => runVisualGraphs("ready", 0));
   const cameraEntity = entities.find(entity => entity.active !== false && component(entity, "camera"));
   camera = cameraEntity ? component(cameraEntity, "camera") : {position: [worldSize[0] / 2, worldSize[1] / 2], zoom: 1, rotation: 0, follow_entity: sceneRules.player_id || null, follow_smoothing: 8};
   camera.position = camera.position || [worldSize[0] / 2, worldSize[1] / 2];
@@ -1371,16 +1483,18 @@ function update(dt) {
   if (actionPressed("save")) saveGame();
   if (actionPressed("load")) loadGame();
   if (!paused && !won && !gameOver) {
-    updateControllers(dt);
-    updateBehaviors(dt);
-    integratePhysics(dt);
-    applyBounds();
-    collisionStep();
-    updateHealth(dt);
-    runVisualGraphs("tick", dt);
-    updateCamera(dt);
-    scheduleMusic(dt);
-    checkGameState();
+    runVisualGraphBatch("fixed-step", dt, true, () => {
+      updateControllers(dt);
+      updateBehaviors(dt);
+      integratePhysics(dt);
+      applyBounds();
+      collisionStep();
+      updateHealth(dt);
+      runVisualGraphs("tick", dt);
+      updateCamera(dt);
+      scheduleMusic(dt);
+      checkGameState();
+    });
     flushGraphDespawns();
     gameTime += dt;
     tick += 1;

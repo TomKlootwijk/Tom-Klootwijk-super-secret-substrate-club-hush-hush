@@ -197,7 +197,9 @@ class _StableCapture:
     prefix: ProofDAGHead | None
 
 
-def _manifest_seed() -> bytes:
+def proof_dag_manifest_seed() -> bytes:
+    """Return the domain-separated empty ordered-occurrence manifest."""
+
     return hashlib.sha256(
         PROOF_DAG_MANIFEST_SCHEMA.encode("ascii") + b"\x00seed\x00"
     ).digest()
@@ -247,6 +249,12 @@ def _advance_manifest(previous: bytes, record: bytes) -> bytes:
     return digest.digest()
 
 
+def advance_proof_dag_manifest(previous: bytes, edge: DAGEdge) -> bytes:
+    """Commit one validated exact edge occurrence after ``previous``."""
+
+    return _advance_manifest(previous, _manifest_record(edge))
+
+
 def _head(
     *,
     record_count: int,
@@ -280,7 +288,7 @@ def _stable_capture(
 
     for _ in range(_MAX_STABLE_AUDIT_ATTEMPTS):
         before = dag.audit().require_valid()
-        manifest = _manifest_seed()
+        manifest = proof_dag_manifest_seed()
         seen_nodes: set[str] = set()
         count = 0
         first_frame_offset: int | None = None
@@ -306,7 +314,7 @@ def _stable_capture(
                 raise ProofDAGIntegrityError("frontier edge frame boundary is invalid")
             if count and edge.frame_offset != last_frame_end:
                 raise ProofDAGIntegrityError("frontier edge frames are not contiguous")
-            manifest = _advance_manifest(manifest, _manifest_record(edge))
+            manifest = advance_proof_dag_manifest(manifest, edge)
             seen_nodes.add(edge.child_node_sha256)
             count += 1
             last_content_sha256 = edge.frontier_content_sha256
@@ -353,7 +361,7 @@ def _stable_capture(
                     node_count=0,
                     frontier_size=header_size,
                     last_content_sha256=None,
-                    manifest=_manifest_seed(),
+                    manifest=proof_dag_manifest_seed(),
                 )
             elif prefix_record_count <= count:
                 assert prefix_node_count is not None
@@ -423,6 +431,8 @@ __all__ = [
     "ProofDAGHead",
     "ProofDAGHeadMismatchError",
     "ProofDAGRollbackError",
+    "advance_proof_dag_manifest",
     "audit_proof_dag_head",
+    "proof_dag_manifest_seed",
     "require_external_dag_head",
 ]

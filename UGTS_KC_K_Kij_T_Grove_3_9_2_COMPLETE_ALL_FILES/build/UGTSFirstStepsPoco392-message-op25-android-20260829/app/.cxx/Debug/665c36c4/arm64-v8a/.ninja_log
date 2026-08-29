@@ -1,0 +1,17 @@
+# ninja log v5
+0	2046	8097121751434096	CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o	4a94e9e7d267951a
+2047	2289	8097121753319414	libnative_app_glue.a	28c08eddaa145569
+46	8430	8097121813986368	CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o	44c6dbe82a9cd0f8
+34	8435	8097121814310066	CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o	3164321a3e6cabd0
+108	8436	8097121814967427	CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o	20930c1f9e837208
+136	8437	8097121813819160	CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o	db6d829479cebafe
+115	8439	8097121814295199	CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o	f8c21730e50fd5b2
+152	8484	8097121813903364	CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o	ae169fce2086d112
+126	8486	8097121813819160	CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o	a0368d2f1366c540
+54	8487	8097121815087571	CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o	c557b639928392d
+144	8489	8097121814657054	CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o	76c070f01f217973
+101	8526	8097121816306025	CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o	152ec942d36fce8d
+25	8783	8097121818657527	CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o	9190a79a5a9d97e
+10	10671	8097121837707873	CMakeFiles/ugts_kc_native.dir/main.cpp.o	e4884d831b5dd1b0
+17	11255	8097121843571353	CMakeFiles/ugts_kc_native.dir/engine.cpp.o	b94079a7c2dc3881
+11255	11884	8097121849599732	C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/UGTSFirstStepsPoco392-message-op25-android-20260829/app/build/intermediates/cxx/Debug/665c36c4/obj/arm64-v8a/libugts_kc_native.so	2070dd397181bd6

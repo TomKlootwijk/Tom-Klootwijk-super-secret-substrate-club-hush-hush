@@ -1,6 +1,13 @@
 {
   "adversarial_cases": 18,
-  "board_sizes": [1, 2, 3, 5, 9, 19],
+  "board_sizes": [
+    1,
+    2,
+    3,
+    5,
+    9,
+    19
+  ],
   "compute_capability": "12.0",
   "corpus_sha256": "55b7bbfcd6eee3b467a919bd406c8b7f71c35de96081cd45ece003f9f7c1112e",
   "cpp_cuda_compared_child_words_across_streams": 541184,
@@ -9,7 +16,7 @@
   "device_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
   "format": "ugts-go19-cuda-local-transition-parity-v1",
   "gate_source_sha256": {
-    "cpp/tests/cuda_local_transition_eval.cu": "5719053935f7aaf8b368e22f417f15f9cfaf9e5638e234a2d1506b22027bc6c4",
+    "cpp/tests/cuda_local_transition_eval.cu": "da74e23d927ac2101716a7cae43b61ee5c8af72082ec0ffb2f0d6df57523f67e",
     "cpp/tests/cuda_local_transition_guards.cu": "2878fa314fff7dd503a8a090231a9b679712bbd2dce3c6dc7900b5a59c18fd37",
     "cpp/tests/cuda_local_transition_parity.py": "7e03af812200bc8b6407be5d395d1ad8a7ac24f799337a570b6d4522db008fa7"
   },
@@ -60,7 +67,11 @@
   },
   "root_status": "UNKNOWN",
   "scope": "pre-superko-local-point-transitions; CPU-authoritative",
-  "stream_modes": ["default", "nondefault", "dual-reverse-sync"],
+  "stream_modes": [
+    "default",
+    "nondefault",
+    "dual-reverse-sync"
+  ],
   "unique_corpus_point_slots": 25281,
   "unique_corpus_states": 124,
   "verified_point_slots_across_streams": 50562

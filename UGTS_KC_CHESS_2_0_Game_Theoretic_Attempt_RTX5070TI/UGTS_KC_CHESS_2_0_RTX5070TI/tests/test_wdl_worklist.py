@@ -11,11 +11,17 @@ from ugts_chess.game_theory import WDL
 from ugts_chess.hashing import canonical_json_bytes
 from ugts_chess.position import Position
 from ugts_chess.proof_dag import ProofDAG
+from ugts_chess.proof_dag_commitment import (
+    ProofDAGConcurrentMutationError,
+    ProofDAGHead,
+    audit_proof_dag_head,
+)
 from ugts_chess.rules import apply_move, legal_moves
 from ugts_chess.wdl import BoundedWDLSolver
 from ugts_chess.wdl_fact_journal import WDLFactJournal
 from ugts_chess.wdl_worklist import (
     DeterministicWDLWorklist,
+    WorklistConcurrentMutationError,
     WorklistLimits,
     WorklistStepStatus,
     WorklistStopReason,
@@ -437,6 +443,9 @@ class WDLWorklistTests(unittest.TestCase):
         second_head = second_worklist.dag_head
         self.assertIsNotNone(first_head)
         self.assertIsNotNone(second_head)
+        self.assertIs(wdl_worklist_module.DAGHead, ProofDAGHead)
+        self.assertEqual(first_head, audit_proof_dag_head(first_dag))
+        self.assertEqual(second_head, audit_proof_dag_head(second_dag))
 
         self.assertEqual(first_head.frontier_record_count, second_head.frontier_record_count)  # type: ignore[union-attr]
         self.assertEqual(first_head.sqlite_edge_count, second_head.sqlite_edge_count)  # type: ignore[union-attr]
@@ -473,6 +482,13 @@ class WDLWorklistTests(unittest.TestCase):
 
         journal = self.make_journal()
         worklist = DeterministicWDLWorklist(self.dag, journal)
+        with mock.patch.object(
+            wdl_worklist_module,
+            "audit_proof_dag_head",
+            side_effect=ProofDAGConcurrentMutationError("moving DAG"),
+        ):
+            with self.assertRaises(WorklistConcurrentMutationError):
+                worklist.rebuild()
         with self.assertRaises(TypeError):
             worklist.run({})  # type: ignore[arg-type]
         with self.assertRaises(TypeError):

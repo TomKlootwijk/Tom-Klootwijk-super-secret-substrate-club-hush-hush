@@ -34,7 +34,7 @@ sparse Android record per moving node. Dynamic nodes are guarded because their t
 physics.
 
 KCVG001 now carries sparse world graphs as well as entity graphs, and desktop, retained HTML5 and
-native Android execute the full current 23-block vocabulary. Append-only opcode 21 is **Repeatable
+native Android execute the full current 24-block vocabulary. Append-only opcode 21 is **Repeatable
 Random Number**. Opcode 22 is **Find Nearby Object**, a Sensing block that starts from an explicit
 or bound origin, accepts only Player/Collectible/Goal/Decorative/Hazard, uses an inclusive radius,
 filters the origin plus dead/inactive candidates, selects the nearest match and breaks an exact tie
@@ -51,6 +51,11 @@ entry/exit has matching desktop/native sphere/box overlap,
 non-physical transitions, sensor/player/entity graph context, world-or-matching-sensor dispatch and
 explicit sensor/dispatch caps.
 
+Append-only opcode 24 is **Find Object Ahead**. It preserves opcode 22's tag/radius filters, nearest
+selection, UTF-8 tie-break and nullable outputs, then applies an inclusive source-aligned binary32
+GSP4 cone. One Vector4 stores explicit world-axis X/Y/Z plus minimum cosine. Runtime normalization
+uses no trigonometry, and Origin rotation and scale are deliberately irrelevant.
+
 Desktop Preview now exposes a read-only Logic Trail. Numbered block badges and the Last Run list show
 execution order, values, chosen flow and errors without mutating or serializing the project; the latest
 trail remains visible after Stop and adds zero export bytes.
@@ -60,8 +65,8 @@ the Inspector's **Use as Trigger** control offers Sphere/Radius or Box/Size X/Y/
 Resources panel identify Trigger Areas, and edits support Undo/Redo and save/load.
 
 Grove's phone player is native C++/GLES rather than an HTML wrapper. The retained 2D project model
-still exports HTML5, and its bounded browser VM executes the same current 23-block vocabulary,
-including Repeatable Random Number, Find Nearby Object, When Timer Rings and one-shot Trigger Enter/Exit lifecycle and
+still exports HTML5, and its bounded browser VM executes the same current 24-block vocabulary,
+including Repeatable Random Number, Find Nearby Object, Find Object Ahead, When Timer Rings and one-shot Trigger Enter/Exit lifecycle and
 sensor/player context. The Android exporter
 currently consumes the separate Mobile3D project model.
 
@@ -77,20 +82,28 @@ compact decorative population, not a general gameplay-PCG system; overlap avoida
 LOD and a Mobile 3D browser runtime are not claimed.
 
 First Steps now adds **World Logic → Count the Timer Rings**: a repeating one-second timer writes its
-count to `timer_rings`, replacing a difficult Every Frame counter. The project has five graphs, 20
-nodes and five bindings including two world bindings. Current verification passes 469 tests plus 62
-subtests in 45.29 seconds. Its 929-byte `KCVG001` has SHA-256
-`420e60ca385fa874a3d47b9bc16bdfec105c4cb4d55f2c5a35900fb7fd0fac02`; 914-byte KCPK and 60-byte
-KCSP sidecars bring the compact total to 1,903 bytes.
+count to `timer_rings`, replacing a difficult Every Frame counter. **Find the Goal Ahead** uses the
+saved 3D Forward world axis and Normal width and writes `goal_ahead`. The project has six graphs, 23
+nodes and six bindings including three world bindings. Current verification passes 483 tests plus 87
+subtests in 59.77 seconds; the focused opcode-24 slice passes 14 tests plus 25 subtests. Its 1,085-byte
+`KCVG001` has SHA-256 `2c5c6edb0c804da7fb2b6edab8c6beab12ccd2dac8b4e743d03c6194aff4af27`;
+the 914-byte KCPK (`8a45ddbf874d918cedaeb0161e80fef3314c2c2b0b21a45da90e22a18c4dd313`) and 60-byte KCSP
+(`e95bde225571ab5f6eac3b9c04cb1bd332a0c95c740b377ac2dee30460dd2fd1`) bring the compact total to
+2,059 bytes. Fresh execution sets `goal_ahead=true` and has state SHA-256
+`71df205686c92c217c3b1e23ad00929a331d07b5bb43e64d27023ec17d490a9c`.
 
-The canonical opcode-23 Poco APK is 1,443,529 bytes with SHA-256
-`C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`. Local `aapt`/`apksigner`
+The canonical opcode-24 Poco APK is 1,460,361 bytes with SHA-256
+`917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`. Local `aapt`/`apksigner`
 inspection verifies package `org.ugts.games.my_mobile_3d_game.pocox7pro`, version 392 /
 `3.9.2-poco-x7-pro`, minimum SDK 26, target/compile SDK 36, GLES 3.0, ARM64-only native code, the
 debug certificate and APK Signature Scheme v2. Its embedded KCVG/KCPK/KCSP assets match the current
-source sidecars exactly. ADB reported zero devices, so this opcode-23 artifact is not claimed as
+source sidecars exactly. ADB reported zero devices, so this opcode-24 artifact is not claimed as
 installed, launched or profiled. Those physical-device claims and the 120.23-FPS 30-second result
 remain attached to the preserved 1,441,929-byte opcode-22
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk`; the 64.9-second idle
 baseline belongs to a still earlier APK. Interaction-heavy/touch, unplugged, long-duration thermal,
 explicit 60/90 Hz fallback and lower-tier device runs remain open.
+
+The preceding opcode-23 artifact is preserved as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
+`C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`.

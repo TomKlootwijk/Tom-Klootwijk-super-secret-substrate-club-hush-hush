@@ -90,9 +90,18 @@ user-specified RTX 5070 Ti Laptop GPU with 12 GB VRAM.
   bitplanes. Its CPU adapter recomputes every point and exclusively owns pass,
   exact PSK, metadata, and proof updates. The target gate covered 25,281 unique
   slots and 50,562 cross-stream Python/C++/CUDA comparisons with zero mismatches;
-  the direct guard crossed 524,280 production candidates and sanitizer
-  memcheck/racecheck/initcheck were clean. It is not the 10-million-slot M4 gate,
-  a benchmark, proof-path integration, or a solved claim.
+  the direct guard crossed the 524,280-candidate production capacity with
+  524,533 exact slots and sanitizer memcheck/racecheck/initcheck were clean.
+- The production adapter scale gate then covered 10,000,303 point slots from
+  27,716 exact-distinct semantic states once on each of the default and
+  nondefault streams, for 20,000,606 total C++/CUDA CPU-authority checks and zero
+  mismatches. The unique corpus includes 554,496 reachable full-history campaign
+  slots and 9,444,121 ordinal-injective randomized 19×19 slots; canonical bytes
+  independently reject duplicates. Target-laptop adapter-plus-validation rates
+  were 155,493/165,556 slots/s, and a 257,516-slot complete-corpus structural run
+  passed Compute Sanitizer memcheck. These are hardware-specific non-proof
+  results, not Python coverage over all 10m slots, proof-path integration, or a
+  solved claim.
 - Acceptance is fail closed on Windows native-command failures and validates the
   canonical `UNKNOWN` preflight envelope before printing success.
 
@@ -119,10 +128,13 @@ user-specified RTX 5070 Ti Laptop GPU with 12 GB VRAM.
 - Bounded CUDA local-transition parity and sanitizer evidence:
   `evidence/local_m4_cuda_local_transition_parity.json` and
   `evidence/local_m4_cuda_local_transition_compute_sanitizer.json`
+- CUDA local-transition unique-breadth and representative sanitizer evidence:
+  `evidence/local_m4_cuda_local_transition_scale_10m.json` and
+  `evidence/local_m4_cuda_local_transition_scale_sanitizer.json`
 
 ## Next target-laptop action
 
 Page the live history/proof records through bounded segment handles, then bound
 peak memory, mappings/handles, manifest metadata, and recovery for
 campaign-scale NVMe spill/restart. Keep CUDA outside the proof path until the
-10-million-slot legal-child gate and campaign integration invariants pass.
+campaign integration invariants and CPU-authority failure handling pass.

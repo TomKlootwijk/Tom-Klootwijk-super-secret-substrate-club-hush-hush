@@ -52,12 +52,20 @@ protocol, memory-shape, sentinel, or parity error. The CPU alone handles pass,
 exact raw-board positional-superko membership, previous-board/pass/ply/history
 metadata, and all proof updates.
 
-The target-laptop v1 gate is bounded: 25,281 unique point slots and 50,562
-default/nondefault Python/C++/CUDA point comparisons, plus a 524,533-candidate
-dual-stream grid-stride guard, all with zero mismatches. It has not reached the
-10,000,000-slot M4 exit gate, is not wired into proof search, and establishes no
-throughput or solved-result claim. The dense 19×19 device representation uses
-36,606 bytes per input state plus one batch error word; the adapter queries
+The target-laptop cross-language v1 gate is bounded: 25,281 unique point slots
+and 50,562 default/nondefault Python/C++/CUDA point comparisons, plus a
+524,533-candidate dual-stream grid-stride guard, all with zero mismatches. The
+separate breadth gate traverses 10,000,303 point slots from 27,716 exact-distinct
+states once on each of the default and nondefault streams. It reports the second
+traversal separately rather than doubling the unique count. The primary corpus
+contains 554,496 reachable full-history campaign slots and 9,444,121 randomized
+ordinal-injective 19×19 slots. Both stream modes produced the same result digest
+with zero mismatch; the measured 155,493/165,556 slots/s are hardware-specific,
+non-proof C++/CUDA results and do not claim Python coverage over the 10m corpus.
+
+This boundary is still not wired into proof search and establishes no solved-
+result claim. The dense 19×19 device representation uses 36,606 bytes per input
+state plus one batch error word; the adapter queries
 `cudaMemGetInfo`, retains an 18% free-memory reserve, admits at most 16% of the
 post-reserve amount for this workspace, and rejects rather than silently
 shrinking or partially evaluating a batch.
