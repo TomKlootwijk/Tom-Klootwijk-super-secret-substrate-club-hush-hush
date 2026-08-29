@@ -73,6 +73,13 @@ def canonical_proof_state_json(state: State, rules: Rules) -> str:
 
 
 def state_digest(state: State, rules: Rules) -> str:
+    """Return the legacy claim/certificate root digest.
+
+    This intentionally preserves the released empty-19x19 identifier. It is a
+    different serialization from SHA-256 of ``UGTS-GO-STATE-v1`` and must not
+    be substituted for that canonical semantic-state object ID.
+    """
+
     payload = {
         "board": state.board.hex(),
         "to_play": state.to_play,

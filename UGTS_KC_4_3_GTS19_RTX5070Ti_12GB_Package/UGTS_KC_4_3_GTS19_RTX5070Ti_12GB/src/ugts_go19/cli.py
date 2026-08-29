@@ -18,6 +18,7 @@ from .digests import state_digest
 from .exact import ExactSolver, SearchBudgetExceeded
 from .frontier import canonical_frontier
 from .memory import GIB, plan_memory
+from .pndag import ProofNumberDAG
 from .pns import ProofNumberSearch
 from .rules import Rules
 from .state import State
@@ -29,6 +30,17 @@ def _write_or_print(payload: dict, output: str | None) -> None:
         Path(output).parent.mkdir(parents=True, exist_ok=True)
         Path(output).write_text(text, encoding="utf-8")
     print(text, end="")
+
+
+def _paths_alias(left: Path, right: Path) -> bool:
+    """Return whether two publication paths name the same filesystem object."""
+
+    if left.resolve(strict=False) == right.resolve(strict=False):
+        return True
+    try:
+        return left.samefile(right)
+    except (FileNotFoundError, OSError):
+        return False
 
 
 def cmd_selftest(_args: argparse.Namespace) -> int:
@@ -117,6 +129,53 @@ def cmd_attempt19(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_pndag_tiny(args: argparse.Namespace) -> int:
+    """Advance the bounded, restartable 1x1/2x2 proof-DAG slice."""
+
+    rules = _tiny_rules(args.size, args.komi2)
+    root = State.initial(rules)
+    checkpoint = Path(args.checkpoint)
+    output = Path(args.output) if args.output is not None else None
+    if output is not None and _paths_alias(checkpoint, output):
+        raise SystemExit("--output must not refer to the checkpoint path")
+    if args.resume:
+        if not checkpoint.is_file():
+            raise SystemExit(f"checkpoint does not exist: {checkpoint}")
+        dag = ProofNumberDAG.load_checkpoint(
+            checkpoint,
+            expected_rules=rules,
+            expected_root_state=root,
+            expected_threshold2=args.threshold2,
+        )
+    else:
+        if checkpoint.exists() and not args.overwrite:
+            raise SystemExit(
+                f"checkpoint already exists (use --resume or --overwrite): {checkpoint}"
+            )
+        dag = ProofNumberDAG(rules, args.threshold2, root)
+    result = dag.advance(args.additional_expansions)
+    if args.expect_status is not None and result.status != args.expect_status:
+        return 2
+    dag.save_checkpoint(checkpoint)
+    checkpoint_payload = json.loads(checkpoint.read_text(encoding="utf-8"))
+    _write_or_print(
+        {
+            "campaign": "bounded tiny exact PNDAG persistence validation",
+            "checkpoint": str(checkpoint),
+            "checkpoint_sha256": checkpoint_payload["checkpoint_sha256"],
+            "claim_boundary": (
+                "This host-local checkpoint is not a standalone certificate and "
+                "does not establish any 19x19 result."
+            ),
+            "result": result.as_dict(),
+            "root_digest": state_digest(root, rules),
+            "rules": rules.as_dict(),
+        },
+        str(output) if output is not None else None,
+    )
+    return 0
+
+
 def cmd_frontier(args: argparse.Namespace) -> int:
     rules = Rules.canonical_19x19()
     states, summary = canonical_frontier(rules, args.depth)
@@ -170,6 +229,23 @@ def build_parser() -> argparse.ArgumentParser:
     attempt.add_argument("--node-budget", type=int, default=64)
     attempt.add_argument("--output")
     attempt.set_defaults(func=cmd_attempt19)
+
+    pndag = sub.add_parser(
+        "pndag-tiny",
+        help="advance/resume the bounded exact 1x1/2x2 proof-DAG slice",
+    )
+    pndag.add_argument("--size", type=int, choices=(1, 2), default=2)
+    pndag.add_argument("--komi2", type=int, default=1, help="komi in half-points")
+    pndag.add_argument("--threshold2", type=int, default=1)
+    pndag.add_argument("--additional-expansions", type=int, default=64)
+    pndag.add_argument("--checkpoint", required=True)
+    pndag.add_argument("--resume", action="store_true")
+    pndag.add_argument("--overwrite", action="store_true")
+    pndag.add_argument(
+        "--expect-status", choices=("PROVEN", "DISPROVEN", "UNKNOWN")
+    )
+    pndag.add_argument("--output")
+    pndag.set_defaults(func=cmd_pndag_tiny)
 
     frontier = sub.add_parser("frontier", help="generate D4-canonical opening states")
     frontier.add_argument("--depth", type=int, default=1)

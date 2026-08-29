@@ -18,7 +18,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import time
-from typing import Any, Iterable, Mapping
+from typing import Iterable, Mapping
 
 from .game_state import (
     HistoryContext,
@@ -427,7 +427,11 @@ def _history_from_record(record: object) -> HistoryContext:
     for item in record:
         if not isinstance(item, list) or len(item) != 2 or not isinstance(item[0], str):
             raise WDLVerificationError("malformed history count entry")
-        count = int(item[1])
+        if len(item[0]) != 64 or any(character not in "0123456789abcdef" for character in item[0]):
+            raise WDLVerificationError("history repetition key must be a lowercase SHA-256 digest")
+        count = item[1]
+        if isinstance(count, bool) or not isinstance(count, int):
+            raise WDLVerificationError("history occurrence count must be an integer")
         if count <= 0 or count > 5:
             raise WDLVerificationError("history occurrence count must be in 1..5")
         pairs.append((item[0], count))
@@ -449,6 +453,9 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
         raise WDLVerificationError("unsupported WDL bundle schema")
     if bundle.get("rules_profile") != RULE_PROFILE_ID:
         raise WDLVerificationError("unsupported WDL rules profile")
+    max_plies = bundle.get("max_plies")
+    if isinstance(max_plies, bool) or not isinstance(max_plies, int) or max_plies < 0:
+        raise WDLVerificationError("bundle max_plies must be a non-negative integer")
     raw_nodes = bundle.get("nodes")
     if not isinstance(raw_nodes, list) or not raw_nodes:
         raise WDLVerificationError("bundle contains no nodes")
@@ -490,10 +497,18 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
         try:
             position = Position.from_fen(str(record["fen"]))
             history = _history_from_record(record["history_counts"])
-            depth = int(record["depth_remaining"])
+            depth_remaining = record["depth_remaining"]
+            if isinstance(depth_remaining, bool) or not isinstance(depth_remaining, int) or depth_remaining < 0:
+                raise ValueError("depth_remaining must be a non-negative integer")
             value = WDL(str(record["value"]))
-            exact = bool(record["exact"])
-            legal_count = int(record["legal_move_count"])
+            exact_value = record["exact"]
+            if not isinstance(exact_value, bool):
+                raise ValueError("exact must be a boolean")
+            exact = exact_value
+            legal_count_value = record["legal_move_count"]
+            if isinstance(legal_count_value, bool) or not isinstance(legal_count_value, int):
+                raise ValueError("legal_move_count must be an integer")
+            legal_count = legal_count_value
             coverage = str(record["coverage"])
         except (KeyError, TypeError, ValueError) as exc:
             raise WDLVerificationError(f"malformed node {cert_hash}: {exc}") from exc
@@ -543,7 +558,11 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
                 move_text = child.get("move")
                 if not isinstance(code, str) or (move_text is not None and not isinstance(move_text, str)):
                     raise WDLVerificationError("malformed claim action")
-                if child.get("child_value") != WDL.DRAW.value or child.get("value_for_parent") != WDL.DRAW.value or not child.get("exact"):
+                if (
+                    child.get("child_value") != WDL.DRAW.value
+                    or child.get("value_for_parent") != WDL.DRAW.value
+                    or child.get("exact") is not True
+                ):
                     raise WDLVerificationError("claim action must be an exact draw")
                 supplied_claims.add((move_text, code))
             elif kind == "move":
@@ -573,6 +592,8 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
                 raise WDLVerificationError("move obligation references a missing child certificate")
             child_value = verify_node(child_cert)
             child_node = store[child_cert]
+            if depth_remaining <= 0 or child_node.get("depth_remaining") != depth_remaining - 1:
+                raise WDLVerificationError("child certificate depth does not decrement by one ply")
             if child_node.get("fen") != child_position.to_fen():
                 raise WDLVerificationError("child FEN mismatch")
             if child_node.get("history_counts") != child_history.record():
@@ -584,7 +605,9 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
             converted = invert_child(child_value)
             if child_record.get("value_for_parent") != converted.value:
                 raise WDLVerificationError("parent-converted WDL mismatch")
-            if bool(child_record.get("exact")) != bool(child_node.get("exact")):
+            if not isinstance(child_record.get("exact"), bool):
+                raise WDLVerificationError("child exactness must be a boolean")
+            if child_record.get("exact") != child_node.get("exact"):
                 raise WDLVerificationError("child exactness mismatch")
             return converted
 
@@ -632,12 +655,16 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
 
     root_value = verify_node(root_hash)
     root_record = store[root_hash]
-    root_exact = bool(root_record["exact"])
+    if root_record.get("depth_remaining") != max_plies:
+        raise WDLVerificationError("bundle max_plies does not match root depth")
+    root_exact = root_record["exact"]
     if not root_exact and not allow_unknown_root:
         raise WDLVerificationError("root is UNKNOWN, not a completed proof")
     if bundle.get("root_state_hash") != root_record.get("state_hash"):
         raise WDLVerificationError("bundle root-state hash mismatch")
-    if bundle.get("root_value") != root_value.value or bool(bundle.get("root_exact")) != root_exact:
+    if not isinstance(bundle.get("root_exact"), bool):
+        raise WDLVerificationError("bundle root_exact must be a boolean")
+    if bundle.get("root_value") != root_value.value or bundle.get("root_exact") != root_exact:
         raise WDLVerificationError("bundle root summary mismatch")
 
     return {

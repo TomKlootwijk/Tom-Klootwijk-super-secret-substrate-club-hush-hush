@@ -29,12 +29,24 @@ user-specified RTX 5070 Ti Laptop GPU with 12 GB VRAM.
 - C++ distinguishes rule-illegal moves from malformed inputs with the
   `IllegalMove` exception taxonomy, preventing invalid states from being silently
   reported as shorter legal masks.
-- M1 C++ semantic parity is complete. The deterministic campaign compared
-  1,000,006 legal transitions across 31,176 exact states, including adversarial
+- M1 v2 compared
+  1,000,007 legal transitions across 31,177 exact states, including adversarial
   snapback, ko, multi-capture, edge, suicide, pass, and terminal cases, with zero
-  mismatches across 10,093,588 authoritative raw fields. The native core also
+  mismatches across 13,187,153 authoritative raw/canonical fields. The native core also
   has exact complete-history equality and shared `UGTS-GO-STATE-v1`
-  serialization; hashes do not establish identity.
+  serialization, and v2 compares exact JSON bytes plus portable SHA-256 object
+  IDs. Hashes never establish identity.
+- A bounded host-local `ProofNumberDAG` now checkpoints and resumes exact 1×1/2×2
+  PSK searches. It detects digest collisions by raw equality, audits every
+  expanded legal edge, reconstructs proof numbers in a fresh process, and
+  preserves an older checkpoint on publication failure. It is explicitly not
+  production DFPN, persistent NVMe history, or a standalone certificate.
+- Separate bounded M2 components now provide a canonical structurally shared
+  PSK history, root-backed transitions that match the flat reference, and
+  deterministic immutable board/history segments with append-only manifests and
+  verified restart. They are not yet wired into `ProofNumberDAG`; injected
+  digest callbacks are test-only, authoritative history loads require a trusted
+  external root pin, and the storage layer remains single-writer.
 - CUDA 12.8 compiled the optional CUDA targets, and the runtime probe identified
   the NVIDIA GeForce RTX 5070 Ti Laptop GPU at compute capability 12.0. The
   occupancy kernel itself remains untested against the exact references and is
@@ -54,11 +66,11 @@ user-specified RTX 5070 Ti Laptop GPU with 12 GB VRAM.
 - M0 evidence: `evidence/local_m0_1x1_verify.json`,
   `evidence/local_m0_2x2_verify.json`, and
   `evidence/local_m0_hardware.json`
-- M1 evidence: `evidence/local_m1_cpp_python_parity_1m.json`
+- M1 v2 evidence: `evidence/local_m1_cpp_python_parity_v2_1m.json`
 
 ## Next target-laptop action
 
-Build the first bounded M2 persistent-history vertical slice: immutable exact
-state/history records, collision fallback, atomic expansion records, and
-restart verification on tractable boards. Keep CUDA outside the proof path until
-those persistence and independent-recomputation invariants are established.
+Wire the validated persistent-root transition and immutable segment components
+into the proof DAG, then demonstrate resident-memory-bounded NVMe spill/restart.
+Keep CUDA outside the proof path until the integrated M2 invariants are
+independently verified.

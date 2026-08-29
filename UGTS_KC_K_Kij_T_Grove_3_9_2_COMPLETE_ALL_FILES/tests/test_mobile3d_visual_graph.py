@@ -57,8 +57,24 @@ class Mobile3DVisualGraphTests(unittest.TestCase):
         self.assertEqual(world.state["score"], 1)
         self.assertEqual(world.require("player").scale, (1.35, 1.35, 1.35))
         self.assertNotEqual(world.require("goal").position, goal_before)
+        player = world.require("player")
+        player.position = world.require("goal").position
+        player.velocity = (0.0, 0.0, 0.0)
+        world.step()
+        self.assertTrue(world.state["inside_goal"])
+        player.position = (12.0, 1.0, 12.0)
+        player.velocity = (0.0, 0.0, 0.0)
+        world.step()
+        self.assertFalse(world.state["inside_goal"])
         packed = inspect_graph_pack(compile_graph_pack_bytes(project))
-        self.assertEqual(packed["graphs"], [{"id": "dash_lesson", "node_count": 6, "max_steps": 1024}])
+        self.assertEqual(
+            packed["graphs"],
+            [
+                {"id": "dash_lesson", "node_count": 6, "max_steps": 1024},
+                {"id": "goal_area_lesson", "node_count": 6, "max_steps": 1024},
+            ],
+        )
+        self.assertEqual(packed["binding_count"], 2)
         polar = inspect_polar_pack(
             compile_polar_pack_bytes(project), node_count=len(project.nodes)
         )

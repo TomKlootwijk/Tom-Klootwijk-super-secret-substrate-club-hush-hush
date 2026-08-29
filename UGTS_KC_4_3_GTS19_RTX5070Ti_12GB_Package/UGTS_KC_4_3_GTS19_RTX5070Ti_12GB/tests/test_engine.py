@@ -128,8 +128,24 @@ class EngineTests(unittest.TestCase):
         )
         with self.assertRaises(TypeError):
             invalid_seen_type.validate(self.rules)
+        missing_previous_history = State(
+            board=root.board,
+            to_play=BLACK,
+            passes=0,
+            seen=root.seen,
+            previous_board=bytes((1,)) + bytes(8),
+        )
+        with self.assertRaisesRegex(ValueError, "previous board"):
+            missing_previous_history.validate(self.rules)
         with self.assertRaises(ValueError):
             area_score(bytes((7,)) * 9, self.rules)
+
+    def test_moves_require_exact_integer_type(self) -> None:
+        root = State.initial(self.rules)
+        for move in (True, False, -1.0, 0.0, "0"):
+            with self.subTest(move=move):
+                with self.assertRaisesRegex(TypeError, "move must be an integer"):
+                    apply_move(root, move, self.rules)  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

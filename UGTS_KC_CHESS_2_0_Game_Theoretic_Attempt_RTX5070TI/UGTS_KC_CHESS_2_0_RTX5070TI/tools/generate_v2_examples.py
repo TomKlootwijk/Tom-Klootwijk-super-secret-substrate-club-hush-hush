@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 
 from ugts_chess import Position
-from ugts_chess.campaign import campaign_status, init_campaign, verify_campaign
+from ugts_chess.campaign import campaign_status, export_campaign, init_campaign, verify_campaign
 from ugts_chess.game_theory import root_obligations
 from ugts_chess.gpu_protocol import recommended_rtx5070ti_config, run_batch
 from ugts_chess.rules import perft
@@ -23,6 +23,10 @@ def write_json(path: Path, value: object) -> None:
 
 
 def main() -> None:
+    resolved_examples = EXAMPLES.resolve()
+    resolved_root = ROOT.resolve()
+    if resolved_examples != resolved_root / "examples" / "campaign" or resolved_root not in resolved_examples.parents:
+        raise RuntimeError(f"refusing to replace unexpected examples directory: {resolved_examples}")
     if EXAMPLES.exists():
         shutil.rmtree(EXAMPLES)
     EXAMPLES.mkdir(parents=True)
@@ -34,6 +38,7 @@ def main() -> None:
     write_json(EXAMPLES / "campaign_init.json", init)
     write_json(EXAMPLES / "campaign_status.json", status)
     write_json(EXAMPLES / "campaign_verify.json", verification)
+    export_campaign(db, EXAMPLES / "campaign_snapshot.json")
 
     root = Position.initial()
     workloads = []

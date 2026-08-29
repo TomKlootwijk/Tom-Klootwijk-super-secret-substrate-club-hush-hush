@@ -24,14 +24,27 @@ Exit criterion: zero mismatches and reproducible seeds.
 
 ## Phase 2 — durable exact state identity
 
-- Implement collision-checked content-addressed boards.
-- Implement a persistent superko set with Merkle roots.
-- Demonstrate restart-safe host/NVMe checkpoints.
-- Inject hash collisions in tests and verify exact equality prevents corruption.
+The bounded Python components now validate collision fallback, canonical
+structurally shared PSK roots, root-backed transitions, immutable exact-object
+segments, and atomic restart. Phase 2 remains open because `ProofNumberDAG`
+still uses flat histories and the segment layer has not yet demonstrated
+resident-memory-bounded NVMe spill at campaign scale.
+
+- [done, bounded] Implement collision-checked content-addressed boards.
+- [done, bounded] Implement a persistent superko set with Merkle roots.
+- [done, bounded] Demonstrate restart-safe immutable host segments.
+- [done, bounded] Inject index collisions and verify exact equality prevents
+  corruption.
+- Integrate persistent roots and segments into the proof DAG.
+- Add resident-memory-bounded NVMe spill/restart and campaign recovery tooling.
 
 Exit criterion: checkpoint round-trip reproduces all proof numbers and roots.
 
 ## Phase 3 — proof-number coordinator
+
+The same bounded slice validates proof-number DAG recomputation across restart,
+but does not count as the production C++ DFPN coordinator or its certificate
+verifier.
 
 - Port threshold PNS/DFPN to C++.
 - Add TT bounds keyed by complete state identity.

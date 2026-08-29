@@ -28,7 +28,7 @@
   "correctness_boundary": "CUDA produces move/frontier/retrograde proposal candidates only; the exact host verifier and content-addressed certificate chain remain authoritative.",
   "device_match": "GeForce RTX 5070 Ti Laptop GPU",
   "max_moves_per_position": 256,
-  "measurement_boundary": "No physical RTX 5070 Ti benchmark was executed while packaging this release.",
+  "measurement_boundary": "Profile values are conservative configuration defaults, not physical benchmark results; bind device measurements to separate timestamped evidence.",
   "minimum_toolkit": "CUDA 12.8",
   "nominal_vram_mib": 12288,
   "profile_id": "rtx5070ti-laptop-12gb-sm120-v2",

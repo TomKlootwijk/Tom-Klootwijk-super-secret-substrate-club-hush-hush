@@ -55,7 +55,7 @@ struct ApplyResult {
 [[nodiscard]] std::vector<int> LegalMoves(const State& state,
                                           const Rules& rules,
                                           bool include_pass = true);
-[[nodiscard]] int AreaScore2(const State& state, const Rules& rules);
+[[nodiscard]] std::int64_t AreaScore2(const State& state, const Rules& rules);
 [[nodiscard]] std::vector<std::uint64_t> PackBlackBitplane(const State& state);
 [[nodiscard]] std::vector<std::uint64_t> PackWhiteBitplane(const State& state);
 // Canonical proof-state serialization. The representation contains every
@@ -64,6 +64,10 @@ struct ApplyResult {
 // excluded because it is campaign metadata, not part of game-state equality.
 [[nodiscard]] std::string CanonicalStateJson(const State& state,
                                              const Rules& rules);
+// SHA-256 content address of the exact UTF-8 bytes returned by
+// CanonicalStateJson. This is never a substitute for ExactStateEqual.
+[[nodiscard]] std::string CanonicalStateObjectId(const State& state,
+                                                 const Rules& rules);
 // Exact collision-independent semantic equality. Hashes may select candidates,
 // but this comparison is the authority before proof data can be shared.
 [[nodiscard]] bool ExactStateEqual(const State& left, const Rules& left_rules,

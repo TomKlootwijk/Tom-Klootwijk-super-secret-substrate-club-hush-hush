@@ -3,20 +3,35 @@
 ## 3.9.2 - K-Kij-T / Grove Creation Engine
 
 - Adds a dockable PySide6 desktop editor with editable 2D/3D scenes, inspectors, real runtime preview,
-  friendly project checks and direct web, glTF, Android source, Poco APK and ADB-install builds.
+  friendly project checks and direct web, glTF, Android source, Poco APK and ADB-install-and-open builds.
 - Adds typed, serializable Logic Blocks with deterministic ordering and bounded desktop execution.
-- Executes the full current 18-block vocabulary in HTML5 and compact `KCVG001` Android bytecode,
-  including sparse world graphs and Apply Force with explicit native value/component limits.
-- Adds a phone-ready beginner template whose graph runs in both the desktop oracle and Android VM.
+- Adds a desktop-only **Logic Trail** presentation: read-only live execution badges plus a **Last Run**
+  list for values, flow and errors. The latest trail remains after Stop but is not serialized and adds
+  zero bytes to exports.
+- Executes the full current 20-block vocabulary in HTML5 and compact `KCVG001` Android bytecode,
+  including sparse world graphs, Apply Force and Trigger Enter/Exit with bounded sensor context.
+- Adds a phone-ready beginner template whose two lessons run in the desktop oracle, browser VM where
+  applicable, and native Android VM.
+- Extends the Mobile 3D beginner template with **Crystal Garden**: one authored static object and an
+  undoable deterministic **Populate Area** recipe. Groups allow 2–256 objects, with 64 groups and
+  1,024 population objects per project.
+- Adds optional `KCSP392` data with a shared 24-byte header and fixed 36-byte group records, glTF copy
+  baking, and native GLES instanced rendering of a deterministic quality-budget prefix.
 - Adds pointer-ID-aware two-thumb Android controls with density-scaled tap detection and a native
   host gesture harness; Space now has the same beginner jump/dash meaning as the editor preview.
 - Adds undoable scene add/copy/delete, contextual Logic Block choices, 2D picture or 3D
   shape/material assignment, and bounded Wavefront OBJ mesh import.
-- Adds a one-click Windows launcher and a prominent GUI ADB deploy action with device-state guidance.
+- Adds a one-click Windows launcher and a prominent GUI ADB deploy action that pins one authorized
+  device, builds, installs and opens the exact Gradle-reported application ID.
 - Fixes synchronous Add Block reloading so a new logic block stays selected and Undo remains reliable.
 - Adds composable desktop 3D ECS access plus compact log-polar pose/motion components, shared binary16
   LUTs and checksummed `UGECS1` deployment files.
-- Adds a native Poco ARM64 Gradle/NDK build path. Physical-phone frame pacing and thermals remain unverified.
+- Adds a native Poco ARM64 Gradle/NDK build path. A physical Poco-class `rodin` device accepted and
+  launched a GUI deployment; sustained frame pacing and thermals remain unverified.
+- Keeps Populate Area honest and decorative: unsafe transform/collider/gameplay/graph/movement
+  ownership is rejected; copies have no such semantics. Desktop presentation is capped at 64
+  generated copies per group and 256 globally, while browser Mobile 3D, overlap avoidance, per-copy
+  frustum culling and LOD are not implemented.
 
 ## 3.9.1 - Tom Klootwijk Signature Native Android and Mobile-3D Edition
 

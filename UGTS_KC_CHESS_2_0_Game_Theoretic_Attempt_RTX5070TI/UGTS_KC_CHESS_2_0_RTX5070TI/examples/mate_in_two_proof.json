@@ -1,12 +1,19 @@
 {
-  "$schema": "ugts-kc-chess-mate-proof-1.0",
+  "$schema": "ugts-chess-mate-proof-2.0",
   "attacker": "white",
-  "explored_nodes": 418,
+  "explored_nodes": 407,
   "max_plies": 3,
-  "proof_semantics": "OR nodes choose one legal attacker move; AND nodes enumerate every legal defender reply; leaves are checkmate.",
+  "proof_semantics": "OR nodes choose one legal attacker move; AND nodes enumerate every legal defender reply and reject defender draw-claim actions; leaves are checkmate.",
   "root_fen": "8/8/8/8/8/k7/8/1QK5 w - - 0 1",
   "root_hash": "64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16",
-  "schema_version": "1.0.0",
+  "root_history_counts": [
+    [
+      "04ee7076251ac62487c35979de8f380d31c087046d0ed69da4fa2de97a6ff7e9",
+      1
+    ]
+  ],
+  "rules_profile": "fide-classical-2023-claims-as-actions-v2",
+  "schema_version": "2.0.0",
   "status": "proved",
   "tree": {
     "child": {

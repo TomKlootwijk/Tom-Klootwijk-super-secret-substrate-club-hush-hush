@@ -2,11 +2,17 @@
   "campaign": "unrestricted mathematical game; bounded execution attempt",
   "claim_boundary": "PROVEN/DISPROVEN is an exact threshold result only if reached; UNKNOWN is not evidence for either player.",
   "result": {
-    "disproof_number": 362,
-    "elapsed_seconds": 0.025554299994837493,
+    "disproof_number": 361,
+    "elapsed_seconds": 0.023991000023670495,
     "expanded_nodes": 2,
-    "generated_nodes": 724,
+    "generated_nodes": 725,
     "max_ply": 2,
+    "proof_arithmetic": {
+      "bits": 64,
+      "endianness": "little",
+      "infinity": "18446744073709551615",
+      "kind": "saturating_uint64"
+    },
     "proof_number": 1,
     "status": "UNKNOWN",
     "threshold2": 1

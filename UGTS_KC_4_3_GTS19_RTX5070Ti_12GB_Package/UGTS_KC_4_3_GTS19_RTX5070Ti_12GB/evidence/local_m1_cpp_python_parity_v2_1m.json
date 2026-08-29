@@ -1,0 +1,33 @@
+{
+  "cases_by_size": {
+    "1": 1,
+    "19": 123,
+    "3": 498,
+    "5": 25675,
+    "9": 4880
+  },
+  "chunk_size": 10000,
+  "chunks": 100,
+  "comparisons": 1031184,
+  "corpus_sha256": "9effdd450e1e3e27f60ed9f29c1a8323a4f53b076ed884aa766e9eaff39d0702",
+  "elapsed_seconds": 197.674158,
+  "evidence_format": "UGTS-M1-PARITY-EVIDENCE-v2",
+  "field_comparisons": 13187153,
+  "generator": "splitmix64-v1-shallow-reachable-psk",
+  "hash_role": "SHA-256 object IDs and corpus hash are evidence/content addresses only; exact raw fields establish equality",
+  "max_seen_boards": 10,
+  "mismatches": 0,
+  "mode": "campaign",
+  "protocol": "UGTS_TRACE_V2",
+  "root_status": "UNKNOWN",
+  "seeds": [
+    6221081,
+    12648430
+  ],
+  "state_object_id": "sha256(utf8(UGTS-GO-STATE-v1 canonical JSON))",
+  "states": 31177,
+  "target_met": true,
+  "target_transitions": 1000000,
+  "transitions": 1000007,
+  "transitions_per_second": 5058.866
+}

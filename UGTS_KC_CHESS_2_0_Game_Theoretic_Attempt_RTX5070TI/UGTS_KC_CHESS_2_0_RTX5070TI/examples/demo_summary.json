@@ -1,6 +1,6 @@
 {
   "proof": {
-    "explored_nodes": 418,
+    "explored_nodes": 407,
     "root_hash": "64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16",
     "status": "proved"
   },
@@ -12,9 +12,9 @@
     "best_move": "b1b5",
     "completed": true,
     "depth": 4,
-    "elapsed_seconds": 0.42856242199991357,
+    "elapsed_seconds": 0.44483360002050176,
     "nodes": 1195,
-    "nodes_per_second": 4645,
+    "nodes_per_second": 4475,
     "principal_variation_san": [
       "Qb5",
       "Ka2",

@@ -3,7 +3,7 @@ project(ugts_go19 LANGUAGES CXX)
 
 option(UGTS_ENABLE_CUDA "Build optional CUDA accelerator scaffolding" OFF)
 
-add_library(ugts_go_core STATIC src/go_state.cpp)
+add_library(ugts_go_core STATIC src/go_state.cpp src/sha256.cpp)
 target_include_directories(ugts_go_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(ugts_go_core PUBLIC cxx_std_17)
 if(MSVC)

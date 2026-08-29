@@ -1,13 +1,26 @@
 {
   "authority": "python_exact_oracle",
-  "executable_stdout": "{\"backend\":\"cuda\",\"positions\":3,\"moves\":94,\"seconds\":0.144267,\"cuda_fallback_reason\":\"\"}",
+  "executable_stdout": "{\"backend\":\"cuda\",\"positions\":3,\"moves\":94,\"seconds\":0.128442,\"cuda_fallback_reason\":\"\"}",
   "input": {
     "count": 3,
     "path": "validation\\device\\batch\\positions.ugcb",
     "record_size": 64,
     "sha256": "0d24a9c326451b4f5ffdcb7b96653035b95e4ae13e3b5b093857fd2fd19dfdf4"
   },
+  "input_sha256": "0d24a9c326451b4f5ffdcb7b96653035b95e4ae13e3b5b093857fd2fd19dfdf4",
   "mismatches": [],
+  "output": {
+    "backend": "cuda",
+    "backend_flag": 1,
+    "bytes": 1606,
+    "count": 3,
+    "path": "validation\\device\\batch\\moves.ugmv",
+    "semantic_payload_sha256": "05badfc24feea50b401b2812039e1c4e9d339f35652b991b5d0ff071fac1e44e",
+    "sha256": "dc3faaf04e6a1ef89010201a76a00db6c3e71f6b65d4ee507b7dceabd27d3840"
+  },
+  "output_backend_flag": 1,
+  "output_semantic_payload_sha256": "05badfc24feea50b401b2812039e1c4e9d339f35652b991b5d0ff071fac1e44e",
+  "output_sha256": "dc3faaf04e6a1ef89010201a76a00db6c3e71f6b65d4ee507b7dceabd27d3840",
   "positions": 3,
   "proposal_move_count": 94,
   "verified_move_count": 94

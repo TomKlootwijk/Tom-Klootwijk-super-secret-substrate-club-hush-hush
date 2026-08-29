@@ -25,6 +25,11 @@ Build and measure the supplied foundation, then extend it only through proof-pre
 
 ## Suggested Codex engineering sequence
 
+Checkpoint: the CUDA correctness gate, equal-output benchmark, append-only
+frontier, and crash-recoverable disk DAG core are implemented. The DAG still
+stores only `UNKNOWN`; transition checking and verified-certificate promotion
+belong to the next integration layer.
+
 1. Make the CUDA build pass without changing the host oracle.
 2. Differential-test every CUDA-generated move list against `ugts_chess.rules.legal_moves` on all packaged fixtures and a seeded random legal corpus.
 3. Benchmark CPU versus CUDA batch expansion with equal exact outputs.

@@ -8,12 +8,14 @@ The long-term target is a game-theoretic solution of the empty 19×19 state for
 profile `UGTS-GO19-AREA-PSK-K7.5-v1` on a laptop with 12 GB VRAM. The current
 root status is UNKNOWN. Do not claim otherwise.
 
-Implement **M1 — C++ semantic parity** from `codex/TASKS.md` first. Keep the
-Python engine as oracle. Add a deterministic cross-language trace format and a
-randomized differential harness that checks legal actions, captures, exact
-board transitions, player/pass state, positional-superko rejection, terminal
-state, and area score. Minimize any mismatch into a fixture. Do not start CUDA
-proof work before this gate passes.
+M1 C++ semantic parity is complete and archived under the v2 evidence gate.
+Continue **M2 — persistent exact history** from `codex/TASKS.md`. The bounded
+canonical PSK trie, root-backed transition/tree-PNS adapters, and immutable
+lazy segment/restart layer are implemented and tested. The next task is to wire
+those exact roots and disk-backed objects into the restartable proof DAG, then
+bound metadata/mmap handles and add campaign recovery semantics. Keep the Python
+engine as oracle. Do not start CUDA proof work before the integrated M2 identity
+and persistence gates pass.
 
 Requirements:
 
@@ -25,6 +27,5 @@ Requirements:
 - resource exhaustion always returns UNKNOWN;
 - preserve the claim boundary in README and KNOWN_LIMITS.
 
-After M1 passes, report measured results and propose the smallest auditable M2
-implementation. Make actual code changes and run the gates; do not provide only
-a design essay.
+Report measured results for each bounded M2 increment. Make actual code changes
+and run the gates; do not provide only a design essay.

@@ -21,7 +21,7 @@
     ],
     "stats": {
       "cutoffs": 1031,
-      "elapsed_seconds": 0.03918449999764562,
+      "elapsed_seconds": 0.04424989997642115,
       "max_ply": 30,
       "nodes": 2532,
       "terminals": 836,

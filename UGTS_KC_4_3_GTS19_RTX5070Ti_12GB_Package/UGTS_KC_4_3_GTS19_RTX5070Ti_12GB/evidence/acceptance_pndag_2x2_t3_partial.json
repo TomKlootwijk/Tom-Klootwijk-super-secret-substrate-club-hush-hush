@@ -1,0 +1,33 @@
+{
+  "campaign": "bounded tiny exact PNDAG persistence validation",
+  "checkpoint": "evidence\\acceptance_pndag_2x2_t3_checkpoint.json",
+  "checkpoint_sha256": "3a7182d638194678cbaf4b23456414edef8113f88f7aad9a7c963c07f9b461ab",
+  "claim_boundary": "This host-local checkpoint is not a standalone certificate and does not establish any 19x19 result.",
+  "result": {
+    "committed_expansions": 7,
+    "disproof_number": 4,
+    "edge_count": 30,
+    "expanded_this_call": 7,
+    "graph_sha256": "d590e99f76af40b8ca3a71f7774622af408d501ca8c84d4f0b5484db148ede7b",
+    "node_count": 31,
+    "proof_arithmetic": {
+      "bits": 64,
+      "endianness": "little",
+      "infinity": "18446744073709551615",
+      "kind": "saturating_uint64"
+    },
+    "proof_number": 3,
+    "status": "UNKNOWN",
+    "threshold2": 3
+  },
+  "root_digest": "a62f684a28ce81499cc356a03c233656c673ced77376be63753f615526ee2bd8",
+  "rules": {
+    "allow_suicide": false,
+    "komi2": 1,
+    "passes_to_end": 2,
+    "profile_id": "UGTS-TINY-2x2-AREA-PSK-K1/2",
+    "scoring": "area",
+    "size": 2,
+    "superko": "positional_superko"
+  }
+}

@@ -52,7 +52,13 @@ The package root re-exports the retained KC 3.0 APIs and all 3.9 APIs for concis
 - `visual_graph`: typed graph records, registry, validation and bounded desktop runtime.
 - `packed_kinematics`: compact log-polar pose/motion components, shared LUTs and UGECS1 files.
 - `polarpack`: sparse `KCPK392` compiler/inspector for native Mobile3D packed components.
+- `scatter` / `scatterpack`: validated deterministic decorative population recipes, generated transform
+  parity and the sparse `KCSP392` compiler/inspector.
 - `androidexport` / `androidbuild`: KC3D392 compiler/inspector, graph pack, glTF adapter,
-  native Android source builder, Gradle APK build and owner-device ADB installation.
+  native Android source builder, Gradle APK build, owner-device ADB installation and exact-package
+  `NativeActivity` launch.
 - CLI: `editor`, `new-3d`, `validate-3d`, `simulate-3d`, `pack-3d`, `export-gltf3d`,
   `build-android`, `android-devices`, `pack-ecs`, `unpack-ecs`, `make-polar-lut`.
+
+UGTS Studio's `EditorDocument` additionally exposes runtime-only Logic Trail snapshots for Preview.
+They are presentation state, not project schema or export API data.

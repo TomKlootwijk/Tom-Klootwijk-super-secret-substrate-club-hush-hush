@@ -15,7 +15,6 @@ from pathlib import Path
 import jsonschema
 
 from ugts_chess.campaign import campaign_status, verify_campaign
-from ugts_chess.game_state import HistoryContext, game_state_sha256
 from ugts_chess.gpu_protocol import recommended_rtx5070ti_config, run_batch
 from ugts_chess.position import Position
 from ugts_chess.proof import verify_mate_certificate
@@ -176,6 +175,7 @@ def main() -> None:
         (ROOT / "spec" / "ugts_chess_wdl.schema.json", ROOT / "examples" / "campaign" / "bounded_wdl_initial_depth2.json"),
         (ROOT / "spec" / "ugts_chess_rtx5070ti_profile.schema.json", ROOT / "spec" / "rtx5070ti_profile.json"),
         (ROOT / "spec" / "ugts_chess_rtx5070ti_profile.schema.json", ROOT / "examples" / "campaign" / "rtx5070ti_profile.json"),
+        (ROOT / "spec" / "ugts_chess_campaign_snapshot.schema.json", ROOT / "examples" / "campaign" / "campaign_snapshot.json"),
     ]
     for shard in sorted((ROOT / "examples" / "campaign" / "root_shards").glob("*.json")):
         schema_pairs.append((ROOT / "spec" / "ugts_chess_proof_obligation.schema.json", shard))
@@ -275,7 +275,7 @@ def main() -> None:
     dist = VAL / "dist_v2"
     shutil.rmtree(dist, ignore_errors=True)
     dist.mkdir(parents=True)
-    wheel_build = run(
+    run(
         [sys.executable, "-m", "pip", "wheel", ".", "--no-deps", "--no-build-isolation", "-w", str(dist)],
         log=VAL / "package_build_v2.txt",
     )
@@ -287,8 +287,8 @@ def main() -> None:
     run([sys.executable, "-m", "venv", str(clean)], log=VAL / "clean_install_venv_v2.txt")
     python_exe = clean / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     cli_exe = clean / ("Scripts/ugts-chess.exe" if os.name == "nt" else "bin/ugts-chess")
-    install = run([str(python_exe), "-m", "pip", "install", "--force-reinstall", "--ignore-installed", "--no-deps", str(wheels[0])], log=VAL / "clean_install_v2.txt")
-    clean_info = run([str(cli_exe), "info"], cwd=Path("/tmp"), log=VAL / "clean_install_info_v2.json")
+    run([str(python_exe), "-m", "pip", "install", "--force-reinstall", "--ignore-installed", "--no-deps", str(wheels[0])], log=VAL / "clean_install_v2.txt")
+    clean_info = run([str(cli_exe), "info"], cwd=clean, log=VAL / "clean_install_info_v2.json")
     clean_record = json.loads(clean_info.stdout)
     if clean_record["version"] != "2.0.0":
         raise RuntimeError("clean-installed CLI version mismatch")

@@ -5,7 +5,7 @@ cd "$ROOT"
 export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 mkdir -p evidence
 
-python -m unittest discover -s tests -v 2>&1 | tee evidence/python_unittest.txt
+python -m pytest -q 2>&1 | tee evidence/python_pytest.txt
 python scripts/generate_fixtures.py
 python -m ugts_go19 selftest > evidence/python_selftest.json
 python -m ugts_go19 frontier --depth 1 --limit 64 --output evidence/opening_frontier.json
@@ -20,6 +20,7 @@ cmake -S cpp -B evidence/build-cpu -DUGTS_ENABLE_CUDA=OFF -DCMAKE_BUILD_TYPE=Rel
 cmake --build evidence/build-cpu --config Release > evidence/cmake_build.txt 2>&1
 evidence/build-cpu/ugts_go19_smoke > evidence/cpp_smoke.json
 ctest --test-dir evidence/build-cpu --output-on-failure > evidence/ctest.txt
+python scripts/parity_gate.py evidence/local_m1_cpp_python_parity_v2_1m.json
 
 python scripts/make_manifest.py
 python scripts/verify_release.py

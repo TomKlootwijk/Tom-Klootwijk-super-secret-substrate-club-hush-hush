@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic Python/C++ differential corpus for UGTS_TRACE_V1."""
+"""Deterministic Python/C++ differential corpus for UGTS_TRACE_V2."""
 
 from __future__ import annotations
 
@@ -17,7 +17,10 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from ugts_go19.constants import BLACK, PASS, WHITE  # noqa: E402
-from ugts_go19.digests import canonical_proof_state_payload  # noqa: E402
+from ugts_go19.digests import (  # noqa: E402
+    canonical_json_bytes,
+    canonical_proof_state_payload,
+)
 from ugts_go19.engine import (  # noqa: E402
     apply_move,
     apply_move_detailed,
@@ -28,7 +31,7 @@ from ugts_go19.rules import Rules  # noqa: E402
 from ugts_go19.score import area_score2  # noqa: E402
 from ugts_go19.state import State  # noqa: E402
 
-PROTOCOL = "UGTS_TRACE_V1"
+PROTOCOL = "UGTS_TRACE_V2"
 DEFAULT_SEEDS = (0x5EED19, 0xC0FFEE)
 UINT64_MASK = (1 << 64) - 1
 
@@ -198,6 +201,19 @@ def focused_cases() -> list[Case]:
     if snapback_capture.captured != 1 or snapback_recapture.captured != 2:
         raise AssertionError("focused reachable snapback is not a snapback")
 
+    extreme_score_rules = Rules(
+        size=1,
+        komi2=-(1 << 31),
+        superko="positional_superko",
+        allow_suicide=False,
+        scoring="area",
+        passes_to_end=2,
+        profile_id="cpp-parity-int32-min-komi",
+    )
+    extreme_score = State.initial(extreme_score_rules)
+    if area_score2(extreme_score.board, extreme_score_rules) != 1 << 31:
+        raise AssertionError("focused int64 score case has the wrong Python value")
+
     rules19 = parity_rules(19)
     return [
         Case("initial-3", rules, initial),
@@ -212,6 +228,7 @@ def focused_cases() -> list[Case]:
         Case("reachable-ko-after", rules5, ko_after),
         Case("reachable-snapback-before", rules, snapback_before),
         Case("reachable-snapback-after", rules, snapback_after),
+        Case("int64-score-boundary", extreme_score_rules, extreme_score),
         Case("initial-19", rules19, State.initial(rules19)),
     ]
 
@@ -307,16 +324,30 @@ def encode_case(case_id: int, case: Case) -> str:
     )
 
 
+def canonical_state_fields(
+    state: State, rules: Rules
+) -> tuple[dict[str, Any], str, str]:
+    payload = canonical_proof_state_payload(state, rules)
+    canonical_json = canonical_json_bytes(payload).decode("utf-8")
+    object_id = hashlib.sha256(canonical_json.encode("utf-8")).hexdigest()
+    return payload, canonical_json, object_id
+
+
 def state_record(
     case_id: int, state: State, rules: Rules, legal: tuple[int, ...]
 ) -> dict[str, Any]:
+    canonical_state, canonical_state_json, state_object_id = canonical_state_fields(
+        state, rules
+    )
     return {
         "protocol": PROTOCOL,
         "kind": "state",
         "id": case_id,
         "terminal": state.is_terminal(rules),
         "score2": area_score2(state.board, rules),
-        "canonical_state": canonical_proof_state_payload(state, rules),
+        "canonical_state": canonical_state,
+        "canonical_state_json": canonical_state_json,
+        "state_object_id": state_object_id,
         "legal": list(legal),
     }
 
@@ -326,6 +357,9 @@ def move_record(
 ) -> dict[str, Any]:
     result = apply_move_detailed(state, move, rules)
     child = result.state
+    canonical_state, canonical_state_json, state_object_id = canonical_state_fields(
+        child, rules
+    )
     return {
         "protocol": PROTOCOL,
         "kind": "move",
@@ -340,7 +374,9 @@ def move_record(
             child.previous_board.hex() if child.previous_board is not None else None
         ),
         "seen": [token.hex() for token in sorted(child.seen)],
-        "canonical_state": canonical_proof_state_payload(child, rules),
+        "canonical_state": canonical_state,
+        "canonical_state_json": canonical_state_json,
+        "state_object_id": state_object_id,
         "ply": child.ply,
         "terminal": child.is_terminal(rules),
         "score2": area_score2(child.board, rules),
@@ -508,7 +544,7 @@ def main() -> int:
         evaluate_chunk(args.evaluator, payload, expected, contexts)
         corpus_digest.update(payload.encode("ascii"))
         comparisons += len(expected)
-        field_comparisons += len(pending) * 4 + chunk_transitions * 11
+        field_comparisons += len(pending) * 6 + chunk_transitions * 13
         states += len(pending)
         transitions += chunk_transitions
         chunks += 1
@@ -563,15 +599,19 @@ def main() -> int:
         "comparisons": comparisons,
         "corpus_sha256": corpus_digest.hexdigest(),
         "elapsed_seconds": round(elapsed_seconds, 6),
-        "evidence_format": "UGTS-M1-PARITY-EVIDENCE-v1",
+        "evidence_format": "UGTS-M1-PARITY-EVIDENCE-v2",
         "field_comparisons": field_comparisons,
         "generator": "splitmix64-v1-shallow-reachable-psk",
-        "hash_role": "corpus evidence only; exact raw fields establish equality",
+        "hash_role": (
+            "SHA-256 object IDs and corpus hash are evidence/content addresses only; "
+            "exact raw fields establish equality"
+        ),
         "max_seen_boards": max_seen_boards,
         "mismatches": 0,
         "mode": mode,
         "protocol": PROTOCOL,
         "root_status": "UNKNOWN",
+        "state_object_id": "sha256(utf8(UGTS-GO-STATE-v1 canonical JSON))",
         "seeds": list(seeds),
         "states": states,
         "target_met": transitions >= target,

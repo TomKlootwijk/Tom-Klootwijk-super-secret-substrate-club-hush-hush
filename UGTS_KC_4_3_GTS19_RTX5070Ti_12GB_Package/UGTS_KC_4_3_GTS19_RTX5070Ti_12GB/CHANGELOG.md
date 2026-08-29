@@ -23,12 +23,27 @@
 - Added a C++ `IllegalMove` exception taxonomy so rule-illegal moves can become
   `false` in legal masks while malformed state/rules errors remain fatal instead
   of silently shortening the legal action set.
-- Added the deterministic, chunked `UGTS_TRACE_V1` Python/C++ differential
-  endpoint and completed the M1 gate: 1,000,006 fixed-seed legal transitions,
-  10,093,588 exact raw-field comparisons, adversarial tactical fixtures, and
-  zero mismatches.
+- Added the deterministic, chunked `UGTS_TRACE_V2` Python/C++ differential
+  endpoint and completed M1: 1,000,007 fixed-seed legal transitions,
+  13,187,153 exact raw/canonical comparisons, adversarial tactical fixtures,
+  byte-exact canonical JSON, portable SHA-256 object IDs, and zero mismatches.
 - Added shared `UGTS-GO-STATE-v1` canonical semantic serialization and native
   collision-independent exact state equality over the complete PSK context.
+- Added portable C++ SHA-256 vectors, int64 score arithmetic, fail-closed uint64
+  ply exhaustion, and previous-board/history lineage validation.
+- Added a bounded 1×1/2×2 exact proof-number DAG with collision-safe interning,
+  complete-edge audits, real transpositions, atomic self-hashed checkpoints,
+  deterministic resume, and fresh-process proof-cache recomputation. This is a
+  host-local vertical slice, not production DFPN or a 19×19 certificate.
+- Added a bounded immutable PSK radix trie with insertion-order-independent
+  Merkle roots, exact-byte collision leaves, structurally shared transitions,
+  pinned restart validation, and a PSK engine that never reconstructs flat
+  histories during moves. A bounded persistent-root tree PNS matches the exact,
+  flat-PNS, and proof-DAG truth values on complete 1×1/2×2 thresholds.
+- Added deterministic exact-object binary segments, append-only self-hashed
+  manifests, and atomic `CURRENT` publication. Restart verifies every reachable
+  segment and exact object; this remains a single-writer storage slice rather
+  than production proof-DAG/NVMe integration.
 - Compiled the optional CUDA targets with CUDA 12.8 and ran the device probe on
   the RTX 5070 Ti Laptop GPU (compute capability 12.0). The occupancy kernel has
   not yet been reference-tested and is not proof-authoritative.

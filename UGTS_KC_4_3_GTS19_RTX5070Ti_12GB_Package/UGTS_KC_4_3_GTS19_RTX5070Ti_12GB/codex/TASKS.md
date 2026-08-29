@@ -24,28 +24,42 @@ Artifacts: `fixtures/empty_1x1_*.json`, `fixtures/empty_2x2_*.json`,
       score, and digests for at least 1,000,000 transitions.
 - [x] Add adversarial snapback, ko, multi-capture, edge, and suicide cases.
 
-Evidence: `evidence/local_m1_cpp_python_parity_1m.json` records 1,000,006
-transitions across 31,176 exact states, 10,093,588 authoritative raw-field
-comparisons, fixed seeds `0x5eed19` and `0xc0ffee`, and zero mismatches (corpus
-SHA-256 `a2a7257961e8a669e64826d4c17755903c837df612cf25e9822fda47f09f225d`).
-The quick CTest additionally compares the shared `UGTS-GO-STATE-v1` canonical
-semantic object. Hashes remain evidence locators only; `ExactStateEqual`
-compares the raw board, player, passes, previous board, complete PSK set, and
-semantic rules tuple.
+Evidence: `evidence/local_m1_cpp_python_parity_v2_1m.json` records 1,000,007
+transitions across 31,177 exact states, 13,187,153 authoritative comparisons,
+fixed seeds `0x5eed19` and `0xc0ffee`, and zero mismatches (corpus SHA-256
+`9effdd450e1e3e27f60ed9f29c1a8323a4f53b076ed884aa766e9eaff39d0702`).
+V2 compares the shared semantic object, its byte-exact canonical JSON, and its
+portable SHA-256 object ID in addition to every raw transition field. Hashes
+remain locators only; `ExactStateEqual` compares the raw board, player, passes,
+previous board, complete PSK set, and semantic rules tuple. The older v1 raw-field
+artifact remains archived separately.
 
 Gate: zero differences; every prior difference has a minimized fixture.
 
 ## M2 — Persistent exact history
 
-- [ ] Design immutable collision-checked board objects.
-- [ ] Implement persistent superko set in host RAM.
-- [ ] Add Merkle root and content-addressed segment format.
-- [ ] Add NVMe spill and restart.
-- [ ] Inject deliberate hash collisions and prove equality fallback works.
+Bounded vertical slices now include the host-local `ProofNumberDAG`, a canonical
+structurally shared `PersistentHistory`, a PSK transition adapter that consumes
+history roots without materializing flat sets, a bounded persistent-root tree
+PNS, and an immutable exact-object segment/manifest store. They remain Python
+validation components and are not yet the proof DAG's production storage path.
 
-Gate: state identity survives restart and collision injection.
+- [x] Design immutable collision-checked board objects (bounded Python slice).
+- [x] Implement persistent superko set in host RAM (bounded Python slice).
+- [x] Add Merkle root and content-addressed segment format (bounded Python slice).
+- [ ] Add NVMe spill and restart.
+- [x] Inject deliberate hash collisions and prove equality fallback works.
+
+Bounded component gate: exact history members and roots survive restart and
+injected index collisions. M2 remains open until the proof DAG uses this path and
+storage can spill/restart under an explicit resident-memory bound.
 
 ## M3 — Production DFPN
+
+The bounded Python PNDAG now exercises saturating proof arithmetic, real shared
+states, complete-edge auditing, and interrupted-versus-uninterrupted 2×2
+equivalence. These are fixture-level semantics only; no production C++ DFPN item
+below is complete.
 
 - [ ] Port proof/disproof semantics to C++.
 - [ ] Add most-proving selection, thresholds, and saturating arithmetic.

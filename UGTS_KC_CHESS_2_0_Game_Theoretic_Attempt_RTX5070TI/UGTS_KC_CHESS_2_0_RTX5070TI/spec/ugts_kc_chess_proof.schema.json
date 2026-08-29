@@ -1,11 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/ugts_kc_chess_proof.schema.json",
-  "title": "UGTS-KC Chess Mate Proof 1.0",
+  "title": "UGTS Chess Mate Proof 2.0",
   "type": "object",
   "required": [
     "$schema",
     "schema_version",
+    "rules_profile",
+    "root_history_counts",
     "status",
     "root_fen",
     "root_hash",
@@ -14,8 +16,10 @@
     "tree"
   ],
   "properties": {
-    "$schema": {"const": "ugts-kc-chess-mate-proof-1.0"},
-    "schema_version": {"const": "1.0.0"},
+    "$schema": {"const": "ugts-chess-mate-proof-2.0"},
+    "schema_version": {"const": "2.0.0"},
+    "rules_profile": {"const": "fide-classical-2023-claims-as-actions-v2"},
+    "root_history_counts": {"$ref": "#/$defs/history"},
     "status": {"enum": ["proved", "not_forced_within_horizon"]},
     "root_fen": {"type": "string"},
     "root_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
@@ -23,16 +27,46 @@
     "max_plies": {"type": "integer", "minimum": 1},
     "explored_nodes": {"type": "integer", "minimum": 0},
     "proof_semantics": {"type": "string"},
-    "tree": {"$ref": "#/$defs/node"}
+    "tree": {}
   },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "proved"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {"tree": {"$ref": "#/$defs/node"}}
+      },
+      "else": {
+        "properties": {"tree": {"type": "null"}}
+      }
+    }
+  ],
   "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {"$ref": "#/$defs/hash"},
+          {"type": "integer", "minimum": 1, "maximum": 5}
+        ],
+        "items": false,
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
     "base": {
       "type": "object",
       "required": ["role", "fen", "hash"],
       "properties": {
         "role": {"enum": ["OR", "AND", "terminal"]},
         "fen": {"type": "string"},
-        "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "hash": {"$ref": "#/$defs/hash"},
         "side": {"enum": ["white", "black"]}
       }
     },

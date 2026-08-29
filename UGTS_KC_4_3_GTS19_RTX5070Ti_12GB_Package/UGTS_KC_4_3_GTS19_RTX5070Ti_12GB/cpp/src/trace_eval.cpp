@@ -1,9 +1,11 @@
 #include "ugts_go19/go_state.hpp"
+#include "ugts_go19/sha256.hpp"
 
 #include <algorithm>
 #include <charconv>
 #include <cstdint>
 #include <iostream>
+#include <locale>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -12,7 +14,7 @@
 
 namespace {
 
-constexpr std::string_view kProtocol = "UGTS_TRACE_V1";
+constexpr std::string_view kProtocol = "UGTS_TRACE_V2";
 
 struct Request {
   std::uint64_t id = 0;
@@ -102,7 +104,7 @@ Request ParseRequest(const std::string& line) {
   const auto fields = Split(line, '|');
   if (fields.size() != 12 || fields[0] != kProtocol) {
     throw std::invalid_argument(
-        "expected 12-field UGTS_TRACE_V1 request");
+        "expected 12-field UGTS_TRACE_V2 request");
   }
 
   Request request;
@@ -156,17 +158,60 @@ void WriteSeenBoards(const ugts_go19::State& state) {
   std::cout << ']';
 }
 
+void WriteJsonString(std::string_view value) {
+  constexpr char kHexDigits[] = "0123456789abcdef";
+  std::cout << '"';
+  for (const unsigned char byte : value) {
+    switch (byte) {
+      case '"':
+        std::cout << "\\\"";
+        break;
+      case '\\':
+        std::cout << "\\\\";
+        break;
+      case '\b':
+        std::cout << "\\b";
+        break;
+      case '\f':
+        std::cout << "\\f";
+        break;
+      case '\n':
+        std::cout << "\\n";
+        break;
+      case '\r':
+        std::cout << "\\r";
+        break;
+      case '\t':
+        std::cout << "\\t";
+        break;
+      default:
+        if (byte < 0x20U) {
+          std::cout << "\\u00" << kHexDigits[byte >> 4U]
+                    << kHexDigits[byte & 0x0fU];
+        } else {
+          std::cout << static_cast<char>(byte);
+        }
+        break;
+    }
+  }
+  std::cout << '"';
+}
+
 void WriteStateRecord(const Request& request,
                       const std::vector<int>& legal_moves) {
+  const std::string canonical_json =
+      ugts_go19::CanonicalStateJson(request.state, request.rules);
   std::cout << "{\"protocol\":\"" << kProtocol
             << "\",\"kind\":\"state\",\"id\":" << request.id
             << ",\"terminal\":"
             << (request.state.Terminal(request.rules) ? "true" : "false")
             << ",\"score2\":"
             << ugts_go19::AreaScore2(request.state, request.rules)
-            << ",\"canonical_state\":"
-            << ugts_go19::CanonicalStateJson(request.state, request.rules)
-            << ",\"legal\":";
+            << ",\"canonical_state\":" << canonical_json
+            << ",\"canonical_state_json\":";
+  WriteJsonString(canonical_json);
+  std::cout << ",\"state_object_id\":\""
+            << ugts_go19::Sha256Hex(canonical_json) << "\",\"legal\":";
   WriteMoves(legal_moves);
   std::cout << "}\n";
 }
@@ -175,6 +220,8 @@ void WriteMoveRecord(std::uint64_t id, int move,
                      const ugts_go19::ApplyResult& result,
                      const ugts_go19::Rules& rules) {
   const auto& state = result.state;
+  const std::string canonical_json =
+      ugts_go19::CanonicalStateJson(state, rules);
   std::cout << "{\"protocol\":\"" << kProtocol
             << "\",\"kind\":\"move\",\"id\":" << id
             << ",\"move\":" << move << ",\"board\":\""
@@ -190,9 +237,12 @@ void WriteMoveRecord(std::uint64_t id, int move,
   }
   std::cout << ",\"seen\":";
   WriteSeenBoards(state);
-  std::cout << ",\"canonical_state\":"
-            << ugts_go19::CanonicalStateJson(state, rules)
-            << ",\"ply\":" << state.ply << ",\"terminal\":"
+  std::cout << ",\"canonical_state\":" << canonical_json
+            << ",\"canonical_state_json\":";
+  WriteJsonString(canonical_json);
+  std::cout << ",\"state_object_id\":\""
+            << ugts_go19::Sha256Hex(canonical_json) << "\",\"ply\":"
+            << state.ply << ",\"terminal\":"
             << (state.Terminal(rules) ? "true" : "false")
             << ",\"score2\":" << ugts_go19::AreaScore2(state, rules)
             << "}\n";
@@ -211,7 +261,7 @@ void Evaluate(const Request& request) {
 
 void PrintUsage() {
   std::cout
-      << "Read one UGTS_TRACE_V1 state per line from stdin and emit JSONL state "
+      << "Read one UGTS_TRACE_V2 state per line from stdin and emit JSONL state "
          "and move records. See cpp/tests/TRACE_PROTOCOL.md.\n";
 }
 
@@ -228,6 +278,8 @@ int main(int argc, char** argv) {
   }
 
   std::ios::sync_with_stdio(false);
+  std::cout.imbue(std::locale::classic());
+  std::cerr.imbue(std::locale::classic());
   std::string line;
   std::size_t line_number = 0;
   try {

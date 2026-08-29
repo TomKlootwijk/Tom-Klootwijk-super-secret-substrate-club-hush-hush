@@ -88,6 +88,13 @@ class State:
             current_token = repetition_token(self.board, self.to_play, rules)
             if current_token not in self.seen:
                 raise ValueError("superko history must contain current state token")
+            if self.previous_board is not None:
+                previous_to_play = WHITE if self.to_play == BLACK else BLACK
+                previous_token = repetition_token(
+                    self.previous_board, previous_to_play, rules
+                )
+                if previous_token not in self.seen:
+                    raise ValueError("superko history must contain the previous board")
 
     def exact_key(self) -> tuple:
         """Collision-free state key for correctness-first reference search."""

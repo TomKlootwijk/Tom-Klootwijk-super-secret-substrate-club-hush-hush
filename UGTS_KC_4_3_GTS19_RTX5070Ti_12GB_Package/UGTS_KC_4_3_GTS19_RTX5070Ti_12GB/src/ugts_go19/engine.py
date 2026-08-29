@@ -75,6 +75,8 @@ def _check_repetition(state: State, new_board: bytes, next_to_play: int, rules: 
 
 
 def apply_move_detailed(state: State, move: int, rules: Rules) -> MoveResult:
+    if type(move) is not int:
+        raise TypeError("move must be an integer")
     state.validate(rules)
     if state.is_terminal(rules):
         raise IllegalMove("game is already terminal")

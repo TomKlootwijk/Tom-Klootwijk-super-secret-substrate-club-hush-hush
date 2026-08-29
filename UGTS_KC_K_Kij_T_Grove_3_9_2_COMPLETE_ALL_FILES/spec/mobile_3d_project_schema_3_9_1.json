@@ -222,6 +222,11 @@
           "type": "string"
         },
         "metadata": {
+          "properties": {
+            "scatter_population": {
+              "$ref": "#/$defs/scatter_population"
+            }
+          },
           "type": "object"
         },
         "restitution": {
@@ -255,6 +260,52 @@
         "restitution",
         "tags",
         "metadata"
+      ],
+      "type": "object"
+    },
+    "scatter_population": {
+      "additionalProperties": false,
+      "properties": {
+        "instance_count": {
+          "maximum": 256,
+          "minimum": 2,
+          "type": "integer"
+        },
+        "random_yaw": {
+          "type": "boolean"
+        },
+        "scale_max": {
+          "maximum": 8,
+          "minimum": 0.05,
+          "type": "number"
+        },
+        "scale_min": {
+          "maximum": 8,
+          "minimum": 0.05,
+          "type": "number"
+        },
+        "seed": {
+          "maximum": 4294967295,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "size": {
+          "items": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "maxItems": 3,
+          "minItems": 3,
+          "type": "array"
+        }
+      },
+      "required": [
+        "instance_count",
+        "seed",
+        "size",
+        "scale_min",
+        "scale_max",
+        "random_yaw"
       ],
       "type": "object"
     },

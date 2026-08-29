@@ -1,8 +1,22 @@
 {
   "canonical_component": "ugts.application.chess.game-theoretic-solver@2.0.0",
   "claim_boundary": "Only independently verified certificate records may set a child WDL.",
-  "created_at": "2026-08-29T06:46:58Z",
-  "database": "/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/examples/campaign/initial.sqlite3",
+  "cow_opening_priority": {
+    "boundary": "Scheduling hint only; it changes no proof obligation or verifier rule.",
+    "moves_uci": [
+      "d2d3",
+      "e2e3"
+    ],
+    "priority": 10,
+    "schema": "ugts-chess-scheduler-priority-1.0"
+  },
+  "created_at": "2026-08-29T09:07:23Z",
+  "database": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\examples\\campaign\\initial.sqlite3",
+  "dedication": {
+    "opening": "The Cow Opening",
+    "scope": "Attribution only: this dedication does not alter or exempt any of the 20 legal root-move proof obligations for the classical initial position.",
+    "to": "Anna Cramling"
+  },
   "obligation_count": 20,
   "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
@@ -16,5 +30,5 @@
   "root_wdl": "unknown",
   "rules_profile": "fide-classical-2023-claims-as-actions-v2",
   "schema": "ugts-chess-campaign-2.0",
-  "shard_dir": "/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/examples/campaign/root_shards"
+  "shard_dir": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\examples\\campaign\\root_shards"
 }

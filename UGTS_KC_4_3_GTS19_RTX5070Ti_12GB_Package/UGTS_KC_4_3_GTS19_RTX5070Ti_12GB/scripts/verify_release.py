@@ -36,7 +36,17 @@ def main() -> int:
         "docs/EXACTNESS_CONTRACT.md",
         "configs/go19_canonical.toml",
         "src/ugts_go19/engine.py",
+        "src/ugts_go19/persistent_engine.py",
+        "src/ugts_go19/persistent_history.py",
+        "src/ugts_go19/persistent_pns.py",
+        "src/ugts_go19/pndag.py",
+        "src/ugts_go19/segment_store.py",
         "cpp/src/go_state.cpp",
+        "schemas/pndag_checkpoint.schema.json",
+        "scripts/parity_gate.py",
+        "scripts/storage_gate.py",
+        "evidence/local_m1_cpp_python_parity_v2_1m.json",
+        "evidence/local_m2_storage_gate.json",
         "codex/AGENTS.md",
     ]
     missing = [item for item in required if not (ROOT / item).is_file()]

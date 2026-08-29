@@ -9,7 +9,7 @@
   ],
   "properties": {
     "schema": {"const": "ugts-chess-proof-obligation-2.0"},
-    "obligation_id": {"type": "string", "pattern": "^root-[0-9]{2}-[a-h][1-8][a-h][1-8][nbrq]?$"},
+    "obligation_id": {"type": "string", "pattern": "^root-(?:0[1-9]|[1-9][0-9]+)-[a-h][1-8][a-h][1-8][nbrq]?$"},
     "parent": {"$ref": "#/$defs/state"},
     "action": {
       "type": "object",

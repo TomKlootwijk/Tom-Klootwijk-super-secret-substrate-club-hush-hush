@@ -1,0 +1,4 @@
+ninja: Entering directory `C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\UGTSFirstStepsPoco392-populate\app\.cxx\Debug\665c36c4\arm64-v8a'
+[1/3] Linking C static library libnative_app_glue.a
+[2/3] Building CXX object CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o
+[3/3] Linking CXX shared library "C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\UGTSFirstStepsPoco392-populate\app\build\intermediates\cxx\Debug\665c36c4\obj\arm64-v8a\libugts_kc_native.so"

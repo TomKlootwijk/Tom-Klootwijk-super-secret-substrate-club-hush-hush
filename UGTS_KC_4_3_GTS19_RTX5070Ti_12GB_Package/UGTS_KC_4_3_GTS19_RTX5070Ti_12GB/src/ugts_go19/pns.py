@@ -108,9 +108,18 @@ class ProofNumberSearch:
     def _select_most_proving(self, root: PNSNode) -> PNSNode:
         node = root
         while node.expanded and node.children and node.proof and node.disproof:
+            unresolved = [
+                child
+                for child in node.children
+                if child.proof > 0 and child.disproof > 0
+            ]
+            if not unresolved:
+                raise AssertionError(
+                    "an unresolved parent has no unresolved child"
+                )
             if node.is_or:
                 node = min(
-                    node.children,
+                    unresolved,
                     key=lambda child: (
                         child.proof,
                         child.disproof,
@@ -119,7 +128,7 @@ class ProofNumberSearch:
                 )
             else:
                 node = min(
-                    node.children,
+                    unresolved,
                     key=lambda child: (
                         child.disproof,
                         child.proof,
@@ -129,6 +138,8 @@ class ProofNumberSearch:
         return node
 
     def _expand(self, node: PNSNode) -> None:
+        if node.expanded:
+            raise AssertionError("most-proving selection returned an expanded node")
         if node.state.is_terminal(self.rules):
             self._initialize(node)
             node.expanded = True

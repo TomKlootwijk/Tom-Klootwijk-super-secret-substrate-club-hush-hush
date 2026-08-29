@@ -1,0 +1,6 @@
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-scatter/CMakeFiles/touch_router_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-scatter/CMakeFiles/graph_vm_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-scatter/CMakeFiles/trigger_area_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-scatter/CMakeFiles/scatter_population_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-scatter/CMakeFiles/ALL_BUILD.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-scatter/CMakeFiles/ZERO_CHECK.dir

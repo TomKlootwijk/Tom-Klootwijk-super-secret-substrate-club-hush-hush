@@ -16774,7 +16774,7 @@
   },
   "completed": false,
   "cutoffs": 400,
-  "elapsed_seconds": 0.4267780340005629,
+  "elapsed_seconds": 0.5287239999743178,
   "max_plies": 2,
   "nodes_searched": 421,
   "root": {

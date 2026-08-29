@@ -122,6 +122,100 @@ process.stdout.write(JSON.stringify({first, held, second}));
             )
             self.assertEqual(observed, {"first": 1, "held": 1, "second": 2})
 
+    def test_sensor_trigger_roots_run_once_with_browser_entity_context(self):
+        if shutil.which("node") is None:
+            self.skipTest("Node.js is not installed")
+        project = first_steps_project("Browser Trigger Area")
+        scene = project.scenes[project.start_scene]
+        player = next(entity for entity in scene.entities if "player" in entity.tags)
+        sensor = next(
+            entity for entity in scene.entities
+            if bool(entity.components.get("collider", {}).get("filter", {}).get("sensor"))
+        )
+        graph = VisualGraph(
+            "trigger_lesson",
+            (
+                GraphNode("enter", "event.trigger_enter"),
+                GraphNode("inside", "value.constant", {"value": True}),
+                GraphNode("remember_inside", "action.set_state", {"key": "inside_trigger"}),
+                GraphNode("announce_enter", "action.emit_event", {"kind": "graph_trigger_enter", "payload": {}}),
+                GraphNode("exit", "event.trigger_exit"),
+                GraphNode("outside", "value.constant", {"value": False}),
+                GraphNode("remember_outside", "action.set_state", {"key": "inside_trigger"}),
+                GraphNode("announce_exit", "action.emit_event", {"kind": "graph_trigger_exit", "payload": {}}),
+            ),
+            (
+                GraphLink("enter", "out", "remember_inside", "in"),
+                GraphLink("inside", "value", "remember_inside", "value"),
+                GraphLink("enter", "out", "announce_enter", "in"),
+                GraphLink("enter", "sensor", "announce_enter", "source"),
+                GraphLink("enter", "player", "announce_enter", "target"),
+                GraphLink("exit", "out", "remember_outside", "in"),
+                GraphLink("outside", "value", "remember_outside", "value"),
+                GraphLink("exit", "out", "announce_exit", "in"),
+                GraphLink("exit", "sensor", "announce_exit", "source"),
+                GraphLink("exit", "player", "announce_exit", "target"),
+            ),
+        )
+        player_position = list(player.components["transform"]["position"])
+        entities = []
+        for entity in scene.entities:
+            metadata = {
+                key: value for key, value in entity.metadata.items()
+                if key != "visual_graph"
+            }
+            components = dict(entity.components)
+            tags = entity.tags
+            if entity.id == sensor.id:
+                transform = dict(components["transform"])
+                transform["position"] = player_position
+                components["transform"] = transform
+                components.pop("collectible", None)
+                tags = frozenset(tag for tag in tags if tag != "collectible")
+                metadata["visual_graph"] = graph.id
+            entities.append(replace(
+                entity,
+                components=components,
+                tags=tags,
+                metadata=metadata,
+            ))
+        rules = dict(scene.rules)
+        rules["visual_graphs"] = [graph.to_dict()]
+        rules.pop("world_graphs", None)
+        rules["score_to_win"] = 999
+        project.scenes[scene.id] = replace(scene, entities=tuple(entities), rules=rules)
+        project.validate()
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            result = build_html5(project, Path(temp_dir), single_file=False)
+            observed = _run_browser_js(
+                result.output_dir,
+                f'''
+const first = KCGame.step().inside_trigger;
+fireWindow("keydown", {{code: "ArrowRight", repeat: false}});
+KCGame.step(120);
+fireWindow("keyup", {{code: "ArrowRight"}});
+const afterExit = KCGame.state().inside_trigger;
+const custom = KCGame.events().filter(event => event.kind.startsWith("graph_trigger_"));
+process.stdout.write(JSON.stringify({{
+  first,
+  afterExit,
+  kinds: custom.map(event => event.kind),
+  contexts: custom.map(event => [event.source, event.target]),
+}}));
+''',
+            )
+            self.assertIs(observed["first"], True)
+            self.assertIs(observed["afterExit"], False)
+            self.assertEqual(
+                observed["kinds"],
+                ["graph_trigger_enter", "graph_trigger_exit"],
+            )
+            self.assertEqual(
+                observed["contexts"],
+                [[sensor.id, player.id], [sensor.id, player.id]],
+            )
+
     def test_all_action_and_value_families_execute_in_browser(self):
         if shutil.which("node") is None:
             self.skipTest("Node.js is not installed")

@@ -8,6 +8,8 @@ This proof campaign is dedicated to **Anna Cramling and the Cow Opening**.
 The dedication may guide campaign lineage and work priority, but never changes
 the proof standard: all twenty initial legal moves remain quantified
 obligations, and incomplete evidence remains `UNKNOWN`.
+The scheduler gives the transpositional Cow starts `1.d3` and `1.e3` equal,
+modest priority; this is a queue-order hint only.
 
 This package is an upgraded proof foundation for an **attempted game-theoretic solution of classical chess**. It turns the initial position into twenty independently checkable root obligations, preserves exact legal and history state, supplies bounded WIN/LOSS/DRAW certificates, retains exact KQK/KRK tablebases, and adds two native C++20 programs with optional CUDA 12.8+ backends for an NVIDIA GeForce RTX 5070 Ti Laptop GPU with 12 GB VRAM.
 
@@ -20,7 +22,9 @@ The captured result is **UNKNOWN for the orthodox initial position**. That is a 
 - Threefold and 50-move claims represented as optional actions, including claims made by declaring an intended move.
 - History-correct state hashes using exact repetition-count records; 64-bit keys remain cache keys only.
 - Bounded WDL proof nodes: WIN needs one certified LOSS child; LOSS needs complete successor coverage; DRAW needs complete no-win coverage plus a draw strategy or closed complement; cutoffs remain UNKNOWN.
-- SQLite proof-campaign ledger with twenty root shards, leases, candidate records, independent verification state and a hash-chained event journal.
+- SQLite proof-campaign ledger with twenty root shards, leases, candidate records, replayed certificate verification and a hash-chained event journal.
+- Append-only, checksummed frontier records binding canonical FEN, exact repetition history, lineage and the canonical rules profile.
+- A crash-recoverable SQLite transposition/DAG index derived from that frontier; exact state stays authoritative and indexed WDL remains `UNKNOWN` until a verified-certificate layer is added.
 - Exact KQK and KRK WDL/DTM tables and retained forced-mate certificates.
 - Native C++ legality, alpha-beta, mate proof and fixed-point demonstration.
 - Optional CUDA proposal/fixed-point kernels. CUDA does not bypass the independent verifier.
@@ -34,6 +38,9 @@ Two native executables are built:
 
 The checked-in RTX preset requests CUDA architecture `120` (`sm_120`). Runtime device inspection is authoritative: laptop power limits, free VRAM, driver/toolkit compatibility and thermal behavior vary by system.
 
+The latest physical-device run and its explicit claim boundary are summarized
+in [`validation/device/README.md`](validation/device/README.md).
+
 ```powershell
 # Windows PowerShell from the package root
 powershell -ExecutionPolicy Bypass -File scripts/build_rtx5070ti.ps1
@@ -44,8 +51,7 @@ powershell -ExecutionPolicy Bypass -File scripts/run_codex_campaign.ps1
 # Linux / WSL host validation
 bash scripts/build_host.sh
 PYTHONPATH=src python -m ugts_chess campaign-init \
-  --db examples/campaign/initial.sqlite3 \
-  --shard-dir examples/campaign/root_shards --force
+  --out-dir examples/campaign --force
 PYTHONPATH=src python -m ugts_chess campaign-verify examples/campaign/initial.sqlite3
 ```
 
@@ -69,8 +75,9 @@ A worker may propose `win`, `draw` or `loss` for one root shard. It becomes auth
 - The initial 32-piece value is unresolved.
 - The built-in dead-position recognizer certifies a common exact subset; a global classical proof requires a complete dead-position oracle or certificate mechanism.
 - KQK/KRK are bundled, not the full external 3- through 7-piece corpus.
-- CUDA source is host-reviewed and has a CPU fallback, but this delivery environment did not compile with `nvcc` or run the user's physical RTX 5070 Ti laptop.
-- No performance, thermal, battery or playing-strength advantage is claimed before Codex/device measurement.
+- The disk-backed DAG currently provides exact storage, transpositions and auditing; it does not yet validate chess-transition semantics for every edge or promote proof certificates into node values.
+- The local device gate compiled real `sm_120` CUDA with `nvcc` 12.8 and compared 4,112 deterministic fixture/reachable positions against the exact Python oracle with zero move-set mismatches or fallbacks; this validates that captured corpus, not all chess states.
+- Large-batch measurements show a local throughput benefit, but no sustained thermal, battery or playing-strength advantage is claimed; the laptop was measured on its Balanced power plan.
 
 ## Package map
 

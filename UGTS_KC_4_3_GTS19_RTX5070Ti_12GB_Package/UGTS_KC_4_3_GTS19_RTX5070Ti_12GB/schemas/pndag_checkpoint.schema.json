@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ugts:go:pndag-checkpoint:v1",
+  "title": "UGTS bounded exact PNDAG checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "algorithm",
+    "checkpoint_sha256",
+    "claim_root_digest",
+    "committed_expansions",
+    "digest_index",
+    "edge_count",
+    "format",
+    "graph_sha256",
+    "move_order",
+    "node_count",
+    "nodes",
+    "proof_arithmetic",
+    "root_disproof_number",
+    "root_id",
+    "root_proof_number",
+    "root_state_object_id",
+    "rules",
+    "rules_sha256",
+    "selection",
+    "state_format",
+    "status",
+    "symmetry",
+    "threshold2"
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "uint64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "int64": {
+      "type": "integer",
+      "minimum": -9223372036854775808,
+      "maximum": 9223372036854775807
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allow_suicide",
+        "komi2",
+        "passes_to_end",
+        "profile_id",
+        "scoring",
+        "size",
+        "superko"
+      ],
+      "properties": {
+        "allow_suicide": {"type": "boolean"},
+        "komi2": {"$ref": "#/$defs/int64"},
+        "passes_to_end": {"const": 2},
+        "profile_id": {"type": "string", "minLength": 1},
+        "scoring": {"const": "area"},
+        "size": {"enum": [1, 2]},
+        "superko": {"const": "positional_superko"}
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["child_id", "move"],
+      "properties": {
+        "child_id": {"$ref": "#/$defs/uint64"},
+        "move": {"type": "integer", "minimum": -1, "maximum": 3}
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cached_disproof",
+        "cached_proof",
+        "children",
+        "digest",
+        "expansion",
+        "id",
+        "rank",
+        "state_hex"
+      ],
+      "properties": {
+        "cached_disproof": {"$ref": "#/$defs/uint64"},
+        "cached_proof": {"$ref": "#/$defs/uint64"},
+        "children": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/edge"}
+        },
+        "digest": {"$ref": "#/$defs/sha256"},
+        "expansion": {"enum": ["unexpanded", "expanded", "terminal"]},
+        "id": {"$ref": "#/$defs/uint64"},
+        "rank": {
+          "allOf": [
+            {"$ref": "#/$defs/uint64"},
+            {"minimum": 2}
+          ]
+        },
+        "state_hex": {
+          "type": "string",
+          "pattern": "^(?:[0-9a-f]{2})+$"
+        }
+      }
+    }
+  },
+  "properties": {
+    "algorithm": {"const": "bounded-exact-pndag-v1"},
+    "checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+    "claim_root_digest": {"$ref": "#/$defs/sha256"},
+    "committed_expansions": {"$ref": "#/$defs/uint64"},
+    "digest_index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["collision_checked", "name"],
+      "properties": {
+        "collision_checked": {"const": true},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "edge_count": {"$ref": "#/$defs/uint64"},
+    "format": {"const": "UGTS-GO-PNDAG-CHECKPOINT-v1"},
+    "graph_sha256": {"$ref": "#/$defs/sha256"},
+    "move_order": {"const": "numeric-pass-minus-one-v1"},
+    "node_count": {
+      "allOf": [
+        {"$ref": "#/$defs/uint64"},
+        {"minimum": 1}
+      ]
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/node"}
+    },
+    "proof_arithmetic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bits", "endianness", "infinity", "kind"],
+      "properties": {
+        "bits": {"const": 64},
+        "endianness": {"const": "little"},
+        "infinity": {"const": "18446744073709551615"},
+        "kind": {"const": "saturating_uint64"}
+      }
+    },
+    "root_disproof_number": {"$ref": "#/$defs/uint64"},
+    "root_id": {"const": 0},
+    "root_proof_number": {"$ref": "#/$defs/uint64"},
+    "root_state_object_id": {"$ref": "#/$defs/sha256"},
+    "rules": {"$ref": "#/$defs/rules"},
+    "rules_sha256": {"$ref": "#/$defs/sha256"},
+    "selection": {"const": "pns-pn-dn-move-statebytes-v1"},
+    "state_format": {"const": "UGTS-GO-STATE-v1"},
+    "status": {"enum": ["PROVEN", "DISPROVEN", "UNKNOWN"]},
+    "symmetry": {"const": "none"},
+    "threshold2": {"$ref": "#/$defs/int64"}
+  }
+}

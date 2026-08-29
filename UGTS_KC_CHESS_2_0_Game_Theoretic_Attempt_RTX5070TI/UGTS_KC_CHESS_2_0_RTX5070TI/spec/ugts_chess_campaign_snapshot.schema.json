@@ -9,6 +9,9 @@
         "event_hash": {
           "$ref": "#/$defs/hash"
         },
+        "job_id": {
+          "type": ["string", "null"]
+        },
         "payload": {
           "type": "object"
         },
@@ -18,10 +21,16 @@
         "sequence": {
           "minimum": 1,
           "type": "integer"
+        },
+        "timestamp": {
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+          "type": "string"
         }
       },
       "required": [
         "sequence",
+        "timestamp",
+        "job_id",
         "action",
         "prev_hash",
         "event_hash",
@@ -32,6 +41,20 @@
     "hash": {
       "pattern": "^[0-9a-f]{64}$",
       "type": "string"
+    },
+    "history": {
+      "items": {
+        "items": false,
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {"$ref": "#/$defs/hash"},
+          {"maximum": 5, "minimum": 1, "type": "integer"}
+        ],
+        "type": "array"
+      },
+      "minItems": 1,
+      "type": "array"
     },
     "job": {
       "additionalProperties": true,
@@ -46,7 +69,7 @@
           "type": "string"
         },
         "obligation_id": {
-          "pattern": "^root-[0-9]{2}-[a-h][1-8][a-h][1-8][nbrq]?$",
+          "pattern": "^root-(?:0[1-9]|[1-9][0-9]+)-[a-h][1-8][a-h][1-8][nbrq]?$",
           "type": "string"
         },
         "shard_sha256": {
@@ -85,6 +108,74 @@
   "$id": "https://example.invalid/ugts-chess-campaign-snapshot-2.0.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "properties": {"is_classical_initial_root": {"const": true}},
+                "required": ["is_classical_initial_root"]
+              },
+              {
+                "properties": {"classical_initial_solved": {"const": true}},
+                "required": ["classical_initial_solved"]
+              }
+            ]
+          }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "jobs": {
+            "maxItems": 20,
+            "minItems": 20
+          },
+          "metadata": {
+            "properties": {
+              "root_fen": {
+                "const": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+              },
+              "root_game_state_sha256": {
+                "const": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078"
+              },
+              "root_history_counts": {
+                "const": [
+                  ["5fff14a1814396798d5d67e856ab753fb117f2f41d4e0dcea98696f5102ac071", 1]
+                ]
+              },
+              "root_position_sha256": {
+                "const": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95"
+              }
+            }
+          },
+          "status": {
+            "properties": {
+              "is_classical_initial_root": {"const": true},
+              "obligations": {"const": 20},
+              "root_automatic_code": {"const": "ongoing"},
+              "root_claim_actions": {"const": []},
+              "root_fen": {
+                "const": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+              },
+              "root_game_state_sha256": {
+                "const": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078"
+              },
+              "root_identity_sha256": {
+                "const": "8a9bd1387dcfd4741c77c6bc1fffd47620f2c4337e175b2d9fefa99bad967dd3"
+              },
+              "root_position_sha256": {
+                "const": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95"
+              },
+              "verified_children": {"maximum": 20}
+            }
+          }
+        }
+      }
+    }
+  ],
   "properties": {
     "events": {
       "items": {
@@ -97,21 +188,170 @@
       "items": {
         "$ref": "#/$defs/job"
       },
-      "maxItems": 20,
-      "minItems": 20,
       "type": "array"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "properties": {
+        "dedication": {
+          "additionalProperties": false,
+          "properties": {
+            "opening": {"const": "The Cow Opening"},
+            "scope": {"type": "string"},
+            "to": {"const": "Anna Cramling"}
+          },
+          "required": ["to", "opening", "scope"],
+          "type": "object"
+        },
+        "cow_opening_priority": {
+          "additionalProperties": false,
+          "properties": {
+            "boundary": {"type": "string"},
+            "moves_uci": {"const": ["d2d3", "e2e3"]},
+            "priority": {"const": 10},
+            "schema": {"const": "ugts-chess-scheduler-priority-1.0"}
+          },
+          "required": ["schema", "moves_uci", "priority", "boundary"],
+          "type": "object"
+        },
+        "canonical_component": {
+          "const": "ugts.application.chess.game-theoretic-solver@2.0.0"
+        },
+        "claim_boundary": {
+          "const": "Only independently verified certificate records may set a child WDL."
+        },
+        "created_at": {
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+          "type": "string"
+        },
+        "root_fen": {
+          "type": "string"
+        },
+        "root_game_state_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "root_history_counts": {
+          "$ref": "#/$defs/history"
+        },
+        "root_position_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "root_wdl": {
+          "const": "unknown"
+        },
+        "schema": {
+          "const": "ugts-chess-campaign-2.0"
+        },
+        "rules_profile": {
+          "const": "fide-classical-2023-claims-as-actions-v2"
+        }
+      },
+      "required": [
+        "schema",
+        "created_at",
+        "canonical_component",
+        "root_fen",
+        "root_position_sha256",
+        "root_game_state_sha256",
+        "root_history_counts",
+        "dedication",
+        "cow_opening_priority",
+        "rules_profile",
+        "root_wdl",
+        "claim_boundary"
+      ],
+      "type": "object"
     },
     "schema": {
       "const": "ugts-chess-campaign-2.0"
     },
     "status": {
       "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {"game_solved": {"const": true}},
+            "required": ["game_solved"]
+          },
+          "then": {
+            "properties": {
+              "audit_valid": {"const": true},
+              "root_wdl": {"not": {"const": "unknown"}}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"classical_initial_solved": {"const": true}},
+            "required": ["classical_initial_solved"]
+          },
+          "then": {
+            "properties": {
+              "audit_valid": {"const": true},
+              "game_solved": {"const": true},
+              "is_classical_initial_root": {"const": true}
+            }
+          }
+        }
+      ],
       "properties": {
         "game_solved": {
           "type": "boolean"
         },
+        "game_solved_scope": {
+          "const": "declared_campaign_root_only"
+        },
+        "classical_initial_solved": {
+          "type": "boolean"
+        },
+        "is_classical_initial_root": {
+          "type": "boolean"
+        },
+        "audit_valid": {
+          "type": "boolean"
+        },
+        "audit_errors": {
+          "items": {"type": "string"},
+          "type": "array"
+        },
         "obligations": {
-          "const": 20
+          "minimum": 0,
+          "type": "integer"
+        },
+        "verified_children": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "root_fen": {
+          "type": ["string", "null"]
+        },
+        "root_position_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/hash"},
+            {"type": "null"}
+          ]
+        },
+        "root_game_state_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/hash"},
+            {"type": "null"}
+          ]
+        },
+        "root_identity_sha256": {
+          "oneOf": [
+            {"$ref": "#/$defs/hash"},
+            {"type": "null"}
+          ]
+        },
+        "root_identity_schema": {
+          "const": "ugts-chess-campaign-root-identity-1.0"
+        },
+        "root_automatic_code": {
+          "type": ["string", "null"]
+        },
+        "root_claim_actions": {
+          "items": {"type": "string"},
+          "type": "array"
         },
         "root_wdl": {
           "enum": [
@@ -128,7 +368,20 @@
       "required": [
         "root_wdl",
         "game_solved",
+        "game_solved_scope",
+        "classical_initial_solved",
+        "is_classical_initial_root",
+        "audit_valid",
+        "audit_errors",
         "obligations",
+        "verified_children",
+        "root_fen",
+        "root_position_sha256",
+        "root_game_state_sha256",
+        "root_identity_sha256",
+        "root_identity_schema",
+        "root_automatic_code",
+        "root_claim_actions",
         "status_counts"
       ],
       "type": "object"
@@ -136,6 +389,7 @@
   },
   "required": [
     "schema",
+    "metadata",
     "status",
     "jobs",
     "events"

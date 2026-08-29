@@ -40,7 +40,7 @@ from ..project import GameProject
 from ..templates import first_steps_project
 from ..templates3d import first_steps_mobile3d_project
 from ..webexport import build_html5
-from .document import EditorDocument, SelectionRef
+from .document import EditorDocument, LogicTraceSnapshot, SelectionRef
 from .graph import GraphPage
 from .scene_view import SceneViewport
 from .widgets import (
@@ -51,7 +51,6 @@ from .widgets import (
     WelcomePage,
     friendly,
 )
-
 
 def _same_transform(a: Mapping[str, Any] | None, b: Mapping[str, Any] | None) -> bool:
     if a is None or b is None or set(a) != set(b):
@@ -284,6 +283,8 @@ class EditorMainWindow(QMainWindow):
         self.document = EditorDocument(self)
         self.undo_stack = QUndoStack(self)
         self._playing = False
+        self._logic_trace_snapshot: LogicTraceSnapshot | None = None
+        self._preserve_logic_trace_on_stop = False
         self._frame_count = 0
         self._fps_started = time.perf_counter()
         self._build_thread: QThread | None = None
@@ -328,8 +329,8 @@ class EditorMainWindow(QMainWindow):
         scene_layout.addWidget(scene_bar)
         scene_layout.addWidget(self.viewport, 1)
         self.graph_page = GraphPage()
-        self.editor_tabs.addTab(scene_page, "Scene")
-        self.editor_tabs.addTab(self.graph_page, "Logic Blocks")
+        self._scene_tab_index = self.editor_tabs.addTab(scene_page, "Scene")
+        self._logic_tab_index = self.editor_tabs.addTab(self.graph_page, "Logic Blocks")
         self.central_stack.addWidget(self.welcome)
         self.central_stack.addWidget(self.editor_tabs)
         self.setCentralWidget(self.central_stack)
@@ -521,6 +522,7 @@ class EditorMainWindow(QMainWindow):
         self.hierarchy.selectionRequested.connect(self.document.set_selection)
         self.hierarchy.sceneRequested.connect(self.document.set_current_scene)
         self.hierarchy.addRequested.connect(self._add_scene_object)
+        self.hierarchy.addTriggerRequested.connect(self._add_trigger_area)
         self.hierarchy.duplicateRequested.connect(self._duplicate_scene_object)
         self.hierarchy.deleteRequested.connect(self._delete_scene_object)
         self.viewport.selectionRequested.connect(self._viewport_selected)
@@ -530,6 +532,8 @@ class EditorMainWindow(QMainWindow):
         )
         self.inspector.transformEdited.connect(self._inspector_transform_edited)
         self.inspector.resourceEdited.connect(self._inspector_resource_edited)
+        self.inspector.triggerAreaEdited.connect(self._inspector_trigger_area_edited)
+        self.inspector.populationEdited.connect(self._inspector_population_edited)
         self.inspector.movementPatternEdited.connect(self._inspector_movement_pattern_edited)
         self.graph_page.graphEdited.connect(self._graph_edited)
         self.graph_page.helpRequested.connect(self._gentle_message)
@@ -542,6 +546,7 @@ class EditorMainWindow(QMainWindow):
         self.document.transformChanged.connect(self._transform_changed)
         self.document.graphChanged.connect(self._graph_changed)
         self.document.structureChanged.connect(self._structure_changed)
+        self.document.logicTraceChanged.connect(self._logic_trace_changed)
 
     def _show_welcome_state(self) -> None:
         self.central_stack.setCurrentWidget(self.welcome)
@@ -549,6 +554,8 @@ class EditorMainWindow(QMainWindow):
         self.assets_project.set_document(None)
         self.inspector.clear()
         self.build_output.set_kind(None)
+        self._set_logic_read_only(False)
+        self._clear_logic_trace()
 
     @staticmethod
     def _repository_root() -> Path:
@@ -714,6 +721,8 @@ class EditorMainWindow(QMainWindow):
         self.viewport.set_document(self.document)
         self.graph_page.set_project_kind(self.document.kind)
         self.graph_page.load_data(self.document.graph_data())
+        self._set_logic_read_only(False)
+        self._clear_logic_trace()
         self.build_output.set_kind(self.document.kind)
         self.build_output.append(
             f"Opened {self.document.display_name} as a {'2D' if self.document.kind == '2d' else 'mobile 3D'} project.",
@@ -744,6 +753,7 @@ class EditorMainWindow(QMainWindow):
         self.hierarchy.set_document(self.document)
         self.viewport.refresh(keep_view=False)
         self.graph_page.load_data(self.document.graph_data())
+        self._refresh_logic_trace()
         self.scene_label.setText(f"Scene: {friendly(scene_id)}")
         self._gentle_message(f"Showing {friendly(scene_id)}.")
 
@@ -759,6 +769,7 @@ class EditorMainWindow(QMainWindow):
             wanted = self.document.graph_data()
             if str(wanted.get("id", "")) != current_graph_id:
                 self.graph_page.load_data(wanted)
+        self._refresh_logic_trace()
 
     def _selection_for_record(self, object_id: str) -> SelectionRef:
         kind = "entity" if self.document.kind == "2d" else "node"
@@ -791,6 +802,30 @@ class EditorMainWindow(QMainWindow):
                 )
             )
             self._gentle_message(f"Added {friendly(record.id)}. Use the Inspector to place it.")
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _add_trigger_area(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        try:
+            before = tuple(self.document.scene_objects())
+            record = self.document.new_trigger_area_record()
+            selection = SelectionRef("node", record.id)
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    f"Add {friendly(record.id)}",
+                    before,
+                    before + (record,),
+                    self.document.selection,
+                    selection,
+                    None,
+                )
+            )
+            self._gentle_message(
+                f"Added {friendly(record.id)}. Enter and Exit Trigger Logic Blocks can react to it."
+            )
         except Exception as exc:
             self._scene_edit_error(str(exc))
 
@@ -868,6 +903,11 @@ class EditorMainWindow(QMainWindow):
         self.inspector.set_selection(self.document, self.document.selection)
 
     def _graph_edited(self, graph: Mapping[str, Any]) -> None:
+        if self._playing:
+            # A queued editor signal must never replace the runtime snapshot.
+            self.graph_page.load_data(self.document.graph_data())
+            self._refresh_logic_trace()
+            return
         before = self.document.graph_data()
         after = dict(graph)
         if before == after:
@@ -876,6 +916,56 @@ class EditorMainWindow(QMainWindow):
 
     def _graph_changed(self) -> None:
         self.graph_page.load_data(self.document.graph_data())
+        self._refresh_logic_trace()
+
+    def _set_logic_read_only(self, read_only: bool) -> None:
+        """Keep the Logic tab visible while preventing Preview-time edits."""
+
+        self.graph_page.set_read_only(read_only)
+        self.editor_tabs.setTabEnabled(self._logic_tab_index, True)
+
+    def _logic_trace_for_current_context(self) -> LogicTraceSnapshot | None:
+        """Return the newest trail relevant to the graph currently on screen."""
+
+        if not self.document.is_loaded:
+            return None
+        graph_id = str(self.graph_page.graph_scene.property("graph_id") or "")
+        if not graph_id:
+            return None
+        owner_id = (
+            None
+            if self.document.selection is None
+            else self.document.selection.object_id
+        )
+        if owner_id is not None:
+            # A graph may be bound to several objects.  Never present another
+            # object's latest run as if it belonged to the selected object.
+            return self.document.logic_trace(graph_id, owner_id)
+        return (
+            self.document.logic_trace(graph_id, None)
+            or self.document.latest_logic_trace(graph_id)
+        )
+
+    def _show_logic_trace(self, snapshot: LogicTraceSnapshot | None) -> None:
+        self._logic_trace_snapshot = snapshot
+        self.graph_page.show_trace(snapshot)
+        count = self.graph_page.trace_count
+        title = "Logic Blocks" if count <= 0 else f"Logic Blocks • {count} ran"
+        self.editor_tabs.setTabText(self._logic_tab_index, title)
+
+    def _clear_logic_trace(self) -> None:
+        self._show_logic_trace(None)
+
+    def _refresh_logic_trace(self) -> None:
+        self._show_logic_trace(self._logic_trace_for_current_context())
+
+    def _logic_trace_changed(self, snapshot: LogicTraceSnapshot | None) -> None:
+        if self._preserve_logic_trace_on_stop:
+            return
+        if snapshot is None:
+            self._clear_logic_trace()
+        else:
+            self._refresh_logic_trace()
 
     def _viewport_selected(self, object_id: str) -> None:
         kind = "entity" if self.document.kind == "2d" else "node"
@@ -943,6 +1033,95 @@ class EditorMainWindow(QMainWindow):
             self.build_output.append(f"Appearance change paused: {exc}", "warning")
             self._gentle_message(str(exc))
 
+    def _inspector_trigger_area_edited(self, values: Mapping[str, Any]) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        try:
+            before = tuple(self.document.scene_objects())
+            index = next(
+                item_index
+                for item_index, record in enumerate(before)
+                if record.id == selection.object_id
+            )
+            updated = self.document.record_with_trigger_area(selection, values)
+            if updated == before[index]:
+                return
+            after = before[:index] + (updated,) + before[index + 1 :]
+            enabled = bool(values.get("enabled", False))
+            shape = friendly(str(values.get("shape", "sphere")))
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    f"Edit {friendly(selection.object_id)} Trigger Area",
+                    before,
+                    after,
+                    selection,
+                    selection,
+                    None,
+                )
+            )
+            message = (
+                f"{friendly(selection.object_id)} now notices the player in a {shape} area."
+                if enabled
+                else f"{friendly(selection.object_id)} is no longer used as a Trigger Area."
+            )
+            self._gentle_message(message)
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Trigger Area change paused: {exc}", "warning")
+            self._gentle_message(str(exc))
+
+    def _inspector_population_edited(self, values: Mapping[str, Any]) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        try:
+            before = tuple(self.document.scene_objects())
+            index = next(
+                item_index
+                for item_index, record in enumerate(before)
+                if record.id == selection.object_id
+            )
+            updated = self.document.record_with_population(selection, values)
+            # Node3DRecord deliberately excludes metadata from dataclass
+            # equality, while Populate Area is stored entirely in metadata.
+            if updated.to_dict() == before[index].to_dict():
+                return
+            after = before[:index] + (updated,) + before[index + 1 :]
+            enabled = bool(values.get("enabled", False))
+            count = 0
+            if enabled:
+                raw_population = updated.metadata.get("scatter_population", {})
+                count = int(
+                    raw_population.get("instance_count", values.get("instance_count", 8))
+                )
+            command_text = (
+                f"Populate {friendly(selection.object_id)} with {count} Display Objects"
+                if enabled
+                else f"Remove {friendly(selection.object_id)} Populate Area"
+            )
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    command_text,
+                    before,
+                    after,
+                    selection,
+                    selection,
+                    None,
+                )
+            )
+            self._gentle_message(
+                f"One saved object becomes {count} display objects."
+                if enabled
+                else f"Removed Populate Area from {friendly(selection.object_id)}."
+            )
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Populate Area change paused: {exc}", "warning")
+            self._gentle_message(str(exc))
+
     def _inspector_movement_pattern_edited(self, values: Mapping[str, Any]) -> None:
         selection = self.document.selection
         if selection is None or self._playing:
@@ -989,21 +1168,36 @@ class EditorMainWindow(QMainWindow):
             self.inspector.set_selection(self.document, selection)
 
     def _tab_changed(self, index: int) -> None:
-        if index == 1 and self.document.is_loaded:
+        if index == self._logic_tab_index and self.document.is_loaded:
             self.graph_page.load_data(self.document.graph_data())
-            self._gentle_message("Logic Blocks: double-click a block, then drag between its dots.")
+            self._refresh_logic_trace()
+            self._gentle_message(
+                "Logic Trail is updating live. Press Stop when you want to edit blocks."
+                if self._playing
+                else "Logic Blocks: double-click a block, then drag between its dots."
+            )
+        elif self.document.is_loaded:
+            self._refresh_logic_trace()
 
     def play(self) -> None:
         if not self.document.is_loaded or self._playing:
             return
+        self._clear_logic_trace()
         try:
             self.document.begin_play()
         except Exception as exc:
+            # begin_play() may retain a useful Ready-error trail even though it
+            # cannot return a runtime world. Keep that new run visible.
+            snapshot = self._logic_trace_for_current_context()
+            if snapshot is None and self.document.selection is None:
+                snapshot = self.document.latest_logic_trace()
+            self._show_logic_trace(snapshot)
             QMessageBox.warning(self, "Preview could not start", str(exc))
             return
         self._playing = True
-        self.editor_tabs.setCurrentIndex(0)
-        self.editor_tabs.setTabEnabled(1, False)
+        self.editor_tabs.setCurrentIndex(self._scene_tab_index)
+        self._set_logic_read_only(True)
+        self._refresh_logic_trace()
         self.inspector.setEnabled(False)
         self.hierarchy.set_authoring_enabled(False)
         self.viewport.set_playing(True)
@@ -1025,6 +1219,7 @@ class EditorMainWindow(QMainWindow):
         try:
             state, events = self.document.step_play(self.viewport.pressed_keys)
             self.viewport.set_runtime_state(state)
+            self._refresh_logic_trace()
             world_state = state.get("__world__", {})
             if "score" in world_state:
                 self.status_message.setText(f"Playing — Score {world_state['score']}")
@@ -1047,11 +1242,17 @@ class EditorMainWindow(QMainWindow):
         if not self._playing:
             return
         self.play_timer.stop()
-        self.document.stop_play()
+        retained_trace = self._logic_trace_snapshot
+        self._preserve_logic_trace_on_stop = True
+        try:
+            self.document.stop_play()
+        finally:
+            self._preserve_logic_trace_on_stop = False
         self._playing = False
         self.viewport.set_playing(False)
         self.viewport.set_runtime_state(None)
-        self.editor_tabs.setTabEnabled(1, True)
+        self._set_logic_read_only(False)
+        self._show_logic_trace(retained_trace)
         self.inspector.setEnabled(True)
         self.hierarchy.set_authoring_enabled(True)
         self.play_action.setEnabled(True)

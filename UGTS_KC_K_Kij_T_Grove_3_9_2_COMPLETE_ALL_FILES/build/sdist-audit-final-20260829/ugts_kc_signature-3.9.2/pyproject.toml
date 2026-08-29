@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugts-kc-signature"
+version = "3.9.2"
+description = "UGTS-KC 3.9.2 K-Kij-T Grove vector, 3D and native Android game runtime"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Tom Klootwijk"}]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Games/Entertainment",
+  "Topic :: Multimedia :: Graphics",
+  "Operating System :: Android",
+]
+
+[project.scripts]
+ugts-kc = "ugts_kc3.cli:main"
+
+[project.gui-scripts]
+ugts-studio = "ugts_kc3.editor.__main__:main"
+
+[project.optional-dependencies]
+editor = ["PySide6>=6.8,<7"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+"ugts_kc3.android_template" = ["project/**/*"]

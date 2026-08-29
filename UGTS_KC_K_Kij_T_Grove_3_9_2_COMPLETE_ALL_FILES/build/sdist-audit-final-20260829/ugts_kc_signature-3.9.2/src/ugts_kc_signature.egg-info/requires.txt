@@ -1,0 +1,3 @@
+
+[editor]
+PySide6<7,>=6.8

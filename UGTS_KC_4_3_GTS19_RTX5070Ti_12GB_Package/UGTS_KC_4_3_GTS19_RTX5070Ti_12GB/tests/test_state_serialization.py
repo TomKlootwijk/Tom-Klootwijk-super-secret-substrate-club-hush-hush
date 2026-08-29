@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import unittest
 
 from ugts_go19.digests import (
     canonical_proof_state_json,
     canonical_proof_state_payload,
+    state_digest,
 )
 from ugts_go19.engine import apply_move
 from ugts_go19.rules import Rules
@@ -24,6 +26,8 @@ class CanonicalStateSerializationTests(unittest.TestCase):
             '"seen_hex":["00000000"],"to_play":1}'
         )
         self.assertEqual(canonical_proof_state_json(initial, rules), expected)
+        object_id = hashlib.sha256(expected.encode("utf-8")).hexdigest()
+        self.assertNotEqual(object_id, state_digest(initial, rules))
 
         moved = apply_move(initial, 0, rules)
         same_semantics_different_ply = State(

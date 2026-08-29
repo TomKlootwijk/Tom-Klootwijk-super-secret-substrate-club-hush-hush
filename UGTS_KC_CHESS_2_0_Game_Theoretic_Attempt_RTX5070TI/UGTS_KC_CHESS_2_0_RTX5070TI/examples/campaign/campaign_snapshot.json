@@ -2,7 +2,7 @@
   "events": [
     {
       "action": "campaign_initialized",
-      "event_hash": "a3320170186c7a0336dff9048596926ce538f944e499f3a72773c21cbe5e2b0e",
+      "event_hash": "ae4112a41cc7570de5dd8ffcb7e0e2941e19bd3b7968adad47df4bf0bbf7e855",
       "job_id": null,
       "payload": {
         "obligations": 20,
@@ -11,7 +11,7 @@
       },
       "prev_hash": "eb4865ecbe57cc32a7f7a233ec9360de0ee182b24d777cfcd6afbcaf174b7902",
       "sequence": 1,
-      "timestamp": "2026-08-29T06:46:58Z"
+      "timestamp": "2026-08-29T09:07:23Z"
     }
   ],
   "jobs": [
@@ -43,9 +43,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-01-a2a3.json",
-      "shard_sha256": "912cbbbb108a331363729de3e9282b55d7ca7757d23f2a8382a05bfaebf56e24",
+      "shard_sha256": "8f6b1c206ed3add055f67886d24b11f72cf2a6aae191db462edb434d273579f8",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -77,9 +77,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-02-a2a4.json",
-      "shard_sha256": "d14827b1e7e16a69c598f3b165e216632d365e936fcbbb935ab39fefee086a30",
+      "shard_sha256": "9f867c400fc853e9a63d03eae12dc1cbfeaebda34164a7b332153c58392c7c4d",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -111,9 +111,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-03-b1a3.json",
-      "shard_sha256": "ebe54955367d9cdcd12c4d6fa5aac8ece8acfc462b3ace9ee02a6634cfde2468",
+      "shard_sha256": "bb231425da934cdf16a7fa0381f0f9728ee630d0d7a60225876e8efa8c7ee585",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -145,9 +145,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-04-b1c3.json",
-      "shard_sha256": "06bcb4eae84cdb3bc744aeda357c479db29fc85ef9e4805a212298bb08f59b79",
+      "shard_sha256": "85be7f2a58fd00b857d0f241f10871a6b7b69beb9621188ebd4c75659b1f33da",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -179,9 +179,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-05-b2b3.json",
-      "shard_sha256": "5ef2263b4ada1ae74a921bc5717e36231765b4bce03310595d1401d3da3c4e1e",
+      "shard_sha256": "0c1bdf6fb02dad419792473c216b4faac679fa9aae1a6fae77a42d0f957e3c35",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -213,9 +213,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-06-b2b4.json",
-      "shard_sha256": "617978c62a93abef6c42b2c427d845fe00bbe1753bdec6b45fb0bf08a9a111ee",
+      "shard_sha256": "e22f1831ea6ccf4b6a9774ce7c929cf5117df86b162e172085debe1a35fa284d",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -247,9 +247,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-07-c2c3.json",
-      "shard_sha256": "10c9d325c0eea403636385f3988d293b81b1ce8296adbb8dd252f36e7805b77e",
+      "shard_sha256": "38c5f553b093e9156d315cbf22ba8853cfc32776b35ac8c485df2ae467b9b7ed",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -281,9 +281,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-08-c2c4.json",
-      "shard_sha256": "fd1dbe740e5ca47a0f07456410f270bd13b27512103c70492e992029e0417528",
+      "shard_sha256": "20409e4fdd17ec808f4a2df535f3aaf07f0cba1ef83aabc9c9a64f4b2e0543ac",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -313,11 +313,11 @@
       "move_uci": "d2d3",
       "obligation_id": "root-09-d2d3",
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
-      "priority": 0,
+      "priority": 10,
       "shard_path": "root_shards/root-09-d2d3.json",
-      "shard_sha256": "a29b7810ecb6164372ae2e4b18bb83c6194faf0fc10568a6e100bdc95bd93985",
+      "shard_sha256": "059de8d04d8fb82e409e9646eba4a1f4abb14a3fcd7c2b3cdd5a05417378dc60",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -349,9 +349,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-10-d2d4.json",
-      "shard_sha256": "896a71edd998a9eecbb5615d6548202967c0d594037a36e1b7feabfd75bdbccb",
+      "shard_sha256": "6a62a1d5211a4088e1b6dff8c4bedda7ef8773a613d0cdcb564a1e180867fa7b",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -381,11 +381,11 @@
       "move_uci": "e2e3",
       "obligation_id": "root-11-e2e3",
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
-      "priority": 0,
+      "priority": 10,
       "shard_path": "root_shards/root-11-e2e3.json",
-      "shard_sha256": "7351630db8e0a554b8c79f076846e31a758c94c078f9feba5f8b0fcc7ff90dbe",
+      "shard_sha256": "3cb44f061e581f20eb6be4fe7a0c7bdda7f6065ecab1ff4fe3f7d3afeb5eaa65",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -417,9 +417,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-12-e2e4.json",
-      "shard_sha256": "b69f8a9b04c9b0647f0c86e24e48b209e92760289b72972422e930ccb2ed3721",
+      "shard_sha256": "81cc088b259dfa40a224cfd2a040eb571ecdc9b7fe59baa06a982832750f6b84",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -451,9 +451,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-13-f2f3.json",
-      "shard_sha256": "e773d77a80e2890a2e687560e0804352dd4cfe90f3a8b23a04c777290a03372b",
+      "shard_sha256": "38af94cfeb2af3f23fac092ec6ea05f1613b4aebcb177db747cc05f446be394a",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -485,9 +485,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-14-f2f4.json",
-      "shard_sha256": "7a683fb8939ddbccbe1dce268f666aacfe9885dbd5f81f6b187336316b62a735",
+      "shard_sha256": "c128fb9934c0ac604cbc19d17fd943dd832368f22392ddd0a3938f660c3fe184",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -519,9 +519,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-15-g1f3.json",
-      "shard_sha256": "ad3195042e04913ad9fc2de5919d4515df93033179022b0ea91d0aad94eddfb5",
+      "shard_sha256": "d8115b33825ffd4cb23067f19324307c25a2ccf72d1a4ea684c7e083da3a708e",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -553,9 +553,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-16-g1h3.json",
-      "shard_sha256": "c91679a9ccb62400085c2091fe912869febb9c29970c5ba4b27aa70c5a1e83ce",
+      "shard_sha256": "9675aeb5936db762dd85c50cacc3e21bba0efddb2583b7f61806da27538b4327",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -587,9 +587,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-17-g2g3.json",
-      "shard_sha256": "126acf4090a7d8d33fecda0e69fb0931fc1da25132150003184cc4b895fc1f2b",
+      "shard_sha256": "9de5be52d6533250ead4aeb45c9cfb74f574ca6c2de7f4dc4507053cb684252c",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -621,9 +621,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-18-g2g4.json",
-      "shard_sha256": "1c8613e7176225c7c89acf251c836bd94743e94140b7e8512fdb7814ef382f06",
+      "shard_sha256": "c8c7390f6c8f68fb936bad537924db1368b0e142efa6222621c3da6cbd9cfde3",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -655,9 +655,9 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-19-h2h3.json",
-      "shard_sha256": "64259225eb35eb61f106d004ab653fd18534782397b513fce4d772c7b017d853",
+      "shard_sha256": "9ee335d33d529562bd6ba6cdafb2279423c3fba92c9c90d71a1b7d86c4b5b969",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     },
@@ -689,22 +689,77 @@
       "parent_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
       "priority": 0,
       "shard_path": "root_shards/root-20-h2h4.json",
-      "shard_sha256": "c3f6d26412c323fb2e99649286aab6e5c2b54ada14f1b85107346ef3d206096f",
+      "shard_sha256": "fbb6d244ed766f70465aea0c27e3e9c4aa127c294abf210ebe17691c5fade9e5",
       "status": "unresolved",
-      "updated_at": "2026-08-29T06:46:58Z",
+      "updated_at": "2026-08-29T09:07:23Z",
       "verification": "unverified",
       "wdl": "unknown"
     }
   ],
-  "schema": "ugts-chess-campaign-2.0",
-  "status": {
-    "evidence_boundary": "UNKNOWN remains UNKNOWN until proof certificates are independently verified.",
-    "game_solved": false,
-    "last_event_hash": "a3320170186c7a0336dff9048596926ce538f944e499f3a72773c21cbe5e2b0e",
-    "last_event_sequence": 1,
-    "obligations": 20,
+  "metadata": {
+    "canonical_component": "ugts.application.chess.game-theoretic-solver@2.0.0",
+    "claim_boundary": "Only independently verified certificate records may set a child WDL.",
+    "cow_opening_priority": {
+      "boundary": "Scheduling hint only; it changes no proof obligation or verifier rule.",
+      "moves_uci": [
+        "d2d3",
+        "e2e3"
+      ],
+      "priority": 10,
+      "schema": "ugts-chess-scheduler-priority-1.0"
+    },
+    "created_at": "2026-08-29T09:07:23Z",
+    "dedication": {
+      "opening": "The Cow Opening",
+      "scope": "Attribution only: this dedication does not alter or exempt any of the 20 legal root-move proof obligations for the classical initial position.",
+      "to": "Anna Cramling"
+    },
     "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
     "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+    "root_history_counts": [
+      [
+        "5fff14a1814396798d5d67e856ab753fb117f2f41d4e0dcea98696f5102ac071",
+        1
+      ]
+    ],
+    "root_position_sha256": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
+    "root_wdl": "unknown",
+    "rules_profile": "fide-classical-2023-claims-as-actions-v2",
+    "schema": "ugts-chess-campaign-2.0"
+  },
+  "schema": "ugts-chess-campaign-2.0",
+  "status": {
+    "audit_errors": [],
+    "audit_valid": true,
+    "classical_initial_solved": false,
+    "cow_opening_priority": {
+      "boundary": "Scheduling hint only; it changes no proof obligation or verifier rule.",
+      "moves_uci": [
+        "d2d3",
+        "e2e3"
+      ],
+      "priority": 10,
+      "schema": "ugts-chess-scheduler-priority-1.0"
+    },
+    "dedication": {
+      "opening": "The Cow Opening",
+      "scope": "Attribution only: this dedication does not alter or exempt any of the 20 legal root-move proof obligations for the classical initial position.",
+      "to": "Anna Cramling"
+    },
+    "evidence_boundary": "The declared root remains UNKNOWN unless audit proves an automatic terminal result or replays sufficient exact child certificates.",
+    "game_solved": false,
+    "game_solved_scope": "declared_campaign_root_only",
+    "is_classical_initial_root": true,
+    "last_event_hash": "ae4112a41cc7570de5dd8ffcb7e0e2941e19bd3b7968adad47df4bf0bbf7e855",
+    "last_event_sequence": 1,
+    "obligations": 20,
+    "root_automatic_code": "ongoing",
+    "root_claim_actions": [],
+    "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+    "root_identity_schema": "ugts-chess-campaign-root-identity-1.0",
+    "root_identity_sha256": "8a9bd1387dcfd4741c77c6bc1fffd47620f2c4337e175b2d9fefa99bad967dd3",
+    "root_position_sha256": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
     "root_wdl": "unknown",
     "schema": "ugts-chess-campaign-2.0",
     "status_counts": {

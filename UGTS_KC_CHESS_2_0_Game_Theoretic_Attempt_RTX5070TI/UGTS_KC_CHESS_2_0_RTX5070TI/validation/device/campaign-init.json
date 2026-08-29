@@ -4,11 +4,25 @@
     "events": 1,
     "jobs": 20,
     "path": "validation\\device\\campaign\\campaign_checkpoint.json",
-    "sha256": "0df20acbcd78a1ad40dc1ef9b89f3726341906845c06b1c13ee6d0e18fc05e5f"
+    "sha256": "169727632af362c0fc0a61ef68893b01a4b91a269271d9a656289fd325130c54"
   },
   "claim_boundary": "Only independently verified certificate records may set a child WDL.",
-  "created_at": "2026-08-29T07:54:42Z",
+  "cow_opening_priority": {
+    "boundary": "Scheduling hint only; it changes no proof obligation or verifier rule.",
+    "moves_uci": [
+      "d2d3",
+      "e2e3"
+    ],
+    "priority": 10,
+    "schema": "ugts-chess-scheduler-priority-1.0"
+  },
+  "created_at": "2026-08-29T08:38:12Z",
   "database": "validation\\device\\campaign\\classical_root.sqlite3",
+  "dedication": {
+    "opening": "The Cow Opening",
+    "scope": "Attribution only: this dedication does not alter or exempt any of the 20 legal root-move proof obligations for the classical initial position.",
+    "to": "Anna Cramling"
+  },
   "obligation_count": 20,
   "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",

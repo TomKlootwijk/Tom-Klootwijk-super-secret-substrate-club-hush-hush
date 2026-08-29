@@ -1,11 +1,22 @@
 {
+  "classical_initial_solved": false,
   "errors": [],
   "event_count": 1,
   "expected_job_count": 20,
-  "final_event_hash": "a3320170186c7a0336dff9048596926ce538f944e499f3a72773c21cbe5e2b0e",
+  "final_event_hash": "ae4112a41cc7570de5dd8ffcb7e0e2941e19bd3b7968adad47df4bf0bbf7e855",
   "game_solved": false,
+  "game_solved_scope": "declared_campaign_root_only",
+  "is_classical_initial_root": true,
   "job_count": 20,
+  "root_automatic_code": "ongoing",
+  "root_claim_actions": [],
+  "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+  "root_identity_schema": "ugts-chess-campaign-root-identity-1.0",
+  "root_identity_sha256": "8a9bd1387dcfd4741c77c6bc1fffd47620f2c4337e175b2d9fefa99bad967dd3",
+  "root_position_sha256": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
   "root_wdl": "unknown",
   "schema": "ugts-chess-campaign-2.0",
-  "valid": true
+  "valid": true,
+  "verified_children": 0
 }

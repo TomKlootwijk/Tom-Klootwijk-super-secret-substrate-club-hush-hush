@@ -1,9 +1,9 @@
-.PHONY: test fixtures cpu acceptance manifest
+.PHONY: test fixtures cpu acceptance evidence manifest
 
 PYTHON ?= python
 
 test:
-	PYTHONPATH=src $(PYTHON) -m unittest discover -s tests -v
+	PYTHONPATH=src $(PYTHON) -m pytest -q
 
 fixtures:
 	PYTHONPATH=src $(PYTHON) scripts/generate_fixtures.py
@@ -15,6 +15,10 @@ cpu:
 
 acceptance:
 	./codex/acceptance.sh
+
+evidence:
+	$(PYTHON) scripts/parity_gate.py evidence/local_m1_cpp_python_parity_v2_1m.json
+	$(PYTHON) scripts/storage_gate.py --validate evidence/local_m2_storage_gate.json
 
 manifest:
 	$(PYTHON) scripts/make_manifest.py

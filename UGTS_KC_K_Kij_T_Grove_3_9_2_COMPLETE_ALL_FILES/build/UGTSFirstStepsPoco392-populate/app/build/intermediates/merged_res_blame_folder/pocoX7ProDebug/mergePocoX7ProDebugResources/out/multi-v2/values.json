@@ -1,0 +1,45 @@
+{
+    "logs": [
+        {
+            "outputFile": "org.ugts.games.my_mobile_3d_game.app-mergePocoX7ProDebugResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\UGTSFirstStepsPoco392-populate\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "13",
+                        "endColumns": "12",
+                        "endOffsets": "752"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "118",
+                        "endLines": "14",
+                        "endColumns": "12",
+                        "endOffsets": "815"
+                    }
+                },
+                {
+                    "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\UGTSFirstStepsPoco392-populate\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "57",
+                        "endColumns": "62",
+                        "endOffsets": "115"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "62",
+                        "endOffsets": "113"
+                    }
+                }
+            ]
+        }
+    ]
+}

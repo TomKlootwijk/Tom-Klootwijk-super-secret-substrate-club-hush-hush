@@ -1,0 +1,18 @@
+{
+  "schema": "ugts-chess-cuda-throughput-comparison-v1",
+  "input_sha256": "40fc2db41d438f7b254702c7ecb94ecc0909bf7a3ebe526affef4a2c5689463f",
+  "positions": 131072,
+  "moves": 3973989,
+  "semantic_payload_identical": true,
+  "cuda_backend": "cuda",
+  "cuda_fallback_reason": "",
+  "cuda_seconds": 0.170173,
+  "cuda_positions_per_second": 770227.945,
+  "cuda_moves_per_second": 23352641.136,
+  "cpu_backend": "cpu",
+  "cpu_seconds": 0.426269,
+  "cpu_positions_per_second": 307486.587,
+  "cpu_moves_per_second": 9322725.791,
+  "cuda_speedup_over_cpu": 2.504916,
+  "measurement": "native timer covers allocation, H2D, kernel, synchronization, D2H; excludes input/output file I/O"
+}

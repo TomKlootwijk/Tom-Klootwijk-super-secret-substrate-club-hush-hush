@@ -19,7 +19,7 @@
       "type": "string"
     },
     "obligation_id": {
-      "pattern": "^root-[0-9]{2}-[a-h][1-8][a-h][1-8][nbrq]?$",
+      "pattern": "^root-(?:0[1-9]|[1-9][0-9]+)-[a-h][1-8][a-h][1-8][nbrq]?$",
       "type": "string"
     },
     "schema": {

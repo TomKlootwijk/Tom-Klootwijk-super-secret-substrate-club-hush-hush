@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import unittest
 
 from ugts_chess.game_theory import WDL
+from ugts_chess.hashing import canonical_json_bytes
 from ugts_chess.position import Position
 from ugts_chess.wdl import BoundedWDLSolver, WDLVerificationError, verify_wdl_certificate
 
@@ -53,6 +55,32 @@ class WDLTests(unittest.TestCase):
         bundle["rules_profile"] = "different-chess-rules"
 
         with self.assertRaises(WDLVerificationError):
+            verify_wdl_certificate(bundle)
+
+    def test_07_history_counts_are_not_coerced(self) -> None:
+        position = Position.from_fen("k7/1Q6/2K5/8/8/8/8/8 b - - 0 1")
+        original = BoundedWDLSolver().solve(position, max_plies=0).certificate_bundle()
+
+        for non_integer in (True, "1", 1.0):
+            with self.subTest(non_integer=non_integer):
+                bundle = copy.deepcopy(original)
+                node = bundle["nodes"][0]
+                node["history_counts"][0][1] = non_integer
+                node_without_hash = dict(node)
+                node_without_hash.pop("certificate_hash")
+                new_hash = hashlib.sha256(canonical_json_bytes(node_without_hash)).hexdigest()
+                node["certificate_hash"] = new_hash
+                bundle["root_certificate_hash"] = new_hash
+
+                with self.assertRaisesRegex(WDLVerificationError, "occurrence count must be an integer"):
+                    verify_wdl_certificate(bundle)
+
+    def test_08_bundle_bound_must_match_root_depth(self) -> None:
+        position = Position.from_fen("k7/1Q6/2K5/8/8/8/8/8 b - - 0 1")
+        bundle = BoundedWDLSolver().solve(position, max_plies=0).certificate_bundle()
+        bundle["max_plies"] = 99
+
+        with self.assertRaisesRegex(WDLVerificationError, "max_plies does not match root depth"):
             verify_wdl_certificate(bundle)
 
 

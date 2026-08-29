@@ -1,11 +1,35 @@
 {
-  "evidence_boundary": "UNKNOWN remains UNKNOWN until proof certificates are independently verified.",
+  "audit_errors": [],
+  "audit_valid": true,
+  "classical_initial_solved": false,
+  "cow_opening_priority": {
+    "boundary": "Scheduling hint only; it changes no proof obligation or verifier rule.",
+    "moves_uci": [
+      "d2d3",
+      "e2e3"
+    ],
+    "priority": 10,
+    "schema": "ugts-chess-scheduler-priority-1.0"
+  },
+  "dedication": {
+    "opening": "The Cow Opening",
+    "scope": "Attribution only: this dedication does not alter or exempt any of the 20 legal root-move proof obligations for the classical initial position.",
+    "to": "Anna Cramling"
+  },
+  "evidence_boundary": "The declared root remains UNKNOWN unless audit proves an automatic terminal result or replays sufficient exact child certificates.",
   "game_solved": false,
-  "last_event_hash": "50ec176e40905c77a730a2916ac275ed66bae3c3165b5e4687a3615719a622c9",
+  "game_solved_scope": "declared_campaign_root_only",
+  "is_classical_initial_root": true,
+  "last_event_hash": "b5af8c99fa3331dc369cf712eefd7ea282cf8f4cf7fc029d6d6f8633a0a0be20",
   "last_event_sequence": 1,
   "obligations": 20,
+  "root_automatic_code": "ongoing",
+  "root_claim_actions": [],
   "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
   "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+  "root_identity_schema": "ugts-chess-campaign-root-identity-1.0",
+  "root_identity_sha256": "8a9bd1387dcfd4741c77c6bc1fffd47620f2c4337e175b2d9fefa99bad967dd3",
+  "root_position_sha256": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
   "root_wdl": "unknown",
   "schema": "ugts-chess-campaign-2.0",
   "status_counts": {

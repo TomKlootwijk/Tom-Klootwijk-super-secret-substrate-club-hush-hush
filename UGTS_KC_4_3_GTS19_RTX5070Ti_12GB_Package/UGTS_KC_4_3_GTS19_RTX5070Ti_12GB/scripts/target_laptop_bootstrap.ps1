@@ -16,7 +16,7 @@ if (-not (Test-Path ".venv")) {
 & .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 Assert-NativeCommandSucceeded "pip upgrade"
-python -m pip install -e .
+python -m pip install -e ".[test]"
 Assert-NativeCommandSucceeded "Editable package installation"
 
 New-Item -ItemType Directory -Force evidence | Out-Null
@@ -39,4 +39,4 @@ if (Test-Path $Probe) {
   Assert-NativeCommandSucceeded "CUDA runtime probe"
 }
 
-Write-Host "Bootstrap complete. Read codex/TASKS.md and start M1; do not launch a long 19x19 campaign yet."
+Write-Host "Bootstrap complete. M1 is gated; continue the bounded M2 work in codex/TASKS.md."

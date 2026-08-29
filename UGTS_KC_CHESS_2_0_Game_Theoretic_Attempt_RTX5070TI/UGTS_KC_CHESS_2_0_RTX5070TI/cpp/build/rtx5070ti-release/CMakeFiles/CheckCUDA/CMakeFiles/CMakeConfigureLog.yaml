@@ -1614,8 +1614,8 @@ events:
     checks:
       - "Detecting CUDA compiler ABI info"
     directories:
-      source: "U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-x2e1ch"
-      binary: "U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-x2e1ch"
+      source: "U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-2j7wkz"
+      binary: "U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-2j7wkz"
     cmakeVariables:
       CMAKE_CUDA_ARCHITECTURES: "52"
       CMAKE_CUDA_FLAGS: "-D_WINDOWS -Xcompiler=\" /EHsc\""
@@ -1627,10 +1627,10 @@ events:
       variable: "CMAKE_CUDA_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-x2e1ch'
+        Change Dir: 'U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-2j7wkz'
         
-        Run Build Command(s): C:/Users/Tom/miniconda3/Scripts/ninja.exe -v cmTC_8b562
-        [1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler -D_MBCS  -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od" "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -Xcompiler=-MDd -Xcompiler=-RTC1 -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.3\\Modules\\CMakeCUDACompilerABI.cu -o CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_8b562.dir\\,-FS
+        Run Build Command(s): C:/Users/Tom/miniconda3/Scripts/ninja.exe -v cmTC_90cb2
+        [1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler -D_MBCS  -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od" "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -Xcompiler=-MDd -Xcompiler=-RTC1 -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.3\\Modules\\CMakeCUDACompilerABI.cu -o CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_90cb2.dir\\,-FS
         cl : Command line warning D9002 : ignoring unknown option '-v'
         CMakeCUDACompilerABI.cu
         cl : Command line warning D9002 : ignoring unknown option '-v'
@@ -1638,9 +1638,9 @@ events:
         nvcc warning : Support for offline compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
         CMakeCUDACompilerABI.cu
         cl : Command line warning D9002 : ignoring unknown option '-v'
-        tmpxft_0002e3d4_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp
+        tmpxft_000342cc_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp
         C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.3\\Modules\\CMakeCompilerCUDAArch.h(10): warning C4305: 'return': truncation from 'int' to 'bool'
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_8b562.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_8b562.exe /implib:cmTC_8b562.lib /pdb:cmTC_8b562.pdb /version:0.0  -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."
+        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_90cb2.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_90cb2.exe /implib:cmTC_90cb2.lib /pdb:cmTC_90cb2.pdb /version:0.0  -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."
         
       exitCode: 0
   -
@@ -1664,10 +1664,10 @@ events:
       Parsed CUDA implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
-        ignore line: [Change Dir: 'U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-x2e1ch']
+        ignore line: [Change Dir: 'U:/cpp/build/rtx5070ti-release/CMakeFiles/CheckCUDA/CMakeFiles/CMakeScratch/TryCompile-2j7wkz']
         ignore line: []
-        ignore line: [Run Build Command(s): C:/Users/Tom/miniconda3/Scripts/ninja.exe -v cmTC_8b562]
-        ignore line: [[1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler -D_MBCS  -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od" "--generate-code=arch=compute_52 code=[compute_52 sm_52]" -Xcompiler=-MDd -Xcompiler=-RTC1 -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.3\\Modules\\CMakeCUDACompilerABI.cu -o CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_8b562.dir\\ -FS]
+        ignore line: [Run Build Command(s): C:/Users/Tom/miniconda3/Scripts/ninja.exe -v cmTC_90cb2]
+        ignore line: [[1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler -D_MBCS  -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od" "--generate-code=arch=compute_52 code=[compute_52 sm_52]" -Xcompiler=-MDd -Xcompiler=-RTC1 -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.3\\Modules\\CMakeCUDACompilerABI.cu -o CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_90cb2.dir\\ -FS]
         ignore line: [cl : Command line warning D9002 : ignoring unknown option '-v']
         ignore line: [CMakeCUDACompilerABI.cu]
         ignore line: [cl : Command line warning D9002 : ignoring unknown option '-v']
@@ -1675,9 +1675,9 @@ events:
         ignore line: [nvcc warning : Support for offline compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).]
         ignore line: [CMakeCUDACompilerABI.cu]
         ignore line: [cl : Command line warning D9002 : ignoring unknown option '-v']
-        ignore line: [tmpxft_0002e3d4_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp]
+        ignore line: [tmpxft_000342cc_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp]
         ignore line: [C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.3\\Modules\\CMakeCompilerCUDAArch.h(10): warning C4305: 'return': truncation from 'int' to 'bool']
-        ignore line: [[2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_8b562.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_8b562.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_8b562.exe /implib:cmTC_8b562.lib /pdb:cmTC_8b562.pdb /version:0.0  -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."]
+        ignore line: [[2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && C:\\Users\\Tom\\miniconda3\\Lib\\site-packages\\cmake\\data\\bin\\cmake.exe -E vs_link_exe --intdir=CMakeFiles\\cmTC_90cb2.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100261~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_90cb2.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_90cb2.exe /implib:cmTC_90cb2.lib /pdb:cmTC_90cb2.pdb /version:0.0  -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."]
         ignore line: []
         ignore line: []
         linker tool for 'CUDA': C:/PROGRA~2/MICROS~2/2022/BUILDT~1/VC/Tools/MSVC/1444~1.352/bin/Hostx64/x64/link.exe

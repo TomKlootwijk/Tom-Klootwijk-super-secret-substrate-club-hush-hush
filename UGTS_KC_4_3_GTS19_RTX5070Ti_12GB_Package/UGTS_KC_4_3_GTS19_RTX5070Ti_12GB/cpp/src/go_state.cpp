@@ -1,8 +1,12 @@
 #include "ugts_go19/go_state.hpp"
 
+#include "ugts_go19/sha256.hpp"
+
 #include <algorithm>
 #include <array>
 #include <iomanip>
+#include <limits>
+#include <locale>
 #include <queue>
 #include <set>
 #include <sstream>
@@ -67,6 +71,13 @@ void ValidateStateForRules(const State& state, const Rules& rules) {
   }
   if (state.previous_board.has_value()) {
     ValidateBoard(*state.previous_board, expected_points, "previous board");
+    if (std::none_of(state.seen_boards.begin(), state.seen_boards.end(),
+                     [&](const auto& seen_board) {
+                       return seen_board == *state.previous_board;
+                     })) {
+      throw std::invalid_argument(
+          "positional-superko history does not contain previous board");
+    }
   }
 }
 
@@ -91,8 +102,15 @@ std::vector<std::vector<std::uint8_t>> CanonicalSeen(const State& state) {
   return seen;
 }
 
-// A compact deterministic non-cryptographic digest for diagnostics only.
-// Proof files use SHA-256 in the Python coordinator/verifier.
+void RequirePlyIncrementAvailable(const State& state) {
+  if (state.ply == std::numeric_limits<std::uint64_t>::max()) {
+    throw std::overflow_error(
+        "ply exceeds the uint64 campaign-metadata representation");
+  }
+}
+
+// A compact deterministic non-cryptographic board digest for diagnostics only.
+// Canonical proof-state content addresses use Sha256Hex instead.
 std::uint64_t Fnv1a64(const std::vector<std::uint8_t>& data,
                       std::uint64_t seed) {
   std::uint64_t hash = seed;
@@ -187,6 +205,7 @@ ApplyResult ApplyMove(const State& state, int move, const Rules& rules) {
   }
   const std::uint8_t next_player = Other(state.to_play);
   if (move == kPass) {
+    RequirePlyIncrementAvailable(state);
     State next = state;
     next.to_play = next_player;
     next.passes += 1;
@@ -231,6 +250,7 @@ ApplyResult ApplyMove(const State& state, int move, const Rules& rules) {
   if (BoardSeen(state, next.board)) {
     throw IllegalMove("positional superko");
   }
+  RequirePlyIncrementAvailable(state);
   next.seen_boards.push_back(next.board);
   next.previous_board = state.board;
   next.to_play = next_player;
@@ -259,11 +279,14 @@ std::vector<int> LegalMoves(const State& state, const Rules& rules,
       result.push_back(point);
     }
   }
-  if (include_pass) result.push_back(kPass);
+  if (include_pass) {
+    RequirePlyIncrementAvailable(state);
+    result.push_back(kPass);
+  }
   return result;
 }
 
-int AreaScore2(const State& state, const Rules& rules) {
+std::int64_t AreaScore2(const State& state, const Rules& rules) {
   ValidateStateForRules(state, rules);
   int black_area = 0;
   int white_area = 0;
@@ -308,7 +331,8 @@ int AreaScore2(const State& state, const Rules& rules) {
       white_area += static_cast<int>(region.size());
     }
   }
-  return 2 * (black_area - white_area) - rules.komi2;
+  return 2LL * static_cast<std::int64_t>(black_area - white_area) -
+         static_cast<std::int64_t>(rules.komi2);
 }
 
 std::vector<std::uint64_t> PackBlackBitplane(const State& state) {
@@ -337,6 +361,7 @@ std::string CanonicalStateJson(const State& state, const Rules& rules) {
   ValidateStateForRules(state, rules);
   const auto seen = CanonicalSeen(state);
   std::ostringstream stream;
+  stream.imbue(std::locale::classic());
   // Keys at every object level are lexicographically sorted, and there is no
   // insignificant whitespace. All string values are fixed ASCII or hex.
   stream << "{\"board_hex\":\"" << Hex(state.board)
@@ -359,6 +384,10 @@ std::string CanonicalStateJson(const State& state, const Rules& rules) {
   }
   stream << "],\"to_play\":" << static_cast<int>(state.to_play) << '}';
   return stream.str();
+}
+
+std::string CanonicalStateObjectId(const State& state, const Rules& rules) {
+  return Sha256Hex(CanonicalStateJson(state, rules));
 }
 
 bool ExactStateEqual(const State& left, const Rules& left_rules,

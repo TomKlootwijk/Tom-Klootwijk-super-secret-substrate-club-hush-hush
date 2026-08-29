@@ -2,18 +2,28 @@
 
 This package is the complete 3.9.2 release: the 3.9.1 substrate and artifacts plus the actual K-Kij-T / Grove native Android upgrade.
 
-Grove is native Android, not HTML5. It targets Mali-G720 MC7 / POCO X7 Pro 12 GB as the performance focus while keeping general Android fallback tiers.
+Grove's phone runtime is native Android rather than an HTML wrapper. The retained 2D workflow still
+exports HTML5. Mali-G720 MC7 / POCO X7 Pro 12 GB is the performance focus, with general Android
+fallback tiers.
 
 ## Desktop editor and first game
 
 The Grove engine work now includes an optional PySide6 desktop editor, deterministic visual-graph
-runtime, compact log-polar ECS components and direct APK build/install tooling. Core simulation and
+runtime, compact log-polar ECS components and direct APK build/install/open tooling. Core simulation and
 build commands remain dependency-free; Qt is only needed for the editor.
 
 UGTS Studio can add, copy, delete, select and move 2D entities or 3D nodes with undo/redo. The
 Inspector can assign 2D pictures, 3D shapes and materials; Wavefront OBJ shapes import as validated,
-undoable project resources. Logic Blocks are editable typed data, not generated source hidden behind
-the GUI.
+undoable project resources. For non-dynamic Mobile 3D nodes, **Movement Pattern** offers Off, Orbit,
+Spiral Out and Spiral In without exposing packed hexadecimal words. Orbit and spiral movers share one
+binary16 log-polar lookup profile; each authored mover becomes two unsigned 64-bit words and one
+24-byte sparse Android record. Dynamic nodes are guarded because physics already owns their transform.
+Logic Blocks are editable typed data, not generated source hidden behind the GUI.
+
+During desktop Preview, the **Logic Blocks** tab stays open in read-only mode. Its **Last Run** panel
+and block badges show execution order, values, chosen flow and errors from the current graph. The trail
+survives Stop so it can be inspected, but it is presentation state only: it never changes project
+data, is never serialized and contributes zero bytes to every export.
 
 On Windows, double-click `RUN_UGTS_STUDIO.cmd` in this folder for a one-click launch. It checks the
 editor dependency on first use and offers to install it only when needed.
@@ -34,7 +44,20 @@ python -m ugts_kc3 new-3d games\my_first_phone_game --title "My First Phone Game
 Start with [`docs/FIRST_10_MINUTES.md`](docs/FIRST_10_MINUTES.md). Technical decisions and honest
 boundaries are in [`docs/ENGINE_ARCHITECTURE.md`](docs/ENGINE_ARCHITECTURE.md).
 
-PCG is future TODO only.
+The Mobile 3D first-steps lesson now includes **Crystal Garden**. One authored static crystal carries a
+**Populate Area** recipe and becomes 18 deterministic display objects. A group may contain 2–256
+objects including its authored prototype; a project may contain 64 groups and 1,024 population
+objects in total. Android stores one 36-byte group record plus one shared 24-byte `KCSP392` header,
+regardless of the group's object count. Raising the count preserves the existing deterministic prefix.
+
+Populate Area is intentionally bounded decorative population, not general gameplay PCG. The editor
+rejects dynamic, moving, collider/Trigger Area, gameplay-tagged, Logic Block or Movement Pattern
+prototypes. Generated copies have no independent collider, graph, movement or gameplay identity.
+Desktop authoring shows at most 64 generated copies per group and 256 globally; glTF bakes copies as
+nodes, while native GLES draws generated copies with instancing and may keep a deterministic prefix
+under its visible-node quality budget. The current implementation does not prevent overlaps and has
+no per-copy frustum culling or LOD. Mobile 3D and Populate Area do not have a browser runtime; the
+retained HTML5 workflow remains the 2D path.
 
 ## Retained 3.9.1 substrate — Tom Klootwijk Signature Edition
 ## Vector Art, Deterministic 2D/3D Game Runtime and Native Android Source Target
@@ -56,8 +79,8 @@ vector assets + input + scene project
 3D/mobile authoring:
 meshes + materials + tagged nodes + camera/light/world
 -> deterministic 3D arcade oracle
--> glTF or compact KC3D392 scene pack
--> Android NativeActivity + C++20 + EGL/OpenGL ES 3.0
+-> glTF with baked decorative copies, or compact KC3D392 + optional KCSP392 population data
+-> Android NativeActivity + C++20 + EGL/OpenGL ES 3.0 instanced population rendering
 -> POCO signature / high / balanced / compatibility quality policy
 ```
 
@@ -92,14 +115,28 @@ PYTHONPATH=src python -m ugts_kc3 pack-3d   examples/tom_signature_arena_3d/proj
 PYTHONPATH=src python -m ugts_kc3 build-android   examples/tom_signature_arena_3d/project.json   build/UGTSKCKKijTGrove --apk
 ```
 
-The desktop editor can produce a Poco debug APK directly, optionally installing it when exactly one
-authorized ADB device is connected. Its blue **Deploy to Phone** toolbar action preflights ADB,
-builds into an editor-owned cache and installs in one operation. You can still open
-`android/UGTSKCKKijTGrove` in Android Studio.
+The desktop editor can produce a Poco debug APK directly. Its blue **Deploy to Phone** toolbar action
+preflights the one authorized ADB device, pins that device's serial for the entire operation, builds
+under the saved project's `.ugts-studio/deploy/<project-id>-android` folder, installs the APK and opens
+the game. It reads the exact flavor-aware `applicationId` emitted by Gradle and launches
+`<applicationId>/android.app.NativeActivity`; it does not guess a package name. Output distinguishes a
+build failure from an install failure and from an APK that installed but could not be opened. You can
+still open `android/UGTSKCKKijTGrove` in Android Studio.
 The checked-in native project contains a
 66-node interactive arena, `NativeActivity` lifecycle, fixed-step movement/gameplay, touch,
 keyboard and gamepad input, camera orbit/pinch, asset-loaded GLSL ES 3 shaders, depth/culling,
 dynamic-resolution framebuffer, high-refresh request and adaptive quality controller.
+
+Mobile 3D sensor colliders now emit non-physical Trigger Enter and Trigger Exit transitions. Those
+are portable Logic Block roots on desktop and in the Android C++ graph VM, for both world graphs and
+graphs bound to the matching sensor. Children can create one with **+ Trigger Area**, or select any
+3D object and turn on **Use as Trigger** in the **Trigger Area** Inspector group. Sphere uses Radius;
+Box uses Size X/Y/Z. These edits support Undo/Redo and save/load, and the Scene Tree and Resources
+panel label sensor objects as Trigger Areas.
+
+Select **Crystal Garden** in the same starter to change **Populate Area** object count, World number,
+area size, size variation and random turning. The change is one normal Undo/Redo operation and only
+the compact recipe is saved; the Resources panel reports it under **Populated Areas**.
 
 ## Retained 2D/browser workflow
 
@@ -125,25 +162,31 @@ print(world.state_hash())
 
 ## Validation status
 
-- The retained and new automated Python tests pass; the current count is reported by the verification command rather than frozen in this document.
 - Python source compilation and mobile-project JSON Schema validation pass.
 - The Python scene-pack compiler and independent C++ parser agree on the KC3D392 format-1 pack.
 - The host-native parser, POCO selector and adaptive-quality controller compile and execute.
 - The Android source tree, manifest, Gradle/CMake configuration, shaders and asset references pass
   static release checks.
+- Mobile 3D Trigger Enter/Exit roots and sensor overlap behavior have desktop/native parity, with
+  explicit sensor and per-step dispatch caps.
 - Wheel/source distributions build and install in a fresh environment.
-- The HTML5 runtime executes the full current 18-block graph vocabulary and passes headless JavaScript runtime checks.
-- The 352-test regression suite, native pointer-ID gesture harness and editor 2D/3D authoring smoke pass.
+- The HTML5 runtime executes the full current 20-block graph vocabulary, including sensor Trigger
+  Enter/Exit context, and passes headless JavaScript runtime checks.
+- All 412 Python regression tests, the native scatter/pointer-ID/Trigger Area harnesses and the editor 2D/3D
+  authoring smoke pass.
 - The actual child-friendly first-steps project compiles from this repository's long Windows path
-  to a 1,351,488-byte ARM64 Poco debug APK. Its native graph and packed log-polar assets are 308 and
-  914 bytes respectively.
+  to a 1,436,161-byte ARM64 Poco debug APK. Its two native learner graphs, packed log-polar asset and
+  18-object population recipe are 496, 914 and 60 bytes respectively.
 
-Captured evidence is under `validation/`.
+Current release evidence is summarized in [`docs/BUILD_STATUS_3_9_2.md`](docs/BUILD_STATUS_3_9_2.md).
+The `validation/` folder retains earlier captured evidence.
 
 ## Package layout
 
 - `src/ugts_kc3/mobile3d.py` — mobile-3D records, device policy and deterministic oracle.
 - `src/ugts_kc3/androidexport.py` — KC3D392 compiler/inspector and Android source exporter.
+- `src/ugts_kc3/polarpack.py` — sparse KCPK392 packed-movement asset and shared UGLUT2 profiles.
+- `src/ugts_kc3/scatter.py` / `scatterpack.py` — deterministic decorative populations and KCSP392.
 - `src/ugts_kc3/android_template/` — packaged NativeActivity/GLES3 template.
 - `android/UGTSKCKKijTGrove/` — generated Android Studio source project.
 - `examples/tom_signature_arena_3d/` — editable project, native pack and glTF.
@@ -156,10 +199,12 @@ Captured evidence is under `validation/`.
 
 ## Evidence boundary
 
-An ARM64 POCO-targeted APK has been compiled with the local Android SDK/NDK; its SHA-256 is
-`954ECB28E41F79C752151D7D9F9B21BD793106D8AA0DEE5923DD3CD5F069AE96`. No physical POCO X7 Pro is
-connected, so installation, device compatibility, sustained 120 Hz performance, thermal behavior
-and profiling remain unverified. Vulkan is a future backend hook. 4D is a design-contract TODO only.
+The current ARM64 POCO-targeted APK was compiled with the local Android SDK/NDK; its SHA-256 is
+`0696375DD496ADC6D71505749BB760E4EBF7F05D2A76030F0B38577BD022B3DD`. An authorized physical
+Xiaomi `2412DPC0AG` / `rodin` was detected as a Mali-G720 MC7, and the GUI deploy path installed and
+launched UGTS 3.9.2 on it. The phone disconnected before sustained frame, memory, touch and thermal
+capture, and the exact current hash above has not yet been confirmed on-device. Vulkan remains a future
+backend hook. 4D is a design-contract TODO only.
 
 ## Attribution
 

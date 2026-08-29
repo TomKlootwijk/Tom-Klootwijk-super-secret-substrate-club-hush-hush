@@ -1,0 +1,65 @@
+{
+  "schema": "ugts-chess-cpu-cuda-batch-parity-v1",
+  "comparison": "counts and all 256 move slots per position; excludes 64-byte header whose backend flag intentionally differs",
+  "batches": 5,
+  "positions": 528,
+  "moves": 15750,
+  "all_semantic_payloads_identical": true,
+  "records": [
+    {
+      "batch": "batch_000000",
+      "positions": 128,
+      "moves": 3626,
+      "cpu_seconds": 0.000399,
+      "cuda_payload_sha256": "441724e0c53e81d61167b3e08d0eee2e80065e3113504ad527f47f8765c13238",
+      "cpu_payload_sha256": "441724e0c53e81d61167b3e08d0eee2e80065e3113504ad527f47f8765c13238",
+      "semantic_payload_identical": true,
+      "full_file_expected_to_differ": true,
+      "full_file_difference": "output header backend flag: CUDA=1, CPU=0"
+    },
+    {
+      "batch": "batch_000001",
+      "positions": 128,
+      "moves": 3876,
+      "cpu_seconds": 0.000391,
+      "cuda_payload_sha256": "a04096dcd61a8880e9c5628e3224cd88b4883acdbcd650dd7bc113f7a5bd898f",
+      "cpu_payload_sha256": "a04096dcd61a8880e9c5628e3224cd88b4883acdbcd650dd7bc113f7a5bd898f",
+      "semantic_payload_identical": true,
+      "full_file_expected_to_differ": true,
+      "full_file_difference": "output header backend flag: CUDA=1, CPU=0"
+    },
+    {
+      "batch": "batch_000002",
+      "positions": 128,
+      "moves": 3821,
+      "cpu_seconds": 0.000402,
+      "cuda_payload_sha256": "dbd2ef0e1c0cc9fa4936b69b0949dbfac70333512d91829c9f90fc324f0757e3",
+      "cpu_payload_sha256": "dbd2ef0e1c0cc9fa4936b69b0949dbfac70333512d91829c9f90fc324f0757e3",
+      "semantic_payload_identical": true,
+      "full_file_expected_to_differ": true,
+      "full_file_difference": "output header backend flag: CUDA=1, CPU=0"
+    },
+    {
+      "batch": "batch_000003",
+      "positions": 128,
+      "moves": 3881,
+      "cpu_seconds": 0.000397,
+      "cuda_payload_sha256": "30edbcdb1c47c63d27ec56ea1048c63bf91f6001541c74aec64066922dd37b51",
+      "cpu_payload_sha256": "30edbcdb1c47c63d27ec56ea1048c63bf91f6001541c74aec64066922dd37b51",
+      "semantic_payload_identical": true,
+      "full_file_expected_to_differ": true,
+      "full_file_difference": "output header backend flag: CUDA=1, CPU=0"
+    },
+    {
+      "batch": "batch_000004",
+      "positions": 16,
+      "moves": 546,
+      "cpu_seconds": 0.000322,
+      "cuda_payload_sha256": "44e92bfa9352d48a2021984709fbadda949ac0d8428758015137f3e9e93e6de5",
+      "cpu_payload_sha256": "44e92bfa9352d48a2021984709fbadda949ac0d8428758015137f3e9e93e6de5",
+      "semantic_payload_identical": true,
+      "full_file_expected_to_differ": true,
+      "full_file_difference": "output header backend flag: CUDA=1, CPU=0"
+    }
+  ]
+}

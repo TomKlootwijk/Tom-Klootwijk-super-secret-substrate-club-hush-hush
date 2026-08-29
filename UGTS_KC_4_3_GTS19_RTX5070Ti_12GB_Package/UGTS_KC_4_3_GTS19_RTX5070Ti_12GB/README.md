@@ -37,8 +37,8 @@ cd UGTS_KC_4_3_GTS19_RTX5070Ti_12GB
 python -m venv .venv
 # Windows PowerShell: .venv\Scripts\Activate.ps1
 # Linux/macOS: source .venv/bin/activate
-python -m pip install -e .
-python -m unittest discover -s tests -v
+python -m pip install -e '.[test]'
+python -m pytest -q
 ugts-go19 selftest
 ugts-go19 solve-tiny --size 2 --komi2 1 \
   --certificate evidence/local_2x2_certificate.json
@@ -85,6 +85,30 @@ Do not allocate against the nominal 12 GB value. Query free VRAM at runtime and 
 - optional ordering heuristic: 7%.
 
 The exact transposition store is expected to spill to host RAM and then content-addressed NVMe segments. The GPU is a hot cache and batch engine, not the sole database.
+
+The current bounded persistence vertical slice is available as `pndag-tiny` for
+1×1/2×2 only. It can create or resume a collision-checked, self-validating JSON
+checkpoint; for example:
+
+```text
+python -m ugts_go19 pndag-tiny --size 2 --komi2 1 --threshold2 1 \
+  --additional-expansions 64 --checkpoint evidence/tiny-pndag.json
+python -m ugts_go19 pndag-tiny --size 2 --komi2 1 --threshold2 1 \
+  --additional-expansions 10000 --checkpoint evidence/tiny-pndag.json --resume
+```
+
+This command rejects boards above 2×2 and is not the production 19×19 search or
+a standalone proof certificate.
+
+The next M2 storage primitives are also present as bounded Python components:
+`PersistentHistory` supplies canonical structurally shared PSK roots,
+`persistent_engine` applies exact moves without rebuilding flat repetition sets,
+`PersistentProofNumberSearch` proves the complete 1×1/2×2 threshold fixtures on
+those roots, and `ImmutableSegmentStore` publishes exact board/history bytes
+through immutable binary segments and append-only manifests. Tests cover fresh-store order
+independence, injected index collisions, pinned restart, torn/corrupt files, and
+19×19-shaped one-move state data. These components are not yet wired into
+`ProofNumberDAG` and do not make the 19×19 root solved.
 
 ```bash
 ugts-go19 plan-memory --free-vram-gib 10

@@ -3,7 +3,7 @@
   "root_digest": "0b2b1f4498e950de4d6caaa42a6f95fde1ae012c009f353dba5b6862abf91766",
   "stats": {
     "cutoffs": 0,
-    "elapsed_seconds": 9.249994764104486e-05,
+    "elapsed_seconds": 9.379995753988624e-05,
     "max_ply": 2,
     "nodes": 5,
     "terminals": 2,

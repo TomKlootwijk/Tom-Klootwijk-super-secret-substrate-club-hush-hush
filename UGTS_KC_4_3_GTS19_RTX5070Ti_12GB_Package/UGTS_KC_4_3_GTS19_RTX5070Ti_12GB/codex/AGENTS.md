@@ -5,7 +5,7 @@ You are extending an exact proof system, not merely a strong Go player.
 ## First commands
 
 ```bash
-python -m unittest discover -s tests -v
+python -m pytest -q
 cmake -S cpp -B build-cpu -DUGTS_ENABLE_CUDA=OFF -DCMAKE_BUILD_TYPE=Release
 cmake --build build-cpu --config Release
 ctest --test-dir build-cpu --output-on-failure

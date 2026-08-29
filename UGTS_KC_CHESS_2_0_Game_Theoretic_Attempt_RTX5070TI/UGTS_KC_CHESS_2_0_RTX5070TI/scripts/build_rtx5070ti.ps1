@@ -9,6 +9,18 @@ function Assert-NativeSuccess([string]$Step) {
     }
 }
 
+function Invoke-CapturedNative([string]$CommandLine, [string]$LogPath, [string]$Step) {
+    # Merge stderr inside cmd.exe so Windows PowerShell does not convert native
+    # diagnostic lines into terminating NativeCommandError records.  Capture
+    # the process exit code before Tee-Object and always retain the full log.
+    $Output = & $env:ComSpec /d /s /c "$CommandLine 2>&1"
+    $ExitCode = $LASTEXITCODE
+    $Output | Tee-Object -FilePath $LogPath
+    if ($ExitCode -ne 0) {
+        throw "$Step failed with exit code $ExitCode; see $LogPath"
+    }
+}
+
 function Import-VsDevEnvironment {
     if (Get-Command cl.exe -ErrorAction SilentlyContinue) { return }
 
@@ -89,16 +101,17 @@ if (Test-Path -LiteralPath $BuildTarget) {
 $ShortDrive = New-ShortWorkspaceMount $Root
 Push-Location (Join-Path "${ShortDrive}\" "cpp")
 try {
-    & $env:ComSpec /d /s /c "cmake --preset rtx5070ti-release 2>&1" |
-        Tee-Object -FilePath "$Root/validation/device/cmake-configure-rtx5070ti.txt"
-    Assert-NativeSuccess "CMake SM120 configure"
+    Invoke-CapturedNative "cmake --preset rtx5070ti-release" `
+        "$Root/validation/device/cmake-configure-rtx5070ti.txt" `
+        "CMake SM120 configure"
     Write-Host "[3/7] Building"
-    & $env:ComSpec /d /s /c "cmake --build --preset rtx5070ti-release --parallel 2>&1" |
-        Tee-Object -FilePath "$Root/validation/device/cmake-build-rtx5070ti.txt"
-    Assert-NativeSuccess "SM120 build"
+    Invoke-CapturedNative "cmake --build --preset rtx5070ti-release --parallel" `
+        "$Root/validation/device/cmake-build-rtx5070ti.txt" `
+        "SM120 build"
     Write-Host "[4/7] Running native tests"
-    ctest --preset rtx5070ti-release --output-on-failure 2>&1 | Tee-Object -FilePath "$Root/validation/device/ctest-rtx5070ti.txt"
-    Assert-NativeSuccess "SM120 native tests"
+    Invoke-CapturedNative "ctest --preset rtx5070ti-release --output-on-failure" `
+        "$Root/validation/device/ctest-rtx5070ti.txt" `
+        "SM120 native tests"
 }
 finally {
     Pop-Location

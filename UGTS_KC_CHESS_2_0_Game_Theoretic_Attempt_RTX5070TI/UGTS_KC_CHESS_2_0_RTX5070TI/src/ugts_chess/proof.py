@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .constants import WHITE, color_name, opposite
+from .game_state import RULE_PROFILE_ID
 from .hashing import repetition_key, state_sha256
 from .position import Position
 from .rules import apply_move, in_check, insufficient_material, legal_moves, move_to_san, parse_uci_move
@@ -26,7 +27,10 @@ class MateProver:
     def __init__(self, *, node_budget: int = 2_000_000) -> None:
         self.node_budget = node_budget
         self.nodes = 0
-        self.memo: dict[tuple[str, int, int], tuple[bool, dict[str, Any] | None]] = {}
+        self.memo: dict[
+            tuple[str, int, int, tuple[tuple[str, int], ...]],
+            tuple[bool, dict[str, Any] | None],
+        ] = {}
 
     def _order(self, position: Position, moves: list[Any]) -> list[Any]:
         def key(move: Any) -> tuple[int, int, int, str]:
@@ -74,8 +78,11 @@ class MateProver:
         if position.turn != attacker and (position.halfmove_clock >= 100 or occurrences >= 3):
             return False, None
 
-        memo_key = (pos_hash, plies_left, attacker)
-        if path_counts.get(rep_key, 0) <= 1 and memo_key in self.memo:
+        # Repetition claims depend on every prior position count, not only the
+        # count of the current position.  A position/depth-only memo entry can
+        # therefore be unsound when reached through a different history.
+        memo_key = (pos_hash, plies_left, attacker, tuple(sorted(path_counts.items())))
+        if memo_key in self.memo:
             return self.memo[memo_key]
 
         role = "OR" if position.turn == attacker else "AND"
@@ -100,8 +107,7 @@ class MateProver:
                         "child": child_node,
                     }
                     result = (True, node)
-                    if path_counts.get(rep_key, 0) <= 1:
-                        self.memo[memo_key] = result
+                    self.memo[memo_key] = result
                     return result
             result = (False, None)
         else:
@@ -117,8 +123,7 @@ class MateProver:
                     if path_counts[child_key] == 0:
                         del path_counts[child_key]
                     result = (False, None)
-                    if path_counts.get(rep_key, 0) <= 1:
-                        self.memo[memo_key] = result
+                    self.memo[memo_key] = result
                     return result
                 ok, child_node = self._prove(child, attacker, plies_left - 1, path_counts)
                 path_counts[child_key] -= 1
@@ -126,8 +131,7 @@ class MateProver:
                     del path_counts[child_key]
                 if not ok or child_node is None:
                     result = (False, None)
-                    if path_counts.get(rep_key, 0) <= 1:
-                        self.memo[memo_key] = result
+                    self.memo[memo_key] = result
                     return result
                 replies.append({
                     "move": move.uci(),
@@ -144,8 +148,7 @@ class MateProver:
                     "replies": replies,
                 },
             )
-        if path_counts.get(rep_key, 0) <= 1:
-            self.memo[memo_key] = result
+        self.memo[memo_key] = result
         return result
 
     def prove(self, position: Position, *, max_plies: int, attacker: int | None = None) -> MateProofResult:
@@ -197,6 +200,8 @@ def _verify_node(position: Position, node: dict[str, Any], attacker: int, depth:
             raise ValueError("terminal mate winner is not the declared attacker")
         if node.get("result") != "checkmate":
             raise ValueError("terminal result must be checkmate")
+        if node.get("winner") != color_name(attacker):
+            raise ValueError("terminal winner field does not match the declared attacker")
         return 1
     if role == "terminal":
         raise ValueError("terminal node is not checkmate")
@@ -207,11 +212,15 @@ def _verify_node(position: Position, node: dict[str, Any], attacker: int, depth:
     expected_role = "OR" if position.turn == attacker else "AND"
     if role != expected_role:
         raise ValueError(f"expected {expected_role} node, got {role}")
+    if node.get("side") != color_name(position.turn):
+        raise ValueError("proof node side field does not match the position")
     if role == "OR":
         move_text = node.get("move")
         if not isinstance(move_text, str):
             raise ValueError("OR node lacks selected move")
         move = parse_uci_move(position, move_text)
+        if node.get("san") != move_to_san(position, move):
+            raise ValueError("OR node SAN does not match the selected move")
         child = node.get("child")
         if not isinstance(child, dict):
             raise ValueError("OR node lacks child")
@@ -240,6 +249,8 @@ def _verify_node(position: Position, node: dict[str, Any], attacker: int, depth:
         if not isinstance(item, dict) or not isinstance(item.get("child"), dict):
             raise ValueError("malformed AND reply")
         move = by_uci[str(item["move"])]
+        if item.get("san") != move_to_san(position, move):
+            raise ValueError("AND reply SAN does not match the legal move")
         child_position = apply_move(position, move)
         child_key = repetition_key(child_position)
         path_counts[child_key] = path_counts.get(child_key, 0) + 1
@@ -255,6 +266,12 @@ def _verify_node(position: Position, node: dict[str, Any], attacker: int, depth:
 
 
 def verify_mate_certificate(certificate: dict[str, Any]) -> dict[str, Any]:
+    if certificate.get("$schema") != "ugts-chess-mate-proof-2.0":
+        raise ValueError("unsupported mate-proof schema")
+    if certificate.get("schema_version") != "2.0.0":
+        raise ValueError("unsupported mate-proof schema version")
+    if certificate.get("rules_profile") != RULE_PROFILE_ID:
+        raise ValueError("unsupported mate-proof rules profile")
     if certificate.get("status") != "proved":
         raise ValueError("only proved certificates can be verified")
     root = Position.from_fen(str(certificate["root_fen"]))
@@ -264,16 +281,30 @@ def verify_mate_certificate(certificate: dict[str, Any]) -> dict[str, Any]:
     attacker = WHITE if attacker_name == "white" else 1 if attacker_name == "black" else -1
     if attacker not in (0, 1):
         raise ValueError("invalid attacker")
-    max_plies = int(certificate["max_plies"])
+    max_plies_value = certificate.get("max_plies")
+    if isinstance(max_plies_value, bool) or not isinstance(max_plies_value, int) or max_plies_value < 1:
+        raise ValueError("max_plies must be a positive integer")
+    max_plies = max_plies_value
     tree = certificate.get("tree")
     if not isinstance(tree, dict):
         raise ValueError("certificate lacks proof tree")
     root_key = repetition_key(root)
-    history_record = certificate.get("root_history_counts", [[root_key, 1]])
-    try:
-        path_counts = {str(key): int(count) for key, count in history_record}
-    except Exception as exc:
-        raise ValueError(f"invalid root history counts: {exc}") from exc
+    history_record = certificate.get("root_history_counts")
+    if not isinstance(history_record, list):
+        raise ValueError("root_history_counts must be an explicit list")
+    pairs: list[tuple[str, int]] = []
+    for item in history_record:
+        if not isinstance(item, list) or len(item) != 2:
+            raise ValueError("root_history_counts contains a malformed entry")
+        key, count = item
+        if not isinstance(key, str) or len(key) != 64 or any(character not in "0123456789abcdef" for character in key):
+            raise ValueError("root history repetition key must be a lowercase SHA-256 digest")
+        if isinstance(count, bool) or not isinstance(count, int) or not 1 <= count <= 5:
+            raise ValueError("root history occurrence counts must be integers in 1..5")
+        pairs.append((key, count))
+    if pairs != sorted(pairs) or len({key for key, _ in pairs}) != len(pairs):
+        raise ValueError("root_history_counts must be unique and sorted")
+    path_counts = dict(pairs)
     if path_counts.get(root_key, 0) < 1:
         raise ValueError("root history omits the root position")
     nodes = _verify_node(root, tree, attacker, 0, max_plies, path_counts)
