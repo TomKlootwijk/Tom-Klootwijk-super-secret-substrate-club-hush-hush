@@ -15,6 +15,8 @@ From this folder:
 ```powershell
 python -m pip install -e ".[editor]"
 python -m ugts_kc3 editor
+# Or launch the installed desktop command:
+ugts-studio
 ```
 
 Choose **My First Game** on the welcome screen. The starter has a player, one crystal and a tiny
@@ -81,4 +83,3 @@ Debug builds are for learning and owner-device testing. Publishing needs your ow
 
 Read the first plain-language message in Output. Do not change five things at once. Stop Play, undo
 the last change, and try a smaller change. Saving another copy before experimenting is always okay.
-

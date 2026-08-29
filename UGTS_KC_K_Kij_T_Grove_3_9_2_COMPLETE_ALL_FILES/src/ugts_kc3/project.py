@@ -19,6 +19,7 @@ from .version import __codename__, __game_project_schema__, __version__
 from .packed_kinematics import (
     attach_packed_kinematics,
     pack_ecs_document,
+    packed_kinematic_codecs_from_dict,
     unpack_ecs_document,
 )
 from .visual_graph import VisualGraph, attach_graph
@@ -61,6 +62,17 @@ def visual_graphs_from_rules(rules: Mapping[str, Any]) -> tuple[VisualGraph, ...
     if len(ids) != len(set(ids)):
         raise ValueError("scene contains duplicate visual graph ids")
     return tuple(sorted(graphs, key=lambda graph: graph.id))
+
+
+def visual_graph_binding_ids(raw: Any, label: str = "visual graph binding") -> tuple[str, ...]:
+    """Normalize one graph id or a list of ids without iterating text as characters."""
+    if raw is None:
+        return ()
+    if isinstance(raw, str):
+        return (raw,)
+    if isinstance(raw, (list, tuple)) and all(isinstance(item, str) for item in raw):
+        return tuple(raw)
+    raise TypeError(f"{label} must be text or a list of text graph ids")
 
 
 def _normalize_json_numbers(value: Any) -> Any:
@@ -370,6 +382,25 @@ class GameProject:
                 capture(f"tilemaps.{tilemap_id}.layers.{layer.name}", "tilemap.invalid", lambda l=layer: l.__post_init__())
         entity_total = 0
         graph_total = 0
+        graph_binding_total = 0
+        packed_profile_data = self.build.get("packed_kinematic_profiles", {})
+        packed_profile_ids = {"default"}
+        if not isinstance(packed_profile_data, Mapping):
+            issues.append(ProjectIssue(
+                "error", "packed_kinematic.profiles_type",
+                "build.packed_kinematic_profiles must be an object",
+                "build.packed_kinematic_profiles",
+            ))
+            packed_profile_data = {}
+        try:
+            packed_profile_ids = set(
+                packed_kinematic_codecs_from_dict(packed_profile_data)
+            )
+        except (TypeError, ValueError) as exc:
+            issues.append(ProjectIssue(
+                "error", "packed_kinematic.profile_invalid", str(exc),
+                "build.packed_kinematic_profiles",
+            ))
         for scene_id, scene in sorted(self.scenes.items()):
             capture(f"scenes.{scene_id}", "scene.invalid", scene.validate)
             entity_total += len(scene.entities)
@@ -385,27 +416,46 @@ class GameProject:
                     f"scenes.{scene_id}.rules.visual_graphs",
                 ))
             graph_ids = {graph.id for graph in graphs}
+            try:
+                world_bindings = visual_graph_binding_ids(
+                    scene.rules.get("world_graphs"),
+                    f"scene {scene_id} world_graphs",
+                )
+                graph_binding_total += len(world_bindings)
+                for graph_id in world_bindings:
+                    if graph_id not in graph_ids:
+                        issues.append(ProjectIssue(
+                            "error", "visual_graph.unknown",
+                            f"scene {scene_id} references unknown world visual graph {graph_id}",
+                            f"scenes.{scene_id}.rules.world_graphs",
+                        ))
+            except TypeError as exc:
+                issues.append(ProjectIssue(
+                    "error", "visual_graph.binding_type", str(exc),
+                    f"scenes.{scene_id}.rules.world_graphs",
+                ))
             for tilemap_id in scene.tilemaps:
                 if tilemap_id not in self.tilemaps:
                     issues.append(ProjectIssue("error", "tilemap.unknown", f"scene references unknown tilemap {tilemap_id}", f"scenes.{scene_id}.tilemaps"))
             for entity in scene.entities:
-                binding = entity.metadata.get("visual_graph")
-                bindings = (binding,) if isinstance(binding, str) else binding
-                if bindings is not None:
-                    if not isinstance(bindings, (list, tuple)):
-                        issues.append(ProjectIssue(
-                            "error", "visual_graph.binding_type",
-                            f"entity {entity.id} visual_graph binding must be text or a list",
-                            f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
-                        ))
-                    else:
-                        for graph_id in bindings:
-                            if str(graph_id) not in graph_ids:
-                                issues.append(ProjectIssue(
-                                    "error", "visual_graph.unknown",
-                                    f"entity {entity.id} references unknown visual graph {graph_id}",
-                                    f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
-                                ))
+                try:
+                    bindings = visual_graph_binding_ids(
+                        entity.metadata.get("visual_graph"),
+                        f"entity {entity.id} visual_graph binding",
+                    )
+                    graph_binding_total += len(bindings)
+                    for graph_id in bindings:
+                        if graph_id not in graph_ids:
+                            issues.append(ProjectIssue(
+                                "error", "visual_graph.unknown",
+                                f"entity {entity.id} references unknown visual graph {graph_id}",
+                                f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
+                            ))
+                except TypeError as exc:
+                    issues.append(ProjectIssue(
+                        "error", "visual_graph.binding_type", str(exc),
+                        f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
+                    ))
                 renderer = entity.components.get("vector_renderer")
                 if renderer and renderer.get("asset_id") not in self.vector_assets.assets:
                     issues.append(
@@ -417,6 +467,14 @@ class GameProject:
                         )
                     )
                 for component_name, component in entity.components.items():
+                    if component_name == "packed_kinematic" and isinstance(component, Mapping):
+                        profile_id = str(component.get("profile", "default"))
+                        if profile_id not in packed_profile_ids:
+                            issues.append(ProjectIssue(
+                                "error", "packed_kinematic.profile_unknown",
+                                f"entity {entity.id} references unknown packed kinematic profile {profile_id}",
+                                f"scenes.{scene_id}.entities.{entity.id}.components.packed_kinematic.profile",
+                            ))
                     sound = component.get("sound") if isinstance(component, Mapping) else None
                     if sound is not None and sound not in self.audio.cues:
                         issues.append(ProjectIssue("error", "audio.unknown", f"entity {entity.id} references unknown sound cue {sound}", f"scenes.{scene_id}.entities.{entity.id}.components.{component_name}"))
@@ -430,6 +488,8 @@ class GameProject:
                 "tilemap_count": len(self.tilemaps),
                 "action_count": len(self.input_map.actions),
                 "visual_graph_count": graph_total,
+                "visual_graph_binding_count": graph_binding_total,
+                "packed_kinematic_profile_count": len(packed_profile_ids),
             },
         )
         if raise_on_error and not report.passed:
@@ -438,6 +498,7 @@ class GameProject:
         return report
 
     def instantiate_world(self, scene_id: str | None = None, *, fixed_dt: float = 1.0 / 60.0) -> GameWorld:
+        self.validate()
         scene = self.scenes[scene_id or self.start_scene]
         world = GameWorld(fixed_dt=fixed_dt, gravity=scene.rules.get("gravity", (0, 0)))
         world.state = copy.deepcopy(dict(scene.initial_state))
@@ -448,12 +509,19 @@ class GameProject:
             entity.active = spec.active
             for name, data in spec.components.items():
                 world.add_component(spec.id, component_from_dict(name, data), name)
-        attach_packed_kinematics(world)
+        attach_packed_kinematics(
+            world,
+            codecs=packed_kinematic_codecs_from_dict(
+                self.build.get("packed_kinematic_profiles", {})
+            ),
+        )
         graphs = {graph.id: graph for graph in visual_graphs_from_rules(scene.rules)}
         bindings = []
         for spec in scene.entities:
-            raw = spec.metadata.get("visual_graph")
-            graph_ids = (raw,) if isinstance(raw, str) else tuple(raw or ())
+            graph_ids = visual_graph_binding_ids(
+                spec.metadata.get("visual_graph"),
+                f"entity {spec.id} visual_graph binding",
+            )
             for graph_id in graph_ids:
                 bindings.append(attach_graph(
                     world,
@@ -461,7 +529,9 @@ class GameProject:
                     entity_id=spec.id,
                     name=f"visual_graph:{scene.id}:{spec.id}:{graph_id}",
                 ))
-        for graph_id in scene.rules.get("world_graphs", ()):
+        for graph_id in visual_graph_binding_ids(
+            scene.rules.get("world_graphs"), f"scene {scene.id} world_graphs"
+        ):
             bindings.append(attach_graph(
                 world,
                 graphs[str(graph_id)],

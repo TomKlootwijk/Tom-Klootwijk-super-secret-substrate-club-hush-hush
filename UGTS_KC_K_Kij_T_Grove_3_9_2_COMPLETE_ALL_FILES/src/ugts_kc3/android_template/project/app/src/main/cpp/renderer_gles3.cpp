@@ -174,7 +174,7 @@ void RendererGles3::render(const ScenePack& scene,const std::vector<NodeData>& n
 
     std::uint32_t drawn=0;
     for (const auto& node:nodes) {
-        if (!node.alive || drawn>=maxNodes || node.meshIndex>=meshes_.size() || node.materialIndex>=scene.materials.size()) continue;
+        if (!node.alive || !node.active || drawn>=maxNodes || node.meshIndex>=meshes_.size() || node.materialIndex>=scene.materials.size()) continue;
         const auto& gpu=meshes_[node.meshIndex];
         const auto& material=scene.materials[node.materialIndex];
         const auto model=trs(node.translation,node.rotation,node.scale);

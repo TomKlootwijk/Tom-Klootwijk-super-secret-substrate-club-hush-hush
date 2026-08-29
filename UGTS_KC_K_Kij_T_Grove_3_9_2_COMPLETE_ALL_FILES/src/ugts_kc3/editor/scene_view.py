@@ -23,7 +23,6 @@ from PySide6.QtWidgets import (
     QGraphicsItem,
     QGraphicsItemGroup,
     QGraphicsPathItem,
-    QGraphicsPolygonItem,
     QGraphicsRectItem,
     QGraphicsScene,
     QGraphicsSimpleTextItem,
@@ -31,10 +30,10 @@ from PySide6.QtWidgets import (
 )
 
 from ..math3d import compose_trs, transform_point
-from ..mobile3d import Mobile3DProject
+from ..mobile3d import Mobile3DProject, Node3DRecord
 from ..project import EntitySpec, GameProject
 from ..vector2d import LinearGradient, RadialGradient, VectorAsset2D, VectorPath
-from .document import EditorDocument, SelectionRef
+from .document import EditorDocument
 
 
 _RGBA_RE = re.compile(
@@ -255,6 +254,7 @@ class SceneViewport(QGraphicsView):
         self._playing = False
         self._panning = False
         self._pan_origin = QPointF()
+        self._mesh_items: dict[str, ProjectedMeshItem] = {}
         self.pressed_keys: set[str] = set()
         self.scene().selectionChanged.connect(self._scene_selection_changed)
 
@@ -274,7 +274,16 @@ class SceneViewport(QGraphicsView):
 
     def set_runtime_state(self, state: Mapping[str, Mapping[str, Any]] | None) -> None:
         self._runtime_state = state
-        self.refresh(keep_view=True)
+        if (
+            state is not None
+            and self._document is not None
+            and isinstance(self._document.project, Mobile3DProject)
+            and self._mesh_items
+        ):
+            self._update_3d_runtime(self._document.project, state)
+            self.viewport().update()
+        else:
+            self.refresh(keep_view=True)
 
     def set_selected_id(self, object_id: str | None) -> None:
         if object_id == self._selected_id:
@@ -288,6 +297,7 @@ class SceneViewport(QGraphicsView):
         self._rendering = True
         try:
             self.scene().clear()
+            self._mesh_items.clear()
             if self._document is None or self._document.project is None:
                 self._render_empty()
             elif isinstance(self._document.project, GameProject):
@@ -488,47 +498,16 @@ class SceneViewport(QGraphicsView):
 
         projector = _PerspectiveProjector(project, width, height)
         self._add_3d_grid(projector, project)
-        node_faces: dict[str, list[tuple[float, QPolygonF, QColor]]] = {}
-        light_direction = _normalized(tuple(-value for value in project.light.direction))
         for node in project.nodes:
             runtime = self._runtime_state.get(node.id) if self._runtime_state else None
-            translation = node.transform.translation if runtime is None else runtime.get("translation", node.transform.translation)
-            rotation = node.transform.rotation if runtime is None else runtime.get("rotation", node.transform.rotation)
-            scale = node.transform.scale if runtime is None else runtime.get("scale", node.transform.scale)
-            matrix = compose_trs(translation, rotation, scale)
-            mesh = project.meshes.get(node.mesh_id)
-            material = project.materials.get(node.material_id)
-            if mesh is None or material is None:
+            faces = self._project_node_faces(project, node, projector, runtime)
+            if not faces:
                 continue
-            world_vertices = [transform_point(matrix, vertex) for vertex in mesh.vertices]
-            for ia, ib, ic in mesh.triangles:
-                points3d = (world_vertices[ia], world_vertices[ib], world_vertices[ic])
-                normal = _normalized(_cross(_sub(points3d[1], points3d[0]), _sub(points3d[2], points3d[0])))
-                center = tuple(sum(point[axis] for point in points3d) / 3.0 for axis in range(3))
-                if not material.double_sided and _dot(normal, _sub(project.camera.position, center)) <= 0:
-                    continue
-                projected = [projector.project(point) for point in points3d]
-                if any(point is None for point in projected):
-                    continue
-                screen_points = [point[0] for point in projected if point is not None]
-                depth = sum(point[1] for point in projected if point is not None) / 3.0
-                diffuse = max(0.0, _dot(normal, light_direction))
-                brightness = min(1.7, project.light.ambient + diffuse * project.light.intensity)
-                base_color = material.base_color
-                emissive = material.emissive
-                color = QColor.fromRgbF(
-                    min(1.0, base_color[0] * brightness * project.light.color[0] + emissive[0]),
-                    min(1.0, base_color[1] * brightness * project.light.color[1] + emissive[1]),
-                    min(1.0, base_color[2] * brightness * project.light.color[2] + emissive[2]),
-                    min(1.0, base_color[3]),
-                )
-                node_faces.setdefault(node.id, []).append((depth, QPolygonF(screen_points), color))
-
-        for node_id, faces in node_faces.items():
-            item = ProjectedMeshItem(node_id, faces, node_id == self._selected_id)
+            item = ProjectedMeshItem(node.id, faces, node.id == self._selected_id)
             average_depth = sum(face[0] for face in faces) / len(faces)
             item.setZValue(-average_depth)
             self.scene().addItem(item)
+            self._mesh_items[node.id] = item
         if self._selected_id:
             self._add_3d_gizmo(projector, project, self._selected_id)
 
@@ -542,6 +521,73 @@ class SceneViewport(QGraphicsView):
         hint.setPos(22, height - 38)
         hint.setZValue(1000000)
         self.scene().addItem(hint)
+
+    def _project_node_faces(
+        self,
+        project: Mobile3DProject,
+        node: Node3DRecord,
+        projector: _PerspectiveProjector,
+        runtime: Mapping[str, Any] | None,
+    ) -> list[tuple[float, QPolygonF, QColor]]:
+        translation = node.transform.translation if runtime is None else runtime.get("translation", node.transform.translation)
+        rotation = node.transform.rotation if runtime is None else runtime.get("rotation", node.transform.rotation)
+        scale = node.transform.scale if runtime is None else runtime.get("scale", node.transform.scale)
+        matrix = compose_trs(translation, rotation, scale)
+        mesh = project.meshes.get(node.mesh_id)
+        material = project.materials.get(node.material_id)
+        if mesh is None or material is None:
+            return []
+        world_vertices = [transform_point(matrix, vertex) for vertex in mesh.vertices]
+        light_direction = _normalized(tuple(-value for value in project.light.direction))
+        faces: list[tuple[float, QPolygonF, QColor]] = []
+        for ia, ib, ic in mesh.triangles:
+            points3d = (world_vertices[ia], world_vertices[ib], world_vertices[ic])
+            normal = _normalized(_cross(_sub(points3d[1], points3d[0]), _sub(points3d[2], points3d[0])))
+            center = tuple(sum(point[axis] for point in points3d) / 3.0 for axis in range(3))
+            if not material.double_sided and _dot(normal, _sub(project.camera.position, center)) <= 0:
+                continue
+            projected = [projector.project(point) for point in points3d]
+            if any(point is None for point in projected):
+                continue
+            screen_points = [point[0] for point in projected if point is not None]
+            depth = sum(point[1] for point in projected if point is not None) / 3.0
+            diffuse = max(0.0, _dot(normal, light_direction))
+            brightness = min(1.7, project.light.ambient + diffuse * project.light.intensity)
+            base_color = material.base_color
+            emissive = material.emissive
+            color = QColor.fromRgbF(
+                min(1.0, base_color[0] * brightness * project.light.color[0] + emissive[0]),
+                min(1.0, base_color[1] * brightness * project.light.color[1] + emissive[1]),
+                min(1.0, base_color[2] * brightness * project.light.color[2] + emissive[2]),
+                min(1.0, base_color[3]),
+            )
+            faces.append((depth, QPolygonF(screen_points), color))
+        return faces
+
+    def _update_3d_runtime(
+        self, project: Mobile3DProject, state: Mapping[str, Mapping[str, Any]]
+    ) -> None:
+        projector = _PerspectiveProjector(project, 1280.0, 720.0)
+        animated_ids = {
+            node.id for node in project.nodes if node.dynamic or "player" in node.tags
+        }
+        animated_ids.update(node_id for node_id in self._mesh_items if node_id not in state)
+        for node in project.nodes:
+            if node.id not in animated_ids:
+                continue
+            previous = self._mesh_items.pop(node.id, None)
+            if previous is not None and previous.scene() is self.scene():
+                self.scene().removeItem(previous)
+            runtime = state.get(node.id)
+            if runtime is None:
+                continue
+            faces = self._project_node_faces(project, node, projector, runtime)
+            if not faces:
+                continue
+            item = ProjectedMeshItem(node.id, faces, node.id == self._selected_id)
+            item.setZValue(-sum(face[0] for face in faces) / len(faces))
+            self.scene().addItem(item)
+            self._mesh_items[node.id] = item
 
     def _add_3d_grid(self, projector: _PerspectiveProjector, project: Mobile3DProject) -> None:
         floor = project.world.floor_y

@@ -965,8 +965,23 @@ class GraphBinding:
         self.ready_result = self.runtime.ready(self.world, entity_id=self.entity_id)
         return self.ready_result
 
+    def owner_is_active(self) -> bool:
+        """World graphs always run; entity graphs follow their owner's lifecycle."""
+        if self.entity_id is None:
+            return True
+        entities = getattr(self.world, "entities", None)
+        if not isinstance(entities, Mapping):
+            return False
+        entity = entities.get(self.entity_id)
+        return bool(
+            entity is not None
+            and getattr(entity, "alive", True)
+            and getattr(entity, "active", True)
+        )
+
     def update(self, world: Any, dt: float, input_frame: Any) -> None:
-        self.last_result = self.runtime.tick(world, dt, input_frame, entity_id=self.entity_id)
+        if self.owner_is_active():
+            self.last_result = self.runtime.tick(world, dt, input_frame, entity_id=self.entity_id)
 
 
 def attach_graph(

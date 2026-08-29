@@ -11,7 +11,6 @@ from PySide6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
     QDoubleSpinBox,
-    QFileDialog,
     QFormLayout,
     QFrame,
     QGroupBox,
@@ -21,8 +20,6 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
-    QScrollArea,
-    QSizePolicy,
     QStackedWidget,
     QTabWidget,
     QTreeWidget,
@@ -32,7 +29,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..mobile3d import Mobile3DProject
 from ..project import GameProject
 from .document import (
     EditorDocument,

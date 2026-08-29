@@ -71,6 +71,7 @@ struct NodeData {
     float mass = 1.0f;
     float restitution = 0.35f;
     std::uint32_t tagMask = 0;
+    bool active = true;
     bool alive = true;
 };
 

@@ -25,7 +25,8 @@ TAU = math.tau
 _POSE_BITS = (20, 18, 14, 12)  # log-radius, angle, tick, heading
 _POSE_MAGIC = b"UGPL1"
 _ARCHIVE_MAGIC = b"UGECS1"
-_LUT_MAGIC = b"UGLUT1"
+_LUT_MAGIC = b"UGLUT2"
+_LUT_MAGIC_V1 = b"UGLUT1"
 
 
 def _finite(value: float, label: str) -> float:
@@ -110,6 +111,24 @@ class LogPolarProfile:
         radius = self.r0 * math.exp(_clamp(float(rho), self.rho_min, self.rho_max))
         return radius * math.cos(theta), radius * math.sin(theta)
 
+    def to_dict(self) -> dict[str, float]:
+        return {
+            "r0": self.r0,
+            "rho_min": self.rho_min,
+            "rho_max": self.rho_max,
+            "core_radius": self.core_radius,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any] | None) -> "LogPolarProfile":
+        data = data or {}
+        return cls(
+            float(data.get("r0", 1.0)),
+            float(data.get("rho_min", -12.0)),
+            float(data.get("rho_max", 12.0)),
+            float(data.get("core_radius", 1.0e-6)),
+        )
+
 
 @dataclass(frozen=True)
 class PolarPose:
@@ -138,6 +157,19 @@ class MotionRange:
         for name, value in self.__dict__.items():
             if _finite(value, name.replace("_", " ")) <= 0:
                 raise ValueError(f"{name.replace('_', ' ')} range must be positive")
+
+    def to_dict(self) -> dict[str, float]:
+        return dict(self.__dict__)
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any] | None) -> "MotionRange":
+        data = data or {}
+        return cls(
+            float(data.get("rho_velocity", 16.0)),
+            float(data.get("theta_velocity", 32.0)),
+            float(data.get("rho_acceleration", 64.0)),
+            float(data.get("theta_acceleration", 128.0)),
+        )
 
 
 @dataclass
@@ -330,9 +362,33 @@ class PackedKinematicCodec:
         return word
 
 
+def packed_kinematic_codecs_from_dict(
+    profiles: Mapping[str, Any] | None = None,
+) -> dict[str, PackedKinematicCodec]:
+    """Build an explicit profile-id registry for project/runtime composition."""
+    result: dict[str, PackedKinematicCodec] = {"default": PackedKinematicCodec()}
+    for raw_id, raw_config in (profiles or {}).items():
+        profile_id = str(raw_id).strip()
+        if not profile_id:
+            raise ValueError("packed kinematic profile id cannot be empty")
+        if not isinstance(raw_config, Mapping):
+            raise TypeError(f"packed kinematic profile {profile_id!r} must be an object")
+        profile_data = raw_config.get("profile", raw_config)
+        motion_data = raw_config.get("motion_range", {})
+        if not isinstance(profile_data, Mapping) or not isinstance(motion_data, Mapping):
+            raise TypeError(f"packed kinematic profile {profile_id!r} fields must be objects")
+        result[profile_id] = PackedKinematicCodec(
+            LogPolarProfile.from_dict(profile_data), MotionRange.from_dict(motion_data)
+        )
+    return result
+
+
 def make_packed_kinematic_system(
     codec: PackedKinematicCodec | None = None,
     lut: "PolarLookupTable | None" = None,
+    *,
+    codecs: Mapping[str, PackedKinematicCodec] | None = None,
+    luts: Mapping[str, "PolarLookupTable"] | None = None,
 ):
     """Create a normal ``GameWorld`` system that composes packed motion with Transform2D.
 
@@ -340,17 +396,28 @@ def make_packed_kinematic_system(
     ordinary system means a learner can remove, reorder, or replace it without
     hidden engine state.
     """
-    codec = codec or PackedKinematicCodec()
+    if codec is not None and codecs is not None:
+        raise ValueError("pass either one default codec or a profile codec registry, not both")
+    codec_registry = dict(codecs or {"default": codec or PackedKinematicCodec()})
+    lut_registry = dict(luts or {})
+    if lut is not None:
+        lut_registry.setdefault("default", lut)
 
     def packed_kinematic_system(world, dt: float, input_frame) -> None:
         del input_frame
         for entity in world.query("packed_kinematic"):
             packed = entity.components["packed_kinematic"]
-            advanced = codec.advance(packed, dt)
+            selected = codec_registry.get(packed.profile_id)
+            if selected is None:
+                raise ValueError(
+                    f"packed kinematic component references unknown profile {packed.profile_id!r}"
+                )
+            selected_lut = lut_registry.get(packed.profile_id)
+            advanced = selected.advance(packed, dt)
             entity.components["packed_kinematic"] = advanced
             transform = entity.components.get("transform")
             if transform is not None:
-                state = codec.cartesian_state(advanced, lut)
+                state = selected.cartesian_state(advanced, selected_lut)
                 transform.position = state["position"]
                 transform.rotation = state["pose"].heading
 
@@ -362,12 +429,27 @@ def attach_packed_kinematics(
     world,
     codec: PackedKinematicCodec | None = None,
     lut: "PolarLookupTable | None" = None,
+    *,
+    codecs: Mapping[str, PackedKinematicCodec] | None = None,
+    luts: Mapping[str, "PolarLookupTable"] | None = None,
 ) -> bool:
     """Attach the packed system when a world contains at least one such component."""
-    if not world.query("packed_kinematic", active_only=False):
+    entities = world.query("packed_kinematic", active_only=False)
+    if not entities:
         return False
+    if codec is not None and codecs is not None:
+        raise ValueError("pass either one default codec or a profile codec registry, not both")
+    codec_registry = dict(codecs or {"default": codec or PackedKinematicCodec()})
+    required_profiles = {
+        entity.components["packed_kinematic"].profile_id for entity in entities
+    }
+    missing = sorted(required_profiles - set(codec_registry))
+    if missing:
+        raise ValueError(
+            "packed kinematic components reference unknown profiles: " + ", ".join(missing)
+        )
     world.add_system(
-        make_packed_kinematic_system(codec, lut),
+        make_packed_kinematic_system(lut=lut, codecs=codec_registry, luts=luts),
         phase="pre_physics",
         priority=-100,
         name="packed_polar_kinematics",
@@ -433,29 +515,42 @@ class PolarLookupTable:
         return self.radii[low] + (self.radii[high] - self.radii[low]) * fraction
 
     def to_bytes(self) -> bytes:
+        # Binary16 tops out at 65,504 while the useful default log-radius
+        # profile reaches exp(12).  One shared scale keeps all radius samples
+        # representable without increasing the per-entry cost.
+        radius_scale = max(1.0, max(self.radii) / 60000.0)
         header = struct.pack(
-            "<6sHdddd",
+            "<6sHddddd",
             _LUT_MAGIC,
             self.resolution,
             self.profile.r0,
             self.profile.rho_min,
             self.profile.rho_max,
             self.profile.core_radius,
+            radius_scale,
         )
-        values = self.sine + self.cosine + self.radii
+        values = self.sine + self.cosine + tuple(radius / radius_scale for radius in self.radii)
         return header + struct.pack(f"<{len(values)}e", *values)
 
     @classmethod
     def from_bytes(cls, data: bytes) -> "PolarLookupTable":
-        header_format = "<6sHdddd"
+        if len(data) < 6:
+            raise ValueError("polar lookup data is truncated")
+        magic = data[:6]
+        if magic == _LUT_MAGIC:
+            header_format = "<6sHddddd"
+        elif magic == _LUT_MAGIC_V1:
+            header_format = "<6sHdddd"
+        else:
+            raise ValueError("polar lookup magic does not match UGLUT1 or UGLUT2")
         header_size = struct.calcsize(header_format)
         if len(data) < header_size:
             raise ValueError("polar lookup data is truncated")
-        magic, resolution, r0, rho_min, rho_max, core_radius = struct.unpack(
-            header_format, data[:header_size]
-        )
-        if magic != _LUT_MAGIC:
-            raise ValueError("polar lookup magic does not match UGLUT1")
+        header = struct.unpack(header_format, data[:header_size])
+        _, resolution, r0, rho_min, rho_max, core_radius, *extra = header
+        radius_scale = float(extra[0]) if extra else 1.0
+        if not math.isfinite(radius_scale) or radius_scale <= 0:
+            raise ValueError("polar lookup radius scale must be positive and finite")
         count = int(resolution) * 3
         expected = header_size + count * 2
         if len(data) != expected:
@@ -466,7 +561,7 @@ class PolarLookupTable:
             resolution,
             tuple(values[:resolution]),
             tuple(values[resolution:resolution * 2]),
-            tuple(values[resolution * 2:]),
+            tuple(radius * radius_scale for radius in values[resolution * 2:]),
         )
 
 

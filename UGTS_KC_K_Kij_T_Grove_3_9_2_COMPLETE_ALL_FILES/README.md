@@ -13,6 +13,8 @@ build commands remain dependency-free; Qt is only needed for the editor.
 ```powershell
 python -m pip install -e ".[editor]"
 python -m ugts_kc3 editor
+# After installation, the no-console desktop shortcut is also available:
+ugts-studio
 
 # A child-friendly first project with one readable logic graph
 python -m ugts_kc3 new games\my_first_game --title "My First Game"

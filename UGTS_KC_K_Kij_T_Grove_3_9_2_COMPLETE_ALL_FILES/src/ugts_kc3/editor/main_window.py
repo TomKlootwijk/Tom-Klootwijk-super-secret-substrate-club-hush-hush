@@ -8,11 +8,10 @@ from typing import Any, Mapping
 
 from PySide6.QtCore import QObject, QThread, QTimer, Qt, Signal, Slot
 from PySide6.QtGui import (
-    QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QIcon, QKeySequence,
+    QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QKeySequence,
     QUndoCommand, QUndoStack,
 )
 from PySide6.QtWidgets import (
-    QApplication,
     QDockWidget,
     QFileDialog,
     QHBoxLayout,
@@ -31,6 +30,8 @@ from PySide6.QtWidgets import (
 from ..androidexport import build_android_project, write_mobile3d_gltf
 from ..mobile3d import Mobile3DProject
 from ..project import GameProject
+from ..templates import first_steps_project
+from ..templates3d import blank_mobile3d_project
 from ..webexport import build_html5
 from .document import EditorDocument, SelectionRef
 from .graph import GraphPage
@@ -199,6 +200,11 @@ class EditorMainWindow(QMainWindow):
         self.assets_dock = self._dock("Resources & Project", self.assets_project, Qt.DockWidgetArea.LeftDockWidgetArea)
         self.inspector_dock = self._dock("Inspector", self.inspector, Qt.DockWidgetArea.RightDockWidgetArea)
         self.output_dock = self._dock("Output & Builds", self.build_output, Qt.DockWidgetArea.BottomDockWidgetArea)
+        for dock in (self.hierarchy_dock, self.assets_dock):
+            dock.setMinimumWidth(230)
+            dock.setMaximumWidth(350)
+        self.inspector_dock.setMinimumWidth(275)
+        self.inspector_dock.setMaximumWidth(390)
         self.splitDockWidget(self.hierarchy_dock, self.assets_dock, Qt.Orientation.Vertical)
         self.resizeDocks([self.hierarchy_dock, self.assets_dock], [510, 290], Qt.Orientation.Vertical)
         self.resizeDocks([self.hierarchy_dock, self.inspector_dock], [270, 320], Qt.Orientation.Horizontal)
@@ -401,14 +407,28 @@ class EditorMainWindow(QMainWindow):
             return False
 
     def new_2d_project(self) -> None:
-        template = self._repository_root() / "templates" / "blank_vector_game" / "project.json"
-        if template.exists() and self.open_project(template, as_copy=True):
-            self._gentle_message("Your new 2D game is ready. Pick the Player, change its Transform, then press Play.")
+        if not self._maybe_save():
+            return
+        try:
+            self.stop()
+            self.undo_stack.clear()
+            self.document.create(first_steps_project())
+            self._gentle_message(
+                "Your first game is ready. Press Play, move with WASD, and dash with Space to count points."
+            )
+        except Exception as exc:
+            QMessageBox.warning(self, "Could not start the 2D lesson", str(exc))
 
     def new_3d_project(self) -> None:
-        template = self._repository_root() / "templates" / "blank_mobile_3d" / "project.json"
-        if template.exists() and self.open_project(template, as_copy=True):
+        if not self._maybe_save():
+            return
+        try:
+            self.stop()
+            self.undo_stack.clear()
+            self.document.create(blank_mobile3d_project())
             self._gentle_message("Your new mobile 3D game is ready. Select an object to begin.")
+        except Exception as exc:
+            QMessageBox.warning(self, "Could not start the 3D project", str(exc))
 
     def save_project(self) -> bool:
         if not self.document.is_loaded:
@@ -453,6 +473,7 @@ class EditorMainWindow(QMainWindow):
         self.assets_project.set_document(self.document)
         self.inspector.clear()
         self.viewport.set_document(self.document)
+        self.graph_page.set_project_kind(self.document.kind)
         self.graph_page.load_data(self.document.graph_data())
         self.build_output.set_kind(self.document.kind)
         self.build_output.append(
@@ -635,12 +656,13 @@ class EditorMainWindow(QMainWindow):
             suffix = "web" if target == "html5" else "android"
             suggested = base / "build" / f"{slug}-{suffix}"
             path = QFileDialog.getExistingDirectory(
-                self, "Choose or Create a Build Folder", str(suggested),
+                self, "Choose Where to Put the Build Folder", str(suggested.parent),
                 QFileDialog.Option.ShowDirsOnly,
             )
             if not path:
                 return
-            destination = Path(path)
+            # Always build into a named child. The chosen parent is never cleaned.
+            destination = Path(path) / suggested.name
             if destination.exists() and any(destination.iterdir()):
                 answer = QMessageBox.question(
                     self, "Replace the old build?",
@@ -720,11 +742,9 @@ class EditorMainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:  # type: ignore[override]
         if self._build_thread is not None and self._build_thread.isRunning():
-            answer = QMessageBox.question(
+            QMessageBox.information(
                 self, "A build is still running",
                 "Please wait for the build to finish before closing UGTS Studio.",
-                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
-                QMessageBox.StandardButton.Ok,
             )
             event.ignore()
             return

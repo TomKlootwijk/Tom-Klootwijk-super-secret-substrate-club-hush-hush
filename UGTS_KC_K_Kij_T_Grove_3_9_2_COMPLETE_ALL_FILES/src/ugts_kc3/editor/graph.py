@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 import uuid
 from typing import Any, Mapping
 
@@ -19,7 +20,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QPushButton,
-    QSizePolicy,
     QSplitter,
     QStyle,
     QTreeWidget,
@@ -28,7 +28,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..visual_graph import BUILTIN_NODE_REGISTRY, PortDirection, VisualGraph
+from ..visual_graph import BUILTIN_NODE_REGISTRY, PortDirection, PortKind, VisualGraph
 
 
 @dataclass(frozen=True)
@@ -96,12 +96,18 @@ class GraphPort(QGraphicsObject):
         self.node = node
         self.name = name
         self.direction = direction
+        definition = BUILTIN_NODE_REGISTRY.get(node.template.key)
+        port = None if definition is None else definition.port(direction, name)
+        self.port_kind = None if port is None else port.kind
+        self.data_type = None if port is None else port.data_type
         self.setAcceptHoverEvents(True)
         self.setCursor(Qt.CursorShape.CrossCursor)
-        self.setToolTip(
-            f"{name.replace('_', ' ').title()} — drag to "
-            + ("an input" if direction == "output" else "an output")
-        )
+        description = f"{name.replace('_', ' ').title()}"
+        if self.port_kind is PortKind.DATA:
+            description += f" ({self.data_type} value)"
+        else:
+            description += " (step flow)"
+        self.setToolTip(description + " — drag to " + ("an input" if direction == "output" else "an output"))
 
     def boundingRect(self) -> QRectF:  # type: ignore[override]
         radius = self.RADIUS + 3
@@ -111,7 +117,9 @@ class GraphPort(QGraphicsObject):
         active = bool(option.state & QStyle.StateFlag.State_MouseOver)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setPen(QPen(QColor("#dce9f8"), 1.5))
-        painter.setBrush(QColor("#73d8ff") if active else QColor("#344963"))
+        active_color = QColor("#f7c968") if self.port_kind is PortKind.DATA else QColor("#73d8ff")
+        idle_color = QColor("#6e5b35") if self.port_kind is PortKind.DATA else QColor("#344963")
+        painter.setBrush(active_color if active else idle_color)
         painter.drawEllipse(QPointF(0, 0), self.RADIUS, self.RADIUS)
 
     def mousePressEvent(self, event) -> None:  # type: ignore[override]
@@ -150,7 +158,7 @@ class GraphNode(QGraphicsObject):
         if properties is not None:
             self.properties.update(dict(properties))
         rows = max(len(template.inputs), len(template.outputs), 1)
-        self.height = 78.0 + rows * 24.0
+        self.height = 78.0 + rows * 24.0 + (30.0 if self.properties else 0.0)
         self.input_ports = {
             name: GraphPort(self, name, "input") for name in template.inputs
         }
@@ -206,6 +214,19 @@ class GraphNode(QGraphicsObject):
                 QRectF(self.WIDTH - 98, 62 + index * 24, 85, 22),
                 Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight,
                 name.replace("_", " ").title(),
+            )
+        if self.properties:
+            painter.setPen(QPen(QColor("#293d53"), 1))
+            painter.drawLine(12, self.height - 29, self.WIDTH - 12, self.height - 29)
+            key, value = next(iter(self.properties.items()))
+            display = str(value)
+            if len(display) > 20:
+                display = display[:19] + "…"
+            painter.setPen(QColor("#8fa9c1"))
+            painter.drawText(
+                QRectF(13, self.height - 27, self.WIDTH - 26, 24),
+                Qt.AlignmentFlag.AlignVCenter,
+                f"{key.replace('_', ' ').title()}: {display}",
             )
 
     def itemChange(self, change, value):  # type: ignore[override]
@@ -264,6 +285,7 @@ class GraphConnection(QGraphicsPathItem):
 
 class VisualGraphScene(QGraphicsScene):
     graphEdited = Signal(object)
+    connectionRejected = Signal(str)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -404,6 +426,23 @@ class VisualGraphScene(QGraphicsScene):
         source, destination = (start, target) if start.direction == "output" else (target, start)
         if source.direction != "output" or destination.direction != "input":
             return
+        source_definition = BUILTIN_NODE_REGISTRY.get(source.node.template.key)
+        target_definition = BUILTIN_NODE_REGISTRY.get(destination.node.template.key)
+        source_port = None if source_definition is None else source_definition.port(PortDirection.OUTPUT, source.name)
+        target_port = None if target_definition is None else target_definition.port(PortDirection.INPUT, destination.name)
+        if source_port is not None and target_port is not None:
+            same_kind = source_port.kind is target_port.kind
+            same_type = (
+                source_port.kind is PortKind.FLOW
+                or source_port.data_type == "any"
+                or target_port.data_type == "any"
+                or source_port.data_type == target_port.data_type
+            )
+            if not same_kind or not same_type:
+                self.connectionRejected.emit(
+                    "Those dots carry different kinds of information. Try another matching dot."
+                )
+                return
         self._add_connection(source, destination)
 
     def cancel_connection(self) -> None:
@@ -502,14 +541,15 @@ class NodePalette(QWidget):
         self.setObjectName("NodePalette")
         self.setMinimumWidth(225)
         self.setMaximumWidth(310)
+        self._project_kind: str | None = None
         layout = QVBoxLayout(self)
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(9)
         title = QLabel("Build with Blocks")
         title.setObjectName("PanelTitle")
-        subtitle = QLabel("Pick a block, then connect its dots.")
-        subtitle.setObjectName("MutedLabel")
-        subtitle.setWordWrap(True)
+        self.subtitle = QLabel("Pick a block, then connect its dots.")
+        self.subtitle.setObjectName("MutedLabel")
+        self.subtitle.setWordWrap(True)
         self.search = QLineEdit()
         self.search.setPlaceholderText("Find a block…")
         self.search.setClearButtonEnabled(True)
@@ -527,7 +567,7 @@ class NodePalette(QWidget):
         self.add_button.setEnabled(False)
         self.add_button.setToolTip("Adds the selected block to the middle of the graph")
         layout.addWidget(title)
-        layout.addWidget(subtitle)
+        layout.addWidget(self.subtitle)
         layout.addWidget(self.search)
         layout.addWidget(self.tree, 1)
         layout.addWidget(self.description)
@@ -563,10 +603,28 @@ class NodePalette(QWidget):
             for child_index in range(category.childCount()):
                 child = category.child(child_index)
                 template = TEMPLATE_BY_KEY[str(child.data(0, Qt.ItemDataRole.UserRole))]
-                matches = query in f"{template.title} {template.category} {template.description}".casefold()
+                compatible = not (
+                    self._project_kind == "3d" and template.key == "action.apply_force"
+                )
+                matches = compatible and query in f"{template.title} {template.category} {template.description}".casefold()
                 child.setHidden(not matches)
                 visible = visible or matches
             category.setHidden(not visible)
+
+    def set_project_kind(self, kind: str | None) -> None:
+        self._project_kind = kind
+        if kind == "3d":
+            self.subtitle.setText("Android-safe blocks are shown. Use 3 numbers for 3D positions and scale.")
+        else:
+            self.subtitle.setText("Pick a block, then connect its dots.")
+        self._filter(self.search.text())
+        current = self.tree.currentItem()
+        if (
+            current is not None
+            and kind == "3d"
+            and current.data(0, Qt.ItemDataRole.UserRole) == "action.apply_force"
+        ):
+            self.tree.setCurrentItem(None)
 
     def _selection_changed(self, current: QTreeWidgetItem | None, previous=None) -> None:
         key = None if current is None else current.data(0, Qt.ItemDataRole.UserRole)
@@ -583,6 +641,121 @@ class NodePalette(QWidget):
         key = item.data(0, Qt.ItemDataRole.UserRole)
         if key:
             self.nodeRequested.emit(str(key))
+
+
+class NodePropertiesPanel(QWidget):
+    """Small type-aware property editor for the selected logic block."""
+
+    propertiesEdited = Signal()
+
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.node: GraphNode | None = None
+        self._updating = False
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(12, 8, 12, 12)
+        layout.setSpacing(7)
+        self.title = QLabel("Selected Block Settings")
+        self.title.setObjectName("PanelTitle")
+        self.hint = QLabel("Select a block to change its friendly values.")
+        self.hint.setObjectName("MutedLabel")
+        self.hint.setWordWrap(True)
+        self.values = QTreeWidget()
+        self.values.setHeaderLabels(["Setting", "Value"])
+        self.values.setRootIsDecorated(False)
+        self.values.setAlternatingRowColors(True)
+        self.values.setMinimumHeight(120)
+        layout.addWidget(self.title)
+        layout.addWidget(self.hint)
+        layout.addWidget(self.values, 1)
+        self.values.itemChanged.connect(self._item_changed)
+
+    @staticmethod
+    def _display(value: Any) -> str:
+        if value is None:
+            return "Not set"
+        if isinstance(value, bool):
+            return "Yes" if value else "No"
+        if isinstance(value, (list, tuple)):
+            return ", ".join(str(item) for item in value)
+        if isinstance(value, Mapping):
+            return "Advanced value"
+        return str(value)
+
+    @staticmethod
+    def _parse(text: str, original: Any) -> Any:
+        value = text.strip()
+        if isinstance(original, bool):
+            return value.casefold() in {"yes", "true", "on", "1"}
+        if isinstance(original, int) and not isinstance(original, bool):
+            return int(float(value))
+        if isinstance(original, float):
+            return float(value)
+        if isinstance(original, (list, tuple)):
+            parts = [part.strip() for part in value.strip("[]() ").split(",") if part.strip()]
+            parsed: list[Any] = []
+            for index, part in enumerate(parts):
+                sample = original[min(index, len(original) - 1)] if original else 0.0
+                parsed.append(NodePropertiesPanel._parse(part, sample))
+            return parsed
+        if original is None:
+            if not value or value.casefold() in {"none", "not set"}:
+                return None
+            try:
+                return json.loads(value)
+            except Exception:
+                return value
+        return value
+
+    def set_node(self, node: GraphNode | None) -> None:
+        self._updating = True
+        try:
+            self.node = node
+            self.values.clear()
+            if node is None:
+                self.title.setText("Selected Block Settings")
+                self.hint.setText("Select a block to change its friendly values.")
+                return
+            self.title.setText(node.template.title)
+            if not node.properties:
+                self.hint.setText("This block has no values to change. Connect its dots to use it.")
+                return
+            self.hint.setText("Double-click a value to change it. Your edit is saved in the graph.")
+            for key, value in node.properties.items():
+                item = QTreeWidgetItem([key.replace("_", " ").title(), self._display(value)])
+                item.setData(0, Qt.ItemDataRole.UserRole, key)
+                item.setData(1, Qt.ItemDataRole.UserRole, value)
+                if not isinstance(value, Mapping):
+                    item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
+                    item.setToolTip(1, "Double-click to edit")
+                else:
+                    item.setToolTip(1, "This advanced mapping is kept safe but hidden here")
+                self.values.addTopLevelItem(item)
+            self.values.resizeColumnToContents(0)
+        finally:
+            self._updating = False
+
+    def _item_changed(self, item: QTreeWidgetItem, column: int) -> None:
+        if self._updating or column != 1 or self.node is None:
+            return
+        key = str(item.data(0, Qt.ItemDataRole.UserRole))
+        original = item.data(1, Qt.ItemDataRole.UserRole)
+        try:
+            parsed = self._parse(item.text(1), original)
+        except (TypeError, ValueError):
+            self._updating = True
+            item.setText(1, self._display(original))
+            self._updating = False
+            item.setToolTip(1, "That value did not fit, so the previous safe value was kept")
+            return
+        self.node.properties[key] = parsed
+        item.setData(1, Qt.ItemDataRole.UserRole, parsed)
+        item.setText(1, self._display(parsed))
+        self.node.update()
+        scene = self.node.scene()
+        if isinstance(scene, VisualGraphScene):
+            scene.notify_edited()
+        self.propertiesEdited.emit()
 
 
 class GraphPage(QWidget):
@@ -608,11 +781,20 @@ class GraphPage(QWidget):
         bar_layout.addWidget(self.delete_button)
         bar_layout.addWidget(self.frame_button)
         self.palette = NodePalette()
+        self.properties = NodePropertiesPanel()
         self.graph_scene = VisualGraphScene(self)
         self.view = VisualGraphView(self.graph_scene)
         splitter = QSplitter()
         splitter.setChildrenCollapsible(False)
-        splitter.addWidget(self.palette)
+        left = QWidget()
+        left.setMinimumWidth(225)
+        left.setMaximumWidth(310)
+        left_layout = QVBoxLayout(left)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+        left_layout.setSpacing(0)
+        left_layout.addWidget(self.palette, 3)
+        left_layout.addWidget(self.properties, 2)
+        splitter.addWidget(left)
         splitter.addWidget(self.view)
         splitter.setStretchFactor(1, 1)
         layout.addWidget(bar)
@@ -621,9 +803,22 @@ class GraphPage(QWidget):
         self.delete_button.clicked.connect(self.graph_scene.delete_selected)
         self.frame_button.clicked.connect(self.view.frame_all)
         self.graph_scene.graphEdited.connect(self.graphEdited)
+        self.graph_scene.connectionRejected.connect(self.helpRequested)
+        self.graph_scene.selectionChanged.connect(self._selection_changed)
+        self._project_kind: str | None = None
+
+    def set_project_kind(self, kind: str | None) -> None:
+        self._project_kind = kind
+        self.palette.set_project_kind(kind)
 
     def load_data(self, data: Mapping[str, Any]) -> None:
         self.graph_scene.load_data(data)
+        if self._project_kind == "3d" and any(
+            node.template.key == "action.apply_force" for node in self.graph_scene.nodes.values()
+        ):
+            self.helpRequested.emit(
+                "This graph uses Push an Object, which is 2D-only. Remove it before an Android build."
+            )
         if self.graph_scene.nodes:
             self.view.frame_all()
         else:
@@ -636,9 +831,21 @@ class GraphPage(QWidget):
             return
         center = self.view.mapToScene(self.view.viewport().rect().center())
         offset = QPointF(len(self.graph_scene.nodes) % 4 * 18, len(self.graph_scene.nodes) % 3 * 18)
-        node = self.graph_scene.add_node(template, center - QPointF(105, 50) + offset)
+        properties = None
+        if self._project_kind == "3d" and key == "action.set_component":
+            properties = {"entity": None, "component": "transform", "field": "translation", "value": [0, 0, 0]}
+        node = self.graph_scene.add_node(
+            template, center - QPointF(105, 50) + offset, properties=properties
+        )
         self.view.centerOn(node)
         self.helpRequested.emit(f"Added “{template.title}”. Drag its dots to connect it.")
+
+    def _selection_changed(self) -> None:
+        node = next(
+            (item for item in self.graph_scene.selectedItems() if isinstance(item, GraphNode)),
+            None,
+        )
+        self.properties.set_node(node)
 
 
 __all__ = ["GraphPage", "NODE_TEMPLATES", "NodePalette", "VisualGraphScene"]

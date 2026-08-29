@@ -19,6 +19,7 @@ target_include_directories(native_app_glue PUBLIC
 add_library(ugts_kc_native SHARED
     main.cpp
     engine.cpp
+    graph_vm.cpp
     renderer_gles3.cpp
     scene_pack.cpp
     device_profile.cpp

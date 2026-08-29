@@ -3,6 +3,7 @@
 #include "grove_juice.hpp"
 #include "grove_tuning.hpp"
 #include "device_profile.hpp"
+#include "graph_vm.hpp"
 #include "renderer_gles3.hpp"
 #include <android/input.h>
 #include <android_native_app_glue.h>
@@ -29,6 +30,7 @@ private:
         float lifetime=0.6f;
     };
     std::vector<std::uint8_t> readAsset(const char* path);
+    bool loadContent();
     DeviceInfo deviceInfo() const;
     int thermalStatus() const;
     void requestFrameRate(float fps);
@@ -36,6 +38,8 @@ private:
     void triggerJuice(std::uint32_t kind, const Vec3& origin, float intensity=1.0f);
     void spawnBurst(const Vec3& origin, std::uint32_t kind, float intensity);
     void updateParticles(float dt);
+    GraphInputState graphInputState() const;
+    void reportGraphResults();
     NodeData* player();
     float colliderRadius(const NodeData& node) const;
     android_app* app_;
@@ -48,14 +52,18 @@ private:
     AdaptiveQuality adaptive_;
     GroveJuice juice_;
     GroveTuning tuning_;
+    GraphVm graphVm_;
     std::size_t qualityIndex_=0;
     bool focused_=false;
+    bool contentLoaded_=false,graphReady_=false;
     float accumulator_=0,time_=0;
     float yaw_=0.68f,pitch_=0.42f,distance_=16.0f;
     Vec3 cameraTarget_{0,1,0};
     float moveX_=0,moveZ_=0,lookX_=0,lookY_=0;
     bool jump_=false;
     bool dash_=false;
+    GraphInputState previousGraphInput_{};
+    std::uint64_t fixedTick_=0;
     bool touchMove_=false,touchLook_=false;
     float touchStartX_=0,touchStartY_=0,lastTouchX_=0,lastTouchY_=0;
     int score_=0;

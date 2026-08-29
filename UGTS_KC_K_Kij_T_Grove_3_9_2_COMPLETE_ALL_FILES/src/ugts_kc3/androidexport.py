@@ -12,6 +12,11 @@ from typing import Any
 from xml.sax.saxutils import escape as xml_escape
 
 from .export import write_gltf
+from .graphpack import (
+    GRAPH_PACK_ASSET,
+    compile_graph_pack_bytes,
+    inspect_graph_pack,
+)
 from .mobile3d import Mobile3DProject, tag_mask
 
 # Grove emits KC3D392.  The native reader accepts both 3.9.1 and 3.9.2 packs,
@@ -344,6 +349,7 @@ class AndroidProjectBuild:
     total_bytes: int
     project_hash: str
     profile_hint: str
+    graph_pack: Path | None = None
 
 
 def _file_digest(path: Path) -> str:
@@ -378,6 +384,12 @@ def build_android_project(
 ) -> AndroidProjectBuild:
     """Materialize a self-contained Android Studio/Gradle native source project."""
     project.validate()
+    # Compile metadata before touching an existing output directory.  A graph
+    # outside the native subset must fail export clearly and non-destructively.
+    graph_pack_data = compile_graph_pack_bytes(project)
+    graph_inspection = (
+        inspect_graph_pack(graph_pack_data) if graph_pack_data else None
+    )
     output_dir = Path(output_dir)
     template = Path(__file__).with_name("android_template") / "project"
     if not template.exists():
@@ -410,6 +422,10 @@ def build_android_project(
     evidence_dir = assets if include_authoring_assets else output_dir
     project_file = project.write(evidence_dir / "project.json")
     scene_pack = write_scene_pack(project, assets / "signature_scene.kc3d")
+    graph_pack = None
+    if graph_pack_data:
+        graph_pack = assets / GRAPH_PACK_ASSET
+        graph_pack.write_bytes(graph_pack_data)
     inspection = inspect_scene_pack(scene_pack)
     (evidence_dir / "scene-pack-inspection.json").write_text(
         json.dumps(inspection, indent=2, sort_keys=True) + "\n",
@@ -426,6 +442,7 @@ def build_android_project(
         "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed",
         "application_id": android_application_id(project.id),
         "authoring_assets_packaged": include_authoring_assets,
+        "visual_graph_runtime": graph_inspection,
         "compile_sdk": 36,
         "target_sdk": 36,
         "min_sdk": 26,
@@ -449,8 +466,8 @@ def build_android_project(
     files = sorted(path for path in output_dir.rglob("*") if path.is_file())
     return AndroidProjectBuild(
         output_dir, project_file, scene_pack, report_path, len(files),
-        sum(path.stat().st_size for path in files),
-        project.content_hash(), profile_hint,
+        sum(path.stat().st_size for path in files), project.content_hash(),
+        profile_hint, graph_pack,
     )
 
 

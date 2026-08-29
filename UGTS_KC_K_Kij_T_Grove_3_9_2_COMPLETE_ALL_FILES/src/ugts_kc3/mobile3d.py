@@ -10,7 +10,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 from .geometry import Mesh
 from .materials import PBRMaterial
@@ -20,6 +20,7 @@ from .math3d import (
     quat_mul, quat_normalize, scale as vscale, sub,
 )
 from .scene import Asset, Scene, SceneMetadata, SceneNode
+from .visual_graph import VisualGraph, attach_graph
 
 Vec3 = tuple[float, float, float]
 Quat = tuple[float, float, float, float]
@@ -39,6 +40,34 @@ TAG_MAP = {
     "decorative": TAG_DECORATIVE,
     "hazard": TAG_HAZARD,
 }
+
+
+def visual_graphs_from_metadata(metadata: Mapping[str, Any]) -> tuple[VisualGraph, ...]:
+    """Read the canonical visual-graph collection used by desktop and Android 3D."""
+    raw = metadata.get("visual_graphs", ())
+    if isinstance(raw, Mapping):
+        if "nodes" in raw or "schema" in raw:
+            items = [raw]
+        else:
+            items = []
+            for graph_id, value in sorted(raw.items(), key=lambda pair: str(pair[0])):
+                if not isinstance(value, Mapping):
+                    raise TypeError(f"visual graph {graph_id!r} must be an object")
+                item = dict(value)
+                item.setdefault("id", str(graph_id))
+                items.append(item)
+    elif isinstance(raw, (list, tuple)):
+        items = list(raw)
+    else:
+        raise TypeError("metadata.visual_graphs must be a list or object")
+    graphs = tuple(
+        item if isinstance(item, VisualGraph) else VisualGraph.from_dict(item)
+        for item in items
+    )
+    ids = [graph.id for graph in graphs]
+    if len(ids) != len(set(ids)):
+        raise ValueError("project contains duplicate visual graph ids")
+    return tuple(sorted(graphs, key=lambda graph: graph.id))
 
 
 def _normalized_json(value: Any) -> Any:
@@ -778,6 +807,59 @@ class Mobile3DProject:
                 error("mesh.unknown", f"{path}.mesh_id", node.mesh_id)
             if node.material_id not in self.materials:
                 error("material.unknown", f"{path}.material_id", node.material_id)
+        graphs: tuple[VisualGraph, ...] = ()
+        try:
+            graphs = visual_graphs_from_metadata(self.metadata)
+            for graph in graphs:
+                graph.validate()
+        except (TypeError, ValueError) as exc:
+            error("graph.invalid", "metadata.visual_graphs", str(exc))
+        graph_ids = {graph.id for graph in graphs}
+        binding_count = 0
+        for index, node in enumerate(self.nodes):
+            raw_binding = node.metadata.get("visual_graph")
+            if raw_binding is None:
+                continue
+            if isinstance(raw_binding, str):
+                bindings = (raw_binding,)
+            elif isinstance(raw_binding, (list, tuple)) and all(
+                isinstance(item, str) for item in raw_binding
+            ):
+                bindings = tuple(raw_binding)
+            else:
+                error(
+                    "graph.binding_type",
+                    f"nodes[{index}].metadata.visual_graph",
+                    "binding must be a graph id or list of graph ids",
+                )
+                continue
+            binding_count += len(bindings)
+            for graph_id in bindings:
+                if graph_id not in graph_ids:
+                    error(
+                        "graph.binding_unknown",
+                        f"nodes[{index}].metadata.visual_graph",
+                        graph_id,
+                    )
+        raw_world_bindings = self.metadata.get("world_graphs", ())
+        if isinstance(raw_world_bindings, str):
+            world_bindings = (raw_world_bindings,)
+        elif isinstance(raw_world_bindings, (list, tuple)) and all(
+            isinstance(item, str) for item in raw_world_bindings
+        ):
+            world_bindings = tuple(raw_world_bindings)
+        else:
+            world_bindings = ()
+            if raw_world_bindings not in (None, ()):
+                error(
+                    "graph.world_binding_type",
+                    "metadata.world_graphs",
+                    "world bindings must be a graph id or list of graph ids",
+                )
+        binding_count += len(world_bindings)
+        for graph_id in world_bindings:
+            if graph_id not in graph_ids:
+                error("graph.binding_unknown", "metadata.world_graphs", graph_id)
         quality_ids: set[str] = set()
         for index, tier in enumerate(self.quality_tiers):
             try:
@@ -815,6 +897,8 @@ class Mobile3DProject:
             "triangle_count": sum(len(mesh.triangles) for mesh in self.meshes.values()),
             "quality_tier_count": len(self.quality_tiers),
             "target_profile_count": len(self.target_profiles),
+            "visual_graph_count": len(graphs),
+            "visual_graph_binding_count": binding_count,
         }
         report = ProjectValidation3D(not issues, tuple(issues), metrics)
         if raise_on_error and not report.passed:
@@ -973,6 +1057,53 @@ class InputFrame3D:
     look_y: float = 0.0
     jump: bool = False
     action: bool = False
+    previous_jump: bool = False
+    previous_action: bool = False
+    previous_move_x: float = 0.0
+    previous_move_z: float = 0.0
+
+    def value(self, action: str, default: float = 0.0) -> float:
+        """Expose named actions to the shared visual-graph event nodes."""
+        values = {
+            "move_left": max(0.0, -float(self.move_x)),
+            "move_right": max(0.0, float(self.move_x)),
+            "move_up": max(0.0, -float(self.move_z)),
+            "move_down": max(0.0, float(self.move_z)),
+            "jump": float(bool(self.jump)),
+            "action": float(bool(self.action)),
+            "accept": float(bool(self.action)),
+            "dash": float(bool(self.action)),
+        }
+        return float(values.get(str(action), default))
+
+    def pressed(self, action: str) -> bool:
+        current = abs(self.value(action)) >= 0.5
+        previous_values = {
+            "move_left": max(0.0, -float(self.previous_move_x)),
+            "move_right": max(0.0, float(self.previous_move_x)),
+            "move_up": max(0.0, -float(self.previous_move_z)),
+            "move_down": max(0.0, float(self.previous_move_z)),
+            "jump": float(bool(self.previous_jump)),
+            "action": float(bool(self.previous_action)),
+            "accept": float(bool(self.previous_action)),
+            "dash": float(bool(self.previous_action)),
+        }
+        return current and abs(previous_values.get(str(action), 0.0)) < 0.5
+
+    def with_previous(self, previous: "InputFrame3D") -> "InputFrame3D":
+        """Return this frame with edge history supplied by its owning world."""
+        return InputFrame3D(
+            self.move_x,
+            self.move_z,
+            self.look_x,
+            self.look_y,
+            self.jump,
+            self.action,
+            previous.jump,
+            previous.action,
+            previous.move_x,
+            previous.move_z,
+        )
 
     def normalized(self) -> "InputFrame3D":
         x, z = float(self.move_x), float(self.move_z)
@@ -984,7 +1115,73 @@ class InputFrame3D:
             _clamp(float(self.look_x), -1, 1),
             _clamp(float(self.look_y), -1, 1),
             bool(self.jump), bool(self.action),
+            bool(self.previous_jump), bool(self.previous_action),
+            _clamp(float(self.previous_move_x), -1, 1),
+            _clamp(float(self.previous_move_z), -1, 1),
         )
+
+
+@dataclass
+class TransformComponent3D:
+    position: Vec3
+    rotation: Quat
+    scale: Vec3
+
+    @property
+    def translation(self) -> Vec3:
+        return self.position
+
+    @translation.setter
+    def translation(self, value: Sequence[float]) -> None:
+        self.position = _values(value, 3, "transform translation")
+
+    def validate(self) -> None:
+        self.position = _values(self.position, 3, "transform position")
+        self.rotation = quat_normalize(_values(self.rotation, 4, "transform rotation"))
+        self.scale = _values(self.scale, 3, "transform scale")
+
+
+@dataclass
+class BodyComponent3D:
+    velocity: Vec3
+    angular_velocity: Vec3
+    dynamic: bool
+    mass: float
+    restitution: float
+
+    def validate(self) -> None:
+        self.velocity = _values(self.velocity, 3, "body velocity")
+        self.angular_velocity = _values(self.angular_velocity, 3, "body angular velocity")
+        self.mass = _positive(self.mass, "body mass")
+        if not 0 <= float(self.restitution) <= 1:
+            raise ValueError("body restitution must be in [0,1]")
+
+
+@dataclass
+class ColliderComponent3D:
+    shape: str = "none"
+    radius: float = 0.5
+    half_extents: Vec3 = (0.5, 0.5, 0.5)
+    sensor: bool = False
+
+    def validate(self) -> None:
+        Collider3DRecord(
+            str(self.shape), float(self.radius), _values(self.half_extents, 3, "collider half extents"), bool(self.sensor)
+        ).validate()
+
+    def to_record(self) -> Collider3DRecord:
+        self.validate()
+        return Collider3DRecord(str(self.shape), float(self.radius), tuple(self.half_extents), bool(self.sensor))
+
+
+@dataclass
+class RenderComponent3D:
+    mesh_id: str
+    material_id: str
+
+    def validate(self) -> None:
+        if not str(self.mesh_id) or not str(self.material_id):
+            raise ValueError("render mesh and material ids are required")
 
 
 @dataclass
@@ -1004,6 +1201,9 @@ class EntityState3D:
     tags: tuple[str, ...]
     grounded: bool = False
     alive: bool = True
+    active: bool = True
+    metadata: dict[str, Any] = field(default_factory=dict)
+    extra_components: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_node(cls, node: Node3DRecord) -> "EntityState3D":
@@ -1012,6 +1212,7 @@ class EntityState3D:
             node.transform.translation, quat_normalize(node.transform.rotation),
             node.transform.scale, node.velocity, node.angular_velocity,
             node.collider, node.dynamic, node.mass, node.restitution, node.tags,
+            metadata=dict(node.metadata),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -1024,7 +1225,9 @@ class EntityState3D:
             "collider": self.collider.to_dict(), "dynamic": self.dynamic,
             "mass": self.mass, "restitution": self.restitution,
             "tags": list(self.tags), "grounded": self.grounded,
-            "alive": self.alive,
+            "alive": self.alive, "active": self.active,
+            "metadata": self.metadata,
+            "extra_components": self.extra_components,
         }
 
 
@@ -1044,8 +1247,22 @@ class WorldEvent3D:
         }
 
 
+@dataclass(order=True)
+class _SystemEntry3D:
+    priority: int
+    name: str
+    callback: Callable[["GameWorld3D", float, InputFrame3D], None] = field(compare=False)
+
+
 class GameWorld3D:
-    """Small deterministic sphere-approximation arcade physics/gameplay reference."""
+    """Deterministic 3D ECS facade with bounded arcade physics and graph systems.
+
+    The historical ``EntityState3D`` record remains available for compatibility,
+    while ``get/add_component/query`` expose editable component composition to the
+    shared visual-graph runtime and authoring tools.
+    """
+
+    PHASES = ("input", "pre_physics", "post_physics", "update", "late")
 
     def __init__(self, settings: World3DSettings = World3DSettings()):
         settings.validate()
@@ -1057,12 +1274,39 @@ class GameWorld3D:
         self.state: dict[str, Any] = {
             "score": 0, "finished": False, "health": 3
         }
+        self._systems: dict[str, list[_SystemEntry3D]] = {
+            phase: [] for phase in self.PHASES
+        }
+        self._listeners: dict[str, list[Callable[[WorldEvent3D], None]]] = {}
+        self.visual_graph_bindings: list[Any] = []
+        self._previous_input_frame = InputFrame3D()
 
     @classmethod
     def from_project(cls, project: Mobile3DProject) -> "GameWorld3D":
         world = cls(project.world)
         for node in project.nodes:
             world.spawn(EntityState3D.from_node(node))
+        graphs = {graph.id: graph for graph in visual_graphs_from_metadata(project.metadata)}
+
+        def binding_ids(raw: Any) -> tuple[str, ...]:
+            if raw is None:
+                return ()
+            return (raw,) if isinstance(raw, str) else tuple(raw)
+
+        for graph_id in binding_ids(project.metadata.get("world_graphs")):
+            world.visual_graph_bindings.append(
+                attach_graph(world, graphs[graph_id], phase="pre_physics")
+            )
+        for node in project.nodes:
+            for graph_id in binding_ids(node.metadata.get("visual_graph")):
+                world.visual_graph_bindings.append(
+                    attach_graph(
+                        world,
+                        graphs[graph_id],
+                        entity_id=node.id,
+                        phase="pre_physics",
+                    )
+                )
         return world
 
     def spawn(self, entity: EntityState3D) -> None:
@@ -1070,21 +1314,216 @@ class GameWorld3D:
             raise ValueError(f"duplicate entity {entity.id}")
         self.entities[entity.id] = entity
 
-    def require(self, entity_id: str) -> EntityState3D:
+    def require(
+        self, entity_id: str, component_or_name: type | str | None = None
+    ) -> EntityState3D | Any:
         if entity_id not in self.entities:
             raise KeyError(entity_id)
-        return self.entities[entity_id]
+        if component_or_name is None:
+            return self.entities[entity_id]
+        return self.require_component(entity_id, component_or_name)
+
+    @staticmethod
+    def _component_key(component_or_name: type | str) -> str:
+        if isinstance(component_or_name, str):
+            return component_or_name
+        names = {
+            TransformComponent3D: "transform",
+            BodyComponent3D: "body",
+            ColliderComponent3D: "collider",
+            RenderComponent3D: "render",
+        }
+        return names.get(component_or_name, component_or_name.__name__.lower())
+
+    def get(
+        self,
+        entity_id: str,
+        component_or_name: type | str,
+        default: Any = None,
+    ) -> Any:
+        entity = self.entities.get(entity_id)
+        if entity is None:
+            return default
+        name = self._component_key(component_or_name)
+        if name == "transform":
+            return TransformComponent3D(entity.position, entity.rotation, entity.scale)
+        if name == "body":
+            return BodyComponent3D(
+                entity.velocity,
+                entity.angular_velocity,
+                entity.dynamic,
+                entity.mass,
+                entity.restitution,
+            )
+        if name == "collider":
+            return ColliderComponent3D(
+                entity.collider.shape,
+                entity.collider.radius,
+                entity.collider.half_extents,
+                entity.collider.sensor,
+            )
+        if name == "render":
+            return RenderComponent3D(entity.mesh_id, entity.material_id)
+        if name == "entity":
+            return entity
+        return entity.extra_components.get(name, default)
+
+    def require_component(
+        self, entity_id: str, component_or_name: type | str
+    ) -> Any:
+        component = self.get(entity_id, component_or_name)
+        if component is None:
+            raise KeyError(
+                f"entity {entity_id} lacks component {self._component_key(component_or_name)}"
+            )
+        return component
+
+    def add_component(
+        self,
+        entity_id: str,
+        component: Any,
+        name: str | None = None,
+        replace_existing: bool = False,
+    ) -> None:
+        entity = self.require(entity_id)
+        component_name = name or self._component_key(type(component))
+        if component_name == "transform":
+            value = component if isinstance(component, TransformComponent3D) else TransformComponent3D(
+                tuple(component.get("position", component.get("translation", entity.position))),
+                tuple(component.get("rotation", entity.rotation)),
+                tuple(component.get("scale", entity.scale)),
+            )
+            value.validate()
+            entity.position, entity.rotation, entity.scale = value.position, value.rotation, value.scale
+            return
+        if component_name == "body":
+            value = component if isinstance(component, BodyComponent3D) else BodyComponent3D(
+                tuple(component.get("velocity", entity.velocity)),
+                tuple(component.get("angular_velocity", entity.angular_velocity)),
+                bool(component.get("dynamic", entity.dynamic)),
+                float(component.get("mass", entity.mass)),
+                float(component.get("restitution", entity.restitution)),
+            )
+            value.validate()
+            entity.velocity = value.velocity
+            entity.angular_velocity = value.angular_velocity
+            entity.dynamic = bool(value.dynamic)
+            entity.mass = value.mass
+            entity.restitution = value.restitution
+            return
+        if component_name == "collider":
+            value = component if isinstance(component, ColliderComponent3D) else ColliderComponent3D(
+                str(component.get("shape", entity.collider.shape)),
+                float(component.get("radius", entity.collider.radius)),
+                tuple(component.get("half_extents", entity.collider.half_extents)),
+                bool(component.get("sensor", entity.collider.sensor)),
+            )
+            entity.collider = value.to_record()
+            return
+        if component_name == "render":
+            value = component if isinstance(component, RenderComponent3D) else RenderComponent3D(
+                str(component.get("mesh_id", entity.mesh_id)),
+                str(component.get("material_id", entity.material_id)),
+            )
+            value.validate()
+            entity.mesh_id, entity.material_id = value.mesh_id, value.material_id
+            return
+        if component_name in entity.extra_components and not replace_existing:
+            raise ValueError(f"entity {entity_id} already has component {component_name}")
+        validate = getattr(component, "validate", None)
+        if callable(validate):
+            validate()
+        entity.extra_components[component_name] = component
+
+    def remove_component(self, entity_id: str, component_or_name: type | str) -> Any:
+        name = self._component_key(component_or_name)
+        if name in {"transform", "body", "collider", "render", "entity"}:
+            raise ValueError(f"built-in 3D component {name} cannot be removed from the compatibility record")
+        return self.require(entity_id).extra_components.pop(name)
+
+    def query(
+        self,
+        *component_types: type | str,
+        tags: Sequence[str] = (),
+        active_only: bool = True,
+    ) -> tuple[EntityState3D, ...]:
+        names = tuple(self._component_key(item) for item in component_types)
+        required_tags = set(tags)
+        builtins = {"transform", "body", "collider", "render", "entity"}
+        return tuple(
+            entity
+            for entity_id in sorted(self.entities)
+            if (entity := self.entities[entity_id]).alive
+            and (entity.active or not active_only)
+            and required_tags.issubset(entity.tags)
+            and all(name in builtins or name in entity.extra_components for name in names)
+        )
+
+    def add_system(
+        self,
+        callback: Callable[["GameWorld3D", float, InputFrame3D], None],
+        *,
+        phase: str = "update",
+        priority: int = 0,
+        name: str | None = None,
+    ) -> None:
+        if phase not in self._systems:
+            raise ValueError(f"unknown system phase: {phase}")
+        entry = _SystemEntry3D(
+            int(priority), name or getattr(callback, "__name__", "system"), callback
+        )
+        self._systems[phase].append(entry)
+        self._systems[phase].sort()
+
+    def _run_systems(self, phase: str, frame: InputFrame3D) -> None:
+        for system in tuple(self._systems[phase]):
+            system.callback(self, self.settings.fixed_dt, frame)
+
+    def on(self, kind: str, listener: Callable[[WorldEvent3D], None]) -> None:
+        self._listeners.setdefault(str(kind), []).append(listener)
+
+    def emit(
+        self,
+        kind: str,
+        source: str | None = None,
+        target: str | None = None,
+        payload: Mapping[str, Any] | None = None,
+    ) -> WorldEvent3D:
+        event = WorldEvent3D(
+            self.tick,
+            str(kind),
+            source or "world",
+            target,
+            dict(payload or {}),
+        )
+        self.events.append(event)
+        for listener in (*self._listeners.get(event.kind, ()), *self._listeners.get("*", ())):
+            listener(event)
+        return event
+
+    def despawn(self, entity_id: str) -> None:
+        self.require(entity_id).alive = False
+
+    def apply_force(self, entity_id: str, force: Sequence[float]) -> None:
+        entity = self.require(entity_id)
+        values = tuple(float(value) for value in force)
+        if len(values) == 2:
+            values = (values[0], 0.0, values[1])
+        if len(values) != 3 or not all(math.isfinite(value) for value in values):
+            raise ValueError("3D force must contain two XZ values or three XYZ values")
+        if entity.dynamic:
+            entity.velocity = add(entity.velocity, vscale(values, 1.0 / entity.mass))
 
     def _emit(
         self, kind: str, a: str, b: str | None = None, **data: Any
     ) -> None:
-        self.events.append(WorldEvent3D(self.tick, kind, a, b, data))
+        self.emit(kind, source=a, target=b, payload=data)
 
     def _player(self, frame: InputFrame3D) -> None:
         frame = frame.normalized()
         for key in sorted(self.entities):
             entity = self.entities[key]
-            if entity.alive and "player" in entity.tags:
+            if entity.alive and entity.active and "player" in entity.tags:
                 entity.velocity = (
                     frame.move_x * self.settings.player_speed,
                     entity.velocity[1],
@@ -1102,7 +1541,7 @@ class GameWorld3D:
         dt = self.settings.fixed_dt
         for key in sorted(self.entities):
             entity = self.entities[key]
-            if not entity.alive:
+            if not entity.alive or not entity.active:
                 continue
             if entity.dynamic:
                 entity.velocity = add(
@@ -1125,7 +1564,7 @@ class GameWorld3D:
         lo, hi = self.settings.bounds_min, self.settings.bounds_max
         for key in sorted(self.entities):
             entity = self.entities[key]
-            if not entity.alive or not entity.dynamic:
+            if not entity.alive or not entity.active or not entity.dynamic:
                 continue
             extent_y = entity.collider.vertical_extent(entity.scale)
             if entity.position[1] - extent_y < self.settings.floor_y:
@@ -1156,7 +1595,10 @@ class GameWorld3D:
             entity.position, entity.velocity = tuple(p), tuple(v)
 
     def _pairs(self) -> None:
-        ids = [key for key in sorted(self.entities) if self.entities[key].alive]
+        ids = [
+            key for key in sorted(self.entities)
+            if self.entities[key].alive and self.entities[key].active
+        ]
         for index, a_id in enumerate(ids):
             a = self.entities[a_id]
             ra = a.collider.bounding_radius(a.scale)
@@ -1208,11 +1650,11 @@ class GameWorld3D:
     def _gameplay(self) -> None:
         players = [
             entity for entity in self.entities.values()
-            if entity.alive and "player" in entity.tags
+            if entity.alive and entity.active and "player" in entity.tags
         ]
         for key in sorted(self.entities):
             entity = self.entities[key]
-            if not entity.alive:
+            if not entity.alive or not entity.active:
                 continue
             radius = entity.collider.bounding_radius(entity.scale)
             for player in players:
@@ -1246,15 +1688,22 @@ class GameWorld3D:
         if steps < 1:
             raise ValueError("steps must be positive")
         start = len(self.events)
-        frame = frame or InputFrame3D()
+        current_frame = (frame or InputFrame3D()).normalized()
         for _ in range(steps):
+            frame = current_frame.with_previous(self._previous_input_frame)
+            self._run_systems("input", frame)
             self.tick += 1
             self._player(frame)
+            self._run_systems("pre_physics", frame)
             self._integrate()
             self._floor_bounds()
+            self._run_systems("post_physics", frame)
             self._pairs()
             self._gameplay()
+            self._run_systems("update", frame)
+            self._run_systems("late", frame)
             self.time = self.tick * self.settings.fixed_dt
+            self._previous_input_frame = current_frame
         return tuple(self.events[start:])
 
     def snapshot(self) -> dict[str, Any]:

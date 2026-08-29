@@ -25,7 +25,7 @@ from ..mobile3d import (
     Transform3DRecord,
 )
 from ..project import EntitySpec, GameProject, GameSceneSpec
-from ..visual_graph import VisualGraph, attach_graph
+from ..visual_graph import VisualGraph
 
 
 GRAPHS_KEY = "visual_graphs"
@@ -151,6 +151,26 @@ class EditorDocument(QObject):
         self._dirty = bool(as_copy)
         self.projectLoaded.emit()
         self.documentChanged.emit(self._dirty)
+        if self.current_scene_id:
+            self.sceneChanged.emit(self.current_scene_id)
+        self.selectionChanged.emit(None)
+
+    def create(self, project: GameProject | Mobile3DProject) -> None:
+        """Adopt a freshly generated project as an unsaved editor document."""
+
+        if not isinstance(project, (GameProject, Mobile3DProject)):
+            raise TypeError("EditorDocument.create needs a GameProject or Mobile3DProject.")
+        self.project = project
+        self.kind = "2d" if isinstance(project, GameProject) else "3d"
+        self.path = None
+        self.current_scene_id = project.start_scene if isinstance(project, GameProject) else None
+        self.selection = None
+        self._runtime_world = None
+        self._previous_input = None
+        self._extra_top_level = {}
+        self._dirty = True
+        self.projectLoaded.emit()
+        self.documentChanged.emit(True)
         if self.current_scene_id:
             self.sceneChanged.emit(self.current_scene_id)
         self.selectionChanged.emit(None)
@@ -415,35 +435,6 @@ class EditorDocument(QObject):
         self.play_warnings = []
         if isinstance(self.project, GameProject):
             self._runtime_world = self.project.instantiate_world(self.current_scene_id)
-            scene = self.scene()
-            if scene is not None:
-                raw_graphs = scene.rules.get(GRAPHS_KEY, [])
-                graphs: dict[str, VisualGraph] = {}
-                for item in raw_graphs if isinstance(raw_graphs, (tuple, list)) else ():
-                    if not isinstance(item, Mapping):
-                        continue
-                    try:
-                        parsed = VisualGraph.from_dict(item)
-                        graphs[parsed.id] = parsed
-                    except Exception as exc:
-                        self.play_warnings.append(f"One logic graph could not load: {exc}")
-                attached: set[tuple[str, str | None]] = set()
-                for entity in scene.entities:
-                    graph_id = entity.metadata.get(BINDING_KEY)
-                    if graph_id not in graphs:
-                        continue
-                    try:
-                        attach_graph(self._runtime_world, graphs[str(graph_id)], entity_id=entity.id)
-                        attached.add((str(graph_id), entity.id))
-                    except Exception as exc:
-                        self.play_warnings.append(f"Logic for {entity.id} needs attention: {exc}")
-                for graph_id, parsed in graphs.items():
-                    if any(bound_graph == graph_id for bound_graph, _ in attached):
-                        continue
-                    try:
-                        attach_graph(self._runtime_world, parsed)
-                    except Exception as exc:
-                        self.play_warnings.append(f"Logic graph {graph_id} needs attention: {exc}")
         elif isinstance(self.project, Mobile3DProject):
             self._runtime_world = self.project.instantiate_world()
         else:

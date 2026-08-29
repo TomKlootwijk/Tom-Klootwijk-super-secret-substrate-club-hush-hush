@@ -1,3 +1,4 @@
+from dataclasses import replace
 import math
 from pathlib import Path
 import tempfile
@@ -14,9 +15,10 @@ from ugts_kc3.packed_kinematics import (
     unpack_ecs_document,
 )
 from ugts_kc3.game import GameWorld
-from ugts_kc3.mobile3d import Mobile3DProject, blank_mobile3d_project
+from ugts_kc3.mobile3d import Mobile3DProject
 from ugts_kc3.project import GameProject
 from ugts_kc3.templates import first_steps_project
+from ugts_kc3.templates3d import blank_mobile3d_project
 
 
 class PackedKinematicsTests(unittest.TestCase):
@@ -44,6 +46,18 @@ class PackedKinematicsTests(unittest.TestCase):
         self.assertAlmostEqual(sine, math.sin(1.234), places=3)
         self.assertAlmostEqual(cosine, math.cos(1.234), places=3)
         self.assertAlmostEqual(restored.radius(0.7), math.exp(0.7), delta=0.002)
+
+    def test_default_lut_scales_radii_that_exceed_binary16(self):
+        lut = PolarLookupTable.generate(resolution=256)
+        binary = lut.to_bytes()
+        self.assertTrue(binary.startswith(b"UGLUT2"))
+        self.assertLess(len(binary), 1700)
+        restored = PolarLookupTable.from_bytes(binary)
+        self.assertAlmostEqual(
+            restored.radius(restored.profile.rho_max),
+            math.exp(restored.profile.rho_max),
+            delta=math.exp(restored.profile.rho_max) * 0.001,
+        )
 
     def test_polar_kinematic_calculus_matches_reference_formula(self):
         codec = PackedKinematicCodec(LogPolarProfile(rho_min=-4, rho_max=4))
@@ -108,6 +122,46 @@ class PackedKinematicsTests(unittest.TestCase):
             packed_3d = project_3d.write_packed(Path(temp_dir) / "blank_3d.ugecs")
             self.assertEqual(GameProject.load_packed(packed_2d).content_hash(), project_2d.content_hash())
             self.assertEqual(Mobile3DProject.load_packed(packed_3d).content_hash(), project_3d.content_hash())
+
+    def test_profile_ids_select_the_matching_codec_in_a_project(self):
+        profile = LogPolarProfile(rho_min=-4, rho_max=4)
+        codec = PackedKinematicCodec(profile)
+        component = codec.component(
+            PolarPose(2.0, 0.0), PolarMotion(), profile_id="small"
+        )
+        project = first_steps_project()
+        scene = project.scenes[project.start_scene]
+        target = next(entity for entity in scene.entities if "collectible" in entity.tags)
+        project.scenes[scene.id] = replace(
+            scene,
+            entities=tuple(
+                replace(
+                    entity,
+                    components={
+                        **entity.components,
+                        "packed_kinematic": component.to_dict(),
+                    },
+                )
+                if entity.id == target.id
+                else entity
+                for entity in scene.entities
+            ),
+        )
+        project.build["packed_kinematic_profiles"] = {
+            "small": {"profile": profile.to_dict()}
+        }
+        self.assertTrue(project.validate(raise_on_error=False).passed)
+        world = project.instantiate_world()
+        world.step()
+        transform = world.require(target.id, "transform")
+        self.assertAlmostEqual(math.hypot(*transform.position), math.exp(2.0), delta=0.002)
+
+        project.build["packed_kinematic_profiles"] = {}
+        report = project.validate(raise_on_error=False)
+        self.assertFalse(report.passed)
+        self.assertTrue(
+            any(issue.code == "packed_kinematic.profile_unknown" for issue in report.issues)
+        )
 
 
 if __name__ == "__main__":

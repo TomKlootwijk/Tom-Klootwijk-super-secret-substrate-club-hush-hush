@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdio>
 #include <fstream>
+#include <stdexcept>
 #include <thread>
 
 #define KC_LOGI(...) __android_log_print(ANDROID_LOG_INFO,"UGTS-KC392",__VA_ARGS__)
@@ -92,17 +93,28 @@ int Engine::thermalStatus() const {
     return result;
 }
 
-bool Engine::initializeWindow() {
-    if (!app_->window) return false;
+bool Engine::loadContent() {
+    if (contentLoaded_) return true;
     try {
         scene_=parseScenePack(readAsset("signature_scene.kc3d"));
-    } catch (...) {
-        KC_LOGE("failed to parse signature_scene.kc3d");
+        if (!std::isfinite(scene_.fixedDt) || scene_.fixedDt<=0.0f || scene_.fixedDt>0.25f)
+            throw std::runtime_error("scene fixedDt must be finite and in (0, 0.25]");
+        if (scene_.qualities.empty()) throw std::runtime_error("scene needs at least one quality tier");
+        nodes_=scene_.nodes;
+        particles_.clear();
+        renderNodes_.clear();
+        const auto graphBytes=readAsset("visual_graphs.kcvg");
+        if (!graphBytes.empty()) graphVm_.load(graphBytes,nodes_.size());
+    } catch (const std::exception& error) {
+        KC_LOGE("failed to load game content: %s",error.what());
         return false;
     }
-    nodes_=scene_.nodes;
-    particles_.clear();
-    renderNodes_.clear();
+    contentLoaded_=true;
+    return true;
+}
+
+bool Engine::initializeWindow() {
+    if (!app_->window || !loadContent()) return false;
     if (!renderer_.initialize(app_->window,app_->activity->assetManager,scene_)) {
         KC_LOGE("GLES3 renderer initialization failed");
         return false;
@@ -115,6 +127,11 @@ bool Engine::initializeWindow() {
     for (std::size_t i=0;i<scene_.qualities.size();++i) if (scene_.qualities[i].id==profile_.qualityId) qualityIndex_=i;
     adaptive_=AdaptiveQuality(qualityIndex_);
     requestFrameRate(static_cast<float>(profile_.targetFps));
+    if (!graphReady_) {
+        graphVm_.ready(nodes_);
+        reportGraphResults();
+        graphReady_=true;
+    }
     KC_LOGI("UGTS-KC 3.9.2 profile=%s grove=%s quality=%s fps=%u scale=%.2f model=%s gpu=%s ram=%uMB juice=%.2f",
         profile_.profileId.c_str(),tuning_.profileId.c_str(),profile_.qualityId.c_str(),profile_.targetFps,profile_.renderScale,
         info.model.c_str(),info.gpu.c_str(),info.ramMb,tuning_.juiceIntensity);
@@ -123,8 +140,30 @@ bool Engine::initializeWindow() {
 
 void Engine::terminateWindow() { renderer_.shutdown(); }
 
+GraphInputState Engine::graphInputState() const {
+    GraphInputState result;
+    result.moveX=moveX_; result.moveZ=moveZ_;
+    result.lookX=lookX_; result.lookY=lookY_;
+    result.jump=jump_; result.dash=dash_;
+    return result;
+}
+
+void Engine::reportGraphResults() {
+    for (const auto& issue:graphVm_.issues()) {
+        const auto graph=graphVm_.graphId(issue.graph);
+        KC_LOGE("visual graph %.*s node=%u disabled: %s",
+            static_cast<int>(graph.size()),graph.data(),static_cast<unsigned>(issue.node),graphVmErrorName(issue.code));
+    }
+    for (const auto& event:graphVm_.events()) {
+        const char* source=event.source>=0 && static_cast<std::size_t>(event.source)<nodes_.size()?nodes_[static_cast<std::size_t>(event.source)].id.c_str():"-";
+        const char* target=event.target>=0 && static_cast<std::size_t>(event.target)<nodes_.size()?nodes_[static_cast<std::size_t>(event.target)].id.c_str():"-";
+        KC_LOGI("visual graph event=%.*s source=%s target=%s",
+            static_cast<int>(event.kind.size()),event.kind.data(),source,target);
+    }
+}
+
 NodeData* Engine::player() {
-    for (auto& node:nodes_) if (node.alive && (node.tagMask&TagPlayer)) return &node;
+    for (auto& node:nodes_) if (node.alive && node.active && (node.tagMask&TagPlayer)) return &node;
     return nullptr;
 }
 
@@ -187,16 +226,20 @@ void Engine::updateParticles(float dt) {
 }
 
 void Engine::fixedUpdate(float dt) {
+    const auto currentInput=graphInputState();
+    graphVm_.tick(dt,++fixedTick_,GraphInputFrame{currentInput,previousGraphInput_},nodes_);
+    reportGraphResults();
+    previousGraphInput_=currentInput;
     updateParticles(dt);
     hazardCooldown_=std::max(0.0f,hazardCooldown_-dt);
     goalCooldown_=std::max(0.0f,goalCooldown_-dt);
     for (auto& node:nodes_) {
-        if (!node.alive) continue;
+        if (!node.alive || !node.active) continue;
         const float angular=length(node.angularVelocity);
         if (angular>1.0e-5f) node.rotation=normalize(multiply(axisAngle(node.angularVelocity/angular,angular*dt),node.rotation));
     }
     NodeData* p=player();
-    if (!p) return;
+    if (!p) { jump_=false; dash_=false; return; }
     if (dash_ && dashTimer_<=0.0f) {
         dashDirection_={moveX_,0.0f,moveZ_};
         if (length(dashDirection_)<0.1f) dashDirection_={-std::sin(yaw_),0.0f,-std::cos(yaw_)};
@@ -224,7 +267,7 @@ void Engine::fixedUpdate(float dt) {
     p->translation.x=clamp(p->translation.x,scene_.boundsMin.x+radius,scene_.boundsMax.x-radius);
     p->translation.z=clamp(p->translation.z,scene_.boundsMin.z+radius,scene_.boundsMax.z-radius);
     for (auto& node:nodes_) {
-        if (!node.alive || &node==p) continue;
+        if (!node.alive || !node.active || &node==p) continue;
         const float distance=length(node.translation-p->translation);
         if (distance>radius+colliderRadius(node)) continue;
         if (node.tagMask&TagCollectible) {
@@ -287,12 +330,13 @@ int Engine::handleInput(AInputEvent* event) {
     if (type==AINPUT_EVENT_TYPE_KEY) {
         const int key=AKeyEvent_getKeyCode(event);
         const bool down=AKeyEvent_getAction(event)!=AKEY_EVENT_ACTION_UP;
+        const bool repeated=down && AKeyEvent_getRepeatCount(event)>0;
         if (key==AKEYCODE_W || key==AKEYCODE_DPAD_UP) moveZ_=down?-1.0f:0.0f;
         else if (key==AKEYCODE_S || key==AKEYCODE_DPAD_DOWN) moveZ_=down?1.0f:0.0f;
         else if (key==AKEYCODE_A || key==AKEYCODE_DPAD_LEFT) moveX_=down?-1.0f:0.0f;
         else if (key==AKEYCODE_D || key==AKEYCODE_DPAD_RIGHT) moveX_=down?1.0f:0.0f;
-        else if ((key==AKEYCODE_SPACE || key==AKEYCODE_BUTTON_A) && down) jump_=true;
-        else if ((key==AKEYCODE_SHIFT_LEFT || key==AKEYCODE_SHIFT_RIGHT || key==AKEYCODE_BUTTON_B) && down) dash_=true;
+        else if (key==AKEYCODE_SPACE || key==AKEYCODE_BUTTON_A) { if (down && !repeated) jump_=true; }
+        else if (key==AKEYCODE_SHIFT_LEFT || key==AKEYCODE_SHIFT_RIGHT || key==AKEYCODE_BUTTON_B) { if (down && !repeated) dash_=true; }
         else return 0;
         return 1;
     }
