@@ -21,10 +21,20 @@ from .androidbuild import (
 from .game_input import InputFrame
 from .mobile3d import InputFrame3D, Mobile3DProject
 from .project import GameProject
-from .templates import blank_vector_game_project, elizabeth_vector_quest_project
+from .templates import (
+    blank_vector_game_project,
+    elizabeth_vector_quest_project,
+    first_steps_project,
+)
 from .templates3d import blank_mobile3d_project, tom_signature_arena_project
 from .vector2d import write_vector_svg
 from .version import __codename__, __edition__, __version__
+from .packed_kinematics import (
+    LogPolarProfile,
+    PolarLookupTable,
+    pack_ecs_document,
+    unpack_ecs_document,
+)
 from .webexport import build_html5
 
 
@@ -43,7 +53,11 @@ def _parser() -> argparse.ArgumentParser:
     new.add_argument("directory", type=Path)
     new.add_argument("--title", default="My KC Signature Game")
     new.add_argument("--author", default="")
-    new.add_argument("--template", choices=("blank", "elizabeth-quest"), default="blank")
+    new.add_argument(
+        "--template",
+        choices=("first-steps", "blank", "elizabeth-quest"),
+        default="first-steps",
+    )
     new.add_argument("--build", action="store_true", help="also build an HTML5 dist directory")
 
     validate = sub.add_parser("validate", help="validate a 2D project.json file")
@@ -109,6 +123,10 @@ def _parser() -> argparse.ArgumentParser:
     android.add_argument("--profile", default="auto")
     android.add_argument("--no-clean", action="store_true")
     android.add_argument(
+        "--debug-assets", action="store_true",
+        help="package authoring JSON/inspection evidence into the APK for debugging",
+    )
+    android.add_argument(
         "--apk", action="store_true",
         help="compile an APK after generating the Android project",
     )
@@ -130,6 +148,26 @@ def _parser() -> argparse.ArgumentParser:
         "android-devices", help="list attached Android Debug Bridge devices"
     )
     devices.add_argument("--json", action="store_true", dest="as_json")
+
+    pack_ecs = sub.add_parser(
+        "pack-ecs", help="compress project/ECS/graph JSON into a small UGECS1 file"
+    )
+    pack_ecs.add_argument("source", type=Path)
+    pack_ecs.add_argument("output", type=Path)
+
+    unpack_ecs = sub.add_parser(
+        "unpack-ecs", help="restore a UGECS1 file to readable JSON"
+    )
+    unpack_ecs.add_argument("source", type=Path)
+    unpack_ecs.add_argument("output", type=Path)
+
+    polar_lut = sub.add_parser(
+        "make-polar-lut", help="build a compact shared log-polar binary16 lookup table"
+    )
+    polar_lut.add_argument("output", type=Path)
+    polar_lut.add_argument("--resolution", type=int, default=256)
+    polar_lut.add_argument("--rho-min", type=float, default=-12.0)
+    polar_lut.add_argument("--rho-max", type=float, default=12.0)
 
     return parser
 
@@ -169,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
             print("2D: vector art, deterministic game world, collision, animation, tilemaps, audio and HTML5 export")
             print("3D: validated mobile scene projects, deterministic arcade physics, glTF/KC3D scene packs and native Android NDK/GLES3 source export")
             print("Android: POCO X7 Pro 12 GB signature profile plus high, balanced and compatibility device tiers")
-            print("4D: design-contract TODO only; no 4D runtime is claimed in 3.9.1")
+            print("4D: design-contract TODO only; no 4D runtime is claimed in 3.9.2")
             return 0
 
         if args.command == "editor":
@@ -194,8 +232,44 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"{device.serial}\t{device.state}{label}")
             return 0
 
+        if args.command == "pack-ecs":
+            document = json.loads(args.source.read_text(encoding="utf-8"))
+            if not isinstance(document, dict):
+                raise ValueError("ECS source root must be a JSON object")
+            payload = pack_ecs_document(document)
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_bytes(payload)
+            ratio = len(payload) / max(1, args.source.stat().st_size)
+            print(f"{args.output} ({len(payload)} bytes, {ratio:.1%} of source)")
+            return 0
+
+        if args.command == "unpack-ecs":
+            document = unpack_ecs_document(args.source.read_bytes())
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(
+                json.dumps(document, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            print(args.output)
+            return 0
+
+        if args.command == "make-polar-lut":
+            table = PolarLookupTable.generate(
+                LogPolarProfile(rho_min=args.rho_min, rho_max=args.rho_max),
+                args.resolution,
+            )
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_bytes(table.to_bytes())
+            print(f"{args.output} ({args.output.stat().st_size} bytes)")
+            return 0
+
         if args.command == "new":
-            project = elizabeth_vector_quest_project(args.author) if args.template == "elizabeth-quest" else blank_vector_game_project(args.title, args.author)
+            if args.template == "elizabeth-quest":
+                project = elizabeth_vector_quest_project(args.author)
+            elif args.template == "blank":
+                project = blank_vector_game_project(args.title, args.author)
+            else:
+                project = first_steps_project(args.title, args.author)
             args.directory.mkdir(parents=True, exist_ok=True)
             project_path = project.write(args.directory / "project.json")
             (args.directory / "README.md").write_text(
@@ -281,7 +355,13 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.command == "build-android":
-            result = build_android_project(Mobile3DProject.load(args.project), args.output, args.profile, clean=not args.no_clean)
+            result = build_android_project(
+                Mobile3DProject.load(args.project),
+                args.output,
+                args.profile,
+                clean=not args.no_clean,
+                include_authoring_assets=args.debug_assets,
+            )
             print(result.output_dir)
             print(f"{result.file_count} files, {result.total_bytes} bytes, project {result.project_hash[:12]}")
             if args.apk or args.install:

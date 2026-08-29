@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace "nl.tomklootwijk.ugtskc.signature"
+    namespace "__APPLICATION_ID__"
     compileSdk 36
     ndkVersion "29.0.14206865"
 
     defaultConfig {
-        applicationId "nl.tomklootwijk.ugtskc.signature"
+        applicationId "__APPLICATION_ID__"
         minSdk 26
         targetSdk 36
         versionCode 392

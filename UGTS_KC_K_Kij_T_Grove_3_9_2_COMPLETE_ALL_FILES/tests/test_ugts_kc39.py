@@ -641,7 +641,7 @@ class ProjectAndWeb39Tests(unittest.TestCase):
         env = dict(os.environ, PYTHONPATH=str(HERE.parent / "src"))
         result = subprocess.run([sys.executable, "-m", "ugts_kc3", "info"], cwd=HERE.parent, env=env, text=True, capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("3.9.1", result.stdout)
+        self.assertIn("3.9.2", result.stdout)
 
     def test_cli_new_validate_build(self):
         env = dict(os.environ, PYTHONPATH=str(HERE.parent / "src"))

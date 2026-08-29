@@ -7,7 +7,9 @@ import json
 from pathlib import Path
 import shutil
 import struct
+import re
 from typing import Any
+from xml.sax.saxutils import escape as xml_escape
 
 from .export import write_gltf
 from .mobile3d import Mobile3DProject, tag_mask
@@ -310,7 +312,7 @@ def inspect_scene_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
     if len(project_hash) != 64 or any(c not in "0123456789abcdef" for c in project_hash):
         raise ValueError("scene-pack project hash invalid")
     return {
-        "schema": "ugts-kc-native-scene-pack-inspection-3.9.1",
+        "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
         "format_version": PACK_VERSION,
         "byte_length": len(data),
         "sha256": hashlib.sha256(data).hexdigest(),
@@ -348,11 +350,31 @@ def _file_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def android_application_id(project_id: str) -> str:
+    """Derive a stable, install-safe package id so learner projects do not collide."""
+    segments = []
+    for raw in re.split(r"[^a-zA-Z0-9_]+", project_id.lower()):
+        if not raw:
+            continue
+        if raw[0].isdigit():
+            raw = "g_" + raw
+        segments.append(raw)
+    if not segments:
+        segments = ["game"]
+    suffix = ".".join(segments)
+    application_id = f"org.ugts.games.{suffix}"
+    if len(application_id) > 150:
+        digest = hashlib.sha256(project_id.encode("utf-8")).hexdigest()[:12]
+        application_id = f"org.ugts.games.game_{digest}"
+    return application_id
+
+
 def build_android_project(
     project: Mobile3DProject,
     output_dir: str | Path,
     profile_hint: str = "auto",
     clean: bool = True,
+    include_authoring_assets: bool = False,
 ) -> AndroidProjectBuild:
     """Materialize a self-contained Android Studio/Gradle native source project."""
     project.validate()
@@ -368,34 +390,42 @@ def build_android_project(
 
     strings_path = output_dir / "app/src/main/res/values/strings.xml"
     strings_path.write_text(
-        strings_path.read_text("utf-8").replace("__APP_TITLE__", project.title),
+        strings_path.read_text("utf-8").replace(
+            "__APP_TITLE__", xml_escape(project.title, {'"': "&quot;", "'": "&apos;"})
+        ),
         encoding="utf-8",
     )
     gradle_path = output_dir / "app/build.gradle"
     gradle_path.write_text(
-        gradle_path.read_text("utf-8").replace(
-            "__PROFILE_HINT__", profile_hint
-        ),
+        gradle_path.read_text("utf-8")
+        .replace("__PROFILE_HINT__", profile_hint)
+        .replace("__APPLICATION_ID__", android_application_id(project.id)),
         encoding="utf-8",
     )
     assets = output_dir / "app/src/main/assets"
     assets.mkdir(parents=True, exist_ok=True)
-    project_file = project.write(assets / "project.json")
+    # Authoring JSON and inspection evidence are not runtime inputs.  Keeping
+    # them outside app/src/main/assets avoids silently packaging duplicate data
+    # into every APK.  A diagnostic export can opt back into the old layout.
+    evidence_dir = assets if include_authoring_assets else output_dir
+    project_file = project.write(evidence_dir / "project.json")
     scene_pack = write_scene_pack(project, assets / "signature_scene.kc3d")
     inspection = inspect_scene_pack(scene_pack)
-    (assets / "scene-pack-inspection.json").write_text(
+    (evidence_dir / "scene-pack-inspection.json").write_text(
         json.dumps(inspection, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     files = sorted(path for path in output_dir.rglob("*") if path.is_file())
     report = {
-        "schema": "ugts-kc-android-source-build-3.9.1",
+        "schema": "ugts-kc-android-source-build-3.9.2",
         "edition": project.edition,
         "project_id": project.id,
         "project_hash": project.content_hash(),
         "profile_hint": profile_hint,
         "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
-        "vulkan_status": "interface reserved; backend is a post-3.9.1 task",
+        "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed",
+        "application_id": android_application_id(project.id),
+        "authoring_assets_packaged": include_authoring_assets,
         "compile_sdk": 36,
         "target_sdk": 36,
         "min_sdk": 26,

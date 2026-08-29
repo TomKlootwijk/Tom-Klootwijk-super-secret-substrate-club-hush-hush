@@ -16,9 +16,51 @@ from .game_input import InputMap
 from .tilemap import TileMap
 from .vector2d import VectorLibrary
 from .version import __codename__, __game_project_schema__, __version__
-from .packed_kinematics import attach_packed_kinematics
+from .packed_kinematics import (
+    attach_packed_kinematics,
+    pack_ecs_document,
+    unpack_ecs_document,
+)
+from .visual_graph import VisualGraph, attach_graph
 
 _PROJECT_ID_RE = re.compile(r"^[a-z][a-z0-9._-]*$")
+
+
+def visual_graphs_from_rules(rules: Mapping[str, Any]) -> tuple[VisualGraph, ...]:
+    """Load the additive graph resources accepted by a 2D scene.
+
+    ``visual_graphs`` is normally a list.  A mapping keyed by graph id is also
+    accepted because it is convenient for hand-authored JSON.  The earlier
+    editor preview's singular ``visual_graph`` key remains readable.
+    """
+    raw: Any = rules.get("visual_graphs")
+    if raw is None and "visual_graph" in rules:
+        raw = [rules["visual_graph"]]
+    if raw is None:
+        return ()
+    if isinstance(raw, Mapping):
+        if "nodes" in raw or "schema" in raw:
+            items = [raw]
+        else:
+            items = []
+            for graph_id, value in sorted(raw.items(), key=lambda pair: str(pair[0])):
+                if not isinstance(value, Mapping):
+                    raise TypeError(f"visual graph {graph_id!r} must be an object")
+                item = dict(value)
+                item.setdefault("id", str(graph_id))
+                items.append(item)
+    elif isinstance(raw, (list, tuple)):
+        items = list(raw)
+    else:
+        raise TypeError("scene rules.visual_graphs must be a list or object")
+    graphs = tuple(
+        item if isinstance(item, VisualGraph) else VisualGraph.from_dict(item)
+        for item in items
+    )
+    ids = [graph.id for graph in graphs]
+    if len(ids) != len(set(ids)):
+        raise ValueError("scene contains duplicate visual graph ids")
+    return tuple(sorted(graphs, key=lambda graph: graph.id))
 
 
 def _normalize_json_numbers(value: Any) -> Any:
@@ -327,13 +369,43 @@ class GameProject:
             for layer in tilemap.layers.values():
                 capture(f"tilemaps.{tilemap_id}.layers.{layer.name}", "tilemap.invalid", lambda l=layer: l.__post_init__())
         entity_total = 0
+        graph_total = 0
         for scene_id, scene in sorted(self.scenes.items()):
             capture(f"scenes.{scene_id}", "scene.invalid", scene.validate)
             entity_total += len(scene.entities)
+            graphs: tuple[VisualGraph, ...] = ()
+            try:
+                graphs = visual_graphs_from_rules(scene.rules)
+                for graph in graphs:
+                    graph.validate()
+                graph_total += len(graphs)
+            except (TypeError, ValueError) as exc:
+                issues.append(ProjectIssue(
+                    "error", "visual_graph.invalid", str(exc),
+                    f"scenes.{scene_id}.rules.visual_graphs",
+                ))
+            graph_ids = {graph.id for graph in graphs}
             for tilemap_id in scene.tilemaps:
                 if tilemap_id not in self.tilemaps:
                     issues.append(ProjectIssue("error", "tilemap.unknown", f"scene references unknown tilemap {tilemap_id}", f"scenes.{scene_id}.tilemaps"))
             for entity in scene.entities:
+                binding = entity.metadata.get("visual_graph")
+                bindings = (binding,) if isinstance(binding, str) else binding
+                if bindings is not None:
+                    if not isinstance(bindings, (list, tuple)):
+                        issues.append(ProjectIssue(
+                            "error", "visual_graph.binding_type",
+                            f"entity {entity.id} visual_graph binding must be text or a list",
+                            f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
+                        ))
+                    else:
+                        for graph_id in bindings:
+                            if str(graph_id) not in graph_ids:
+                                issues.append(ProjectIssue(
+                                    "error", "visual_graph.unknown",
+                                    f"entity {entity.id} references unknown visual graph {graph_id}",
+                                    f"scenes.{scene_id}.entities.{entity.id}.metadata.visual_graph",
+                                ))
                 renderer = entity.components.get("vector_renderer")
                 if renderer and renderer.get("asset_id") not in self.vector_assets.assets:
                     issues.append(
@@ -357,6 +429,7 @@ class GameProject:
                 "audio_cue_count": len(self.audio.cues),
                 "tilemap_count": len(self.tilemaps),
                 "action_count": len(self.input_map.actions),
+                "visual_graph_count": graph_total,
             },
         )
         if raise_on_error and not report.passed:
@@ -376,6 +449,25 @@ class GameProject:
             for name, data in spec.components.items():
                 world.add_component(spec.id, component_from_dict(name, data), name)
         attach_packed_kinematics(world)
+        graphs = {graph.id: graph for graph in visual_graphs_from_rules(scene.rules)}
+        bindings = []
+        for spec in scene.entities:
+            raw = spec.metadata.get("visual_graph")
+            graph_ids = (raw,) if isinstance(raw, str) else tuple(raw or ())
+            for graph_id in graph_ids:
+                bindings.append(attach_graph(
+                    world,
+                    graphs[str(graph_id)],
+                    entity_id=spec.id,
+                    name=f"visual_graph:{scene.id}:{spec.id}:{graph_id}",
+                ))
+        for graph_id in scene.rules.get("world_graphs", ()):
+            bindings.append(attach_graph(
+                world,
+                graphs[str(graph_id)],
+                name=f"visual_graph:{scene.id}:world:{graph_id}",
+            ))
+        world.visual_graph_bindings = bindings
         return world
 
     def to_dict(self) -> dict[str, Any]:
@@ -425,6 +517,20 @@ class GameProject:
         output.write_text(json.dumps(self.to_dict(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
         return output
 
+    def write_packed(self, path: str | Path, *, validate: bool = True) -> Path:
+        """Write the same editable project as a compact, checksummed ECS archive."""
+        if validate:
+            self.validate()
+        output = Path(path)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(pack_ecs_document(self.to_dict()))
+        return output
+
     @classmethod
     def load(cls, path: str | Path, *, validate: bool = True) -> "GameProject":
         return cls.from_dict(json.loads(Path(path).read_text(encoding="utf-8")), validate=validate)
+
+    @classmethod
+    def load_packed(cls, path: str | Path, *, validate: bool = True) -> "GameProject":
+        """Load a project written by :meth:`write_packed`."""
+        return cls.from_dict(unpack_ecs_document(Path(path).read_bytes()), validate=validate)

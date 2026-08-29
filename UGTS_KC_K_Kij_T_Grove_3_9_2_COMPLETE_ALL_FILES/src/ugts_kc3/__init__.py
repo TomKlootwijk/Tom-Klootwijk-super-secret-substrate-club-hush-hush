@@ -31,5 +31,6 @@ from .templates3d import *
 from .androidexport import *
 from .androidbuild import *
 from .packed_kinematics import *
+from .visual_graph import *
 from .version import (__version__, __codename__, __edition__, __game_project_schema__,
     __mobile3d_schema__, __native_scene_pack__)

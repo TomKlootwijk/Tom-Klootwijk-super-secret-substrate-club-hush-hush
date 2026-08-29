@@ -54,7 +54,7 @@ from ugts_kc3.version import __version__, __edition__
 
 class Version391Tests(unittest.TestCase):
     def test_version(self):
-        self.assertEqual(__version__, "3.9.1")
+        self.assertEqual(__version__, "3.9.2")
         self.assertIn("Tom Klootwijk Signature", __edition__)
 
     def test_root_imports(self):
@@ -69,7 +69,7 @@ class Version391Tests(unittest.TestCase):
             cwd=ROOT, env=env, text=True, capture_output=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("UGTS-KC 3.9.1", result.stdout)
+        self.assertIn("UGTS-KC 3.9.2", result.stdout)
         self.assertIn("4D: design-contract TODO only", result.stdout)
 
 
@@ -360,7 +360,7 @@ class AndroidExport391Tests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             result = build_android_project(tom_signature_arena_project(), Path(tmp) / "android")
             report = json.loads(result.build_report.read_text())
-            self.assertEqual(report["schema"], "ugts-kc-android-source-build-3.9.1")
+            self.assertEqual(report["schema"], "ugts-kc-android-source-build-3.9.2")
             self.assertEqual(report["target_sdk"], 36)
             self.assertGreater(len(report["files"]), 20)
 
@@ -390,9 +390,9 @@ class AndroidExport391Tests(unittest.TestCase):
             self.assertTrue(pack.exists())
 
     def test_checked_in_android_source(self):
-        base = ROOT / "android/UGTSKC391Signature"
+        base = ROOT / "android/UGTSKCKKijTGrove"
         self.assertTrue((base / "app/src/main/cpp/renderer_gles3.cpp").exists())
-        self.assertTrue((base / "app/src/main/assets/signature_scene.kc3d").exists())
+        self.assertTrue((base / "app/src/main/assets/grove_scene.kc3d").exists())
         self.assertIn("compileSdk 36", (base / "app/build.gradle").read_text())
 
 

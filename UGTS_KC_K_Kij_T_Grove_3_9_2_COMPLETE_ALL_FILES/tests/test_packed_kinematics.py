@@ -1,4 +1,6 @@
 import math
+from pathlib import Path
+import tempfile
 import unittest
 
 from ugts_kc3.packed_kinematics import (
@@ -12,6 +14,9 @@ from ugts_kc3.packed_kinematics import (
     unpack_ecs_document,
 )
 from ugts_kc3.game import GameWorld
+from ugts_kc3.mobile3d import Mobile3DProject, blank_mobile3d_project
+from ugts_kc3.project import GameProject
+from ugts_kc3.templates import first_steps_project
 
 
 class PackedKinematicsTests(unittest.TestCase):
@@ -94,6 +99,15 @@ class PackedKinematicsTests(unittest.TestCase):
         transform = world.require("orbit", "transform")
         self.assertAlmostEqual(math.hypot(*transform.position), 2.0, places=3)
         self.assertGreater(transform.position[1], 0.0)
+
+    def test_projects_offer_direct_packed_roundtrips(self):
+        project_2d = first_steps_project()
+        project_3d = blank_mobile3d_project()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            packed_2d = project_2d.write_packed(Path(temp_dir) / "first_steps.ugecs")
+            packed_3d = project_3d.write_packed(Path(temp_dir) / "blank_3d.ugecs")
+            self.assertEqual(GameProject.load_packed(packed_2d).content_hash(), project_2d.content_hash())
+            self.assertEqual(Mobile3DProject.load_packed(packed_3d).content_hash(), project_3d.content_hash())
 
 
 if __name__ == "__main__":

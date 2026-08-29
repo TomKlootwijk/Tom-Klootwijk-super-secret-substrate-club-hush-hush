@@ -25,9 +25,11 @@ from ..mobile3d import (
     Transform3DRecord,
 )
 from ..project import EntitySpec, GameProject, GameSceneSpec
+from ..visual_graph import VisualGraph, attach_graph
 
 
-GRAPH_KEY = "visual_graph"
+GRAPHS_KEY = "visual_graphs"
+BINDING_KEY = "visual_graph"
 
 
 @dataclass(frozen=True)
@@ -94,6 +96,7 @@ class EditorDocument(QObject):
         self._extra_top_level: dict[str, Any] = {}
         self._runtime_world: Any | None = None
         self._previous_input: InputFrame | None = None
+        self.play_warnings: list[str] = []
 
     @property
     def is_loaded(self) -> bool:
@@ -311,40 +314,136 @@ class EditorDocument(QObject):
     def graph_data(self) -> dict[str, Any]:
         if isinstance(self.project, GameProject):
             scene = self.scene()
-            value = None if scene is None else scene.rules.get(GRAPH_KEY)
+            values = [] if scene is None else scene.rules.get(GRAPHS_KEY, [])
+            legacy = None if scene is None else scene.rules.get(BINDING_KEY)
         elif isinstance(self.project, Mobile3DProject):
-            value = self.project.metadata.get(GRAPH_KEY)
+            values = self.project.metadata.get(GRAPHS_KEY, [])
+            legacy = self.project.metadata.get(BINDING_KEY)
         else:
-            value = None
-        if not isinstance(value, Mapping):
-            return {"version": 1, "nodes": [], "connections": []}
-        result = copy.deepcopy(dict(value))
-        result.setdefault("version", 1)
-        result.setdefault("nodes", [])
-        result.setdefault("connections", [])
-        return result
+            values, legacy = [], None
+        if not isinstance(values, (list, tuple)):
+            values = []
+        if not values and isinstance(legacy, Mapping):
+            values = [legacy]
+        binding = None
+        selected = self.entity()
+        if isinstance(selected, (EntitySpec, Node3DRecord)):
+            binding = selected.metadata.get(BINDING_KEY)
+        candidate = next(
+            (item for item in values if isinstance(item, Mapping) and item.get("id") == binding),
+            next((item for item in values if isinstance(item, Mapping)), None),
+        )
+        if candidate is None:
+            base = self.current_scene_id or getattr(self.project, "id", "scene")
+            return VisualGraph(id=f"{base}_logic").to_dict()
+        raw = copy.deepcopy(dict(candidate))
+        # One early editor preview used connections/from_node keys. Migrate it in memory.
+        if "connections" in raw and "links" not in raw:
+            raw["links"] = [
+                {
+                    "source_node": item.get("from_node"), "source_port": item.get("from_port"),
+                    "target_node": item.get("to_node"), "target_port": item.get("to_port"),
+                }
+                for item in raw.get("connections", []) if isinstance(item, Mapping)
+            ]
+            raw.pop("connections", None)
+        raw.setdefault("schema", VisualGraph.SCHEMA)
+        raw.setdefault("id", f"{self.current_scene_id or 'scene'}_logic")
+        raw.setdefault("metadata", {})
+        return VisualGraph.from_dict(raw).to_dict()
 
     def set_graph_data(self, graph: Mapping[str, Any]) -> None:
-        payload = copy.deepcopy(dict(graph))
+        payload = VisualGraph.from_dict(graph).to_dict()
+        graph_id = str(payload["id"])
         if isinstance(self.project, GameProject):
             scene = self.scene()
             if scene is None:
                 return
             rules = copy.deepcopy(dict(scene.rules))
-            rules[GRAPH_KEY] = payload
-            self.project.scenes[scene.id] = replace(scene, rules=rules)
+            graphs = [
+                copy.deepcopy(dict(item)) for item in rules.get(GRAPHS_KEY, [])
+                if isinstance(item, Mapping) and item.get("id") != graph_id
+            ]
+            graphs.append(payload)
+            rules[GRAPHS_KEY] = graphs
+            rules.pop(BINDING_KEY, None)
+            binding_id = None
+            if self.selection is not None and self.selection.scene_id in (None, scene.id):
+                binding_id = self.selection.object_id
+            if binding_id is None:
+                wanted = str(scene.rules.get("player_id", ""))
+                binding_id = wanted if any(item.id == wanted for item in scene.entities) else None
+            if binding_id is None:
+                binding_id = next((item.id for item in scene.entities if "transform" in item.components), None)
+            entities: list[EntitySpec] = []
+            for entity in scene.entities:
+                if entity.id == binding_id:
+                    metadata = copy.deepcopy(dict(entity.metadata))
+                    metadata[BINDING_KEY] = graph_id
+                    entity = replace(entity, metadata=metadata)
+                entities.append(entity)
+            self.project.scenes[scene.id] = replace(scene, rules=rules, entities=tuple(entities))
         elif isinstance(self.project, Mobile3DProject):
             metadata = copy.deepcopy(self.project.metadata)
-            metadata[GRAPH_KEY] = payload
+            graphs = [
+                copy.deepcopy(dict(item)) for item in metadata.get(GRAPHS_KEY, [])
+                if isinstance(item, Mapping) and item.get("id") != graph_id
+            ]
+            graphs.append(payload)
+            metadata[GRAPHS_KEY] = graphs
+            metadata.pop(BINDING_KEY, None)
             self.project.metadata = metadata
+            binding_id = self.selection.object_id if self.selection is not None else None
+            if binding_id is None:
+                binding_id = next((node.id for node in self.project.nodes if "player" in node.tags), None)
+            if binding_id is None and self.project.nodes:
+                binding_id = self.project.nodes[0].id
+            nodes: list[Node3DRecord] = []
+            for node in self.project.nodes:
+                if node.id == binding_id:
+                    node_metadata = copy.deepcopy(node.metadata)
+                    node_metadata[BINDING_KEY] = graph_id
+                    node = replace(node, metadata=node_metadata)
+                nodes.append(node)
+            self.project.nodes = tuple(nodes)
         else:
             return
         self.set_dirty(True)
         self.graphChanged.emit()
 
     def begin_play(self) -> None:
+        self.play_warnings = []
         if isinstance(self.project, GameProject):
             self._runtime_world = self.project.instantiate_world(self.current_scene_id)
+            scene = self.scene()
+            if scene is not None:
+                raw_graphs = scene.rules.get(GRAPHS_KEY, [])
+                graphs: dict[str, VisualGraph] = {}
+                for item in raw_graphs if isinstance(raw_graphs, (tuple, list)) else ():
+                    if not isinstance(item, Mapping):
+                        continue
+                    try:
+                        parsed = VisualGraph.from_dict(item)
+                        graphs[parsed.id] = parsed
+                    except Exception as exc:
+                        self.play_warnings.append(f"One logic graph could not load: {exc}")
+                attached: set[tuple[str, str | None]] = set()
+                for entity in scene.entities:
+                    graph_id = entity.metadata.get(BINDING_KEY)
+                    if graph_id not in graphs:
+                        continue
+                    try:
+                        attach_graph(self._runtime_world, graphs[str(graph_id)], entity_id=entity.id)
+                        attached.add((str(graph_id), entity.id))
+                    except Exception as exc:
+                        self.play_warnings.append(f"Logic for {entity.id} needs attention: {exc}")
+                for graph_id, parsed in graphs.items():
+                    if any(bound_graph == graph_id for bound_graph, _ in attached):
+                        continue
+                    try:
+                        attach_graph(self._runtime_world, parsed)
+                    except Exception as exc:
+                        self.play_warnings.append(f"Logic graph {graph_id} needs attention: {exc}")
         elif isinstance(self.project, Mobile3DProject):
             self._runtime_world = self.project.instantiate_world()
         else:
@@ -405,8 +504,9 @@ class EditorDocument(QObject):
 
 
 __all__ = [
+    "BINDING_KEY",
     "EditorDocument",
-    "GRAPH_KEY",
+    "GRAPHS_KEY",
     "SelectionRef",
     "euler_degrees_to_quaternion",
     "quaternion_to_euler_degrees",

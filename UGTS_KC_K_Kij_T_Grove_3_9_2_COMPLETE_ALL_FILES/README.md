@@ -4,6 +4,23 @@ This package is the complete 3.9.2 release: the 3.9.1 substrate and artifacts pl
 
 Grove is native Android, not HTML5. It targets Mali-G720 MC7 / POCO X7 Pro 12 GB as the performance focus while keeping general Android fallback tiers.
 
+## Desktop editor and first game
+
+The Grove engine work now includes an optional PySide6 desktop editor, deterministic visual-graph
+runtime, compact log-polar ECS components and direct APK build/install tooling. Core simulation and
+build commands remain dependency-free; Qt is only needed for the editor.
+
+```powershell
+python -m pip install -e ".[editor]"
+python -m ugts_kc3 editor
+
+# A child-friendly first project with one readable logic graph
+python -m ugts_kc3 new games\my_first_game --title "My First Game"
+```
+
+Start with [`docs/FIRST_10_MINUTES.md`](docs/FIRST_10_MINUTES.md). Technical decisions and honest
+boundaries are in [`docs/ENGINE_ARCHITECTURE.md`](docs/ENGINE_ARCHITECTURE.md).
+
 PCG is future TODO only.
 
 # UGTS-KC 3.9.1 — Tom Klootwijk Signature Edition

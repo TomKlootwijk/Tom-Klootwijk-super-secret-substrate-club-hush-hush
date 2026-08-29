@@ -22,6 +22,7 @@ from .vector2d import (
     rectangle_asset,
     star_asset,
 )
+from .visual_graph import GraphLink, GraphNode, VisualGraph
 
 PLAYER_LAYER = 1
 WORLD_LAYER = 2
@@ -375,6 +376,71 @@ def blank_vector_game_project(title: str = "My KC Elizabeth Game", author: str =
         scenes=(scene,),
         start_scene="main",
     )
+    project.validate()
+    return project
+
+
+def first_steps_project(
+    title: str = "My First UGTS Game", author: str = ""
+) -> GameProject:
+    """A tiny, friendly starter that teaches one visual-graph interaction."""
+    project = blank_vector_game_project(title, author)
+    scene = project.scenes[project.start_scene]
+    graph = VisualGraph(
+        "dash_counter",
+        (
+            GraphNode("when_dash", "event.input_pressed", {"action": "dash"}, (0, 80)),
+            GraphNode("current_score", "value.state", {"key": "score", "default": 0}, (0, 250)),
+            GraphNode("one", "value.constant", {"value": 1}, (0, 390)),
+            GraphNode("add_one", "math.add", {}, (260, 260)),
+            GraphNode("save_score", "action.set_state", {"key": "score"}, (520, 80)),
+        ),
+        (
+            GraphLink("when_dash", "out", "save_score", "in"),
+            GraphLink("current_score", "value", "add_one", "a"),
+            GraphLink("one", "value", "add_one", "b"),
+            GraphLink("add_one", "result", "save_score", "value"),
+        ),
+        {
+            "title": "Count every dash",
+            "lesson": "An event starts the flow. Value blocks calculate a number. The action saves it.",
+            "beginner": True,
+        },
+    )
+    entities = tuple(
+        replace(
+            entity,
+            metadata={
+                **entity.metadata,
+                "visual_graph": "dash_counter",
+                "description": "Move this player, then change its graph one block at a time.",
+            },
+        ) if entity.id == "player" else entity
+        for entity in scene.entities
+    )
+    rules = {
+        **scene.rules,
+        "visual_graphs": [graph.to_dict()],
+        "lesson": {
+            "title": "Your first game",
+            "steps": [
+                "Press Play.",
+                "Move with WASD or the arrow keys.",
+                "Press Space and watch Score increase.",
+                "Open Logic and change the number 1 to make it yours.",
+            ],
+        },
+    }
+    ui = (
+        {
+            "type": "text",
+            "text": "Move: WASD / arrows   ·   Dash: Space   ·   Open Logic to change what happens",
+            "position": [480, 30],
+            "align": "center",
+            "color": "rgba(235,245,255,.88)",
+        },
+    )
+    project.scenes[scene.id] = replace(scene, entities=entities, rules=rules, ui=ui)
     project.validate()
     return project
 

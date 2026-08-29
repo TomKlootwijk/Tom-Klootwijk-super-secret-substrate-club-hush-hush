@@ -14,6 +14,7 @@ from typing import Any, Mapping, Sequence
 
 from .geometry import Mesh
 from .materials import PBRMaterial
+from .packed_kinematics import pack_ecs_document, unpack_ecs_document
 from .math3d import (
     EPS, add, compose_trs, cross, dot, norm, normalize, quat_from_axis_angle,
     quat_mul, quat_normalize, scale as vscale, sub,
@@ -885,11 +886,26 @@ class Mobile3DProject:
     ) -> "Mobile3DProject":
         return cls.from_dict(json.loads(Path(path).read_text("utf-8")), validate)
 
+    @classmethod
+    def load_packed(
+        cls, path: str | Path, validate: bool = True
+    ) -> "Mobile3DProject":
+        """Load a compact, checksummed deployment copy of a 3D project."""
+        return cls.from_dict(unpack_ecs_document(Path(path).read_bytes()), validate)
+
     def write(self, path: str | Path) -> Path:
         self.validate()
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(self.to_dict(), indent=2, sort_keys=True) + "\n")
+        return path
+
+    def write_packed(self, path: str | Path) -> Path:
+        """Write compact runtime data while keeping JSON as the authoring format."""
+        self.validate()
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(pack_ecs_document(self.to_dict()))
         return path
 
     def content_hash(self) -> str:

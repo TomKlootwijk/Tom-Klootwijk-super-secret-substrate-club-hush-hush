@@ -181,6 +181,49 @@ class _PerspectiveProjector:
         return QPointF(x, y), depth
 
 
+class ProjectedMeshItem(QGraphicsItem):
+    """Paint all visible faces of one node as a single lightweight scene item."""
+
+    def __init__(
+        self,
+        object_id: str,
+        faces: list[tuple[float, QPolygonF, QColor]],
+        selected: bool,
+    ) -> None:
+        super().__init__()
+        self.object_id = object_id
+        self.faces = sorted(faces, key=lambda item: item[0], reverse=True)
+        self.selected = selected
+        bounds = QRectF()
+        for _, polygon, _ in self.faces:
+            bounds = bounds.united(polygon.boundingRect())
+        self._bounds = bounds.adjusted(-3, -3, 3, 3)
+        self.setData(0, object_id)
+        self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
+        self.setToolTip(f"{_friendly_name(object_id)}\nClick to inspect its 3D transform")
+
+    def boundingRect(self) -> QRectF:  # type: ignore[override]
+        return self._bounds
+
+    def shape(self) -> QPainterPath:  # type: ignore[override]
+        path = QPainterPath()
+        for _, polygon, _ in self.faces:
+            path.addPolygon(polygon)
+        return path
+
+    def paint(self, painter: QPainter, option, widget=None) -> None:  # type: ignore[override]
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        highlighted = self.selected or self.isSelected()
+        for _, polygon, color in self.faces:
+            painter.setBrush(color)
+            painter.setPen(
+                QPen(QColor("#65dbff"), 1.55)
+                if highlighted
+                else QPen(color.darker(145), 0.7)
+            )
+            painter.drawPolygon(polygon)
+
+
 class SceneViewport(QGraphicsView):
     """Editable 2D scene view and projected 3D mesh preview."""
 
@@ -210,6 +253,8 @@ class SceneViewport(QGraphicsView):
         self._rendering = False
         self._first_render = True
         self._playing = False
+        self._panning = False
+        self._pan_origin = QPointF()
         self.pressed_keys: set[str] = set()
         self.scene().selectionChanged.connect(self._scene_selection_changed)
 
@@ -443,7 +488,7 @@ class SceneViewport(QGraphicsView):
 
         projector = _PerspectiveProjector(project, width, height)
         self._add_3d_grid(projector, project)
-        triangles: list[tuple[float, str, QPolygonF, QColor]] = []
+        node_faces: dict[str, list[tuple[float, QPolygonF, QColor]]] = {}
         light_direction = _normalized(tuple(-value for value in project.light.direction))
         for node in project.nodes:
             runtime = self._runtime_state.get(node.id) if self._runtime_state else None
@@ -477,23 +522,12 @@ class SceneViewport(QGraphicsView):
                     min(1.0, base_color[2] * brightness * project.light.color[2] + emissive[2]),
                     min(1.0, base_color[3]),
                 )
-                triangles.append((depth, node.id, QPolygonF(screen_points), color))
+                node_faces.setdefault(node.id, []).append((depth, QPolygonF(screen_points), color))
 
-        for index, (depth, node_id, polygon, color) in enumerate(
-            sorted(triangles, key=lambda item: item[0], reverse=True)
-        ):
-            item = QGraphicsPolygonItem(polygon)
-            selected = node_id == self._selected_id
-            item.setBrush(color)
-            item.setPen(
-                QPen(QColor("#65dbff"), 1.6)
-                if selected
-                else QPen(color.darker(145), 0.7)
-            )
-            item.setData(0, node_id)
-            item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
-            item.setToolTip(f"{_friendly_name(node_id)}\nClick to inspect its 3D transform")
-            item.setZValue(index)
+        for node_id, faces in node_faces.items():
+            item = ProjectedMeshItem(node_id, faces, node_id == self._selected_id)
+            average_depth = sum(face[0] for face in faces) / len(faces)
+            item.setZValue(-average_depth)
             self.scene().addItem(item)
         if self._selected_id:
             self._add_3d_gizmo(projector, project, self._selected_id)
@@ -576,22 +610,29 @@ class SceneViewport(QGraphicsView):
 
     def mousePressEvent(self, event) -> None:  # type: ignore[override]
         if event.button() == Qt.MouseButton.MiddleButton:
-            self.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
-            synthetic = type(event)(
-                event.type(), event.position(), event.scenePosition(), event.globalPosition(),
-                Qt.MouseButton.LeftButton, event.buttons() | Qt.MouseButton.LeftButton,
-                event.modifiers(), event.source(), event.pointingDevice(),
-            )
-            super().mousePressEvent(synthetic)
+            self._panning = True
+            self._pan_origin = event.position()
+            self.viewport().setCursor(Qt.CursorShape.ClosedHandCursor)
+            event.accept()
             return
         super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event) -> None:  # type: ignore[override]
-        super().mouseReleaseEvent(event)
         if event.button() == Qt.MouseButton.MiddleButton:
-            self.setDragMode(QGraphicsView.DragMode.NoDrag)
+            self._panning = False
+            self.viewport().unsetCursor()
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
+        if self._panning:
+            delta = event.position() - self._pan_origin
+            self._pan_origin = event.position()
+            self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - int(delta.x()))
+            self.verticalScrollBar().setValue(self.verticalScrollBar().value() - int(delta.y()))
+            event.accept()
+            return
         point = self.mapToScene(event.position().toPoint())
         self.mouseScenePosition.emit(point.x(), point.y())
         super().mouseMoveEvent(event)

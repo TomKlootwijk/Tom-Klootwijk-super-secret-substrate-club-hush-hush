@@ -7,8 +7,12 @@ implemented in C++.
 
 ## Build
 
-Open this directory in Android Studio, or use Gradle 8.13 with Android SDK 36, Android Gradle Plugin
-8.13.2, CMake 3.22.1 and Android NDK r29 (`29.0.14206865`).
+Open this directory in Android Studio, or use the checked, pinned Gradle 8.13 wrapper with Android
+SDK 36, Android Gradle Plugin 8.13.2, CMake 3.22.1 and Android NDK r29 (`29.0.14206865`):
+
+```powershell
+.\gradlew.bat assemblePocoX7ProDebug
+```
 
 Common variants:
 
@@ -16,7 +20,9 @@ Common variants:
 - `universalDebug`: ARM64, ARMv7 and x86_64 with runtime profile selection.
 - Release variants are source-ready but require your own signing configuration.
 
-The project intentionally does not include private signing keys or a fabricated Gradle wrapper JAR.
+The wrapper is copied from the verified UGTS 4.1.1 parent package and pins the distribution SHA-256.
+The project intentionally includes no private signing key; use debug builds for direct learning and
+device testing, then configure a private release key only when publishing.
 
 ## Controls
 
