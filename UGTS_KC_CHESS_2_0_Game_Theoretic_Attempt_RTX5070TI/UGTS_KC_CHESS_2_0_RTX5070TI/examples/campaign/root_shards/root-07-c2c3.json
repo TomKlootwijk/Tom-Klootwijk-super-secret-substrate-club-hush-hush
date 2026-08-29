@@ -1,0 +1,40 @@
+{
+  "action": {
+    "kind": "move",
+    "san": "c3",
+    "uci": "c2c3"
+  },
+  "child": {
+    "fen": "rnbqkbnr/pppppppp/8/8/8/2P5/PP1PPPPP/RNBQKBNR b KQkq - 0 1",
+    "game_state_sha256": "4b0082294d645569fcbd33c902d16845b372310978a61f99cac6553b49ce472b",
+    "history_counts": [
+      [
+        "5fff14a1814396798d5d67e856ab753fb117f2f41d4e0dcea98696f5102ac071",
+        1
+      ],
+      [
+        "6acb41f3442dd9ce44921971020283bac1af276a2c154ea443ae5a37c5b33b43",
+        1
+      ]
+    ],
+    "position_sha256": "940b4c84d727992b48f115d4e9affc26294fcac2cc486c8ed6e25f68a1d60ef8",
+    "side_to_move": "black"
+  },
+  "obligation_id": "root-07-c2c3",
+  "parent": {
+    "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+    "history_counts": [
+      [
+        "5fff14a1814396798d5d67e856ab753fb117f2f41d4e0dcea98696f5102ac071",
+        1
+      ]
+    ],
+    "position_sha256": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95"
+  },
+  "proof_rule": "The child WDL is from the child side-to-move perspective. It becomes authoritative only after an independent checker accepts a complete certificate.",
+  "schema": "ugts-chess-proof-obligation-2.0",
+  "target": "exact-full-game-WDL-under-declared-FIDE-profile",
+  "verification": "unverified",
+  "wdl": "unknown"
+}

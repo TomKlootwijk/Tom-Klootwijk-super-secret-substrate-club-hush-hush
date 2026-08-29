@@ -1,0 +1,27 @@
+{
+  "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "root_sha256": "46074c082edc30fd94b4e9f2f201ca16936b91551b94e6d81f3e20b840253f1e",
+  "game_theoretic_value": "unknown",
+  "shards": [
+    {"id": "root-01-a2a3", "move": "a2a3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1", "child_sha256": "17fed2fde6422ec4ae871777cd7f347dca965fd1721ebefa3e27e26d40c89c89", "status": "unresolved"},
+    {"id": "root-02-a2a4", "move": "a2a4", "child_fen": "rnbqkbnr/pppppppp/8/8/P7/8/1PPPPPPP/RNBQKBNR b KQkq a3 0 1", "child_sha256": "d5ae41467f8f31e45c1e121a143d3d25a25c59a2caa949ca1ec8076b0292e042", "status": "unresolved"},
+    {"id": "root-03-b1a3", "move": "b1a3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/N7/PPPPPPPP/R1BQKBNR b KQkq - 1 1", "child_sha256": "0c0e881d3ea972b7278326adf252b36759c9997914e0b6fb0738970599221683", "status": "unresolved"},
+    {"id": "root-04-b1c3", "move": "b1c3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1", "child_sha256": "ead0111db7123ebe284526b454aa3aeaad7450c2884c6b96a0c761e297297082", "status": "unresolved"},
+    {"id": "root-05-b2b3", "move": "b2b3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR b KQkq - 0 1", "child_sha256": "03fdbaca057f93c1a836220bb7e09129675fa1821234b5b55fa5dd7050bfa4c0", "status": "unresolved"},
+    {"id": "root-06-b2b4", "move": "b2b4", "child_fen": "rnbqkbnr/pppppppp/8/8/1P6/8/P1PPPPPP/RNBQKBNR b KQkq b3 0 1", "child_sha256": "37c31c30902c4cd8b40346e121036361902aee8e62584f1c17518f86738efd2c", "status": "unresolved"},
+    {"id": "root-07-c2c3", "move": "c2c3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/2P5/PP1PPPPP/RNBQKBNR b KQkq - 0 1", "child_sha256": "5710ab151e1bebe3b416b5792953f52a4b4388847c30a6940c36c07c9ae97384", "status": "unresolved"},
+    {"id": "root-08-c2c4", "move": "c2c4", "child_fen": "rnbqkbnr/pppppppp/8/8/2P5/8/PP1PPPPP/RNBQKBNR b KQkq c3 0 1", "child_sha256": "b92d0e2542793cb35b421913ab5f3cc4257ed2308047022802a9110f77151a8d", "status": "unresolved"},
+    {"id": "root-09-d2d3", "move": "d2d3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/3P4/PPP1PPPP/RNBQKBNR b KQkq - 0 1", "child_sha256": "3616ca88f471dfc39e98c5a6c8c234a8f14f7d6a5a25298b629df8c20bff8168", "status": "unresolved"},
+    {"id": "root-10-d2d4", "move": "d2d4", "child_fen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq d3 0 1", "child_sha256": "f9276e0d8ff871f3535fb58a3151fcb34ebd82d3f862707d969e35588b324db7", "status": "unresolved"},
+    {"id": "root-11-e2e3", "move": "e2e3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR b KQkq - 0 1", "child_sha256": "3a1f3dd1208c55c2676336f617e193d69084e5f37bb1cd55219c3a60dfd8b4f4", "status": "unresolved"},
+    {"id": "root-12-e2e4", "move": "e2e4", "child_fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", "child_sha256": "c815e34e25f31a60522851261e67bfc1f3b6e74df4cd575f19214434bfba7265", "status": "unresolved"},
+    {"id": "root-13-f2f3", "move": "f2f3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/5P2/PPPPP1PP/RNBQKBNR b KQkq - 0 1", "child_sha256": "47b5c8f28e5ddbbe7c63e78ddb39cef4d874526a9363567185834a37e2f23d2e", "status": "unresolved"},
+    {"id": "root-14-f2f4", "move": "f2f4", "child_fen": "rnbqkbnr/pppppppp/8/8/5P2/8/PPPPP1PP/RNBQKBNR b KQkq f3 0 1", "child_sha256": "78927977bfc0ef631b5f35a7ead0bc02797c85dce4b62835d27172d6f0b2aea9", "status": "unresolved"},
+    {"id": "root-15-g1f3", "move": "g1f3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1", "child_sha256": "9ca869f15821002bdeb69a72de4c3f274061810003e85853269cd4081712def3", "status": "unresolved"},
+    {"id": "root-16-g1h3", "move": "g1h3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b KQkq - 1 1", "child_sha256": "eee5064317a4ea54baddd1d55b1acda030919270125d94e8c00f38b5d64e9549", "status": "unresolved"},
+    {"id": "root-17-g2g3", "move": "g2g3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/6P1/PPPPPP1P/RNBQKBNR b KQkq - 0 1", "child_sha256": "07bc2b3fe35e357f65d74120e0e1cece85d910e25707904f17bbaa4353af7438", "status": "unresolved"},
+    {"id": "root-18-g2g4", "move": "g2g4", "child_fen": "rnbqkbnr/pppppppp/8/8/6P1/8/PPPPPP1P/RNBQKBNR b KQkq g3 0 1", "child_sha256": "2111fa19f3d169f613f19227d1caaa0f6f0cbaeb51bdbef30576805430e99790", "status": "unresolved"},
+    {"id": "root-19-h2h3", "move": "h2h3", "child_fen": "rnbqkbnr/pppppppp/8/8/8/7P/PPPPPPP1/RNBQKBNR b KQkq - 0 1", "child_sha256": "31486af8bf492489016a1fc12213836dc38a3ad76a3d87018b0f7f55016e960e", "status": "unresolved"},
+    {"id": "root-20-h2h4", "move": "h2h4", "child_fen": "rnbqkbnr/pppppppp/8/8/7P/8/PPPPPPP1/RNBQKBNR b KQkq h3 0 1", "child_sha256": "351e17cb943859cd8b61bd56aaa369aa35fc45b746b1da3a0f798ddd824fcfc7", "status": "unresolved"}
+  ]
+}

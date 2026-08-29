@@ -1,0 +1,20 @@
+{
+  "canonical_component": "ugts.application.chess.game-theoretic-solver@2.0.0",
+  "claim_boundary": "Only independently verified certificate records may set a child WDL.",
+  "created_at": "2026-08-29T06:46:58Z",
+  "database": "/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/examples/campaign/initial.sqlite3",
+  "obligation_count": 20,
+  "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+  "root_history_counts": [
+    [
+      "5fff14a1814396798d5d67e856ab753fb117f2f41d4e0dcea98696f5102ac071",
+      1
+    ]
+  ],
+  "root_position_sha256": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
+  "root_wdl": "unknown",
+  "rules_profile": "fide-classical-2023-claims-as-actions-v2",
+  "schema": "ugts-chess-campaign-2.0",
+  "shard_dir": "/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/examples/campaign/root_shards"
+}

@@ -816,7 +816,7 @@ class GraphRuntime:
         self.last_trace: tuple[TraceEntry, ...] = ()
 
     def execute(self, trigger: str, context: GraphContext, *, max_steps: int | None = None) -> ExecutionResult:
-        """Dispatch ``ready``, ``tick``, ``input_pressed`` or a registered event."""
+        """Dispatch ``ready``, ``tick``, input, or another registered event."""
 
         trigger_name = str(trigger).strip()
         if not trigger_name:
@@ -869,6 +869,22 @@ class GraphRuntime:
     ) -> ExecutionResult:
         step_dt = float(getattr(world, "fixed_dt", 0.0) if dt is None else dt)
         return self.execute("tick", GraphContext(world, entity_id, input_frame, step_dt, payload=payload or {}))
+
+    def event(
+        self,
+        trigger: str,
+        world: Any,
+        *,
+        entity_id: str | None = None,
+        input_frame: Any = None,
+        dt: float = 0.0,
+        payload: Mapping[str, Any] | None = None,
+    ) -> ExecutionResult:
+        """Dispatch a named world event with an explicit, immutable payload."""
+        return self.execute(
+            trigger,
+            GraphContext(world, entity_id, input_frame, dt, payload=payload or {}),
+        )
 
     def _evaluate(
         self,
@@ -960,6 +976,7 @@ class GraphBinding:
     name: str
     ready_result: ExecutionResult | None = None
     last_result: ExecutionResult | None = None
+    last_input_frame: Any = None
 
     def run_ready(self) -> ExecutionResult:
         self.ready_result = self.runtime.ready(self.world, entity_id=self.entity_id)
@@ -981,7 +998,33 @@ class GraphBinding:
 
     def update(self, world: Any, dt: float, input_frame: Any) -> None:
         if self.owner_is_active():
+            self.last_input_frame = input_frame
             self.last_result = self.runtime.tick(world, dt, input_frame, entity_id=self.entity_id)
+
+    def handle_trigger(self, event: Any) -> None:
+        """Dispatch player/sensor transitions to world or matching sensor graphs."""
+        trigger = str(getattr(event, "kind", ""))
+        if trigger not in {"trigger_enter", "trigger_exit"}:
+            return
+        sensor = getattr(event, "entity_a", getattr(event, "source", None))
+        player = getattr(event, "entity_b", getattr(event, "target", None))
+        if self.entity_id is not None and str(sensor) != self.entity_id:
+            return
+        if not self.owner_is_active():
+            return
+        raw_payload = getattr(event, "data", getattr(event, "payload", {}))
+        payload = dict(raw_payload) if isinstance(raw_payload, Mapping) else {}
+        payload.update({"sensor": None if sensor is None else str(sensor), "player": None if player is None else str(player)})
+        settings = getattr(self.world, "settings", None)
+        dt = float(getattr(settings, "fixed_dt", getattr(self.world, "fixed_dt", 0.0)))
+        self.last_result = self.runtime.event(
+            trigger,
+            self.world,
+            entity_id=self.entity_id,
+            input_frame=self.last_input_frame,
+            dt=dt,
+            payload=payload,
+        )
 
 
 def attach_graph(
@@ -1004,6 +1047,9 @@ def attach_graph(
     binding_name = name or f"visual_graph:{runtime.graph.id}:{entity_id or 'world'}"
     binding = GraphBinding(runtime, world, entity_id, phase, binding_name)
     world.add_system(binding.update, phase=phase, priority=int(priority), name=binding_name)
+    if hasattr(world, "on"):
+        world.on("trigger_enter", binding.handle_trigger)
+        world.on("trigger_exit", binding.handle_trigger)
     if run_ready:
         binding.run_ready()
     return binding
@@ -1101,6 +1147,17 @@ def _event_input_pressed(context: GraphContext, node: GraphNode, inputs: Mapping
     else:
         active = context.event_name == "input_pressed" and context.payload.get("action", action) == action
     return NodeResult({"action": action, "value": value, "entity": context.entity_id}, ("out",) if active else ())
+
+
+def _event_trigger(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
+    return NodeResult(
+        {
+            "sensor": context.payload.get("sensor"),
+            "player": context.payload.get("player"),
+            "entity": context.entity_id,
+        },
+        ("out",),
+    )
 
 
 def _branch(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
@@ -1244,6 +1301,16 @@ def create_builtin_registry() -> NodeRegistry:
             "event.input_pressed", "Input Pressed", "Events", "Runs on the frame an input action crosses its pressed threshold.",
             (_in_data("action", "string", required=True), _out_flow(), _out_data("action", "string"), _out_data("value", "number"), _out_data("entity", "entity")),
             _event_input_pressed, {"action": "accept"}, event="input_pressed",
+        ),
+        NodeDefinition(
+            "event.trigger_enter", "Trigger Enter", "Events", "Runs once when the active player enters this sensor area.",
+            (_out_flow(), _out_data("sensor", "entity", "The sensor area."), _out_data("player", "entity", "The active player."), _out_data("entity", "entity", "The graph's bound sensor, if any.")),
+            _event_trigger, event="trigger_enter",
+        ),
+        NodeDefinition(
+            "event.trigger_exit", "Trigger Exit", "Events", "Runs once when the active player leaves this sensor area.",
+            (_out_flow(), _out_data("sensor", "entity", "The sensor area."), _out_data("player", "entity", "The active player."), _out_data("entity", "entity", "The graph's bound sensor, if any.")),
+            _event_trigger, event="trigger_exit",
         ),
         NodeDefinition(
             "flow.branch", "Branch", "Flow", "Continues through True or False based on a boolean condition.",

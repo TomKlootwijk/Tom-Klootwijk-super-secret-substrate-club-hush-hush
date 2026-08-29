@@ -1,0 +1,28 @@
+{
+  "generated": [
+    "architecture.png",
+    "authority_chain.png",
+    "bounded_results.png",
+    "campaign_ledger.png",
+    "certificate_flow.png",
+    "codex_workflow.png",
+    "cover_architecture.png",
+    "global_solve.png",
+    "gpu_protocol.png",
+    "mate_sequence.png",
+    "native_architecture.png",
+    "package_map.png",
+    "perft_chart.png",
+    "proof_tree.png",
+    "roadmap.png",
+    "root_obligations.png",
+    "rtx_memory.png",
+    "solve_ladder.png",
+    "solver_layers.png",
+    "source_grounding.png",
+    "state_identity.png",
+    "tablebase_counts.png",
+    "validation_dashboard.png",
+    "wdl_calculus.png"
+  ]
+}

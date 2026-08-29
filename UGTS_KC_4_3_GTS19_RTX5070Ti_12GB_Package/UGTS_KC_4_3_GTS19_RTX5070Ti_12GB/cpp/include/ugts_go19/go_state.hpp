@@ -58,6 +58,17 @@ struct ApplyResult {
 [[nodiscard]] int AreaScore2(const State& state, const Rules& rules);
 [[nodiscard]] std::vector<std::uint64_t> PackBlackBitplane(const State& state);
 [[nodiscard]] std::vector<std::uint64_t> PackWhiteBitplane(const State& state);
+// Canonical proof-state serialization. The representation contains every
+// semantic state component from the formal specification, including the full
+// positional-superko set and immediately previous board. `ply` is deliberately
+// excluded because it is campaign metadata, not part of game-state equality.
+[[nodiscard]] std::string CanonicalStateJson(const State& state,
+                                             const Rules& rules);
+// Exact collision-independent semantic equality. Hashes may select candidates,
+// but this comparison is the authority before proof data can be shared.
+[[nodiscard]] bool ExactStateEqual(const State& left, const Rules& left_rules,
+                                   const State& right,
+                                   const Rules& right_rules);
 [[nodiscard]] std::string BoardDigestHex(const State& state);
 
 }  // namespace ugts_go19

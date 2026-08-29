@@ -32,6 +32,12 @@ CANONICAL_ROOT_DIGEST = (
     "62eed2c148b6baefbd0312aa940a447a5c3aaa6ff524d18508a0628079ddc92e"
 )
 CANONICAL_THRESHOLD2 = 1
+CANONICAL_PROOF_ARITHMETIC: dict[str, Any] = {
+    "bits": 64,
+    "endianness": "little",
+    "infinity": "18446744073709551615",
+    "kind": "saturating_uint64",
+}
 
 
 def _positive_int(value: Any) -> bool:
@@ -80,6 +86,8 @@ def validate_unknown_preflight(payload: Any) -> None:
         raise ValueError("UNKNOWN preflight requires a positive proof_number")
     if not _positive_int(result.get("disproof_number")):
         raise ValueError("UNKNOWN preflight requires a positive disproof_number")
+    if result.get("proof_arithmetic") != CANONICAL_PROOF_ARITHMETIC:
+        raise ValueError("preflight proof arithmetic is missing or noncanonical")
 
 
 def main() -> int:

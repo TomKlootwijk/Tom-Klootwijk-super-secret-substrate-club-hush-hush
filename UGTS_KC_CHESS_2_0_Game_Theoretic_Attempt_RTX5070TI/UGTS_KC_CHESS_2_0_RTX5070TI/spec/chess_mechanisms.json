@@ -1,0 +1,834 @@
+[
+  {
+    "definition": "A versioned application profile mapping standard chess into typed state, verified moves, deterministic transitions, proof search and exact bounded tablebases.",
+    "disposition": "ENGINEERING",
+    "domain": "Profile",
+    "id": "C001",
+    "mechanism": "UGTS chess solver profile",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Separate exact rule/proof results, heuristic search results, external standards and unproved full-game claims.",
+    "disposition": "RETAIN",
+    "domain": "Governance",
+    "id": "C002",
+    "mechanism": "Evidence boundary",
+    "validation": "Enforced"
+  },
+  {
+    "definition": "q carries the serialized FEN position, exact repetition-count context, rule profile and lineage; proof identity projects away non-semantic fullmove notation.",
+    "disposition": "ENGINEERING",
+    "domain": "State",
+    "id": "C003",
+    "mechanism": "Position tuple",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Map a1..h8 bijectively to integer cells 0..63 with explicit file/rank transforms.",
+    "disposition": "RETAIN",
+    "domain": "Coordinates",
+    "id": "C004",
+    "mechanism": "Square address",
+    "validation": "Exact"
+  },
+  {
+    "definition": "Piece type, color and square are distinct fields; captured pieces leave the board through a verified event.",
+    "disposition": "ENGINEERING",
+    "domain": "Identity",
+    "id": "C005",
+    "mechanism": "Piece identity",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "One bit selects the mover only; it never replaces board, rights, clocks or lineage.",
+    "disposition": "RETAIN",
+    "domain": "State",
+    "id": "C006",
+    "mechanism": "Side-to-move bit",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Four explicit rights are carried and patched by king/rook moves or home-rook capture.",
+    "disposition": "ENGINEERING",
+    "domain": "State",
+    "id": "C007",
+    "mechanism": "Castling-right mask",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A transient target square is typed separately and admitted only under pawn and king-safety guards.",
+    "disposition": "ENGINEERING",
+    "domain": "State",
+    "id": "C008",
+    "mechanism": "En-passant target",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Halfmove is rule-authoritative for draw guards; fullmove remains explicit for FEN round trips and replay lineage but is excluded from game-value identity.",
+    "disposition": "RETAIN",
+    "domain": "State",
+    "id": "C009",
+    "mechanism": "Move counters",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Parse and serialize six-field Forsyth-Edwards positions with structure validation.",
+    "disposition": "ENGINEERING",
+    "domain": "Encoding",
+    "id": "C010",
+    "mechanism": "Strict FEN codec",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Maintain separate canonical serialized-position and semantic game-state records so notation metadata cannot split equivalent proof states.",
+    "disposition": "ENGINEERING",
+    "domain": "Persistence",
+    "id": "C011",
+    "mechanism": "Canonical state record",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Use SHA-256 over canonical serialized position and separately over semantic game state; hashes are integrity metadata, not legal identity.",
+    "disposition": "RETAIN",
+    "domain": "Persistence",
+    "id": "C012",
+    "mechanism": "SHA-256 state identity",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Use deterministic BLAKE2b-64 as a transposition/index key while keeping SHA-256 authoritative.",
+    "disposition": "ENGINEERING",
+    "domain": "Indexing",
+    "id": "C013",
+    "mechanism": "Compact 64-bit cache key",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Board, side, castling and effective en-passant rights form the repetition key; clocks are excluded.",
+    "disposition": "ENGINEERING",
+    "domain": "Identity",
+    "id": "C014",
+    "mechanism": "Repetition identity",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Leaper offsets, pawn direction and finite slider rays provide coarse move support.",
+    "disposition": "RETAIN",
+    "domain": "Support",
+    "id": "C015",
+    "mechanism": "Piece movement support",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A supported destination must agree with side, own occupancy, capture and promotion semantics.",
+    "disposition": "ENGINEERING",
+    "domain": "Compatibility",
+    "id": "C016",
+    "mechanism": "Occupancy and color gate",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Typed pawn, knight, king and slider attacks define check and castling-transit relations.",
+    "disposition": "RETAIN",
+    "domain": "Relation",
+    "id": "C017",
+    "mechanism": "Attack relation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A move commits only when the mover's king is not attacked in the resulting state.",
+    "disposition": "RETAIN",
+    "domain": "Guard",
+    "id": "C018",
+    "mechanism": "King-safety guard",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Castling requires rights, home rook, empty corridor and unattacked origin/transit/destination.",
+    "disposition": "ENGINEERING",
+    "domain": "Guard",
+    "id": "C019",
+    "mechanism": "Castling transit guard",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "The captured pawn is removed before testing whether the moving side's king is exposed.",
+    "disposition": "ENGINEERING",
+    "domain": "Guard",
+    "id": "C020",
+    "mechanism": "En-passant exposure guard",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A last-rank pawn event branches into exactly Q/R/B/N outcomes.",
+    "disposition": "RETAIN",
+    "domain": "Branch",
+    "id": "C021",
+    "mechanism": "Promotion branch",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A proposed move records source hash, support, compatibility, guard status and reason codes.",
+    "disposition": "ENGINEERING",
+    "domain": "Event",
+    "id": "C022",
+    "mechanism": "Move proposal",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Verified moves atomically patch source, destination, capture, rook motion and promotion.",
+    "disposition": "ENGINEERING",
+    "domain": "Transition",
+    "id": "C023",
+    "mechanism": "Deterministic board patch",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Castling rights are deterministically removed by king/rook motion and home-rook capture.",
+    "disposition": "ENGINEERING",
+    "domain": "Transition",
+    "id": "C024",
+    "mechanism": "Rights patch",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Every move updates en-passant, halfmove, fullmove and side-to-move fields in a fixed order.",
+    "disposition": "ENGINEERING",
+    "domain": "Transition",
+    "id": "C025",
+    "mechanism": "Clock and turn patch",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Committed events carry UCI, SAN, pre/post hashes, capture, promotion, check and lineage label.",
+    "disposition": "ENGINEERING",
+    "domain": "Event",
+    "id": "C026",
+    "mechanism": "Move event record",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Replay requires contiguous sequence and matching pre/post state hashes.",
+    "disposition": "RETAIN",
+    "domain": "Replay",
+    "id": "C027",
+    "mechanism": "Hash-checked replay",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "No legal moves plus check is a terminal loss for the side to move.",
+    "disposition": "RETAIN",
+    "domain": "Terminal",
+    "id": "C028",
+    "mechanism": "Checkmate relation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "No legal moves without check is a draw.",
+    "disposition": "RETAIN",
+    "domain": "Terminal",
+    "id": "C029",
+    "mechanism": "Stalemate relation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Kings-only, single-minor and same-color-bishop-only exact dead positions are recognized.",
+    "disposition": "BOUNDED",
+    "domain": "Terminal",
+    "id": "C030",
+    "mechanism": "Dead-position subset",
+    "validation": "Implemented subset"
+  },
+  {
+    "definition": "Claimable 50-move/threefold and automatic 75-move/fivefold policies remain explicit.",
+    "disposition": "RETAIN",
+    "domain": "Terminal",
+    "id": "C031",
+    "mechanism": "Draw counters",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Generate all and only moves passing support, compatibility and king-safety guards.",
+    "disposition": "ENGINEERING",
+    "domain": "Query",
+    "id": "C032",
+    "mechanism": "Legal move enumeration",
+    "validation": "Validated"
+  },
+  {
+    "definition": "Count legal move paths and compare with established regression fixtures.",
+    "disposition": "RETAIN",
+    "domain": "Validation",
+    "id": "C033",
+    "mechanism": "Perft oracle",
+    "validation": "Validated"
+  },
+  {
+    "definition": "Generate deterministic human-readable algebraic notation downstream of legal authority.",
+    "disposition": "OPTIONAL",
+    "domain": "Encoding",
+    "id": "C034",
+    "mechanism": "SAN projection",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Material and small piece-square terms order non-terminal search without becoming proof authority.",
+    "disposition": "ENGINEERING",
+    "domain": "Heuristic",
+    "id": "C035",
+    "mechanism": "Transparent evaluation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Bounded adversarial search evaluates alternating legal transitions with fail-soft mate scores.",
+    "disposition": "RETAIN",
+    "domain": "Search",
+    "id": "C036",
+    "mechanism": "Alpha-beta negamax",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Search depth increases monotonically and preserves the last completed result under a time budget.",
+    "disposition": "ENGINEERING",
+    "domain": "Search",
+    "id": "C037",
+    "mechanism": "Iterative deepening",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "At the horizon, captures, promotions and all check evasions extend tactical stability.",
+    "disposition": "ENGINEERING",
+    "domain": "Search",
+    "id": "C038",
+    "mechanism": "Quiescence",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Cache depth, score bound and best move under a compact key; collisions cannot certify proofs.",
+    "disposition": "ENGINEERING",
+    "domain": "Search",
+    "id": "C039",
+    "mechanism": "Transposition record",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Use TT move, promotion, capture score and UCI ordering for reproducible runs.",
+    "disposition": "ENGINEERING",
+    "domain": "Search",
+    "id": "C040",
+    "mechanism": "Deterministic move ordering",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Encode checkmate with ply distance so faster wins and slower losses are preferred.",
+    "disposition": "ENGINEERING",
+    "domain": "Search",
+    "id": "C041",
+    "mechanism": "Mate-distance score",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A forced-mate proof selects one legal attacker move with a proved child.",
+    "disposition": "RETAIN",
+    "domain": "Proof",
+    "id": "C042",
+    "mechanism": "OR attacker node",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A proof enumerates every legal defender reply and proves every child.",
+    "disposition": "RETAIN",
+    "domain": "Proof",
+    "id": "C043",
+    "mechanism": "AND defender node",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A proof leaf independently verifies check, zero legal replies and declared winner.",
+    "disposition": "RETAIN",
+    "domain": "Proof",
+    "id": "C044",
+    "mechanism": "Checkmate leaf",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Serialize FEN, SHA-256, node roles, chosen moves, complete replies and horizon.",
+    "disposition": "ENGINEERING",
+    "domain": "Proof",
+    "id": "C045",
+    "mechanism": "Mate certificate",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A small checker regenerates legal moves, checks reply completeness and replays every edge.",
+    "disposition": "ENGINEERING",
+    "domain": "Proof",
+    "id": "C046",
+    "mechanism": "Independent verifier",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Failure is reported as not forced within the declared horizon, never as a global game result.",
+    "disposition": "BOUNDARY",
+    "domain": "Proof",
+    "id": "C047",
+    "mechanism": "Finite-horizon status",
+    "validation": "Enforced"
+  },
+  {
+    "definition": "Retrograde solve KQK and KRK over all legal three-piece cells.",
+    "disposition": "ENGINEERING",
+    "domain": "Tablebase",
+    "id": "C048",
+    "mechanism": "KXK exact profile",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Pack strong king, major piece, weak king and side into 19 exact address bits.",
+    "disposition": "ENGINEERING",
+    "domain": "Packing",
+    "id": "C049",
+    "mechanism": "Dense 19-bit KXK key",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Invalid overlaps, adjacent kings and side-not-to-move-in-check cells are marked explicitly.",
+    "disposition": "ENGINEERING",
+    "domain": "Tablebase",
+    "id": "C050",
+    "mechanism": "Validity cell",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Seed checkmates as losses and stalemates as draws before retrograde propagation.",
+    "disposition": "RETAIN",
+    "domain": "Tablebase",
+    "id": "C051",
+    "mechanism": "Terminal initialization",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Generate exact reverse king/slider moves without storing a full edge graph.",
+    "disposition": "ENGINEERING",
+    "domain": "Tablebase",
+    "id": "C052",
+    "mechanism": "Predecessor relation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A predecessor is win if any child is loss and loss if every child is win; unresolved cells are draw.",
+    "disposition": "RETAIN",
+    "domain": "Tablebase",
+    "id": "C053",
+    "mechanism": "WDL propagation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Wins minimize and losses maximize plies to checkmate under optimal play.",
+    "disposition": "ENGINEERING",
+    "domain": "Tablebase",
+    "id": "C054",
+    "mechanism": "DTM propagation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Weak-king capture of the queen/rook exits to exact K-v-K draw.",
+    "disposition": "ENGINEERING",
+    "domain": "Tablebase",
+    "id": "C055",
+    "mechanism": "Major-piece capture draw",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Store two bytes per dense address and gzip the payload; compression is transport, not correctness.",
+    "disposition": "ENGINEERING",
+    "domain": "Compression",
+    "id": "C056",
+    "mechanism": "Gzip table transport",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Color-swap plus 180-degree rotation maps black-strong KXK into the canonical white-strong table.",
+    "disposition": "ENGINEERING",
+    "domain": "Symmetry",
+    "id": "C057",
+    "mechanism": "Black-strong normalization",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Select DTM-minimizing wins, DTM-maximizing losses or draw-preserving moves.",
+    "disposition": "ENGINEERING",
+    "domain": "Tablebase",
+    "id": "C058",
+    "mechanism": "Exact best move query",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Record outcome counts, maximum DTM, byte sizes and SHA-256 transport hash.",
+    "disposition": "ENGINEERING",
+    "domain": "Evidence",
+    "id": "C059",
+    "mechanism": "Tablebase metadata",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Expose info, validate, perft, solve, prove, verify, probe, generate and demo commands.",
+    "disposition": "ENGINEERING",
+    "domain": "Tooling",
+    "id": "C060",
+    "mechanism": "Command-line workflow",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Version proof, project and evidence records with machine-readable schemas.",
+    "disposition": "ENGINEERING",
+    "domain": "Schema",
+    "id": "C061",
+    "mechanism": "JSON contracts",
+    "validation": "Supplied"
+  },
+  {
+    "definition": "A self-contained HTML page displays boards and navigates OR/AND proof branches.",
+    "disposition": "OPTIONAL",
+    "domain": "Presentation",
+    "id": "C062",
+    "mechanism": "Offline proof viewer",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Compile, run tests, check perft, proof, tablebase hashes, package schema and manifest.",
+    "disposition": "ENGINEERING",
+    "domain": "Validation",
+    "id": "C063",
+    "mechanism": "Automated release gates",
+    "validation": "Passed"
+  },
+  {
+    "definition": "Shard by typed material/history state and admit only checker-verified boundary certificates.",
+    "disposition": "FUTURE",
+    "domain": "Roadmap",
+    "id": "C064",
+    "mechanism": "Distributed global proof sharding",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Name the upgrade ugts.application.chess-proof@2.0.0 rather than treating every UGTS number as one global ladder.",
+    "disposition": "RETAIN",
+    "domain": "Governance",
+    "id": "C065",
+    "mechanism": "Component-scoped release identity",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Represent threefold and 50-move claims as optional actions instead of forced terminal values.",
+    "disposition": "ENGINEERING",
+    "domain": "Rules",
+    "id": "C066",
+    "mechanism": "Claim-as-action semantics",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Admit a draw action that declares a legal move producing the third repetition or 50-move threshold without replacing the option to execute that move.",
+    "disposition": "ENGINEERING",
+    "domain": "Rules",
+    "id": "C067",
+    "mechanism": "Intended-move draw claim",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Terminate as draw when the exact repetition identity occurs five times, after checkmate/stalemate precedence.",
+    "disposition": "ENGINEERING",
+    "domain": "Rules",
+    "id": "C068",
+    "mechanism": "Fivefold automatic guard",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Terminate at 150 reversible plies, with checkmate taking precedence.",
+    "disposition": "ENGINEERING",
+    "domain": "Rules",
+    "id": "C069",
+    "mechanism": "Seventy-five-move automatic guard",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Include an en-passant target in repetition identity only when an en-passant capture is legal.",
+    "disposition": "CORRECTED",
+    "domain": "Identity",
+    "id": "C070",
+    "mechanism": "Legal en-passant repetition right",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Carry exact repetition-identity occurrence counts in proof state rather than a checksum alone.",
+    "disposition": "ENGINEERING",
+    "domain": "State",
+    "id": "C071",
+    "mechanism": "History-count context",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Hash the sorted exact repetition-count record for caching and proof lineage without replacing the record.",
+    "disposition": "ENGINEERING",
+    "domain": "State",
+    "id": "C072",
+    "mechanism": "History digest",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Use WIN, LOSS, DRAW and UNKNOWN; a cutoff is never coerced to DRAW.",
+    "disposition": "ENGINEERING",
+    "domain": "Proof",
+    "id": "C073",
+    "mechanism": "WDL four-value lattice",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "One independently certified child LOSS is sufficient to prove the parent WIN.",
+    "disposition": "RETAIN",
+    "domain": "Proof",
+    "id": "C074",
+    "mechanism": "WIN existential obligation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Every legal action must be covered and certified WIN for the child side before the parent is LOSS.",
+    "disposition": "RETAIN",
+    "domain": "Proof",
+    "id": "C075",
+    "mechanism": "LOSS universal obligation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Require no winning action plus a verified draw action, terminal or complete closed-complement argument.",
+    "disposition": "ENGINEERING",
+    "domain": "Proof",
+    "id": "C076",
+    "mechanism": "DRAW complete-coverage obligation",
+    "validation": "Specified/Implemented bounded subset"
+  },
+  {
+    "definition": "Preserve open successor, history, dead-position or resource obligations as UNKNOWN.",
+    "disposition": "ENGINEERING",
+    "domain": "Proof",
+    "id": "C077",
+    "mechanism": "UNKNOWN propagation",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Hash canonical state, profile, children, values and exactness into each bounded WDL node record.",
+    "disposition": "ENGINEERING",
+    "domain": "Proof",
+    "id": "C078",
+    "mechanism": "Content-addressed WDL node",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Treat complete FIDE dead-position determination as a certificate obligation; the bundled detector certifies only a conservative exact subset.",
+    "disposition": "BOUNDED",
+    "domain": "Proof",
+    "id": "C079",
+    "mechanism": "Dead-position certificate gate",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Split the initial position into one stable shard per legal first move.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C080",
+    "mechanism": "Twenty root obligations",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Aggregate only independently verified child values from the child side-to-move perspective.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C081",
+    "mechanism": "Root WDL aggregate",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Store root jobs, status, leases, candidate certificate paths and verification records in a transactional database.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C082",
+    "mechanism": "SQLite obligation ledger",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Link initialization, lease, candidate and verification events with canonical SHA-256 predecessor hashes.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C083",
+    "mechanism": "Hash-chained campaign events",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Lease unresolved obligations with expiry and deterministic priority/attempt order.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C084",
+    "mechanism": "Worker lease",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "A candidate WDL becomes verified only after a separate checker record is hashed and attached.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C085",
+    "mechanism": "Independent candidate promotion",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Record exact depth-four path counts under each first move for scheduling evidence.",
+    "disposition": "ENGINEERING",
+    "domain": "Campaign",
+    "id": "C086",
+    "mechanism": "Exact root-shard workload",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Provide a dependency-light native legality/perft/search/mate implementation independent of Python.",
+    "disposition": "ENGINEERING",
+    "domain": "Native",
+    "id": "C087",
+    "mechanism": "C++20 exact rule oracle",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Propagate terminal WIN/LOSS values monotonically and classify the complete unresolved complement as DRAW only on a closed graph.",
+    "disposition": "ENGINEERING",
+    "domain": "Native",
+    "id": "C088",
+    "mechanism": "Finite WDL fixed-point demo",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Parallelize monotone W/L candidate propagation over a closed adjacency graph.",
+    "disposition": "ENGINEERING",
+    "domain": "GPU",
+    "id": "C089",
+    "mechanism": "CUDA fixed-point kernel",
+    "validation": "Implemented source; device pending"
+  },
+  {
+    "definition": "GPU-generated move lists and value candidates cannot mutate or certify proof state without host verification.",
+    "disposition": "RETAIN",
+    "domain": "GPU",
+    "id": "C090",
+    "mechanism": "GPU proposal-only authority",
+    "validation": "Enforced"
+  },
+  {
+    "definition": "Exchange board cells, side, rights, en-passant, counters, parent and 128-bit key fields in a fixed record.",
+    "disposition": "ENGINEERING",
+    "domain": "Packing",
+    "id": "C091",
+    "mechanism": "64-byte packed position",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Pack source, destination and promotion into a reversible 16-bit value.",
+    "disposition": "ENGINEERING",
+    "domain": "Packing",
+    "id": "C092",
+    "mechanism": "16-bit move code",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Use versioned UGTSCB20 input and UGTSMV20 output files with fixed counts and move matrices.",
+    "disposition": "ENGINEERING",
+    "domain": "GPU",
+    "id": "C093",
+    "mechanism": "Batch move protocol",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Run the same packed legal generator on CPU whenever CUDA is unavailable and compare output to the Python oracle.",
+    "disposition": "ENGINEERING",
+    "domain": "GPU",
+    "id": "C094",
+    "mechanism": "CPU fallback equivalence",
+    "validation": "Implemented"
+  },
+  {
+    "definition": "Compile the RTX 5070 Ti Laptop preset for CUDA architecture 120 after runtime device verification.",
+    "disposition": "ENGINEERING",
+    "domain": "GPU",
+    "id": "C095",
+    "mechanism": "SM120 build profile",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Allocate from measured free VRAM with a conservative fraction and fixed headroom rather than nominal capacity alone.",
+    "disposition": "ENGINEERING",
+    "domain": "GPU",
+    "id": "C096",
+    "mechanism": "Free-VRAM budgeting",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Overlap upload, candidate expansion and download/checking through bounded streams without reordering proof commits.",
+    "disposition": "ENGINEERING",
+    "domain": "GPU",
+    "id": "C097",
+    "mechanism": "Three-stream pipeline",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Store immutable state/certificate shards outside VRAM and merge by full content identity.",
+    "disposition": "FUTURE",
+    "domain": "Storage",
+    "id": "C098",
+    "mechanism": "Disk-backed proof DAG target",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Permit short keys for lookup while requiring full state/history reconstruction and collision policy.",
+    "disposition": "RETAIN",
+    "domain": "Storage",
+    "id": "C099",
+    "mechanism": "64-bit index boundary",
+    "validation": "Enforced"
+  },
+  {
+    "definition": "Accept an external endgame value only with explicit rule profile, reconstructible position and independent verification.",
+    "disposition": "FUTURE",
+    "domain": "Integration",
+    "id": "C100",
+    "mechanism": "External tablebase adapter gate",
+    "validation": "Specified"
+  },
+  {
+    "definition": "Require exact move-path agreement across independent rule kernels on standard stress fixtures.",
+    "disposition": "ENGINEERING",
+    "domain": "Validation",
+    "id": "C101",
+    "mechanism": "Python/C++ perft differential",
+    "validation": "Passed"
+  },
+  {
+    "definition": "Require no missing or extra CUDA/CPU packed moves against the Python legal oracle.",
+    "disposition": "ENGINEERING",
+    "domain": "Validation",
+    "id": "C102",
+    "mechanism": "Packed batch differential",
+    "validation": "Passed on host fallback"
+  },
+  {
+    "definition": "Record exact GPU, driver, toolkit, VRAM, latency, thermal and mismatch evidence before performance claims.",
+    "disposition": "ENGINEERING",
+    "domain": "Validation",
+    "id": "C103",
+    "mechanism": "Physical-device evidence gate",
+    "validation": "Codex/device pending"
+  },
+  {
+    "definition": "Promote the root from UNKNOWN only after all quantified WDL obligations, history semantics and checker records close.",
+    "disposition": "FUTURE",
+    "domain": "Roadmap",
+    "id": "C104",
+    "mechanism": "Initial-position proof promotion gate",
+    "validation": "Open"
+  }
+]

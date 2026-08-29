@@ -1,0 +1,105 @@
+id,domain,mechanism,definition,disposition,validation
+C001,Profile,UGTS chess solver profile,"A versioned application profile mapping standard chess into typed state, verified moves, deterministic transitions, proof search and exact bounded tablebases.",ENGINEERING,Implemented
+C002,Governance,Evidence boundary,"Separate exact rule/proof results, heuristic search results, external standards and unproved full-game claims.",RETAIN,Enforced
+C003,State,Position tuple,"q carries the serialized FEN position, exact repetition-count context, rule profile and lineage; proof identity projects away non-semantic fullmove notation.",ENGINEERING,Implemented
+C004,Coordinates,Square address,Map a1..h8 bijectively to integer cells 0..63 with explicit file/rank transforms.,RETAIN,Exact
+C005,Identity,Piece identity,"Piece type, color and square are distinct fields; captured pieces leave the board through a verified event.",ENGINEERING,Implemented
+C006,State,Side-to-move bit,"One bit selects the mover only; it never replaces board, rights, clocks or lineage.",RETAIN,Implemented
+C007,State,Castling-right mask,Four explicit rights are carried and patched by king/rook moves or home-rook capture.,ENGINEERING,Implemented
+C008,State,En-passant target,A transient target square is typed separately and admitted only under pawn and king-safety guards.,ENGINEERING,Implemented
+C009,State,Move counters,Halfmove is rule-authoritative for draw guards; fullmove remains explicit for FEN round trips and replay lineage but is excluded from game-value identity.,RETAIN,Implemented
+C010,Encoding,Strict FEN codec,Parse and serialize six-field Forsyth-Edwards positions with structure validation.,ENGINEERING,Implemented
+C011,Persistence,Canonical state record,Maintain separate canonical serialized-position and semantic game-state records so notation metadata cannot split equivalent proof states.,ENGINEERING,Implemented
+C012,Persistence,SHA-256 state identity,"Use SHA-256 over canonical serialized position and separately over semantic game state; hashes are integrity metadata, not legal identity.",RETAIN,Implemented
+C013,Indexing,Compact 64-bit cache key,Use deterministic BLAKE2b-64 as a transposition/index key while keeping SHA-256 authoritative.,ENGINEERING,Implemented
+C014,Identity,Repetition identity,"Board, side, castling and effective en-passant rights form the repetition key; clocks are excluded.",ENGINEERING,Implemented
+C015,Support,Piece movement support,"Leaper offsets, pawn direction and finite slider rays provide coarse move support.",RETAIN,Implemented
+C016,Compatibility,Occupancy and color gate,"A supported destination must agree with side, own occupancy, capture and promotion semantics.",ENGINEERING,Implemented
+C017,Relation,Attack relation,"Typed pawn, knight, king and slider attacks define check and castling-transit relations.",RETAIN,Implemented
+C018,Guard,King-safety guard,A move commits only when the mover's king is not attacked in the resulting state.,RETAIN,Implemented
+C019,Guard,Castling transit guard,"Castling requires rights, home rook, empty corridor and unattacked origin/transit/destination.",ENGINEERING,Implemented
+C020,Guard,En-passant exposure guard,The captured pawn is removed before testing whether the moving side's king is exposed.,ENGINEERING,Implemented
+C021,Branch,Promotion branch,A last-rank pawn event branches into exactly Q/R/B/N outcomes.,RETAIN,Implemented
+C022,Event,Move proposal,"A proposed move records source hash, support, compatibility, guard status and reason codes.",ENGINEERING,Implemented
+C023,Transition,Deterministic board patch,"Verified moves atomically patch source, destination, capture, rook motion and promotion.",ENGINEERING,Implemented
+C024,Transition,Rights patch,Castling rights are deterministically removed by king/rook motion and home-rook capture.,ENGINEERING,Implemented
+C025,Transition,Clock and turn patch,"Every move updates en-passant, halfmove, fullmove and side-to-move fields in a fixed order.",ENGINEERING,Implemented
+C026,Event,Move event record,"Committed events carry UCI, SAN, pre/post hashes, capture, promotion, check and lineage label.",ENGINEERING,Implemented
+C027,Replay,Hash-checked replay,Replay requires contiguous sequence and matching pre/post state hashes.,RETAIN,Implemented
+C028,Terminal,Checkmate relation,No legal moves plus check is a terminal loss for the side to move.,RETAIN,Implemented
+C029,Terminal,Stalemate relation,No legal moves without check is a draw.,RETAIN,Implemented
+C030,Terminal,Dead-position subset,"Kings-only, single-minor and same-color-bishop-only exact dead positions are recognized.",BOUNDED,Implemented subset
+C031,Terminal,Draw counters,Claimable 50-move/threefold and automatic 75-move/fivefold policies remain explicit.,RETAIN,Implemented
+C032,Query,Legal move enumeration,"Generate all and only moves passing support, compatibility and king-safety guards.",ENGINEERING,Validated
+C033,Validation,Perft oracle,Count legal move paths and compare with established regression fixtures.,RETAIN,Validated
+C034,Encoding,SAN projection,Generate deterministic human-readable algebraic notation downstream of legal authority.,OPTIONAL,Implemented
+C035,Heuristic,Transparent evaluation,Material and small piece-square terms order non-terminal search without becoming proof authority.,ENGINEERING,Implemented
+C036,Search,Alpha-beta negamax,Bounded adversarial search evaluates alternating legal transitions with fail-soft mate scores.,RETAIN,Implemented
+C037,Search,Iterative deepening,Search depth increases monotonically and preserves the last completed result under a time budget.,ENGINEERING,Implemented
+C038,Search,Quiescence,"At the horizon, captures, promotions and all check evasions extend tactical stability.",ENGINEERING,Implemented
+C039,Search,Transposition record,"Cache depth, score bound and best move under a compact key; collisions cannot certify proofs.",ENGINEERING,Implemented
+C040,Search,Deterministic move ordering,"Use TT move, promotion, capture score and UCI ordering for reproducible runs.",ENGINEERING,Implemented
+C041,Search,Mate-distance score,Encode checkmate with ply distance so faster wins and slower losses are preferred.,ENGINEERING,Implemented
+C042,Proof,OR attacker node,A forced-mate proof selects one legal attacker move with a proved child.,RETAIN,Implemented
+C043,Proof,AND defender node,A proof enumerates every legal defender reply and proves every child.,RETAIN,Implemented
+C044,Proof,Checkmate leaf,"A proof leaf independently verifies check, zero legal replies and declared winner.",RETAIN,Implemented
+C045,Proof,Mate certificate,"Serialize FEN, SHA-256, node roles, chosen moves, complete replies and horizon.",ENGINEERING,Implemented
+C046,Proof,Independent verifier,"A small checker regenerates legal moves, checks reply completeness and replays every edge.",ENGINEERING,Implemented
+C047,Proof,Finite-horizon status,"Failure is reported as not forced within the declared horizon, never as a global game result.",BOUNDARY,Enforced
+C048,Tablebase,KXK exact profile,Retrograde solve KQK and KRK over all legal three-piece cells.,ENGINEERING,Implemented
+C049,Packing,Dense 19-bit KXK key,"Pack strong king, major piece, weak king and side into 19 exact address bits.",ENGINEERING,Implemented
+C050,Tablebase,Validity cell,"Invalid overlaps, adjacent kings and side-not-to-move-in-check cells are marked explicitly.",ENGINEERING,Implemented
+C051,Tablebase,Terminal initialization,Seed checkmates as losses and stalemates as draws before retrograde propagation.,RETAIN,Implemented
+C052,Tablebase,Predecessor relation,Generate exact reverse king/slider moves without storing a full edge graph.,ENGINEERING,Implemented
+C053,Tablebase,WDL propagation,A predecessor is win if any child is loss and loss if every child is win; unresolved cells are draw.,RETAIN,Implemented
+C054,Tablebase,DTM propagation,Wins minimize and losses maximize plies to checkmate under optimal play.,ENGINEERING,Implemented
+C055,Tablebase,Major-piece capture draw,Weak-king capture of the queen/rook exits to exact K-v-K draw.,ENGINEERING,Implemented
+C056,Compression,Gzip table transport,"Store two bytes per dense address and gzip the payload; compression is transport, not correctness.",ENGINEERING,Implemented
+C057,Symmetry,Black-strong normalization,Color-swap plus 180-degree rotation maps black-strong KXK into the canonical white-strong table.,ENGINEERING,Implemented
+C058,Tablebase,Exact best move query,"Select DTM-minimizing wins, DTM-maximizing losses or draw-preserving moves.",ENGINEERING,Implemented
+C059,Evidence,Tablebase metadata,"Record outcome counts, maximum DTM, byte sizes and SHA-256 transport hash.",ENGINEERING,Implemented
+C060,Tooling,Command-line workflow,"Expose info, validate, perft, solve, prove, verify, probe, generate and demo commands.",ENGINEERING,Implemented
+C061,Schema,JSON contracts,"Version proof, project and evidence records with machine-readable schemas.",ENGINEERING,Supplied
+C062,Presentation,Offline proof viewer,A self-contained HTML page displays boards and navigates OR/AND proof branches.,OPTIONAL,Implemented
+C063,Validation,Automated release gates,"Compile, run tests, check perft, proof, tablebase hashes, package schema and manifest.",ENGINEERING,Passed
+C064,Roadmap,Distributed global proof sharding,Shard by typed material/history state and admit only checker-verified boundary certificates.,FUTURE,Specified
+C065,Governance,Component-scoped release identity,Name the upgrade ugts.application.chess-proof@2.0.0 rather than treating every UGTS number as one global ladder.,RETAIN,Specified
+C066,Rules,Claim-as-action semantics,Represent threefold and 50-move claims as optional actions instead of forced terminal values.,ENGINEERING,Implemented
+C067,Rules,Intended-move draw claim,Admit a draw action that declares a legal move producing the third repetition or 50-move threshold without replacing the option to execute that move.,ENGINEERING,Implemented
+C068,Rules,Fivefold automatic guard,"Terminate as draw when the exact repetition identity occurs five times, after checkmate/stalemate precedence.",ENGINEERING,Implemented
+C069,Rules,Seventy-five-move automatic guard,"Terminate at 150 reversible plies, with checkmate taking precedence.",ENGINEERING,Implemented
+C070,Identity,Legal en-passant repetition right,Include an en-passant target in repetition identity only when an en-passant capture is legal.,CORRECTED,Implemented
+C071,State,History-count context,Carry exact repetition-identity occurrence counts in proof state rather than a checksum alone.,ENGINEERING,Implemented
+C072,State,History digest,Hash the sorted exact repetition-count record for caching and proof lineage without replacing the record.,ENGINEERING,Implemented
+C073,Proof,WDL four-value lattice,"Use WIN, LOSS, DRAW and UNKNOWN; a cutoff is never coerced to DRAW.",ENGINEERING,Implemented
+C074,Proof,WIN existential obligation,One independently certified child LOSS is sufficient to prove the parent WIN.,RETAIN,Implemented
+C075,Proof,LOSS universal obligation,Every legal action must be covered and certified WIN for the child side before the parent is LOSS.,RETAIN,Implemented
+C076,Proof,DRAW complete-coverage obligation,"Require no winning action plus a verified draw action, terminal or complete closed-complement argument.",ENGINEERING,Specified/Implemented bounded subset
+C077,Proof,UNKNOWN propagation,"Preserve open successor, history, dead-position or resource obligations as UNKNOWN.",ENGINEERING,Implemented
+C078,Proof,Content-addressed WDL node,"Hash canonical state, profile, children, values and exactness into each bounded WDL node record.",ENGINEERING,Implemented
+C079,Proof,Dead-position certificate gate,Treat complete FIDE dead-position determination as a certificate obligation; the bundled detector certifies only a conservative exact subset.,BOUNDED,Specified
+C080,Campaign,Twenty root obligations,Split the initial position into one stable shard per legal first move.,ENGINEERING,Implemented
+C081,Campaign,Root WDL aggregate,Aggregate only independently verified child values from the child side-to-move perspective.,ENGINEERING,Implemented
+C082,Campaign,SQLite obligation ledger,"Store root jobs, status, leases, candidate certificate paths and verification records in a transactional database.",ENGINEERING,Implemented
+C083,Campaign,Hash-chained campaign events,"Link initialization, lease, candidate and verification events with canonical SHA-256 predecessor hashes.",ENGINEERING,Implemented
+C084,Campaign,Worker lease,Lease unresolved obligations with expiry and deterministic priority/attempt order.,ENGINEERING,Implemented
+C085,Campaign,Independent candidate promotion,A candidate WDL becomes verified only after a separate checker record is hashed and attached.,ENGINEERING,Implemented
+C086,Campaign,Exact root-shard workload,Record exact depth-four path counts under each first move for scheduling evidence.,ENGINEERING,Implemented
+C087,Native,C++20 exact rule oracle,Provide a dependency-light native legality/perft/search/mate implementation independent of Python.,ENGINEERING,Implemented
+C088,Native,Finite WDL fixed-point demo,Propagate terminal WIN/LOSS values monotonically and classify the complete unresolved complement as DRAW only on a closed graph.,ENGINEERING,Implemented
+C089,GPU,CUDA fixed-point kernel,Parallelize monotone W/L candidate propagation over a closed adjacency graph.,ENGINEERING,Implemented source; device pending
+C090,GPU,GPU proposal-only authority,GPU-generated move lists and value candidates cannot mutate or certify proof state without host verification.,RETAIN,Enforced
+C091,Packing,64-byte packed position,"Exchange board cells, side, rights, en-passant, counters, parent and 128-bit key fields in a fixed record.",ENGINEERING,Implemented
+C092,Packing,16-bit move code,"Pack source, destination and promotion into a reversible 16-bit value.",ENGINEERING,Implemented
+C093,GPU,Batch move protocol,Use versioned UGTSCB20 input and UGTSMV20 output files with fixed counts and move matrices.,ENGINEERING,Implemented
+C094,GPU,CPU fallback equivalence,Run the same packed legal generator on CPU whenever CUDA is unavailable and compare output to the Python oracle.,ENGINEERING,Implemented
+C095,GPU,SM120 build profile,Compile the RTX 5070 Ti Laptop preset for CUDA architecture 120 after runtime device verification.,ENGINEERING,Specified
+C096,GPU,Free-VRAM budgeting,Allocate from measured free VRAM with a conservative fraction and fixed headroom rather than nominal capacity alone.,ENGINEERING,Specified
+C097,GPU,Three-stream pipeline,"Overlap upload, candidate expansion and download/checking through bounded streams without reordering proof commits.",ENGINEERING,Specified
+C098,Storage,Disk-backed proof DAG target,Store immutable state/certificate shards outside VRAM and merge by full content identity.,FUTURE,Specified
+C099,Storage,64-bit index boundary,Permit short keys for lookup while requiring full state/history reconstruction and collision policy.,RETAIN,Enforced
+C100,Integration,External tablebase adapter gate,"Accept an external endgame value only with explicit rule profile, reconstructible position and independent verification.",FUTURE,Specified
+C101,Validation,Python/C++ perft differential,Require exact move-path agreement across independent rule kernels on standard stress fixtures.,ENGINEERING,Passed
+C102,Validation,Packed batch differential,Require no missing or extra CUDA/CPU packed moves against the Python legal oracle.,ENGINEERING,Passed on host fallback
+C103,Validation,Physical-device evidence gate,"Record exact GPU, driver, toolkit, VRAM, latency, thermal and mismatch evidence before performance claims.",ENGINEERING,Codex/device pending
+C104,Roadmap,Initial-position proof promotion gate,"Promote the root from UNKNOWN only after all quantified WDL obligations, history semantics and checker records close.",FUTURE,Open

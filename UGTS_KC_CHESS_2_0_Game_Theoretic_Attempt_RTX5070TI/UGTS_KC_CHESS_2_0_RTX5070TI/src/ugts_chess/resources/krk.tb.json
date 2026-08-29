@@ -1,0 +1,22 @@
+{
+  "address_bits": 19,
+  "address_count": 524288,
+  "fifty_move_boundary": "KQK/KRK wins represented here complete within the observed maximum DTM, below 100 plies.",
+  "file_bytes": 152306,
+  "initial_checkmates": 216,
+  "initial_stalemates": 68,
+  "material": "KRK",
+  "max_dtm_plies": 32,
+  "outcome_counts": {
+    "draw": 22244,
+    "invalid": 125176,
+    "loss": 201700,
+    "win": 175168
+  },
+  "piece": "R",
+  "raw_payload_bytes": 1048592,
+  "schema": "ugts-kc-chess-kxk-tablebase-1.0",
+  "semantics": "Outcome is from the side-to-move perspective; DTM counts plies to checkmate under optimal play.",
+  "sha256": "b52dbd40d7e6fc9b8af9a5fe3e8d67b97566c2935a29ad766e2b418502e1c78f",
+  "valid_positions": 399112
+}

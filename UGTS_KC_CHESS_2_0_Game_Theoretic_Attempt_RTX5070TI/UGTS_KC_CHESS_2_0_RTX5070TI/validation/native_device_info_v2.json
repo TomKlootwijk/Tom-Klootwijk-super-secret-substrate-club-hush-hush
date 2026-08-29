@@ -1,0 +1,13 @@
+{
+  "cuda_compiled": false,
+  "device_available": false,
+  "device_index": 0,
+  "name": "",
+  "compute_capability": "0.0",
+  "total_memory_bytes": 0,
+  "free_memory_bytes": 0,
+  "multiprocessors": 0,
+  "warp_size": 0,
+  "max_threads_per_block": 0,
+  "error": "binary was built without CUDA; rebuild with -DUGTS_ENABLE_CUDA=ON"
+}

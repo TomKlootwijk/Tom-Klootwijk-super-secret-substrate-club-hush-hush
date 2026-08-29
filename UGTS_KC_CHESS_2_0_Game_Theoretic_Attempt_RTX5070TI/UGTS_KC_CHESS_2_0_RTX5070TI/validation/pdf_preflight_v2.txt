@@ -1,0 +1,6 @@
+PDF: /mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/report/UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI.pdf
+Pages: 33
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False

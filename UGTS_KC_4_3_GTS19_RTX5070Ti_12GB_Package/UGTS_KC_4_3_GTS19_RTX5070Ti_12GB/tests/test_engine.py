@@ -100,6 +100,37 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(score.white_area, 0)
         self.assertEqual(area_score2(bytes(9), self.rules), -1)
 
+    def test_rules_require_exact_types_and_pinned_canonical_profile(self) -> None:
+        with self.assertRaises(TypeError):
+            Rules(size=True, komi2=1, profile_id="bad-size-type")
+        with self.assertRaises(ValueError):
+            Rules(size=9, profile_id="UGTS-GO19-AREA-PSK-K7.5-v1")
+        with self.assertRaises(ValueError):
+            Rules.from_dict({"size": 19})
+
+    def test_state_and_scoring_reject_noncanonical_types_and_values(self) -> None:
+        root = State.initial(self.rules)
+        invalid_player = State(
+            board=root.board,
+            to_play=True,
+            passes=0,
+            seen=root.seen,
+            previous_board=None,
+        )
+        with self.assertRaises(TypeError):
+            invalid_player.validate(self.rules)
+        invalid_seen_type = State(
+            board=root.board,
+            to_play=BLACK,
+            passes=0,
+            seen=set(root.seen),  # type: ignore[arg-type]
+            previous_board=None,
+        )
+        with self.assertRaises(TypeError):
+            invalid_seen_type.validate(self.rules)
+        with self.assertRaises(ValueError):
+            area_score(bytes((7,)) * 9, self.rules)
+
 
 if __name__ == "__main__":
     unittest.main()

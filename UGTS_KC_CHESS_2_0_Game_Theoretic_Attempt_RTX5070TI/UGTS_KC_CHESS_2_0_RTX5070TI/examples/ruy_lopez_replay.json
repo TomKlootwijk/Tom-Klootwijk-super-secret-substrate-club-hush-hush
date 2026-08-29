@@ -1,0 +1,74 @@
+{
+  "events": [
+    {
+      "captured_piece": null,
+      "check": false,
+      "lineage_label": "ply:1:P:e2->e4",
+      "move_san": "e4",
+      "move_uci": "e2e4",
+      "post_hash": "d4e7fb0fd815bf8187b0d5bc87860e30537e3034392c54529ecf5fbb9d2897b8",
+      "pre_hash": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
+      "promotion": null,
+      "proposal_id": "move:5a11ce6025ea:e2e4",
+      "sequence": 1,
+      "side": "white"
+    },
+    {
+      "captured_piece": null,
+      "check": false,
+      "lineage_label": "ply:2:P:e7->e5",
+      "move_san": "e5",
+      "move_uci": "e7e5",
+      "post_hash": "449487e3f99e175f3530556f2892d856ded66d7d6a7fd68407f451b9c12f27a8",
+      "pre_hash": "d4e7fb0fd815bf8187b0d5bc87860e30537e3034392c54529ecf5fbb9d2897b8",
+      "promotion": null,
+      "proposal_id": "move:d4e7fb0fd815:e7e5",
+      "sequence": 2,
+      "side": "black"
+    },
+    {
+      "captured_piece": null,
+      "check": false,
+      "lineage_label": "ply:3:N:g1->f3",
+      "move_san": "Nf3",
+      "move_uci": "g1f3",
+      "post_hash": "857f445efd831872f15acca347d2ab32ab5dc362a00964b27874749738b4dcfd",
+      "pre_hash": "449487e3f99e175f3530556f2892d856ded66d7d6a7fd68407f451b9c12f27a8",
+      "promotion": null,
+      "proposal_id": "move:449487e3f99e:g1f3",
+      "sequence": 3,
+      "side": "white"
+    },
+    {
+      "captured_piece": null,
+      "check": false,
+      "lineage_label": "ply:4:N:b8->c6",
+      "move_san": "Nc6",
+      "move_uci": "b8c6",
+      "post_hash": "984a9d71e9b4db7b401d836eb80547c9e5ec13cf33b2d230c1dcb0ec7433930d",
+      "pre_hash": "857f445efd831872f15acca347d2ab32ab5dc362a00964b27874749738b4dcfd",
+      "promotion": null,
+      "proposal_id": "move:857f445efd83:b8c6",
+      "sequence": 4,
+      "side": "black"
+    },
+    {
+      "captured_piece": null,
+      "check": false,
+      "lineage_label": "ply:5:B:f1->b5",
+      "move_san": "Bb5",
+      "move_uci": "f1b5",
+      "post_hash": "13824da80942e5d38c212c316f558f49068eb1983b5da7a83b5dbc56aef57c47",
+      "pre_hash": "984a9d71e9b4db7b401d836eb80547c9e5ec13cf33b2d230c1dcb0ec7433930d",
+      "promotion": null,
+      "proposal_id": "move:984a9d71e9b4:f1b5",
+      "sequence": 5,
+      "side": "white"
+    }
+  ],
+  "final_fen": "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+  "final_hash": "13824da80942e5d38c212c316f558f49068eb1983b5da7a83b5dbc56aef57c47",
+  "initial_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "initial_hash": "5a11ce6025ea01d38792feb2e60538f380ae51220d40ebcb589ce13b43274c95",
+  "schema": "ugts-kc-chess-replay-1.0"
+}

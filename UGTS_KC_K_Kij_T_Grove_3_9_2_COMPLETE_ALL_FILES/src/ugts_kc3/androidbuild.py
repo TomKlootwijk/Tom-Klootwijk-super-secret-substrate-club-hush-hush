@@ -8,6 +8,7 @@ or explicitly owner-signed build through ADB.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import json
 import os
 from pathlib import Path
 import re
@@ -67,11 +68,19 @@ class AndroidBuildResult:
     task: str
     apk: Path
     output: str
+    application_id: str = ""
 
 
 @dataclass(frozen=True)
 class AndroidInstallResult:
     apk: Path
+    serial: str
+    output: str
+
+
+@dataclass(frozen=True)
+class AndroidLaunchResult:
+    application_id: str
     serial: str
     output: str
 
@@ -204,7 +213,48 @@ def build_apk(
         raise FileNotFoundError(
             f"Gradle completed but produced no APK below {output_dir}"
         )
-    return AndroidBuildResult(project_dir, variant, task, apks[-1], output)
+    metadata_path = output_dir / "output-metadata.json"
+    if not metadata_path.is_file():
+        # Older/external Gradle projects may not emit AGP output metadata. Keep
+        # build-only compatibility; phone launch deliberately requires the
+        # exact application id and will fail clearly before invoking ADB.
+        return AndroidBuildResult(
+            project_dir, variant, task, apks[-1], output, application_id=""
+        )
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"could not read Android output metadata: {metadata_path}") from exc
+    application_id = str(metadata.get("applicationId", ""))
+    if not re.fullmatch(
+        r"[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z][A-Za-z0-9_]*)+",
+        application_id,
+    ):
+        raise RuntimeError(
+            f"Android output metadata has an invalid applicationId: {application_id!r}"
+        )
+    elements = metadata.get("elements")
+    if not isinstance(elements, list) or not elements:
+        raise RuntimeError(
+            f"Android output metadata has no APK elements: {metadata_path}"
+        )
+    output_files = {
+        str(element.get("outputFile", ""))
+        for element in elements
+        if isinstance(element, Mapping) and element.get("outputFile")
+    }
+    matching_apks = tuple(apk for apk in apks if apk.name in output_files)
+    if not matching_apks:
+        expected = ", ".join(sorted(output_files)) or "<none>"
+        found = ", ".join(apk.name for apk in apks)
+        raise RuntimeError(
+            "Android output metadata does not match the APK files in the build "
+            f"folder (expected: {expected}; found: {found})"
+        )
+    apk = matching_apks[-1]
+    return AndroidBuildResult(
+        project_dir, variant, task, apk, output, application_id=application_id
+    )
 
 
 def list_android_devices(
@@ -343,3 +393,44 @@ def install_apk(
     if not re.search(r"(?m)^Success\s*$", output):
         raise RuntimeError(f"ADB did not report a successful install:\n{output}")
     return AndroidInstallResult(apk, serial, output)
+
+
+def launch_android_app(
+    application_id: str,
+    *,
+    serial: str | None = None,
+    stop_existing: bool = True,
+    timeout: float = 60.0,
+) -> AndroidLaunchResult:
+    """Open one installed native UGTS game on an explicitly selected phone."""
+
+    if not re.fullmatch(
+        r"[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z][A-Za-z0-9_]*)+",
+        application_id,
+    ):
+        raise ValueError(f"invalid Android application id: {application_id!r}")
+    sdk = _find_sdk_root()
+    adb = _find_adb(sdk)
+    toolchain = AndroidToolchain(sdk, adb, ())
+    device = select_android_device(list_android_devices(toolchain), serial=serial)
+    component = f"{application_id}/android.app.NativeActivity"
+    command = [
+        str(adb), "-s", device.serial, "shell", "am", "start", "-W",
+    ]
+    if stop_existing:
+        command.append("-S")
+    command.extend(("--user", "current", "-n", component))
+    output = _run(
+        command,
+        cwd=sdk,
+        environment=os.environ,
+        timeout=timeout,
+    )
+    if re.search(r"(?im)^\s*Error:", output) or not re.search(
+        r"(?im)^\s*Status:\s*ok\s*$", output
+    ):
+        raise RuntimeError(
+            "ADB installed the game, but Android did not confirm that it opened:\n"
+            f"{output}"
+        )
+    return AndroidLaunchResult(application_id, device.serial, output)

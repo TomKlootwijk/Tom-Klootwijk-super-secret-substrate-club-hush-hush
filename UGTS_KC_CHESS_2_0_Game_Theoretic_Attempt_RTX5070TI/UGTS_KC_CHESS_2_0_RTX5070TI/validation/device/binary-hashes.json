@@ -1,0 +1,10 @@
+[
+  {
+    "path": ".\\cpp\\build\\rtx5070ti-release\\ugts-chess-gpu.exe",
+    "sha256": "679b548828138a402aec712bc35b7c62da971f824d1b869d697af703df63081d"
+  },
+  {
+    "path": ".\\cpp\\build\\rtx5070ti-release\\ugts-chess2.exe",
+    "sha256": "224b3d39f9abd6a38a5cd23a2db90ea80df0fc8f204b8c4e758b2a0e7a613f6f"
+  }
+]

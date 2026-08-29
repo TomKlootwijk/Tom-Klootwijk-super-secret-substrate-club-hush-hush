@@ -1,0 +1,21 @@
+# ninja log v7
+37	623	8096932105134646	CMakeFiles/ugts_chess2_core.dir/src/retrograde_cpu.cpp.obj	6d5560fd3a5adf62
+28	736	8096932105039537	CMakeFiles/ugts_chess2_core.dir/src/search.cpp.obj	7733c919874e50d7
+33	790	8096932105094650	CMakeFiles/ugts_chess2_core.dir/src/sha256.cpp.obj	8f0ce6b9c21edd41
+42	1026	8096932105184069	CMakeFiles/ugts_chess_packed.dir/src/fen.cpp.obj	609090435accada
+1027	1101	8096932115029822	ugts_chess_packed.lib	84873bce59ed1e22
+22	1186	8096932104989539	CMakeFiles/ugts_chess2_core.dir/src/core.cpp.obj	5a0b92b37e8f50db
+65	1207	8096932105416511	CMakeFiles/ugts_chess2_tests.dir/tests/native_tests.cpp.obj	44286e9d66c5139e
+1186	1295	8096932116628432	ugts_chess2_core.lib	7cd459c0dae72bbb
+56	1369	8096932105329196	CMakeFiles/ugts-chess2.dir/src/main.cpp.obj	1a260804471418bc
+60	1440	8096932105374325	CMakeFiles/ugts-chess-gpu.dir/src/gpu_main.cpp.obj	d4ac3880ddb54e1b
+46	2608	8096932105224084	CMakeFiles/ugts_chess2_retro_backend.dir/cuda/retrograde_cuda.cu.obj	36155ede3f574f9f
+2609	2670	8096932130857823	ugts_chess2_retro_backend.lib	bb6eb4cf3b487d51
+2670	3040	8096932131462765	CMakeFiles/ugts-chess2.dir/cmake_device_link.obj	b144d364558fcb2
+2674	3047	8096932131502810	CMakeFiles/ugts_chess2_tests.dir/cmake_device_link.obj	7381912b0c4da777
+3040	3236	8096932135169376	ugts-chess2.exe	ec52546c9b8cee98
+3047	3236	8096932135239424	ugts_chess2_tests.exe	6e4045786380e9f1
+51	3257	8096932105279183	CMakeFiles/ugts_chess_cuda_backend.dir/cuda/cuda_api.cu.obj	9fc677188337599c
+3258	3333	8096932137354332	ugts_chess_cuda_backend.lib	85861b2398b832a3
+3333	3703	8096932138089849	CMakeFiles/ugts-chess-gpu.dir/cmake_device_link.obj	d12ae4a6d7d49434
+3703	3875	8096932141800185	ugts-chess-gpu.exe	5d285d33f174a93b

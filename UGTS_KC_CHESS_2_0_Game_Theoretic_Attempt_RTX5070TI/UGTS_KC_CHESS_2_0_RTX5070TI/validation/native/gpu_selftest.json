@@ -1,0 +1,15 @@
+{
+  "record_size": 64,
+  "tests": [
+    {"name":"initial_d1","depth":1,"nodes":20,"pass":true},
+    {"name":"initial_d2","depth":2,"nodes":400,"pass":true},
+    {"name":"initial_d3","depth":3,"nodes":8902,"pass":true},
+    {"name":"initial_d4","depth":4,"nodes":197281,"pass":true},
+    {"name":"kiwipete_d3","depth":3,"nodes":97862,"pass":true},
+    {"name":"position3_d4","depth":4,"nodes":43238,"pass":true},
+    {"name":"position4_d3","depth":3,"nodes":9467,"pass":true},
+    {"name":"position5_d3","depth":3,"nodes":62379,"pass":true},
+    {"name":"position6_d3","depth":3,"nodes":89890,"pass":true}
+  ],
+  "passed": 9
+}

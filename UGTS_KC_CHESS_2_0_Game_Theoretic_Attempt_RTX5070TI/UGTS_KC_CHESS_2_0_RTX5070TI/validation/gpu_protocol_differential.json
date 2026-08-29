@@ -1,0 +1,14 @@
+{
+  "authority": "python_exact_oracle",
+  "executable_stdout": "{\"backend\":\"cpu\",\"positions\":4,\"moves\":105,\"seconds\":0.000013,\"cuda_fallback_reason\":\"CUDA support not compiled\"}",
+  "input": {
+    "count": 4,
+    "path": "/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/validation/gpu_protocol/positions.ugcb",
+    "record_size": 64,
+    "sha256": "7c16c99964c27443904fad7e213060dc3e5b9be653e6195d0a6dec66dcc9c84e"
+  },
+  "mismatches": [],
+  "positions": 4,
+  "proposal_move_count": 105,
+  "verified_move_count": 105
+}

@@ -1,0 +1,94 @@
+[1/17] Building CXX object CMakeFiles/ugts_chess2_core.dir/src/search.cpp.o
+[2/17] Building CXX object CMakeFiles/ugts_chess2_core.dir/src/sha256.cpp.o
+[3/17] Building CXX object CMakeFiles/ugts_chess2_core.dir/src/retrograde_cpu.cpp.o
+[4/17] Building CXX object CMakeFiles/ugts_chess2_core.dir/src/core.cpp.o
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp: In function ‘bool ugts::chess2::is_square_attacked(const Position&, int, Color)’:
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:342:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  342 |     for (const auto [df, dr] : KNIGHT_DELTAS) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:342:21: note: use reference type to prevent copying
+  342 |     for (const auto [df, dr] : KNIGHT_DELTAS) {
+      |                     ^~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:347:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  347 |     for (const auto [df, dr] : KING_DELTAS) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:347:21: note: use reference type to prevent copying
+  347 |     for (const auto [df, dr] : KING_DELTAS) {
+      |                     ^~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:354:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  354 |     for (const auto [df, dr] : BISHOP_DIRS) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:354:21: note: use reference type to prevent copying
+  354 |     for (const auto [df, dr] : BISHOP_DIRS) {
+      |                     ^~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:362:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  362 |     for (const auto [df, dr] : ROOK_DIRS) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:362:21: note: use reference type to prevent copying
+  362 |     for (const auto [df, dr] : ROOK_DIRS) {
+      |                     ^~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp: In function ‘bool ugts::chess2::insufficient_material(const Position&)’:
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:491:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, char>’ [-Wrange-loop-construct]
+  491 |     for (const auto [sq, piece] : non_kings) {
+      |                     ^~~~~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:491:21: note: use reference type to prevent copying
+  491 |     for (const auto [sq, piece] : non_kings) {
+      |                     ^~~~~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:499:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, char>’ [-Wrange-loop-construct]
+  499 |     for (const auto [sq, piece] : non_kings) {
+      |                     ^~~~~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:499:21: note: use reference type to prevent copying
+  499 |     for (const auto [sq, piece] : non_kings) {
+      |                     ^~~~~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp: In instantiation of ‘void ugts::chess2::{anonymous}::add_leaper_moves(const ugts::chess2::Position&, int, char, const std::array<std::pair<int, int>, N>&, std::vector<ugts::chess2::Move>&) [with long unsigned int N = 8]’:
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:386:39:   required from here
+  386 |             case 'N': add_leaper_moves(position, sq, piece, KNIGHT_DELTAS, out); break;
+      |                       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:105:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  105 |     for (const auto [df, dr] : deltas) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:105:21: note: use reference type to prevent copying
+  105 |     for (const auto [df, dr] : deltas) {
+      |                     ^~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp: In instantiation of ‘void ugts::chess2::{anonymous}::add_slider_moves(const ugts::chess2::Position&, int, char, const std::array<std::pair<int, int>, N>&, std::vector<ugts::chess2::Move>&) [with long unsigned int N = 4]’:
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:387:39:   required from here
+  387 |             case 'B': add_slider_moves(position, sq, piece, BISHOP_DIRS, out); break;
+      |                       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:125:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  125 |     for (const auto [df, dr] : dirs) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:125:21: note: use reference type to prevent copying
+  125 |     for (const auto [df, dr] : dirs) {
+      |                     ^~~~~~~~
+      |                     &
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp: In instantiation of ‘void ugts::chess2::{anonymous}::add_slider_moves(const ugts::chess2::Position&, int, char, const std::array<std::pair<int, int>, N>&, std::vector<ugts::chess2::Move>&) [with long unsigned int N = 8]’:
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:389:39:   required from here
+  389 |             case 'Q': add_slider_moves(position, sq, piece, QUEEN_DIRS, out); break;
+      |                       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:125:21: warning: loop variable ‘<structured bindings>’ creates a copy from type ‘const std::pair<int, int>’ [-Wrange-loop-construct]
+  125 |     for (const auto [df, dr] : dirs) {
+      |                     ^~~~~~~~
+/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/cpp/src/core.cpp:125:21: note: use reference type to prevent copying
+  125 |     for (const auto [df, dr] : dirs) {
+      |                     ^~~~~~~~
+      |                     &
+[5/17] Linking CXX static library libugts_chess2_core.a
+[6/17] Building CXX object CMakeFiles/ugts_chess2_retro_backend.dir/src/cuda_stub.cpp.o
+[7/17] Building CXX object CMakeFiles/ugts_chess_cuda_backend.dir/src/cuda_api_stub.cpp.o
+[8/17] Linking CXX static library libugts_chess2_retro_backend.a
+[9/17] Building CXX object CMakeFiles/ugts_chess_packed.dir/src/fen.cpp.o
+[10/17] Linking CXX static library libugts_chess_packed.a
+[11/17] Linking CXX static library libugts_chess_cuda_backend.a
+[12/17] Building CXX object CMakeFiles/ugts-chess2.dir/src/main.cpp.o
+[13/17] Building CXX object CMakeFiles/ugts_chess2_tests.dir/tests/native_tests.cpp.o
+[14/17] Linking CXX executable ugts-chess2
+[15/17] Linking CXX executable ugts_chess2_tests
+[16/17] Building CXX object CMakeFiles/ugts-chess-gpu.dir/src/gpu_main.cpp.o
+[17/17] Linking CXX executable ugts-chess-gpu

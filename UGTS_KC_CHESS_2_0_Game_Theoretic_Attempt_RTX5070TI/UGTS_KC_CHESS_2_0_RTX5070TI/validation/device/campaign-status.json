@@ -1,0 +1,15 @@
+{
+  "evidence_boundary": "UNKNOWN remains UNKNOWN until proof certificates are independently verified.",
+  "game_solved": false,
+  "last_event_hash": "50ec176e40905c77a730a2916ac275ed66bae3c3165b5e4687a3615719a622c9",
+  "last_event_sequence": 1,
+  "obligations": 20,
+  "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "root_game_state_sha256": "eef9110182efec68661804d99fb8a91a1eac10973bdb4a44569d66ac0c9f8078",
+  "root_wdl": "unknown",
+  "schema": "ugts-chess-campaign-2.0",
+  "status_counts": {
+    "unresolved": 20
+  },
+  "verified_children": 0
+}

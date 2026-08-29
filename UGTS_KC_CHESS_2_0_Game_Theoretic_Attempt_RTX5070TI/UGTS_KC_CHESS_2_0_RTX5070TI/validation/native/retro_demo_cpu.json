@@ -1,0 +1,8 @@
+{
+  "backend": "cpu-fixed-point",
+  "used_cuda": false,
+  "iterations": 3,
+  "resolved_by_propagation": 4,
+  "draws_after_fixpoint": 0,
+  "outcomes": ["loss", "win", "win", "loss", "draw", "loss", "win"]
+}

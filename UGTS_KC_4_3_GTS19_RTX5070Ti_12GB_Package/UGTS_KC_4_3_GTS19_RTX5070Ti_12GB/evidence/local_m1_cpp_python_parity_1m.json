@@ -1,0 +1,31 @@
+{
+  "cases_by_size": {
+    "19": 123,
+    "3": 498,
+    "5": 25675,
+    "9": 4880
+  },
+  "chunk_size": 10000,
+  "chunks": 100,
+  "comparisons": 1031182,
+  "corpus_sha256": "a2a7257961e8a669e64826d4c17755903c837df612cf25e9822fda47f09f225d",
+  "elapsed_seconds": 103.009017,
+  "evidence_format": "UGTS-M1-PARITY-EVIDENCE-v1",
+  "field_comparisons": 10093588,
+  "generator": "splitmix64-v1-shallow-reachable-psk",
+  "hash_role": "corpus evidence only; exact raw fields establish equality",
+  "max_seen_boards": 10,
+  "mismatches": 0,
+  "mode": "campaign",
+  "protocol": "UGTS_TRACE_V1",
+  "root_status": "UNKNOWN",
+  "seeds": [
+    6221081,
+    12648430
+  ],
+  "states": 31176,
+  "target_met": true,
+  "target_transitions": 1000000,
+  "transitions": 1000006,
+  "transitions_per_second": 9707.946
+}

@@ -26,6 +26,12 @@ def canonical_unknown_payload() -> dict:
             "threshold2": 1,
             "proof_number": 1,
             "disproof_number": 362,
+            "proof_arithmetic": {
+                "bits": 64,
+                "endianness": "little",
+                "infinity": "18446744073709551615",
+                "kind": "saturating_uint64",
+            },
         },
     }
 
@@ -39,6 +45,7 @@ class ClaimGateTests(unittest.TestCase):
             ("rules", ("rules", "komi2"), 13),
             ("root", ("root_digest",), "0" * 64),
             ("threshold", ("result", "threshold2"), 3),
+            ("arithmetic", ("result", "proof_arithmetic", "bits"), 60),
         ]
         for name, path, value in cases:
             with self.subTest(name=name):

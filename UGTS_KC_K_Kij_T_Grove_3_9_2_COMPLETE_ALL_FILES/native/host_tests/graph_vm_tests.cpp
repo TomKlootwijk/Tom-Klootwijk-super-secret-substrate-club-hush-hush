@@ -66,6 +66,23 @@ int main(int argc, char** argv) {
     if (!near(nodes[1].translation.y, 7.0f)) return fail("world tick stopped with inactive player");
     if (!near(nodes[1].translation.z, 0.0f)) return fail("inactive entity-bound graph still ran");
 
+    vm.trigger(true,2,1,1.0f/120.0f,1,{},nodes);
+    if (!vm.issues().empty()) return fail("trigger enter reported a runtime issue");
+    if (!near(nodes[2].translation.x,11.0f)) return fail("sensor-bound enter graph did not run");
+    if (!near(nodes[1].translation.y,12.0f)) return fail("trigger player context was not portable");
+    const auto enterEvents=vm.events();
+    if (enterEvents.size()!=1 || enterEvents[0].kind!="player_entered" ||
+        enterEvents[0].source!=2 || enterEvents[0].target!=1)
+        return fail("world trigger enter context was incorrect");
+
+    vm.trigger(false,2,1,1.0f/120.0f,1,{},nodes);
+    if (!vm.issues().empty()) return fail("trigger exit reported a runtime issue");
+    if (!near(nodes[2].translation.x,-11.0f)) return fail("sensor-bound exit graph did not run");
+    const auto exitEvents=vm.events();
+    if (exitEvents.size()!=2 || exitEvents[1].kind!="player_exited" ||
+        exitEvents[1].source!=2 || exitEvents[1].target!=1)
+        return fail("world trigger exit context was incorrect");
+
     std::cout << "PASS graph VM world binding\n";
     return 0;
 }

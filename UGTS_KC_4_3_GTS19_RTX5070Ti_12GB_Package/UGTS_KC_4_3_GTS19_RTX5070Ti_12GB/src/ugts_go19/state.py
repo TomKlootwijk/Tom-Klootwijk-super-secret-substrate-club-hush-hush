@@ -41,26 +41,40 @@ class State:
 
     def validate(self, rules: Rules) -> None:
         expected = rules.size * rules.size
+        if type(self.board) is not bytes:
+            raise TypeError("board must be immutable bytes")
         if len(self.board) != expected:
             raise ValueError(f"board has {len(self.board)} points, expected {expected}")
+        if type(self.to_play) is not int:
+            raise TypeError("to_play must be an integer")
         if self.to_play not in (1, 2):
             raise ValueError("to_play must be 1 (black) or 2 (white)")
+        if type(self.passes) is not int:
+            raise TypeError("passes must be an integer")
         if not 0 <= self.passes <= rules.passes_to_end:
             raise ValueError(
                 f"passes must be in 0..{rules.passes_to_end} for a reachable state"
             )
+        if type(self.ply) is not int:
+            raise TypeError("ply must be an integer")
         if self.ply < 0:
             raise ValueError("ply cannot be negative")
         if any(point not in (0, 1, 2) for point in self.board):
             raise ValueError("board contains an invalid point value")
         if self.previous_board is not None:
+            if type(self.previous_board) is not bytes:
+                raise TypeError("previous_board must be immutable bytes or None")
             if len(self.previous_board) != expected:
                 raise ValueError("previous_board length does not match board size")
             if any(point not in (0, 1, 2) for point in self.previous_board):
                 raise ValueError("previous_board contains an invalid point value")
 
+        if type(self.seen) is not frozenset:
+            raise TypeError("seen must be a frozenset of immutable byte tokens")
         token_length = expected + (1 if rules.superko == "situational_superko" else 0)
         for token in self.seen:
+            if type(token) is not bytes:
+                raise TypeError("repetition tokens must be immutable bytes")
             if len(token) != token_length:
                 raise ValueError("repetition token length does not match rules")
             if any(point not in (0, 1, 2) for point in token[:expected]):

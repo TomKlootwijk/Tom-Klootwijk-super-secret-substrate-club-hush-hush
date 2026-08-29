@@ -60,6 +60,10 @@ def _world_graph() -> VisualGraph:
         ),
         GraphNode("push", "action.apply_force", {"entity": "player", "force": [4.0, 6.0]}),
         GraphNode("announce", "action.emit_event", {"kind": "world_ready", "payload": {}}),
+        GraphNode("trigger_enter", "event.trigger_enter"),
+        GraphNode("trigger_exit", "event.trigger_exit"),
+        GraphNode("announce_enter", "action.emit_event", {"kind": "player_entered", "payload": {}}),
+        GraphNode("announce_exit", "action.emit_event", {"kind": "player_exited", "payload": {}}),
     )
     links = (
         GraphLink("ready", "out", "set_x", "in"),
@@ -67,6 +71,12 @@ def _world_graph() -> VisualGraph:
         GraphLink("push", "out", "announce", "in"),
         GraphLink("ready", "entity", "announce", "source"),
         GraphLink("tick", "out", "set_y", "in"),
+        GraphLink("trigger_enter", "out", "announce_enter", "in"),
+        GraphLink("trigger_enter", "sensor", "announce_enter", "source"),
+        GraphLink("trigger_enter", "player", "announce_enter", "target"),
+        GraphLink("trigger_exit", "out", "announce_exit", "in"),
+        GraphLink("trigger_exit", "sensor", "announce_exit", "source"),
+        GraphLink("trigger_exit", "player", "announce_exit", "target"),
     )
     return VisualGraph("world_logic", nodes, links)
 
@@ -86,20 +96,41 @@ def _bound_graph() -> VisualGraph:
     )
 
 
+def _sensor_graph() -> VisualGraph:
+    return VisualGraph(
+        "sensor_logic",
+        (
+            GraphNode("enter", "event.trigger_enter"),
+            GraphNode("exit", "event.trigger_exit"),
+            GraphNode("mark_sensor", "action.set_component", {"component": "transform", "field": "translation.x", "value": 11.0}),
+            GraphNode("mark_player", "action.set_component", {"component": "transform", "field": "translation.y", "value": 12.0}),
+            GraphNode("clear_sensor", "action.set_component", {"component": "transform", "field": "translation.x", "value": -11.0}),
+        ),
+        (
+            GraphLink("enter", "out", "mark_sensor", "in"),
+            GraphLink("enter", "out", "mark_player", "in"),
+            GraphLink("enter", "player", "mark_player", "entity"),
+            GraphLink("exit", "out", "clear_sensor", "in"),
+        ),
+    )
+
+
 class AndroidWorldGraphTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which("cmake"), "CMake is required for the host graph-VM test")
     def test_world_graph_executes_in_host_cpp_and_ignores_entity_lifecycle(self) -> None:
         if not _host_cpp_toolchain_available():
             self.skipTest("No host C++20 compiler is installed")
         project = blank_mobile3d_project()
-        world, bound = _world_graph(), _bound_graph()
-        project.metadata["visual_graphs"] = [world.to_dict(), bound.to_dict()]
+        world, bound, sensor = _world_graph(), _bound_graph(), _sensor_graph()
+        project.metadata["visual_graphs"] = [world.to_dict(), bound.to_dict(), sensor.to_dict()]
         project.metadata["world_graphs"] = world.id
         player = next(node for node in project.nodes if node.id == "player")
         player.metadata["visual_graph"] = bound.id
+        goal = next(node for node in project.nodes if node.id == "goal")
+        goal.metadata["visual_graph"] = sensor.id
         packed = compile_graph_pack_bytes(project)
         info = inspect_graph_pack(packed)
-        self.assertEqual(info["binding_count"], 2)
+        self.assertEqual(info["binding_count"], 3)
         self.assertEqual(info["world_binding_count"], 1)
 
         with tempfile.TemporaryDirectory() as temporary:

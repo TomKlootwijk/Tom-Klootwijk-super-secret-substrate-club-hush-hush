@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-chess-rtx5070ti-profile-2.0.schema.json",
+  "title": "UGTS Chess RTX 5070 Ti Laptop execution profile 2.0",
+  "type": "object",
+  "required": [
+    "profile_id", "device_match", "nominal_vram_mib", "reserved_headroom_mib",
+    "solver_budget_mib", "compile_architecture", "cmake_cuda_architectures",
+    "ptx_fallback", "minimum_toolkit", "batch_positions_initial",
+    "batch_positions_min", "max_moves_per_position", "threads_per_block",
+    "streams_initial", "allocation_mib", "allocation_bytes", "adaptive_rules",
+    "correctness_boundary", "measurement_boundary"
+  ],
+  "properties": {
+    "profile_id": {"const": "rtx5070ti-laptop-12gb-sm120-v2"},
+    "device_match": {"const": "GeForce RTX 5070 Ti Laptop GPU"},
+    "nominal_vram_mib": {"const": 12288},
+    "reserved_headroom_mib": {"type": "integer", "minimum": 2048},
+    "solver_budget_mib": {"type": "integer", "minimum": 1, "maximum": 9216},
+    "compile_architecture": {"const": "120"},
+    "cmake_cuda_architectures": {"const": "120"},
+    "ptx_fallback": {"const": "compute_120"},
+    "minimum_toolkit": {"type": "string", "pattern": "^CUDA [0-9]+\\.[0-9]+$"},
+    "batch_positions_initial": {"type": "integer", "minimum": 1},
+    "batch_positions_min": {"type": "integer", "minimum": 1},
+    "max_moves_per_position": {"type": "integer", "minimum": 1, "maximum": 256},
+    "threads_per_block": {"type": "integer", "minimum": 32, "maximum": 1024},
+    "streams_initial": {"type": "integer", "minimum": 1},
+    "allocation_mib": {"$ref": "#/$defs/allocation"},
+    "allocation_bytes": {"$ref": "#/$defs/allocation"},
+    "adaptive_rules": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "correctness_boundary": {"type": "string", "minLength": 1},
+    "measurement_boundary": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "allocation": {
+      "type": "object",
+      "required": [
+        "transposition_and_proof_index", "frontier_positions",
+        "move_matrix_and_counts", "retrograde_edges_and_counters",
+        "checkpoint_staging", "scratch"
+      ],
+      "properties": {
+        "transposition_and_proof_index": {"type": "integer", "minimum": 0},
+        "frontier_positions": {"type": "integer", "minimum": 0},
+        "move_matrix_and_counts": {"type": "integer", "minimum": 0},
+        "retrograde_edges_and_counters": {"type": "integer", "minimum": 0},
+        "checkpoint_staging": {"type": "integer", "minimum": 0},
+        "scratch": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  }
+}

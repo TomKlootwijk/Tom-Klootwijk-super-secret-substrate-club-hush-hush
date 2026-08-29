@@ -1,0 +1,132 @@
+[
+  {
+    "record": "examples/project.json",
+    "schema": "ugts_kc_chess_project.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/mate_in_two_proof.json",
+    "schema": "ugts_kc_chess_proof.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/bounded_wdl_mate_over_claim.json",
+    "schema": "ugts_chess_wdl.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/bounded_wdl_initial_depth2.json",
+    "schema": "ugts_chess_wdl.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "spec/rtx5070ti_profile.json",
+    "schema": "ugts_chess_rtx5070ti_profile.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/rtx5070ti_profile.json",
+    "schema": "ugts_chess_rtx5070ti_profile.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-01-a2a3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-02-a2a4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-03-b1a3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-04-b1c3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-05-b2b3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-06-b2b4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-07-c2c3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-08-c2c4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-09-d2d3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-10-d2d4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-11-e2e3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-12-e2e4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-13-f2f3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-14-f2f4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-15-g1f3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-16-g1h3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-17-g2g3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-18-g2g4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-19-h2h3.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  },
+  {
+    "record": "examples/campaign/root_shards/root-20-h2h4.json",
+    "schema": "ugts_chess_proof_obligation.schema.json",
+    "status": "pass"
+  }
+]

@@ -1,18 +1,28 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:ugts:go:recompute-certificate:v1",
+  "$id": "urn:ugts:go:recompute-certificate:v2",
   "title": "UGTS Go recomputation certificate",
   "type": "object",
   "required": ["format", "rules", "root", "result", "verification", "certificate_sha256"],
   "properties": {
-    "format": {"const": "UGTS-GO-RECOMPUTE-CERT-v1"},
+    "format": {"const": "UGTS-GO-RECOMPUTE-CERT-v2"},
     "rules": {
       "type": "object",
-      "required": ["size", "komi2", "superko", "allow_suicide", "scoring", "passes_to_end", "profile_id"]
+      "required": ["size", "komi2", "superko", "allow_suicide", "scoring", "passes_to_end", "profile_id"],
+      "properties": {
+        "size": {"type": "integer", "minimum": 1, "maximum": 19},
+        "komi2": {"type": "integer"},
+        "superko": {"enum": ["none", "simple_ko", "positional_superko", "situational_superko"]},
+        "allow_suicide": {"type": "boolean"},
+        "scoring": {"const": "area"},
+        "passes_to_end": {"type": "integer", "minimum": 1},
+        "profile_id": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
     },
     "root": {
       "type": "object",
-      "required": ["board_hex", "to_play", "passes", "seen_hex", "digest"],
+      "required": ["board_hex", "to_play", "passes", "seen_hex", "previous_board_hex", "ply", "digest"],
       "properties": {
         "board_hex": {"type": "string", "pattern": "^[0-9a-f]*$"},
         "to_play": {"enum": [1, 2]},
@@ -21,17 +31,30 @@
         "previous_board_hex": {"type": ["string", "null"]},
         "ply": {"type": "integer", "minimum": 0},
         "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
-      }
+      },
+      "additionalProperties": false
     },
     "result": {
       "type": "object",
-      "required": ["value2", "winner", "best_move", "stats"]
+      "required": ["value2", "value_points", "winner"],
+      "properties": {
+        "value2": {"type": "integer"},
+        "value_points": {"type": "number"},
+        "winner": {"enum": ["black", "white", "draw"]}
+      },
+      "additionalProperties": false
     },
     "verification": {
       "type": "object",
-      "required": ["method", "requires_exact_history", "standalone_strategy_tree"]
+      "required": ["method", "requires_exact_history", "standalone_strategy_tree"],
+      "properties": {
+        "method": {"const": "independent deterministic recomputation"},
+        "requires_exact_history": {"const": true},
+        "standalone_strategy_tree": {"const": false}
+      },
+      "additionalProperties": false
     },
     "certificate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

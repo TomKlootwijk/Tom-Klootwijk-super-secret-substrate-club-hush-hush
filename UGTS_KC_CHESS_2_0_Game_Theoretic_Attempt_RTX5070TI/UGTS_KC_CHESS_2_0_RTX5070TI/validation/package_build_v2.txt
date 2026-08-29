@@ -1,0 +1,10 @@
+WARNING: The directory '/home/oai/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing /mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: ugts-kc-chess
+  Building wheel for ugts-kc-chess (pyproject.toml): started
+  Building wheel for ugts-kc-chess (pyproject.toml): finished with status 'done'
+  Created wheel for ugts-kc-chess: filename=ugts_kc_chess-2.0.0-py3-none-any.whl size=332019 sha256=4e43bcd6f598ec459bab7046a4c0e00f2325570dad9bec26c2ed4db721c07879
+  Stored in directory: /tmp/pip-ephem-wheel-cache-0c67wi80/wheels/0e/08/84/6bfa4b80165662c48ea74a4fa37595c38449b4af473eec453f
+Successfully built ugts-kc-chess

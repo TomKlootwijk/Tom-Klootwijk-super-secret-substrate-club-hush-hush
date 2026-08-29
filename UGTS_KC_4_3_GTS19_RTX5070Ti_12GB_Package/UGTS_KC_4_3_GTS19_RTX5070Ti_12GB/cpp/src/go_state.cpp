@@ -41,12 +41,29 @@ void ValidateStateForRules(const State& state, const Rules& rules) {
   if (state.passes < 0) {
     throw std::invalid_argument("state pass count cannot be negative");
   }
+  if (state.passes > rules.passes_to_end) {
+    throw std::invalid_argument("state pass count exceeds terminal count");
+  }
 
   const auto expected_points =
       static_cast<std::size_t>(rules.size * rules.size);
   ValidateBoard(state.board, expected_points, "state board");
   for (const auto& seen_board : state.seen_boards) {
     ValidateBoard(seen_board, expected_points, "seen board");
+  }
+  auto canonical_seen = state.seen_boards;
+  std::sort(canonical_seen.begin(), canonical_seen.end());
+  if (std::adjacent_find(canonical_seen.begin(), canonical_seen.end()) !=
+      canonical_seen.end()) {
+    throw std::invalid_argument(
+        "positional-superko history contains a duplicate board");
+  }
+  if (std::none_of(state.seen_boards.begin(), state.seen_boards.end(),
+                   [&](const auto& seen_board) {
+                     return seen_board == state.board;
+                   })) {
+    throw std::invalid_argument(
+        "positional-superko history does not contain current board");
   }
   if (state.previous_board.has_value()) {
     ValidateBoard(*state.previous_board, expected_points, "previous board");
@@ -56,6 +73,22 @@ void ValidateStateForRules(const State& state, const Rules& rules) {
 bool BoardSeen(const State& state, const std::vector<std::uint8_t>& board) {
   return std::any_of(state.seen_boards.begin(), state.seen_boards.end(),
                      [&](const auto& item) { return item == board; });
+}
+
+std::string Hex(const std::vector<std::uint8_t>& bytes) {
+  constexpr char digits[] = "0123456789abcdef";
+  std::string output(bytes.size() * 2, '0');
+  for (std::size_t index = 0; index < bytes.size(); ++index) {
+    output[2 * index] = digits[bytes[index] >> 4U];
+    output[2 * index + 1] = digits[bytes[index] & 0x0fU];
+  }
+  return output;
+}
+
+std::vector<std::vector<std::uint8_t>> CanonicalSeen(const State& state) {
+  auto seen = state.seen_boards;
+  std::sort(seen.begin(), seen.end());
+  return seen;
 }
 
 // A compact deterministic non-cryptographic digest for diagnostics only.
@@ -75,6 +108,9 @@ std::uint64_t Fnv1a64(const std::vector<std::uint8_t>& data,
 State State::Initial(const Rules& rules) {
   if (rules.size < 1 || rules.size > 19) {
     throw std::invalid_argument("board size must be in 1..19");
+  }
+  if (rules.passes_to_end < 1) {
+    throw std::invalid_argument("passes_to_end must be positive");
   }
   State state;
   state.size = rules.size;
@@ -228,6 +264,7 @@ std::vector<int> LegalMoves(const State& state, const Rules& rules,
 }
 
 int AreaScore2(const State& state, const Rules& rules) {
+  ValidateStateForRules(state, rules);
   int black_area = 0;
   int white_area = 0;
   std::vector<std::uint8_t> visited(state.board.size(), 0);
@@ -294,6 +331,50 @@ std::vector<std::uint64_t> PackWhiteBitplane(const State& state) {
     }
   }
   return output;
+}
+
+std::string CanonicalStateJson(const State& state, const Rules& rules) {
+  ValidateStateForRules(state, rules);
+  const auto seen = CanonicalSeen(state);
+  std::ostringstream stream;
+  // Keys at every object level are lexicographically sorted, and there is no
+  // insignificant whitespace. All string values are fixed ASCII or hex.
+  stream << "{\"board_hex\":\"" << Hex(state.board)
+         << "\",\"format\":\"UGTS-GO-STATE-v1\",\"passes\":"
+         << state.passes << ",\"previous_board_hex\":";
+  if (state.previous_board.has_value()) {
+    stream << '\"' << Hex(*state.previous_board) << '\"';
+  } else {
+    stream << "null";
+  }
+  stream << ",\"rules\":{\"allow_suicide\":"
+         << (rules.allow_suicide ? "true" : "false")
+         << ",\"komi2\":" << rules.komi2
+         << ",\"passes_to_end\":" << rules.passes_to_end
+         << ",\"scoring\":\"area\",\"size\":" << rules.size
+         << ",\"superko\":\"positional_superko\"},\"seen_hex\":[";
+  for (std::size_t index = 0; index < seen.size(); ++index) {
+    if (index != 0) stream << ',';
+    stream << '\"' << Hex(seen[index]) << '\"';
+  }
+  stream << "],\"to_play\":" << static_cast<int>(state.to_play) << '}';
+  return stream.str();
+}
+
+bool ExactStateEqual(const State& left, const Rules& left_rules,
+                     const State& right, const Rules& right_rules) {
+  ValidateStateForRules(left, left_rules);
+  ValidateStateForRules(right, right_rules);
+  if (left_rules.size != right_rules.size ||
+      left_rules.komi2 != right_rules.komi2 ||
+      left_rules.allow_suicide != right_rules.allow_suicide ||
+      left_rules.passes_to_end != right_rules.passes_to_end) {
+    return false;
+  }
+  return left.board == right.board && left.to_play == right.to_play &&
+         left.passes == right.passes &&
+         left.previous_board == right.previous_board &&
+         CanonicalSeen(left) == CanonicalSeen(right);
 }
 
 std::string BoardDigestHex(const State& state) {

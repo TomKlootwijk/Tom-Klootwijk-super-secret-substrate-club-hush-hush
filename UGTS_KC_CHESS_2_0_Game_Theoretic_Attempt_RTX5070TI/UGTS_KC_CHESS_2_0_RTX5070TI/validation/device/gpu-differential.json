@@ -1,0 +1,14 @@
+{
+  "authority": "python_exact_oracle",
+  "executable_stdout": "{\"backend\":\"cuda\",\"positions\":3,\"moves\":94,\"seconds\":0.144267,\"cuda_fallback_reason\":\"\"}",
+  "input": {
+    "count": 3,
+    "path": "validation\\device\\batch\\positions.ugcb",
+    "record_size": 64,
+    "sha256": "0d24a9c326451b4f5ffdcb7b96653035b95e4ae13e3b5b093857fd2fd19dfdf4"
+  },
+  "mismatches": [],
+  "positions": 3,
+  "proposal_move_count": 94,
+  "verified_move_count": 94
+}

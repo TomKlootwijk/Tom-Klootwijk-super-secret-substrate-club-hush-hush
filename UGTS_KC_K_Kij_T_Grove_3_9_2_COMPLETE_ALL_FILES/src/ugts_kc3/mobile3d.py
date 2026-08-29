@@ -38,6 +38,7 @@ Quat = tuple[float, float, float, float]
 Color3 = tuple[float, float, float]
 Color4 = tuple[float, float, float, float]
 MOBILE3D_SCHEMA = "ugts-kc-mobile-3d-project-3.9.1"
+MAX_TRIGGER_SENSORS = 4096
 
 TAG_PLAYER = 1 << 0
 TAG_COLLECTIBLE = 1 << 1
@@ -842,6 +843,7 @@ class Mobile3DProject:
             except ValueError as exc:
                 error("material.invalid", f"materials.{key}", str(exc))
         node_ids: set[str] = set()
+        sensor_count = 0
         for index, node in enumerate(self.nodes):
             path = f"nodes[{index}]"
             if node.id in node_ids:
@@ -855,6 +857,14 @@ class Mobile3DProject:
                 error("mesh.unknown", f"{path}.mesh_id", node.mesh_id)
             if node.material_id not in self.materials:
                 error("material.unknown", f"{path}.material_id", node.material_id)
+            if node.collider.sensor and node.collider.shape != "none":
+                sensor_count += 1
+        if sensor_count > MAX_TRIGGER_SENSORS:
+            error(
+                "trigger.sensor_limit",
+                "nodes",
+                f"projects support at most {MAX_TRIGGER_SENSORS} active trigger areas",
+            )
         graphs: tuple[VisualGraph, ...] = ()
         try:
             graphs = visual_graphs_from_metadata(self.metadata)
@@ -956,6 +966,7 @@ class Mobile3DProject:
             "material_count": len(self.materials),
             "node_count": len(self.nodes),
             "dynamic_node_count": sum(node.dynamic for node in self.nodes),
+            "trigger_sensor_count": sensor_count,
             "vertex_count": sum(len(mesh.vertices) for mesh in self.meshes.values()),
             "triangle_count": sum(len(mesh.triangles) for mesh in self.meshes.values()),
             "quality_tier_count": len(self.quality_tiers),
@@ -1341,6 +1352,48 @@ class EntityState3D:
         }
 
 
+def _trigger_overlap_3d(sensor: EntityState3D, player: EntityState3D) -> bool:
+    """Translation/scale-aligned sphere/box overlap shared with native Android."""
+    sensor_shape, player_shape = sensor.collider.shape, player.collider.shape
+    if sensor_shape == "none" or player_shape == "none":
+        return False
+
+    def sphere_radius(entity: EntityState3D) -> float:
+        return entity.collider.radius * max(abs(value) for value in entity.scale)
+
+    def box_extents(entity: EntityState3D) -> Vec3:
+        return tuple(
+            entity.collider.half_extents[index] * abs(entity.scale[index])
+            for index in range(3)
+        )  # type: ignore[return-value]
+
+    if sensor_shape == player_shape == "sphere":
+        radius = sphere_radius(sensor) + sphere_radius(player)
+        delta = sub(sensor.position, player.position)
+        return radius > 0.0 and dot(delta, delta) <= radius * radius
+    if sensor_shape == player_shape == "box":
+        first, second = box_extents(sensor), box_extents(player)
+        return all(
+            abs(sensor.position[index] - player.position[index])
+            <= first[index] + second[index]
+            for index in range(3)
+        )
+
+    sphere, box = (
+        (sensor, player) if sensor_shape == "sphere" else (player, sensor)
+    )
+    radius, extents = sphere_radius(sphere), box_extents(box)
+    nearest = tuple(
+        max(-extents[index], min(extents[index], sphere.position[index] - box.position[index]))
+        for index in range(3)
+    )
+    remainder = tuple(
+        sphere.position[index] - box.position[index] - nearest[index]
+        for index in range(3)
+    )
+    return radius > 0.0 and dot(remainder, remainder) <= radius * radius
+
+
 def _compose_packed_kinematic_3d(
     entity: EntityState3D,
     component: PackedKinematicComponent,
@@ -1449,6 +1502,7 @@ class GameWorld3D:
         self._listeners: dict[str, list[Callable[[WorldEvent3D], None]]] = {}
         self.visual_graph_bindings: list[Any] = []
         self._previous_input_frame = InputFrame3D()
+        self._trigger_contacts: tuple[tuple[str, str], ...] = ()
 
     @classmethod
     def from_project(cls, project: Mobile3DProject) -> "GameWorld3D":
@@ -1840,6 +1894,50 @@ class GameWorld3D:
                         )
                 self._emit("collision", a_id, b_id, penetration=penetration)
 
+    def _trigger_areas(self) -> None:
+        """Emit one enter/exit transition for the first active player and each sensor."""
+        player = next(
+            (
+                entity for entity in self.entities.values()
+                if entity.alive and entity.active and "player" in entity.tags
+            ),
+            None,
+        )
+        current: list[tuple[str, str]] = []
+        if player is not None:
+            sensors = 0
+            for entity in self.entities.values():
+                if (
+                    entity is player
+                    or not entity.alive
+                    or not entity.active
+                    or not entity.collider.sensor
+                    or entity.collider.shape == "none"
+                ):
+                    continue
+                if sensors >= MAX_TRIGGER_SENSORS:
+                    break
+                sensors += 1
+                if _trigger_overlap_3d(entity, player):
+                    current.append((entity.id, player.id))
+
+        current_contacts = tuple(current)
+        current_set = set(current_contacts)
+        previous_set = set(self._trigger_contacts)
+        for sensor_id, player_id in self._trigger_contacts:
+            if (sensor_id, player_id) not in current_set:
+                self._emit(
+                    "trigger_exit", sensor_id, player_id,
+                    sensor=sensor_id, player=player_id,
+                )
+        for sensor_id, player_id in current_contacts:
+            if (sensor_id, player_id) not in previous_set:
+                self._emit(
+                    "trigger_enter", sensor_id, player_id,
+                    sensor=sensor_id, player=player_id,
+                )
+        self._trigger_contacts = current_contacts
+
     def _gameplay(self) -> None:
         players = [
             entity for entity in self.entities.values()
@@ -1891,6 +1989,7 @@ class GameWorld3D:
             self._floor_bounds()
             self._run_systems("post_physics", frame)
             self._pairs()
+            self._trigger_areas()
             self._gameplay()
             self._run_systems("update", frame)
             self._run_systems("late", frame)

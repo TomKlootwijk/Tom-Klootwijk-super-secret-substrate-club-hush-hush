@@ -10,6 +10,7 @@
       -1,
       -1
     ],
+    "principal_variation_complete": true,
     "principal_variation_coords": [
       "A2",
       "B1",
@@ -19,7 +20,7 @@
     ],
     "stats": {
       "cutoffs": 1031,
-      "elapsed_seconds": 0.019758199981879443,
+      "elapsed_seconds": 0.037288099993020296,
       "max_ply": 30,
       "nodes": 2532,
       "terminals": 836,
@@ -41,11 +42,11 @@
   },
   "status": "EXACT",
   "verification": {
-    "certificate_sha256": "800fcbcc59aa3dd1acd4b9680971bede07498e9eb4da87be2cd8ef5516e0190f",
+    "certificate_sha256": "d89dadb10ea169097b60480fd7396b5d11335b9bede8c3084cdc6cc4e9ad4ed6",
     "root_digest": "1a824f55dae1685be1c92a8d19e3201337e86397b1bc8646d5334a9459ac1333",
     "stats": {
       "cutoffs": 1031,
-      "elapsed_seconds": 0.019197600020561367,
+      "elapsed_seconds": 0.037368400022387505,
       "max_ply": 30,
       "nodes": 2532,
       "terminals": 836,

@@ -1,0 +1,11 @@
+{
+  "errors": [],
+  "event_count": 1,
+  "expected_job_count": 20,
+  "final_event_hash": "a3320170186c7a0336dff9048596926ce538f944e499f3a72773c21cbe5e2b0e",
+  "game_solved": false,
+  "job_count": 20,
+  "root_wdl": "unknown",
+  "schema": "ugts-chess-campaign-2.0",
+  "valid": true
+}

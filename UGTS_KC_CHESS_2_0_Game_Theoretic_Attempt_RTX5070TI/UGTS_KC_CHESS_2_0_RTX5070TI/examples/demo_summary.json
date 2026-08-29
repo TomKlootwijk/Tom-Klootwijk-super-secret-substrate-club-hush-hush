@@ -1,0 +1,58 @@
+{
+  "proof": {
+    "explored_nodes": 418,
+    "root_hash": "64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16",
+    "status": "proved"
+  },
+  "replay": {
+    "events": 5,
+    "final_hash": "13824da80942e5d38c212c316f558f49068eb1983b5da7a83b5dbc56aef57c47"
+  },
+  "search": {
+    "best_move": "b1b5",
+    "completed": true,
+    "depth": 4,
+    "elapsed_seconds": 0.42856242199991357,
+    "nodes": 1195,
+    "nodes_per_second": 4645,
+    "principal_variation_san": [
+      "Qb5",
+      "Ka2",
+      "Qb2#"
+    ],
+    "principal_variation_uci": [
+      "b1b5",
+      "a3a2",
+      "b5b2"
+    ],
+    "qnodes": 796,
+    "root_hash": "64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16",
+    "score": 99997,
+    "score_text": "mate +2",
+    "tt_hits": 132
+  },
+  "tablebase": {
+    "best_moves": [
+      {
+        "child": {
+          "dtm_plies": 2,
+          "exact": true,
+          "key": 20641,
+          "material": "KQK",
+          "outcome": "loss",
+          "side_to_move": "black",
+          "strong_side": "white"
+        },
+        "move": "b1b5",
+        "san": "Qb5"
+      }
+    ],
+    "dtm_plies": 3,
+    "exact": true,
+    "key": 16544,
+    "material": "KQK",
+    "outcome": "win",
+    "side_to_move": "white",
+    "strong_side": "white"
+  }
+}

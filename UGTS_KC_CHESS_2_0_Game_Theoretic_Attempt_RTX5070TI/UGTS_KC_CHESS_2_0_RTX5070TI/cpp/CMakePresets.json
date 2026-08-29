@@ -1,0 +1,38 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 24, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "host-release",
+      "displayName": "Host reference release (CPU oracle/fallback)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/host-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "UGTS_ENABLE_CUDA": "OFF",
+        "BUILD_TESTING": "ON"
+      }
+    },
+    {
+      "name": "rtx5070ti-release",
+      "displayName": "RTX 5070 Ti Laptop CUDA release (SM120)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/rtx5070ti-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "UGTS_ENABLE_CUDA": "ON",
+        "UGTS_CUDA_ARCH": "120",
+        "CMAKE_CUDA_ARCHITECTURES": "120",
+        "BUILD_TESTING": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {"name": "host-release", "configurePreset": "host-release"},
+    {"name": "rtx5070ti-release", "configurePreset": "rtx5070ti-release"}
+  ],
+  "testPresets": [
+    {"name": "host-release", "configurePreset": "host-release", "output": {"outputOnFailure": true}},
+    {"name": "rtx5070ti-release", "configurePreset": "rtx5070ti-release", "output": {"outputOnFailure": true}}
+  ]
+}

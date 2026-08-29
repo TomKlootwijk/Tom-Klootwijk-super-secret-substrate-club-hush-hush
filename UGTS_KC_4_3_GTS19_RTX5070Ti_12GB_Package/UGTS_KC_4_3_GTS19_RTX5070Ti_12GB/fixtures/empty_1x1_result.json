@@ -7,13 +7,14 @@
       -1,
       -1
     ],
+    "principal_variation_complete": true,
     "principal_variation_coords": [
       "pass",
       "pass"
     ],
     "stats": {
       "cutoffs": 0,
-      "elapsed_seconds": 8.149998029693961e-05,
+      "elapsed_seconds": 0.00022089999401941895,
       "max_ply": 2,
       "nodes": 5,
       "terminals": 2,
@@ -35,11 +36,11 @@
   },
   "status": "EXACT",
   "verification": {
-    "certificate_sha256": "bcc8b748748967fbea1808a9e5e8b2bbe2e5b99fe77869bd2de012d197a27b7e",
+    "certificate_sha256": "e41a53ecbf77a212886716a461d21839c337bfb0ef0993b96eb0f67f06f5c7a5",
     "root_digest": "50c3c05f085de6d3482674685b5a9ccb3d9666e1c32815d9b65bb4a416f6169c",
     "stats": {
       "cutoffs": 0,
-      "elapsed_seconds": 4.4899992644786835e-05,
+      "elapsed_seconds": 6.350001785904169e-05,
       "max_ply": 2,
       "nodes": 5,
       "terminals": 2,

@@ -1,0 +1,190 @@
+{
+  "depth": 4,
+  "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+  "root_game_theoretic_value": "unknown",
+  "root_obligations": 20,
+  "schema": "ugts-chess-root-workloads-2.0",
+  "shards": [
+    {
+      "child_game_state_sha256": "518ec3d7f08530940a849d8d30605b112606893ed1cdba398279cbaa5825ed95",
+      "child_position_sha256": "931b34ee54f5e61dde1d5b9ef8f2d547d2ee515a4aa36c6084d55fe9747fc410",
+      "exact_depth4_leaf_paths": 8457,
+      "move_uci": "a2a3",
+      "obligation_id": "root-01-a2a3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "7cb4ba6045c4146f13273da38171f6c2d51ca678c6ce3bf7e15fd502b242a0aa",
+      "child_position_sha256": "b7ea75414b6773b3dfd6859a258f5c83d30431f24151d147e83a3842965067c5",
+      "exact_depth4_leaf_paths": 9329,
+      "move_uci": "a2a4",
+      "obligation_id": "root-02-a2a4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "ca70e7f2e2eea5182f265d0db137e342f5963e2a07469b5833282c063ccc409a",
+      "child_position_sha256": "5587b0aee7f57e7c416cd712910f5e26da151d7bfac7838fca0dc74b7739be7d",
+      "exact_depth4_leaf_paths": 8885,
+      "move_uci": "b1a3",
+      "obligation_id": "root-03-b1a3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "3cc6f814e4ac1050fbf078f60f851499fdd75e10760e907327a1518ef055cc15",
+      "child_position_sha256": "5e68452ae10cc3f4a490cef96a008225f36fa3607a1ca3f3ca938c087af1961d",
+      "exact_depth4_leaf_paths": 9755,
+      "move_uci": "b1c3",
+      "obligation_id": "root-04-b1c3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "507da855002667a000c782181ba128d85a0e9bdd5adb3d2e89736cb53fd3972f",
+      "child_position_sha256": "b98c10883db7be025b7224f6d0bd0fce7fcd75f35d4107c4109aa7b35dc5898e",
+      "exact_depth4_leaf_paths": 9345,
+      "move_uci": "b2b3",
+      "obligation_id": "root-05-b2b3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "5f89f1ae25c6b4807a1c6e62d95819adf4004048207a4b06aabb608ed5abb1f6",
+      "child_position_sha256": "e994f66d68e163ab7061575f5e887c4f1738b3efa79801f3b4fc00a4fee83b24",
+      "exact_depth4_leaf_paths": 9332,
+      "move_uci": "b2b4",
+      "obligation_id": "root-06-b2b4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "4b0082294d645569fcbd33c902d16845b372310978a61f99cac6553b49ce472b",
+      "child_position_sha256": "940b4c84d727992b48f115d4e9affc26294fcac2cc486c8ed6e25f68a1d60ef8",
+      "exact_depth4_leaf_paths": 9272,
+      "move_uci": "c2c3",
+      "obligation_id": "root-07-c2c3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "37aead3745d3b3a9481c90f953c833089d84e17e995efaf46f139445e884bce4",
+      "child_position_sha256": "96416be510de5a13c40e2a4b7203053a2a0da7625a298375026e482e162c0b8b",
+      "exact_depth4_leaf_paths": 9744,
+      "move_uci": "c2c4",
+      "obligation_id": "root-08-c2c4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "de5c8b7a711731f2172470f286e514dd67c035c931a322cb7800311a7989d924",
+      "child_position_sha256": "adc1bf74349bf6c97792f6a99a9ea28c2c296141cab9335fe2061a7b7b550e7e",
+      "exact_depth4_leaf_paths": 11959,
+      "move_uci": "d2d3",
+      "obligation_id": "root-09-d2d3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "dd053060feae027ff217f64f3ba75a9783d89296d0dca9c2d888cfef4738bec0",
+      "child_position_sha256": "d9e63b3d4e76d1d16b6ab414ea7b7519629fdcbedeb3cfc612562b997064e1ff",
+      "exact_depth4_leaf_paths": 12435,
+      "move_uci": "d2d4",
+      "obligation_id": "root-10-d2d4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "ffc21a33bb6f4c7aaa3d49534216df6b7e13e40e8a45ccc2a62a2bcec4735d92",
+      "child_position_sha256": "315dd403f9648ce974b2ab0a9344e29dc0672de9fa00f1585d03d766484e6a2d",
+      "exact_depth4_leaf_paths": 13134,
+      "move_uci": "e2e3",
+      "obligation_id": "root-11-e2e3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "0c17771114519a28053125f1583eaeb04fae1ab3710117424ab602b07f55d3a1",
+      "child_position_sha256": "d4e7fb0fd815bf8187b0d5bc87860e30537e3034392c54529ecf5fbb9d2897b8",
+      "exact_depth4_leaf_paths": 13160,
+      "move_uci": "e2e4",
+      "obligation_id": "root-12-e2e4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "18a915cd029ed54a5fede463fa17f855695171b57a62d45cd87738b1dd50a6ff",
+      "child_position_sha256": "096928e67374db1ff54127c91400b93687dbce1e88624a0cda2eba7cef4b2dd4",
+      "exact_depth4_leaf_paths": 8457,
+      "move_uci": "f2f3",
+      "obligation_id": "root-13-f2f3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "ea8ee0a71777a74add970f66f3569e2f24553d6b66bbabe5cb5aeab00e909e46",
+      "child_position_sha256": "e636d45bd6850a14f80e4b7fd737b3da7b8402d0ce82949bce2fbb9b6685aa22",
+      "exact_depth4_leaf_paths": 8929,
+      "move_uci": "f2f4",
+      "obligation_id": "root-14-f2f4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "7bce0082b2e70e67ad230506edd9899ddd0b49d8f9a3c94696abede8bd43b2f3",
+      "child_position_sha256": "c148062998219821531a1764398ca11443a3f7688ad58d11a2cd82d3699e2f44",
+      "exact_depth4_leaf_paths": 9748,
+      "move_uci": "g1f3",
+      "obligation_id": "root-15-g1f3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "f3bbb23ee9db911ec3c18b567b3f0115a25d2d79c175a3c06458e97522831cfa",
+      "child_position_sha256": "67220b2fed57bc5b89070aff07ab95a31c05b45da6b0bde5d7d509866a86b72c",
+      "exact_depth4_leaf_paths": 8881,
+      "move_uci": "g1h3",
+      "obligation_id": "root-16-g1h3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "83ec3aa79f955b4e9811466e28ae1d0b3a95c824567ead7b638a093bca542a7c",
+      "child_position_sha256": "019972fa8614107d57b5dadee0cc341b39a0365735ae68aa7b5b5adc7dadbb1f",
+      "exact_depth4_leaf_paths": 9345,
+      "move_uci": "g2g3",
+      "obligation_id": "root-17-g2g3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "7467070c5d5e2f2961c7d57471ce4ecf8c8133ec7fcdf780710b24c3812b9725",
+      "child_position_sha256": "3c53a03b496bb3b8028e8814eaca82293ec703c6098eb06990307089dc2d8882",
+      "exact_depth4_leaf_paths": 9328,
+      "move_uci": "g2g4",
+      "obligation_id": "root-18-g2g4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "182e53f411c4eae6febd5e022c5c3729658e1841a932c5749211ad8012540660",
+      "child_position_sha256": "2f19595f5f480b2293f2e0f66dce126bb489b891c2c417e22038272c016a1a4a",
+      "exact_depth4_leaf_paths": 8457,
+      "move_uci": "h2h3",
+      "obligation_id": "root-19-h2h3",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    },
+    {
+      "child_game_state_sha256": "6ce5ea8eeccce23c64c15f69a9906d0e9dc4be47a091ec3625d04f3c76330760",
+      "child_position_sha256": "34e7c47725f6d7dd9d8a7eafd3765cc95220f57ab773993e17542b0c7bb31e89",
+      "exact_depth4_leaf_paths": 9329,
+      "move_uci": "h2h4",
+      "obligation_id": "root-20-h2h4",
+      "remaining_depth": 3,
+      "wdl": "unknown"
+    }
+  ],
+  "total_exact_leaf_paths": 197281
+}

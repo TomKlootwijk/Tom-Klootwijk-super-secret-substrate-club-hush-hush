@@ -1,25 +1,7 @@
 {
-  "certificate_sha256": "bcc8b748748967fbea1808a9e5e8b2bbe2e5b99fe77869bd2de012d197a27b7e",
-  "format": "UGTS-GO-RECOMPUTE-CERT-v1",
+  "certificate_sha256": "e41a53ecbf77a212886716a461d21839c337bfb0ef0993b96eb0f67f06f5c7a5",
+  "format": "UGTS-GO-RECOMPUTE-CERT-v2",
   "result": {
-    "best_move": -1,
-    "best_move_coord": "pass",
-    "principal_variation": [
-      -1,
-      -1
-    ],
-    "principal_variation_coords": [
-      "pass",
-      "pass"
-    ],
-    "stats": {
-      "cutoffs": 0,
-      "max_ply": 2,
-      "nodes": 5,
-      "terminals": 2,
-      "tt_entries": 2,
-      "tt_hits": 1
-    },
     "value2": -1,
     "value_points": -0.5,
     "winner": "white"

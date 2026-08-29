@@ -1,0 +1,145 @@
+{
+  "$defs": {
+    "event": {
+      "additionalProperties": true,
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "event_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "prev_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "sequence": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sequence",
+        "action",
+        "prev_hash",
+        "event_hash",
+        "payload"
+      ],
+      "type": "object"
+    },
+    "hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "job": {
+      "additionalProperties": true,
+      "properties": {
+        "child_fen": {
+          "type": "string"
+        },
+        "child_game_state_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "move_uci": {
+          "type": "string"
+        },
+        "obligation_id": {
+          "pattern": "^root-[0-9]{2}-[a-h][1-8][a-h][1-8][nbrq]?$",
+          "type": "string"
+        },
+        "shard_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "status": {
+          "enum": [
+            "unresolved",
+            "leased",
+            "candidate",
+            "verified",
+            "rejected"
+          ]
+        },
+        "wdl": {
+          "enum": [
+            "win",
+            "draw",
+            "loss",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "obligation_id",
+        "move_uci",
+        "child_fen",
+        "child_game_state_sha256",
+        "status",
+        "wdl",
+        "shard_sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://example.invalid/ugts-chess-campaign-snapshot-2.0.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "events": {
+      "items": {
+        "$ref": "#/$defs/event"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "jobs": {
+      "items": {
+        "$ref": "#/$defs/job"
+      },
+      "maxItems": 20,
+      "minItems": 20,
+      "type": "array"
+    },
+    "schema": {
+      "const": "ugts-chess-campaign-2.0"
+    },
+    "status": {
+      "additionalProperties": true,
+      "properties": {
+        "game_solved": {
+          "type": "boolean"
+        },
+        "obligations": {
+          "const": 20
+        },
+        "root_wdl": {
+          "enum": [
+            "win",
+            "draw",
+            "loss",
+            "unknown"
+          ]
+        },
+        "status_counts": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "root_wdl",
+        "game_solved",
+        "obligations",
+        "status_counts"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "status",
+    "jobs",
+    "events"
+  ],
+  "title": "UGTS Chess proof campaign snapshot 2.0",
+  "type": "object"
+}

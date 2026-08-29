@@ -185,10 +185,116 @@ class EditorSceneAuthoringTests(unittest.TestCase):
                 worker.run()
             self.assertFalse(failures)
             self.assertEqual(len(partial), 1)
-            summary, error, folder = partial[0]
+            summary, phase, error, folder = partial[0]
             self.assertIn("APK built", summary)
+            self.assertEqual(phase, "install")
             self.assertIn("No Android device", error)
             self.assertEqual(folder, apk.parent)
+
+    def test_phone_deploy_builds_installs_and_opens_on_pinned_serial(self) -> None:
+        self.window.new_3d_project()
+        project = self.window.document.project
+        self.assertIsInstance(project, Mobile3DProject)
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            apk = output / "app-pocoX7Pro-debug.apk"
+            apk.write_bytes(b"compiled apk")
+            worker = BuildWorker(project, "android-install", output)
+            finished: list[object] = []
+            worker.finished.connect(finished.append)
+            with (
+                patch(
+                    "ugts_kc3.editor.main_window.build_android_project",
+                    return_value=SimpleNamespace(output_dir=output),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.select_android_device",
+                    return_value=SimpleNamespace(serial="poco-1"),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.build_apk",
+                    return_value=SimpleNamespace(
+                        apk=apk,
+                        application_id="org.ugts.games.child.pocox7pro",
+                    ),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.install_apk",
+                    return_value=SimpleNamespace(serial="poco-1"),
+                ) as install,
+                patch("ugts_kc3.editor.main_window.launch_android_app") as launch,
+            ):
+                worker.run()
+            install.assert_called_once_with(apk, serial="poco-1")
+            launch.assert_called_once_with(
+                "org.ugts.games.child.pocox7pro", serial="poco-1"
+            )
+            self.assertEqual(len(finished), 1)
+            summary, folder = finished[0]
+            self.assertIn("installed on poco-1 and opened", summary)
+            self.assertEqual(folder, apk.parent)
+
+    def test_phone_launch_failure_is_partial_after_successful_install(self) -> None:
+        self.window.new_3d_project()
+        project = self.window.document.project
+        self.assertIsInstance(project, Mobile3DProject)
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            apk = output / "app-pocoX7Pro-debug.apk"
+            apk.write_bytes(b"compiled apk")
+            worker = BuildWorker(project, "android-install", output)
+            partial: list[object] = []
+            worker.partial.connect(partial.append)
+            with (
+                patch(
+                    "ugts_kc3.editor.main_window.build_android_project",
+                    return_value=SimpleNamespace(output_dir=output),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.select_android_device",
+                    return_value=SimpleNamespace(serial="poco-1"),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.build_apk",
+                    return_value=SimpleNamespace(
+                        apk=apk,
+                        application_id="org.ugts.games.child.pocox7pro",
+                    ),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.install_apk",
+                    return_value=SimpleNamespace(serial="poco-1"),
+                ),
+                patch(
+                    "ugts_kc3.editor.main_window.launch_android_app",
+                    side_effect=RuntimeError("Activity did not start"),
+                ),
+            ):
+                worker.run()
+            self.assertEqual(len(partial), 1)
+            summary, phase, error, folder = partial[0]
+            self.assertIn("installed on poco-1", summary)
+            self.assertEqual(phase, "launch")
+            self.assertIn("Activity did not start", error)
+            self.assertEqual(folder, apk.parent)
+
+    def test_phone_preflight_failure_never_starts_android_build(self) -> None:
+        self.window.new_3d_project()
+        project = self.window.document.project
+        self.assertIsInstance(project, Mobile3DProject)
+        worker = BuildWorker(project, "android-install", Path("unused"))
+        failures: list[str] = []
+        worker.failed.connect(failures.append)
+        with (
+            patch(
+                "ugts_kc3.editor.main_window.select_android_device",
+                side_effect=RuntimeError("No Android device was found"),
+            ),
+            patch("ugts_kc3.editor.main_window.build_android_project") as build,
+        ):
+            worker.run()
+        build.assert_not_called()
+        self.assertEqual(failures, ["No Android device was found"])
 
     def test_deploy_action_uses_adb_target_and_editor_owned_folder(self) -> None:
         self.window.new_2d_project()
@@ -198,6 +304,9 @@ class EditorSceneAuthoringTests(unittest.TestCase):
         project = self.window.document.project
         self.assertIsInstance(project, Mobile3DProject)
         self.assertTrue(self.window.deploy_action.isEnabled())
+        install_index = self.window.build_output.target.findData("android-install")
+        self.assertGreaterEqual(install_index, 0)
+        self.assertIn("Open", self.window.build_output.target.itemText(install_index))
         with tempfile.TemporaryDirectory() as temporary:
             project_path = self.window.document.save(Path(temporary) / "project.json")
             with patch.object(self.window, "_build_requested") as requested:
@@ -210,6 +319,18 @@ class EditorSceneAuthoringTests(unittest.TestCase):
                 destination,
                 project_path.parent / ".ugts-studio" / "deploy" / f"{project.id}-android",
             )
+
+    def test_successful_phone_deploy_reports_that_game_is_running(self) -> None:
+        self.window.new_3d_project()
+        with tempfile.TemporaryDirectory() as temporary:
+            self.window._build_finished((
+                "Poco APK built and installed on poco-1 and opened",
+                Path(temporary),
+            ))
+        self.assertEqual(
+            self.window.status_message.text(),
+            "The game is running on the connected phone.",
+        )
 
     def test_check_project_accepts_portable_android_world_graph(self) -> None:
         self.window.new_3d_project()

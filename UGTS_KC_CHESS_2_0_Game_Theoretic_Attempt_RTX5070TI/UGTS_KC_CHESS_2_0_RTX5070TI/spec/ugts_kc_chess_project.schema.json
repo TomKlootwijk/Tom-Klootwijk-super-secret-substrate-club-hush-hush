@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts_kc_chess_project.schema.json",
+  "title": "UGTS-KC Chess Solver Project 1.0",
+  "type": "object",
+  "required": ["schema_version", "project_id", "positions", "solver_policy"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "project_id": {"type": "string", "minLength": 1},
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "fen", "task"],
+        "properties": {
+          "id": {"type": "string"},
+          "fen": {"type": "string"},
+          "task": {"enum": ["validate", "perft", "search", "prove_mate", "tablebase_probe"]}
+        }
+      }
+    },
+    "solver_policy": {
+      "type": "object",
+      "required": ["deterministic", "claim_draws"],
+      "properties": {
+        "deterministic": {"const": true},
+        "claim_draws": {"type": "boolean"},
+        "max_depth": {"type": "integer", "minimum": 1},
+        "max_plies": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

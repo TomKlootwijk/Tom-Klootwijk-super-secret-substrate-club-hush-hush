@@ -1,0 +1,1 @@
+{"campaign": "/mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/examples/campaign/initial.sqlite3", "verified": true, "workloads": 197281}

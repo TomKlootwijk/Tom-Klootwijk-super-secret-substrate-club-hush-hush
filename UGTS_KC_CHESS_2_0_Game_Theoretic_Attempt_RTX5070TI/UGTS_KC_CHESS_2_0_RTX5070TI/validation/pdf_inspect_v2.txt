@@ -1,0 +1,27 @@
+PDF: /mnt/data/UGTS_KC_CHESS_2_0_RTX5070TI/report/UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI.pdf
+Pages: 33
+Encrypted: False
+Page sizes (pt, rounded):
+  - 595 x 842 (33 page(s))
+Metadata:
+  /Author: OpenAI, prepared for Tom Klootwijk
+  /CreationDate: D:20260829070452Z'
+  /Creator: Writer
+  /Keywords: UGTS, chess, game, theory, proof, certificate, WDL, CUDA, RTX, 5070, Ti, SM120, tablebase, campaign
+  /Producer: LibreOffice 25.2.3.2 (X86_64) / LibreOffice Community
+  /Subject: Classical chess proof campaign, exact WDL certificates, disk-backed orchestration and optional CUDA SM120 adapters
+  /Title: UGTS Chess Game-Theoretic Solver 2.0 - RTX 5070 Ti Laptop Edition
+Outline items: 58
+Form fields: 0
+Attachments: 0
+Annotations: 0
+
+Fonts (pdffonts, first 25 lines):
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+BAAAAA+NotoSans-Bold                 TrueType          WinAnsi          yes yes yes   2285  0
+CAAAAA+NotoSans-Regular              TrueType          WinAnsi          yes yes yes   2300  0
+DAAAAA+Carlito-Bold                  TrueType          WinAnsi          yes yes yes   2280  0
+EAAAAA+NotoSans-Italic               TrueType          WinAnsi          yes yes yes   2295  0
+FAAAAA+NotoSans-BoldItalic           TrueType          WinAnsi          yes yes yes   2290  0
+GAAAAA+LiberationMono                TrueType          WinAnsi          yes yes yes   2275  0

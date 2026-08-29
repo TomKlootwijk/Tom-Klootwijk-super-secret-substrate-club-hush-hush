@@ -1,0 +1,41 @@
+{
+  "positions": [
+    {
+      "depth": 4,
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "id": "initial-perft",
+      "task": "perft"
+    },
+    {
+      "depth": 3,
+      "fen": "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",
+      "id": "kiwipete-perft",
+      "task": "perft"
+    },
+    {
+      "fen": "8/8/8/8/8/k7/8/1QK5 w - - 0 1",
+      "id": "mate-in-two-proof",
+      "max_plies": 3,
+      "task": "prove_mate"
+    },
+    {
+      "fen": "8/8/8/8/8/k7/8/1QK5 w - - 0 1",
+      "id": "kqk-tablebase",
+      "task": "tablebase_probe"
+    },
+    {
+      "fen": "6k1/5ppp/8/8/8/8/5PPP/6K1 w - - 0 1",
+      "id": "balanced-search",
+      "max_depth": 4,
+      "task": "search"
+    }
+  ],
+  "project_id": "ugts-chess-reference-project",
+  "schema_version": "1.0.0",
+  "solver_policy": {
+    "claim_draws": true,
+    "deterministic": true,
+    "max_depth": 5,
+    "max_plies": 7
+  }
+}

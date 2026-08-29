@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UGTS-KC Chess Proof Viewer</title>
+<style>
+:root{--ink:#10182f;--blue:#4f79ff;--cyan:#32c9d6;--gold:#e8b84a;--paper:#f5f7fb;--dark:#0c1329;}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--paper);color:var(--ink)}
+header{padding:22px 28px;background:var(--dark);color:white} header h1{margin:0 0 5px;font-size:24px} header p{margin:0;color:#bec9eb}
+main{display:grid;grid-template-columns:minmax(320px,560px) minmax(300px,1fr);gap:24px;padding:24px;max-width:1200px;margin:auto}
+.board{width:min(88vw,560px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:8px solid var(--dark);box-shadow:0 10px 35px #1d294233}
+.sq{display:flex;align-items:center;justify-content:center;font-size:clamp(24px,6vw,52px);font-weight:700;position:relative}
+.light{background:#e8edf8} .dark{background:#6580b6;color:white} .coord{position:absolute;font-size:10px;opacity:.65;left:4px;bottom:2px}
+.panel{background:white;padding:20px;border-radius:14px;box-shadow:0 8px 28px #1d29421f;align-self:start} .tag{display:inline-block;padding:4px 9px;border-radius:999px;background:#eaf0ff;color:#22469c;font-weight:700}
+pre{white-space:pre-wrap;word-break:break-word;background:#10182f;color:#d7e3ff;padding:12px;border-radius:8px;font-size:12px}
+button,select,input{font:inherit} button{border:0;border-radius:8px;background:var(--blue);color:white;padding:10px 14px;cursor:pointer;margin:4px 4px 4px 0} button.secondary{background:#5d6578} button:disabled{opacity:.45;cursor:not-allowed}
+.reply{display:block;width:100%;text-align:left;background:#eef2ff;color:#18336b;margin:8px 0} .reply.active{background:var(--gold);color:#2c2206}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .muted{color:#65708a} .ok{color:#13794c;font-weight:700}
+@media(max-width:880px){main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>UGTS-KC Chess 2.0 - Retained Mate Proof Viewer</h1><p>Offline downstream presentation of the retained, hash-addressed OR/AND mate certificate; the classical initial position remains UNKNOWN.</p></header>
+<main>
+<section><div id="board" class="board" aria-label="Chess board"></div></section>
+<section class="panel">
+<div class="row"><span id="role" class="tag">-</span><span id="depth" class="muted"></span></div>
+<h2 id="moveTitle">Proof root</h2>
+<p id="status"></p>
+<div id="choices"></div>
+<div class="row"><button id="back" class="secondary">Back</button><button id="reset" class="secondary">Root</button></div>
+<hr>
+<label><strong>Load another proof JSON</strong><br><input id="file" type="file" accept="application/json,.json"></label>
+<h3>Position record</h3><pre id="record"></pre>
+<p class="muted">The viewer is not the verifier. Use <code>python -m ugts_chess verify-proof proof.json</code> for authoritative validation.</p>
+</section>
+</main>
+<script>
+const PIECE={'K':'♔','Q':'♕','R':'♖','B':'♗','N':'♘','P':'♙','k':'♚','q':'♛','r':'♜','b':'♝','n':'♞','p':'♟'};
+const DEFAULT_PROOF={"$schema":"ugts-kc-chess-mate-proof-1.0","attacker":"white","explored_nodes":418,"max_plies":3,"proof_semantics":"OR nodes choose one legal attacker move; AND nodes enumerate every legal defender reply; leaves are checkmate.","root_fen":"8/8/8/8/8/k7/8/1QK5 w - - 0 1","root_hash":"64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16","schema_version":"1.0.0","status":"proved","tree":{"child":{"fen":"8/8/8/1Q6/8/k7/8/2K5 b - - 1 1","hash":"71122ec8125633ead94922ad03869d2a78e4fb3a7787231056d3e0f618ffb800","replies":[{"child":{"child":{"fen":"8/8/8/8/8/8/kQ6/2K5 b - - 3 2","hash":"a007f97690f85b674716a15b4b3ef62cf6412ac73aaeeb3ea597f35c3d7cc361","result":"checkmate","role":"terminal","winner":"white"},"fen":"8/8/8/1Q6/8/8/k7/2K5 w - - 2 2","hash":"fe0efa20b004e74f30c530eaf4c29060d9926d9e1de1775a88314f589bbd5b9d","move":"b5b2","role":"OR","san":"Qb2#","side":"white"},"move":"a3a2","san":"Ka2"}],"role":"AND","side":"black"},"fen":"8/8/8/8/8/k7/8/1QK5 w - - 0 1","hash":"64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16","move":"b1b5","role":"OR","san":"Qb5","side":"white"}};
+let proof=DEFAULT_PROOF, path=[], node=proof.tree;
+function boardFromFen(fen){
+ const rows=fen.split(' ')[0].split('/'); const cells=[];
+ for(const row of rows){for(const ch of row){if(/[1-8]/.test(ch)) for(let i=0;i<Number(ch);i++) cells.push('.'); else cells.push(ch);}}
+ return cells;
+}
+function renderBoard(fen){
+ const b=document.getElementById('board'); b.innerHTML=''; const cells=boardFromFen(fen);
+ for(let visual=0;visual<64;visual++){const rank=7-Math.floor(visual/8), file=visual%8, idx=(7-rank)*8+file; const p=cells[idx]; const d=document.createElement('div'); d.className='sq '+(((file+rank)%2)?'dark':'light'); d.textContent=PIECE[p]||''; const c=document.createElement('span'); c.className='coord'; c.textContent=String.fromCharCode(97+file)+(rank+1); d.appendChild(c); b.appendChild(d);}
+}
+function go(child,label){path.push({node,label}); node=child; render();}
+function render(){
+ renderBoard(node.fen); document.getElementById('role').textContent=node.role; document.getElementById('depth').textContent='depth '+path.length+' / '+proof.max_plies;
+ document.getElementById('record').textContent=JSON.stringify({fen:node.fen,hash:node.hash,side:node.side||null,role:node.role},null,2);
+ const choices=document.getElementById('choices'); choices.innerHTML=''; const title=document.getElementById('moveTitle'), status=document.getElementById('status');
+ if(node.role==='terminal'){title.textContent='Checkmate';status.innerHTML='<span class="ok">Winner: '+node.winner+'</span>';}
+ else if(node.role==='OR'){title.textContent='Attacker chooses '+(node.san||node.move); status.textContent='One verified move is sufficient at an OR node.'; const btn=document.createElement('button'); btn.className='reply';btn.textContent=(node.san||node.move)+'  ['+node.move+']';btn.onclick=()=>go(node.child,btn.textContent);choices.appendChild(btn);}
+ else{title.textContent='Defender reply coverage';status.textContent='Every legal reply is represented at this AND node.'; for(const r of node.replies){const btn=document.createElement('button');btn.className='reply';btn.textContent=(r.san||r.move)+'  ['+r.move+']';btn.onclick=()=>go(r.child,btn.textContent);choices.appendChild(btn);}}
+ document.getElementById('back').disabled=path.length===0;
+}
+document.getElementById('back').onclick=()=>{if(path.length){node=path.pop().node;render();}};
+document.getElementById('reset').onclick=()=>{path=[];node=proof.tree;render();};
+document.getElementById('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const obj=JSON.parse(await f.text());if(!obj.tree)throw new Error('No tree');proof=obj;path=[];node=obj.tree;render();}catch(err){alert('Could not load proof: '+err.message);}};
+render();
+</script>
+</body></html>

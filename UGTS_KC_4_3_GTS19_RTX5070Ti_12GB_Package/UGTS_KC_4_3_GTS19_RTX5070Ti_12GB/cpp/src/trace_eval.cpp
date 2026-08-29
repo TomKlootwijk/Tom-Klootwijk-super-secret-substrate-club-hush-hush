@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <vector>
 
 namespace {
@@ -163,6 +164,8 @@ void WriteStateRecord(const Request& request,
             << (request.state.Terminal(request.rules) ? "true" : "false")
             << ",\"score2\":"
             << ugts_go19::AreaScore2(request.state, request.rules)
+            << ",\"canonical_state\":"
+            << ugts_go19::CanonicalStateJson(request.state, request.rules)
             << ",\"legal\":";
   WriteMoves(legal_moves);
   std::cout << "}\n";
@@ -187,7 +190,9 @@ void WriteMoveRecord(std::uint64_t id, int move,
   }
   std::cout << ",\"seen\":";
   WriteSeenBoards(state);
-  std::cout << ",\"ply\":" << state.ply << ",\"terminal\":"
+  std::cout << ",\"canonical_state\":"
+            << ugts_go19::CanonicalStateJson(state, rules)
+            << ",\"ply\":" << state.ply << ",\"terminal\":"
             << (state.Terminal(rules) ? "true" : "false")
             << ",\"score2\":" << ugts_go19::AreaScore2(state, rules)
             << "}\n";

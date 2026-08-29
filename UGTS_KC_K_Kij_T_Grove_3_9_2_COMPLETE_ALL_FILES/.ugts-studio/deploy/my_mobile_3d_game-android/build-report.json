@@ -1,0 +1,322 @@
+{
+  "agp": "8.13.2",
+  "application_id": "org.ugts.games.my_mobile_3d_game",
+  "authoring_assets_packaged": false,
+  "compile_sdk": 36,
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "files": [
+    {
+      "bytes": 1730,
+      "path": "app/build.gradle",
+      "sha256": "8ea34d2cc7eb811070966e9beaaf15af93b6db054b7e51ceaffb984862c7c2ca"
+    },
+    {
+      "bytes": 57,
+      "path": "app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1511,
+      "path": "app/src/main/AndroidManifest.xml",
+      "sha256": "8ec30ea970c150784fa1bc42b2fdd4044cc6745d12fd03a8fb840993a91e19e7"
+    },
+    {
+      "bytes": 914,
+      "path": "app/src/main/assets/packed_kinematics.kcpk",
+      "sha256": "03ce34e1f08537a41380eeb1c97cdbdbda322d4a8cc4d22228236c93e83a6817"
+    },
+    {
+      "bytes": 1473,
+      "path": "app/src/main/assets/shaders/grove_post.frag",
+      "sha256": "5638635fc5df447ffe258f31e05e6c6889d1453b24464aaca288fc98f0356d3a"
+    },
+    {
+      "bytes": 190,
+      "path": "app/src/main/assets/shaders/grove_post.vert",
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    {
+      "bytes": 680,
+      "path": "app/src/main/assets/shaders/scene.frag",
+      "sha256": "3ebd9bd3d65aa8c15f7981f9008692a4b605e792352778b1562cc8588b7deab9"
+    },
+    {
+      "bytes": 413,
+      "path": "app/src/main/assets/shaders/scene.vert",
+      "sha256": "eb70f4a63997af001db413f85d163573df5f5d12840235c998d12c52e9e7d298"
+    },
+    {
+      "bytes": 10221,
+      "path": "app/src/main/assets/signature_scene.kc3d",
+      "sha256": "a1b5de98a4c2289c1bfb4671d2069561adb67d7e41b0f1d9bbd39fb3d200c6af"
+    },
+    {
+      "bytes": 308,
+      "path": "app/src/main/assets/visual_graphs.kcvg",
+      "sha256": "2bd219eb29458ea5fc68d2b0891eb895a1caf05f5fb61e7ad56f442d18978882"
+    },
+    {
+      "bytes": 860,
+      "path": "app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 2030,
+      "path": "app/src/main/cpp/CMakeLists.txt",
+      "sha256": "eaf678f015f6d386128566f5a1aa4ab112b8770aa6c7aaee768aab5a0348271d"
+    },
+    {
+      "bytes": 3497,
+      "path": "app/src/main/cpp/device_profile.cpp",
+      "sha256": "cf9076926932f88136fce6074395ac51e9dcc9b912f4c06b2123b54bb9c18e94"
+    },
+    {
+      "bytes": 676,
+      "path": "app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 21009,
+      "path": "app/src/main/cpp/engine.cpp",
+      "sha256": "f4bfb6c7e9d7c9b2aa274c920429c7dd8926c70ad0b48700490da729aaf922a8"
+    },
+    {
+      "bytes": 2670,
+      "path": "app/src/main/cpp/engine.hpp",
+      "sha256": "227c39e0f1713ddabd9c00fdfcbaf7395564bcd13b20fd76a33a5e2899eb07e0"
+    },
+    {
+      "bytes": 35126,
+      "path": "app/src/main/cpp/graph_vm.cpp",
+      "sha256": "ee4bee0fe95c55dc84538371c3d530afff596ff2d0c5271ac65aca335fdb28fd"
+    },
+    {
+      "bytes": 5835,
+      "path": "app/src/main/cpp/graph_vm.hpp",
+      "sha256": "edc081a3ae2fcd57f586ece009d92424a3b795dc8ac699d6b96e42e5ea88fc57"
+    },
+    {
+      "bytes": 2370,
+      "path": "app/src/main/cpp/grove_juice.cpp",
+      "sha256": "247fed02dd45217041950146fae868e28477d0029161ddb32fdf8bca483f7dec"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/grove_juice.hpp",
+      "sha256": "fc8c20fefb35cbc8833ad786f7d672ba2c1142d4338cf4f4fdfb9e0a985affbb"
+    },
+    {
+      "bytes": 1642,
+      "path": "app/src/main/cpp/grove_tuning.cpp",
+      "sha256": "16ebd1f20c9bb846af5b46444cf4e04df513bd66177ba8a996cc3db126ddf4ab"
+    },
+    {
+      "bytes": 404,
+      "path": "app/src/main/cpp/grove_tuning.hpp",
+      "sha256": "8cab2c99999ca7493ef0c660f331cc3259485e1ad1e4fbe1312cdff2b4fe9133"
+    },
+    {
+      "bytes": 3792,
+      "path": "app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1889,
+      "path": "app/src/main/cpp/main.cpp",
+      "sha256": "2e81982574f1621c6bdb5e60e5a5afc8f487df61820420c81c109396caa9bfd9"
+    },
+    {
+      "bytes": 15257,
+      "path": "app/src/main/cpp/polar_kinematics.cpp",
+      "sha256": "97d872d0f6a52dfeedc2389423e3c59a37d3426de691eaa0e5515047a4af0dff"
+    },
+    {
+      "bytes": 1419,
+      "path": "app/src/main/cpp/polar_kinematics.hpp",
+      "sha256": "3d757a882295aa31e3eaac8456d129013669241421a5c6a9edd11cdd344d9548"
+    },
+    {
+      "bytes": 12354,
+      "path": "app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "d89b98221c9bc508c3e6fac6cbcc0a4429d6836f201ce78c1b3d97606826dd6a"
+    },
+    {
+      "bytes": 1983,
+      "path": "app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "e86713041ce938efb5816f552d7892c7b97405ab7eac2fa68a51fcbf07aa92a2"
+    },
+    {
+      "bytes": 6306,
+      "path": "app/src/main/cpp/scene_pack.cpp",
+      "sha256": "84d1bd5193c0eec7613d615de419a952ad86faa57c5b93ca726dd90c866d483b"
+    },
+    {
+      "bytes": 2860,
+      "path": "app/src/main/cpp/scene_pack.hpp",
+      "sha256": "da19a53b7370cc1e0ba7852744ee2d84ec63b3b6fb77266db402e32dddc56388"
+    },
+    {
+      "bytes": 5743,
+      "path": "app/src/main/cpp/touch_router.cpp",
+      "sha256": "83e05dd6e2e4e8c8b0befef08e20e447fa21f812a3848a9f24916d20ebd69721"
+    },
+    {
+      "bytes": 2150,
+      "path": "app/src/main/cpp/touch_router.hpp",
+      "sha256": "037972a00ca70bc766309b83099028203a4e3758c52532ba271212df6984568a"
+    },
+    {
+      "bytes": 4752,
+      "path": "app/src/main/cpp/trigger_area.cpp",
+      "sha256": "84fdc47aa5f8e5e12044031f9cdfc4b9041e4d53a75b81ba3751f038b9676d31"
+    },
+    {
+      "bytes": 1296,
+      "path": "app/src/main/cpp/trigger_area.hpp",
+      "sha256": "ed490f5bec08bcff5c7dd0beadc8a02d52c77ed0c981254bd3261851409a5c9c"
+    },
+    {
+      "bytes": 131,
+      "path": "app/src/main/res/values/strings.xml",
+      "sha256": "e348ab3c1cee4b6554ac377fc3e0d63424e047300c823e49c8ea2a32d98abd18"
+    },
+    {
+      "bytes": 766,
+      "path": "app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 74,
+      "path": "build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 8042,
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b"
+    },
+    {
+      "bytes": 338,
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "3fb35582e5424775b45f566273d3909032a49f26c0d7d063f92a92e7b5e467d5"
+    },
+    {
+      "bytes": 159,
+      "path": "gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 362,
+      "path": "gradlew",
+      "sha256": "d7014b2f5807fd975867dbb2e3651dbc19dd88d9a13d0df4c9061260d662fd95"
+    },
+    {
+      "bytes": 267,
+      "path": "gradlew.bat",
+      "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
+    },
+    {
+      "bytes": 80250,
+      "path": "project.json",
+      "sha256": "27560415f02b9120d8911224afa1957543d17fa6f1a5886606aca7c7d0215efa"
+    },
+    {
+      "bytes": 3400,
+      "path": "README.md",
+      "sha256": "9457a327d3e572d3e1cd0c2dce31641e1e45b165db2c9cb4fbedce01486c5b6c"
+    },
+    {
+      "bytes": 4269,
+      "path": "scene-pack-inspection.json",
+      "sha256": "6b2d93c30015c190146b2d097e103bfe19a7f91e2799d8e5ec8669afe94b8955"
+    },
+    {
+      "bytes": 333,
+      "path": "settings.gradle",
+      "sha256": "e15aa169810e33620d11fbf6723bf7ddf619f3dfd07801748c3cbd07245fe9b8"
+    }
+  ],
+  "gradle": "8.13",
+  "min_sdk": 26,
+  "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+  "ndk": "r29 / 29.0.14206865",
+  "packed_kinematic_runtime": {
+    "byte_length": 914,
+    "component_count": 1,
+    "components": [
+      {
+        "motion": "e667026a00000000",
+        "node_index": 2,
+        "pose": "cc72cc38e0000000",
+        "profile": "lesson_orbit",
+        "profile_index": 0
+      }
+    ],
+    "format_version": 1,
+    "profile_count": 1,
+    "profiles": [
+      {
+        "id": "lesson_orbit",
+        "lut_bytes": 816,
+        "lut_resolution": 128,
+        "motion_range": {
+          "rho_acceleration": 2.0,
+          "rho_velocity": 1.0,
+          "theta_acceleration": 2.0,
+          "theta_velocity": 2.0
+        },
+        "profile": {
+          "core_radius": 1e-05,
+          "r0": 1.0,
+          "rho_max": 3.0,
+          "rho_min": -3.0
+        }
+      }
+    ],
+    "schema": "ugts-kc-native-packed-kinematics-inspection-3.9.2",
+    "sha256": "03ce34e1f08537a41380eeb1c97cdbdbda322d4a8cc4d22228236c93e83a6817"
+  },
+  "profile_hint": "auto",
+  "project_hash": "8f0f486bc7ee95b269dc8ca23731d4e98281ed428b3bf3cc128d23614e1f0f95",
+  "project_id": "my_mobile_3d_game",
+  "schema": "ugts-kc-android-source-build-3.9.2",
+  "target_sdk": 36,
+  "visual_graph_runtime": {
+    "binding_count": 1,
+    "bindings": [
+      {
+        "graph": "dash_lesson",
+        "scene_node_index": 1,
+        "scope": "node"
+      }
+    ],
+    "byte_length": 308,
+    "flow_target_count": 2,
+    "format_version": 1,
+    "graph_count": 1,
+    "graphs": [
+      {
+        "id": "dash_lesson",
+        "max_steps": 1024,
+        "node_count": 6
+      }
+    ],
+    "input_count": 12,
+    "node_count": 6,
+    "schema": "ugts-kc-android-visual-graph-pack-1",
+    "sha256": "2bd219eb29458ea5fc68d2b0891eb895a1caf05f5fb61e7ad56f442d18978882",
+    "state_key_count": 1,
+    "state_keys": [
+      "score"
+    ],
+    "string_count": 5,
+    "value_count": 8,
+    "world_binding_count": 0
+  },
+  "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed"
+}

@@ -1,0 +1,65 @@
+Start testing: Aug 29 09:53 W. Europe Daylight Time
+----------------------------------------------------------
+1/3 Testing: ugts_chess2_native_tests
+1/3 Test: ugts_chess2_native_tests
+Command: "U:/cpp/build/rtx5070ti-release/ugts_chess2_tests.exe"
+Directory: U:/cpp/build/rtx5070ti-release
+"ugts_chess2_native_tests" start time: Aug 29 09:53 W. Europe Daylight Time
+Output:
+----------------------------------------------------------
+native tests passed
+<end of output>
+Test time =   0.26 sec
+----------------------------------------------------------
+Test Passed.
+"ugts_chess2_native_tests" end time: Aug 29 09:53 W. Europe Daylight Time
+"ugts_chess2_native_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/3 Testing: ugts_chess2_cli_selftest
+2/3 Test: ugts_chess2_cli_selftest
+Command: "U:/cpp/build/rtx5070ti-release/ugts-chess2.exe" "selftest"
+Directory: U:/cpp/build/rtx5070ti-release
+"ugts_chess2_cli_selftest" start time: Aug 29 09:53 W. Europe Daylight Time
+Output:
+----------------------------------------------------------
+{"selftest":"pass","perft_depth_4":197281,"mate_proved":true,"retrograde":"pass"}
+<end of output>
+Test time =   0.13 sec
+----------------------------------------------------------
+Test Passed.
+"ugts_chess2_cli_selftest" end time: Aug 29 09:53 W. Europe Daylight Time
+"ugts_chess2_cli_selftest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/3 Testing: ugts_chess_gpu_selftest
+3/3 Test: ugts_chess_gpu_selftest
+Command: "U:/cpp/build/rtx5070ti-release/ugts-chess-gpu.exe" "self-test"
+Directory: U:/cpp/build/rtx5070ti-release
+"ugts_chess_gpu_selftest" start time: Aug 29 09:53 W. Europe Daylight Time
+Output:
+----------------------------------------------------------
+{
+  "record_size": 64,
+  "tests": [
+    {"name":"initial_d1","depth":1,"nodes":20,"pass":true},
+    {"name":"initial_d2","depth":2,"nodes":400,"pass":true},
+    {"name":"initial_d3","depth":3,"nodes":8902,"pass":true},
+    {"name":"initial_d4","depth":4,"nodes":197281,"pass":true},
+    {"name":"kiwipete_d3","depth":3,"nodes":97862,"pass":true},
+    {"name":"position3_d4","depth":4,"nodes":43238,"pass":true},
+    {"name":"position4_d3","depth":3,"nodes":9467,"pass":true},
+    {"name":"position5_d3","depth":3,"nodes":62379,"pass":true},
+    {"name":"position6_d3","depth":3,"nodes":89890,"pass":true}
+  ],
+  "passed": 9
+}
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"ugts_chess_gpu_selftest" end time: Aug 29 09:53 W. Europe Daylight Time
+"ugts_chess_gpu_selftest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Aug 29 09:53 W. Europe Daylight Time

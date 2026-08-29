@@ -1,0 +1,123 @@
+{
+  "external_standards": [
+    {
+      "edition": "taking effect from 1 January 2023",
+      "role": "Classical move, terminal, repetition and move-count semantics",
+      "title": "FIDE Laws of Chess",
+      "url": "https://handbook.fide.com/chapter/e012023"
+    },
+    {
+      "role": "RTX 5070 Ti Laptop core count, memory and Blackwell device family",
+      "title": "NVIDIA GeForce RTX 50 Series Laptop specifications",
+      "url": "https://www.nvidia.com/en-us/geforce/laptops/50-series/"
+    },
+    {
+      "role": "Runtime/compile architecture reference; GeForce RTX 5070 Ti listed under compute capability 12.0",
+      "title": "NVIDIA CUDA GPU Compute Capability",
+      "url": "https://developer.nvidia.com/cuda/gpus"
+    },
+    {
+      "edition": "current 13.x compatibility table consulted 29 August 2026",
+      "role": "Toolkit/driver compatibility and Windows driver-separation boundary",
+      "title": "CUDA Toolkit Release Notes",
+      "url": "https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/"
+    },
+    {
+      "role": "External exact endgame adapter context; files not bundled",
+      "title": "Syzygy tablebases",
+      "url": "https://syzygy-tables.info/"
+    }
+  ],
+  "generated": "2026-08-29",
+  "schema": "ugts-kc-chess-source-register-2.0",
+  "sources": [
+    {
+      "filename": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum.pdf",
+      "page_basis": "pp. 2-5, 9-15",
+      "redistributed": false,
+      "role": "Canonical support, compatibility, guard, event, transition, lineage; precision and compression boundaries",
+      "sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "title": "UGTS-GN 1.1"
+    },
+    {
+      "filename": "UGTS_KC_2_0_Tom_Klootwijk_Expanded_Substrate.pdf",
+      "page_basis": "pp. 3-5, 8-15",
+      "redistributed": false,
+      "role": "Typed state, query-first patterns, topology, hybrid events, bounded dynamics",
+      "sha256": "a29dd9959ebd300c32d0e1df8fa2c0d4ee15f428892557b98b5f18cd3e878399",
+      "title": "UGTS-KC 2.0"
+    },
+    {
+      "filename": "UGTS_KC_Two_Hands_3_0_Interactive_Graphics_Runtime.pdf",
+      "page_basis": "pp. 5-6, 11-16, 19-20",
+      "redistributed": false,
+      "role": "Proposal verification, deterministic commit, state hashes, checkpoints and replay",
+      "sha256": "183ffa4e2bf29cfa0308687cd221529321598dbd69ef75c150abc0c64810f214",
+      "title": "KC Two Hands 3.0"
+    },
+    {
+      "filename": "UGTS_KC_3_6_Tom_Klootwijk.pdf",
+      "page_basis": "pp. 3-7, 9-14",
+      "redistributed": false,
+      "role": "Definitions as data, content addresses, dependency closure and explicit operation order",
+      "sha256": "e21433cd8378368dafe4ae278d3c9c364725e45ae7fd75b743328bd2d6003a46",
+      "title": "UGTS-KC 3.6"
+    },
+    {
+      "filename": "UGTS_KC_3_6_2_SCLP_Tom_Klootwijk.pdf",
+      "page_basis": "pp. 7-15",
+      "redistributed": false,
+      "role": "Finite packed keys, radix tries, bounded branching and storage audits",
+      "sha256": "6987490a0a7b7ed76b0091057a2e69ab831fee786434a0b4219782923f5ea580",
+      "title": "UGTS-KC 3.6.2 SCLP"
+    },
+    {
+      "filename": "UGTS_KC_3_9_KC_Elizabeth_Vector_Game_Runtime.pdf",
+      "page_basis": "pp. 3-4, 8-13",
+      "redistributed": false,
+      "role": "Deterministic game world, canonical snapshots/hashes, CLI and offline HTML5 delivery",
+      "sha256": "d7ee3c91abf60e35b4b15fb296477974e45802c24e1fde618d683949bc1c7df2",
+      "title": "UGTS-KC 3.9"
+    },
+    {
+      "filename": "UGTS_KC_3_6_3_SARA_Tom_Klootwijk.pdf",
+      "page_basis": "pp. 1-2, 6-12",
+      "redistributed": false,
+      "role": "Reviewed but excluded as wallet/security-specific; only its explicit authorization boundary is retained as a governance analogy",
+      "sha256": "c5a8256e345047d56fbd56b7ce2ba77d95dd8391fc91bf6528295831714bab2f",
+      "title": "UGTS-KC 3.6.3 SARA"
+    },
+    {
+      "filename": "UGTS_KC_4_2_GO_Solver_Report(1).pdf",
+      "page_basis": "pp. 1-13 and appendices",
+      "redistributed": false,
+      "role": "Board-game precedent for rules/position/game-solved separation, exact finite WDL certificates and explicit UNKNOWN boundaries",
+      "sha256": "1ea7d15b0112a870c5737e5643b31e506d6c27b9a5930de2bdafe77e40a921e0",
+      "title": "UGTS-KC 4.2 Go Solver"
+    },
+    {
+      "filename": "UGTS_KC_CHESS_1_0_Proof_Carrying_Solver.pdf",
+      "page_basis": "pp. 2-21",
+      "redistributed": false,
+      "role": "Immediate exact rule, bounded mate, KQK/KRK and proof-viewer baseline",
+      "sha256": "f8bce74ffefeedb48350ff819448331f7614f309cfe2dcd89366b1d2c02985b5",
+      "title": "UGTS-KC Chess 1.0"
+    },
+    {
+      "filename": "UGTS_KC_4_2_General_Operator_Order_Addendum(1).pdf",
+      "page_basis": "pp. 2-17 and appendices",
+      "redistributed": false,
+      "role": "Explicit parse/dependency/evaluation/certification/event/replay order and fixed-point operator contracts",
+      "sha256": "413ef9568330e253ebb8e42cbc756257f3c138485f2d9697de48324b92f28efe",
+      "title": "UGTS-KC 4.2 General Operator and Order Addendum"
+    },
+    {
+      "filename": "UGTS_Versioning_Charter_Phase_1_Foundation_Chronology(1).pdf",
+      "page_basis": "pp. 1-8",
+      "redistributed": false,
+      "role": "Component-scoped release identity and explicit relationship graph",
+      "sha256": "1b64495ed32a24a66f356652cb6fb1291d0727ab9bfa9174c994d757325f037b",
+      "title": "UGTS Versioning Governance Phase 1"
+    }
+  ]
+}

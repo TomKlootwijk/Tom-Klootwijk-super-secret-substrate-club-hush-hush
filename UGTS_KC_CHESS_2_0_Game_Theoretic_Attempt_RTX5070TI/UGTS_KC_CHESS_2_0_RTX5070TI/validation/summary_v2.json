@@ -1,0 +1,168 @@
+{
+  "campaign": {
+    "depth4_leaf_paths": 197281,
+    "event_chain_valid": true,
+    "ok": true,
+    "root_obligations": 20,
+    "root_wdl": "unknown",
+    "verified_children": 0
+  },
+  "claim_boundary": "This validates the supplied attempt and proof machinery; it does not solve the 32-piece initial position.",
+  "cuda_device_validation": {
+    "claim": "No CUDA throughput, VRAM, thermal, power or laptop speed result is claimed by this host validation.",
+    "nvcc": null,
+    "physical_rtx5070ti_run": false,
+    "status": "deferred_no_nvcc"
+  },
+  "generated": "2026-08-29",
+  "mechanism_catalog": {
+    "entries": 104,
+    "ok": true,
+    "range": "C001-C104"
+  },
+  "native_build": {
+    "build_returncode": 0,
+    "configure_returncode": 0,
+    "ctest_failed": 0,
+    "ctest_total": 3,
+    "cuda_compiled": false,
+    "ok": true
+  },
+  "native_selftests": {
+    "device_info": {
+      "compute_capability": "0.0",
+      "cuda_compiled": false,
+      "device_available": false,
+      "device_index": 0,
+      "error": "binary was built without CUDA; rebuild with -DUGTS_ENABLE_CUDA=ON",
+      "free_memory_bytes": 0,
+      "max_threads_per_block": 0,
+      "multiprocessors": 0,
+      "name": "",
+      "total_memory_bytes": 0,
+      "warp_size": 0
+    },
+    "device_info_returncode": 2,
+    "ok": true,
+    "packed": {
+      "passed": 9,
+      "record_size": 64,
+      "tests": [
+        {
+          "depth": 1,
+          "name": "initial_d1",
+          "nodes": 20,
+          "pass": true
+        },
+        {
+          "depth": 2,
+          "name": "initial_d2",
+          "nodes": 400,
+          "pass": true
+        },
+        {
+          "depth": 3,
+          "name": "initial_d3",
+          "nodes": 8902,
+          "pass": true
+        },
+        {
+          "depth": 4,
+          "name": "initial_d4",
+          "nodes": 197281,
+          "pass": true
+        },
+        {
+          "depth": 3,
+          "name": "kiwipete_d3",
+          "nodes": 97862,
+          "pass": true
+        },
+        {
+          "depth": 4,
+          "name": "position3_d4",
+          "nodes": 43238,
+          "pass": true
+        },
+        {
+          "depth": 3,
+          "name": "position4_d3",
+          "nodes": 9467,
+          "pass": true
+        },
+        {
+          "depth": 3,
+          "name": "position5_d3",
+          "nodes": 62379,
+          "pass": true
+        },
+        {
+          "depth": 3,
+          "name": "position6_d3",
+          "nodes": 89890,
+          "pass": true
+        }
+      ]
+    },
+    "solver": {
+      "mate_proved": true,
+      "perft_depth_4": 197281,
+      "retrograde": "pass",
+      "selftest": "pass"
+    }
+  },
+  "packed_differential": {
+    "backend": "CPU fallback; CUDA device build pending",
+    "mismatches": 0,
+    "ok": true,
+    "positions": 4,
+    "proposed_moves": 97,
+    "verified_moves": 97
+  },
+  "python_compile": {
+    "ok": true
+  },
+  "python_perft": {
+    "checks": 20,
+    "largest_nodes": 197281,
+    "ok": true
+  },
+  "python_tests": {
+    "count": 92,
+    "ok": true,
+    "seconds": 9.593393770999683
+  },
+  "root_game_theoretic_value": "unknown",
+  "rtx_profile": {
+    "compile_architecture": "120",
+    "nominal_vram_mib": 12288,
+    "ok": true,
+    "physical_device_run": false,
+    "profile_id": "rtx5070ti-laptop-12gb-sm120-v2",
+    "reserved_headroom_mib": 3072,
+    "solver_budget_mib": 9216
+  },
+  "schema": "ugts-kc-chess-validation-2.0",
+  "schemas_and_proofs": {
+    "mate_verified_nodes": 4,
+    "ok": true,
+    "schema_documents": 26,
+    "schema_files": 5,
+    "wdl_initial_depth2_value": "unknown",
+    "wdl_mate_value": "win"
+  },
+  "tablebases": {
+    "compressed_bytes": 296674,
+    "count": 2,
+    "kqk_max_dtm": 20,
+    "krk_max_dtm": 32,
+    "ok": true
+  },
+  "version": "2.0.0",
+  "wheel": {
+    "bytes": 332019,
+    "clean_install": true,
+    "file": "ugts_kc_chess-2.0.0-py3-none-any.whl",
+    "ok": true
+  }
+}

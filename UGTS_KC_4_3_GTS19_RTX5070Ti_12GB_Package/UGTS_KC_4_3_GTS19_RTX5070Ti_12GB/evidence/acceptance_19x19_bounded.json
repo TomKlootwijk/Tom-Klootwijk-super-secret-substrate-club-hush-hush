@@ -3,7 +3,7 @@
   "claim_boundary": "PROVEN/DISPROVEN is an exact threshold result only if reached; UNKNOWN is not evidence for either player.",
   "result": {
     "disproof_number": 362,
-    "elapsed_seconds": 0.03191849996801466,
+    "elapsed_seconds": 0.025554299994837493,
     "expanded_nodes": 2,
     "generated_nodes": 724,
     "max_ply": 2,

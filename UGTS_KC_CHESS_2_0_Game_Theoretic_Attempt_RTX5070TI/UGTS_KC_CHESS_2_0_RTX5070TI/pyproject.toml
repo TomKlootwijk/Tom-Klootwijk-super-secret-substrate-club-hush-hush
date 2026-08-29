@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugts-kc-chess"
+version = "2.0.0"
+description = "UGTS-KC classical-chess game-theoretic proof campaign with optional CUDA acceleration"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "Tom Klootwijk (requester-supplied project attribution)"}]
+license = {text = "Reference implementation; see NOTICE.md"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: Other/Proprietary License",
+  "Topic :: Games/Entertainment :: Board Games",
+]
+
+[project.scripts]
+ugts-chess = "ugts_chess.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"ugts_chess.resources" = ["*.gz", "*.json"]

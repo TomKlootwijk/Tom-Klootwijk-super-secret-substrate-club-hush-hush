@@ -1,0 +1,20 @@
+{
+  "canonical_component": "ugts.application.chess.game-theoretic-solver@2.0.0",
+  "capabilities": [
+    "strict FEN and complete legal-move kernel",
+    "castling, en-passant, promotion and king-safety guards",
+    "history-correct automatic terminals and optional draw-claim actions",
+    "deterministic heuristic alpha-beta kept outside proof authority",
+    "proof-carrying bounded mate and WDL search",
+    "independent WDL certificate-bundle verifier",
+    "exact compressed KQK and KRK DTM tablebases",
+    "hash-chained initial-position proof campaign with 20 root obligations",
+    "64-byte position / 16-bit move CUDA proposal protocol",
+    "C++20 legal kernel and generic CPU/CUDA retrograde fixed point"
+  ],
+  "evidence_boundary": "The classical initial position remains UNKNOWN. This package is an executable, proof-oriented attempt and Codex handoff, not a completed game-theoretic solution.",
+  "legacy_alias": "UGTS-KC Chess 2.0",
+  "name": "UGTS Application / Chess Game-Theoretic Solver",
+  "schema": "ugts-chess-solver-2.0",
+  "version": "2.0.0"
+}

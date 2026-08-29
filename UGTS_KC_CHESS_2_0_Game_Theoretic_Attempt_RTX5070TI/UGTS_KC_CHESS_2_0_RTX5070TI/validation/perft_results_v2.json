@@ -1,0 +1,162 @@
+[
+  {
+    "actual": 20,
+    "depth": 1,
+    "expected": 20,
+    "fixture": "initial",
+    "match": true,
+    "seconds": 0.0004282159998183488
+  },
+  {
+    "actual": 400,
+    "depth": 2,
+    "expected": 400,
+    "fixture": "initial",
+    "match": true,
+    "seconds": 0.0061464849995900295
+  },
+  {
+    "actual": 8902,
+    "depth": 3,
+    "expected": 8902,
+    "fixture": "initial",
+    "match": true,
+    "seconds": 0.13692838099996152
+  },
+  {
+    "actual": 197281,
+    "depth": 4,
+    "expected": 197281,
+    "fixture": "initial",
+    "match": true,
+    "seconds": 2.898053437999806
+  },
+  {
+    "actual": 48,
+    "depth": 1,
+    "expected": 48,
+    "fixture": "kiwipete",
+    "match": true,
+    "seconds": 0.0006677279998257291
+  },
+  {
+    "actual": 2039,
+    "depth": 2,
+    "expected": 2039,
+    "fixture": "kiwipete",
+    "match": true,
+    "seconds": 0.03043201400032558
+  },
+  {
+    "actual": 97862,
+    "depth": 3,
+    "expected": 97862,
+    "fixture": "kiwipete",
+    "match": true,
+    "seconds": 1.3481469570006084
+  },
+  {
+    "actual": 14,
+    "depth": 1,
+    "expected": 14,
+    "fixture": "position_3",
+    "match": true,
+    "seconds": 0.0001923810004882398
+  },
+  {
+    "actual": 191,
+    "depth": 2,
+    "expected": 191,
+    "fixture": "position_3",
+    "match": true,
+    "seconds": 0.003113097999630554
+  },
+  {
+    "actual": 2812,
+    "depth": 3,
+    "expected": 2812,
+    "fixture": "position_3",
+    "match": true,
+    "seconds": 0.04134894699927827
+  },
+  {
+    "actual": 43238,
+    "depth": 4,
+    "expected": 43238,
+    "fixture": "position_3",
+    "match": true,
+    "seconds": 0.6766379500004405
+  },
+  {
+    "actual": 6,
+    "depth": 1,
+    "expected": 6,
+    "fixture": "position_4",
+    "match": true,
+    "seconds": 0.0003651910001281067
+  },
+  {
+    "actual": 264,
+    "depth": 2,
+    "expected": 264,
+    "fixture": "position_4",
+    "match": true,
+    "seconds": 0.004286880000108795
+  },
+  {
+    "actual": 9467,
+    "depth": 3,
+    "expected": 9467,
+    "fixture": "position_4",
+    "match": true,
+    "seconds": 0.1335566249999829
+  },
+  {
+    "actual": 44,
+    "depth": 1,
+    "expected": 44,
+    "fixture": "position_5",
+    "match": true,
+    "seconds": 0.000598173000071256
+  },
+  {
+    "actual": 1486,
+    "depth": 2,
+    "expected": 1486,
+    "fixture": "position_5",
+    "match": true,
+    "seconds": 0.020694464000371227
+  },
+  {
+    "actual": 62379,
+    "depth": 3,
+    "expected": 62379,
+    "fixture": "position_5",
+    "match": true,
+    "seconds": 0.9016436480005723
+  },
+  {
+    "actual": 46,
+    "depth": 1,
+    "expected": 46,
+    "fixture": "position_6",
+    "match": true,
+    "seconds": 0.0005972210001345957
+  },
+  {
+    "actual": 2079,
+    "depth": 2,
+    "expected": 2079,
+    "fixture": "position_6",
+    "match": true,
+    "seconds": 0.029013950000262412
+  },
+  {
+    "actual": 89890,
+    "depth": 3,
+    "expected": 89890,
+    "fixture": "position_6",
+    "match": true,
+    "seconds": 1.174928663999708
+  }
+]

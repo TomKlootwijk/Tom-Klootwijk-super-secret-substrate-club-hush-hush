@@ -4,23 +4,34 @@ Execute in order. Do not begin a later milestone by weakening an earlier gate.
 
 ## M0 — Reproduce 4.3
 
-- [ ] Install editable Python package.
-- [ ] Run all unit tests.
-- [ ] Regenerate exact 1×1 and 2×2 fixtures.
-- [ ] Verify both certificates in separate processes.
-- [ ] Build/run the C++ smoke test.
-- [ ] Capture `scripts/hardware_probe.py` output on the target laptop.
+- [x] Install editable Python package.
+- [x] Run all unit tests.
+- [x] Regenerate exact 1×1 and 2×2 fixtures.
+- [x] Verify both certificates in separate processes.
+- [x] Build/run the C++ smoke test and CTest suite.
+- [x] Capture `scripts/hardware_probe.py` output on the target laptop.
 
-Artifacts: `evidence/local_m0_*`.
+Artifacts: `fixtures/empty_1x1_*.json`, `fixtures/empty_2x2_*.json`,
+`evidence/local_m0_1x1_verify.json`, `evidence/local_m0_2x2_verify.json`, and
+`evidence/local_m0_hardware.json`.
 
 ## M1 — C++ semantic parity
 
-- [ ] Add canonical JSON state serialization to C++.
-- [ ] Add complete positional-superko context identity.
-- [ ] Add randomized legal-trace generator with fixed seeds.
-- [ ] Compare Python/C++ legal masks, transitions, captures, passes, terminal,
+- [x] Add canonical JSON state serialization to C++.
+- [x] Add complete positional-superko context identity.
+- [x] Add randomized legal-trace generator with fixed seeds.
+- [x] Compare Python/C++ legal masks, transitions, captures, passes, terminal,
       score, and digests for at least 1,000,000 transitions.
-- [ ] Add adversarial snapback, ko, multi-capture, edge, and suicide cases.
+- [x] Add adversarial snapback, ko, multi-capture, edge, and suicide cases.
+
+Evidence: `evidence/local_m1_cpp_python_parity_1m.json` records 1,000,006
+transitions across 31,176 exact states, 10,093,588 authoritative raw-field
+comparisons, fixed seeds `0x5eed19` and `0xc0ffee`, and zero mismatches (corpus
+SHA-256 `a2a7257961e8a669e64826d4c17755903c837df612cf25e9822fda47f09f225d`).
+The quick CTest additionally compares the shared `UGTS-GO-STATE-v1` canonical
+semantic object. Hashes remain evidence locators only; `ExactStateEqual`
+compares the raw board, player, passes, previous board, complete PSK set, and
+semantic rules tuple.
 
 Gate: zero differences; every prior difference has a minimized fixture.
 

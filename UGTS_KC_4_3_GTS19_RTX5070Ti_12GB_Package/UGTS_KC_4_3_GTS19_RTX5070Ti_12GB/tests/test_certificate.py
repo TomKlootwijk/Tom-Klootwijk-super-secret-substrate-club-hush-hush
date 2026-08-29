@@ -85,6 +85,16 @@ class CertificateTests(unittest.TestCase):
         result = verify_certificate(certificate, node_budget=20_000)
         self.assertTrue(result["verified"])
 
+    def test_noncanonical_root_field_type_is_rejected(self) -> None:
+        rules = Rules(size=1, komi2=1, profile_id="certificate-root-types")
+        certificate = make_certificate(rules, State.initial(rules), node_budget=20_000)
+        certificate["root"]["to_play"] = "1"
+        unhashed = dict(certificate)
+        unhashed.pop("certificate_sha256")
+        certificate["certificate_sha256"] = sha256_hex(canonical_json_bytes(unhashed))
+        with self.assertRaises(ValueError):
+            verify_certificate(certificate, node_budget=20_000)
+
 
 if __name__ == "__main__":
     unittest.main()

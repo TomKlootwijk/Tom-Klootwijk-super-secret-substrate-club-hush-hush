@@ -600,11 +600,16 @@ class EditorDocument(QObject):
             or abs(motion.theta_acceleration) > theta_accel_epsilon
         ):
             return "custom"
-        if motion.rho_velocity > rho_epsilon:
+        preset_rate = min(
+            _SPIRAL_LOG_RATE, codec.motion_range.rho_velocity * 0.5
+        )
+        if abs(motion.rho_velocity) <= rho_epsilon:
+            return "orbit"
+        if abs(motion.rho_velocity - preset_rate) <= rho_epsilon:
             return "spiral_out"
-        if motion.rho_velocity < -rho_epsilon:
+        if abs(motion.rho_velocity + preset_rate) <= rho_epsilon:
             return "spiral_in"
-        return "orbit"
+        return "custom"
 
     def movement_pattern_state(
         self, selection: SelectionRef | None = None
@@ -634,6 +639,7 @@ class EditorDocument(QObject):
             "radius_min": 0.25,
             "radius_max": 40.0,
             "speed_max": _STUDIO_MOVEMENT_RANGE.theta_velocity / math.tau,
+            "spiral_rate": _SPIRAL_LOG_RATE,
             "component_bytes": PACKED_COMPONENT_ANDROID_BYTES,
             "shared_lut_bytes": len(
                 PolarLookupTable.generate(
@@ -666,6 +672,9 @@ class EditorDocument(QObject):
                     "radius_min": minimum,
                     "radius_max": maximum,
                     "speed_max": speed_max,
+                    "spiral_rate": min(
+                        _SPIRAL_LOG_RATE, codec.motion_range.rho_velocity * 0.5
+                    ),
                     "shared_lut_bytes": len(
                         PolarLookupTable.generate(codec.profile, resolution).to_bytes()
                     ),
@@ -746,6 +755,11 @@ class EditorDocument(QObject):
                 profile_id = self._shared_studio_profile(profiles)
                 codecs = packed_kinematic_codecs_from_dict(profiles)
             codec = codecs[profile_id]
+            existing_pose = (
+                codec.unpack_pose(existing.pose_word)
+                if existing is not None and existing.profile_id == profile_id
+                else None
+            )
             radius = float(values.get("radius", 3.0))
             speed = float(values.get("speed", 0.2))
             angle_degrees = float(values.get("start_angle", 0.0))
@@ -773,20 +787,37 @@ class EditorDocument(QObject):
             )
             theta = math.radians(angle_degrees) % math.tau
             component = codec.component(
-                PolarPose(rho, theta, 0, theta),
+                PolarPose(
+                    rho,
+                    theta,
+                    0 if existing_pose is None else existing_pose.tick,
+                    theta if existing_pose is None else existing_pose.heading,
+                ),
                 PolarMotion(rho_velocity=rho_velocity, theta_velocity=theta_velocity),
                 profile_id=profile_id,
             )
-            metadata[MOVEMENT_COMPONENT_KEY] = component.to_dict()
-            quantized_pose = codec.unpack_pose(component.pose_word)
-            x, z = codec.profile.decode_cartesian(
-                quantized_pose.rho, quantized_pose.theta
-            )
-            transform = replace(
-                selected.transform,
-                translation=(x, selected.transform.translation[1], z),
-            )
-            updated = replace(selected, transform=transform, metadata=metadata)
+            if (
+                isinstance(raw_existing, Mapping)
+                and component.to_dict() == dict(raw_existing)
+            ):
+                updated = selected
+            else:
+                metadata[MOVEMENT_COMPONENT_KEY] = component.to_dict()
+                quantized_pose = codec.unpack_pose(component.pose_word)
+                x, z = codec.profile.decode_cartesian(
+                    quantized_pose.rho, quantized_pose.theta
+                )
+                transform = replace(
+                    selected.transform,
+                    translation=(x, selected.transform.translation[1], z),
+                    rotation=(
+                        math.cos(quantized_pose.heading * 0.5),
+                        0.0,
+                        math.sin(quantized_pose.heading * 0.5),
+                        0.0,
+                    ),
+                )
+                updated = replace(selected, transform=transform, metadata=metadata)
         updated.validate()
         nodes = tuple(
             updated if node.id == selected.id else copy.deepcopy(node)

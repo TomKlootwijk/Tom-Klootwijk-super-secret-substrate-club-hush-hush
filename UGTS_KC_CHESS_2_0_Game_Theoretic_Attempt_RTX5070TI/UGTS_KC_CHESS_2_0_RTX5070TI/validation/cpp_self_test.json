@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {"name": "initial_d1", "expected": 20, "actual": 20, "seconds": 0.000006, "pass": true, "error": ""},
+    {"name": "initial_d2", "expected": 400, "actual": 400, "seconds": 0.000039, "pass": true, "error": ""},
+    {"name": "initial_d3", "expected": 8902, "actual": 8902, "seconds": 0.000423, "pass": true, "error": ""},
+    {"name": "initial_d4", "expected": 197281, "actual": 197281, "seconds": 0.018388, "pass": true, "error": ""},
+    {"name": "kiwipete_d3", "expected": 97862, "actual": 97862, "seconds": 0.004747, "pass": true, "error": ""},
+    {"name": "position3_d4", "expected": 43238, "actual": 43238, "seconds": 0.004013, "pass": true, "error": ""},
+    {"name": "position4_d3", "expected": 9467, "actual": 9467, "seconds": 0.000498, "pass": true, "error": ""},
+    {"name": "position5_d3", "expected": 62379, "actual": 62379, "seconds": 0.003321, "pass": true, "error": ""},
+    {"name": "position6_d3", "expected": 89890, "actual": 89890, "seconds": 0.003817, "pass": true, "error": ""}
+  ],
+  "pass": true
+}

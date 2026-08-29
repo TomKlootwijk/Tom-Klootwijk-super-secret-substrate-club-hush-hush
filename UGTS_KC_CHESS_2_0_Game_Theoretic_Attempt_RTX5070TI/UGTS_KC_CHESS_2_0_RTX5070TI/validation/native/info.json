@@ -1,0 +1,10 @@
+{
+  "name": "UGTS Chess Game-Theoretic Foundation",
+  "version": "2.0.0",
+  "canonical_identity": "ugts.application.chess.game-theoretic-solver@2.0.0",
+  "cuda_backend_compiled": false,
+  "cuda_device": "CUDA backend not compiled; CPU oracle active",
+  "target_profile": "GeForce RTX 5070 Ti Laptop GPU, 12 GB GDDR7, SM120 when detected",
+  "proof_boundary": "GPU hashes and heuristic scores are caches or ordering aids; only independently checked exact records may certify WDL.",
+  "initial_position_status": "unresolved"
+}

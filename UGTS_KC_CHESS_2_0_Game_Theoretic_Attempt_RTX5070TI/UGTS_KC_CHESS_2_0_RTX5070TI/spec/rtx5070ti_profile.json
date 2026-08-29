@@ -1,0 +1,40 @@
+{
+  "adaptive_rules": [
+    "halve the batch after any allocation failure",
+    "checkpoint before changing memory tiers",
+    "reduce streams or batch size if the laptop reports thermal throttling",
+    "never relax legal-move or certificate-verification gates for speed"
+  ],
+  "allocation_bytes": {
+    "checkpoint_staging": 536870912,
+    "frontier_positions": 1073741824,
+    "move_matrix_and_counts": 1073741824,
+    "retrograde_edges_and_counters": 1073741824,
+    "scratch": 536870912,
+    "transposition_and_proof_index": 5368709120
+  },
+  "allocation_mib": {
+    "checkpoint_staging": 512,
+    "frontier_positions": 1024,
+    "move_matrix_and_counts": 1024,
+    "retrograde_edges_and_counters": 1024,
+    "scratch": 512,
+    "transposition_and_proof_index": 5120
+  },
+  "batch_positions_initial": 131072,
+  "batch_positions_min": 16384,
+  "cmake_cuda_architectures": "120",
+  "compile_architecture": "120",
+  "correctness_boundary": "CUDA produces move/frontier/retrograde proposal candidates only; the exact host verifier and content-addressed certificate chain remain authoritative.",
+  "device_match": "GeForce RTX 5070 Ti Laptop GPU",
+  "max_moves_per_position": 256,
+  "measurement_boundary": "No physical RTX 5070 Ti benchmark was executed while packaging this release.",
+  "minimum_toolkit": "CUDA 12.8",
+  "nominal_vram_mib": 12288,
+  "profile_id": "rtx5070ti-laptop-12gb-sm120-v2",
+  "ptx_fallback": "compute_120",
+  "reserved_headroom_mib": 3072,
+  "solver_budget_mib": 9216,
+  "streams_initial": 3,
+  "threads_per_block": 256
+}

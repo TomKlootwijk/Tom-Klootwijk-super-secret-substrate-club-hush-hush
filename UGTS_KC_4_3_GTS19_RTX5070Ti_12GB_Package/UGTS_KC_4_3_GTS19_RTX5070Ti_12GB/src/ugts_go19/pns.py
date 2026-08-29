@@ -11,7 +11,13 @@ from .rules import Rules
 from .score import area_score2
 from .state import State
 
-INF = 1 << 60
+INF = (1 << 64) - 1
+PROOF_ARITHMETIC = {
+    "bits": 64,
+    "endianness": "little",
+    "infinity": str(INF),
+    "kind": "saturating_uint64",
+}
 
 
 @dataclass(slots=True)
@@ -42,7 +48,9 @@ class PNSResult:
     elapsed_seconds: float
 
     def as_dict(self) -> dict:
-        return asdict(self)
+        payload = asdict(self)
+        payload["proof_arithmetic"] = dict(PROOF_ARITHMETIC)
+        return payload
 
 
 def _sat_add(values: list[int]) -> int:
@@ -103,12 +111,20 @@ class ProofNumberSearch:
             if node.is_or:
                 node = min(
                     node.children,
-                    key=lambda child: (child.proof, child.disproof, child.move or -1),
+                    key=lambda child: (
+                        child.proof,
+                        child.disproof,
+                        child.move if child.move is not None else -2,
+                    ),
                 )
             else:
                 node = min(
                     node.children,
-                    key=lambda child: (child.disproof, child.proof, child.move or -1),
+                    key=lambda child: (
+                        child.disproof,
+                        child.proof,
+                        child.move if child.move is not None else -2,
+                    ),
                 )
         return node
 

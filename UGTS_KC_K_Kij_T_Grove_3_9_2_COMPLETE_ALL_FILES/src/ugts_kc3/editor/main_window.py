@@ -27,7 +27,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..androidbuild import build_apk, install_apk, select_android_device
+from ..androidbuild import (
+    build_apk,
+    install_apk,
+    launch_android_app,
+    select_android_device,
+)
 from ..androidexport import build_android_project, write_mobile3d_gltf
 from ..graphpack import GraphPackError, compile_graph_pack_bytes
 from ..mobile3d import Mesh3DRecord, Mobile3DProject
@@ -174,6 +179,40 @@ class MeshResourcesCommand(QUndoCommand):
         self.document.replace_mesh_resources(self.after)
 
 
+class MovementPatternCommand(QUndoCommand):
+    """Undoable packed-movement edit spanning node records and shared profiles."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before_nodes: tuple[Any, ...],
+        after_nodes: tuple[Any, ...],
+        before_profiles: Mapping[str, Any],
+        after_profiles: Mapping[str, Any],
+        selection: SelectionRef,
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before_nodes = copy.deepcopy(before_nodes)
+        self.after_nodes = copy.deepcopy(after_nodes)
+        self.before_profiles = copy.deepcopy(dict(before_profiles))
+        self.after_profiles = copy.deepcopy(dict(after_profiles))
+        self.selection = selection
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_movement_patterns(
+            self.before_nodes, self.before_profiles, self.selection
+        )
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_movement_patterns(
+            self.after_nodes, self.after_profiles, self.selection
+        )
+
+
 class BuildWorker(QObject):
     finished = Signal(object)
     partial = Signal(object)
@@ -210,7 +249,16 @@ class BuildWorker(QObject):
                             installed = install_apk(compiled.apk, serial=install_serial)
                             summary += f" and installed on {installed.serial}"
                         except Exception as exc:
-                            self.partial.emit((summary, str(exc), folder))
+                            self.partial.emit((summary, "install", str(exc), folder))
+                            return
+                        try:
+                            launch_android_app(
+                                compiled.application_id,
+                                serial=install_serial,
+                            )
+                            summary += " and opened"
+                        except Exception as exc:
+                            self.partial.emit((summary, "launch", str(exc), folder))
                             return
             elif self.target == "gltf" and isinstance(self.project, Mobile3DProject):
                 write_mobile3d_gltf(self.project, self.destination)
@@ -391,7 +439,7 @@ class EditorMainWindow(QMainWindow):
         self.deploy_action = self._action(
             "Deploy to Phone", QStyle.StandardPixmap.SP_DriveNetIcon, "Ctrl+Shift+D",
             self.deploy_to_phone,
-            "Build the Poco APK and install it on the one authorized ADB phone",
+            "Build, install, and open the game on the one authorized ADB phone",
         )
         self.fit_action = self._action(
             "Fit Scene", QStyle.StandardPixmap.SP_DesktopIcon, "F", self.viewport.fit_scene,
@@ -482,6 +530,7 @@ class EditorMainWindow(QMainWindow):
         )
         self.inspector.transformEdited.connect(self._inspector_transform_edited)
         self.inspector.resourceEdited.connect(self._inspector_resource_edited)
+        self.inspector.movementPatternEdited.connect(self._inspector_movement_pattern_edited)
         self.graph_page.graphEdited.connect(self._graph_edited)
         self.graph_page.helpRequested.connect(self._gentle_message)
         self.build_output.buildRequested.connect(self._build_requested)
@@ -894,6 +943,46 @@ class EditorMainWindow(QMainWindow):
             self.build_output.append(f"Appearance change paused: {exc}", "warning")
             self._gentle_message(str(exc))
 
+    def _inspector_movement_pattern_edited(self, values: Mapping[str, Any]) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        try:
+            before_nodes = tuple(self.document.scene_objects())
+            before_profiles = self.document.movement_profiles()
+            after_nodes, after_profiles = self.document.movement_pattern_snapshot(
+                selection, values
+            )
+            before_data = [record.to_dict() for record in before_nodes]
+            after_data = [record.to_dict() for record in after_nodes]
+            if before_data == after_data and before_profiles == after_profiles:
+                return
+            pattern = str(values.get("pattern", "off"))
+            pattern_name = {
+                "off": "Off / Static",
+                "orbit": "Orbit",
+                "spiral_out": "Spiral Out",
+                "spiral_in": "Spiral In",
+            }.get(pattern, "Movement Pattern")
+            self.undo_stack.push(
+                MovementPatternCommand(
+                    self.document,
+                    f"Set {friendly(selection.object_id)} movement to {pattern_name}",
+                    before_nodes,
+                    after_nodes,
+                    before_profiles,
+                    after_profiles,
+                    selection,
+                )
+            )
+            self._gentle_message(
+                f"{friendly(selection.object_id)} now uses {pattern_name}. Undo restores the previous movement."
+            )
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Movement pattern paused: {exc}", "warning")
+            self._gentle_message(str(exc))
+
     def _transform_changed(self, selection: SelectionRef) -> None:
         self.viewport.refresh(keep_view=True)
         if selection == self.document.selection:
@@ -1033,7 +1122,9 @@ class EditorMainWindow(QMainWindow):
         destination = (
             root / ".ugts-studio" / "deploy" / f"{_safe_build_slug(project.id)}-android"
         )
-        self._gentle_message("Checking the connected phone, then building its APK…")
+        self._gentle_message(
+            "Checking the connected phone, then building, installing, and opening the game…"
+        )
         self._build_requested("android-install", destination)
 
     def _build_requested(self, target: str, destination_override: Path | None = None) -> None:
@@ -1107,7 +1198,10 @@ class EditorMainWindow(QMainWindow):
         self.build_output.set_build_path(folder)
         self.build_output.append(str(summary), "good")
         self.output_dock.raise_()
-        self._gentle_message("Build finished. Open Build Folder is ready.")
+        if " and opened" in str(summary):
+            self._gentle_message("The game is running on the connected phone.")
+        else:
+            self._gentle_message("Build finished. Open Build Folder is ready.")
 
     @Slot(str)
     def _build_failed(self, message: str) -> None:
@@ -1118,15 +1212,22 @@ class EditorMainWindow(QMainWindow):
 
     @Slot(object)
     def _build_partial(self, result: object) -> None:
-        summary, install_error, folder = result  # type: ignore[misc]
+        summary, phase, detail, folder = result  # type: ignore[misc]
         self.build_output.set_busy(False)
         self.build_output.set_build_path(folder)
         self.build_output.append(str(summary), "good")
-        self.build_output.append(
-            f"APK install did not finish: {install_error}", "warning"
-        )
+        if phase == "launch":
+            self.build_output.append(
+                f"The APK installed, but the game did not open: {detail}", "warning"
+            )
+            gentle = "The game is installed. Open it on the phone, or try Deploy again."
+        else:
+            self.build_output.append(
+                f"APK install did not finish: {detail}", "warning"
+            )
+            gentle = "The APK is ready. Check the phone message, then try Deploy again."
         self.output_dock.raise_()
-        self._gentle_message("The APK is ready. Connect a phone, then try Install again.")
+        self._gentle_message(gentle)
 
     @Slot()
     def _build_thread_cleared(self) -> None:

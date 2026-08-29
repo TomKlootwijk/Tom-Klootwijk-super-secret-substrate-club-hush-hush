@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
+    QScrollArea,
     QStackedWidget,
     QTabWidget,
     QTreeWidget,
@@ -57,6 +58,7 @@ class InspectorPanel(QWidget):
 
     transformEdited = Signal(object)
     resourceEdited = Signal(str, str)
+    movementPatternEdited = Signal(object)
     messageRequested = Signal(str)
 
     def __init__(self, parent=None) -> None:
@@ -64,9 +66,24 @@ class InspectorPanel(QWidget):
         self._updating = False
         self._selection: SelectionRef | None = None
         self._mode: str | None = None
-        root = QVBoxLayout(self)
+        self._movement_spiral_rate = 0.2
+        self._movement_values: dict[str, float] = {}
+        self._movement_display_values: dict[str, float] = {}
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setObjectName("InspectorScrollArea")
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        self.scroll_area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+        content = QWidget()
+        root = QVBoxLayout(content)
         root.setContentsMargins(10, 10, 10, 10)
         root.setSpacing(9)
+        self.scroll_area.setWidget(content)
+        outer.addWidget(self.scroll_area)
         self.title = QLabel("Nothing selected")
         self.title.setObjectName("PanelTitle")
         self.subtitle = QLabel("Click an object in the scene or Scene Tree.")
@@ -139,6 +156,56 @@ class InspectorPanel(QWidget):
         root.addWidget(self.appearance_box)
         self.appearance_box.hide()
 
+        self.movement_box = QGroupBox("Movement Pattern")
+        movement_layout = QVBoxLayout(self.movement_box)
+        movement_layout.setContentsMargins(8, 12, 8, 8)
+        movement_layout.setSpacing(6)
+        self.movement_explanation = QLabel()
+        self.movement_explanation.setObjectName("MutedLabel")
+        self.movement_explanation.setWordWrap(True)
+        movement_layout.addWidget(self.movement_explanation)
+        movement_form = QFormLayout()
+        movement_form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
+        self.movement_pattern_combo = QComboBox()
+        self.movement_pattern_combo.setObjectName("MovementPatternCombo")
+        self.movement_pattern_combo.setSizeAdjustPolicy(
+            QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
+        )
+        self.movement_pattern_combo.setMinimumContentsLength(18)
+        self.movement_pattern_combo.setToolTip(
+            "Choose a small, efficient movement pattern for this object"
+        )
+        self.movement_radius = _spin(0.25)
+        self.movement_radius.setObjectName("MovementRadius")
+        self.movement_radius.setDecimals(2)
+        self.movement_radius.setSuffix(" units")
+        self.movement_radius.setToolTip("Distance from the centre of the world")
+        self.movement_speed = _spin(0.05)
+        self.movement_speed.setObjectName("MovementSpeed")
+        self.movement_speed.setDecimals(3)
+        self.movement_speed.setSuffix(" turns/s")
+        self.movement_speed.setToolTip(
+            "How many circles per second; a minus sign reverses direction"
+        )
+        self.movement_angle = _spin(5.0)
+        self.movement_angle.setObjectName("MovementStartAngle")
+        self.movement_angle.setDecimals(1)
+        self.movement_angle.setRange(0.0, 359.9)
+        self.movement_angle.setWrapping(True)
+        self.movement_angle.setSuffix(" °")
+        self.movement_angle.setToolTip("Where around the circle the object starts")
+        movement_form.addRow("Pattern", self.movement_pattern_combo)
+        movement_form.addRow("Radius", self.movement_radius)
+        movement_form.addRow("Circle speed", self.movement_speed)
+        movement_form.addRow("Start angle", self.movement_angle)
+        movement_layout.addLayout(movement_form)
+        self.movement_cost = QLabel()
+        self.movement_cost.setObjectName("MutedLabel")
+        self.movement_cost.setWordWrap(True)
+        movement_layout.addWidget(self.movement_cost)
+        root.addWidget(self.movement_box)
+        self.movement_box.hide()
+
         self.quick_info = QLabel()
         self.quick_info.setObjectName("MutedLabel")
         self.quick_info.setWordWrap(True)
@@ -164,6 +231,15 @@ class InspectorPanel(QWidget):
         self.vector_asset_combo.currentIndexChanged.connect(self._emit_vector_asset)
         self.mesh_combo.currentIndexChanged.connect(self._emit_mesh)
         self.material_combo.currentIndexChanged.connect(self._emit_material)
+        self.movement_pattern_combo.currentIndexChanged.connect(
+            self._movement_pattern_changed
+        )
+        for widget in (
+            self.movement_radius,
+            self.movement_speed,
+            self.movement_angle,
+        ):
+            widget.editingFinished.connect(self._emit_movement_pattern)
 
     def clear(self) -> None:
         self._selection = None
@@ -172,9 +248,16 @@ class InspectorPanel(QWidget):
         self.subtitle.setText("Click an object in the scene or Scene Tree.")
         self.transform_box.hide()
         self.appearance_box.hide()
+        self.movement_box.hide()
+        self._set_packed_transform_guard(False)
         self.vector_asset_combo.clear()
         self.mesh_combo.clear()
         self.material_combo.clear()
+        self.movement_pattern_combo.clear()
+        self.movement_explanation.clear()
+        self.movement_cost.clear()
+        self._movement_values.clear()
+        self._movement_display_values.clear()
         self.quick_info.clear()
         self.details.clear()
 
@@ -194,6 +277,7 @@ class InspectorPanel(QWidget):
             role_names = list(components) if isinstance(components, Mapping) else []
             selected = document.entity(selection)
             self._set_appearance(document, selected)
+            self._set_movement_pattern(document.movement_pattern_state(selection))
             if tags:
                 self.quick_info.setText("Tags: " + ", ".join(friendly(str(tag)) for tag in tags))
             elif role_names:
@@ -276,6 +360,193 @@ class InspectorPanel(QWidget):
                 self.appearance_stack.setCurrentWidget(self.appearance3d_widget)
                 self.appearance_box.show()
 
+    def _set_packed_transform_guard(self, active: bool) -> None:
+        """Keep transform-authoritative packed movement from fighting the form."""
+
+        guarded = (self.x3, self.z3, self.rx3, self.ry3, self.rz3)
+        explanation = (
+            "The movement pattern controls this value while the game runs. "
+            "Choose Off / Static to edit it directly."
+        )
+        for widget in guarded:
+            widget.setEnabled(not active)
+            widget.setToolTip(explanation if active else "")
+
+    def _set_movement_pattern(self, state: Mapping[str, Any] | None) -> None:
+        self.movement_box.hide()
+        self.movement_pattern_combo.clear()
+        self._movement_values.clear()
+        self._movement_display_values.clear()
+        self._set_packed_transform_guard(False)
+        if state is None:
+            return
+
+        self.movement_box.show()
+        dynamic = bool(state.get("dynamic", False))
+        has_component = bool(state.get("has_component", False))
+        if dynamic:
+            if has_component:
+                self.movement_pattern_combo.addItem(
+                    "Physics conflict (keep for now)", "guarded"
+                )
+                self.movement_pattern_combo.addItem(
+                    "Remove Movement Pattern", "off"
+                )
+                self.movement_pattern_combo.setEnabled(True)
+                self.movement_explanation.setText(
+                    "Physics and a movement pattern cannot both steer this object. "
+                    "Remove the pattern here, or turn Dynamic off first."
+                )
+            else:
+                self.movement_pattern_combo.addItem(
+                    "Unavailable while Dynamic is on", "guarded"
+                )
+                self.movement_pattern_combo.setEnabled(False)
+                self.movement_explanation.setText(
+                    "Physics already moves this object. Turn Dynamic off before "
+                    "giving it a movement pattern."
+                )
+            for widget in (
+                self.movement_radius,
+                self.movement_speed,
+                self.movement_angle,
+            ):
+                widget.setEnabled(False)
+            self.movement_cost.setText(
+                "Remove the saved movement conflict first. Its compact record uses "
+                "about 24 bytes."
+                if has_component
+                else "No extra packed movement is added while physics owns the object."
+            )
+            self._set_packed_transform_guard(has_component)
+            return
+
+        choices = (
+            ("Off / Static", "off", "Stay where you place it."),
+            ("Orbit (circle)", "orbit", "Circle the centre at one radius."),
+            ("Spiral Out", "spiral_out", "Circle while gently moving outward."),
+            ("Spiral In", "spiral_in", "Circle while gently moving inward."),
+        )
+        for label, value, tooltip in choices:
+            self.movement_pattern_combo.addItem(label, value)
+            self.movement_pattern_combo.setItemData(
+                self.movement_pattern_combo.count() - 1,
+                tooltip,
+                Qt.ItemDataRole.ToolTipRole,
+            )
+        pattern = str(state.get("pattern", "off"))
+        if pattern == "custom":
+            self.movement_pattern_combo.addItem(
+                "Custom movement (kept until changed)", "custom"
+            )
+        elif pattern == "invalid":
+            self.movement_pattern_combo.addItem("Movement needs repair", "invalid")
+        index = self.movement_pattern_combo.findData(pattern)
+        self.movement_pattern_combo.setCurrentIndex(max(0, index))
+        self.movement_pattern_combo.setEnabled(True)
+
+        radius_min = max(0.001, float(state.get("radius_min", 0.25)))
+        radius_max = max(radius_min, float(state.get("radius_max", 40.0)))
+        speed_max = max(0.001, float(state.get("speed_max", 1.0)))
+        self.movement_radius.setRange(radius_min, radius_max)
+        self.movement_speed.setRange(-speed_max, speed_max)
+        self._movement_values = {
+            "radius": float(state.get("radius", 3.0)),
+            "speed": float(state.get("speed", 0.2)),
+            "start_angle": float(state.get("start_angle", 0.0)) % 360.0,
+        }
+        self.movement_radius.setValue(self._movement_values["radius"])
+        self.movement_speed.setValue(self._movement_values["speed"])
+        self.movement_angle.setValue(self._movement_values["start_angle"])
+        self._movement_display_values = {
+            "radius": self.movement_radius.value(),
+            "speed": self.movement_speed.value(),
+            "start_angle": self.movement_angle.value(),
+        }
+        self._movement_spiral_rate = max(
+            0.0, float(state.get("spiral_rate", 0.2))
+        )
+
+        component_bytes = int(state.get("component_bytes", 24))
+        lut_kib = float(state.get("shared_lut_bytes", 0)) / 1024.0
+        resolution = int(state.get("lut_resolution", 128))
+        if has_component:
+            self.movement_cost.setText(
+                f"Compact on Android: about {component_bytes} bytes for this object, "
+                f"plus one shared {resolution}-step lookup (about {lut_kib:.1f} KiB)."
+            )
+        else:
+            self.movement_cost.setText(
+                f"Off adds no movement record. A preset uses about {component_bytes} "
+                f"bytes per object plus one shared {resolution}-step lookup "
+                f"(about {lut_kib:.1f} KiB)."
+            )
+        self._refresh_movement_controls()
+        self._set_packed_transform_guard(has_component)
+
+    def _refresh_movement_controls(self) -> None:
+        pattern = str(self.movement_pattern_combo.currentData() or "guarded")
+        editable = pattern in {"orbit", "spiral_out", "spiral_in"}
+        for widget in (
+            self.movement_radius,
+            self.movement_speed,
+            self.movement_angle,
+        ):
+            widget.setEnabled(editable)
+        outward_percent = (math.exp(self._movement_spiral_rate) - 1.0) * 100.0
+        inward_percent = (1.0 - math.exp(-self._movement_spiral_rate)) * 100.0
+        explanations = {
+            "off": "This object stays where you place it.",
+            "orbit": (
+                "The object circles the world centre at a fixed radius. "
+                "Use a minus speed to reverse direction."
+            ),
+            "spiral_out": (
+                "The object circles while its radius grows gently "
+                f"(about {outward_percent:.0f}% each second)."
+            ),
+            "spiral_in": (
+                "The object circles while its radius shrinks gently "
+                f"(about {inward_percent:.0f}% each second)."
+            ),
+            "custom": (
+                "This saved movement uses advanced values. It stays unchanged until "
+                "you choose one of the simple presets."
+            ),
+            "invalid": (
+                "This saved movement cannot be read. Choose Off / Static or a preset "
+                "to repair it."
+            ),
+        }
+        if pattern in explanations:
+            self.movement_explanation.setText(explanations[pattern])
+
+    def _movement_pattern_changed(self, _index: int = -1) -> None:
+        if self._updating or self._selection is None:
+            return
+        self._refresh_movement_controls()
+        self._emit_movement_pattern()
+
+    def _emit_movement_pattern(self) -> None:
+        if self._updating or self._selection is None:
+            return
+        pattern = str(self.movement_pattern_combo.currentData() or "")
+        if pattern not in {"off", "orbit", "spiral_out", "spiral_in"}:
+            return
+        displayed = {
+            "pattern": pattern,
+            "radius": self.movement_radius.value(),
+            "speed": self.movement_speed.value(),
+            "start_angle": self.movement_angle.value(),
+        }
+        values = {"pattern": pattern}
+        for key in ("radius", "speed", "start_angle"):
+            value = float(displayed[key])
+            if value == self._movement_display_values.get(key):
+                value = self._movement_values.get(key, value)
+            values[key] = value
+        self.movementPatternEdited.emit(values)
+
     def _emit_resource(self, resource_kind: str, combo: QComboBox) -> None:
         if self._updating or self._selection is None or combo.currentIndex() < 0:
             return
@@ -330,6 +601,13 @@ class InspectorPanel(QWidget):
         return str(value)
 
     def _add_detail_value(self, parent: QTreeWidgetItem, key: str, value: Any, depth: int = 0) -> None:
+        if str(key) == "packed_kinematic":
+            parent.addChild(
+                QTreeWidgetItem(
+                    ["Movement Pattern", "Packed compactly; use the friendly controls above"]
+                )
+            )
+            return
         if isinstance(value, Mapping) and depth < 2:
             item = QTreeWidgetItem([friendly(str(key)), f"{len(value)} settings"])
             parent.addChild(item)
@@ -569,10 +847,46 @@ class AssetsProjectPanel(QTabWidget):
             materials = self._category("Materials", len(project.materials))
             for material in project.materials.values():
                 materials.addChild(QTreeWidgetItem([friendly(material.id), "Material"]))
+            movement_nodes = [
+                node
+                for node in project.nodes
+                if isinstance(node.metadata.get("packed_kinematic"), Mapping)
+            ]
+            movement = self._category("Movement Patterns", len(movement_nodes))
+            pattern_labels = {
+                "orbit": "Orbit",
+                "spiral_out": "Spiral Out",
+                "spiral_in": "Spiral In",
+                "custom": "Custom Movement",
+                "invalid": "Needs Repair",
+            }
+            referenced_profiles: set[str] = set()
+            for node in movement_nodes:
+                raw_component = node.metadata.get("packed_kinematic", {})
+                if isinstance(raw_component, Mapping):
+                    profile_id = raw_component.get("profile")
+                    if isinstance(profile_id, str) and profile_id:
+                        referenced_profiles.add(profile_id)
+                state = document.movement_pattern_state(SelectionRef("node", node.id))
+                pattern = "custom" if state is None else str(state.get("pattern", "custom"))
+                movement.addChild(
+                    QTreeWidgetItem(
+                        [friendly(node.id), f"{pattern_labels.get(pattern, 'Movement')} · about 24 bytes"]
+                    )
+                )
+            if referenced_profiles:
+                movement.addChild(
+                    QTreeWidgetItem(
+                        [
+                            "Shared lookups",
+                            f"{len(referenced_profiles)} compact table(s), reused by objects",
+                        ]
+                    )
+                )
             profiles = self._category("Android Devices", len(project.target_profiles))
             for profile in project.target_profiles:
                 profiles.addChild(QTreeWidgetItem([profile.label, f"{profile.target_refresh_hz} Hz target"]))
-            for category in (meshes, materials, profiles):
+            for category in (meshes, materials, movement, profiles):
                 self.assets.addTopLevelItem(category)
         try:
             report = document.validate()
@@ -632,7 +946,7 @@ class BuildOutputPanel(QWidget):
             self.target.addItem("Web / HTML5", "html5")
         elif kind == "3d":
             self.target.addItem("Poco X7 Pro APK (Debug)", "android-apk")
-            self.target.addItem("Poco APK + Install", "android-install")
+            self.target.addItem("Poco: Build + Install + Open", "android-install")
             self.target.addItem("Android Studio Project", "android")
             self.target.addItem("glTF 3D Preview", "gltf")
         else:

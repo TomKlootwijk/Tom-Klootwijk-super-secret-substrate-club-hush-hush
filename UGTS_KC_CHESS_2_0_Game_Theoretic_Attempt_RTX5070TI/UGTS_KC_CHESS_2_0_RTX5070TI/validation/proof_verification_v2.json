@@ -1,0 +1,29 @@
+{
+  "mate_certificate": {
+    "attacker": "white",
+    "max_plies": 3,
+    "root_hash": "64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16",
+    "valid": true,
+    "verified_nodes": 4
+  },
+  "wdl_initial_depth2": {
+    "exact_nodes": 0,
+    "root_certificate_hash": "271b0ab3929a7bf53afff0642de961ab6d1546145e6259ffda76d3c75d8ebdbb",
+    "root_exact": false,
+    "root_value": "unknown",
+    "unknown_nodes": 421,
+    "unreferenced_nodes": 0,
+    "valid": true,
+    "verified_reachable_nodes": 421
+  },
+  "wdl_mate_over_claim": {
+    "exact_nodes": 2,
+    "root_certificate_hash": "87d8a14d9b5af5cbfbccb9522f9c6ae372b66f68992c8749667a80dd1962dfb7",
+    "root_exact": true,
+    "root_value": "win",
+    "unknown_nodes": 0,
+    "unreferenced_nodes": 0,
+    "valid": true,
+    "verified_reachable_nodes": 2
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts_kc_chess_proof.schema.json",
+  "title": "UGTS-KC Chess Mate Proof 1.0",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "status",
+    "root_fen",
+    "root_hash",
+    "attacker",
+    "max_plies",
+    "tree"
+  ],
+  "properties": {
+    "$schema": {"const": "ugts-kc-chess-mate-proof-1.0"},
+    "schema_version": {"const": "1.0.0"},
+    "status": {"enum": ["proved", "not_forced_within_horizon"]},
+    "root_fen": {"type": "string"},
+    "root_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "attacker": {"enum": ["white", "black"]},
+    "max_plies": {"type": "integer", "minimum": 1},
+    "explored_nodes": {"type": "integer", "minimum": 0},
+    "proof_semantics": {"type": "string"},
+    "tree": {"$ref": "#/$defs/node"}
+  },
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["role", "fen", "hash"],
+      "properties": {
+        "role": {"enum": ["OR", "AND", "terminal"]},
+        "fen": {"type": "string"},
+        "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "side": {"enum": ["white", "black"]}
+      }
+    },
+    "reply": {
+      "type": "object",
+      "required": ["move", "child"],
+      "properties": {
+        "move": {"type": "string"},
+        "san": {"type": "string"},
+        "child": {"$ref": "#/$defs/node"}
+      }
+    },
+    "node": {
+      "oneOf": [
+        {
+          "allOf": [
+            {"$ref": "#/$defs/base"},
+            {
+              "type": "object",
+              "required": ["move", "child"],
+              "properties": {
+                "role": {"const": "OR"},
+                "move": {"type": "string"},
+                "san": {"type": "string"},
+                "child": {"$ref": "#/$defs/node"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/base"},
+            {
+              "type": "object",
+              "required": ["replies"],
+              "properties": {
+                "role": {"const": "AND"},
+                "replies": {
+                  "type": "array",
+                  "items": {"$ref": "#/$defs/reply"}
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/base"},
+            {
+              "type": "object",
+              "required": ["result", "winner"],
+              "properties": {
+                "role": {"const": "terminal"},
+                "result": {"const": "checkmate"},
+                "winner": {"enum": ["white", "black"]}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

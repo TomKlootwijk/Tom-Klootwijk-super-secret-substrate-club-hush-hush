@@ -1,6 +1,6 @@
 {
   "certificate": "evidence/acceptance_2x2_certificate.json",
-  "certificate_sha256": "8ef9a93a4938440afd372f3df2d07514e2d5210f824a2a71adb46c7a2a877e03",
+  "certificate_sha256": "d4c6c9c1a80bc8c2788745860fa3ee8134a646bd9977bed7e056158e9222eeda",
   "result": {
     "best_move": 0,
     "best_move_coord": "A2",
@@ -21,7 +21,7 @@
     ],
     "stats": {
       "cutoffs": 1031,
-      "elapsed_seconds": 0.03962539997883141,
+      "elapsed_seconds": 0.03918449999764562,
       "max_ply": 30,
       "nodes": 2532,
       "terminals": 836,

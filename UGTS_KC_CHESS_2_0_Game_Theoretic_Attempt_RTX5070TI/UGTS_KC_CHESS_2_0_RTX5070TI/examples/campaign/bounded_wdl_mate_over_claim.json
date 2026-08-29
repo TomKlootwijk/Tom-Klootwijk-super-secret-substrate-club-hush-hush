@@ -1,0 +1,116 @@
+{
+  "cache_hits": 0,
+  "certificate_bundle": {
+    "max_plies": 1,
+    "nodes": [
+      {
+        "certificate_hash": "87d8a14d9b5af5cbfbccb9522f9c6ae372b66f68992c8749667a80dd1962dfb7",
+        "children": [
+          {
+            "action_id": "move:b5a4",
+            "child_certificate_hash": "891172e29d5aca1a49c857b4c2080284a98b717507e394061efd1f1f3ecb266f",
+            "child_state_hash": "46b333cba5bc0776fe5d6b6f6e38b8b87b332b6bcb772fe811f31c398a1fdd08",
+            "child_value": "loss",
+            "claim_code": null,
+            "exact": true,
+            "kind": "move",
+            "move": "b5a4",
+            "san": "Qa4#",
+            "value_for_parent": "win"
+          }
+        ],
+        "coverage": "witness",
+        "current_claim_actions": [
+          "claim_fifty_move_current"
+        ],
+        "depth_remaining": 1,
+        "exact": true,
+        "fen": "8/8/8/1Q6/8/8/k7/2K5 w - - 100 2",
+        "history_counts": [
+          [
+            "ac6fdc4a99dec68a554d20dd6a2f411d8e60d28f14789d4fb7c182ac9c1c320b",
+            1
+          ]
+        ],
+        "legal_move_count": 26,
+        "schema": "ugts-chess-wdl-node-2.0",
+        "state_hash": "167f6c9a8b2090579f0f46acc4d36994986f196de6c55148c0d79f3c56f0f841",
+        "terminal_code": "winning_move_witness",
+        "value": "win"
+      },
+      {
+        "certificate_hash": "891172e29d5aca1a49c857b4c2080284a98b717507e394061efd1f1f3ecb266f",
+        "children": [],
+        "coverage": "terminal",
+        "current_claim_actions": [
+          "claim_fifty_move_current"
+        ],
+        "depth_remaining": 0,
+        "exact": true,
+        "fen": "8/8/8/8/Q7/8/k7/2K5 b - - 101 2",
+        "history_counts": [
+          [
+            "ac6fdc4a99dec68a554d20dd6a2f411d8e60d28f14789d4fb7c182ac9c1c320b",
+            1
+          ],
+          [
+            "d6f656a90bef5d8ad7ff24cd47bec97afa3b773f59c35fb1d0a67777ea5cf37c",
+            1
+          ]
+        ],
+        "legal_move_count": 0,
+        "schema": "ugts-chess-wdl-node-2.0",
+        "state_hash": "46b333cba5bc0776fe5d6b6f6e38b8b87b332b6bcb772fe811f31c398a1fdd08",
+        "terminal_code": "checkmate",
+        "value": "loss"
+      }
+    ],
+    "root_certificate_hash": "87d8a14d9b5af5cbfbccb9522f9c6ae372b66f68992c8749667a80dd1962dfb7",
+    "root_exact": true,
+    "root_state_hash": "167f6c9a8b2090579f0f46acc4d36994986f196de6c55148c0d79f3c56f0f841",
+    "root_value": "win",
+    "rules_profile": "fide-classical-2023-claims-as-actions-v2",
+    "schema": "ugts-chess-wdl-certificate-bundle-2.0"
+  },
+  "completed": true,
+  "cutoffs": 0,
+  "elapsed_seconds": 0.0015665029995943769,
+  "max_plies": 1,
+  "nodes_searched": 2,
+  "root": {
+    "certificate_hash": "87d8a14d9b5af5cbfbccb9522f9c6ae372b66f68992c8749667a80dd1962dfb7",
+    "children": [
+      {
+        "action_id": "move:b5a4",
+        "child_certificate_hash": "891172e29d5aca1a49c857b4c2080284a98b717507e394061efd1f1f3ecb266f",
+        "child_state_hash": "46b333cba5bc0776fe5d6b6f6e38b8b87b332b6bcb772fe811f31c398a1fdd08",
+        "child_value": "loss",
+        "claim_code": null,
+        "exact": true,
+        "kind": "move",
+        "move": "b5a4",
+        "san": "Qa4#",
+        "value_for_parent": "win"
+      }
+    ],
+    "coverage": "witness",
+    "current_claim_actions": [
+      "claim_fifty_move_current"
+    ],
+    "depth_remaining": 1,
+    "exact": true,
+    "fen": "8/8/8/1Q6/8/8/k7/2K5 w - - 100 2",
+    "history_counts": [
+      [
+        "ac6fdc4a99dec68a554d20dd6a2f411d8e60d28f14789d4fb7c182ac9c1c320b",
+        1
+      ]
+    ],
+    "legal_move_count": 26,
+    "schema": "ugts-chess-wdl-node-2.0",
+    "state_hash": "167f6c9a8b2090579f0f46acc4d36994986f196de6c55148c0d79f3c56f0f841",
+    "terminal_code": "winning_move_witness",
+    "value": "win"
+  },
+  "schema": "ugts-chess-bounded-wdl-result-2.0"
+}

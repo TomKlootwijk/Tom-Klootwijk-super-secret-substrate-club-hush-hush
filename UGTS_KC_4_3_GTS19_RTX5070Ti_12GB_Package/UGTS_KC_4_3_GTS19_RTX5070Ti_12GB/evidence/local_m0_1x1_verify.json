@@ -1,0 +1,15 @@
+{
+  "certificate_sha256": "e41a53ecbf77a212886716a461d21839c337bfb0ef0993b96eb0f67f06f5c7a5",
+  "root_digest": "50c3c05f085de6d3482674685b5a9ccb3d9666e1c32815d9b65bb4a416f6169c",
+  "stats": {
+    "cutoffs": 0,
+    "elapsed_seconds": 9.109999518841505e-05,
+    "max_ply": 2,
+    "nodes": 5,
+    "terminals": 2,
+    "tt_entries": 2,
+    "tt_hits": 1
+  },
+  "value2": -1,
+  "verified": true
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-chess-wdl-2.0.schema.json",
+  "title": "UGTS Chess bounded WDL result 2.0",
+  "type": "object",
+  "required": [
+    "schema", "root", "nodes_searched", "cache_hits", "cutoffs",
+    "elapsed_seconds", "completed", "max_plies", "certificate_bundle"
+  ],
+  "properties": {
+    "schema": {"const": "ugts-chess-bounded-wdl-result-2.0"},
+    "root": {"$ref": "#/$defs/node"},
+    "nodes_searched": {"type": "integer", "minimum": 0},
+    "cache_hits": {"type": "integer", "minimum": 0},
+    "cutoffs": {"type": "integer", "minimum": 0},
+    "elapsed_seconds": {"type": "number", "minimum": 0},
+    "completed": {"type": "boolean"},
+    "max_plies": {"type": "integer", "minimum": 0},
+    "certificate_bundle": {"$ref": "#/$defs/bundle"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "value": {"enum": ["win", "loss", "draw", "unknown"]},
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {"$ref": "#/$defs/hash"},
+          {"type": "integer", "minimum": 1, "maximum": 5}
+        ],
+        "items": false,
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "child": {
+      "type": "object",
+      "required": [
+        "action_id", "kind", "move", "san", "claim_code", "child_state_hash",
+        "child_value", "value_for_parent", "child_certificate_hash", "exact"
+      ],
+      "properties": {
+        "action_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["move", "claim"]},
+        "move": {"type": ["string", "null"]},
+        "san": {"type": ["string", "null"]},
+        "claim_code": {"type": ["string", "null"]},
+        "child_state_hash": {"anyOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]},
+        "child_value": {"$ref": "#/$defs/value"},
+        "value_for_parent": {"$ref": "#/$defs/value"},
+        "child_certificate_hash": {"anyOf": [{"$ref": "#/$defs/hash"}, {"type": "null"}]},
+        "exact": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "schema", "state_hash", "fen", "history_counts", "depth_remaining",
+        "value", "terminal_code", "current_claim_actions", "legal_move_count",
+        "coverage", "children", "exact", "certificate_hash"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-wdl-node-2.0"},
+        "state_hash": {"$ref": "#/$defs/hash"},
+        "fen": {"type": "string", "minLength": 1},
+        "history_counts": {"$ref": "#/$defs/history"},
+        "depth_remaining": {"type": "integer", "minimum": 0},
+        "value": {"$ref": "#/$defs/value"},
+        "terminal_code": {"type": "string", "minLength": 1},
+        "current_claim_actions": {"type": "array", "items": {"type": "string"}},
+        "legal_move_count": {"type": "integer", "minimum": 0, "maximum": 256},
+        "coverage": {"enum": ["terminal", "witness", "complete", "cutoff"]},
+        "children": {"type": "array", "items": {"$ref": "#/$defs/child"}},
+        "exact": {"type": "boolean"},
+        "certificate_hash": {"$ref": "#/$defs/hash"}
+      },
+      "additionalProperties": false
+    },
+    "bundle": {
+      "type": "object",
+      "required": [
+        "schema", "rules_profile", "root_certificate_hash", "root_state_hash",
+        "root_value", "root_exact", "max_plies", "nodes"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chess-wdl-certificate-bundle-2.0"},
+        "rules_profile": {"const": "fide-classical-2023-claims-as-actions-v2"},
+        "root_certificate_hash": {"$ref": "#/$defs/hash"},
+        "root_state_hash": {"$ref": "#/$defs/hash"},
+        "root_value": {"$ref": "#/$defs/value"},
+        "root_exact": {"type": "boolean"},
+        "max_plies": {"type": "integer", "minimum": 0},
+        "nodes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/node"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

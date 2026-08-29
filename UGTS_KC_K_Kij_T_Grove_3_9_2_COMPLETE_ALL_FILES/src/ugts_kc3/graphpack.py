@@ -71,6 +71,8 @@ NODE_OPCODES: dict[str, int] = {
     "action.set_active": 16,
     "action.despawn": 17,
     "action.apply_force": 18,
+    "event.trigger_enter": 19,
+    "event.trigger_exit": 20,
 }
 OPCODE_TYPES = {opcode: type_id for type_id, opcode in NODE_OPCODES.items()}
 
@@ -78,6 +80,8 @@ NODE_INPUTS: dict[str, tuple[str, ...]] = {
     "event.ready": (),
     "event.tick": (),
     "event.input_pressed": ("action",),
+    "event.trigger_enter": (),
+    "event.trigger_exit": (),
     "flow.branch": ("condition",),
     # Constant's saved value is an internal VM input even though it is an output
     # property in the editor registry.
@@ -101,6 +105,8 @@ NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
     "event.ready": ("entity",),
     "event.tick": ("dt", "tick", "entity"),
     "event.input_pressed": ("action", "value", "entity"),
+    "event.trigger_enter": ("sensor", "player", "entity"),
+    "event.trigger_exit": ("sensor", "player", "entity"),
     "flow.branch": (),
     "value.constant": ("value",),
     "value.state": ("value",),
@@ -124,6 +130,8 @@ NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
     "event.ready": ("out",),
     "event.tick": ("out",),
     "event.input_pressed": ("out",),
+    "event.trigger_enter": ("out",),
+    "event.trigger_exit": ("out",),
     "flow.branch": ("true", "false"),
     "value.constant": (),
     "value.state": (),

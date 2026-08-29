@@ -40,6 +40,13 @@ class AreaScore:
 
 
 def area_score(board: bytes, rules: Rules) -> AreaScore:
+    if type(board) is not bytes:
+        raise TypeError("board must be immutable bytes")
+    expected = rules.size * rules.size
+    if len(board) != expected:
+        raise ValueError(f"board has {len(board)} points, expected {expected}")
+    if any(point not in (EMPTY, BLACK, WHITE) for point in board):
+        raise ValueError("board contains an invalid point value")
     black_stones = board.count(BLACK)
     white_stones = board.count(WHITE)
     black_territory = 0

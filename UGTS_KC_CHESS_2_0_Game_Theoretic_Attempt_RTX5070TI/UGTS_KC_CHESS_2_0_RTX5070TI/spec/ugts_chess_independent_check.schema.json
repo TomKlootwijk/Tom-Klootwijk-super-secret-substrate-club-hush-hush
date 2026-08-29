@@ -1,0 +1,50 @@
+{
+  "$id": "https://example.invalid/ugts-chess-independent-check-2.0.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "certificate_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "checker": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "child_game_state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "obligation_id": {
+      "pattern": "^root-[0-9]{2}-[a-h][1-8][a-h][1-8][nbrq]?$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "ugts-chess-independent-check-2.0"
+    },
+    "valid": {
+      "const": true
+    },
+    "wdl": {
+      "enum": [
+        "win",
+        "draw",
+        "loss"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "valid",
+    "obligation_id",
+    "wdl",
+    "certificate_sha256",
+    "child_game_state_sha256",
+    "checker"
+  ],
+  "title": "UGTS Chess independent candidate check 2.0",
+  "type": "object"
+}
