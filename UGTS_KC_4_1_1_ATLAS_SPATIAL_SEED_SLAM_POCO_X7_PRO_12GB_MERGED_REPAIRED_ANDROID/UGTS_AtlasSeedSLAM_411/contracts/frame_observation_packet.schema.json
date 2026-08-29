@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ugts://atlas/3.9.4/frame-observation-packet",
+  "type": "object",
+  "required": ["schema", "session_id", "frame_id", "timestamp_ns", "camera", "pose_proposal", "quality"],
+  "properties": {
+    "schema": {"const": "ugts.frame-observation/3.9.4"},
+    "session_id": {"type": "string", "minLength": 1},
+    "frame_id": {"type": "integer", "minimum": 0},
+    "timestamp_ns": {"type": "integer", "minimum": 0},
+    "camera": {"type": "object"},
+    "pose_proposal": {"type": "object"},
+    "quality": {"type": "object"},
+    "commit_state": {"enum": ["proposed", "accepted", "rejected", "deferred"]}
+  },
+  "additionalProperties": true
+}

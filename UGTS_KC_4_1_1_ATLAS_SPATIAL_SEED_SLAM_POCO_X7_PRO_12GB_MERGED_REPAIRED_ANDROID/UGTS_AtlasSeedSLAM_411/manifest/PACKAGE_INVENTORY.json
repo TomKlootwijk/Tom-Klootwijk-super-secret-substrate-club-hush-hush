@@ -1,0 +1,122 @@
+{
+  "android_apk_included": false,
+  "archive_root": "UGTS_AtlasSeedSLAM_411",
+  "file_count": 134,
+  "maximum_relative_path_characters": 73,
+  "physical_device_validated": false,
+  "release": "UGTS-KC 4.1.1 Atlas Spatial Seed SLAM Fusion",
+  "schema": "ugts.package-inventory/4.1.1",
+  "scope_note": "Counts include manifest and checksum paths. SHA256SUMS excludes its own two checksum files by design.",
+  "source_merge_mode": "documented-contract reimplementation; unavailable 4.1.0 source ZIP was not byte-merged",
+  "top_level": {
+    ".gitignore": {
+      "bytes": 95,
+      "files": 1
+    },
+    "BUILD.md": {
+      "bytes": 1039,
+      "files": 1
+    },
+    "CHANGELOG.md": {
+      "bytes": 1437,
+      "files": 1
+    },
+    "NOTICE.md": {
+      "bytes": 939,
+      "files": 1
+    },
+    "README.md": {
+      "bytes": 3801,
+      "files": 1
+    },
+    "VERSION": {
+      "bytes": 6,
+      "files": 1
+    },
+    "app": {
+      "bytes": 68372,
+      "files": 17
+    },
+    "build.gradle": {
+      "bytes": 132,
+      "files": 1
+    },
+    "checksums": {
+      "bytes": 14143,
+      "files": 2
+    },
+    "contracts": {
+      "bytes": 2296,
+      "files": 2
+    },
+    "core": {
+      "bytes": 122786,
+      "files": 39
+    },
+    "docs": {
+      "bytes": 8870,
+      "files": 7
+    },
+    "gradle": {
+      "bytes": 8380,
+      "files": 2
+    },
+    "gradle.properties": {
+      "bytes": 243,
+      "files": 1
+    },
+    "gradlew": {
+      "bytes": 362,
+      "files": 1
+    },
+    "gradlew.bat": {
+      "bytes": 267,
+      "files": 1
+    },
+    "manifest": {
+      "bytes": 9687,
+      "files": 2
+    },
+    "native": {
+      "bytes": 4203,
+      "files": 4
+    },
+    "provenance": {
+      "bytes": 2467,
+      "files": 2
+    },
+    "report": {
+      "bytes": 1307841,
+      "files": 9
+    },
+    "samples": {
+      "bytes": 14387,
+      "files": 3
+    },
+    "seednative": {
+      "bytes": 4884,
+      "files": 5
+    },
+    "settings.gradle": {
+      "bytes": 363,
+      "files": 1
+    },
+    "sources": {
+      "bytes": 841,
+      "files": 1
+    },
+    "spec": {
+      "bytes": 3496,
+      "files": 3
+    },
+    "tools": {
+      "bytes": 106479,
+      "files": 21
+    },
+    "validation": {
+      "bytes": 13179,
+      "files": 4
+    }
+  },
+  "total_uncompressed_bytes": 1700995
+}

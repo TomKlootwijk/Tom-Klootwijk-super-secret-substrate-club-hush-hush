@@ -1,0 +1,17 @@
+{
+  "schema": "ugts.kseed-inspection/4.1.1",
+  "seed": "58cea86733a4b89a9a25c6a5b2e7c0f7",
+  "analysis_width": 160,
+  "analysis_height": 96,
+  "requested_capture_fps": 15,
+  "feature_budget": 420,
+  "frames": 120,
+  "keyframes": 18,
+  "events": 30,
+  "voxels": 1433,
+  "raw_input_bytes": 1843200,
+  "stored_bytes": 11425,
+  "rejected_proposals": 0,
+  "chunk_count": 6,
+  "final_chain_sha256": "c2616adc55927fc400a1f3897138aa6c3d29fabd01a71adebd99a2cbfd451c66"
+}

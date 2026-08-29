@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ugts.invalid/contracts/spatial_proposal_4_1_1.schema.json",
+  "title": "UGTS-KC 4.1.1 Spatial Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "proposal_id", "entity_id", "timestamp_ns", "type",
+    "support_ok", "compatibility_ok", "guard_status",
+    "confidence", "confidence_floor", "numeric_error", "event_margin",
+    "uncertainty", "max_uncertainty", "requires_metric", "metric_available",
+    "tags", "payload"
+  ],
+  "properties": {
+    "proposal_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "entity_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "timestamp_ns": {"type": "integer", "minimum": 0},
+    "type": {"type": "string", "minLength": 1},
+    "support_ok": {"type": "boolean"},
+    "compatibility_ok": {"type": "boolean"},
+    "guard_status": {"enum": ["crossing", "touch", "tangency", "coincident", "unknown"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "confidence_floor": {"type": "number", "minimum": 0, "maximum": 1},
+    "numeric_error": {"type": "number", "minimum": 0},
+    "event_margin": {"type": "number", "minimum": 0},
+    "uncertainty": {"type": "number", "minimum": 0},
+    "max_uncertainty": {"type": "number", "minimum": 0},
+    "requires_metric": {"type": "boolean"},
+    "metric_available": {"type": "boolean"},
+    "tags": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+    "payload": {"type": "object", "additionalProperties": {"type": "string"}}
+  }
+}

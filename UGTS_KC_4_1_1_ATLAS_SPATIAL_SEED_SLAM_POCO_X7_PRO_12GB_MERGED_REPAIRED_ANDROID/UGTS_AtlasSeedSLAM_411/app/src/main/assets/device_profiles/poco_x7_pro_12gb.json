@@ -1,0 +1,42 @@
+{
+  "schema": "ugts.android-device-profile/4.1.1",
+  "profile_id": "poco-x7-pro-12gb-atlas-seed-slam-411",
+  "target": {
+    "manufacturer": "POCO",
+    "model": "POCO X7 Pro",
+    "ram_gib": 12,
+    "abi": ["arm64-v8a"]
+  },
+  "capture": {
+    "api": "Camera2",
+    "format": "YUV_420_888",
+    "analysis_long_edge": 640,
+    "max_images": 2,
+    "requested_capture_fps": 15,
+    "thermal_fps": {"normal": 15, "warm": 10, "hot": 6}
+  },
+  "slam": {
+    "feature_budget": 1100,
+    "voxel_budget": 260000,
+    "keyframe_limit": 480,
+    "metric_anchor_required": true,
+    "loop_closure_commit": "deferred_without_geometric_bundle_adjustment"
+  },
+  "storage": {
+    "default_extension": ".kseed",
+    "format": "KSEED 4.1",
+    "raw_frames_persisted": false,
+    "compression": "delta+varint+zlib-level-1-when-smaller",
+    "integrity": "CRC32+SHA256-chain"
+  },
+  "presentation": {
+    "camera_preview": "full_resolution_downstream",
+    "bayer_projection": "optional_8x8_four_level_non_authoritative"
+  },
+  "evidence_boundary": {
+    "synthetic_tag_bit": 31,
+    "seed_is_encryption": false,
+    "seed_reconstructs_real_photons": false,
+    "physical_device_validated": false
+  }
+}

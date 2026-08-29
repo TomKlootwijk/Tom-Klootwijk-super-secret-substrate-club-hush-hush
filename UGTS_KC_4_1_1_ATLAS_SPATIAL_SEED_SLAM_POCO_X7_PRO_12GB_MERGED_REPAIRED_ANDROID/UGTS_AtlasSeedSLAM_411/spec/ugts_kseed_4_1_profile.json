@@ -1,0 +1,35 @@
+{
+  "schema": "ugts.kseed-profile/4.1.1",
+  "profile_id": "ugts-kc-4.1.1-atlas-seed-slam",
+  "endianness": "little",
+  "header_bytes": 128,
+  "chunk_header_bytes": 64,
+  "summary_bytes": 60,
+  "magic_hex": "4b53454544343100",
+  "initial_chain_text": "KSEED41-CHAIN",
+  "compression": {
+    "codec": "zlib",
+    "level": 1,
+    "admit_when": "compressed_bytes + 16 < decoded_bytes"
+  },
+  "record_methods": [
+    "delta timestamps",
+    "delta frame indices",
+    "int16 orientation and inertial hints",
+    "base-128 varints",
+    "signed 21-bit Morton voxel keys",
+    "sorted unsigned Morton-key deltas"
+  ],
+  "chunk_types": {
+    "1": "frame_evidence",
+    "2": "keyframes",
+    "3": "ledger",
+    "4": "voxels",
+    "5": "calibration",
+    "255": "summary"
+  },
+  "raw_frames_persisted": false,
+  "seed_is_encryption": false,
+  "seed_reconstructs_real_photons": false,
+  "source_merge_status": "documented-contract-reimplementation"
+}

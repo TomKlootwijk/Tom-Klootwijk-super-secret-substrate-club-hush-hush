@@ -1,0 +1,26 @@
+{
+  "schema": "ugts.release-provenance/2",
+  "release": "4.1.1",
+  "edition": "Atlas Spatial Seed SLAM Fusion",
+  "direct_source_baseline": {
+    "filename": "UGTS_KC_3_9_4_1_ATLAS_POCKET_SLAM_POCO_X7_PRO_12GB_ANDROID_REPAIRED.zip",
+    "sha256": "e87ba13d577da0ea0a3d4cddeebe8a56480ff0fe082279866f9a9f0fa131a729",
+    "treatment": "extracted and used as the source implementation baseline"
+  },
+  "merge_specification": {
+    "filename": "UGTS_KC_4_1_Poco_X7_Pro_Seed_Native.pdf",
+    "availability": "technical report available; complete 4.1.0 source ZIP unavailable in active runtime",
+    "treatment": "KSEED, seed/evidence, authority, synthetic, native and promotion contracts reimplemented"
+  },
+  "earlier_android_lineage": {
+    "filename": "UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES - Tom Klootwijk(1).zip",
+    "sha256": "2d0197bb4526ca994eb67f68985ebd349fb91f52f562870b97f01d03023f8944",
+    "treatment": "indirect lineage retained through the repaired 3.9.4.1 source"
+  },
+  "atlas_substrate_baseline": {
+    "filename": "UGTS_KC_3_9_3_KC_ATLAS_POCKET_SPATIAL_LEDGER_COMPLETE_FILES.zip",
+    "sha256": "6de52824edfd8ef92367d15d601f7d6b463ec9b4be52825ae930406ff2b9517e",
+    "treatment": "authority and frame-observation contracts retained by reference"
+  },
+  "merge_claim": "documented-contract reimplementation; not a byte-identical merge of unavailable 4.1.0 source"
+}

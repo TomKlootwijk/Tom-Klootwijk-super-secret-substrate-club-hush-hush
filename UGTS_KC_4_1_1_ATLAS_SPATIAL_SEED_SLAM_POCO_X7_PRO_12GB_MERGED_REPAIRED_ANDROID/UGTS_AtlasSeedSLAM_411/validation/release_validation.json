@@ -1,0 +1,151 @@
+{
+  "android_build": {
+    "apk_in_release": false,
+    "attempted": false,
+    "build_command": "./tools/build_android.sh",
+    "reason": "Android SDK Platform 36 and NDK 29.0.14206865 were unavailable; no unrelated or stale APK is presented."
+  },
+  "artifacts": {
+    "gradle_bootstrap_jar_bytes": 8042,
+    "gradle_bootstrap_jar_sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b",
+    "kseed_fixture_bytes": 11425,
+    "kseed_fixture_sha256": "cad6ef12bb702f8b91bb29608bc6384ed6b5cb9046492735e019313a9c322343",
+    "legacy_scan_sha256": "ff7efb7163ed815cc953b8f4ce03f00e05338918f26479a20c5103b0cc518d0c"
+  },
+  "checks": [
+    {
+      "command": [
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/run_host_tests.sh"
+      ],
+      "elapsed_seconds": 2.2474,
+      "name": "java_core_host_tests",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "UGTS 3.9.4.1 host core self-test: PASS (8465 assertions)\nUGTS 4.1.1 seed/spatial self-test: PASS (24369 assertions)\n"
+    },
+    {
+      "command": [
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/run_native_host_tests.sh"
+      ],
+      "elapsed_seconds": 0.6633,
+      "name": "portable_native_host_tests",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "Native seed host tests: PASS (10004 checks)\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/compile_android_stubs.py"
+      ],
+      "elapsed_seconds": 3.59,
+      "name": "android_shell_and_jni_bridge_stub_compile",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "Android shell + native bridge stub compile: PASS (16 class files)\n"
+    },
+    {
+      "command": [
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/gradlew",
+        "--bootstrap-self-test"
+      ],
+      "elapsed_seconds": 0.0312,
+      "name": "gradle_bootstrap_self_test",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "UGTS verified Gradle bootstrap: PASS\nproperties=/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/gradle/wrapper/gradle-wrapper.properties\ndistributionUrl=https://services.gradle.org/distributions/gradle-8.13-bin.zip\ndistributionSha256Sum=20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78\n"
+    },
+    {
+      "command": [
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/test_bootstrap_local.sh"
+      ],
+      "elapsed_seconds": 2.7904,
+      "name": "gradle_bootstrap_local_integration",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "UGTS local bootstrap download/hash/extract/execute test: PASS\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/verify_android_source.py"
+      ],
+      "elapsed_seconds": 0.8538,
+      "name": "android_source_contract",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "{\n  \"app_java_files\": 10,\n  \"camera_api\": \"Camera2\",\n  \"core_java_files\": 38,\n  \"dependency_lines\": [\n    \"implementation project(':core')\",\n    \"implementation project(':seednative')\"\n  ],\n  \"document_export\": \"ACTION_CREATE_DOCUMENT\",\n  \"errors\": [],\n  \"external_android_runtime_dependencies\": 0,\n  \"manifest_permissions\": [\n    \"android.permission.CAMERA\"\n  ],\n  \"native_abi\": \"arm64-v8a\",\n  \"native_bridge_java_files\": 1,\n  \"network_permission\": false,\n  \"status\": \"PASS\",\n  \"storage\": \"KSEED 4.1\"\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/kseed_inspect.py",
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/samples/atlas_seed_slam_411_fixture.kseed",
+        "--json"
+      ],
+      "elapsed_seconds": 5.2402,
+      "name": "kseed_independent_inspection",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "{\n  \"bytes\": 11425,\n  \"chunks\": [\n    {\n      \"chain_sha256\": \"784277c26228bf55fff126edee33505de9edb069dc3fcf9b3b0442cbd01de550\",\n      \"decoded_length\": 3842,\n      \"flags\": 32769,\n      \"record_count\": 120,\n      \"schema_id\": \"0x00004101\",\n      \"sequence\": 0,\n      \"stored_length\": 1518,\n      \"type\": 1\n    },\n    {\n      \"chain_sha256\": \"457f1cf69c06b9bebee09db6c7df489fefe062d1a985174f8e5a68c69e1e610f\",\n      \"decoded_length\": 1042,\n      \"flags\": 32769,\n      \"record_count\": 18,\n      \"schema_id\": \"0x00004102\",\n      \"sequence\": 1,\n      \"stored_length\": 771,\n      \"type\": 2\n    },\n    {\n      \"chain_sha256\": \"d3f00c54c9e795f9de4dc981e90fbdc670fed228bd4a8e179d02685896862fbc\",\n      \"decoded_length\": 9219,\n      \"flags\": 32769,\n      \"record_count\": 30,\n      \"schema_id\": \"0x00004103\",\n      \"sequence\": 2,\n      \"stored_length\": 3945,\n      \"type\": 3\n    },\n    {\n      \"chain_sha256\": \"a3061a5dfbbae89c17ebc9e3193709c4d9aa7ddaa3a2305fc5afc9926588c013\",\n      \"decoded_length\": 6084,\n      \"flags\": 32769,\n      \"record_count\": 1433,\n      \"schema_id\": \"0x00004104\",\n      \"sequence\": 3,\n      \"stored_length\": 4446,\n      \"type\": 4\n    },\n    {\n      \"chain_sha256\": \"b6521f248a2fd2db449c1ceb98c44a28e3e6c0532b5b7b4048d7bb9c6b9d022a\",\n      \"decoded_length\": 261,\n      \"flags\": 32769,\n      \"record_count\": 1,\n      \"schema_id\": \"0x00004105\",\n      \"sequence\": 4,\n      \"stored_length\": 173,\n      \"type\": 5\n    },\n    {\n      \"chain_sha256\": \"c2616adc55927fc400a1f3897138aa6c3d29fabd01a71adebd99a2cbfd451c66\",\n      \"decoded_length\": 60,\n      \"flags\": 32768,\n      \"record_count\": 1,\n      \"schema_id\": \"0x000041ff\",\n      \"sequence\": 5,\n      \"stored_length\": 60,\n      \"type\": 255\n    }\n  ],\n  \"compression\": {\n    \"note\": \"ratio compares captured luma bytes with retained evidence, not equal-information reconstruction\",\n    \"raw_to_stored_ratio\": 161.33041575492342\n  },\n  \"file\": \"/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/samples/atlas_seed_slam_411_fixture.kseed\",\n  \"file_sha256\": \"cad6ef12bb702f8b91bb29608bc6384ed6b5cb9046492735e019313a9c322343\",\n  \"final_chain_sha256\": \"c2616adc55927fc400a1f3897138aa6c3d29fabd01a71adebd99a2cbfd451c66\",\n  \"header\": {\n    \"analysis_height\": 96,\n    \"analysis_width\": 160,\n    \"calibration_sha256\": \"7d71e80e4e688fa630b73425bb280a7f03082bf43f8e1f60019374767cea8cf5\",\n    \"capture_profile_sha256\": \"c7fa4e14e4d6c6d46808487c940808b1fe14b7f1bc8e11c28db99b954edb8d81\",\n    \"feature_budget\": 420,\n    \"flags\": 1,\n    \"header_crc32\": \"0dec3166\",\n    \"requested_capture_fps\": 15,\n    \"seed\": \"58cea86733a4b89a9a25c6a5b2e7c0f7\",\n    \"start_time_ns\": 10000000000,\n    \"storage_mode\": 1,\n    \"version\": \"4.1\"\n  },\n  \"integrity\": \"PASS\",\n  \"schema\": \"ugts.kseed-inspection/4.1.1\",\n  \"summary\": {\n    \"chunk_count\": 6,\n    \"events\": 30,\n    \"frames\": 120,\n    \"keyframes\": 18,\n    \"raw_input_bytes\": 1843200,\n    \"rejected_proposals\": 0,\n    \"state_flags\": 1,\n    \"stored_bytes\": 11425,\n    \"voxels\": 1433\n  }\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/tools/ugts_scan_tool.py",
+        "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/samples/synthetic_codec_sample.ugtsscan",
+        "--summary-only"
+      ],
+      "elapsed_seconds": 2.8481,
+      "name": "legacy_ugtsscan_compatibility",
+      "returncode": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "{\n  \"decoded_voxels\": 240,\n  \"file\": \"/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/samples/synthetic_codec_sample.ugtsscan\",\n  \"file_sha256\": \"ff7efb7163ed815cc953b8f4ce03f00e05338918f26479a20c5103b0cc518d0c\",\n  \"verification_errors\": [],\n  \"voxel_size\": 0.02\n}\n"
+    },
+    {
+      "count": 9,
+      "errors": [],
+      "name": "python_source_syntax",
+      "status": "PASS"
+    },
+    {
+      "count": 7,
+      "errors": [],
+      "name": "json_parse",
+      "status": "PASS"
+    }
+  ],
+  "edition": "Atlas Spatial Seed SLAM Fusion",
+  "environment": {
+    "android_sdk": {
+      "available": false,
+      "reason": "Android SDK Platform 36 plus NDK 29.0.14206865 were not available"
+    },
+    "cmake": "cmake version 3.31.6",
+    "java": "openjdk version \"21.0.11\" 2026-04-21",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "physical_device_validation": {
+    "attempted": false,
+    "reason": "No physical target device was attached",
+    "target": "POCO X7 Pro 12 GB RAM edition"
+  },
+  "release": "4.1.1",
+  "schema": "ugts.android-validation/4.1.1",
+  "source_merge_boundary": {
+    "base_source": "UGTS-KC 3.9.4.1 repaired Android package",
+    "byte_identical_4_1_source_merge": false,
+    "merged_contract": "UGTS-KC 4.1.0 POCO X7 Pro Spatial Seed Native report",
+    "reason": "The 4.1.0 source ZIP was not present in the active runtime; its documented KSEED and authority contracts were reimplemented against the available repaired source."
+  },
+  "status": "PASS"
+}

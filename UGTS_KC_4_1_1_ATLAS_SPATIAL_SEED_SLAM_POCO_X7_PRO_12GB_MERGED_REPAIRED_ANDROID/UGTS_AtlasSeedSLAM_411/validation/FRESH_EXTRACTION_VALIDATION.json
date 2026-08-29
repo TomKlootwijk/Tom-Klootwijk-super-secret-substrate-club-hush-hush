@@ -1,0 +1,11 @@
+{
+  "android_source_contract": "PASS",
+  "android_stub_compile": "PASS",
+  "directory_manifest": "PASS",
+  "fresh_system_unzip": true,
+  "gradle_bootstrap_self_test": "PASS",
+  "java_core_host_tests": "PASS",
+  "kseed_integrity": "PASS",
+  "portable_native_host_tests": "PASS",
+  "status": "PASS"
+}

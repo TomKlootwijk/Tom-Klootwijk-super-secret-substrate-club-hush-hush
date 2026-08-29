@@ -1,0 +1,44 @@
+plugins { id 'com.android.library' }
+
+android {
+    namespace 'org.ugts.atlas.seednative'
+    compileSdk 36
+    ndkVersion '29.0.14206865'
+
+    defaultConfig {
+        minSdk 29
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++20 -fno-exceptions -fno-rtti -fvisibility=hidden'
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    buildFeatures {
+        buildConfig false
+        prefab false
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            consumerProguardFiles 'consumer-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

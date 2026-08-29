@@ -1,0 +1,99 @@
+{
+  "bytes": 11425,
+  "chunks": [
+    {
+      "chain_sha256": "784277c26228bf55fff126edee33505de9edb069dc3fcf9b3b0442cbd01de550",
+      "decoded_length": 3842,
+      "flags": 32769,
+      "record_count": 120,
+      "schema_id": "0x00004101",
+      "sequence": 0,
+      "stored_length": 1518,
+      "type": 1
+    },
+    {
+      "chain_sha256": "457f1cf69c06b9bebee09db6c7df489fefe062d1a985174f8e5a68c69e1e610f",
+      "decoded_length": 1042,
+      "flags": 32769,
+      "record_count": 18,
+      "schema_id": "0x00004102",
+      "sequence": 1,
+      "stored_length": 771,
+      "type": 2
+    },
+    {
+      "chain_sha256": "d3f00c54c9e795f9de4dc981e90fbdc670fed228bd4a8e179d02685896862fbc",
+      "decoded_length": 9219,
+      "flags": 32769,
+      "record_count": 30,
+      "schema_id": "0x00004103",
+      "sequence": 2,
+      "stored_length": 3945,
+      "type": 3
+    },
+    {
+      "chain_sha256": "a3061a5dfbbae89c17ebc9e3193709c4d9aa7ddaa3a2305fc5afc9926588c013",
+      "decoded_length": 6084,
+      "flags": 32769,
+      "record_count": 1433,
+      "schema_id": "0x00004104",
+      "sequence": 3,
+      "stored_length": 4446,
+      "type": 4
+    },
+    {
+      "chain_sha256": "b6521f248a2fd2db449c1ceb98c44a28e3e6c0532b5b7b4048d7bb9c6b9d022a",
+      "decoded_length": 261,
+      "flags": 32769,
+      "record_count": 1,
+      "schema_id": "0x00004105",
+      "sequence": 4,
+      "stored_length": 173,
+      "type": 5
+    },
+    {
+      "chain_sha256": "c2616adc55927fc400a1f3897138aa6c3d29fabd01a71adebd99a2cbfd451c66",
+      "decoded_length": 60,
+      "flags": 32768,
+      "record_count": 1,
+      "schema_id": "0x000041ff",
+      "sequence": 5,
+      "stored_length": 60,
+      "type": 255
+    }
+  ],
+  "compression": {
+    "note": "ratio compares captured luma bytes with retained evidence, not equal-information reconstruction",
+    "raw_to_stored_ratio": 161.33041575492342
+  },
+  "file": "/mnt/data/work_merge_411/UGTS_AtlasSeedSLAM_411/samples/atlas_seed_slam_411_fixture.kseed",
+  "file_sha256": "cad6ef12bb702f8b91bb29608bc6384ed6b5cb9046492735e019313a9c322343",
+  "final_chain_sha256": "c2616adc55927fc400a1f3897138aa6c3d29fabd01a71adebd99a2cbfd451c66",
+  "header": {
+    "analysis_height": 96,
+    "analysis_width": 160,
+    "calibration_sha256": "7d71e80e4e688fa630b73425bb280a7f03082bf43f8e1f60019374767cea8cf5",
+    "capture_profile_sha256": "c7fa4e14e4d6c6d46808487c940808b1fe14b7f1bc8e11c28db99b954edb8d81",
+    "feature_budget": 420,
+    "flags": 1,
+    "header_crc32": "0dec3166",
+    "requested_capture_fps": 15,
+    "seed": "58cea86733a4b89a9a25c6a5b2e7c0f7",
+    "start_time_ns": 10000000000,
+    "storage_mode": 1,
+    "version": "4.1"
+  },
+  "integrity": "PASS",
+  "schema": "ugts.kseed-inspection/4.1.1",
+  "summary": {
+    "chunk_count": 6,
+    "events": 30,
+    "frames": 120,
+    "keyframes": 18,
+    "raw_input_bytes": 1843200,
+    "rejected_proposals": 0,
+    "state_flags": 1,
+    "stored_bytes": 11425,
+    "voxels": 1433
+  }
+}

@@ -1,0 +1,63 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'org.ugts.atlas.slam'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'org.ugts.atlas.slam.pocox7pro'
+        minSdk 29
+        targetSdk 36
+        versionCode 40101
+        versionName '4.1.1-poco-x7-pro-12gb-atlas-seed-slam'
+        resourceConfigurations += ['en']
+    }
+
+    buildFeatures {
+        buildConfig false
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+            minifyEnabled false
+        }
+        release {
+            // Installable owner-device build. Replace with a private release key
+            // before public distribution.
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                '/META-INF/{AL2.0,LGPL2.1}',
+                'META-INF/DEPENDENCIES',
+                'META-INF/NOTICE*',
+                'META-INF/LICENSE*'
+            ]
+        }
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds true
+        warningsAsErrors false
+    }
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':seednative')
+}
