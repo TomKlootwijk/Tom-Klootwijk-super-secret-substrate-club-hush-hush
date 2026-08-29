@@ -1,7 +1,8 @@
-"""UGTS-KC 3.9.1 — Tom Klootwijk Signature vector, game and native-mobile runtime.
+"""UGTS-KC 3.9.2 — K-Kij-T / Grove vector, game and native-mobile runtime.
 
 The original 3.0 scene/geometry/two-hand/replay API remains import-compatible.
-Version 3.9 adds the practical 2D stack; 3.9.1 adds a mobile-3D model and native Android source exporter.
+Version 3.9 adds the practical 2D stack, 3.9.1 adds mobile 3D and native Android export,
+and 3.9.2 adds the Grove Android runtime and Poco X7 Pro tuning.
 """
 from .math3d import *
 from .geometry import *

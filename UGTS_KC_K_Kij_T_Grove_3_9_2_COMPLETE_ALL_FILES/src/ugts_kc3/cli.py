@@ -12,6 +12,12 @@ from .androidexport import (
     write_mobile3d_gltf,
     write_scene_pack,
 )
+from .androidbuild import (
+    build_apk,
+    install_apk,
+    list_android_devices,
+    supported_variants,
+)
 from .game_input import InputFrame
 from .mobile3d import InputFrame3D, Mobile3DProject
 from .project import GameProject
@@ -29,6 +35,9 @@ def _parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("info", help="show runtime and edition information")
+
+    editor = sub.add_parser("editor", help="launch the UGTS desktop editor")
+    editor.add_argument("project", type=Path, nargs="?")
 
     new = sub.add_parser("new", help="create a starter 2D vector-game project")
     new.add_argument("directory", type=Path)
@@ -99,6 +108,28 @@ def _parser() -> argparse.ArgumentParser:
     android.add_argument("output", type=Path)
     android.add_argument("--profile", default="auto")
     android.add_argument("--no-clean", action="store_true")
+    android.add_argument(
+        "--apk", action="store_true",
+        help="compile an APK after generating the Android project",
+    )
+    android.add_argument(
+        "--install", action="store_true",
+        help="compile and install on the selected ADB device",
+    )
+    android.add_argument(
+        "--variant", choices=supported_variants(), default="poco-debug",
+        help="Gradle flavor/build type used by --apk or --install",
+    )
+    android.add_argument("--serial", help="ADB serial used by --install")
+    android.add_argument(
+        "--gradle-clean", action="store_true",
+        help="run Gradle clean before compiling the APK",
+    )
+
+    devices = sub.add_parser(
+        "android-devices", help="list attached Android Debug Bridge devices"
+    )
+    devices.add_argument("--json", action="store_true", dest="as_json")
 
     return parser
 
@@ -139,6 +170,28 @@ def main(argv: list[str] | None = None) -> int:
             print("3D: validated mobile scene projects, deterministic arcade physics, glTF/KC3D scene packs and native Android NDK/GLES3 source export")
             print("Android: POCO X7 Pro 12 GB signature profile plus high, balanced and compatibility device tiers")
             print("4D: design-contract TODO only; no 4D runtime is claimed in 3.9.1")
+            return 0
+
+        if args.command == "editor":
+            try:
+                from .editor import run_editor
+            except ImportError as exc:
+                raise RuntimeError(
+                    "the desktop editor requires PySide6 (pip install PySide6)"
+                ) from exc
+            return int(run_editor(args.project))
+
+        if args.command == "android-devices":
+            devices = list_android_devices()
+            payload = [device.__dict__ | {"ready": device.ready} for device in devices]
+            if args.as_json:
+                print(json.dumps(payload, indent=2, sort_keys=True))
+            elif not devices:
+                print("No ADB devices attached.")
+            else:
+                for device in devices:
+                    label = f" ({device.model})" if device.model else ""
+                    print(f"{device.serial}\t{device.state}{label}")
             return 0
 
         if args.command == "new":
@@ -231,10 +284,20 @@ def main(argv: list[str] | None = None) -> int:
             result = build_android_project(Mobile3DProject.load(args.project), args.output, args.profile, clean=not args.no_clean)
             print(result.output_dir)
             print(f"{result.file_count} files, {result.total_bytes} bytes, project {result.project_hash[:12]}")
+            if args.apk or args.install:
+                compiled = build_apk(
+                    result.output_dir,
+                    args.variant,
+                    clean=args.gradle_clean,
+                )
+                print(compiled.apk)
+                if args.install:
+                    installed = install_apk(compiled.apk, serial=args.serial)
+                    print(f"installed on {installed.serial}")
             return 0
 
         raise AssertionError("unreachable command")
-    except (OSError, ValueError, KeyError, TypeError) as exc:
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 

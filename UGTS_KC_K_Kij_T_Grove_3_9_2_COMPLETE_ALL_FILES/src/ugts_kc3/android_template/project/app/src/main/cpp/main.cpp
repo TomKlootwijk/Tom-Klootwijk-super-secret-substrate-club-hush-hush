@@ -20,6 +20,7 @@ int32_t input(android_app* app,AInputEvent* event) {
 }
 
 void android_main(android_app* app) {
+    // Force-link native_app_glue so NativeActivity can resolve ANativeActivity_onCreate.
     app_dummy();
     kc::Engine engine(app);
     app->userData=&engine;
@@ -34,7 +35,9 @@ void android_main(android_app* app) {
         while (ALooper_pollOnce(timeout,nullptr,&events,reinterpret_cast<void**>(&source))>=0) {
             if (source) source->process(app,source);
             if (app->destroyRequested) break;
-            if (timeout==0) break;
+            // INIT_WINDOW and GAINED_FOCUS can arrive in the same blocking poll
+            // cycle. Break as soon as both are true so the first frame is drawn.
+            if (engine.ready() && engine.focused()) break;
         }
         const auto now=clock::now();
         const float dt=std::chrono::duration<float>(now-previous).count();

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-#define KC_LOGE(...) __android_log_print(ANDROID_LOG_ERROR,"UGTS-KC391",__VA_ARGS__)
+#define KC_LOGE(...) __android_log_print(ANDROID_LOG_ERROR,"UGTS-KC392",__VA_ARGS__)
 
 namespace kc {
 
@@ -39,7 +39,9 @@ GLuint RendererGles3::compile(GLenum type,const std::string& source) {
 bool RendererGles3::createProgram(AAssetManager* assets) {
     const auto vs=compile(GL_VERTEX_SHADER,readAsset(assets,"shaders/scene.vert"));
     const auto fs=compile(GL_FRAGMENT_SHADER,readAsset(assets,"shaders/scene.frag"));
-    if (!vs || !fs) return false;
+    const auto pvs=compile(GL_VERTEX_SHADER,readAsset(assets,"shaders/grove_post.vert"));
+    const auto pfs=compile(GL_FRAGMENT_SHADER,readAsset(assets,"shaders/grove_post.frag"));
+    if (!vs || !fs || !pvs || !pfs) return false;
     program_=glCreateProgram();
     glAttachShader(program_,vs); glAttachShader(program_,fs); glLinkProgram(program_);
     glDeleteShader(vs); glDeleteShader(fs);
@@ -59,6 +61,22 @@ bool RendererGles3::createProgram(AAssetManager* assets) {
     uLightIntensity_=glGetUniformLocation(program_,"uLightIntensity");
     uAmbient_=glGetUniformLocation(program_,"uAmbient");
     uPulse_=glGetUniformLocation(program_,"uPulse");
+    postProgram_=glCreateProgram();
+    glAttachShader(postProgram_,pvs); glAttachShader(postProgram_,pfs); glLinkProgram(postProgram_);
+    glDeleteShader(pvs); glDeleteShader(pfs);
+    GLint postOk=GL_FALSE; glGetProgramiv(postProgram_,GL_LINK_STATUS,&postOk);
+    if (!postOk) return false;
+    pColor_=glGetUniformLocation(postProgram_,"uColor");
+    pTime_=glGetUniformLocation(postProgram_,"uTime");
+    pBloom_=glGetUniformLocation(postProgram_,"uBloom");
+    pFlash_=glGetUniformLocation(postProgram_,"uFlash");
+    pAberration_=glGetUniformLocation(postProgram_,"uAberration");
+    pVignette_=glGetUniformLocation(postProgram_,"uVignette");
+    pSaturation_=glGetUniformLocation(postProgram_,"uSaturation");
+    pContrast_=glGetUniformLocation(postProgram_,"uContrast");
+    pShock_=glGetUniformLocation(postProgram_,"uShock");
+    pShockCenter_=glGetUniformLocation(postProgram_,"uShockCenter");
+    pJuicePulse_=glGetUniformLocation(postProgram_,"uJuicePulse");
     return true;
 }
 
@@ -129,7 +147,7 @@ void RendererGles3::rebuildFramebuffer(int width,int height,float scale) {
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) KC_LOGE("dynamic-resolution framebuffer incomplete");
 }
 
-void RendererGles3::render(const ScenePack& scene,const std::vector<NodeData>& nodes,Vec3 target,float yaw,float pitch,float distance,float scale,std::uint32_t maxNodes,float time) {
+void RendererGles3::render(const ScenePack& scene,const std::vector<NodeData>& nodes,Vec3 target,float yaw,float pitch,float distance,float scale,std::uint32_t maxNodes,float time,const GroveJuiceFrame& juice,bool postProcessing) {
     if (!ready()) return;
     eglQuerySurface(display_,surface_,EGL_WIDTH,&width_);
     eglQuerySurface(display_,surface_,EGL_HEIGHT,&height_);
@@ -171,9 +189,33 @@ void RendererGles3::render(const ScenePack& scene,const std::vector<NodeData>& n
         glDrawElements(GL_TRIANGLES,gpu.indexCount,GL_UNSIGNED_INT,nullptr);
         ++drawn;
     }
-    glBindFramebuffer(GL_READ_FRAMEBUFFER,framebuffer_);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
-    glBlitFramebuffer(0,0,internalWidth_,internalHeight_,0,0,width_,height_,GL_COLOR_BUFFER_BIT,GL_LINEAR);
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glViewport(0,0,width_,height_);
+    if (postProcessing && postProgram_ && colorTexture_) {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glUseProgram(postProgram_);
+        glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D,colorTexture_);
+        glUniform1i(pColor_,0);
+        glUniform1f(pTime_,time);
+        glUniform1f(pBloom_,juice.bloom);
+        glUniform1f(pFlash_,juice.flash);
+        glUniform1f(pAberration_,juice.aberration);
+        glUniform1f(pVignette_,juice.vignette);
+        glUniform1f(pSaturation_,juice.saturation);
+        glUniform1f(pContrast_,juice.contrast);
+        glUniform1f(pShock_,juice.shock);
+        glUniform2f(pShockCenter_,juice.shockX,juice.shockY);
+        glUniform1f(pJuicePulse_,juice.pulse);
+        glDrawArrays(GL_TRIANGLES,0,3);
+        glBindTexture(GL_TEXTURE_2D,0);
+        glUseProgram(program_);
+    } else {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER,framebuffer_);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
+        glBlitFramebuffer(0,0,internalWidth_,internalHeight_,0,0,width_,height_,GL_COLOR_BUFFER_BIT,GL_LINEAR);
+    }
+    glEnable(GL_DEPTH_TEST);
     eglSwapBuffers(display_,surface_);
 }
 
@@ -187,11 +229,12 @@ void RendererGles3::shutdown() {
         meshes_.clear();
         destroyFramebuffer();
         if (program_) glDeleteProgram(program_);
+        if (postProgram_) glDeleteProgram(postProgram_);
         if (context_!=EGL_NO_CONTEXT) eglDestroyContext(display_,context_);
         if (surface_!=EGL_NO_SURFACE) eglDestroySurface(display_,surface_);
         eglTerminate(display_);
     }
-    display_=EGL_NO_DISPLAY; surface_=EGL_NO_SURFACE; context_=EGL_NO_CONTEXT; program_=0;
+    display_=EGL_NO_DISPLAY; surface_=EGL_NO_SURFACE; context_=EGL_NO_CONTEXT; program_=0; postProgram_=0;
 }
 
 } // namespace kc

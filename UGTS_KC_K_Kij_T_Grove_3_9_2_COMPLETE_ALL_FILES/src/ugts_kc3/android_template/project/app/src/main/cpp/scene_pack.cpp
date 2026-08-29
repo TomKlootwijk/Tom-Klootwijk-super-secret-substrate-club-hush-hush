@@ -53,8 +53,10 @@ void require(bool condition, const char* message) {
 
 ScenePack parseScenePack(const std::uint8_t* data, std::size_t size) {
     Reader r(data,size);
-    const char expected[8]={'K','C','3','D','3','9','1','\0'};
-    require(std::memcmp(r.raw(8),expected,8)==0,"KC3D magic mismatch");
+    const auto* magic=r.raw(8);
+    const bool legacy=std::memcmp(magic,"KC3D391\0",8)==0;
+    const bool grove=std::memcmp(magic,"KC3D392\0",8)==0;
+    require(legacy || grove,"KC3D magic mismatch");
     require(r.u32()==0x01020304u,"KC3D endian marker mismatch");
     require(r.u32()==1u,"unsupported KC3D version");
     const auto meshCount=r.u32();

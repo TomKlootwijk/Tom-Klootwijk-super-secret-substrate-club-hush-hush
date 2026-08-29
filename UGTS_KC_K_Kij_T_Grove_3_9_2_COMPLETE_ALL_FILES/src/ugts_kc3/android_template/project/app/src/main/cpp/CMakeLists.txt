@@ -23,6 +23,8 @@ add_library(ugts_kc_native SHARED
     scene_pack.cpp
     device_profile.cpp
     adaptive_quality.cpp
+    grove_juice.cpp
+    grove_tuning.cpp
 )
 
 target_include_directories(ugts_kc_native PRIVATE

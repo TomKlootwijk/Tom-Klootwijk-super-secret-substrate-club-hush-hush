@@ -1,8 +1,9 @@
-# UGTS-KC 3.9.1 Tom Klootwijk Signature — Native Android Source
+# UGTS-KC 3.9.2 — Native Android Source
 
 This is a dependency-free `NativeActivity` project. The game loop, scene loader, GLES 3.0 renderer,
 dynamic-resolution framebuffer, fixed-step gameplay, device tier selection, touch/gamepad input and
-adaptive thermal/FPS quality logic are implemented in C++.
+adaptive thermal/FPS quality logic, Grove juice events, particles and optional post-processing are
+implemented in C++.
 
 ## Build
 
@@ -19,11 +20,10 @@ The project intentionally does not include private signing keys or a fabricated 
 
 ## Controls
 
-- Left side touch: movement.
-- Right side drag: orbit camera.
+- Left side drag: movement; left-side tap: jump.
+- Right side drag: orbit camera; right-side tap: dash.
 - Two-finger spacing: camera distance.
-- Gamepad left/right sticks: movement/look; A: jump.
-- Keyboard: WASD/arrows and Space.
+- Gamepad left/right sticks: movement/look; A: jump; B: dash.
+- Keyboard: WASD/arrows and Space; Shift: dash.
 
 The runtime currently uses OpenGL ES 3.0. Vulkan is declared optional and reserved as a future backend.
-The 4D work is a design-only TODO documented in the parent archive.

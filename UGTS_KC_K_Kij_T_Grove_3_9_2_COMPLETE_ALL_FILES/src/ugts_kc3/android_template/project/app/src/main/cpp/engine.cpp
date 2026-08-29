@@ -9,8 +9,8 @@
 #include <fstream>
 #include <thread>
 
-#define KC_LOGI(...) __android_log_print(ANDROID_LOG_INFO,"UGTS-KC391",__VA_ARGS__)
-#define KC_LOGE(...) __android_log_print(ANDROID_LOG_ERROR,"UGTS-KC391",__VA_ARGS__)
+#define KC_LOGI(...) __android_log_print(ANDROID_LOG_INFO,"UGTS-KC392",__VA_ARGS__)
+#define KC_LOGE(...) __android_log_print(ANDROID_LOG_ERROR,"UGTS-KC392",__VA_ARGS__)
 
 #ifndef UGTS_KC_PROFILE_HINT
 #define UGTS_KC_PROFILE_HINT "auto"
@@ -101,19 +101,23 @@ bool Engine::initializeWindow() {
         return false;
     }
     nodes_=scene_.nodes;
+    particles_.clear();
+    renderNodes_.clear();
     if (!renderer_.initialize(app_->window,app_->activity->assetManager,scene_)) {
         KC_LOGE("GLES3 renderer initialization failed");
         return false;
     }
-    profile_=selectProfile(scene_,deviceInfo(),UGTS_KC_PROFILE_HINT);
+    const auto info=deviceInfo();
+    tuning_=selectGroveTuning(info);
+    juice_.configure(tuning_.juiceIntensity,1.0f,1.0f+tuning_.bloom*0.5f);
+    profile_=selectProfile(scene_,info,UGTS_KC_PROFILE_HINT);
     qualityIndex_=0;
     for (std::size_t i=0;i<scene_.qualities.size();++i) if (scene_.qualities[i].id==profile_.qualityId) qualityIndex_=i;
     adaptive_=AdaptiveQuality(qualityIndex_);
     requestFrameRate(static_cast<float>(profile_.targetFps));
-    const auto info=deviceInfo();
-    KC_LOGI("UGTS-KC 3.9.1 profile=%s quality=%s fps=%u scale=%.2f model=%s gpu=%s ram=%uMB",
-        profile_.profileId.c_str(),profile_.qualityId.c_str(),profile_.targetFps,profile_.renderScale,
-        info.model.c_str(),info.gpu.c_str(),info.ramMb);
+    KC_LOGI("UGTS-KC 3.9.2 profile=%s grove=%s quality=%s fps=%u scale=%.2f model=%s gpu=%s ram=%uMB juice=%.2f",
+        profile_.profileId.c_str(),tuning_.profileId.c_str(),profile_.qualityId.c_str(),profile_.targetFps,profile_.renderScale,
+        info.model.c_str(),info.gpu.c_str(),info.ramMb,tuning_.juiceIntensity);
     return true;
 }
 
@@ -131,7 +135,61 @@ float Engine::colliderRadius(const NodeData& node) const {
     return 0;
 }
 
+void Engine::triggerJuice(std::uint32_t kind, const Vec3& origin, float intensity) {
+    juice_.event(kind,intensity);
+    spawnBurst(origin,kind,intensity);
+}
+
+void Engine::spawnBurst(const Vec3& origin, std::uint32_t kind, float intensity) {
+    if (tuning_.particleBudget==0 || scene_.meshes.empty() || scene_.materials.empty()) return;
+    const char* materialId=(kind==GroveJuice::Hazard)?"hazard":(kind==GroveJuice::Dash)?"signature_cyan":"signature_gold";
+    std::size_t meshIndex=scene_.meshes.size(), materialIndex=scene_.materials.size();
+    for (std::size_t i=0;i<scene_.meshes.size();++i) if (scene_.meshes[i].id=="sphere") { meshIndex=i; break; }
+    for (std::size_t i=0;i<scene_.materials.size();++i) if (scene_.materials[i].id==materialId) { materialIndex=i; break; }
+    if (meshIndex==scene_.meshes.size() || materialIndex==scene_.materials.size()) return;
+    const std::uint32_t requested=kind==GroveJuice::Goal?42u:(kind==GroveJuice::Hazard?22u:(kind==GroveJuice::Pickup?16u:8u));
+    const auto count=std::min<std::uint32_t>(requested,std::max(4u,tuning_.particleBudget/8u));
+    const float strength=clamp(intensity,0.25f,1.0f);
+    particles_.reserve(std::min<std::size_t>(tuning_.particleBudget,particles_.size()+count));
+    for (std::uint32_t i=0;i<count;++i) {
+        const float phase=time_*4.0f+static_cast<float>(i)*2.39996323f+static_cast<float>(particles_.size())*0.173f;
+        const float speed=(1.4f+0.16f*static_cast<float>(i%7))*strength;
+        const float size=(kind==GroveJuice::Goal?0.105f:0.070f)*(0.8f+0.06f*static_cast<float>(i%5));
+        EffectParticle particle;
+        particle.node.id="grove_burst";
+        particle.node.meshIndex=static_cast<std::uint32_t>(meshIndex);
+        particle.node.materialIndex=static_cast<std::uint32_t>(materialIndex);
+        particle.node.translation=origin;
+        particle.node.scale={size,size,size};
+        particle.startScale=particle.node.scale;
+        particle.node.velocity={std::cos(phase)*speed,1.4f+0.16f*static_cast<float>(i%6),std::sin(phase)*speed};
+        particle.node.angularVelocity={0.8f+0.1f*static_cast<float>(i%4),1.6f+0.12f*static_cast<float>(i%5),0.45f};
+        particle.node.collider.type=0;
+        particle.node.tagMask=TagDecorative;
+        particle.lifetime=kind==GroveJuice::Goal?1.15f:0.65f;
+        particles_.push_back(std::move(particle));
+    }
+    const auto budget=static_cast<std::size_t>(tuning_.particleBudget);
+    if (particles_.size()>budget) particles_.erase(particles_.begin(),particles_.begin()+static_cast<std::ptrdiff_t>(particles_.size()-budget));
+}
+
+void Engine::updateParticles(float dt) {
+    for (auto& particle:particles_) {
+        particle.age+=dt;
+        particle.node.velocity.y-=5.5f*dt;
+        particle.node.translation=particle.node.translation+particle.node.velocity*dt;
+        const float life=clamp(1.0f-particle.age/particle.lifetime,0.0f,1.0f);
+        particle.node.scale=particle.startScale*(0.35f+life*0.9f);
+        const float angular=length(particle.node.angularVelocity);
+        if (angular>1.0e-5f) particle.node.rotation=normalize(multiply(axisAngle(particle.node.angularVelocity/angular,angular*dt),particle.node.rotation));
+    }
+    particles_.erase(std::remove_if(particles_.begin(),particles_.end(),[](const EffectParticle& particle){ return particle.age>=particle.lifetime; }),particles_.end());
+}
+
 void Engine::fixedUpdate(float dt) {
+    updateParticles(dt);
+    hazardCooldown_=std::max(0.0f,hazardCooldown_-dt);
+    goalCooldown_=std::max(0.0f,goalCooldown_-dt);
     for (auto& node:nodes_) {
         if (!node.alive) continue;
         const float angular=length(node.angularVelocity);
@@ -139,12 +197,23 @@ void Engine::fixedUpdate(float dt) {
     }
     NodeData* p=player();
     if (!p) return;
-    p->velocity.x=moveX_*scene_.playerSpeed;
-    p->velocity.z=moveZ_*scene_.playerSpeed;
+    if (dash_ && dashTimer_<=0.0f) {
+        dashDirection_={moveX_,0.0f,moveZ_};
+        if (length(dashDirection_)<0.1f) dashDirection_={-std::sin(yaw_),0.0f,-std::cos(yaw_)};
+        else dashDirection_=normalize(dashDirection_);
+        dashTimer_=0.18f;
+        triggerJuice(GroveJuice::Dash,p->translation,0.9f);
+    }
+    dash_=false;
+    const float dashSpeed=dashTimer_>0.0f?scene_.playerSpeed*1.35f:0.0f;
+    p->velocity.x=moveX_*scene_.playerSpeed+dashDirection_.x*dashSpeed;
+    p->velocity.z=moveZ_*scene_.playerSpeed+dashDirection_.z*dashSpeed;
     const float verticalExtent=p->collider.type==1?p->collider.radius*std::abs(p->scale.y):p->collider.halfExtents.y*std::abs(p->scale.y);
     const bool grounded=p->translation.y-verticalExtent<=scene_.floorY+0.02f;
-    if (jump_ && grounded) p->velocity.y=scene_.jumpSpeed;
+    if (grounded && !groundedLast_) triggerJuice(GroveJuice::Land,p->translation,1.0f);
+    if (jump_ && grounded) { p->velocity.y=scene_.jumpSpeed; triggerJuice(GroveJuice::Jump,p->translation,0.75f); }
     jump_=false;
+    groundedLast_=grounded;
     if (p->dynamic) p->velocity=p->velocity+scene_.gravity*dt;
     p->translation=p->translation+p->velocity*dt;
     if (p->translation.y-verticalExtent<scene_.floorY) {
@@ -154,18 +223,31 @@ void Engine::fixedUpdate(float dt) {
     const float radius=colliderRadius(*p);
     p->translation.x=clamp(p->translation.x,scene_.boundsMin.x+radius,scene_.boundsMax.x-radius);
     p->translation.z=clamp(p->translation.z,scene_.boundsMin.z+radius,scene_.boundsMax.z-radius);
-    cameraTarget_=p->translation+Vec3{0,1,0};
     for (auto& node:nodes_) {
         if (!node.alive || &node==p) continue;
         const float distance=length(node.translation-p->translation);
         if (distance>radius+colliderRadius(node)) continue;
         if (node.tagMask&TagCollectible) {
             node.alive=false; ++score_;
+            triggerJuice(GroveJuice::Pickup,node.translation,1.0f);
             KC_LOGI("collectible %s score=%d",node.id.c_str(),score_);
+        } else if ((node.tagMask&TagHazard) && hazardCooldown_<=0.0f) {
+            const Vec3 delta=p->translation-node.translation;
+            const Vec3 knockback=length(delta)>0.05f?normalize(delta):Vec3{0,0,1};
+            p->translation=p->translation+knockback*0.72f;
+            p->velocity=p->velocity+knockback*(scene_.playerSpeed*0.75f);
+            hazardCooldown_=0.65f;
+            triggerJuice(GroveJuice::Hazard,node.translation,1.0f);
         } else if (node.tagMask&TagGoal) {
-            KC_LOGI("signature goal reached, score=%d",score_);
+            if (goalCooldown_<=0.0f) {
+                KC_LOGI("goal reached, score=%d",score_);
+                goalCooldown_=1.5f;
+                triggerJuice(GroveJuice::Goal,node.translation,1.0f);
+            }
         }
     }
+    dashTimer_=std::max(0.0f,dashTimer_-dt);
+    cameraTarget_=p->translation+Vec3{0,1,0};
 }
 
 void Engine::frame(float dt) {
@@ -184,8 +266,20 @@ void Engine::frame(float dt) {
         qualityIndex_=adaptive_.update(scene_,measuredFps_,static_cast<float>(profile_.targetFps),lastThermal_,fpsAccumulator_);
         fpsAccumulator_=0; fpsFrames_=0;
     }
+    juice_.update(dt,time_);
+    const auto juice=juice_.frame();
+    const float shake=juice.cameraShake;
+    if (shake>0.001f) {
+        const float sx=std::sin(time_*46.0f)*shake;
+        const float sy=std::cos(time_*39.0f)*shake*0.7f;
+        cameraTarget_.x += sx*0.035f; cameraTarget_.y += sy*0.025f;
+    }
     const auto& quality=scene_.qualities[std::min(qualityIndex_,scene_.qualities.size()-1)];
-    renderer_.render(scene_,nodes_,cameraTarget_,yaw_,pitch_,distance_,quality.renderScale,quality.maxVisibleNodes,time_);
+    const bool usePost=tuning_.post && quality.postProcessing;
+    renderNodes_=nodes_;
+    renderNodes_.reserve(nodes_.size()+particles_.size());
+    for (const auto& particle:particles_) renderNodes_.push_back(particle.node);
+    renderer_.render(scene_,renderNodes_,cameraTarget_,yaw_,pitch_,distance_,quality.renderScale,quality.maxVisibleNodes,time_,juice,usePost);
 }
 
 int Engine::handleInput(AInputEvent* event) {
@@ -198,6 +292,7 @@ int Engine::handleInput(AInputEvent* event) {
         else if (key==AKEYCODE_A || key==AKEYCODE_DPAD_LEFT) moveX_=down?-1.0f:0.0f;
         else if (key==AKEYCODE_D || key==AKEYCODE_DPAD_RIGHT) moveX_=down?1.0f:0.0f;
         else if ((key==AKEYCODE_SPACE || key==AKEYCODE_BUTTON_A) && down) jump_=true;
+        else if ((key==AKEYCODE_SHIFT_LEFT || key==AKEYCODE_SHIFT_RIGHT || key==AKEYCODE_BUTTON_B) && down) dash_=true;
         else return 0;
         return 1;
     }
@@ -237,6 +332,11 @@ int Engine::handleInput(AInputEvent* event) {
         return 1;
     }
     if (action==AMOTION_EVENT_ACTION_UP || action==AMOTION_EVENT_ACTION_CANCEL) {
+        const bool tap=action==AMOTION_EVENT_ACTION_UP && std::hypot(x-touchStartX_,y-touchStartY_)<32.0f;
+        if (tap) {
+            if (touchMove_) jump_=true;
+            else if (touchLook_) dash_=true;
+        }
         if (touchMove_) moveX_=moveZ_=0;
         touchMove_=touchLook_=false;
         return 1;
