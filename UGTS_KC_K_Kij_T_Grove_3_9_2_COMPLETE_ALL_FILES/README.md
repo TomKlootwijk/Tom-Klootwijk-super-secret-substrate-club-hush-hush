@@ -11,8 +11,12 @@ runtime, compact log-polar ECS components and direct APK build/install tooling. 
 build commands remain dependency-free; Qt is only needed for the editor.
 
 UGTS Studio can add, copy, delete, select and move 2D entities or 3D nodes with undo/redo. The
-Inspector can assign the project's existing 2D pictures, 3D shapes and materials. Logic Blocks are
-editable typed data, not generated source hidden behind the GUI.
+Inspector can assign 2D pictures, 3D shapes and materials; Wavefront OBJ shapes import as validated,
+undoable project resources. Logic Blocks are editable typed data, not generated source hidden behind
+the GUI.
+
+On Windows, double-click `RUN_UGTS_STUDIO.cmd` in this folder for a one-click launch. It checks the
+editor dependency on first use and offers to install it only when needed.
 
 ```powershell
 python -m pip install -e ".[editor]"
@@ -89,7 +93,9 @@ PYTHONPATH=src python -m ugts_kc3 build-android   examples/tom_signature_arena_3
 ```
 
 The desktop editor can produce a Poco debug APK directly, optionally installing it when exactly one
-authorized ADB device is connected. You can still open `android/UGTSKCKKijTGrove` in Android Studio.
+authorized ADB device is connected. Its blue **Deploy to Phone** toolbar action preflights ADB,
+builds into an editor-owned cache and installs in one operation. You can still open
+`android/UGTSKCKKijTGrove` in Android Studio.
 The checked-in native project contains a
 66-node interactive arena, `NativeActivity` lifecycle, fixed-step movement/gameplay, touch,
 keyboard and gamepad input, camera orbit/pinch, asset-loaded GLSL ES 3 shaders, depth/culling,

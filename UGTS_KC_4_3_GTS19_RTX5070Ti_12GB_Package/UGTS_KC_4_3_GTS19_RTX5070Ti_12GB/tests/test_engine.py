@@ -3,7 +3,13 @@ from __future__ import annotations
 import unittest
 
 from ugts_go19.constants import BLACK, PASS, WHITE, coord_to_move, move_to_coord
-from ugts_go19.engine import IllegalMove, apply_move, apply_move_detailed, legal_moves
+from ugts_go19.engine import (
+    IllegalMove,
+    apply_move,
+    apply_move_detailed,
+    legal_moves,
+    play_sequence,
+)
 from ugts_go19.rules import Rules
 from ugts_go19.score import area_score, area_score2
 from ugts_go19.state import State
@@ -60,6 +66,17 @@ class EngineTests(unittest.TestCase):
         self.assertTrue(state.is_terminal(self.rules))
         with self.assertRaises(IllegalMove):
             apply_move(state, PASS, self.rules)
+
+    def test_situational_superko_records_pass_created_situation(self) -> None:
+        rules = Rules(
+            size=3,
+            komi2=1,
+            superko="situational_superko",
+            profile_id="situational-pass-history",
+        )
+        state = play_sequence(State.initial(rules), [1, 0, 5, 4, PASS, 2], rules)
+        with self.assertRaises(IllegalMove):
+            apply_move(state, 1, rules)
 
     def test_positional_superko_rejects_seen_board(self) -> None:
         initial = State.initial(self.rules)

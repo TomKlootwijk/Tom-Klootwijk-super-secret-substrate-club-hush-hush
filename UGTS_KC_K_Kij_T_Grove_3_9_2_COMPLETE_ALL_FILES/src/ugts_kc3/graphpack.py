@@ -70,6 +70,7 @@ NODE_OPCODES: dict[str, int] = {
     "action.emit_event": 15,
     "action.set_active": 16,
     "action.despawn": 17,
+    "action.apply_force": 18,
 }
 OPCODE_TYPES = {opcode: type_id for type_id, opcode in NODE_OPCODES.items()}
 
@@ -93,6 +94,7 @@ NODE_INPUTS: dict[str, tuple[str, ...]] = {
     "action.emit_event": ("kind", "source", "target", "payload"),
     "action.set_active": ("entity", "active"),
     "action.despawn": ("entity",),
+    "action.apply_force": ("entity", "force"),
 }
 
 NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
@@ -115,6 +117,7 @@ NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
     "action.emit_event": ("event",),
     "action.set_active": (),
     "action.despawn": (),
+    "action.apply_force": (),
 }
 
 NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
@@ -135,6 +138,7 @@ NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
     "action.emit_event": ("out",),
     "action.set_active": ("out",),
     "action.despawn": ("out",),
+    "action.apply_force": ("out",),
 }
 
 
@@ -144,6 +148,7 @@ VALUE_NUMBER = 2
 VALUE_STRING = 3
 VALUE_VEC3 = 4
 VALUE_VEC4 = 5
+VALUE_VEC2 = 6
 VALUE_TAG_NAMES = {
     VALUE_NULL: "null",
     VALUE_BOOL: "boolean",
@@ -151,6 +156,7 @@ VALUE_TAG_NAMES = {
     VALUE_STRING: "string",
     VALUE_VEC3: "vector3",
     VALUE_VEC4: "vector4",
+    VALUE_VEC2: "vector2",
 }
 
 
@@ -250,13 +256,14 @@ def _value_spec(value: Any, path: str) -> _ValueSpec:
         if len(encoded) > 65535:
             raise GraphPackError(f"{path} is longer than 65535 UTF-8 bytes")
         return _ValueSpec(VALUE_STRING, value)
-    if isinstance(value, (tuple, list)) and len(value) in (3, 4):
+    if isinstance(value, (tuple, list)) and len(value) in (2, 3, 4):
         numbers = tuple(_f32(item, f"{path}[{index}]") for index, item in enumerate(value))
-        return _ValueSpec(VALUE_VEC3 if len(numbers) == 3 else VALUE_VEC4, numbers)
+        tag = {2: VALUE_VEC2, 3: VALUE_VEC3, 4: VALUE_VEC4}[len(numbers)]
+        return _ValueSpec(tag, numbers)
     kind = type(value).__name__
     raise GraphPackError(
         f"{path} uses unsupported Android literal type {kind}; use null, boolean, "
-        "number, text, Vector3, or Vector4"
+        "number, text, Vector2, Vector3, or Vector4"
     )
 
 
@@ -460,7 +467,7 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
             raise _fail(
                 graph.id,
                 node,
-                "is not in the portable Android subset (action.apply_force is editor/2D only)",
+                "is not in the portable Android node vocabulary",
             )
         unknown = sorted(set(node.properties) - set(NODE_INPUTS[node.type]))
         if unknown:
@@ -682,7 +689,7 @@ def compile_graph_pack_bytes(project: Mobile3DProject) -> bytes:
             writer.f32(value.payload)
         elif value.tag == VALUE_STRING:
             writer.u32(string_index[value.payload])
-        elif value.tag in {VALUE_VEC3, VALUE_VEC4}:
+        elif value.tag in {VALUE_VEC2, VALUE_VEC3, VALUE_VEC4}:
             for item in value.payload:
                 writer.f32(item)
     for key in state_keys:
@@ -831,8 +838,9 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
             if index >= string_count:
                 raise GraphPackError("visual-graph value has an invalid string reference")
             payload = strings[index]
-        elif tag in {VALUE_VEC3, VALUE_VEC4}:
-            payload = tuple(reader.f32() for _ in range(3 if tag == VALUE_VEC3 else 4))
+        elif tag in {VALUE_VEC2, VALUE_VEC3, VALUE_VEC4}:
+            dimensions = {VALUE_VEC2: 2, VALUE_VEC3: 3, VALUE_VEC4: 4}[tag]
+            payload = tuple(reader.f32() for _ in range(dimensions))
         else:
             raise GraphPackError(f"visual-graph value has unknown tag {tag}")
         values.append((tag, payload))

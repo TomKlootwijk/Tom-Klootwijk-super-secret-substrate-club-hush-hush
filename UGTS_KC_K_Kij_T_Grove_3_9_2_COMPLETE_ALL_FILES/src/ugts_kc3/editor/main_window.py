@@ -27,10 +27,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..androidbuild import build_apk, install_apk
+from ..androidbuild import build_apk, install_apk, select_android_device
 from ..androidexport import build_android_project, write_mobile3d_gltf
 from ..graphpack import GraphPackError, compile_graph_pack_bytes
-from ..mobile3d import Mobile3DProject
+from ..mobile3d import Mesh3DRecord, Mobile3DProject
 from ..project import GameProject
 from ..templates import first_steps_project
 from ..templates3d import first_steps_mobile3d_project
@@ -62,6 +62,14 @@ def _same_transform(a: Mapping[str, Any] | None, b: Mapping[str, Any] | None) ->
     left = [value for key in sorted(a) for value in flatten(a[key])]
     right = [value for key in sorted(b) for value in flatten(b[key])]
     return len(left) == len(right) and all(abs(x - y) <= 1.0e-9 for x, y in zip(left, right))
+
+
+def _safe_build_slug(value: Any) -> str:
+    text = "".join(
+        character if character.isascii() and (character.isalnum() or character in "-_") else "_"
+        for character in str(value)
+    )
+    return text.strip("_-")[:64] or "game"
 
 
 class TransformCommand(QUndoCommand):
@@ -142,6 +150,30 @@ class SceneObjectsCommand(QUndoCommand):
         )
 
 
+class MeshResourcesCommand(QUndoCommand):
+    """Undoable replacement of a mobile-3D project's mesh resources."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before: Mapping[str, Mesh3DRecord],
+        after: Mapping[str, Mesh3DRecord],
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before = copy.deepcopy(dict(before))
+        self.after = copy.deepcopy(dict(after))
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_mesh_resources(self.before)
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_mesh_resources(self.after)
+
+
 class BuildWorker(QObject):
     finished = Signal(object)
     partial = Signal(object)
@@ -161,6 +193,9 @@ class BuildWorker(QObject):
                 summary = f"Web game built: {len(result.files)} files, {result.total_bytes / 1024:.1f} KiB"
                 folder = result.output_dir
             elif self.target in {"android", "android-apk", "android-install"} and isinstance(self.project, Mobile3DProject):
+                install_serial: str | None = None
+                if self.target == "android-install":
+                    install_serial = select_android_device().serial
                 result = build_android_project(self.project, self.destination, clean=True)
                 if self.target == "android":
                     summary = f"Android project built: {result.file_count} files, {result.total_bytes / 1024:.1f} KiB"
@@ -172,7 +207,7 @@ class BuildWorker(QObject):
                     folder = compiled.apk.parent
                     if self.target == "android-install":
                         try:
-                            installed = install_apk(compiled.apk)
+                            installed = install_apk(compiled.apk, serial=install_serial)
                             summary += f" and installed on {installed.serial}"
                         except Exception as exc:
                             self.partial.emit((summary, str(exc), folder))
@@ -312,6 +347,11 @@ class EditorMainWindow(QMainWindow):
             "Open Project…", QStyle.StandardPixmap.SP_DialogOpenButton, QKeySequence.StandardKey.Open,
             self.open_project_dialog, "Open an existing project.json",
         )
+        self.import_3d_shape_action = self._action(
+            "Import 3D Shape…", QStyle.StandardPixmap.SP_DialogOpenButton, None,
+            lambda: self.import_3d_shape(),
+            "Import a Wavefront OBJ as an editable project shape",
+        )
         self.save_action = self._action(
             "Save", QStyle.StandardPixmap.SP_DialogSaveButton, QKeySequence.StandardKey.Save,
             self.save_project, "Save changes to this project",
@@ -348,16 +388,31 @@ class EditorMainWindow(QMainWindow):
             lambda: self._build_requested(str(self.build_output.target.currentData() or "")),
             "Create a playable web, Android, or glTF build",
         )
+        self.deploy_action = self._action(
+            "Deploy to Phone", QStyle.StandardPixmap.SP_DriveNetIcon, "Ctrl+Shift+D",
+            self.deploy_to_phone,
+            "Build the Poco APK and install it on the one authorized ADB phone",
+        )
         self.fit_action = self._action(
             "Fit Scene", QStyle.StandardPixmap.SP_DesktopIcon, "F", self.viewport.fit_scene,
             "Show the whole scene",
         )
-        for action in (self.save_action, self.save_as_action, self.play_action, self.validate_action, self.build_action):
+        for action in (
+            self.save_action,
+            self.save_as_action,
+            self.import_3d_shape_action,
+            self.play_action,
+            self.validate_action,
+            self.build_action,
+            self.deploy_action,
+        ):
             action.setEnabled(False)
 
     def _create_menus_and_toolbar(self) -> None:
         file_menu = self.menuBar().addMenu("File")
         file_menu.addActions([self.new_2d_action, self.new_3d_action, self.open_action])
+        file_menu.addSeparator()
+        file_menu.addAction(self.import_3d_shape_action)
         file_menu.addSeparator()
         file_menu.addActions([self.save_action, self.save_as_action])
         file_menu.addSeparator()
@@ -365,7 +420,10 @@ class EditorMainWindow(QMainWindow):
         edit_menu = self.menuBar().addMenu("Edit")
         edit_menu.addActions([self.undo_action, self.redo_action])
         project_menu = self.menuBar().addMenu("Project")
-        project_menu.addActions([self.play_action, self.stop_action, self.validate_action, self.build_action])
+        project_menu.addActions([
+            self.play_action, self.stop_action, self.validate_action,
+            self.build_action, self.deploy_action,
+        ])
         view_menu = self.menuBar().addMenu("View")
         view_menu.addAction(self.fit_action)
         view_menu.addSeparator()
@@ -393,6 +451,10 @@ class EditorMainWindow(QMainWindow):
         toolbar.addSeparator()
         toolbar.addAction(self.validate_action)
         toolbar.addAction(self.build_action)
+        toolbar.addAction(self.deploy_action)
+        deploy_widget = toolbar.widgetForAction(self.deploy_action)
+        if deploy_widget is not None:
+            deploy_widget.setObjectName("DeployButton")
 
     def _create_status_bar(self) -> None:
         self.status_message = QLabel("Ready — open a project or start with a template")
@@ -485,6 +547,53 @@ class EditorMainWindow(QMainWindow):
             self._gentle_message("The project stayed unchanged. Choose another project file when ready.")
             return False
 
+    def import_3d_shape(self, path: str | Path | None = None) -> bool:
+        """Import one OBJ into the open 3D project as an undoable resource."""
+
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return False
+        if path is None:
+            start = self.document.path.parent if self.document.path else self._repository_root()
+            chosen, _ = QFileDialog.getOpenFileName(
+                self,
+                "Import a 3D Shape",
+                str(start),
+                "Wavefront OBJ (*.obj);;All files (*)",
+            )
+            if not chosen:
+                return False
+            path = chosen
+        try:
+            mesh = self.document.imported_obj_mesh(path)
+            project = self.document.project
+            assert isinstance(project, Mobile3DProject)
+            before = dict(project.meshes)
+            after = dict(before)
+            after[mesh.id] = mesh
+            self.undo_stack.push(
+                MeshResourcesCommand(
+                    self.document,
+                    f"Import {friendly(mesh.id)} 3D shape",
+                    before,
+                    after,
+                )
+            )
+            self.assets_project.setCurrentIndex(0)
+            self.build_output.append(
+                f"Imported {friendly(mesh.id)}: {len(mesh.vertices)} vertices, "
+                f"{len(mesh.triangles)} triangles.",
+                "good",
+            )
+            self._gentle_message(
+                f"Imported {friendly(mesh.id)}. Choose it from an object's Shape field."
+            )
+            return True
+        except Exception as exc:
+            self.build_output.append(f"3D shape import paused: {exc}", "warning")
+            QMessageBox.warning(self, "Could not import that 3D shape", str(exc))
+            self._gentle_message("The project stayed unchanged. Choose another OBJ when ready.")
+            return False
+
     def new_2d_project(self) -> None:
         if not self._maybe_save():
             return
@@ -567,6 +676,8 @@ class EditorMainWindow(QMainWindow):
         )
         for action in (self.save_action, self.save_as_action, self.play_action, self.validate_action, self.build_action):
             action.setEnabled(True)
+        self.import_3d_shape_action.setEnabled(self.document.kind == "3d")
+        self.deploy_action.setEnabled(self.document.kind == "3d")
         self._update_title()
         self._gentle_message("Ready. Choose an object on the left or click it in the scene.")
 
@@ -811,6 +922,8 @@ class EditorMainWindow(QMainWindow):
         self.play_action.setEnabled(False)
         self.stop_action.setEnabled(True)
         self.save_action.setEnabled(False)
+        self.import_3d_shape_action.setEnabled(False)
+        self.deploy_action.setEnabled(False)
         self._frame_count = 0
         self._fps_started = time.perf_counter()
         self.play_timer.start()
@@ -855,6 +968,8 @@ class EditorMainWindow(QMainWindow):
         self.play_action.setEnabled(True)
         self.stop_action.setEnabled(False)
         self.save_action.setEnabled(True)
+        self.import_3d_shape_action.setEnabled(self.document.kind == "3d")
+        self.deploy_action.setEnabled(self.document.kind == "3d")
         self.status_fps.setText("Preview idle")
         self.build_output.append("Preview stopped; project edits were kept separate.", "good")
         self._gentle_message("Back in edit mode.")
@@ -904,14 +1019,33 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self.build_output.append(f"Project check paused: {exc}", "error")
 
-    def _build_requested(self, target: str) -> None:
+    def deploy_to_phone(self) -> None:
+        """Build into UGTS-owned cache and install on the sole authorized phone."""
+
+        project = self.document.project
+        if not isinstance(project, Mobile3DProject) or self._playing:
+            self.build_output.append("Open a Mobile 3D project before deploying to a phone.", "warning")
+            return
+        index = self.build_output.target.findData("android-install")
+        if index >= 0:
+            self.build_output.target.setCurrentIndex(index)
+        root = self.document.path.parent if self.document.path else self._repository_root()
+        destination = (
+            root / ".ugts-studio" / "deploy" / f"{_safe_build_slug(project.id)}-android"
+        )
+        self._gentle_message("Checking the connected phone, then building its APK…")
+        self._build_requested("android-install", destination)
+
+    def _build_requested(self, target: str, destination_override: Path | None = None) -> None:
         if not self.document.is_loaded or not target or self._build_thread is not None:
             return
         project = self.document.project
         assert project is not None
         base = self.document.path.parent if self.document.path else self._repository_root()
         slug = (getattr(project, "id", None) or getattr(getattr(project, "metadata", None), "id", "game"))
-        if target == "gltf":
+        if destination_override is not None:
+            destination = Path(destination_override)
+        elif target == "gltf":
             suggested = base / "build" / f"{slug}.gltf"
             path, _ = QFileDialog.getSaveFileName(self, "Export a 3D Preview", str(suggested), "glTF (*.gltf)")
             if not path:
@@ -946,6 +1080,8 @@ class EditorMainWindow(QMainWindow):
             self.build_output.append(f"Build paused: {exc}", "error")
             return
         self.build_output.set_busy(True)
+        self.build_action.setEnabled(False)
+        self.deploy_action.setEnabled(False)
         self.build_output.append(f"Building {self.build_output.target.currentText()}…")
         thread = QThread(self)
         worker = BuildWorker(snapshot, target, destination)
@@ -996,6 +1132,8 @@ class EditorMainWindow(QMainWindow):
     def _build_thread_cleared(self) -> None:
         self._build_thread = None
         self._build_worker = None
+        self.build_action.setEnabled(self.document.is_loaded and not self._playing)
+        self.deploy_action.setEnabled(self.document.kind == "3d" and not self._playing)
 
     def _gentle_message(self, message: str) -> None:
         self.status_message.setText(message)

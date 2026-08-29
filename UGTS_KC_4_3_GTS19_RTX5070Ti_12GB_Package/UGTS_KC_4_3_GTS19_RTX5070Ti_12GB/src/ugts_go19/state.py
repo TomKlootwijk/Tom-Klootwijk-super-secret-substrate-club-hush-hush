@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .constants import BLACK
+from .constants import BLACK, WHITE
 from .rules import Rules
 
 
@@ -45,10 +45,35 @@ class State:
             raise ValueError(f"board has {len(self.board)} points, expected {expected}")
         if self.to_play not in (1, 2):
             raise ValueError("to_play must be 1 (black) or 2 (white)")
-        if self.passes < 0:
-            raise ValueError("passes cannot be negative")
+        if not 0 <= self.passes <= rules.passes_to_end:
+            raise ValueError(
+                f"passes must be in 0..{rules.passes_to_end} for a reachable state"
+            )
+        if self.ply < 0:
+            raise ValueError("ply cannot be negative")
         if any(point not in (0, 1, 2) for point in self.board):
             raise ValueError("board contains an invalid point value")
+        if self.previous_board is not None:
+            if len(self.previous_board) != expected:
+                raise ValueError("previous_board length does not match board size")
+            if any(point not in (0, 1, 2) for point in self.previous_board):
+                raise ValueError("previous_board contains an invalid point value")
+
+        token_length = expected + (1 if rules.superko == "situational_superko" else 0)
+        for token in self.seen:
+            if len(token) != token_length:
+                raise ValueError("repetition token length does not match rules")
+            if any(point not in (0, 1, 2) for point in token[:expected]):
+                raise ValueError("repetition token contains an invalid point value")
+            if rules.superko == "situational_superko" and token[-1] not in (
+                BLACK,
+                WHITE,
+            ):
+                raise ValueError("situational-superko token has invalid player")
+        if rules.superko in {"positional_superko", "situational_superko"}:
+            current_token = repetition_token(self.board, self.to_play, rules)
+            if current_token not in self.seen:
+                raise ValueError("superko history must contain current state token")
 
     def exact_key(self) -> tuple:
         """Collision-free state key for correctness-first reference search."""

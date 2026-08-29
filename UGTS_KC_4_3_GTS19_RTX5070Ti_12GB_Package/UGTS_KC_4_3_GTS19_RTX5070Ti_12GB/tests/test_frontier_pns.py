@@ -25,6 +25,22 @@ class FrontierAndPNSTests(unittest.TestCase):
         result = ProofNumberSearch(rules, threshold2=1, node_budget=1).run(state)
         self.assertEqual(result.status, "DISPROVEN")
 
+    def test_frontier_stops_at_terminal_states(self) -> None:
+        rules = Rules(size=1, komi2=1, profile_id="frontier-terminal")
+        states, summary = canonical_frontier(rules, depth=3)
+        self.assertEqual(states, [])
+        self.assertEqual(summary.depth, 3)
+
+    def test_pns_rejects_profiles_with_undefined_cycles(self) -> None:
+        rules = Rules(
+            size=2,
+            komi2=1,
+            superko="simple_ko",
+            profile_id="pns-cyclic-simple-ko",
+        )
+        with self.assertRaisesRegex(ValueError, "finite superko"):
+            ProofNumberSearch(rules, threshold2=1, node_budget=10)
+
     def test_bounded_19_attempt_has_honest_status(self) -> None:
         rules = Rules.canonical_19x19()
         result = ProofNumberSearch(rules, threshold2=1, node_budget=2).run()
@@ -32,6 +48,25 @@ class FrontierAndPNSTests(unittest.TestCase):
         if result.status == "UNKNOWN":
             self.assertGreater(result.proof_number, 0)
             self.assertGreater(result.disproof_number, 0)
+
+    def test_empty_2x2_thresholds_match_exact_value(self) -> None:
+        rules = Rules(size=2, komi2=1, profile_id="pns-2x2")
+        proven = ProofNumberSearch(rules, threshold2=1, node_budget=1_000).run()
+        disproven = ProofNumberSearch(rules, threshold2=3, node_budget=1_000).run()
+        self.assertEqual(proven.status, "PROVEN")
+        self.assertEqual(proven.proof_number, 0)
+        self.assertEqual(disproven.status, "DISPROVEN")
+        self.assertEqual(disproven.disproof_number, 0)
+
+    def test_pns_instance_reuse_resets_search_counters(self) -> None:
+        rules = Rules(size=2, komi2=1, profile_id="pns-reuse")
+        search = ProofNumberSearch(rules, threshold2=1, node_budget=1_000)
+        first = search.run()
+        second = search.run()
+        self.assertEqual(first.status, second.status)
+        self.assertEqual(first.expanded_nodes, second.expanded_nodes)
+        self.assertEqual(first.generated_nodes, second.generated_nodes)
+        self.assertEqual(first.max_ply, second.max_ply)
 
 
 if __name__ == "__main__":

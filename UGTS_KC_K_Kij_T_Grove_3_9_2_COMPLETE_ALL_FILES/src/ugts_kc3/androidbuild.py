@@ -258,6 +258,59 @@ def list_android_devices(
     return tuple(devices)
 
 
+def select_android_device(
+    devices: Sequence[AndroidDevice] | None = None,
+    *,
+    serial: str | None = None,
+) -> AndroidDevice:
+    """Choose one authorized ADB device and explain common connection problems."""
+
+    attached = tuple(list_android_devices() if devices is None else devices)
+    if serial is not None:
+        match = next((device for device in attached if device.serial == serial), None)
+        if match is None:
+            raise RuntimeError(f"ADB device is not connected: {serial}")
+        if not match.ready:
+            if match.state == "unauthorized":
+                raise RuntimeError(
+                    f"ADB device {serial} is waiting for USB-debugging authorization. "
+                    "Unlock the phone and accept its Allow USB debugging prompt."
+                )
+            raise RuntimeError(f"ADB device {serial} is not ready (state: {match.state})")
+        return match
+
+    ready = tuple(device for device in attached if device.ready)
+    if len(ready) == 1:
+        return ready[0]
+    if len(ready) > 1:
+        labels = ", ".join(
+            f"{device.model or 'Android device'} [{device.serial}]" for device in ready
+        )
+        raise RuntimeError(
+            "More than one authorized Android device is connected. Disconnect the extra "
+            f"device or deploy by serial. Ready devices: {labels}"
+        )
+    unauthorized = tuple(device for device in attached if device.state == "unauthorized")
+    if unauthorized:
+        labels = ", ".join(
+            f"{device.model or 'Android phone'} [{device.serial}]" for device in unauthorized
+        )
+        raise RuntimeError(
+            "The connected phone is waiting for USB-debugging authorization. Unlock it, "
+            f"accept Allow USB debugging, and try Deploy again: {labels}"
+        )
+    if attached:
+        states = ", ".join(f"{device.serial} ({device.state})" for device in attached)
+        raise RuntimeError(
+            "No connected Android device is ready for deployment. Reconnect USB and check "
+            f"the phone's USB-debugging status: {states}"
+        )
+    raise RuntimeError(
+        "No Android device was found. Connect the phone by USB, enable Developer options "
+        "and USB debugging, then try Deploy again."
+    )
+
+
 def install_apk(
     apk: str | Path,
     *,
@@ -273,17 +326,8 @@ def install_apk(
     sdk = _find_sdk_root()
     adb = _find_adb(sdk)
     toolchain = AndroidToolchain(sdk, adb, ())
-    ready = tuple(device for device in list_android_devices(toolchain) if device.ready)
-    if serial is None:
-        if len(ready) != 1:
-            detail = ", ".join(f"{d.serial} ({d.state})" for d in ready) or "none"
-            raise RuntimeError(
-                "install requires exactly one ready device when --serial is omitted; "
-                f"ready devices: {detail}"
-            )
-        serial = ready[0].serial
-    elif serial not in {device.serial for device in ready}:
-        raise RuntimeError(f"ADB device is not ready: {serial}")
+    device = select_android_device(list_android_devices(toolchain), serial=serial)
+    serial = device.serial
     command = [str(adb), "-s", serial, "install"]
     if replace:
         command.append("-r")

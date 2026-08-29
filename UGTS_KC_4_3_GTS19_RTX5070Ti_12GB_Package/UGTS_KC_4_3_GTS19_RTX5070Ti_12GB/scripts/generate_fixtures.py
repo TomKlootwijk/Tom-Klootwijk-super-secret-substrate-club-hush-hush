@@ -17,7 +17,7 @@ FIXTURES = ROOT / "fixtures"
 def main() -> int:
     FIXTURES.mkdir(parents=True, exist_ok=True)
     summary = []
-    for size, budget in ((1, 20_000), (2, 2_000_000)):
+    for size, budget in ((1, 20_000), (2, 20_000)):
         rules = Rules(size=size, komi2=1, profile_id=f"UGTS-FIXTURE-{size}x{size}")
         state = State.initial(rules)
         result = ExactSolver(rules, node_budget=budget).solve(state)

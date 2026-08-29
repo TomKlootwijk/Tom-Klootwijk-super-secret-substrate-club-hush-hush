@@ -1,0 +1,12 @@
+[
+  {
+    "certificate": "empty_1x1_certificate.json",
+    "size": 1,
+    "value2": -1
+  },
+  {
+    "certificate": "empty_2x2_certificate.json",
+    "size": 2,
+    "value2": 1
+  }
+]

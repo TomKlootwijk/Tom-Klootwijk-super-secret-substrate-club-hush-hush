@@ -1,5 +1,5 @@
 {
-  "certificate_sha256": "779be8beae699e3fe6913eb0c75f8dd523a032c60e8cf6e1768fb7668719e777",
+  "certificate_sha256": "bcc8b748748967fbea1808a9e5e8b2bbe2e5b99fe77869bd2de012d197a27b7e",
   "format": "UGTS-GO-RECOMPUTE-CERT-v1",
   "result": {
     "best_move": -1,
@@ -14,7 +14,6 @@
     ],
     "stats": {
       "cutoffs": 0,
-      "elapsed_seconds": 3.582700003335049e-05,
       "max_ply": 2,
       "nodes": 5,
       "terminals": 2,

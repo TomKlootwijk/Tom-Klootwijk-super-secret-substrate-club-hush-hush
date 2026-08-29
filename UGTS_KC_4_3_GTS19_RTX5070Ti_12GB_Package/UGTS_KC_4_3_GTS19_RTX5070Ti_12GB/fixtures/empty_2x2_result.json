@@ -1,0 +1,58 @@
+{
+  "certificate": "empty_2x2_certificate.json",
+  "result": {
+    "best_move": 0,
+    "best_move_coord": "A2",
+    "principal_variation": [
+      0,
+      3,
+      1,
+      -1,
+      -1
+    ],
+    "principal_variation_coords": [
+      "A2",
+      "B1",
+      "B2",
+      "pass",
+      "pass"
+    ],
+    "stats": {
+      "cutoffs": 1031,
+      "elapsed_seconds": 0.019758199981879443,
+      "max_ply": 30,
+      "nodes": 2532,
+      "terminals": 836,
+      "tt_entries": 1636,
+      "tt_hits": 60
+    },
+    "value2": 1,
+    "value_points": 0.5,
+    "winner": "black"
+  },
+  "rules": {
+    "allow_suicide": false,
+    "komi2": 1,
+    "passes_to_end": 2,
+    "profile_id": "UGTS-FIXTURE-2x2",
+    "scoring": "area",
+    "size": 2,
+    "superko": "positional_superko"
+  },
+  "status": "EXACT",
+  "verification": {
+    "certificate_sha256": "800fcbcc59aa3dd1acd4b9680971bede07498e9eb4da87be2cd8ef5516e0190f",
+    "root_digest": "1a824f55dae1685be1c92a8d19e3201337e86397b1bc8646d5334a9459ac1333",
+    "stats": {
+      "cutoffs": 1031,
+      "elapsed_seconds": 0.019197600020561367,
+      "max_ply": 30,
+      "nodes": 2532,
+      "terminals": 836,
+      "tt_entries": 1636,
+      "tt_hits": 60
+    },
+    "value2": 1,
+    "verified": true
+  }
+}

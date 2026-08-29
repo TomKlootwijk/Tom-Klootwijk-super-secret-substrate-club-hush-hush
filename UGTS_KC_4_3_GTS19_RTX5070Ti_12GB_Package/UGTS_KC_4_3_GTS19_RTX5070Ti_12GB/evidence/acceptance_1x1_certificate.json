@@ -1,0 +1,53 @@
+{
+  "certificate_sha256": "796c80e99ae4d73467a05a6c5f0fdc9f037cd9caf44180a299d60d5eaf03c21c",
+  "format": "UGTS-GO-RECOMPUTE-CERT-v1",
+  "result": {
+    "best_move": -1,
+    "best_move_coord": "pass",
+    "principal_variation": [
+      -1,
+      -1
+    ],
+    "principal_variation_complete": true,
+    "principal_variation_coords": [
+      "pass",
+      "pass"
+    ],
+    "stats": {
+      "cutoffs": 0,
+      "max_ply": 2,
+      "nodes": 5,
+      "terminals": 2,
+      "tt_entries": 2,
+      "tt_hits": 1
+    },
+    "value2": -1,
+    "value_points": -0.5,
+    "winner": "white"
+  },
+  "root": {
+    "board_hex": "00",
+    "digest": "0b2b1f4498e950de4d6caaa42a6f95fde1ae012c009f353dba5b6862abf91766",
+    "passes": 0,
+    "ply": 0,
+    "previous_board_hex": null,
+    "seen_hex": [
+      "00"
+    ],
+    "to_play": 1
+  },
+  "rules": {
+    "allow_suicide": false,
+    "komi2": 1,
+    "passes_to_end": 2,
+    "profile_id": "UGTS-TINY-1x1-AREA-PSK-K1/2",
+    "scoring": "area",
+    "size": 1,
+    "superko": "positional_superko"
+  },
+  "verification": {
+    "method": "independent deterministic recomputation",
+    "requires_exact_history": true,
+    "standalone_strategy_tree": false
+  }
+}

@@ -18,8 +18,17 @@ add_executable(
 )
 target_include_directories(touch_router_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
+add_executable(
+    graph_vm_tests
+    graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+)
+target_include_directories(graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
 if(MSVC)
     target_compile_options(touch_router_tests PRIVATE /W4 /permissive-)
+    target_compile_options(graph_vm_tests PRIVATE /W4 /permissive-)
 else()
     target_compile_options(touch_router_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()

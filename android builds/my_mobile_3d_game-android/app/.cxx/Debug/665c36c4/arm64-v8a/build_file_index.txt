@@ -1,0 +1,1 @@
+C:\Tom Klootwijk super secret substrate club hush hush\android builds\my_mobile_3d_game-android\app\src\main\cpp\CMakeLists.txt

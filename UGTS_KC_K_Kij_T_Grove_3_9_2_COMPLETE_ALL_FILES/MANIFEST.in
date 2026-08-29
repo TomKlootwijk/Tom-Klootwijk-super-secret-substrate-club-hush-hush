@@ -8,3 +8,4 @@ global-exclude __pycache__ *.py[cod]
 include README.md
 include README_K_KIJ_T_GROVE_3_9_2.md
 include VERSION
+include RUN_UGTS_STUDIO.cmd

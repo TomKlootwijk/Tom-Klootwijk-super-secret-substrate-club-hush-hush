@@ -12,6 +12,11 @@ You do not need to know Python or C++ to begin.
 
 From this folder:
 
+On Windows, double-click **`RUN_UGTS_STUDIO.cmd`**. It opens the editor without leaving a console
+window behind and offers to install the editor dependency only if it is missing.
+
+The equivalent commands are:
+
 ```powershell
 python -m pip install -e ".[editor]"
 python -m ugts_kc3 editor
@@ -73,7 +78,9 @@ player. Its supported Logic Blocks compile into bounded native graph bytecode.
 Use **+ Add**, **Copy** and **Delete** above the Scene Tree to construct the scene. Every structural
 change supports Undo; essential referenced objects are guarded with an explanation instead of being
 silently broken. Select an object and use **Appearance** in the Inspector to choose one of the
-project's vector pictures, 3D shapes or materials; those choices also support Undo and Redo.
+project's vector pictures, 3D shapes or materials; those choices also support Undo and Redo. Use
+**File → Import 3D Shape…** to bring a Wavefront OBJ into a Mobile 3D project. Imported shapes are
+checked, appear in Resources and the Shape chooser, survive Android packing, and support Undo.
 
 On a phone, hold or drag the left side to move and tap it to jump. Drag the right side to look and
 tap it to dash—even while the left thumb stays down. Pinch changes camera distance. Touch roles follow
@@ -82,6 +89,9 @@ pointer IDs, so the order in which a child puts their thumbs down does not swap 
 In **Output & Builds**, choose **Poco X7 Pro APK (Debug)** for a directly installable file. Choose
 **Poco APK + Install** only after the phone is connected, USB debugging is enabled, and its authorization
 prompt has been accepted. Android Studio remains an optional advanced target, not a beginner requirement.
+The blue **Deploy to Phone** toolbar button performs that build-and-install flow directly. It stops
+before a long build when no authorized phone is ready and explains no-device, unauthorized, offline,
+or multiple-device states.
 
 Generate and compile a direct-device Poco build with:
 

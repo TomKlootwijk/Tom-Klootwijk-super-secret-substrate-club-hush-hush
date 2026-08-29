@@ -1,0 +1,158 @@
+[
+  {
+    "level_": 0,
+    "message_": "Start JSON generation. Platform version: 26 min SDK version: arm64-v8a",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "rebuilding JSON C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\\android_gradle_build.json due to:",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "- no fingerprint file, will remove stale configuration folder",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "removing stale contents from \u0027C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\u0027",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "created folder \u0027C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\u0027",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "executing cmake @echo off\n\"C:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\cmake.exe\" ^\n  \"-HC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\src\\\\main\\\\cpp\" ^\n  \"-DCMAKE_SYSTEM_NAME\u003dAndroid\" ^\n  \"-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\" ^\n  \"-DCMAKE_SYSTEM_VERSION\u003d26\" ^\n  \"-DANDROID_PLATFORM\u003dandroid-26\" ^\n  \"-DANDROID_ABI\u003darm64-v8a\" ^\n  \"-DCMAKE_ANDROID_ARCH_ABI\u003darm64-v8a\" ^\n  \"-DANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_ANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_TOOLCHAIN_FILE\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\\\\build\\\\cmake\\\\android.toolchain.cmake\" ^\n  \"-DCMAKE_MAKE_PROGRAM\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\ninja.exe\" ^\n  \"-DCMAKE_CXX_FLAGS\u003d-std\u003dc++20 -Wall -Wextra -Wpedantic\" ^\n  \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\665c36c4\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\665c36c4\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_BUILD_TYPE\u003dDebug\" ^\n  \"-BC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\.cxx\\\\Debug\\\\665c36c4\\\\arm64-v8a\" ^\n  -GNinja ^\n  \"-DANDROID_STL\u003dc++_static\" ^\n  \"-DUGTS_KC_PROFILE_HINT\u003dpoco_x7_pro_12gb\"\n",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "@echo off\n\"C:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\cmake.exe\" ^\n  \"-HC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\src\\\\main\\\\cpp\" ^\n  \"-DCMAKE_SYSTEM_NAME\u003dAndroid\" ^\n  \"-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\" ^\n  \"-DCMAKE_SYSTEM_VERSION\u003d26\" ^\n  \"-DANDROID_PLATFORM\u003dandroid-26\" ^\n  \"-DANDROID_ABI\u003darm64-v8a\" ^\n  \"-DCMAKE_ANDROID_ARCH_ABI\u003darm64-v8a\" ^\n  \"-DANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_ANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_TOOLCHAIN_FILE\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\\\\build\\\\cmake\\\\android.toolchain.cmake\" ^\n  \"-DCMAKE_MAKE_PROGRAM\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\ninja.exe\" ^\n  \"-DCMAKE_CXX_FLAGS\u003d-std\u003dc++20 -Wall -Wextra -Wpedantic\" ^\n  \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\665c36c4\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\665c36c4\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_BUILD_TYPE\u003dDebug\" ^\n  \"-BC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\android builds\\\\my_mobile_3d_game-android\\\\app\\\\.cxx\\\\Debug\\\\665c36c4\\\\arm64-v8a\" ^\n  -GNinja ^\n  \"-DANDROID_STL\u003dc++_static\" ^\n  \"-DUGTS_KC_PROFILE_HINT\u003dpoco_x7_pro_12gb\"\n",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "Received process result: 0",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "Exiting generation of C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\\compile_commands.json.bin normally",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "done executing cmake",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "hard linked C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\.cxx\\Debug\\665c36c4\\arm64-v8a\\compile_commands.json to C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\.cxx\\tools\\pocoX7ProDebug\\arm64-v8a\\compile_commands.json",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "JSON generation completed without problems",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\android builds\\my_mobile_3d_game-android\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "pocoX7ProDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  }
+]

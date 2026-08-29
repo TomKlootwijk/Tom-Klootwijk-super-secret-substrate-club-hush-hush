@@ -1,0 +1,46 @@
+{
+  "certificate": "evidence/acceptance_2x2_certificate.json",
+  "certificate_sha256": "8ef9a93a4938440afd372f3df2d07514e2d5210f824a2a71adb46c7a2a877e03",
+  "result": {
+    "best_move": 0,
+    "best_move_coord": "A2",
+    "principal_variation": [
+      0,
+      3,
+      1,
+      -1,
+      -1
+    ],
+    "principal_variation_complete": true,
+    "principal_variation_coords": [
+      "A2",
+      "B1",
+      "B2",
+      "pass",
+      "pass"
+    ],
+    "stats": {
+      "cutoffs": 1031,
+      "elapsed_seconds": 0.03962539997883141,
+      "max_ply": 30,
+      "nodes": 2532,
+      "terminals": 836,
+      "tt_entries": 1636,
+      "tt_hits": 60
+    },
+    "value2": 1,
+    "value_points": 0.5,
+    "winner": "black"
+  },
+  "root_digest": "a62f684a28ce81499cc356a03c233656c673ced77376be63753f615526ee2bd8",
+  "rules": {
+    "allow_suicide": false,
+    "komi2": 1,
+    "passes_to_end": 2,
+    "profile_id": "UGTS-TINY-2x2-AREA-PSK-K1/2",
+    "scoring": "area",
+    "size": 2,
+    "superko": "positional_superko"
+  },
+  "status": "EXACT"
+}

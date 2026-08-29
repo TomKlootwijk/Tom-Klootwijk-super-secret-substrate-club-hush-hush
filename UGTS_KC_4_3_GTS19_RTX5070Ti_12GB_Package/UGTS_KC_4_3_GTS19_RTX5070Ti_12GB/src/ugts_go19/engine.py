@@ -82,12 +82,19 @@ def apply_move_detailed(state: State, move: int, rules: Rules) -> MoveResult:
     next_player = other(state.to_play)
     if move == PASS:
         # Pass is explicitly permitted even though it preserves the board.
+        new_seen = state.seen
+        if rules.superko == "situational_superko":
+            # The repetition check is waived for pass, but the newly reached
+            # player/board situation still participates in later SSK checks.
+            new_seen = state.seen | frozenset(
+                (repetition_token(state.board, next_player, rules),)
+            )
         return MoveResult(
             state=State(
                 board=state.board,
                 to_play=next_player,
                 passes=state.passes + 1,
-                seen=state.seen,
+                seen=new_seen,
                 previous_board=state.board,
                 ply=state.ply + 1,
             ),

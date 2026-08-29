@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -12,6 +13,11 @@ constexpr std::uint8_t kEmpty = 0;
 constexpr std::uint8_t kBlack = 1;
 constexpr std::uint8_t kWhite = 2;
 constexpr int kPass = -1;
+
+class IllegalMove : public std::invalid_argument {
+ public:
+  using std::invalid_argument::invalid_argument;
+};
 
 struct Rules {
   int size = 19;

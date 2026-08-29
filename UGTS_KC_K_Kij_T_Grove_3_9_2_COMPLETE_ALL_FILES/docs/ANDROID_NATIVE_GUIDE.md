@@ -53,3 +53,6 @@ PYTHONPATH=src python -m ugts_kc3 build-android examples/tom_signature_arena_3d/
 ```
 
 The desktop editor exposes the same flow as **Poco X7 Pro APK (Debug)** and **Poco APK + Install**.
+Its blue **Deploy to Phone** toolbar action first requires exactly one authorized ADB device, then
+builds and installs from an editor-owned `.ugts-studio/deploy` folder. No-device, unauthorized,
+offline and multiple-device states are reported in plain language before compilation begins.

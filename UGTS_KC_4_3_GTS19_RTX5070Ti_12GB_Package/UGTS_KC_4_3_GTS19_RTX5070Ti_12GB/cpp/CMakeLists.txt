@@ -18,6 +18,10 @@ target_link_libraries(ugts_go19_smoke PRIVATE ugts_go_core)
 include(CTest)
 if(BUILD_TESTING)
   add_test(NAME ugts_go19_smoke COMMAND ugts_go19_smoke)
+
+  add_executable(ugts_go_core_tests tests/go_state_test.cpp)
+  target_link_libraries(ugts_go_core_tests PRIVATE ugts_go_core)
+  add_test(NAME ugts_go_core_tests COMMAND ugts_go_core_tests)
 endif()
 
 if(UGTS_ENABLE_CUDA)

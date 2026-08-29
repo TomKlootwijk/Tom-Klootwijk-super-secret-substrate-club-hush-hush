@@ -13,7 +13,7 @@
     ],
     "stats": {
       "cutoffs": 0,
-      "elapsed_seconds": 0.00012680199995429575,
+      "elapsed_seconds": 8.149998029693961e-05,
       "max_ply": 2,
       "nodes": 5,
       "terminals": 2,
@@ -35,11 +35,11 @@
   },
   "status": "EXACT",
   "verification": {
-    "certificate_sha256": "779be8beae699e3fe6913eb0c75f8dd523a032c60e8cf6e1768fb7668719e777",
+    "certificate_sha256": "bcc8b748748967fbea1808a9e5e8b2bbe2e5b99fe77869bd2de012d197a27b7e",
     "root_digest": "50c3c05f085de6d3482674685b5a9ccb3d9666e1c32815d9b65bb4a416f6169c",
     "stats": {
       "cutoffs": 0,
-      "elapsed_seconds": 4.1518999978507054e-05,
+      "elapsed_seconds": 4.4899992644786835e-05,
       "max_ply": 2,
       "nodes": 5,
       "terminals": 2,

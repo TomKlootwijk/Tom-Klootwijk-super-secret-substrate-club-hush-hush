@@ -45,6 +45,7 @@ class ExactResult:
     value2: int
     best_move: int
     principal_variation: tuple[int, ...]
+    principal_variation_complete: bool
     stats: SearchStats
 
     def as_dict(self, rules: Rules) -> dict:
@@ -58,6 +59,7 @@ class ExactResult:
             "principal_variation_coords": [
                 move_to_coord(move, rules.size) for move in self.principal_variation
             ],
+            "principal_variation_complete": self.principal_variation_complete,
             "stats": self.stats.as_dict(),
         }
 
@@ -76,11 +78,18 @@ class ExactSolver:
         node_budget: int | None = None,
         time_budget_seconds: float | None = None,
         use_symmetry: bool = False,
+        pass_first: bool = True,
     ) -> None:
+        if rules.superko not in {"positional_superko", "situational_superko"}:
+            raise ValueError(
+                "ExactSolver requires a finite superko profile; infinite-play "
+                "utility is undefined for none/simple_ko"
+            )
         self.rules = rules
         self.node_budget = node_budget
         self.time_budget_seconds = time_budget_seconds
         self.use_symmetry = use_symmetry
+        self.pass_first = pass_first
         self.stats = SearchStats()
         self._tt: dict[tuple, TTEntry] = {}
         self._start = 0.0
@@ -102,17 +111,32 @@ class ExactSolver:
                 f"time budget {self.time_budget_seconds:.3f}s exceeded"
             )
 
+    def _ordered_children(self, state: State) -> list[tuple[int, State, int]]:
+        """Return the shared exact children with an optional pass-first baseline.
+
+        A pass is normally last in the engine-wide tactical ordering.  Exploring
+        it first in full-width alpha-beta establishes a terminal score quickly,
+        which sharply improves pruning on tiny exact games without changing the
+        legal child set or any returned value.  Keep an off switch so the
+        optimization can be checked differentially.
+        """
+        children = ordered_children(state, self.rules)
+        if self.pass_first and children and children[-1][0] == PASS:
+            return children[-1:] + children[:-1]
+        return children
+
     def solve(self, state: State | None = None) -> ExactResult:
         root = state if state is not None else State.initial(self.rules)
+        root.validate(self.rules)
         self.stats = SearchStats()
         self._tt.clear()
         self._start = monotonic()
         self._root_ply = root.ply
         value, best_move = self._value(root, NEG_INF, POS_INF)
-        pv = self._principal_variation(root)
+        pv, pv_complete = self._principal_variation(root)
         self.stats.elapsed_seconds = monotonic() - self._start
         self.stats.tt_entries = len(self._tt)
-        return ExactResult(value, best_move, tuple(pv), self.stats)
+        return ExactResult(value, best_move, tuple(pv), pv_complete, self.stats)
 
     def _value(self, state: State, alpha: int, beta: int) -> tuple[int, int]:
         self.stats.nodes += 1
@@ -140,11 +164,12 @@ class ExactSolver:
         best_move = PASS
         if state.to_play == BLACK:
             best_value = NEG_INF
-            for move, child, _priority in ordered_children(state, self.rules):
+            for move, child, _priority in self._ordered_children(state):
                 child_value, _ = self._value(child, alpha, beta)
-                if child_value > best_value or (
-                    child_value == best_value and move < best_move
-                ):
+                # A fail-soft child can return only a bound equal to the
+                # current alpha.  It must not replace the already exact best
+                # move on a tie.
+                if child_value > best_value:
                     best_value, best_move = child_value, move
                 alpha = max(alpha, best_value)
                 if alpha >= beta:
@@ -152,11 +177,9 @@ class ExactSolver:
                     break
         else:
             best_value = POS_INF
-            for move, child, _priority in ordered_children(state, self.rules):
+            for move, child, _priority in self._ordered_children(state):
                 child_value, _ = self._value(child, alpha, beta)
-                if child_value < best_value or (
-                    child_value == best_value and move < best_move
-                ):
+                if child_value < best_value:
                     best_value, best_move = child_value, move
                 beta = min(beta, best_value)
                 if alpha >= beta:
@@ -172,24 +195,33 @@ class ExactSolver:
         self._tt[key] = TTEntry(best_value, flag)
         return best_value, best_move
 
-    def _principal_variation(self, root: State, max_length: int = 256) -> list[int]:
+    def _principal_variation(
+        self, root: State, max_length: int = 256
+    ) -> tuple[list[int], bool]:
         # Re-search each PV state with a full window. This avoids storing moves in
         # symmetry-canonical TT coordinates and keeps the correctness contract simple.
         pv: list[int] = []
         state = root
         for _ in range(max_length):
             if state.is_terminal(self.rules):
-                break
+                return pv, True
             best_value = NEG_INF if state.to_play == BLACK else POS_INF
             best_move = PASS
             best_child = None
-            for move, child, _priority in ordered_children(state, self.rules):
-                value, _ = self._value(child, NEG_INF, POS_INF)
-                better = value > best_value if state.to_play == BLACK else value < best_value
-                if better or (value == best_value and move < best_move):
-                    best_value, best_move, best_child = value, move, child
+            try:
+                for move, child, _priority in self._ordered_children(state):
+                    value, _ = self._value(child, NEG_INF, POS_INF)
+                    better = (
+                        value > best_value
+                        if state.to_play == BLACK
+                        else value < best_value
+                    )
+                    if better or (value == best_value and move < best_move):
+                        best_value, best_move, best_child = value, move, child
+            except SearchBudgetExceeded:
+                return pv, False
             if best_child is None:
-                break
+                return pv, False
             pv.append(best_move)
             state = best_child
-        return pv
+        return pv, state.is_terminal(self.rules)

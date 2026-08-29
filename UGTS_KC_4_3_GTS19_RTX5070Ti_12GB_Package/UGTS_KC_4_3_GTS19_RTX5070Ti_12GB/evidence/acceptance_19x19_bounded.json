@@ -1,0 +1,24 @@
+{
+  "campaign": "unrestricted mathematical game; bounded execution attempt",
+  "claim_boundary": "PROVEN/DISPROVEN is an exact threshold result only if reached; UNKNOWN is not evidence for either player.",
+  "result": {
+    "disproof_number": 362,
+    "elapsed_seconds": 0.03191849996801466,
+    "expanded_nodes": 2,
+    "generated_nodes": 724,
+    "max_ply": 2,
+    "proof_number": 1,
+    "status": "UNKNOWN",
+    "threshold2": 1
+  },
+  "root_digest": "62eed2c148b6baefbd0312aa940a447a5c3aaa6ff524d18508a0628079ddc92e",
+  "rules": {
+    "allow_suicide": false,
+    "komi2": 15,
+    "passes_to_end": 2,
+    "profile_id": "UGTS-GO19-AREA-PSK-K7.5-v1",
+    "scoring": "area",
+    "size": 19,
+    "superko": "positional_superko"
+  }
+}

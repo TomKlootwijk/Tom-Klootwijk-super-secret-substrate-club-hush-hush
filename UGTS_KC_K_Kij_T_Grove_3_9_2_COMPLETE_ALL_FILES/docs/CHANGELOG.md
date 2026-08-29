@@ -5,12 +5,14 @@
 - Adds a dockable PySide6 desktop editor with editable 2D/3D scenes, inspectors, real runtime preview,
   friendly project checks and direct web, glTF, Android source, Poco APK and ADB-install builds.
 - Adds typed, serializable Logic Blocks with deterministic ordering and bounded desktop execution.
-- Executes the full current 18-block vocabulary in HTML5 exports and a deliberately validated native
-  subset through compact `KCVG001` Android bytecode.
+- Executes the full current 18-block vocabulary in HTML5 and compact `KCVG001` Android bytecode,
+  including sparse world graphs and Apply Force with explicit native value/component limits.
 - Adds a phone-ready beginner template whose graph runs in both the desktop oracle and Android VM.
 - Adds pointer-ID-aware two-thumb Android controls with density-scaled tap detection and a native
   host gesture harness; Space now has the same beginner jump/dash meaning as the editor preview.
-- Adds undoable scene add/copy/delete and 2D picture or 3D shape/material assignment in the Inspector.
+- Adds undoable scene add/copy/delete, contextual Logic Block choices, 2D picture or 3D
+  shape/material assignment, and bounded Wavefront OBJ mesh import.
+- Adds a one-click Windows launcher and a prominent GUI ADB deploy action with device-state guidance.
 - Fixes synchronous Add Block reloading so a new logic block stays selected and Undo remains reliable.
 - Adds composable desktop 3D ECS access plus compact log-polar pose/motion components, shared binary16
   LUTs and checksummed `UGECS1` deployment files.

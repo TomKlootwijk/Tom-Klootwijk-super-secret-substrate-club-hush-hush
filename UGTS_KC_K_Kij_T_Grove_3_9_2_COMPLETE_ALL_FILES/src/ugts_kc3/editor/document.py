@@ -22,9 +22,21 @@ from ..game import Transform2D
 from ..game_input import InputFrame
 from ..mobile3d import (
     InputFrame3D,
+    Mesh3DRecord,
     Mobile3DProject,
     Node3DRecord,
     Transform3DRecord,
+)
+from ..objimport import load_wavefront_obj
+from ..packed_kinematics import (
+    LogPolarProfile,
+    MotionRange,
+    PackedKinematicCodec,
+    PackedKinematicComponent,
+    PolarLookupTable,
+    PolarMotion,
+    PolarPose,
+    packed_kinematic_codecs_from_dict,
 )
 from ..project import EntitySpec, GameProject, GameSceneSpec
 from ..visual_graph import VisualGraph
@@ -32,6 +44,31 @@ from ..visual_graph import VisualGraph
 
 GRAPHS_KEY = "visual_graphs"
 BINDING_KEY = "visual_graph"
+MOVEMENT_PROFILES_KEY = "packed_kinematic_profiles"
+MOVEMENT_COMPONENT_KEY = "packed_kinematic"
+STUDIO_MOVEMENT_PROFILE_ID = "studio_movement"
+PACKED_COMPONENT_ANDROID_BYTES = 24
+_STUDIO_MOVEMENT_PROFILE = LogPolarProfile(
+    r0=1.0, rho_min=-2.0, rho_max=4.0, core_radius=1.0e-5
+)
+_STUDIO_MOVEMENT_RANGE = MotionRange(
+    rho_velocity=1.0,
+    theta_velocity=8.0,
+    rho_acceleration=1.0,
+    theta_acceleration=8.0,
+)
+_STUDIO_MOVEMENT_LUT_RESOLUTION = 128
+_SPIRAL_LOG_RATE = 0.2
+
+
+def studio_movement_profile_config() -> dict[str, Any]:
+    """Return a fresh canonical shared profile used by Inspector presets."""
+
+    return {
+        "profile": _STUDIO_MOVEMENT_PROFILE.to_dict(),
+        "motion_range": _STUDIO_MOVEMENT_RANGE.to_dict(),
+        "lut_resolution": _STUDIO_MOVEMENT_LUT_RESOLUTION,
+    }
 
 
 def friendly_rule_name(value: str) -> str:
@@ -289,6 +326,28 @@ class EditorDocument(QObject):
             suffix += 1
         return f"{base}_{suffix}"
 
+    def collision_free_mesh_id(self, label: str) -> str:
+        """Make a readable resource id without overwriting an existing mesh."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Import 3D Shape is available in mobile 3D projects.")
+        base = self._friendly_id_base(label, "imported_shape")
+        used = set(self.project.meshes)
+        if base not in used:
+            return base
+        suffix = 2
+        while f"{base}_{suffix}" in used:
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def imported_obj_mesh(self, path: str | Path) -> Mesh3DRecord:
+        """Parse an OBJ into a new, collision-free project mesh snapshot."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before importing a 3D shape.")
+        source = Path(path)
+        return load_wavefront_obj(source, self.collision_free_mesh_id(source.stem))
+
     def new_object_record(self) -> EntitySpec | Node3DRecord:
         """Create a small visible object that uses resources already in the project."""
 
@@ -474,6 +533,299 @@ class EditorDocument(QObject):
             self.project.nodes = snapshot
         else:
             raise RuntimeError("Open a project before editing its scene.")
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
+        self.set_selection(selection)
+
+    def replace_mesh_resources(self, meshes: Mapping[str, Mesh3DRecord]) -> None:
+        """Apply a validated 3D-mesh snapshot and refresh all editor surfaces."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before changing its 3D shapes.")
+        snapshot = copy.deepcopy(dict(meshes))
+        if not snapshot:
+            raise ValueError("A mobile 3D project must keep at least one 3D shape.")
+        for key, mesh in snapshot.items():
+            if not isinstance(mesh, Mesh3DRecord) or key != mesh.id:
+                raise ValueError("Every imported 3D shape needs a matching resource name.")
+            mesh.validate()
+        for node in self.project.nodes:
+            if node.mesh_id not in snapshot:
+                raise ValueError(f"{node.id} still uses the missing 3D shape {node.mesh_id}.")
+        candidate = copy.deepcopy(self.project)
+        candidate.meshes = snapshot
+        candidate.validate()
+        self.project.meshes = snapshot
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
+
+    def movement_profiles(self) -> dict[str, Any]:
+        """Return a detached snapshot of canonical packed-movement profiles."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return {}
+        raw = self.project.metadata.get(MOVEMENT_PROFILES_KEY, {})
+        if raw is None:
+            return {}
+        if not isinstance(raw, Mapping):
+            raise ValueError("Movement pattern profiles must be a project object.")
+        return copy.deepcopy(dict(raw))
+
+    @staticmethod
+    def _profile_resolution(profiles: Mapping[str, Any], profile_id: str) -> int:
+        raw = profiles.get(profile_id, {})
+        if not isinstance(raw, Mapping):
+            return 256
+        value = raw.get("lut_resolution", 256)
+        return int(value) if isinstance(value, int) and not isinstance(value, bool) else 256
+
+    @staticmethod
+    def _profile_limits(codec: PackedKinematicCodec) -> tuple[float, float, float]:
+        minimum = codec.profile.r0 * math.exp(codec.profile.rho_min)
+        maximum = codec.profile.r0 * math.exp(codec.profile.rho_max)
+        turn_speed = codec.motion_range.theta_velocity / math.tau
+        return minimum, maximum, turn_speed
+
+    @staticmethod
+    def _movement_pattern(
+        motion: PolarMotion, codec: PackedKinematicCodec
+    ) -> str:
+        rho_epsilon = codec.motion_range.rho_velocity / 32767.0 * 1.5
+        theta_accel_epsilon = codec.motion_range.theta_acceleration / 32767.0 * 1.5
+        rho_accel_epsilon = codec.motion_range.rho_acceleration / 32767.0 * 1.5
+        if (
+            abs(motion.rho_acceleration) > rho_accel_epsilon
+            or abs(motion.theta_acceleration) > theta_accel_epsilon
+        ):
+            return "custom"
+        if motion.rho_velocity > rho_epsilon:
+            return "spiral_out"
+        if motion.rho_velocity < -rho_epsilon:
+            return "spiral_in"
+        return "orbit"
+
+    def movement_pattern_state(
+        self, selection: SelectionRef | None = None
+    ) -> dict[str, Any] | None:
+        """Decode one 3D node's packed words into friendly Inspector values."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return None
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return None
+        raw_component = selected.metadata.get(MOVEMENT_COMPONENT_KEY)
+        profiles = self.movement_profiles()
+        default_codec = PackedKinematicCodec(
+            _STUDIO_MOVEMENT_PROFILE, _STUDIO_MOVEMENT_RANGE
+        )
+        x, _y, z = selected.transform.translation
+        authored_radius = math.hypot(x, z)
+        authored_angle = math.degrees(math.atan2(z, x)) % 360.0
+        base: dict[str, Any] = {
+            "dynamic": bool(selected.dynamic),
+            "has_component": raw_component is not None,
+            "pattern": "off",
+            "radius": authored_radius if authored_radius >= 0.25 else 3.0,
+            "speed": 0.2,
+            "start_angle": authored_angle,
+            "radius_min": 0.25,
+            "radius_max": 40.0,
+            "speed_max": _STUDIO_MOVEMENT_RANGE.theta_velocity / math.tau,
+            "component_bytes": PACKED_COMPONENT_ANDROID_BYTES,
+            "shared_lut_bytes": len(
+                PolarLookupTable.generate(
+                    _STUDIO_MOVEMENT_PROFILE, _STUDIO_MOVEMENT_LUT_RESOLUTION
+                ).to_bytes()
+            ),
+            "lut_resolution": _STUDIO_MOVEMENT_LUT_RESOLUTION,
+            "error": "",
+        }
+        if raw_component is None:
+            return base
+        try:
+            if not isinstance(raw_component, Mapping):
+                raise TypeError("the saved movement component is not an object")
+            component = PackedKinematicComponent.from_dict(raw_component)
+            codecs = packed_kinematic_codecs_from_dict(profiles)
+            if component.profile_id not in codecs:
+                raise ValueError(f"unknown movement profile {component.profile_id}")
+            codec = codecs[component.profile_id]
+            pose = codec.unpack_pose(component.pose_word)
+            motion = codec.unpack_motion(component.motion_word)
+            minimum, maximum, speed_max = self._profile_limits(codec)
+            resolution = self._profile_resolution(profiles, component.profile_id)
+            base.update(
+                {
+                    "pattern": self._movement_pattern(motion, codec),
+                    "radius": codec.profile.r0 * math.exp(pose.rho),
+                    "speed": motion.theta_velocity / math.tau,
+                    "start_angle": math.degrees(pose.theta) % 360.0,
+                    "radius_min": minimum,
+                    "radius_max": maximum,
+                    "speed_max": speed_max,
+                    "shared_lut_bytes": len(
+                        PolarLookupTable.generate(codec.profile, resolution).to_bytes()
+                    ),
+                    "lut_resolution": resolution,
+                }
+            )
+        except (KeyError, OverflowError, TypeError, ValueError) as exc:
+            base.update({"pattern": "invalid", "error": str(exc)})
+        return base
+
+    @staticmethod
+    def _profile_matches_studio(raw: Any) -> bool:
+        if not isinstance(raw, Mapping):
+            return False
+        try:
+            profile_data = raw.get("profile", raw)
+            motion_data = raw.get("motion_range", {})
+            return (
+                isinstance(profile_data, Mapping)
+                and isinstance(motion_data, Mapping)
+                and LogPolarProfile.from_dict(profile_data) == _STUDIO_MOVEMENT_PROFILE
+                and MotionRange.from_dict(motion_data) == _STUDIO_MOVEMENT_RANGE
+                and raw.get("lut_resolution", 256) == _STUDIO_MOVEMENT_LUT_RESOLUTION
+            )
+        except (TypeError, ValueError):
+            return False
+
+    @classmethod
+    def _shared_studio_profile(cls, profiles: dict[str, Any]) -> str:
+        for profile_id, raw in profiles.items():
+            if cls._profile_matches_studio(raw):
+                return str(profile_id)
+        profile_id = STUDIO_MOVEMENT_PROFILE_ID
+        suffix = 2
+        while profile_id in profiles:
+            profile_id = f"{STUDIO_MOVEMENT_PROFILE_ID}_{suffix}"
+            suffix += 1
+        profiles[profile_id] = studio_movement_profile_config()
+        return profile_id
+
+    def movement_pattern_snapshot(
+        self,
+        selection: SelectionRef,
+        values: Mapping[str, Any],
+    ) -> tuple[tuple[Node3DRecord, ...], dict[str, Any]]:
+        """Build validated node/profile snapshots for one friendly movement edit."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Movement patterns are available in mobile 3D projects.")
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            raise ValueError("Choose a 3D object before changing its movement pattern.")
+        pattern = str(values.get("pattern", "off"))
+        if pattern not in {"off", "orbit", "spiral_out", "spiral_in"}:
+            raise ValueError("Choose Off, Orbit, Spiral Out, or Spiral In.")
+        if selected.dynamic and pattern != "off":
+            raise ValueError(
+                "Physics already controls this dynamic object. Turn Dynamic off before adding a movement pattern."
+            )
+        profiles = self.movement_profiles()
+        metadata = copy.deepcopy(selected.metadata)
+        updated = selected
+        if pattern == "off":
+            metadata.pop(MOVEMENT_COMPONENT_KEY, None)
+            updated = replace(selected, metadata=metadata)
+        else:
+            raw_existing = selected.metadata.get(MOVEMENT_COMPONENT_KEY)
+            existing: PackedKinematicComponent | None = None
+            if isinstance(raw_existing, Mapping):
+                try:
+                    existing = PackedKinematicComponent.from_dict(raw_existing)
+                except (TypeError, ValueError):
+                    existing = None
+            codecs = packed_kinematic_codecs_from_dict(profiles)
+            if existing is not None and existing.profile_id in codecs:
+                profile_id = existing.profile_id
+            else:
+                profile_id = self._shared_studio_profile(profiles)
+                codecs = packed_kinematic_codecs_from_dict(profiles)
+            codec = codecs[profile_id]
+            radius = float(values.get("radius", 3.0))
+            speed = float(values.get("speed", 0.2))
+            angle_degrees = float(values.get("start_angle", 0.0))
+            if not all(math.isfinite(value) for value in (radius, speed, angle_degrees)):
+                raise ValueError("Movement radius, speed, and start angle must be finite numbers.")
+            if radius <= 0:
+                raise ValueError("Movement radius must be greater than zero.")
+            rho = math.log(radius / codec.profile.r0)
+            if not codec.profile.rho_min <= rho <= codec.profile.rho_max:
+                minimum, maximum, _speed_max = self._profile_limits(codec)
+                raise ValueError(
+                    f"This shared movement profile supports radii from {minimum:.2f} to {maximum:.2f}."
+                )
+            theta_velocity = speed * math.tau
+            if abs(theta_velocity) > codec.motion_range.theta_velocity + 1.0e-12:
+                _minimum, _maximum, speed_max = self._profile_limits(codec)
+                raise ValueError(
+                    f"Turn speed must stay between {-speed_max:.2f} and {speed_max:.2f} turns per second."
+                )
+            radial_rate = min(_SPIRAL_LOG_RATE, codec.motion_range.rho_velocity * 0.5)
+            rho_velocity = (
+                radial_rate if pattern == "spiral_out"
+                else -radial_rate if pattern == "spiral_in"
+                else 0.0
+            )
+            theta = math.radians(angle_degrees) % math.tau
+            component = codec.component(
+                PolarPose(rho, theta, 0, theta),
+                PolarMotion(rho_velocity=rho_velocity, theta_velocity=theta_velocity),
+                profile_id=profile_id,
+            )
+            metadata[MOVEMENT_COMPONENT_KEY] = component.to_dict()
+            quantized_pose = codec.unpack_pose(component.pose_word)
+            x, z = codec.profile.decode_cartesian(
+                quantized_pose.rho, quantized_pose.theta
+            )
+            transform = replace(
+                selected.transform,
+                translation=(x, selected.transform.translation[1], z),
+            )
+            updated = replace(selected, transform=transform, metadata=metadata)
+        updated.validate()
+        nodes = tuple(
+            updated if node.id == selected.id else copy.deepcopy(node)
+            for node in self.project.nodes
+        )
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = nodes
+        candidate_metadata = copy.deepcopy(candidate.metadata)
+        if profiles:
+            candidate_metadata[MOVEMENT_PROFILES_KEY] = copy.deepcopy(profiles)
+        else:
+            candidate_metadata.pop(MOVEMENT_PROFILES_KEY, None)
+        candidate.metadata = candidate_metadata
+        candidate.validate()
+        return nodes, profiles
+
+    def replace_movement_patterns(
+        self,
+        nodes: tuple[Node3DRecord, ...],
+        profiles: Mapping[str, Any],
+        selection: SelectionRef | None,
+    ) -> None:
+        """Apply one validated packed-movement snapshot and refresh editor views."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before changing movement patterns.")
+        snapshot_nodes = copy.deepcopy(tuple(nodes))
+        snapshot_profiles = copy.deepcopy(dict(profiles))
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = snapshot_nodes
+        metadata = copy.deepcopy(candidate.metadata)
+        if snapshot_profiles:
+            metadata[MOVEMENT_PROFILES_KEY] = snapshot_profiles
+        else:
+            metadata.pop(MOVEMENT_PROFILES_KEY, None)
+        candidate.metadata = metadata
+        candidate.validate()
+        self.project.nodes = snapshot_nodes
+        self.project.metadata = metadata
         self._runtime_world = None
         self.set_dirty(True)
         self.structureChanged.emit()

@@ -65,6 +65,11 @@ class ProofNumberSearch:
     def __init__(self, rules: Rules, threshold2: int, node_budget: int = 10_000):
         if node_budget < 1:
             raise ValueError("node_budget must be positive")
+        if rules.superko not in {"positional_superko", "situational_superko"}:
+            raise ValueError(
+                "ProofNumberSearch requires a finite superko profile; "
+                "infinite-play utility is undefined for none/simple_ko"
+            )
         self.rules = rules
         self.threshold2 = threshold2
         self.node_budget = node_budget
@@ -131,7 +136,11 @@ class ProofNumberSearch:
             current = current.parent
 
     def run(self, state: State | None = None) -> PNSResult:
+        self.expanded_nodes = 0
+        self.generated_nodes = 1
+        self.max_ply = 0
         root = PNSNode(state=state if state is not None else State.initial(self.rules))
+        root.state.validate(self.rules)
         self._initialize(root)
         start = monotonic()
         root_ply = root.state.ply

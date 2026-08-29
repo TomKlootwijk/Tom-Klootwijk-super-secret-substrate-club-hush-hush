@@ -170,6 +170,10 @@ class EditorSceneAuthoringTests(unittest.TestCase):
                     return_value=SimpleNamespace(output_dir=output),
                 ),
                 patch(
+                    "ugts_kc3.editor.main_window.select_android_device",
+                    return_value=SimpleNamespace(serial="device-1"),
+                ),
+                patch(
                     "ugts_kc3.editor.main_window.build_apk",
                     return_value=SimpleNamespace(apk=apk),
                 ),
@@ -186,7 +190,28 @@ class EditorSceneAuthoringTests(unittest.TestCase):
             self.assertIn("No Android device", error)
             self.assertEqual(folder, apk.parent)
 
-    def test_check_project_reports_android_graph_pack_incompatibility(self) -> None:
+    def test_deploy_action_uses_adb_target_and_editor_owned_folder(self) -> None:
+        self.window.new_2d_project()
+        self.assertFalse(self.window.deploy_action.isEnabled())
+        self.window.document.set_dirty(False)
+        self.window.new_3d_project()
+        project = self.window.document.project
+        self.assertIsInstance(project, Mobile3DProject)
+        self.assertTrue(self.window.deploy_action.isEnabled())
+        with tempfile.TemporaryDirectory() as temporary:
+            project_path = self.window.document.save(Path(temporary) / "project.json")
+            with patch.object(self.window, "_build_requested") as requested:
+                self.window.deploy_to_phone()
+            requested.assert_called_once()
+            target, destination = requested.call_args.args
+            self.assertEqual(target, "android-install")
+            self.assertEqual(self.window.build_output.target.currentData(), "android-install")
+            self.assertEqual(
+                destination,
+                project_path.parent / ".ugts-studio" / "deploy" / f"{project.id}-android",
+            )
+
+    def test_check_project_accepts_portable_android_world_graph(self) -> None:
         self.window.new_3d_project()
         project = self.window.document.project
         self.assertIsInstance(project, Mobile3DProject)
@@ -196,9 +221,9 @@ class EditorSceneAuthoringTests(unittest.TestCase):
         self.window.build_output.output.clear()
         self.window.validate_project()
         messages = self.window.build_output.output.toPlainText()
-        self.assertIn("Android build cannot use these Logic Blocks yet", messages)
-        self.assertIn("world_graphs", messages)
-        self.assertIn("Needs attention", self.window.assets_project.project_status.text())
+        self.assertIn("Project check passed", messages)
+        self.assertNotIn("Android build cannot use these Logic Blocks yet", messages)
+        self.assertEqual(self.window.assets_project.project_status.text(), "Ready")
 
 
 if __name__ == "__main__":

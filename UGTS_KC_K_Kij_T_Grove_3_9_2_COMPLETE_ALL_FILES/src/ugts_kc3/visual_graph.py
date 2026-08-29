@@ -1298,7 +1298,7 @@ def create_builtin_registry() -> NodeRegistry:
             _emit_event, {"kind": "graph_event", "source": None, "target": None, "payload": {}},
         ),
         NodeDefinition(
-            "action.apply_force", "Apply Force", "Physics", "Adds a two-dimensional force to an entity's Body2D.",
+            "action.apply_force", "Apply Force", "Physics", "Pushes a 2D body in XY or a 3D body across its XZ ground plane.",
             flow_action_ports + (_in_data("entity", "entity"), _in_data("force", "vector2", required=True)), _apply_force, {"entity": None, "force": [0, 0]},
         ),
         NodeDefinition(

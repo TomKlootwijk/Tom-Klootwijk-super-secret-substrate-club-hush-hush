@@ -35,6 +35,8 @@ def canonical_frontier(rules: Rules, depth: int = 1) -> tuple[list[State], Front
     for _ in range(depth):
         next_by_key: dict[tuple, State] = {}
         for state in current:
+            if state.is_terminal(rules):
+                continue
             for _move, child, _priority in ordered_children(state, rules):
                 raw_children += 1
                 next_by_key.setdefault(canonical_state_key(child, rules), child)

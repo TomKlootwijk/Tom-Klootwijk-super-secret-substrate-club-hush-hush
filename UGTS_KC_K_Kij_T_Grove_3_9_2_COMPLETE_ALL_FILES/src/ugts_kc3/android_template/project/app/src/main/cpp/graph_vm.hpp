@@ -68,7 +68,7 @@ public:
     std::string_view graphId(std::uint32_t index) const;
 
 private:
-    enum class ValueTag : std::uint8_t { Null=0, Boolean=1, Number=2, String=3, Vec3=4, Vec4=5, Entity=6 };
+    enum class ValueTag : std::uint8_t { Null=0, Boolean=1, Number=2, String=3, Vec3=4, Vec4=5, Vec2=6, Entity=7 };
     struct Value {
         ValueTag tag=ValueTag::Null;
         std::uint32_t index=0;

@@ -11,6 +11,48 @@
 namespace ugts_go19 {
 namespace {
 
+void ValidateBoard(const std::vector<std::uint8_t>& board,
+                   std::size_t expected_points, const char* label) {
+  if (board.size() != expected_points) {
+    throw std::invalid_argument(std::string(label) +
+                                " size does not match rules");
+  }
+  if (std::any_of(board.begin(), board.end(), [](std::uint8_t point) {
+        return point != kEmpty && point != kBlack && point != kWhite;
+      })) {
+    throw std::invalid_argument(std::string(label) +
+                                " contains an invalid point");
+  }
+}
+
+void ValidateStateForRules(const State& state, const Rules& rules) {
+  if (rules.size < 1 || rules.size > 19) {
+    throw std::invalid_argument("board size must be in 1..19");
+  }
+  if (rules.passes_to_end < 1) {
+    throw std::invalid_argument("passes_to_end must be positive");
+  }
+  if (state.size != rules.size) {
+    throw std::invalid_argument("state size does not match rules");
+  }
+  if (state.to_play != kBlack && state.to_play != kWhite) {
+    throw std::invalid_argument("state has an invalid player to move");
+  }
+  if (state.passes < 0) {
+    throw std::invalid_argument("state pass count cannot be negative");
+  }
+
+  const auto expected_points =
+      static_cast<std::size_t>(rules.size * rules.size);
+  ValidateBoard(state.board, expected_points, "state board");
+  for (const auto& seen_board : state.seen_boards) {
+    ValidateBoard(seen_board, expected_points, "seen board");
+  }
+  if (state.previous_board.has_value()) {
+    ValidateBoard(*state.previous_board, expected_points, "previous board");
+  }
+}
+
 bool BoardSeen(const State& state, const std::vector<std::uint8_t>& board) {
   return std::any_of(state.seen_boards.begin(), state.seen_boards.end(),
                      [&](const auto& item) { return item == board; });
@@ -103,8 +145,9 @@ std::pair<std::vector<int>, std::vector<int>> GroupAndLiberties(
 }
 
 ApplyResult ApplyMove(const State& state, int move, const Rules& rules) {
+  ValidateStateForRules(state, rules);
   if (state.Terminal(rules)) {
-    throw std::invalid_argument("game is terminal");
+    throw IllegalMove("game is terminal");
   }
   const std::uint8_t next_player = Other(state.to_play);
   if (move == kPass) {
@@ -116,10 +159,10 @@ ApplyResult ApplyMove(const State& state, int move, const Rules& rules) {
     return {std::move(next), 0, 0};
   }
   if (move < 0 || move >= static_cast<int>(state.board.size())) {
-    throw std::invalid_argument("move outside board");
+    throw IllegalMove("move outside board");
   }
   if (state.board[static_cast<std::size_t>(move)] != kEmpty) {
-    throw std::invalid_argument("occupied point");
+    throw IllegalMove("occupied point");
   }
 
   State next = state;
@@ -144,13 +187,13 @@ ApplyResult ApplyMove(const State& state, int move, const Rules& rules) {
       GroupAndLiberties(next.board, move, rules.size);
   int self_captured = 0;
   if (own_liberties.empty()) {
-    if (!rules.allow_suicide) throw std::invalid_argument("suicide");
+    if (!rules.allow_suicide) throw IllegalMove("suicide");
     self_captured = static_cast<int>(own_stones.size());
     for (int stone : own_stones) next.board[static_cast<std::size_t>(stone)] = kEmpty;
   }
 
   if (BoardSeen(state, next.board)) {
-    throw std::invalid_argument("positional superko");
+    throw IllegalMove("positional superko");
   }
   next.seen_boards.push_back(next.board);
   next.previous_board = state.board;
@@ -164,13 +207,14 @@ bool IsLegal(const State& state, int move, const Rules& rules) {
   try {
     static_cast<void>(ApplyMove(state, move, rules));
     return true;
-  } catch (const std::exception&) {
+  } catch (const IllegalMove&) {
     return false;
   }
 }
 
 std::vector<int> LegalMoves(const State& state, const Rules& rules,
                             bool include_pass) {
+  ValidateStateForRules(state, rules);
   std::vector<int> result;
   if (state.Terminal(rules)) return result;
   for (int point = 0; point < static_cast<int>(state.board.size()); ++point) {

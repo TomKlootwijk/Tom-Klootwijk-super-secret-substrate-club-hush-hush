@@ -27,6 +27,7 @@ from .project import *
 from .webexport import *
 from .templates import *
 from .mobile3d import *
+from .objimport import *
 from .templates3d import *
 from .androidexport import *
 from .androidbuild import *

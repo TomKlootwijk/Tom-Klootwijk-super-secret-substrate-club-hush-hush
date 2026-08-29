@@ -92,11 +92,12 @@ class GraphPackTests(unittest.TestCase):
             GraphNode("emit", "action.emit_event", {"kind": "hello", "payload": {}}),
             GraphNode("active", "action.set_active"),
             GraphNode("despawn", "action.despawn"),
+            GraphNode("force", "action.apply_force", {"force": [1, 2]}),
         )
         project = blank_mobile3d_project()
         _attach(project, VisualGraph("portable", nodes))
         info = inspect_graph_pack(compile_graph_pack_bytes(project))
-        self.assertEqual(info["node_count"], 17)
+        self.assertEqual(info["node_count"], 18)
         self.assertEqual(info["state_keys"], ["score"])
 
     def test_many_nodes_remain_small(self):
@@ -125,21 +126,7 @@ class GraphPackTests(unittest.TestCase):
             report = json.loads(built.build_report.read_text("utf-8"))
             self.assertEqual(report["visual_graph_runtime"]["graph_count"], 1)
 
-    def test_rejects_2d_force_node(self):
-        graph = VisualGraph("bad", (GraphNode("force", "action.apply_force"),))
-        project = blank_mobile3d_project()
-        _attach(project, graph)
-        with self.assertRaisesRegex(GraphPackError, "action.apply_force"):
-            compile_graph_pack_bytes(project)
-        with tempfile.TemporaryDirectory() as tmp:
-            output = Path(tmp) / "existing"
-            output.mkdir()
-            marker = output / "keep.txt"
-            marker.write_text("untouched", encoding="utf-8")
-            with self.assertRaisesRegex(GraphPackError, "action.apply_force"):
-                build_android_project(project, output, clean=True)
-            self.assertEqual(marker.read_text("utf-8"), "untouched")
-
+    def test_rejects_unavailable_input_action_without_touching_output(self):
         project = blank_mobile3d_project()
         _attach(
             project,
@@ -148,8 +135,14 @@ class GraphPackTests(unittest.TestCase):
                 (GraphNode("pressed", "event.input_pressed", {"action": "custom_unmapped_action"}),),
             ),
         )
-        with self.assertRaisesRegex(GraphPackError, "not available in the Android template"):
-            compile_graph_pack_bytes(project)
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "existing"
+            output.mkdir()
+            marker = output / "keep.txt"
+            marker.write_text("untouched", encoding="utf-8")
+            with self.assertRaisesRegex(GraphPackError, "not available in the Android template"):
+                build_android_project(project, output, clean=True)
+            self.assertEqual(marker.read_text("utf-8"), "untouched")
 
     def test_rejects_nonempty_event_payload_and_event_object_link(self):
         project = blank_mobile3d_project()
@@ -180,11 +173,22 @@ class GraphPackTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing"):
             compile_graph_pack_bytes(project)
 
+    def test_world_graph_binding_is_compact_canonical_and_inspectable(self):
         project = blank_mobile3d_project()
-        project.metadata["visual_graphs"] = [VisualGraph("world", (GraphNode("tick", "event.tick"),)).to_dict()]
+        graph = VisualGraph("world", (GraphNode("tick", "event.tick"),))
+        project.metadata["visual_graphs"] = [graph.to_dict()]
         project.metadata["world_graphs"] = "world"
-        with self.assertRaisesRegex(GraphPackError, "world_graphs"):
-            compile_graph_pack_bytes(project)
+        packed = compile_graph_pack_bytes(project)
+        clone = Mobile3DProject.from_dict(project.to_dict())
+        self.assertEqual(compile_graph_pack_bytes(clone), packed)
+        info = inspect_graph_pack(packed)
+        self.assertEqual(info["binding_count"], 1)
+        self.assertEqual(info["world_binding_count"], 1)
+        self.assertEqual(
+            info["bindings"],
+            [{"graph": "world", "scope": "world", "scene_node_index": None}],
+        )
+        self.assertLess(len(packed), 160)
 
     def test_inspector_rejects_damage(self):
         project = blank_mobile3d_project()

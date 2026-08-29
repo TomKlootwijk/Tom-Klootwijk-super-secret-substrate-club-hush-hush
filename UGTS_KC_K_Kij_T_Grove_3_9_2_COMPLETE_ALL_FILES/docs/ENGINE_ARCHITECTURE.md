@@ -73,13 +73,14 @@ The first vocabulary covers lifecycle/input events, branches, values, arithmetic
 state, components, emitted events, forces, activation and despawn. Arbitrary Python or native code is
 not embedded in a learner project.
 
-Android exports an optional `visual_graphs.kcvg` (`KCVG001`) asset. Its native subset supports
-ready/tick/input-pressed, branch, constants/state/component reads, scalar math/comparisons,
-set-state/set-component, bounded empty-payload event logging, activation and despawn. It deliberately
-rejects world graphs, `apply_force`, dynamic configuration ports, mapping/nonempty event payloads and
-component paths outside the native NodeData whitelist rather than silently changing their meaning.
+Android exports an optional `visual_graphs.kcvg` (`KCVG001`) asset. Its native VM supports the full
+current 18-block authoring vocabulary, including sparse node bindings, world bindings and 2D-XZ or
+3D-XYZ Apply Force. Ready/tick/input, branches, values, state/components, scalar math/comparisons,
+bounded event logging, activation and despawn retain the same step/lifecycle rules as desktop. It
+still deliberately rejects mapping/nonempty event payloads, connected event records, unmapped input
+names and component paths outside the native NodeData whitelist rather than changing their meaning.
 
-HTML5 exports precompile graph plans too. The browser VM executes all 18 current built-ins, preserves
+HTML5 exports precompile graph plans too. The browser VM also executes all 18 current built-ins, preserves
 entity/world binding ownership, sorts flow deterministically and enforces a 1,024-step ceiling. Browser
 exports therefore fail at build time if a future custom block has no browser implementation; logic is
 never silently dropped.
@@ -91,7 +92,8 @@ resolution, careful effects, asset reuse and measured visibility—not enormous 
 currently provides GLES 3 depth/culling, a scaled framebuffer, post effects, particles, camera shake,
 adaptive quality tiers and Poco-specific ARM64 policy.
 
-It does **not** yet provide a full AAA asset pipeline: skeletal animation, texture compression,
+OBJ mesh import is now a bounded authoring-to-native-pack path, but Grove does **not** yet provide a
+full AAA asset pipeline: skeletal animation, texture compression,
 streaming LOD, occlusion, instancing/batching, production physics and a Vulkan renderer remain work.
 Those gaps are tracked rather than hidden behind marketing language.
 

@@ -43,4 +43,9 @@ def state_digest(state: State, rules: Rules) -> str:
         "seen": [token.hex() for token in sorted(state.seen)],
         "rules": rules.as_dict(),
     }
+    # Preserve the canonical initial-root digest while distinguishing the
+    # previous-board lineage whenever one exists (required by simple ko and the
+    # complete cross-profile state identity).
+    if state.previous_board is not None:
+        payload["previous_board"] = state.previous_board.hex()
     return sha256_hex(canonical_json_bytes(payload))

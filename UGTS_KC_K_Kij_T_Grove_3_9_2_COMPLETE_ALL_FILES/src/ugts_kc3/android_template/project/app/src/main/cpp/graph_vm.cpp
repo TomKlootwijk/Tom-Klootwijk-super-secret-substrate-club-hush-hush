@@ -54,7 +54,7 @@ std::uint16_t expectedInputs(std::uint8_t opcode) {
     switch (opcode) {
         case 1: case 2: return 0;
         case 3: case 4: case 5: case 16: case 17: return opcode==16?2:1;
-        case 6: case 8: case 9: case 10: case 11: case 13: return 2;
+        case 6: case 8: case 9: case 10: case 11: case 13: case 18: return 2;
         case 7: case 14: case 15: return 4;
         case 12: return 3;
         default: throw std::runtime_error("KCVG opcode is unknown");
@@ -72,7 +72,7 @@ std::uint8_t dataOutputs(std::uint8_t opcode) {
 
 std::uint8_t flowOutputs(std::uint8_t opcode) {
     if (opcode==4) return 2;
-    if (opcode==1 || opcode==2 || opcode==3 || (opcode>=13 && opcode<=17)) return 1;
+    if (opcode==1 || opcode==2 || opcode==3 || (opcode>=13 && opcode<=18)) return 1;
     return 0;
 }
 
@@ -166,15 +166,15 @@ void GraphVm::load(const std::vector<std::uint8_t>& bytes,std::size_t sceneNodeC
     values_.reserve(valueCount);
     for (std::uint32_t i=0;i<valueCount;++i) {
         Value value; const auto tag=r.u8();
-        require(tag<=static_cast<std::uint8_t>(ValueTag::Vec4),"KCVG value tag invalid");
+        require(tag<=static_cast<std::uint8_t>(ValueTag::Vec2),"KCVG value tag invalid");
         value.tag=static_cast<ValueTag>(tag);
         if (value.tag==ValueTag::Boolean) {
             const auto raw=r.u8(); require(raw<=1,"KCVG boolean invalid"); value.index=raw;
         } else if (value.tag==ValueTag::Number) value.number=r.f32();
         else if (value.tag==ValueTag::String) {
             value.index=r.u32(); require(value.index<stringCount,"KCVG string value reference invalid");
-        } else if (value.tag==ValueTag::Vec3 || value.tag==ValueTag::Vec4) {
-            const int count=value.tag==ValueTag::Vec3?3:4;
+        } else if (value.tag==ValueTag::Vec2 || value.tag==ValueTag::Vec3 || value.tag==ValueTag::Vec4) {
+            const int count=value.tag==ValueTag::Vec2?2:(value.tag==ValueTag::Vec3?3:4);
             for (int j=0;j<count;++j) value.vector[static_cast<std::size_t>(j)]=r.f32();
         }
         values_.push_back(value);
@@ -476,6 +476,7 @@ bool GraphVm::equalValues(const Value& a,const Value& b) const {
         case ValueTag::Null: return true;
         case ValueTag::Boolean: case ValueTag::String: case ValueTag::Entity: return a.index==b.index;
         case ValueTag::Number: return a.number==b.number;
+        case ValueTag::Vec2: return a.vector[0]==b.vector[0] && a.vector[1]==b.vector[1];
         case ValueTag::Vec3: return a.vector[0]==b.vector[0] && a.vector[1]==b.vector[1] && a.vector[2]==b.vector[2];
         case ValueTag::Vec4: return a.vector==b.vector;
     }
@@ -604,6 +605,19 @@ bool GraphVm::executeNode(std::uint16_t local,bool queued,std::size_t depth,std:
         case 17: {
             const auto resolved=entityValue(input[0],true); if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
             auto& target=(*currentNodes_)[static_cast<std::size_t>(resolved)]; target.alive=false; target.active=false;
+            flowMask=1; return true;
+        }
+        case 18: {
+            const auto resolved=entityValue(input[0],true); if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
+            auto& target=(*currentNodes_)[static_cast<std::size_t>(resolved)];
+            if (input[1].tag!=ValueTag::Vec2 && input[1].tag!=ValueTag::Vec3)
+                return fail(GraphVmError::TypeMismatch,local);
+            if (!target.dynamic || !std::isfinite(target.mass) || target.mass<=0.0f) { flowMask=1; return true; }
+            const float inverseMass=1.0f/target.mass;
+            const Vec3 force=input[1].tag==ValueTag::Vec2
+                ?Vec3{input[1].vector[0],0.0f,input[1].vector[1]}
+                :Vec3{input[1].vector[0],input[1].vector[1],input[1].vector[2]};
+            target.velocity=target.velocity+force*inverseMass;
             flowMask=1; return true;
         }
         default: return fail(GraphVmError::TypeMismatch,local);

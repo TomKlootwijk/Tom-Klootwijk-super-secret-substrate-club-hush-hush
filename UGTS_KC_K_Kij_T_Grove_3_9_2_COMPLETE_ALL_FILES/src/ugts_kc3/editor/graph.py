@@ -11,6 +11,7 @@ from PySide6.QtCore import QPointF, QRectF, Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QComboBox,
     QFrame,
     QGraphicsItem,
     QGraphicsObject,
@@ -63,6 +64,113 @@ _FRIENDLY_NODE_NAMES = {
 _CATEGORY_COLORS = {
     "Events": "#5ac8fa", "Choices": "#c792ea", "Values": "#f6c85f",
     "Math": "#f0a45d", "Movement": "#78e6a3", "Game Actions": "#ff8fab",
+}
+
+
+@dataclass(frozen=True)
+class PropertyChoiceSpec:
+    """Canonical values and child-facing labels for one finite node setting."""
+
+    choices: tuple[tuple[Any, str, str], ...]
+    tooltip: str
+    editable: bool = False
+
+
+_COMPARISON_CHOICES = (
+    ("equal", "Is equal to  (=)", "Both values must be the same"),
+    ("not_equal", "Is not equal to  (≠)", "The values must be different"),
+    ("less", "Is less than  (<)", "A must be smaller than B"),
+    ("less_equal", "Is at most  (≤)", "A may be smaller than or equal to B"),
+    ("greater", "Is greater than  (>)", "A must be larger than B"),
+    ("greater_equal", "Is at least  (≥)", "A may be larger than or equal to B"),
+)
+_BOOLEAN_CHOICES = (
+    (True, "Yes", "Store the boolean value true"),
+    (False, "No", "Store the boolean value false"),
+)
+_ACTION_CHOICES = {
+    "2d": (
+        ("dash", "Dash", "Space, Shift, gamepad, or the Dash touch button"),
+        ("move_x", "Move left / right", "The project's horizontal movement action"),
+        ("move_y", "Move up / down", "The project's vertical movement action"),
+        ("pause", "Pause", "Pause button"),
+        ("restart", "Restart", "Restart button"),
+        ("mute", "Mute sound", "Mute button"),
+        ("save", "Save game", "Save button"),
+        ("load", "Load game", "Load button"),
+    ),
+    "3d": (
+        ("dash", "Dash / action", "The phone action button used by the starter lesson"),
+        ("action", "Action", "The general phone action button"),
+        ("accept", "Accept", "An alias for the phone action button"),
+        ("jump", "Jump", "The phone jump button"),
+        ("move_left", "Move left", "The left side of the movement control"),
+        ("move_right", "Move right", "The right side of the movement control"),
+        ("move_up", "Move forward", "The forward side of the movement control"),
+        ("move_down", "Move backward", "The backward side of the movement control"),
+    ),
+}
+_COMPONENT_FIELDS = {
+    "2d": {
+        "transform": ("position", "rotation", "scale"),
+        "body": (
+            "velocity", "angular_velocity", "acceleration", "force", "mass",
+            "damping", "gravity_scale", "restitution", "friction", "max_speed",
+            "fixed_rotation", "body_type",
+        ),
+        "collider": ("enabled", "offset", "tag", "filter.layer", "filter.mask", "filter.sensor"),
+        "vector_renderer": ("asset_id", "z_index", "visible", "opacity", "tint"),
+        "camera": ("position", "zoom", "rotation", "follow_entity", "follow_smoothing"),
+        "lifetime": ("remaining",),
+        "health": ("current", "maximum", "invulnerability", "invulnerable_remaining"),
+        "bounds_constraint": ("mode",),
+        "player_controller": (
+            "x_action", "y_action", "speed", "dash_action", "dash_speed",
+            "dash_duration", "dash_cooldown", "last_direction",
+        ),
+        "collectible": ("points", "state_key", "sound", "destroy_on_collect"),
+        "hazard": ("damage", "knockback", "cooldown", "sound"),
+        "packed_kinematic": ("pose_word", "motion_word", "profile_id"),
+    },
+    "3d": {
+        "transform": ("translation", "position", "rotation", "scale"),
+        "body": ("velocity", "angular_velocity", "dynamic", "mass", "restitution"),
+        "velocity": ("x", "y", "z"),
+        "angular_velocity": ("x", "y", "z"),
+        "collider": ("shape", "radius", "half_extents", "sensor"),
+        "render": ("mesh_id", "material_id"),
+        "active": (),
+        "alive": (),
+        "packed_kinematic": ("pose_word", "motion_word", "profile_id"),
+    },
+}
+_EVENT_CHOICES = {
+    "2d": (
+        "graph_event", "dash", "collision_enter", "collision_stay", "collision_exit",
+        "collected", "damaged", "entity_defeated", "lifetime_expired",
+        "entity_spawned", "entity_despawned",
+    ),
+    "3d": (
+        "graph_event", "jump", "floor_contact", "bounds_contact", "collision",
+        "collected", "goal",
+    ),
+}
+_PROPERTY_LABELS = {
+    "action": "Button / action",
+    "active": "Object is active",
+    "component": "Object part",
+    "condition": "Condition",
+    "default": "Fallback value",
+    "entity": "Object ID",
+    "field": "Part setting",
+    "force": "Push amount",
+    "key": "Game value name",
+    "kind": "Message name",
+    "operator": "Compare using",
+    "payload": "Message details",
+    "source": "Sender object ID",
+    "target": "Receiver object ID",
+    "value": "Value",
 }
 
 
@@ -611,10 +719,7 @@ class NodePalette(QWidget):
             for child_index in range(category.childCount()):
                 child = category.child(child_index)
                 template = TEMPLATE_BY_KEY[str(child.data(0, Qt.ItemDataRole.UserRole))]
-                compatible = not (
-                    self._project_kind == "3d" and template.key == "action.apply_force"
-                )
-                matches = compatible and query in f"{template.title} {template.category} {template.description}".casefold()
+                matches = query in f"{template.title} {template.category} {template.description}".casefold()
                 child.setHidden(not matches)
                 visible = visible or matches
             category.setHidden(not visible)
@@ -622,17 +727,10 @@ class NodePalette(QWidget):
     def set_project_kind(self, kind: str | None) -> None:
         self._project_kind = kind
         if kind == "3d":
-            self.subtitle.setText("Android-safe blocks are shown. Use 3 numbers for 3D positions and scale.")
+            self.subtitle.setText("Compact Android-safe blocks are shown. Push uses the X/Z ground plane.")
         else:
             self.subtitle.setText("Pick a block, then connect its dots.")
         self._filter(self.search.text())
-        current = self.tree.currentItem()
-        if (
-            current is not None
-            and kind == "3d"
-            and current.data(0, Qt.ItemDataRole.UserRole) == "action.apply_force"
-        ):
-            self.tree.setCurrentItem(None)
 
     def _selection_changed(self, current: QTreeWidgetItem | None, previous=None) -> None:
         key = None if current is None else current.data(0, Qt.ItemDataRole.UserRole)
@@ -659,7 +757,10 @@ class NodePropertiesPanel(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.node: GraphNode | None = None
+        self.project_kind: str | None = None
         self._updating = False
+        self._editors: dict[str, QWidget] = {}
+        self._items: dict[str, QTreeWidgetItem] = {}
         layout = QVBoxLayout(self)
         layout.setContentsMargins(12, 8, 12, 12)
         layout.setSpacing(7)
@@ -677,6 +778,19 @@ class NodePropertiesPanel(QWidget):
         layout.addWidget(self.hint)
         layout.addWidget(self.values, 1)
         self.values.itemChanged.connect(self._item_changed)
+
+    def set_project_kind(self, kind: str | None) -> None:
+        kind = kind if kind in {"2d", "3d"} else None
+        if kind == self.project_kind:
+            return
+        self.project_kind = kind
+        if self.node is not None:
+            self.set_node(self.node)
+
+    def editor_for(self, key: str) -> QWidget | None:
+        """Return the contextual editor for tests and accessibility helpers."""
+
+        return self._editors.get(str(key))
 
     @staticmethod
     def _display(value: Any) -> str:
@@ -715,10 +829,171 @@ class NodePropertiesPanel(QWidget):
                 return value
         return value
 
+    @staticmethod
+    def _friendly_value(value: str) -> str:
+        if not value:
+            return "Whole part"
+        replacements = {
+            "translation": "Position (3D)",
+            "position": "Position",
+            "angular_velocity": "Spin speed",
+            "vector_renderer": "Picture",
+            "packed_kinematic": "Packed polar movement",
+            "bounds_constraint": "Scene bounds",
+            "player_controller": "Player controls",
+        }
+        return replacements.get(value, value.replace(".", " › ").replace("_", " ").title())
+
+    def _actions(self) -> tuple[tuple[Any, str, str], ...]:
+        if self.project_kind in _ACTION_CHOICES:
+            return _ACTION_CHOICES[self.project_kind]
+        seen: set[str] = set()
+        result: list[tuple[Any, str, str]] = []
+        for kind in ("2d", "3d"):
+            for choice in _ACTION_CHOICES[kind]:
+                if choice[0] not in seen:
+                    result.append(choice)
+                    seen.add(choice[0])
+        return tuple(result)
+
+    def _component_fields(self) -> Mapping[str, tuple[str, ...]]:
+        if self.project_kind in _COMPONENT_FIELDS:
+            return _COMPONENT_FIELDS[self.project_kind]
+        return _COMPONENT_FIELDS["2d"]
+
+    @staticmethod
+    def _with_current_choice(
+        choices: tuple[tuple[Any, str, str], ...], current: Any, noun: str
+    ) -> tuple[tuple[Any, str, str], ...]:
+        if any(value == current and type(value) is type(current) for value, _, _ in choices):
+            return choices
+        if not isinstance(current, str) or not current:
+            return choices
+        return choices + ((
+            current,
+            f"{NodePropertiesPanel._friendly_value(current)} (project custom)",
+            f"Keep the custom {noun} already stored in this project: {current}",
+        ),)
+
+    def _choice_spec(self, node: GraphNode, key: str, value: Any) -> PropertyChoiceSpec | None:
+        if node.template.key == "compare" and key == "operator":
+            return PropertyChoiceSpec(
+                _COMPARISON_CHOICES,
+                "Choose how A and B are compared. The saved graph keeps the engine's exact operator name.",
+            )
+
+        definition = BUILTIN_NODE_REGISTRY.get(node.template.key)
+        port = None if definition is None else definition.port(PortDirection.INPUT, key)
+        if isinstance(value, bool) or (port is not None and port.data_type == "boolean"):
+            return PropertyChoiceSpec(
+                _BOOLEAN_CHOICES,
+                "Choose Yes or No. This is stored as a real boolean, not text.",
+            )
+
+        if node.template.key == "event.input_pressed" and key == "action":
+            return PropertyChoiceSpec(
+                self._with_current_choice(self._actions(), value, "input action"),
+                "Choose a button action available to this kind of project.",
+            )
+
+        if node.template.key in {"value.component", "action.set_component"} and key == "component":
+            choices = tuple(
+                (
+                    component,
+                    self._friendly_value(component),
+                    f"Use the built-in {component} object part",
+                )
+                for component in self._component_fields()
+            )
+            return PropertyChoiceSpec(
+                self._with_current_choice(choices, value, "component"),
+                "Choose which built-in object part this block reads or changes.",
+            )
+
+        if node.template.key in {"value.component", "action.set_component"} and key == "field":
+            component = str(node.properties.get("component", ""))
+            fields = self._component_fields().get(component)
+            if fields is None:
+                return None
+            choices = tuple(
+                (field, self._friendly_value(field), f"Canonical field: {field or '(whole component)'}")
+                for field in fields
+            )
+            whole_description = (
+                "Read the complete component value"
+                if node.template.key == "value.component"
+                else "Replace the complete component value"
+            )
+            choices = (("", "Whole part", whole_description),) + choices
+            return PropertyChoiceSpec(
+                self._with_current_choice(choices, value, "component field"),
+                f"Choose a setting that belongs to {self._friendly_value(component)}.",
+            )
+
+        if node.template.key == "action.emit_event" and key == "kind":
+            event_values = _EVENT_CHOICES.get(
+                self.project_kind or "", _EVENT_CHOICES["2d"]
+            )
+            choices = tuple(
+                (event, self._friendly_value(event), f"Canonical message name: {event}")
+                for event in event_values
+            )
+            return PropertyChoiceSpec(
+                self._with_current_choice(choices, value, "message name"),
+                "Choose a familiar game message or type a custom message name.",
+                editable=True,
+            )
+        return None
+
+    def _make_choice_editor(
+        self,
+        key: str,
+        value: Any,
+        spec: PropertyChoiceSpec,
+    ) -> QComboBox:
+        combo = QComboBox()
+        combo.setObjectName(f"GraphProperty_{key}")
+        combo.setProperty("graph_property_key", key)
+        combo.setEditable(spec.editable)
+        combo.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
+        combo.setToolTip(spec.tooltip)
+        for canonical, label, tooltip in spec.choices:
+            combo.addItem(label, canonical)
+            combo.setItemData(
+                combo.count() - 1,
+                f"{tooltip}\nSaved as: {canonical}",
+                Qt.ItemDataRole.ToolTipRole,
+            )
+        current_index = next(
+            (
+                index for index in range(combo.count())
+                if combo.itemData(index) == value
+                and type(combo.itemData(index)) is type(value)
+            ),
+            -1,
+        )
+        combo.setCurrentIndex(current_index)
+        if spec.editable and current_index < 0:
+            combo.setCurrentText(str(value))
+        combo.currentIndexChanged.connect(
+            lambda _index, property_key=key, editor=combo: self._choice_changed(
+                property_key, editor, custom_text=False
+            )
+        )
+        if spec.editable and combo.lineEdit() is not None:
+            combo.lineEdit().editingFinished.connect(
+                lambda property_key=key, editor=combo: self._choice_changed(
+                    property_key, editor, custom_text=True
+                )
+            )
+        return combo
+
     def set_node(self, node: GraphNode | None) -> None:
         self._updating = True
         try:
             self.node = node
+            self._editors.clear()
+            self._items.clear()
             self.values.clear()
             if node is None:
                 self.title.setText("Selected Block Settings")
@@ -728,20 +1003,86 @@ class NodePropertiesPanel(QWidget):
             if not node.properties:
                 self.hint.setText("This block has no values to change. Connect its dots to use it.")
                 return
-            self.hint.setText("Double-click a value to change it. Your edit is saved in the graph.")
+            self.hint.setText("Choose friendly options or double-click an open value. Changes stay undoable.")
             for key, value in node.properties.items():
-                item = QTreeWidgetItem([key.replace("_", " ").title(), self._display(value)])
+                label = _PROPERTY_LABELS.get(key, key.replace("_", " ").title())
+                item = QTreeWidgetItem([label, self._display(value)])
                 item.setData(0, Qt.ItemDataRole.UserRole, key)
                 item.setData(1, Qt.ItemDataRole.UserRole, value)
-                if not isinstance(value, Mapping):
+                item.setToolTip(0, f"Engine property: {key}")
+                self._items[key] = item
+                self.values.addTopLevelItem(item)
+                choice_spec = self._choice_spec(node, key, value)
+                if choice_spec is not None:
+                    editor = self._make_choice_editor(key, value, choice_spec)
+                    self._editors[key] = editor
+                    self.values.setItemWidget(item, 1, editor)
+                    item.setToolTip(1, choice_spec.tooltip)
+                elif not isinstance(value, Mapping):
                     item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
-                    item.setToolTip(1, "Double-click to edit")
+                    if key in {"entity", "source", "target"}:
+                        item.setToolTip(1, "Double-click to type a project object ID; custom IDs are allowed")
+                    elif key in {"key", "kind"}:
+                        item.setToolTip(1, "Double-click to type a custom project name")
+                    else:
+                        item.setToolTip(1, "Double-click to edit this open-ended value")
                 else:
                     item.setToolTip(1, "This advanced mapping is kept safe but hidden here")
-                self.values.addTopLevelItem(item)
             self.values.resizeColumnToContents(0)
         finally:
             self._updating = False
+
+    def _choice_changed(
+        self, key: str, combo: QComboBox, *, custom_text: bool
+    ) -> None:
+        if self._updating or self.node is None:
+            return
+        original = self.node.properties.get(key)
+        if custom_text:
+            if (
+                combo.currentIndex() >= 0
+                and combo.currentText() == combo.itemText(combo.currentIndex())
+            ):
+                parsed = combo.currentData()
+            else:
+                parsed = combo.currentText().strip()
+            if not parsed:
+                self._updating = True
+                combo.setCurrentText(self._display(original))
+                combo.setToolTip("A message name cannot be empty; the previous value was kept")
+                self._updating = False
+                return
+        else:
+            if combo.currentIndex() < 0:
+                return
+            parsed = combo.currentData()
+        self._commit_property(key, parsed)
+
+    def _commit_property(self, key: str, parsed: Any) -> None:
+        if self.node is None:
+            return
+        original = self.node.properties.get(key)
+        if parsed == original and type(parsed) is type(original):
+            return
+        node = self.node
+        node.properties[key] = copy.deepcopy(parsed)
+        if key == "component" and "field" in node.properties:
+            fields = self._component_fields().get(str(parsed))
+            if fields is not None and node.properties["field"] not in fields:
+                node.properties["field"] = fields[0] if fields else ""
+        item = self._items.get(key)
+        if item is not None:
+            self._updating = True
+            item.setData(1, Qt.ItemDataRole.UserRole, copy.deepcopy(parsed))
+            item.setText(1, self._display(parsed))
+            self._updating = False
+        if key == "component":
+            self.set_node(node)
+        node.update()
+        scene = node.scene()
+        if isinstance(scene, VisualGraphScene):
+            scene.notify_edited()
+        self.propertiesEdited.emit()
 
     def _item_changed(self, item: QTreeWidgetItem, column: int) -> None:
         if self._updating or column != 1 or self.node is None:
@@ -756,14 +1097,7 @@ class NodePropertiesPanel(QWidget):
             self._updating = False
             item.setToolTip(1, "That value did not fit, so the previous safe value was kept")
             return
-        self.node.properties[key] = parsed
-        item.setData(1, Qt.ItemDataRole.UserRole, parsed)
-        item.setText(1, self._display(parsed))
-        self.node.update()
-        scene = self.node.scene()
-        if isinstance(scene, VisualGraphScene):
-            scene.notify_edited()
-        self.propertiesEdited.emit()
+        self._commit_property(key, parsed)
 
 
 class GraphPage(QWidget):
@@ -818,15 +1152,22 @@ class GraphPage(QWidget):
     def set_project_kind(self, kind: str | None) -> None:
         self._project_kind = kind
         self.palette.set_project_kind(kind)
+        self.properties.set_project_kind(kind)
 
     def load_data(self, data: Mapping[str, Any]) -> None:
+        previous_graph_id = str(self.graph_scene.property("graph_id") or "")
+        next_graph_id = str(data.get("id", "scene_logic"))
+        selected_node_id = next(
+            (
+                item.node_id for item in self.graph_scene.selectedItems()
+                if isinstance(item, GraphNode)
+            ),
+            None,
+        )
         self.graph_scene.load_data(data)
-        if self._project_kind == "3d" and any(
-            node.template.key == "action.apply_force" for node in self.graph_scene.nodes.values()
-        ):
-            self.helpRequested.emit(
-                "This graph uses Push an Object, which is 2D-only. Remove it before an Android build."
-            )
+        if previous_graph_id == next_graph_id and selected_node_id in self.graph_scene.nodes:
+            self.graph_scene.clearSelection()
+            self.graph_scene.nodes[selected_node_id].setSelected(True)
         if self.graph_scene.nodes:
             self.view.frame_all()
         else:
