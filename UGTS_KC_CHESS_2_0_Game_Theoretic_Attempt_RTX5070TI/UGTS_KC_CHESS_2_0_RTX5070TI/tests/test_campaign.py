@@ -694,6 +694,7 @@ class CampaignTests(unittest.TestCase):
         schema_path = Path(__file__).resolve().parents[1] / "spec" / "ugts_chess_campaign_snapshot.schema.json"
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         jsonschema.Draft202012Validator.check_schema(schema)
+        self.assertIn("verify_campaign", schema["description"])
 
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -712,6 +713,19 @@ class CampaignTests(unittest.TestCase):
                     snapshot = json.loads(destination.read_text(encoding="utf-8"))
                     self.assertEqual(len(snapshot["jobs"]), expected_jobs)
                     jsonschema.validate(snapshot, schema)
+                    if name == "classical":
+                        forged_solve = json.loads(json.dumps(snapshot))
+                        forged_solve["status"].update(
+                            {
+                                "root_wdl": WDL.WIN.value,
+                                "game_solved": True,
+                                "classical_initial_solved": True,
+                                "audit_valid": True,
+                                "verified_children": 0,
+                            }
+                        )
+                        with self.assertRaises(jsonschema.ValidationError):
+                            jsonschema.validate(forged_solve, schema)
                     if name == "terminal":
                         forged_scope = json.loads(json.dumps(snapshot))
                         forged_scope["status"]["is_classical_initial_root"] = True
@@ -789,6 +803,30 @@ class CampaignTests(unittest.TestCase):
             snapshot = json.loads(destination.read_text(encoding="utf-8"))
             snapshot["jobs"][0]["obligation_id"] = "root-100-a1a2"
             jsonschema.validate(snapshot, campaign_schema)
+
+    def test_19_init_refuses_lost_database_with_existing_shards(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db = root / "campaign.sqlite3"
+            shard_dir = root / "shared-shards"
+            init_campaign(db, shard_dir)
+            before = {
+                path.name: path.read_bytes()
+                for path in sorted(shard_dir.glob("root-*.json"))
+            }
+            self.assertEqual(len(before), 20)
+
+            db.unlink()
+            self.assertFalse(db.exists())
+            with self.assertRaisesRegex(FileExistsError, "shard artifacts already exist"):
+                init_campaign(db, shard_dir)
+
+            self.assertFalse(db.exists())
+            after = {
+                path.name: path.read_bytes()
+                for path in sorted(shard_dir.glob("root-*.json"))
+            }
+            self.assertEqual(after, before)
 
 
 if __name__ == "__main__":

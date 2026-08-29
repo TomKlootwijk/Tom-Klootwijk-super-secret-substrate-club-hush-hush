@@ -27,7 +27,7 @@ from .digests import (
 )
 from .engine import ordered_children
 from .rules import Rules
-from .score import area_score2
+from .score import area_score2, possible_area_score2_bounds
 from .state import State
 
 
@@ -96,8 +96,9 @@ def _sat_add(values: Iterable[int]) -> int:
         if value < 0 or value > UINT64_MAX:
             raise ValueError("proof number is outside uint64")
         if total > UINT64_MAX - value:
-            return UINT64_MAX
-        total += value
+            total = UINT64_MAX
+        else:
+            total += value
     return total
 
 
@@ -244,6 +245,11 @@ class ProofNumberDAG:
             raise ValueError("threshold2 must fit signed 64-bit interchange")
         if not INT64_MIN <= rules.komi2 <= INT64_MAX:
             raise ValueError("komi2 must fit signed 64-bit interchange")
+        score2_min, score2_max = possible_area_score2_bounds(rules)
+        if score2_min < INT64_MIN or score2_max > INT64_MAX:
+            raise ValueError(
+                "possible score2 range must fit signed 64-bit interchange"
+            )
         if digest_fn is None:
             if digest_name not in (None, "sha256"):
                 raise ValueError("a non-sha256 digest name requires digest_fn")
@@ -371,7 +377,6 @@ class ProofNumberDAG:
             raise ValueError("only an unexpanded nonterminal node can be expanded")
         original_node_count = len(self._nodes)
         original_committed_expansions = self.committed_expansions
-        parents_published: list[int] = []
         edge_list: list[tuple[int, int]] = []
         try:
             for move, _state_bytes, child_state in self._canonical_children(node.state):
@@ -388,7 +393,6 @@ class ProofNumberDAG:
             node.children = tuple(edge_list)
             for _move, child_id in node.children:
                 self._nodes[child_id].parents.add(node_id)
-                parents_published.append(child_id)
             node.expansion = _EXPANDED
             self.committed_expansions += 1
         except BaseException:
@@ -398,7 +402,7 @@ class ProofNumberDAG:
             node.children = ()
             node.expansion = _UNEXPANDED
             self.committed_expansions = original_committed_expansions
-            for child_id in parents_published:
+            for _move, child_id in edge_list:
                 if child_id < len(self._nodes):
                     self._nodes[child_id].parents.discard(node_id)
             if len(self._nodes) > original_node_count:

@@ -45,8 +45,12 @@ _WEB_VISUAL_GRAPH_NODE_TYPES = frozenset({
     "event.input_pressed",
     "event.trigger_enter",
     "event.trigger_exit",
+    "event.timer",
     "flow.branch",
     "value.constant",
+    "value.seeded_number",
+    "query.nearest_tag",
+    "query.nearest_in_cone",
     "value.state",
     "value.component",
     "math.add",
@@ -135,7 +139,7 @@ def _compile_web_visual_graphs(project: GameProject) -> dict[str, Any]:
                 if definition.event is not None:
                     roots.setdefault(definition.event, []).append(node.id)
                     # Python's GraphRuntime polls Input Pressed nodes during Tick.
-                    if definition.event == "input_pressed":
+                    if definition.event in {"input_pressed", "timer"}:
                         roots["tick"].append(node.id)
             for trigger in roots:
                 roots[trigger].sort(key=lambda node_id: (rank[node_id], node_id))
@@ -270,6 +274,7 @@ function configureVisualGraphs() {
   visualGraphBindings = (visualGraphScenePlan.bindings || []).map(binding => ({
     graph: binding.graph,
     entity: binding.entity == null ? null : String(binding.entity),
+    active_step: 0,
   }));
   pendingGraphDespawns = new Set();
 }
@@ -375,11 +380,211 @@ function flushGraphDespawns() {
   pendingGraphDespawns.clear();
 }
 
+const REPEATABLE_NUMBER_NAMESPACE = 0x7f1400acd2ebb3aen;
+function graphSplitMix64(input) {
+  let value = BigInt.asUintN(64, input + 0x9e3779b97f4a7c15n);
+  value = BigInt.asUintN(64, (value ^ (value >> 30n)) * 0xbf58476d1ce4e5b9n);
+  value = BigInt.asUintN(64, (value ^ (value >> 27n)) * 0x94d049bb133111ebn);
+  return BigInt.asUintN(64, value ^ (value >> 31n));
+}
+function graphCombineSeed(seed, input) {
+  seed = BigInt.asUintN(64, seed);
+  const mixed = BigInt.asUintN(64, graphSplitMix64(input) + 0x9e3779b97f4a7c15n + BigInt.asUintN(64, seed << 6n) + (seed >> 2n));
+  return graphSplitMix64(seed ^ mixed);
+}
+function repeatableRandomNumber(inputs) {
+  const rawIndexes = [["World number", inputs.world_number], ["Pick number", inputs.pick_number]];
+  const indexes = [];
+  for (const [label, value] of rawIndexes) {
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+      throw new Error(`${label} must be a whole number from 0 to 65535`);
+    }
+    const canonical = Math.fround(value);
+    if (!Number.isFinite(canonical) || !Number.isInteger(canonical) || canonical < 0 || canonical > 65535) {
+      throw new Error(`${label} must be a whole number from 0 to 65535`);
+    }
+    indexes.push(canonical);
+  }
+  const smallest = Math.fround(inputs.smallest);
+  const largest = Math.fround(inputs.largest);
+  if (typeof inputs.smallest !== "number" || !Number.isFinite(smallest)) throw new Error("Smallest must be a finite number that fits on this device");
+  if (typeof inputs.largest !== "number" || !Number.isFinite(largest)) throw new Error("Largest must be a finite number that fits on this device");
+  if (smallest > largest) throw new Error("Smallest must not be bigger than Largest");
+  const first = graphCombineSeed(BigInt(indexes[0]), REPEATABLE_NUMBER_NAMESPACE);
+  const lineage = graphCombineSeed(first, BigInt(indexes[1]));
+  const unit = Math.fround(Number(graphSplitMix64(lineage) >> 40n) / 16777216);
+  const span = largest - smallest;
+  const scaled = unit * span;
+  return Math.fround(smallest + scaled);
+}
+
+const PORTABLE_QUERY_TAGS = new Set(["player", "collectible", "goal", "decorative", "hazard"]);
+const graphTextEncoder = new TextEncoder();
+function graphUtf8Less(left, right) {
+  const a = graphTextEncoder.encode(String(left));
+  const b = graphTextEncoder.encode(String(right));
+  const count = Math.min(a.length, b.length);
+  for (let index = 0; index < count; index += 1) {
+    if (a[index] !== b[index]) return a[index] < b[index];
+  }
+  return a.length < b.length;
+}
+function graphPosition3(entity, required) {
+  const transform = component(entity, "transform");
+  const position = transform?.position ?? transform?.translation;
+  if (!Array.isArray(position) || ![2, 3].includes(position.length)) {
+    if (required) throw new Error(`entity ${entity.id} has no 2D or 3D transform position`);
+    return null;
+  }
+  const result = [];
+  for (const value of position) {
+    if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`entity ${entity.id} transform position must be finite`);
+    const canonical = Math.fround(value);
+    if (!Number.isFinite(canonical)) throw new Error(`entity ${entity.id} transform position does not fit on this device`);
+    result.push(canonical);
+  }
+  if (result.length === 2) result.push(0);
+  return result;
+}
+function portableGraphCone(value) {
+  if (!Array.isArray(value) || value.length !== 4) {
+    throw new Error("cone must contain a three-number Facing direction and View width");
+  }
+  const cone = value.map(item => Math.fround(item));
+  if (cone.some((item, index) => typeof value[index] !== "number" || !Number.isFinite(item))) {
+    throw new Error("cone must contain finite numbers that fit on this device");
+  }
+  const ax2 = Math.fround(cone[0] * cone[0]);
+  const ay2 = Math.fround(cone[1] * cone[1]);
+  const az2 = Math.fround(cone[2] * cone[2]);
+  const axisSquared = Math.fround(Math.fround(ax2 + ay2) + az2);
+  if (!Number.isFinite(axisSquared) || axisSquared <= 0) {
+    throw new Error("cone Facing direction must be finite and non-zero");
+  }
+  if (cone[3] < -1 || cone[3] > 1) {
+    throw new Error("cone View width must use a minimum cosine from -1 to 1");
+  }
+  const axisLength = Math.fround(Math.sqrt(axisSquared));
+  const axis = [
+    Math.fround(cone[0] / axisLength),
+    Math.fround(cone[1] / axisLength),
+    Math.fround(cone[2] / axisLength),
+  ];
+  if (!Number.isFinite(axisLength) || axis.some(component => !Number.isFinite(component))) {
+    throw new Error("cone Facing direction must be finite and non-zero");
+  }
+  return {axis, cosine: cone[3]};
+}
+function graphConeSupports(delta, squared, cone) {
+  const distance = Math.fround(Math.sqrt(squared));
+  const denominator = Math.max(distance, Math.fround(1e-6));
+  const direction = [
+    Math.fround(delta[0] / denominator),
+    Math.fround(delta[1] / denominator),
+    Math.fround(delta[2] / denominator),
+  ];
+  const tx = Math.fround(direction[0] * cone.axis[0]);
+  const ty = Math.fround(direction[1] * cone.axis[1]);
+  const tz = Math.fround(direction[2] * cone.axis[2]);
+  const cosine = Math.fround(Math.fround(tx + ty) + tz);
+  if (![distance, denominator, ...direction, cosine].every(Number.isFinite)) {
+    throw new Error("cone does not fit deterministic float32 math");
+  }
+  return cosine >= cone.cosine;
+}
+function nearestTaggedEntity(binding, inputs, useCone = false) {
+  if (typeof inputs.tag !== "string" || !PORTABLE_QUERY_TAGS.has(inputs.tag)) {
+    throw new Error("tag must be player, collectible, goal, decorative, or hazard");
+  }
+  if (typeof inputs.radius !== "number" || !Number.isFinite(inputs.radius)) {
+    throw new Error("radius must be a finite number that fits on this device");
+  }
+  const radius = Math.fround(inputs.radius);
+  const radiusSquared = Math.fround(radius * radius);
+  if (!Number.isFinite(radius) || radius < 0 || !Number.isFinite(radiusSquared)) {
+    throw new Error("radius must be a finite non-negative number that fits on this device");
+  }
+  const cone = useCone ? portableGraphCone(inputs.cone) : null;
+  const originEntity = graphEntity(binding, inputs.origin);
+  const origin = graphPosition3(originEntity, true);
+  let bestId = null;
+  let bestSquared = null;
+  for (const candidate of entities) {
+    const candidateId = String(candidate.id);
+    if (candidateId === String(originEntity.id) || candidate.alive === false || candidate.active === false || !hasTag(candidate, inputs.tag)) continue;
+    const position = graphPosition3(candidate, false);
+    if (position === null) continue;
+    const delta = [];
+    let squared = 0;
+    for (let axis = 0; axis < 3; axis += 1) {
+      delta.push(Math.fround(position[axis] - origin[axis]));
+      const term = Math.fround(delta[axis] * delta[axis]);
+      squared = Math.fround(squared + term);
+      if (!Number.isFinite(squared)) throw new Error("entity distance does not fit deterministic float32 math");
+    }
+    if (squared > radiusSquared || (cone && !graphConeSupports(delta, squared, cone))) continue;
+    if (bestSquared === null || squared < bestSquared || (squared === bestSquared && graphUtf8Less(candidateId, bestId))) {
+      bestId = candidateId;
+      bestSquared = squared;
+    }
+  }
+  if (bestId === null) return {found: false, entity: null, distance: null};
+  return {found: true, entity: bestId, distance: Math.fround(Math.sqrt(bestSquared))};
+}
+
+function timerEventValues(binding, inputs, run) {
+  if (typeof inputs.seconds !== "number" || !Number.isFinite(inputs.seconds)) {
+    throw new Error("When Timer Rings Seconds must be a finite positive number up to 86400");
+  }
+  const seconds = Math.fround(inputs.seconds);
+  if (!Number.isFinite(seconds) || seconds <= 0 || seconds > 86400) {
+    throw new Error("When Timer Rings Seconds must be a finite positive number up to 86400");
+  }
+  if (typeof inputs.repeat !== "boolean") {
+    throw new Error("When Timer Rings Repeat must be true or false");
+  }
+  const stepDt = Math.fround(run.dt);
+  if (!Number.isFinite(stepDt) || stepDt <= 0) {
+    throw new Error("When Timer Rings needs a positive fixed-step duration");
+  }
+  const ratio = Math.fround(seconds / stepDt);
+  if (!Number.isFinite(ratio)) {
+    throw new Error("When Timer Rings could not fit this duration into fixed updates");
+  }
+  const period = Math.max(1, Math.ceil(ratio));
+  const step = run.activeStep;
+  let ringing;
+  let rings;
+  let remainingSteps;
+  if (inputs.repeat) {
+    const remainder = step % period;
+    ringing = step > 0 && remainder === 0;
+    rings = Math.floor(step / period);
+    remainingSteps = ringing ? 0 : period - remainder;
+  } else {
+    ringing = step === period;
+    rings = step < period ? 0 : 1;
+    remainingSteps = Math.max(0, period - step);
+  }
+  const count = Math.fround(rings);
+  const remaining = remainingSteps === 0
+    ? 0
+    : Math.fround(Math.fround(remainingSteps) * stepDt);
+  if (!Number.isFinite(count) || !Number.isFinite(remaining)) {
+    throw new Error("When Timer Rings could not fit this duration into fixed updates");
+  }
+  return {
+    values: {count, remaining, entity: binding.entity},
+    flow: ringing ? ["out"] : [],
+  };
+}
+
 function executeGraphNode(binding, graph, node, inputs, run) {
   const entityOutput = binding.entity;
   switch (node.type) {
     case "event.ready": return {values: {entity: entityOutput}, flow: ["out"]};
     case "event.tick": return {values: {dt: run.dt, tick, entity: entityOutput}, flow: ["out"]};
+    case "event.timer": return timerEventValues(binding, inputs, run);
     case "event.input_pressed": {
       const action = String(inputs.action);
       return {values: {action, value: actionValue(action), entity: entityOutput}, flow: actionPressed(action) ? ["out"] : []};
@@ -392,6 +597,9 @@ function executeGraphNode(binding, graph, node, inputs, run) {
       return {values: {}, flow: [inputs.condition ? "true" : "false"]};
     }
     case "value.constant": return {values: {value: deepClone(node.properties.value)}, flow: []};
+    case "value.seeded_number": return {values: {value: repeatableRandomNumber(inputs)}, flow: []};
+    case "query.nearest_tag": return {values: nearestTaggedEntity(binding, inputs), flow: []};
+    case "query.nearest_in_cone": return {values: nearestTaggedEntity(binding, inputs, true), flow: []};
     case "value.state": {
       const key = String(inputs.key);
       const value = Object.prototype.hasOwnProperty.call(state, key) ? state[key] : inputs.default;
@@ -503,6 +711,7 @@ function dispatchVisualGraph(binding, trigger, dt, deferDespawns, triggerContext
     lastOutputs: new Map(),
     triggerSensor: triggerContext?.sensor ?? null,
     triggerPlayer: triggerContext?.player ?? null,
+    activeStep: binding.active_step,
   };
   const queue = (graph.roots?.[trigger] || []).map(nodeId => [nodeId, null]);
   while (queue.length) {
@@ -521,10 +730,12 @@ function dispatchVisualGraph(binding, trigger, dt, deferDespawns, triggerContext
 function runVisualGraphs(trigger, dt = 0) {
   const deferDespawns = trigger === "tick";
   for (const binding of visualGraphBindings) {
+    if (trigger === "ready") binding.active_step = 0;
     if (binding.entity != null) {
       const owner = entityMap.get(binding.entity);
       if (!owner || owner.active === false) continue;
     }
+    if (trigger === "tick") binding.active_step += 1;
     dispatchVisualGraph(binding, trigger, dt, deferDespawns);
   }
 }

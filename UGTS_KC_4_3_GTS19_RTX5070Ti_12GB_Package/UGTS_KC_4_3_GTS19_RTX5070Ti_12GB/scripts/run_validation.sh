@@ -21,6 +21,8 @@ cmake --build evidence/build-cpu --config Release > evidence/cmake_build.txt 2>&
 evidence/build-cpu/ugts_go19_smoke > evidence/cpp_smoke.json
 ctest --test-dir evidence/build-cpu --output-on-failure > evidence/ctest.txt
 python scripts/parity_gate.py evidence/local_m1_cpp_python_parity_v2_1m.json
+python scripts/storage_gate.py --validate evidence/local_m2_storage_gate.json
+python scripts/persistent_pndag_gate.py --validate evidence/local_m2_persistent_pndag_gate.json
 
 python scripts/make_manifest.py
 python scripts/verify_release.py

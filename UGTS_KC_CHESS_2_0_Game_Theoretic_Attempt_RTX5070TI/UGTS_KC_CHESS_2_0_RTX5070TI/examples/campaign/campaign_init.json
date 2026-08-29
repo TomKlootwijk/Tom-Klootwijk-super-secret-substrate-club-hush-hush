@@ -10,7 +10,7 @@
     "priority": 10,
     "schema": "ugts-chess-scheduler-priority-1.0"
   },
-  "created_at": "2026-08-29T09:07:23Z",
+  "created_at": "2026-08-29T10:18:52Z",
   "database": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\examples\\campaign\\initial.sqlite3",
   "dedication": {
     "opening": "The Cow Opening",

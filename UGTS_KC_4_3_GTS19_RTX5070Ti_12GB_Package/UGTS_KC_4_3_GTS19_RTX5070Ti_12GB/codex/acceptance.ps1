@@ -78,6 +78,8 @@ python scripts/parity_gate.py evidence/local_m1_cpp_python_parity_v2_1m.json
 Assert-NativeCommandSucceeded "Archived M1 v2 parity evidence gate"
 python scripts/storage_gate.py --validate evidence/local_m2_storage_gate.json
 Assert-NativeCommandSucceeded "Archived bounded M2 storage evidence gate"
+python scripts/persistent_pndag_gate.py --validate evidence/local_m2_persistent_pndag_gate.json
+Assert-NativeCommandSucceeded "Archived bounded M2 persistent-PNDAG evidence gate"
 python scripts/claim_gate.py --expect-unknown evidence/acceptance_19x19_bounded.json
 Assert-NativeCommandSucceeded "19x19 UNKNOWN claim gate"
 python scripts/verify_release.py --quick `

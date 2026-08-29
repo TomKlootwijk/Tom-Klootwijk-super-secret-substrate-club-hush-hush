@@ -1,11 +1,12 @@
 import json
+import struct
 import unittest
 
 from ugts_kc3.game import Body2D, GameWorld, Health2D, Transform2D
 from ugts_kc3.game_input import InputFrame
+from ugts_kc3.scatter import REPEATABLE_NUMBER_NAMESPACE, repeatable_number
 from ugts_kc3.visual_graph import (
     BUILTIN_NODE_REGISTRY,
-    GraphContext,
     GraphLink,
     GraphNode,
     GraphNodeExecutionError,
@@ -107,6 +108,102 @@ class VisualGraphRecordTests(unittest.TestCase):
 
 
 class VisualGraphExecutionTests(unittest.TestCase):
+    def test_repeatable_random_number_has_binary32_golden_and_linked_inputs(self):
+        self.assertEqual(REPEATABLE_NUMBER_NAMESPACE, 0x7F1400ACD2EBB3AE)
+        direct = repeatable_number(392.000001, 7, -10.0, 10.0)
+        self.assertEqual(struct.unpack("<I", struct.pack("<f", direct))[0], 0xC0F72CB8)
+
+        graph = VisualGraph(
+            "repeatable",
+            (
+                GraphNode("ready", "event.ready"),
+                GraphNode("world", "value.constant", {"value": 392.000001}),
+                GraphNode("pick", "value.constant", {"value": 7}),
+                GraphNode("low", "value.constant", {"value": -10.0}),
+                GraphNode("high", "value.constant", {"value": 10.0}),
+                GraphNode("number", "value.seeded_number"),
+                GraphNode("remember", "action.set_state", {"key": "draw"}),
+            ),
+            (
+                link("ready", "out", "remember", "in"),
+                link("world", "value", "number", "world_number"),
+                link("pick", "value", "number", "pick_number"),
+                link("low", "value", "number", "smallest"),
+                link("high", "value", "number", "largest"),
+                link("number", "value", "remember", "value"),
+            ),
+        )
+        restored = VisualGraph.from_json(graph.canonical_bytes())
+        world = GameWorld()
+        result = GraphRuntime(restored).ready(world)
+        self.assertEqual(
+            struct.unpack("<I", struct.pack("<f", world.state["draw"]))[0],
+            0xC0F72CB8,
+        )
+        number_trace = next(item for item in result.trace if item.node_id == "number")
+        self.assertEqual(dict(number_trace.inputs), {
+            "world_number": 392.000001,
+            "pick_number": 7,
+            "smallest": -10.0,
+            "largest": 10.0,
+        })
+
+    def test_repeatable_random_number_errors_explain_the_bad_setting(self):
+        static_near_integer = VisualGraph(
+            "near-integer",
+            (
+                GraphNode(
+                    "number",
+                    "value.seeded_number",
+                    {"world_number": 392.000001, "pick_number": 7},
+                ),
+            ),
+        )
+        static_near_integer.validate()
+        with self.assertRaisesRegex(
+            GraphValidationError,
+            "World number must be a whole number from 0 to 65535",
+        ):
+            VisualGraph(
+                "fractional-static",
+                (
+                    GraphNode(
+                        "number",
+                        "value.seeded_number",
+                        {"world_number": 392.1},
+                    ),
+                ),
+            ).validate()
+        for bad_world in (-1, 392.1, 65536, True):
+            with self.subTest(world_number=bad_world), self.assertRaisesRegex(
+                ValueError, "World number must be a whole number from 0 to 65535"
+            ):
+                repeatable_number(bad_world, 0, 0.0, 1.0)
+        with self.assertRaises(GraphValidationError) as caught:
+            VisualGraph(
+                "bad-range",
+                (GraphNode("number", "value.seeded_number", {"smallest": 2, "largest": 1}),),
+            ).validate()
+        self.assertIn("Smallest must not be bigger than Largest", str(caught.exception))
+
+        graph = VisualGraph(
+            "bad-linked-pick",
+            (
+                GraphNode("ready", "event.ready"),
+                GraphNode("bad", "value.constant", {"value": 392.1}),
+                GraphNode("number", "value.seeded_number"),
+                GraphNode("remember", "action.set_state", {"key": "draw"}),
+            ),
+            (
+                link("ready", "out", "remember", "in"),
+                link("bad", "value", "number", "pick_number"),
+                link("number", "value", "remember", "value"),
+            ),
+        )
+        with self.assertRaises(GraphNodeExecutionError) as dynamic:
+            GraphRuntime(graph).ready(GameWorld())
+        self.assertIn("Pick number must be a whole number from 0 to 65535", str(dynamic.exception))
+
     def test_ready_math_compare_branch_and_state_execution(self):
         graph = VisualGraph(
             "score-on-ready",

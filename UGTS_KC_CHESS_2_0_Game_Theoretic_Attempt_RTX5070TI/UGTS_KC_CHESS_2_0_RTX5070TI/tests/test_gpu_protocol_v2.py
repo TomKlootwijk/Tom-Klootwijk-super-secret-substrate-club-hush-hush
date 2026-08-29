@@ -1,14 +1,21 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+import hashlib
 import os
 from pathlib import Path
+import struct
 import subprocess
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
 from ugts_chess import Position
 from ugts_chess.gpu_protocol import (
+    MAX_MOVES,
+    OUTPUT_HEADER,
+    OUTPUT_MAGIC,
     PACKED_POSITION,
     decode_move16,
     encode_move16,
@@ -16,6 +23,7 @@ from ugts_chess.gpu_protocol import (
     recommended_rtx5070ti_config,
     run_batch,
 )
+from ugts_chess.rules import legal_moves
 
 
 class GPUProtocolTests(unittest.TestCase):
@@ -49,7 +57,9 @@ class GPUProtocolTests(unittest.TestCase):
                         output.write_bytes(b"stale output that must not be read")
                     with self.assertRaisesRegex(RuntimeError, "without writing its requested output"):
                         run_batch(executable, [Position.initial()], output.parent)
-                    self.assertFalse(output.exists())
+                    self.assertEqual(output.exists(), stale_exists)
+                    if stale_exists:
+                        self.assertEqual(output.read_bytes(), b"stale output that must not be read")
                     command = mocked_run.call_args.args[0]
                     requested_output = Path(command[command.index("--output") + 1])
                     self.assertNotEqual(requested_output, output)
@@ -76,8 +86,55 @@ class GPUProtocolTests(unittest.TestCase):
         self.assertEqual(result["claim_source"], "same_executable_self_report")
         self.assertFalse(result["independent_hardware_attestation"])
 
+    @patch("ugts_chess.gpu_protocol.subprocess.run")
+    def test_06_same_work_root_concurrent_calls_are_byte_isolated(self, mocked_run) -> None:
+        position = Position.initial()
+        moves = sorted(move.uci() for move in legal_moves(position))
+        slots = [encode_move16(move) for move in moves] + [0] * (MAX_MOVES - len(moves))
+        output_bytes = (
+            OUTPUT_HEADER.pack(OUTPUT_MAGIC, 1, 2, MAX_MOVES, 1, 1)
+            + struct.pack("<H", len(moves))
+            + struct.pack(f"<{MAX_MOVES}H", *slots)
+        )
+        rendezvous = threading.Barrier(2)
+
+        def fake_run(command, **_kwargs):
+            requested_output = Path(command[command.index("--output") + 1])
+            rendezvous.wait(timeout=5)
+            requested_output.write_bytes(output_bytes)
+            stdout = (
+                '{"backend":"cuda","positions":1,"moves":20,'
+                '"seconds":0.01,"cuda_fallback_reason":""}'
+            )
+            return subprocess.CompletedProcess(command, 0, stdout=stdout, stderr="")
+
+        mocked_run.side_effect = fake_run
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            executable = root / "fake-gpu.exe"
+            executable.write_bytes(b"fixed fake executable bytes")
+            shared_work_root = root / "shared"
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                futures = [
+                    executor.submit(run_batch, executable, [position], shared_work_root)
+                    for _ in range(2)
+                ]
+                results = [future.result(timeout=10) for future in futures]
+
+            self.assertNotEqual(results[0]["invocation_id"], results[1]["invocation_id"])
+            self.assertNotEqual(results[0]["input"]["path"], results[1]["input"]["path"])
+            self.assertNotEqual(results[0]["output"]["path"], results[1]["output"]["path"])
+            for result in results:
+                output = Path(result["output"]["path"])
+                self.assertTrue(output.is_file())
+                self.assertEqual(
+                    hashlib.sha256(output.read_bytes()).hexdigest(),
+                    result["output_sha256"],
+                )
+                self.assertEqual(result["mismatches"], [])
+
     @unittest.skipUnless(os.environ.get("UGTS_GPU_HOST_EXE"), "host GPU-protocol executable not provided")
-    def test_06_host_batch_matches_python_oracle(self) -> None:
+    def test_07_host_batch_matches_python_oracle(self) -> None:
         executable = Path(os.environ["UGTS_GPU_HOST_EXE"])
         positions = [
             Position.initial(),

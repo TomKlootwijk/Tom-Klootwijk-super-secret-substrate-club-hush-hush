@@ -1,0 +1,2513 @@
+UNIFIED GEOMETRIC-TOPOLOGICAL SUBSTRATE
+
+UGTS FOUNDATION 5.0
+UNICODE SET-FIELD AND
+KLEIN-CONVERSE ATLAS
+Content-addressed operator cells, signed set fields, reflective operand converse
+and packed log-polar execution
+
+Canonical identity
+Legacy discovery
+alias
+Component type
+Version / date
+Codename
+Mechanism delta
+Reference validation
+Prepared for
+
+ugts.foundation.unicode-set-field-klein-converse@5.0.0
+UGTS-KC 5.0
+Foundation
+5.0.0 / 29 August 2026
+USF-KCA
+USF001-USF064; legacy continuity M886-M949
+83 Python tests PASS; 3 schema instances with zero errors; C++20
+scalar test PASS
+Tom Klootwijk
+
+ATTRIBUTION AND EVIDENCE BOUNDARY. Requester-supplied attribution; technical artifact, not legal
+proof. Exact-SDF universality, finite mathematical completeness and physical SIMD performance are not
+claimed.
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+Executive Summary
+FORMAL DECISION
+Release UGTS Foundation 5.0 as a component-scoped major version. The literal Unicode operator becomes the cold-atlas key for a content-addressed OperatorCell that
+co-addresses exact Unicode spelling, typed syntax, semantic evaluator, canonical
+glyph SDF, signed set-field action, converse relation, Klein reflection rule, exactness
+capability, provenance and content hash. Geometry and semantics remain distinct
+typed faces; they are not collapsed into one notion of equality.
+VERIFIED RELEASE RESULT
+The accompanying package supplies 20 hash-verified OperatorCells; a 16-slot setrelation hot codebook with 14 assigned converse slots and two reserved slots;
+a corrected Packed Set-Field Node 32 codec; binary stream framing with CRC; a
+dependency-free Python reference runtime; portable C++20 scalar packing; an optional AVX2 extraction profile; JSON Schemas; a 64-mechanism delta; a 24-row claims
+ledger; runnable examples; a wheel; and captured validation evidence. The release
+test suite contains 83 passing Python tests. Three JSON instances validate with zero
+errors, and the native scalar codec test passes.
+MAJOR-VERSION CONCLUSION
+A Unicode operator is no longer merely text and no longer merely an icon. It is a
+content-addressed, executable geometric rule cell whose literal codepoint resolves
+both its canonical shape and its typed operation. A Klein-converse parity flip mirrors
+the shape, reverses the typed ports and selects the converse Unicode spelling while
+preserving the mathematical truth value.
+EVIDENCE BOUNDARY
+The immediate source document correctly identifies ∋ as the converse spelling of ∈,
+proposes geometric operator primitives, log-polar fixed-point packing, a 32-bit node
+and SIMD decoding. It also contains packing errors, overloaded parity, incomplete
+geometry, and unsupported universal compression, speed, randomness and physical
+claims. Version 5.0 does not silently clean the source into a fictional proof. Every major
+claim is admitted, corrected, bounded or rejected in the machine-readable claims
+ledger. [S0]
+
+Contents
+Executive Summary
+
+i
+
+1 Major Release Identity and Scope
+
+1
+
+1.1 Why this is a major version . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+
+1.2 Component-scoped identity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+
+1.3 What 5.0 adds . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2
+
+1.4 What remains unchanged . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2
+
+2 Source Basis and Evidence Discipline
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+2
+
+Page i of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+2.1 Registered sources . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2
+
+2.2 Immediate source dissection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+
+2.3 Inherited commitments
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+
+2.4 Evidence classes
+
+3 Formal 5.0 Architecture
+
+4
+
+3.1 Upgraded world object . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+
+3.2 Canonical processing path . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+
+3.3 Single source of operator truth . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+5
+
+4 The Unicode OperatorCell
+
+5
+
+4.1 Formal record . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+5
+
+4.2 Literal identity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+5
+
+4.3 Typed ports and reversed operand order . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+4.4 Three faces, one address . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+4.5 Content addressing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+5 Set Theory as Signed Set Fields
+
+6
+
+5.1 General metric definition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+5.2 Finite and symbolic fallback . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+7
+
+5.3 Set algebra as field algebra . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+7
+
+5.4 Relation kernels . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+5.5 Capability-aware certificates . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+6 Unicode Converse Families
+
+9
+
+6.1 Family plus 𝜅 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+9
+
+6.2 Semantic converse law . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+9
+
+6.3 Algebra operators outside the hot pair codebook . . . . . . . . . . . . . . . . . .
+
+9
+
+7 The Klein-Converse Involution
+
+9
+
+7.1 Local transform . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+9
+
+7.2 Local involution and lineage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+9
+
+7.3 Reflective quotient . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7.4 Discrete angle maps . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+8 Canonical Glyph SDFs
+
+10
+
+8.1 Canonical profile . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+8.2 Mirror law . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+8.3 Font-exact mode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+9 Cold Atlas, Hot Codebook and LUT
+
+12
+
+9.1 Cold atlas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+9.2 Hot codebook . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page ii of 26
+
+UGTS FOUNDATION 5.0
+
+9.3 Literal-to-LUT path
+
+Unicode Set-Field and Klein-Converse Atlas
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+
+10 Packed Log-Polar Node 32
+
+13
+
+10.1Bit layout . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+10.2Packing formula . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+10.3Two parities, two roles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+10.4Mandatory stream header . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+10.5Quantization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+10.6Bounded grammar path . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+11 Scalar and SIMD Execution Profiles
+
+15
+
+11.1Scalar oracle . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+11.2AVX2 eight-lane extraction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+11.3ARM NEON profile . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+11.4Branch strategy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+11.5Benchmark boundary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+12 Exactness, Proof and Certification
+
+16
+
+12.1Point query versus global relation . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+12.2Certificate object . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+12.3Finite exact proof . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+12.4Continuous proof . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+12.5Integrity ladder . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+13 Integration with UGTS State Authority
+
+17
+
+13.1Pure evaluation is upstream . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+13.2Canonical handoff . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+13.3Example: membership-triggered transition . . . . . . . . . . . . . . . . . . . . . . 17
+13.4Example: reflective route transition . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+14 Reference Implementation and Validation
+
+17
+
+14.1Package map . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+14.2Validation result . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+14.3What the tests establish . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+14.4What the tests do not establish . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+14.5Reproduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+15 Claims Ledger Summary
+
+19
+
+16Acceptance, Kill Criteria and Final Definition
+
+20
+
+16.1Acceptance gates . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+16.2Kill criteria . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+16.3Final upgraded definition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page iii of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+A Complete Shipped Unicode Operator Atlas
+
+22
+
+B Hot Codebook Set-Core-16
+
+22
+
+C Complete Mechanism Delta USF001–USF064
+
+22
+
+D Complete Claims Ledger
+
+24
+
+E Source Hashes and Package Reproduction
+
+25
+
+E.1 Full source hash register . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+E.2 Artifact identity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+E.3 Canonical filename . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+E.4 Release status . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page iv of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+1 Major Release Identity and Scope
+1.1 Why this is a major version
+Version 5.0 changes the unit of formal operator identity. Earlier releases already established content-addressed definitions, representation profiles, log-polar packing, explicit reflective topology, general typed operators and field-capability boundaries. This release
+unifies those commitments in a new foundation component whose central object is the
+Unicode-addressed executable operator cell.
+The major change is not a larger list of symbols. It is a stronger invariant:
+The exact Unicode literal is a stable lookup key into one record that carries syntax, typed semantics, canonical geometry, field behavior, converse topology and execution metadata.
+A change in font outline does not silently change set membership. A change in operand
+spelling from 𝑥 ∈ 𝐴 to 𝐴 ∋ 𝑥 does not create a second mathematical relation. A packed
+four-bit slot does not replace the global Unicode identity. These distinctions now belong to
+the formal release schema rather than explanatory prose.
+
+1.2 Component-scoped identity
+The versioning charter deprecates a single global ladder because compute profiles, foundations, runtimes, formal packs, applications and platform builds are not globally comparable.
+Version 5.0 therefore uses the canonical identity
+ugts.foundation.unicode-set-field-klein-converse@5.0.0.
+The legacy alias UGTS-KC 5.0 remains for discovery. The parent graph records exactly
+which releases contribute architecture; it does not claim that this foundation supersedes
+unrelated game, scanner, solver or device branches. [S7]
+
+Figure 1: Version 5.0 is major within its foundation component. Typed parent edges replace
+a false global sequence.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 1 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+1.3 What 5.0 adds
+• A content-addressed Unicode OperatorCell schema.
+• A six-level signed set-field capability ladder.
+• Canonical set algebra over sign-compatible fields.
+• Direct/converse Unicode relation families with explicit surface-to-canonical port maps.
+• A reflective Klein-converse involution: operator converse, operand swap, chart reflection, orientation flip and 𝜅-toggle.
+• A canonical capsule-union glyph SDF profile plus a font-exact profile boundary.
+• A cold Unicode atlas and a hash-bound hot 16-slot codebook.
+• A corrected 32-bit packed node and mandatory stream header.
+• Scalar, AVX2 and NEON execution contracts with a scalar oracle.
+• Exactness, quantization, integrity and event-margin certificates.
+• 64 new mechanisms and a complete claims ledger.
+
+1.4 What remains unchanged
+The canonical UGTS authority order is preserved:
+support → compatibility → guard → verified proposal → deterministic commit → lineage.
+Pure operator evaluation may produce evidence or a proposal. It cannot mutate authoritative state, topology, ownership or lineage by itself. Projection, glyph rendering, SIMD layout
+and packed storage remain replaceable implementations around the authority chain. [S4]
+[S5]
+
+2 Source Basis and Evidence Discipline
+2.1 Registered sources
+ID
+
+Source
+
+SHA-256 prefix
+
+Use in 5.0
+
+S0
+
+mandible-broad-set-m
+ath-operator-CE-log
+o-like-simd256.pdf
+UGTS_KC_3_6_Tom_Klootw
+ijk.pdf
+UGTS_KC_3_6_1_BEA_Tom_
+Klootwijk.pdf
+UGTS_KC_3_6_2_SCLP_Tom
+_Klootwijk.pdf
+Unified_Geometric_Topo
+logical_Substrate_GPU_
+Native_Addendum.pdf
+UGTS_KC_4_2_General_Op
+erator_Order_Addendu
+m(1).pdf
+UGTS_KC_3_9_3_IQ_Field
+_Substrate_Tom_Klootwi
+jk(1).pdf
+
+6149e3d398c2...
+
+Immediate Unicode/SDF/logpolar/SIMD source motif
+
+e21433cd8378...
+
+Literal content-addressed definitions
+and operation order
+Representation profile, glyph SDF and
+typed semantic evaluator separation
+Log-polar chart, finite packing, halfturn/Klein distinction
+Packed-state, one-bit and hardware
+evidence discipline
+
+S1
+S2
+S3
+S4
+
+S5
+
+S6
+
+ac857c9c01f5...
+6987490a0a7b...
+3a6b6c57118c...
+
+413ef9568330...
+
+General typed operator record and
+explicit order calculus
+
+c0ae58652436...
+
+Field exactness/capability and signpreserving CSG boundary
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 2 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+ID
+
+Source
+
+SHA-256 prefix
+
+S7
+
+UGTS_Versioning_Charte 1b64495ed32a...
+r_Phase_1_Foundation_C
+hronology(1).pdf
+
+Use in 5.0
+Component-scoped canonical identity
+and filename rule
+
+2.2 Immediate source dissection
+The immediate source contributes five technically useful motifs:
+1. ∈ and ∋ are converse surface spellings of one membership relation.
+2. Unicode operator shapes can be described by bounded geometric primitives.
+3. local geometry can be addressed in log-polar coordinates and packed into fixed-width
+records.
+4. a one-bit selector can choose between declared orientations or relation directions.
+5. SIMD extraction can decode several packed words in parallel.
+It also requires explicit correction:
+• The source’s example LUT selects codepoints by quadrant rather than evaluating the
+advertised glyph SDFs.
+• One packing expression overlaps angle and codepoint bits.
+• The proposed 32-bit decoder extracts the parity bit but does not verify payload parity.
+• The active bit is omitted by one unpacker.
+• A Boolean value of 0 or 1 is not a valid full byte/lane mask for blendv; it must be expanded.
+• A deterministic parity bit is not true randomness, anti-aliasing proof, complete state or
+cryptographic entropy.
+• A half-turn rotation is not an orientation-reversing Klein gluing.
+• Universal 16 KB, constant-time, cycle-count and collision-free-path claims are not established.
+
+2.3 Inherited commitments
+Literal referential 3.6.0 makes definitions first-class, content-addressed substrate data
+with resolvable dependencies and explicit evaluation order. [S1]
+BEA 3.6.1 defines a representation profile containing normalization, glyph renderer, byte
+encoder and typed semantic evaluator. It insists that glyph SDF, semantic residual and
+encoding alignment remain separate spaces. Version 5.0 adopts that separation but lets
+one Unicode cell co-address all three. [S2]
+SCLP 3.6.2 supplies the log-polar chart and the decisive distinction between a source halfturn bundle and a genuine reflective Klein profile:
+(𝜌, 𝜃, 𝜑, 𝑜) ↦ (𝜌′ , 𝜋 − 𝜃, −𝜑, −𝑜).
+The angular derivative is −1, so the base gluing reverses orientation. [S3]
+GPU Native 1.1 supplies the compact-state, narrow-one-bit, compression and hardwareevidence boundaries. [S4]
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 3 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+General Operator and Order 4.2 supplies the typed OperatorSpec, explicit order profiles, exactness/effect/capability metadata and the rule that pure evaluation cannot bypass
+event authority. [S5]
+IQ Field 3.9.3 supplies the capability distinction between exact distance, conservative
+bounds and sign-correct residuals, including the warning that min/max CSG generally preserves sign but not exact Euclidean distance. [S6]
+
+2.4 Evidence classes
+Class
+
+Treatment in 5.0
+
+Source-derived
+motif
+Engineeringderived
+
+Unicode converse, geometric glyph proposal, log-polar packing,
+branchless selector and SIMD sketch are registered as source motifs.
+OperatorCell schema, signed set-field calculus, canonical capsule
+glyphs, Klein-converse transform, codebook and codecs are new formalization.
+Measured packTests, hashes, schema results, binary round trips, wheel and native
+age evidence
+scalar outputs are captured in validation/.
+Bounded hypoth- AVX2/NEON speed, cache behavior and target-device advantage reesis
+main benchmark questions.
+Rejected claim
+Universality, infinite detail, true randomness, automatic collision freedom and physical spacetime assertions are excluded.
+
+3 Formal 5.0 Architecture
+3.1 Upgraded world object
+FORMAL DEFINITION
+Let the version-5 foundation object be
+𝑊5 = 𝑊retained + (𝒰, 𝒪, Φ, Γ, 𝒦, 𝒞, 𝒫, Cert),
+where 𝒰 is the Unicode literal domain; 𝒪 the content-addressed OperatorCell atlas;
+Φ the signed set-field calculus; Γ canonical glyph fields; 𝒦 the Klein-converse transform; 𝒞 hot codebooks; 𝒫 packed execution records; and Cert exactness, integrity,
+quantization and event-margin certificates.
+
+3.2 Canonical processing path
+literal Unicode sequence
+-> normalize under declared profile
+-> resolve OperatorCell + content hash
+-> map surface operands to canonical typed ports
+-> evaluate semantic relation / set-field transform
+-> evaluate optional canonical glyph SDF
+-> apply optional Klein-converse chart transition
+-> resolve hot codebook slot
+-> pack or decode bounded execution record
+-> issue capability + error + integrity certificate
+-> support -> compatibility -> guard -> verified proposal
+-> deterministic commit -> lineage / replay
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 4 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+-> optional render, storage, SIMD or device adapter
+
+Figure 2: The literal, glyph, semantics and field action are distinct but co-addressed.
+
+3.3 Single source of operator truth
+The same OperatorCell records feed schema validation, Unicode lookup, relation evaluation,
+glyph generation, converse mapping, hot-codebook construction, content hashing, report
+tables and tests. A prose-only operator meaning cannot override the machine-readable
+record.
+
+4 The Unicode OperatorCell
+4.1 Formal record
+FORMAL DEFINITION
+For exact Unicode scalar sequence 𝑈 , define
+𝒪𝑈 = (𝑈 , ℓ𝑈 , 𝐺𝑈 , 𝐸𝑈 , 𝐹𝑈 , 𝐶𝑈 , 𝐾𝑈 , 𝑃𝑈 , ℎ𝑈 ),
+where ℓ𝑈 is the literal spelling; 𝐺𝑈 canonical glyph SDF; 𝐸𝑈 typed semantic evaluator;
+𝐹𝑈 set-field action; 𝐶𝑈 typed ports and surface order; 𝐾𝑈 converse/topology rule; 𝑃𝑈
+representation and exactness profile; and ℎ𝑈 the canonical content hash.
+The record stored in spec/operator_atlas.json additionally carries a stable ID, version,
+provenance, Unicode names, UTF-8 bytes, laws, capabilities and explicit non-claims.
+
+4.2 Literal identity
+The cold-atlas key is the exact NFC-normalized scalar sequence, not a font outline and not
+a short local opcode. For ∈:
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 5 of 26
+
+UGTS FOUNDATION 5.0
+
+Literal
+Unicode scalar
+Unicode name
+UTF-8 bytes
+Stable operator ID
+
+Unicode Set-Field and Klein-Converse Atlas
+
+∈
+U+2208
+ELEMENT OF
+e2 88 88
+set.membership.element-of
+
+Compatibility normalization is deliberately not applied because it can collapse presentationdistinct mathematical symbols. A profile may register an alias, but the alias must point to
+a stable operator identity rather than silently replacing the literal.
+
+4.3 Typed ports and reversed operand order
+For membership, the canonical semantic ports are
+[element, container].
+The two surface forms are
+𝑥∈𝐴
+
+and
+
+𝐴 ∋ 𝑥.
+
+The direct syntax map is [0, 1]; the converse syntax map is [1, 0]. Both call one membership
+kernel after port normalization. This makes operand reversal executable data rather than
+a parser special case.
+
+4.4 Three faces, one address
+The release enforces
+𝐺𝑈 ≠ 𝐸 𝑈 ≠ 𝐹 𝑈 ,
+yet resolves all three through the same literal cell. A glyph sample does not decide membership. A semantic truth value does not imply zero geometric glyph distance. A set-field
+transform does not establish a font’s outline. The co-addressing is a referential convenience
+with typed boundaries, not a claim of cross-domain identity. [S2]
+
+4.5 Content addressing
+Each cell hash is computed from canonical UTF-8 JSON with sorted keys, NFC strings and no
+non-finite numbers, excluding only the hash field itself. The atlas hash commits to all cells
+and atlas metadata. A codebook commits to the atlas hash and each occupied operator-cell
+hash.
+BOUNDARY
+A SHA-256 content address identifies bytes under the canonicalization policy. It is not
+legal authorship, ownership, priority, semantic truth or collision-free identity across
+every possible future policy.
+
+5 Set Theory as Signed Set Fields
+5.1 General metric definition
+Let 𝑋 be a declared universe with metric or graph distance 𝑑, and 𝐴 ⊆ 𝑋. Define
+𝜙𝐴 (𝑥) = 𝑑(𝑥, 𝐴) − 𝑑(𝑥, 𝑋 ∖ 𝐴).
+Then, under the declared boundary policy,
+𝜙𝐴 (𝑥) < 0 inside,
+
+𝜙𝐴 (𝑥) = 0 on the boundary,
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+𝜙𝐴 (𝑥) > 0 outside.
+
+Page 6 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+Membership becomes
+𝑥 ∈ 𝐴 ⟺ 𝜙𝐴 (𝑥) ≤ 0.
+The definition is exact only when the metric and the representations of 𝐴 and its complement are exact. Sampled point sets generally produce an approximation or bound rather
+than an exact continuous SDF.
+
+5.2 Finite and symbolic fallback
+When no useful metric exists, a signed characteristic field is sufficient:
+𝜒𝐴 (𝑥) = {
+
+−1,
++1,
+
+𝑥 ∈ 𝐴,
+𝑥 ∉ 𝐴.
+
+The reference runtime implements FiniteSetField over a declared ordered finite universe.
+Its capability is signed_membership_field, not exact_sdf.
+
+Figure 3: Every field carries the strongest capability actually established.
+
+5.3 Set algebra as field algebra
+With the negative-inside convention:
+𝜙𝐴∪𝐵 = min(𝜙𝐴 , 𝜙𝐵 ),
+𝜙𝐴∩𝐵 = max(𝜙𝐴 , 𝜙𝐵 ),
+𝜙𝑋∖𝐴 = −𝜙𝐴 ,
+𝜙𝐴∖𝐵 = max(𝜙𝐴 , −𝜙𝐵 ),
+𝜙𝐴△𝐵 = max(min(𝜙𝐴 , 𝜙𝐵 ), − max(𝜙𝐴 , 𝜙𝐵 )) .
+These formulas preserve the correct inside/outside sign. They do not automatically preserve exact Euclidean distance after composition. [S6]
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 7 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+Figure 4: The field layer turns set operations into bounded, branch-friendly scalar operations.
+
+5.4 Relation kernels
+The shipped reference subset implements:
+𝑥 ∈ 𝐴 ⟺ 𝜙𝐴 (𝑥) ≤ 0,
+𝑥 ∉ 𝐴 ⟺ 𝜙𝐴 (𝑥) > 0,
+𝐴 ⊆ 𝐵 ⟺ 𝐴 ∖ 𝐵 = ∅,
+𝐴 ⊂ 𝐵 ⟺ 𝐴 ⊆ 𝐵 ∧ 𝐴 ≠ 𝐵,
+𝐴 = 𝐵 ⟺ 𝐴 ⊆ 𝐵 ∧ 𝐵 ⊆ 𝐴.
+On a finite universe these statements may be checked exhaustively. On a continuous universe, a sampled LUT is not a universal emptiness or inclusion proof.
+
+5.5 Capability-aware certificates
+A set-field result carries at least:
+• universe/profile identity;
+• sign convention and boundary inclusion policy;
+• capability class;
+• metric or oracle identity;
+• numeric error or interval;
+• proof scope: point query, finite exhaustive domain, sampled domain or continuous certificate;
+• explicit non-claims.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 8 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+6 Unicode Converse Families
+6.1 Family plus 𝜅
+Each hot relation family uses
+operator_id = (family ≪ 1) | 𝜅,
+
+𝜅 ∈ {0, 1}.
+
+The family selects the canonical semantic relation. 𝜅 = 0 selects the direct spelling; 𝜅 = 1
+selects the converse spelling and reversed surface ports.
+Family
+
+𝜅=0
+
+𝜅=1
+
+Canonical relation
+
+0
+1
+2
+3
+4
+5
+6
+7
+
+𝑥∈𝐴
+𝑥∉𝐴
+𝐴⊂𝐵
+𝐴⊆𝐵
+𝐴⊄𝐵
+𝐴⊈𝐵
+𝐴⊊𝐵
+reserved
+
+𝐴∋𝑥
+𝐴∌𝑥
+𝐵⊃𝐴
+𝐵⊇𝐴
+𝐵⊅𝐴
+𝐵⊉𝐴
+𝐵⊋𝐴
+reserved
+
+membership
+nonmembership
+proper inclusion
+inclusion or equality
+negated proper inclusion
+negated inclusion or equality
+strict-inclusion glyph variant
+codebook extension gate
+
+6.2 Semantic converse law
+For every registered pair 𝑈 , 𝑈 ⌣ ,
+𝐸𝑈 ⌣ (𝑏, 𝑎) = 𝐸𝑈 (𝑎, 𝑏).
+This is relation converse, not functional inversion. Typed endpoints swap; multiplicity,
+provenance and truth are preserved.
+
+6.3 Algebra operators outside the hot pair codebook
+The cold atlas also ships ∪, ∩, ∖, ∁, ∅ and =. They are addressed by Unicode and carry
+geometry plus functionality, but they do not consume a direct/converse slot in the shipped
+set-core-16 codebook. A later codebook may assign them local slots without changing
+their global identities.
+
+7 The Klein-Converse Involution
+7.1 Local transform
+Define the local transform
+𝒦(𝑈 , 𝑎, 𝑏, 𝜌, 𝜃, 𝜅, 𝑜) = (𝑈 ⌣ , 𝑏, 𝑎, 𝜌, 𝜋 − 𝜃, 𝜅 ⊕ 1, −𝑜) .
+It acts simultaneously on literal spelling, typed ports, glyph orientation, chart angle and
+orientation state.
+
+7.2 Local involution and lineage
+On the local fiber,
+𝒦2 = id.
+After two applications the literal, ports, angle, 𝜅 and orientation return. Lineage does not
+erase the two wraps; the winding counter increases by two. Thus the state transform is
+involutive while history remains auditable.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 9 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+Figure 5: The semantic square commutes while lineage separately records the wrap.
+
+7.3 Reflective quotient
+A genuine reflective quotient requires a declared boundary identification such as
+(𝜌max , 𝜃, 𝜅, 𝑜) ∼ (𝜌min , 𝜋 − 𝜃, 𝜅 ⊕ 1, −𝑜).
+The angular derivative is −1. That is the orientation-reversing feature. Merely adding 𝜋 to
+𝜃 is a rotation and remains a different profile. [S3]
+
+7.4 Discrete angle maps
+For a 256-bin absolute angle code,
+𝑞 ′ = (128 − 𝑞) mod 256.
+For a local delta code whose chart origin is transformed separately,
+Δ𝑞 ′ = (−Δ𝑞) mod 256.
+Both maps are exact involutions in the finite code space.
+
+8 Canonical Glyph SDFs
+8.1 Canonical profile
+The reference glyph profile is ugts.canonical.capsule-glyph.v1. A glyph is a finite segment skeleton 𝑆𝑈 with stroke radius 𝑟𝑠 . Its field is
+𝐺𝑈 (𝑝) = min 𝑑(𝑝, 𝑒) − 𝑟𝑠 .
+𝑒∈𝑆𝑈
+
+This is an exact Euclidean SDF to the finite union of equal-radius segment capsules that defines the canonical profile. The open ellipse is approximated by a fixed, versioned polyline;
+the exactness claim applies to that capsule union, not to an ideal analytic ellipse or to a
+third-party font.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 10 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+8.2 Mirror law
+For direct/converse relation pairs:
+𝐺𝑈 ⌣ (𝑥, 𝑦) = 𝐺𝑈 (−𝑥, 𝑦).
+The same reflection that changes visible port direction also matches the operand-converse
+map.
+
+Figure 6: Fourteen shipped converse glyph fields. The lower row is the exact x-reflection of
+the upper row in the canonical profile.
+
+8.3 Font-exact mode
+A font profile may provide measured or extracted outlines for each literal. In that mode, font,
+size, style, hinting, antialias threshold, fill/stroke and connectivity are part of the record.
+Semantic converse remains exact, while geometric mirror equality becomes profile-bound.
+This directly preserves BEA’s boundary/equivalence separation. [S2]
+BOUNDARY
+A Unicode codepoint fixes a character identity, not a unique visual outline. The canonical UGTS glyph is one deliberate, auditable geometry profile and never masquerades
+as every font.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 11 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+9 Cold Atlas, Hot Codebook and LUT
+
+Figure 7: The local opcode is a cache alias bound to the exact global atlas.
+
+9.1 Cold atlas
+The cold atlas is keyed by exact literal Unicode sequence and contains all 20 OperatorCells.
+Its 5.0 hash is:
+d4745a198469ff97665825f53d88cdbf8bad27687a3021c89177eedb83a55e91
+
+It is the authority for Unicode identity, typed meaning, glyph profile, converse mapping and
+exactness metadata.
+
+9.2 Hot codebook
+The shipped ugts.set-core-16.v1 codebook contains exactly 16 slots. Slots 0–13 map
+seven converse families; 14–15 are reserved and reject. Its hash is:
+3a279c68331d697f31e223b71eea898a4239d4da989b6f6d5c1dfd0dfcffb009
+
+Slot
+
+Family 𝜅
+
+Literal
+
+Operator ID
+
+0
+1
+2
+3
+4
+5
+
+0
+0
+1
+1
+2
+2
+
+∈
+∋
+∉
+∌
+⊂
+⊃
+
+set.membership.element-of
+set.membership.contains-as-member
+set.membership.not-element-of
+set.membership.does-not-contain-as-member
+set.inclusion.proper-subset
+set.inclusion.proper-superset
+
+0
+1
+0
+1
+0
+1
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 12 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+Slot
+
+Family 𝜅
+
+Literal
+
+Operator ID
+
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+
+3
+3
+4
+4
+5
+5
+6
+6
+-
+
+⊆
+⊇
+⊄
+⊅
+⊈
+⊉
+⊊
+⊋
+reserved
+reserved
+
+set.inclusion.subset-or-equal
+set.inclusion.superset-or-equal
+set.inclusion.not-proper-subset
+set.inclusion.not-proper-superset
+set.inclusion.not-subset-or-equal
+set.inclusion.not-superset-or-equal
+set.inclusion.subset-with-not-equal
+set.inclusion.superset-with-not-equal
+-
+
+0
+1
+0
+1
+0
+1
+0
+1
+-
+
+9.3 Literal-to-LUT path
+A lookup proceeds as follows:
+1. Normalize and resolve the exact Unicode literal in the cold atlas.
+2. Verify the cell hash and atlas hash.
+3. Select or build a hot codebook whose entries commit to those hashes.
+4. Store only the local four-bit slot in packed nodes.
+5. Decode the slot through the codebook before semantic or glyph evaluation.
+Unknown code, codebook mismatch or atlas mismatch is a hard failure.
+
+10 Packed Log-Polar Node 32
+
+Figure 8: Corrected bit layout with separate integrity and topological roles.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 13 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+10.1 Bit layout
+Bits
+
+Width
+
+Field
+
+Contract
+
+31
+30–27
+26–19
+18–11
+10–3
+2–1
+
+1
+4
+8
+8
+8
+2
+
+integrity parity
+operator slot
+Δ𝜌
+Δ𝜃
+grammar path
+local flags
+
+0
+
+1
+
+active
+
+parity of payload bits 0–30; not 𝜅
+three-bit family plus one-bit 𝜅
+signed int8; scale/bias supplied by header
+cyclic uint8; 256-bin period
+bounded eight-decision branch fragment
+profile-defined status; narrow meanings
+only
+explicitly decoded and tested
+
+10.2 Packing formula
+Let 𝑠 = (𝑓, 𝜅, Δ𝜌, Δ𝜃, 𝑝, 𝑔, 𝑎). The payload is
+payload = ((2𝑓 + 𝜅) ≪ 27) | ((Δ𝜌 mod 256) ≪ 19)
+| (Δ𝜃 ≪ 11) | (𝑝 ≪ 3) | (𝑔 ≪ 1) | 𝑎.
+Bit 31 equals the population parity of bits 0–30, giving even parity over the full word.
+
+10.3 Two parities, two roles
+• 𝜅 is the semantic/topological direct-versus-converse selector.
+• bit 31 is an integrity precheck.
+A legitimate ∈ → ∋ transition toggles 𝜅, then recomputes the integrity parity. The two roles
+can never share one bit.
+
+10.4 Mandatory stream header
+The 32-bit word is not self-describing. The stream header carries:
+• schema, atlas and codebook IDs and hashes;
+• 𝜌 origin, scale, bias and admissible range;
+• 𝜃 origin, period and rounding rule;
+• reflective wrap profile;
+• grammar definition and path-prefix context;
+• capability and exactness policy;
+• error budget and event-margin rule;
+• block CRC and optional outer content hash.
+The reference UG5N framing uses a canonical JSON header, little-endian 32-bit words and
+CRC32 over prefix, header and node payload.
+
+10.5 Quantization
+A full circle with 256 bins has bin width
+360∘
+= 1.40625∘ .
+256
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 14 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+With round-to-nearest, maximum half-bin angular error is
+0.703125∘ .
+Radial error depends on the declared Δ𝜌 scale. Packed evaluation may be promoted only
+when total numeric error remains below the relevant event margin.
+
+10.6 Bounded grammar path
+Eight path bits encode eight binary decisions or one fragment of a longer externally stored
+address. They do not encode an unbounded tree, infinite detail or a complete world.
+
+11 Scalar and SIMD Execution Profiles
+11.1 Scalar oracle
+The dependency-free Python and C++20 scalar codecs are the conformance authority. Every backend must match:
+• field extraction and signed Δ𝜌 decoding;
+• active and local flags;
+• operator family and 𝜅;
+• parity verification;
+• Klein flip and round trip;
+• codebook resolution;
+• error and capability status.
+
+11.2 AVX2 eight-lane extraction
+The optional header native/ugts5_avx2.hpp loads eight words and extracts fields with
+shifts and masks. It corrects two common source errors:
+1. reading bit 31 is not parity verification; a tested popcount/XOR fold or scalar check is
+still required;
+2. a 0/1 selector must be expanded to 0x00000000/0xffffffff before lane-wise selection.
+The reference mask expansion is conceptually
+𝑀 = 0 − 𝜅,
+so each 32-bit lane becomes all-zero or all-one.
+
+11.3 ARM NEON profile
+The NEON contract mirrors the AVX2 layout in four lanes and uses full-lane masks before
+vbslq_u32. It is specified but not measured in this package.
+
+11.4 Branch strategy
+Evaluate-both-and-select can help when both branches are cheap and coherence is poor.
+It can waste work when either branch is expensive. A backend may choose among scalar
+branching, active-lane compaction, dual evaluation or measured automatic selection. No
+universal speed claim is promoted.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 15 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+11.5 Benchmark boundary
+Cycle counts, cache residency, SIMD utilization, latency and energy require a named processor, compiler flags, workload, precision, equal-error baseline and captured measurement.
+The package proves codec conformance, not target performance. [S4]
+
+12 Exactness, Proof and Certification
+12.1 Point query versus global relation
+A point membership query can be a local field comparison. Subset, equality and emptiness
+are global relations:
+𝐴 ⊆ 𝐵 ⟺ ∀𝑥 ∈ 𝑋 ∶ 𝑥 ∈ 𝐴 ⇒ 𝑥 ∈ 𝐵.
+No packed local lookup turns the quantifier into universal constant-time proof.
+
+12.2 Certificate object
+A version-5 relation certificate contains:
+𝐶 = (𝑈 , ℎ𝑈 , profile, operands, scope, capability, 𝐼, 𝑒, 𝑚, 𝑟, 𝑁 ),
+where 𝐼 is the result or interval, 𝑒 numeric error, 𝑚 event margin, 𝑟 reason/status and 𝑁
+explicit non-claims.
+
+12.3 Finite exact proof
+For a declared finite universe, the runtime can exhaustively check membership, subset,
+proper subset, equality and emptiness. The universe ordering is part of the proof input.
+Changing the universe invalidates the certificate.
+
+12.4 Continuous proof
+A continuous-domain claim requires at least one of:
+• an analytic proof;
+• interval arithmetic covering the full domain;
+• a certified spatial subdivision with a proven residual bound;
+• a theorem-specific decision procedure;
+• another explicitly verified completeness argument.
+A sampled LUT remains sampled evidence unless the certificate closes the between-sample
+gap.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 16 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+12.5 Integrity ladder
+Layer
+
+Role
+
+Per-node parity
+Stream CRC32
+Operator-cell hash
+Atlas/codebook
+hash
+Pre/post state hash
+Lineage/replay
+
+fast odd-bit corruption precheck
+accidental block corruption detection
+content identity of one definition
+exact lookup-context binding
+authoritative transition identity
+ordered explanation of how state was reached
+
+No single layer substitutes for the others.
+
+13 Integration with UGTS State Authority
+13.1 Pure evaluation is upstream
+A Unicode cell may answer a set relation, return a glyph field value, transform a signed set
+field, select a converse, decode a packed node or issue an exactness certificate. None of
+those operations changes authoritative world state by itself.
+
+13.2 Canonical handoff
+A state-changing application uses:
+operator result + support evidence
+-> compatibility
+-> guard / error / uncertainty
+-> verified proposal
+-> deterministic conflict resolution
+-> atomic commit
+-> pre/post hashes
+-> lineage + replay
+-> optional glyph, display, storage or device projection
+
+13.3 Example: membership-triggered transition
+Suppose a rule proposes opening a gate when token 𝑥 belongs to set 𝐴. The OperatorCell
+answers 𝑥 ∈ 𝐴. The application must still prove that the rule is supported at this gate, the
+token and gate are compatible, timing and uncertainty guards pass, and the resulting patch
+preserves required invariants. Only then is the gate state committed.
+
+13.4 Example: reflective route transition
+A route crossing a declared radial boundary may apply 𝒦. The local operator and orientation
+flip, but the transition is committed only after the boundary guard and topology profile
+verify. Winding and the selected quotient remain in lineage so repeated arrivals at the
+same coordinates are distinguishable.
+
+14 Reference Implementation and Validation
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 17 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+14.1 Package map
+Path
+
+Contents
+
+report/
+src/ugts5/
+
+PDF report and editable XeLaTeX source
+canonical hashing, atlas, set fields, glyph SDF, Klein transform, packing, stream and CLI
+schemas, atlas, codebook, release record, source register, mechanisms and claims
+C++20 scalar codec, AVX2 extraction header and NEON contract
+operator, field and packed-stream demonstrations
+83 standard-library Python conformance tests
+captured outputs, schema results, native results, hashes and manifests
+report diagrams and glyph-field plate
+built Python wheel
+
+spec/
+native/
+examples/
+tests/
+validation/
+figures/
+dist/
+
+14.2 Validation result
+
+Figure 9: Exact captured package evidence.
+Check
+
+Scope
+
+Result
+
+Python conformance
+JSON Schema
+Native scalar codec
+Operator atlas
+Hot codebook
+Mechanism delta
+Claims ledger
+Wheel
+
+83 tests
+3 instances
+C++20
+20 cells
+16 slots
+64 rows
+24 rows
+py3-none-any
+
+PASS
+0 errors
+PASS
+all content hashes verified
+14 assigned / 2 reserved
+USF001-USF064 / M886-M949
+admit / bound / reject recorded
+built and clean-installed
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 18 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+14.3 What the tests establish
+The tests establish deterministic canonical JSON, content-hash verification, Unicode scalar/UTF8 round trip, signed-field truth tables, finite exact set relations, glyph reflection, local Klein
+involution, discrete angle involution, packed round trip, active-bit decoding, integrity parity behavior, stream CRC, codebook rejection, schema validity and native scalar parity with
+the Python layout.
+
+14.4 What the tests do not establish
+The tests are not independent scientific validation. They do not prove every font mirrors
+converse glyphs, every set has a metric SDF, continuous subset claims are solved, AVX2
+or NEON are faster, physical hardware is low-power, or the formalism is complete for all
+Unicode mathematics.
+
+14.5 Reproduction
+python tools/generate_specs.py
+python examples/packed_stream_demo.py
+python -m unittest discover -s tests -v
+python tools/validate_schemas.py
+c++ -std=c++20 -O2 -I native native/test_packed_node.cpp -o /tmp/ugts5_native
+/tmp/ugts5_native
+python -m ugts5 verify --package-root .
+
+15 Claims Ledger Summary
+The complete 24-row ledger is in Appendix D and in spec/claims_ledger.json/csv. The
+governing decisions are:
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 19 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+Claim
+
+Disposition
+
+Reason
+
+Unicode can address
+shape and functionality
+Geometry and semantics
+are identical
+Set theory can use
+signed set fields
+Converse pairs share a
+semantic kernel
+Klein flip is just a bit shift
+
+ADMIT
+
+One bit can be integrity
+and topology
+Four-bit operator ID is
+global
+Packed node is complete
+state
+Composed fields remain
+exact SDFs
+SIMD is automatically
+faster
+Deterministic parity is
+true randomness
+This atlas enumerates all
+mathematics
+
+REJECT
+
+One typed cell co-addresses literal, glyph,
+evaluator and field action.
+They remain distinct domains connected by
+explicit maps.
+Exact SDF is one class; finite, metric, residual and oracle fields remain distinct.
+Typed port normalization makes the reuse
+exact.
+It selects an involution that swaps
+operands and reflects the chart.
+𝜅 and parity are separate fields.
+
+REJECT
+
+It is a hash-bound local codebook alias.
+
+REJECT
+
+Definitions, header, uncertainty, lineage
+and hashes remain external.
+Sign is preserved; exact distance may be
+lost.
+A named target and equal-error benchmark
+are required.
+Determinism supplies repeatability, not entropy.
+The shipped atlas is bounded and the
+schema is extensible.
+
+REJECT
+ADMIT WITH
+CAPABILITY
+ADMIT
+CORRECT
+
+REJECT
+REJECT
+REJECT
+REJECT
+
+16 Acceptance, Kill Criteria and Final Definition
+16.1 Acceptance gates
+A version-5 use is accepted only when:
+1. the exact Unicode scalar sequence resolves;
+2. the OperatorCell and atlas hashes verify;
+3. the operand types and surface-to-canonical port map validate;
+4. the field capability is no stronger than the evidence;
+5. the converse and glyph profile are declared;
+6. the codebook and stream header match;
+7. per-node parity and stream CRC pass;
+8. quantization error stays below the declared event margin;
+9. state mutation proceeds through the canonical authority chain;
+10. lineage records accepted transitions and relevant wraps.
+
+16.2 Kill criteria
+Reject or narrow the use when:
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 20 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+• Unicode identity is replaced by an undocumented local opcode;
+• font geometry is treated as profile-free;
+• semantic zero is called glyph-SDF zero;
+• a sampled LUT is presented as a continuous-domain proof;
+• 𝜅 is overloaded as integrity, randomness, uncertainty or complete state;
+• a half-turn is mislabeled as reflective Klein gluing;
+• an unknown codebook slot aliases an existing operator;
+• min/max field composition silently retains exact-SDF status;
+• backend output differs from the scalar oracle;
+• performance or compression claims omit a named target, workload and equal-error baseline;
+• operator evaluation bypasses support, compatibility, guard, commit or lineage.
+
+16.3 Final upgraded definition
+FORMAL DEFINITION
+UGTS Foundation 5.0 is a literal, content-addressed Unicode operator substrate in
+which set relations and set algebra may be evaluated through typed signed set fields;
+canonical glyph shapes are executable SDF definitions; converse surface spellings
+share canonical semantic kernels; reflective Klein transitions reverse typed ports,
+glyph orientation and chart orientation through an explicit involution; and compact
+log-polar execution records remain hash-bound, error-bounded and downstream of
+authoritative definitions.
+MAJOR-VERSION CONCLUSION
+A Unicode operator is no longer merely text and no longer merely an icon. It is a
+content-addressed, executable geometric rule cell whose literal codepoint resolves
+both its canonical shape and its typed operation. A Klein-converse parity flip mirrors
+the shape, reverses the typed ports and selects the converse Unicode spelling while
+preserving the mathematical truth value.
+EVIDENCE BOUNDARY
+The word parity in the conclusion names the direct/converse 𝜅 selector as a two-state
+orientation parity. It does not merge with bit-31 integrity parity, random entropy, uncertainty, identity or full state. The package and schemas keep those roles separate.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 21 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+A Complete Shipped Unicode Operator Atlas
+Lit. Scalar
+
+Fam. 𝜅
+
+Conv. Kernel
+
+∈
+∋
+
+U+2208
+U+220B
+
+0
+0
+
+0
+1
+
+∋
+∈
+
+∉
+∌
+
+U+2209
+U+220C
+
+1
+1
+
+0
+1
+
+∌
+∉
+
+⊂
+⊃
+⊆
+
+U+2282
+U+2283
+U+2286
+
+2
+2
+3
+
+0
+1
+0
+
+⊃
+⊂
+⊇
+
+⊇
+
+U+2287
+
+3
+
+1
+
+⊆
+
+⊄
+
+U+2284
+
+4
+
+0
+
+⊅
+
+⊅
+
+U+2285
+
+4
+
+1
+
+⊄
+
+⊈
+
+U+2288
+
+5
+
+0
+
+⊉
+
+⊉
+
+U+2289
+
+5
+
+1
+
+⊈
+
+⊊
+
+U+228A
+
+6
+
+0
+
+⊋
+
+⊋
+
+U+228B
+
+6
+
+1
+
+⊊
+
+∪
+∩
+∖
+∁
+∅
+=
+
+U+222A
+U+2229
+U+2216
+U+2201
+U+2205
+U+003D
+
+-
+
+-
+
+-
+
+Stable operator ID
+
+membership
+membership
+
+set.membership.element-of
+set.membership.contains-asmember
+nonmembership set.membership.not-element-of
+nonmembership set.membership.does-not-containas-member
+proper subset
+set.inclusion.proper-subset
+proper subset
+set.inclusion.proper-superset
+subset or
+set.inclusion.subset-or-equal
+equal
+subset or
+set.inclusion.superset-or-equal
+equal
+not proper sub- set.inclusion.not-proper-subset
+set
+not proper sub- set.inclusion.not-proper-superset
+set
+not subset or
+set.inclusion.not-subset-or-equal
+equal
+not subset or
+set.inclusion.not-superset-or-equal
+equal
+proper subset
+set.inclusion.subset-with-not-equal
+variant
+proper subset
+set.inclusion.superset-with-notvariant
+equal
+union
+set.algebra.union
+intersection
+set.algebra.intersection
+difference
+set.algebra.difference
+complement
+set.algebra.complement
+empty set
+set.literal.empty
+set equality
+set.relation.equality
+
+B Hot Codebook Set-Core-16
+The table in Section 9 is normative. Slots 14 and 15 are reserved and must reject unless a
+different versioned codebook is selected in the stream header. The four-bit value is never
+globally meaningful without the codebook hash.
+
+C Complete Mechanism Delta USF001–USF064
+ID
+
+Domain
+
+Name
+
+Definition
+
+Validation
+
+USF001 /
+M886
+USF002 /
+M887
+USF003 /
+M888
+USF004 /
+M889
+
+release
+
+Release identity
+
+source
+
+Source register
+
+referential
+
+OperatorCell
+
+unicode
+
+Unicode scalar key
+
+Component-scoped major release identity with
+legacy UGTS-KC 5.0 alias.
+Content-hashed source and parent register without raw-source redistribution.
+One content-addressed record co-addresses
+literal, glyph, semantics and field action.
+Exact Unicode scalar sequence is a canonical
+cold-atlas lookup key.
+
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 22 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+ID
+
+Domain
+
+Name
+
+Definition
+
+Validation
+
+USF005 /
+M890
+USF006 /
+M891
+USF007 /
+M892
+USF008 /
+M893
+USF009 /
+M894
+USF010 /
+M895
+USF011 /
+M896
+USF012 /
+M897
+USF013 /
+M898
+USF014 /
+M899
+USF015 /
+M900
+USF016 /
+M901
+USF017 /
+M902
+USF018 /
+M903
+USF019 /
+M904
+USF020 /
+M905
+USF021 /
+M906
+USF022 /
+M907
+USF023 /
+M908
+USF024 /
+M909
+USF025 /
+M910
+USF026 /
+M911
+USF027 /
+M912
+USF028 /
+M913
+USF029 /
+M914
+USF030 /
+M915
+USF031 /
+M916
+USF032 /
+M917
+USF033 /
+M918
+USF034 /
+M919
+USF035 /
+M920
+USF036 /
+M921
+USF037 /
+M922
+USF038 /
+M923
+USF039 /
+M924
+
+unicode
+
+UTF-8 literal key
+
+unicode
+
+NFC normalization
+profile
+Typed signature
+
+UTF-8 spelling is recorded and round-tripped
+without ASCII aliasing.
+NFC is explicit; compatibility normalization is not
+silently applied.
+Every operator declares domain, codomain, arity
+and type parameters.
+One semantic port order is authoritative for each
+converse family.
+Surface operands map explicitly to canonical
+semantic ports.
+Literal dispatch selects a bounded typed semantic kernel.
+A versioned capsule-union field represents the
+literal operator shape.
+Operator records declare predicates or signcompatible field transforms.
+Direct and converse cells reference each other
+by stable operator ID.
+Every cell carries a canonical SHA-256 content
+address.
+Source motif, engineering normalization and
+measured evidence stay distinct.
+Exact SDF, metric field, bound, residual, membership field and oracle remain distinct.
+phi_A = d(x,A) - d(x,X\A) under a declared metric
+profile.
+Finite or non-metric sets can use a signed membership field.
+x in A iff phi_A(x) <= 0 under the selected boundary policy.
+x notin A is the typed negation of membership.
+
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+
+typing
+typing
+typing
+semantics
+geometry
+
+Canonical argument order
+Surface argument
+map
+Semantic evaluator
+
+field
+
+Canonical glyph
+SDF
+Set-field action
+
+relation
+
+Converse link
+
+integrity
+
+Operator content
+hash
+provenance Provenance class
+exactness
+
+Capability class
+
+field
+
+Signed set field
+
+field
+
+Characteristic fallback
+Membership predicate
+Nonmembership
+predicate
+Subset predicate
+
+relation
+relation
+relation
+
+field
+
+A subseteq B is a quantified emptiness claim
+over A\B.
+Proper subset predi- Proper inclusion adds non-equality to subset.
+cate
+Set equality
+A=B is mutual inclusion under a common universe/profile.
+Empty-set prediEmptiness is exact only when the domain proof is
+cate
+complete.
+Union field
+min(phi_A,phi_B) preserves the union sign.
+
+field
+
+Intersection field
+
+max(phi_A,phi_B) preserves the intersection sign.
+
+field
+
+Complement field
+
+-phi_A reverses inside and outside.
+
+field
+
+Difference field
+
+max(phi_A,-phi_B) preserves the sign of A\B.
+
+field
+
+topology
+
+Symmetricdifference field
+Field capability
+downgrade
+Finite-universe
+proof
+Interval/analytic
+proof
+Sample-only nonproof
+Klein-converse
+transform
+Operator converse
+
+topology
+
+Operand swap
+
+geometry
+
+Glyph reflection
+
+topology
+
+Angular reflection
+
+A sign-correct max/min formula represents A
+triangle B.
+Composed fields never inherit exact-distance
+status without proof.
+Exhaustive finite checks may issue exact relation
+certificates.
+Continuous global claims require analytic, interval or certified-cover evidence.
+A sampled LUT result is bounded evidence, not
+universal inclusion proof.
+One transform reflects chart, swaps ports and
+toggles converse state.
+U maps to U-smile while preserving truth after
+operand exchange.
+Typed endpoints reverse rather than being reinterpreted in place.
+Canonical converse glyph is the x-reflection of
+the direct glyph.
+theta maps to pi-theta on the reflective profile.
+
+topology
+
+Orientation selector
+
+relation
+relation
+relation
+
+exactness
+proof
+proof
+proof
+topology
+
+kappa is a semantic/topological selector and not
+an integrity bit.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 23 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+ID
+
+Domain
+
+Name
+
+Definition
+
+Validation
+
+USF040 /
+M925
+USF041 /
+M926
+USF042 /
+M927
+USF043 /
+M928
+USF044 /
+M929
+USF045 /
+M930
+USF046 /
+M931
+USF047 /
+M932
+USF048 /
+M933
+USF049 /
+M934
+USF050 /
+M935
+USF051 /
+M936
+USF052 /
+M937
+USF053 /
+M938
+USF054 /
+M939
+USF055 /
+M940
+USF056 /
+M941
+USF057 /
+M942
+USF058 /
+M943
+USF059 /
+M944
+USF060 /
+M945
+USF061 /
+M946
+USF062 /
+M947
+USF063 /
+M948
+USF064 /
+M949
+
+topology
+
+Involution law
+
+topology
+
+Reflective quotient
+
+topology
+
+Half-turn distinction
+
+atlas
+
+Cold Unicode atlas
+
+atlas
+
+Hot 16-slot codebook
+Reserved-slot rejection
+Codebook content
+hash
+Packed Set-Field
+Node 32
+Integrity parity
+
+Applying the Klein-converse transform twice
+returns the original state.
+Boundary gluing declares the actual orientationreversing quotient.
+A pi rotation remains distinct from a reflective
+Klein gluing.
+The full literal record remains content-addressed
+outside hot SIMD state.
+A batch-local codebook maps four-bit slots to
+exact atlas cells.
+Unassigned local codes reject rather than aliasing silently.
+Hot mappings are bound to the exact cold atlas.
+
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+specifiedcontract
+specifiedcontract
+implementedand-tested
+implementedand-tested
+implementedand-tested
+implementedand-tested
+
+atlas
+integrity
+packing
+integrity
+packing
+packing
+packing
+grammar
+
+Family/kappa extraction
+Signed log-radius
+delta
+Cyclic angle delta
+
+packing
+
+Grammar path
+fragment
+Local field flags
+
+packing
+
+Active bit
+
+stream
+
+Stream header
+
+integrity
+
+Block CRC
+
+runtime
+
+Scalar oracle
+
+simd
+simd
+
+Branchless mask
+expansion
+AVX2 profile
+
+simd
+
+NEON profile
+
+quantizationQuantization certificate
+guard
+Event-margin
+guard
+authority
+UGTS authority
+handoff
+validation Validation and kill
+criteria
+
+A corrected 32-bit execution record carries local
+deltas and flags.
+Bit 31 checks payload parity and remains separate from kappa.
+operator_id=(family<<1)|kappa enables
+converse-pair locality.
+An explicit int8 delta requires a stream scale/bias
+contract.
+An 8-bit angular delta has a declared 256-bin
+period.
+Eight bits represent a bounded branch fragment,
+not an unbounded tree.
+Two bits carry profile-defined local status with
+declared meaning.
+Bit zero is decoded and tested rather than
+silently dropped.
+Atlas, codebook, chart, quantization and error
+contracts travel with nodes.
+Stream-level CRC supplements per-node parity
+and content hashes.
+Dependency-free scalar decoding is the conformance authority.
+Boolean selectors expand to full-lane masks before blending.
+Eight-lane extraction is specified behind the
+scalar oracle.
+Four-lane ARM decoding is a specified backend
+target.
+Angular/radial errors are calculated from the
+declared profile.
+Packed evaluation is accepted only below the
+relevant event margin.
+Pure operator evaluation cannot bypass support,
+compatibility and commit.
+Claims fail closed on hash, type, parity, exactness or evidence violations.
+
+D Complete Claims Ledger
+ID
+
+Claim
+
+Disposition
+
+Reason
+
+USF-C01
+
+Unicode literal can key shape
+and functionality
+Geometry and semantics are
+identical
+Set theory can use signed set
+fields
+Membership is a local sign
+query
+Every subset claim is O(1)
+
+ADMIT
+
+The same content-addressed cell co-addresses
+literal, glyph, evaluator and field action.
+They remain typed faces of one record; equality
+requires an explicit map/certificate.
+Exact SDF is one capability; finite, metric, residual
+and oracle profiles are distinct.
+Under a declared set-field profile, x in A iff
+phi_A(x)<=0.
+Global inclusion is quantified and needs finite exhaustion or a continuous-domain proof.
+
+USF-C02
+USF-C03
+USF-C04
+USF-C05
+
+REJECT
+ADMIT WITH CAPABILITY
+ADMIT
+REJECT
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 24 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+ID
+
+Claim
+
+Disposition
+
+Reason
+
+USF-C06
+
+Converse pairs share one
+kernel
+Klein flip is merely a bit shift
+
+ADMIT
+
+Klein-converse preserves
+truth
+A half-turn is a Klein reflection
+One bit can be both integrity
+and topology
+Canonical glyph converse is a
+mirror
+Unicode codepoint alone
+fixes font appearance
+Four-bit operator ID is globally unique
+Packed node is complete
+world state
+One parity bit detects all
+corruption
+32-bit record reduces traffic
+
+ADMIT
+
+Surface operand maps and typed endpoints make
+the reuse exact.
+The bit selects an involution that also swaps
+operands and reflects the chart.
+E_converse(b,a)=E_direct(a,b) for registered relation pairs.
+Rotation and orientation-reversing gluing remain
+distinct profiles.
+Integrity parity and kappa are separate logical and
+physical fields.
+True for the UGTS canonical capsule profile; fontexact profiles may differ.
+Font, size, stroke, threshold and rendering policy
+remain profile data.
+It is only a hot codebook slot bound to an atlas
+hash.
+Definitions, header, lineage, uncertainty and
+hashes remain external.
+It detects odd payload bit flips; CRC/hash layers
+cover stronger integrity roles.
+Only under a measured workload and an error/equivalence contract.
+360/256 with round-to-nearest maximum half-bin
+error 0.703125 degrees.
+Sign is preserved, exact-distance status may be
+lost.
+Sampling can miss features between samples
+unless a certificate closes the gap.
+Backend choice depends on branch cost, coherence and target measurement.
+Correct extraction and full-lane masks are supplied; target throughput remains benchmarked
+evidence.
+Deterministic bits provide repeatable selection or
+checks, not entropy.
+Small atlases and repetitive grammars may fit;
+arbitrary information does not.
+The schema is extensible; the shipped atlas is a
+bounded set-theory foundation.
+
+USF-C07
+USF-C08
+USF-C09
+USF-C10
+USF-C11
+USF-C12
+USF-C13
+USF-C14
+USF-C15
+USF-C16
+USF-C17
+USF-C18
+USF-C19
+USF-C20
+USF-C21
+
+USF-C22
+USF-C23
+USF-C24
+
+Eight-bit angle gives 1.40625
+degree bins
+Composed min/max fields
+remain exact SDFs
+Sampled LUT proves continuous emptiness
+SIMD branchless selection is
+always faster
+AVX2 eight-lane extraction is
+feasible
+
+CORRECT
+
+REJECT
+REJECT
+ADMIT PROFILE
+BOUND
+REJECT
+REJECT
+REJECT
+REJECT
+ADMIT CONDITIONAL
+ADMIT
+REJECT
+REJECT
+REJECT
+ADMIT AS PROFILE
+
+Deterministic parity is true
+randomness
+16 KB stores arbitrary worlds
+
+REJECT
+
+This release enumerates all
+Unicode mathematics
+
+REJECT
+
+REJECT
+
+E Source Hashes and Package Reproduction
+E.1 Full source hash register
+S0
+S1
+S2
+S3
+S4
+S5
+S6
+S7
+
+6149e3d398c22b53d0664ba2f624c046d6260506f9ac009dfb2b2572afb3d18c
+e21433cd8378368dafe4ae278d3c9c364725e45ae7fd75b743328bd2d6003a46
+ac857c9c01f5f4e93edbc8657d2d549a085d939dd1cedce3829ab62bc1dca096
+6987490a0a7b7ed76b0091057a2e69ab831fee786434a0b4219782923f5ea580
+3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2
+413ef9568330e253ebb8e42cbc756257f3c138485f2d9697de48324b92f28efe
+c0ae58652436476f77be3b1f94d4b82cf66f8ba3ca5ae25ad5f6706b217ed8d4
+1b64495ed32a24a66f356652cb6fb1291d0727ab9bfa9174c994d757325f037b
+
+E.2 Artifact identity
+The final package includes validation/SHA256SUMS, a CSV manifest and a plain relativepath manifest. These identify the delivered bytes; they do not establish legal authorship
+or priority.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 25 of 26
+
+UGTS FOUNDATION 5.0
+
+Unicode Set-Field and Klein-Converse Atlas
+
+E.3 Canonical filename
+UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29.pdf
+UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29.zip
+
+E.4 Release status
+RELEASED AS A COMPLETE TECHNICAL FOUNDATION PACKAGE. The formal schema,
+reference runtime, examples, tests, native codec and evidence are delivered. Physical
+CPU/GPU/phone performance, independent mathematical review and font-wide geometry
+equivalence remain open validation activities rather than implied results.
+
+Prepared for Tom Klootwijk - requester-supplied project attribution
+
+Page 26 of 26
+
+

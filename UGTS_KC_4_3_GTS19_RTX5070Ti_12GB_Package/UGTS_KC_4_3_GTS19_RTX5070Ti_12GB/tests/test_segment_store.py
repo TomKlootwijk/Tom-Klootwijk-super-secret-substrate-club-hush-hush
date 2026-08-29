@@ -147,9 +147,7 @@ def test_deliberate_digest_collision_requires_exact_equality_after_restart(
     assert restarted.collision_bucket_sizes() == (2,)
     with pytest.raises(DigestCollisionError, match="ambiguous"):
         restarted.read(first_ref)
-    assert (
-        restarted.read(first_ref, expected_payload=first_payload) == first_payload
-    )
+    assert restarted.read(first_ref, expected_payload=first_payload) == first_payload
     with pytest.raises(KeyError, match="no exact object"):
         restarted.read(first_ref, expected_payload=b"not present")
 
@@ -198,9 +196,7 @@ def test_snapshot_verifies_and_reads_in_a_fresh_process(tmp_path: Path) -> None:
     )
     environment = os.environ.copy()
     source = str(Path(__file__).resolve().parents[1] / "src")
-    environment["PYTHONPATH"] = source + os.pathsep + environment.get(
-        "PYTHONPATH", ""
-    )
+    environment["PYTHONPATH"] = source + os.pathsep + environment.get("PYTHONPATH", "")
     process = subprocess.run(
         [sys.executable, "-c", script, str(root), ref.sha256, payload.hex()],
         text=True,
@@ -416,6 +412,155 @@ def test_file_data_is_fsynced_before_successful_publication(
     assert len(calls) >= 3
 
 
+def test_new_store_directory_chain_is_durably_published(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls: list[Path] = []
+    monkeypatch.setattr(
+        segment_store_module,
+        "_fsync_directory",
+        lambda path: calls.append(path),
+    )
+    root = tmp_path / "new-parent" / "nested" / "store"
+
+    store = ImmutableSegmentStore(root)
+
+    assert root.is_dir()
+    assert (root / "segments").is_dir()
+    assert (root / "manifests").is_dir()
+    assert tmp_path in calls
+    assert root.parent in calls
+    assert calls.count(root) == 2
+    store.close()
+
+
+def test_directory_creation_retry_repeats_failed_parent_barrier(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "new-parent" / "nested" / "store"
+    calls: list[Path] = []
+    failed = False
+
+    def fail_once_on_new_parent_entry(path: Path) -> None:
+        nonlocal failed
+        calls.append(path)
+        if path == tmp_path and not failed:
+            failed = True
+            raise OSError("injected parent-directory barrier failure")
+
+    monkeypatch.setattr(
+        segment_store_module,
+        "_fsync_directory",
+        fail_once_on_new_parent_entry,
+    )
+    with pytest.raises(OSError, match="parent-directory barrier"):
+        ImmutableSegmentStore(root)
+    assert (tmp_path / "new-parent").is_dir()
+
+    calls.clear()
+    store = ImmutableSegmentStore(root)
+    assert tmp_path in calls
+    store.close()
+
+
+def test_short_metadata_write_preserves_existing_target(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    target = tmp_path / "CURRENT"
+    target.write_bytes(b"previous-pointer\n")
+    real_fdopen = segment_store_module.os.fdopen
+
+    class ShortWriter:
+        def __init__(self, stream: object) -> None:
+            self._stream = stream
+
+        def __enter__(self) -> "ShortWriter":
+            self._stream.__enter__()  # type: ignore[attr-defined]
+            return self
+
+        def __exit__(self, *args: object) -> object:
+            return self._stream.__exit__(*args)  # type: ignore[attr-defined]
+
+        def write(self, data: bytes) -> int:
+            written = self._stream.write(data[:-1])  # type: ignore[attr-defined]
+            return int(written)
+
+        def __getattr__(self, name: str) -> object:
+            return getattr(self._stream, name)
+
+    def short_fdopen(*args: object, **kwargs: object) -> ShortWriter:
+        return ShortWriter(real_fdopen(*args, **kwargs))
+
+    monkeypatch.setattr(segment_store_module.os, "fdopen", short_fdopen)
+    with pytest.raises(OSError, match="short write"):
+        segment_store_module._atomic_replace_bytes(target, b"replacement-pointer\n")
+
+    assert target.read_bytes() == b"previous-pointer\n"
+    assert not list(tmp_path.glob(".CURRENT.tmp-*"))
+
+
+def test_segment_result_allocation_failure_removes_fsynced_temp(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = ImmutableSegmentStore(tmp_path / "sealed-result-oom")
+    store.stage_board(b"payload")
+
+    def fail_result_allocation(**_fields: object) -> object:
+        raise MemoryError("injected sealed-result allocation failure")
+
+    monkeypatch.setattr(
+        segment_store_module,
+        "_SealedSegment",
+        fail_result_allocation,
+    )
+    with pytest.raises(MemoryError, match="sealed-result allocation"):
+        store.publish()
+
+    assert not list((store.root / "segments").glob(".segment.tmp-*"))
+    assert store.staged_count == 1
+    store.close(discard_staged=True)
+
+
+def test_segment_digest_allocation_failure_precedes_temp_creation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = ImmutableSegmentStore(tmp_path / "digest-allocation-oom")
+    store.stage_board(b"payload")
+
+    def fail_digest_allocation(*_args: object, **_kwargs: object) -> object:
+        raise MemoryError("injected digest allocation failure")
+
+    monkeypatch.setattr(
+        segment_store_module.hashlib,
+        "sha256",
+        fail_digest_allocation,
+    )
+    with pytest.raises(MemoryError, match="digest allocation"):
+        store.publish()
+
+    assert not list((store.root / "segments").glob(".segment.tmp-*"))
+    assert store.staged_count == 1
+    store.close(discard_staged=True)
+
+
+def test_segment_fdopen_failure_closes_and_removes_temp(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = ImmutableSegmentStore(tmp_path / "fdopen-failure")
+    store.stage_board(b"payload")
+
+    def fail_fdopen(*_args: object, **_kwargs: object) -> object:
+        raise OSError("injected fdopen failure")
+
+    monkeypatch.setattr(segment_store_module.os, "fdopen", fail_fdopen)
+    with pytest.raises(OSError, match="fdopen failure"):
+        store.publish()
+
+    assert not list((store.root / "segments").glob(".segment.tmp-*"))
+    assert store.staged_count == 1
+    store.close(discard_staged=True)
+
+
 def test_empty_publish_and_noncanonical_inputs_fail_closed(tmp_path: Path) -> None:
     store = ImmutableSegmentStore(tmp_path / "empty")
     with pytest.raises(ValueError, match="empty"):
@@ -434,9 +579,7 @@ def test_empty_publish_and_noncanonical_inputs_fail_closed(tmp_path: Path) -> No
         )
     deeply_nested = b"[" * 10_000 + b"0" + b"]" * 10_000 + b"\n"
     with pytest.raises(SegmentStoreError, match="not valid canonical JSON"):
-        segment_store_module._decode_canonical_json(
-            deeply_nested, "adversarial input"
-        )
+        segment_store_module._decode_canonical_json(deeply_nested, "adversarial input")
 
 
 def test_lazy_spill_drops_resident_payloads_and_supports_append_restart(
@@ -487,6 +630,136 @@ def test_lazy_spill_drops_resident_payloads_and_supports_append_restart(
     assert restarted.read(first_ref, expected_payload=first_payload) == first_payload
     assert restarted.read(second_ref, expected_payload=second_payload) == second_payload
     restarted.close()
+
+
+def test_lazy_append_reuses_all_previously_validated_mappings(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = ImmutableSegmentStore(tmp_path / "reuse", lazy_payloads=True)
+    store.stage_board(b"first")
+    store.spill_staged()
+    first_mapping = store._mapped_segments[0]
+    opened: list[Path] = []
+    real_init = segment_store_module._MappedSegment.__init__
+
+    def recording_init(
+        mapping: object,
+        path: Path,
+        *,
+        expected_sha256: str,
+    ) -> None:
+        opened.append(path)
+        real_init(mapping, path, expected_sha256=expected_sha256)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(
+        segment_store_module._MappedSegment,
+        "__init__",
+        recording_init,
+    )
+    store.stage_board(b"second")
+    store.spill_staged()
+
+    assert len(opened) == 1
+    assert store._mapped_segments[0] is first_mapping
+    assert store.mapped_segment_count == 2
+    store.close()
+
+
+def test_reused_mapping_requires_current_path_to_remain_restartable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "reuse-path-validation"
+    store = ImmutableSegmentStore(root, lazy_payloads=True)
+    store.stage_board(b"first")
+    first = store.spill_staged()
+    first_path = root / "segments" / f"{first.segment_sha256s[0]}.seg"
+    store.stage_board(b"second")
+    real_stream_hash = segment_store_module._stream_file_sha256
+
+    def reject_old_path(path: Path) -> tuple[str, int]:
+        digest, byte_length = real_stream_hash(path)
+        if path == first_path:
+            return "00" * 32, byte_length
+        return digest, byte_length
+
+    monkeypatch.setattr(
+        segment_store_module,
+        "_stream_file_sha256",
+        reject_old_path,
+    )
+    with pytest.raises(SegmentStoreError, match="pathname fails"):
+        store.spill_staged()
+
+    assert store.snapshot == first
+    assert store.staged_count == 1
+    monkeypatch.setattr(
+        segment_store_module,
+        "_stream_file_sha256",
+        real_stream_hash,
+    )
+    assert store.spill_staged().generation == 2
+    store.close()
+
+
+def test_snapshot_allocation_failure_cannot_partially_adopt_loaded_manifest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "snapshot-allocation-failure"
+    store = ImmutableSegmentStore(root, lazy_payloads=True)
+    first_ref = store.stage_board(b"first")
+    first = store.spill_staged()
+    store.stage_board(b"second")
+    real_snapshot_type = segment_store_module.SegmentStoreSnapshot
+
+    def fail_snapshot_allocation(**_fields: object) -> object:
+        raise MemoryError("injected snapshot allocation failure")
+
+    monkeypatch.setattr(
+        segment_store_module,
+        "SegmentStoreSnapshot",
+        fail_snapshot_allocation,
+    )
+    with pytest.raises(MemoryError, match="snapshot allocation"):
+        store.spill_staged()
+
+    assert store.snapshot == first
+    assert store._manifest is not None
+    assert store._manifest["generation"] == first.generation
+    assert store.read(first_ref) == b"first"
+    assert store.staged_count == 1
+
+    monkeypatch.setattr(
+        segment_store_module,
+        "SegmentStoreSnapshot",
+        real_snapshot_type,
+    )
+    final = store.spill_staged()
+    assert final.generation == 2
+    assert final.object_count == 2
+    store.close()
+
+
+def test_manifest_counter_exhaustion_precedes_segment_sealing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "counter-exhaustion"
+    store = ImmutableSegmentStore(root, lazy_payloads=True)
+    store.stage_board(b"first")
+    store.spill_staged()
+    store.stage_board(b"second")
+    files_before = _all_store_files(root)
+    monkeypatch.setattr(segment_store_module, "_UINT64_MAX", 1)
+
+    def sealing_would_be_too_late(_records: object) -> object:
+        pytest.fail("counter exhaustion must be checked before segment sealing")
+
+    monkeypatch.setattr(store, "_seal_segment_to_temp", sealing_would_be_too_late)
+    with pytest.raises(OverflowError, match="counter exhausted"):
+        store.spill_staged()
+
+    assert _all_store_files(root) == files_before
+    assert store.staged_count == 1
+    store.close(discard_staged=True)
 
 
 def test_lazy_mode_preserves_exact_collision_fallback_after_restart(
@@ -581,6 +854,161 @@ def test_default_object_digest_does_not_build_a_payload_sized_preimage(
     store.close()
 
 
+def test_segment_publication_never_materializes_or_full_reads_segment(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    payload = bytes(range(256)) * (2 * 1024 * 1024 // 256)
+    root = tmp_path / "streamed-publication"
+    store = ImmutableSegmentStore(root, lazy_payloads=True)
+    ref = store.stage_history(payload)
+
+    def forbid_obsolete_serializer(*_args: object, **_kwargs: object) -> bytes:
+        raise AssertionError("publication materialized a complete segment")
+
+    # This monkeypatch makes the regression fail against the former
+    # `_serialize_segment` + `b''.join(...)` implementation even though the
+    # streaming implementation deliberately has no such method anymore.
+    monkeypatch.setattr(
+        ImmutableSegmentStore,
+        "_serialize_segment",
+        forbid_obsolete_serializer,
+        raising=False,
+    )
+    real_read_bytes = Path.read_bytes
+
+    def forbid_segment_read_bytes(path: Path) -> bytes:
+        if path.suffix == ".seg":
+            raise AssertionError("publication full-read an immutable segment")
+        return real_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", forbid_segment_read_bytes)
+    snapshot = store.spill_staged()
+    assert snapshot.object_count == 1
+    assert store.resident_payload_bytes == 0
+    assert store.read(ref, expected_payload=payload) == payload
+    store.close()
+
+
+def test_streamed_immutable_conflict_fails_closed_then_retries(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "streamed-conflict"
+    store = ImmutableSegmentStore(root, lazy_payloads=True)
+    payload = b"truth-safe-segment"
+    ref = store.stage_board(payload)
+    staged_records = [record for bucket in store._staged.values() for record in bucket]
+    probe = store._seal_segment_to_temp(staged_records)
+    probe.temporary_path.unlink()
+    conflicting_path = root / "segments" / f"{probe.sha256}.seg"
+    conflicting_path.write_bytes(b"different exact immutable bytes")
+
+    with pytest.raises(SegmentStoreError, match="conflicts"):
+        store.spill_staged()
+    assert store.snapshot is None
+    assert store.staged_count == 1
+    assert not list((root / "segments").glob(".segment.tmp-*"))
+
+    conflicting_path.unlink()
+    snapshot = store.spill_staged()
+    assert snapshot.object_count == 1
+    assert store.read(ref) == payload
+    store.close()
+
+
+@pytest.mark.parametrize("failed_directory_name", ("segments", "manifests"))
+def test_retry_repeats_durability_barrier_after_directory_fsync_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failed_directory_name: str,
+) -> None:
+    root = tmp_path / f"durability-retry-{failed_directory_name}"
+    store = ImmutableSegmentStore(root, lazy_payloads=True)
+    store.stage_board(b"durable-retry")
+    real_fsync_directory = segment_store_module._fsync_directory
+    calls: list[Path] = []
+    failed = False
+
+    def fail_once_after_install(path: Path) -> None:
+        nonlocal failed
+        calls.append(path)
+        if path == root / failed_directory_name and not failed:
+            failed = True
+            raise OSError("injected directory durability failure")
+        real_fsync_directory(path)
+
+    monkeypatch.setattr(
+        segment_store_module, "_fsync_directory", fail_once_after_install
+    )
+    with pytest.raises(OSError, match="injected directory durability"):
+        store.spill_staged()
+    assert store.snapshot is None
+    assert store.staged_count == 1
+
+    snapshot = store.spill_staged()
+    assert snapshot.object_count == 1
+    assert calls.count(root / failed_directory_name) >= 2
+    store.close()
+
+
+def test_collision_batch_retries_after_uncommitted_pointer_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "collision-retry"
+    first_payload = b"collision-first"
+    second_payload = b"collision-second"
+    store = ImmutableSegmentStore(
+        root,
+        lazy_payloads=True,
+        digest_fn=_constant_digest,
+        digest_name="constant-a5-test",
+    )
+    ref = store.stage_board(first_payload)
+    assert store.stage_board(second_payload) == ref
+    real_replace = os.replace
+    failed = False
+
+    def fail_first_current_replace(source: object, destination: object) -> None:
+        nonlocal failed
+        if Path(destination) == root / "CURRENT" and not failed:
+            failed = True
+            raise OSError("injected first CURRENT failure")
+        real_replace(source, destination)
+
+    monkeypatch.setattr(segment_store_module.os, "replace", fail_first_current_replace)
+    with pytest.raises(OSError, match="injected first CURRENT"):
+        store.spill_staged()
+    assert store.snapshot is None
+    assert store.staged_count == 2
+    with pytest.raises(SegmentStoreError, match="without a published CURRENT"):
+        ImmutableSegmentStore(
+            root,
+            lazy_payloads=True,
+            digest_fn=_constant_digest,
+            digest_name="constant-a5-test",
+        )
+
+    monkeypatch.setattr(segment_store_module.os, "replace", real_replace)
+    snapshot = store.spill_staged()
+    assert snapshot.generation == 1
+    assert snapshot.object_count == 2
+    assert store.staged_count == 0
+    assert store.collision_bucket_sizes() == (2,)
+    assert store.read(ref, expected_payload=first_payload) == first_payload
+    assert store.read(ref, expected_payload=second_payload) == second_payload
+    store.close()
+
+    restarted = ImmutableSegmentStore(
+        root,
+        lazy_payloads=True,
+        digest_fn=_constant_digest,
+        digest_name="constant-a5-test",
+    )
+    assert restarted.snapshot == snapshot
+    assert restarted.read(ref, expected_payload=first_payload) == first_payload
+    assert restarted.read(ref, expected_payload=second_payload) == second_payload
+    restarted.close()
+
+
 def test_lazy_corruption_rejects_and_releases_failed_mapping(tmp_path: Path) -> None:
     root = tmp_path / "lazy-corrupt"
     store = ImmutableSegmentStore(root, lazy_payloads=True)
@@ -653,18 +1081,28 @@ def test_committed_publish_clears_staging_when_old_mapping_close_fails(
     first = store.spill_staged()
     second_ref = store.stage_board(b"second")
 
+    # Normal append reloads reuse the active mapping. Add an equivalent stale
+    # handle so this test still exercises post-commit retirement failure.
+    active = store._mapped_segments[0]
+    store._mapped_segments.append(
+        segment_store_module._MappedSegment(
+            active.path,
+            expected_sha256=active.expected_sha256,
+        )
+    )
+
     real_close = segment_store_module._MappedSegment.close
     close_calls = 0
 
-    def close_then_fail_once(mapping: object) -> None:
+    def fail_before_close_once(mapping: object) -> None:
         nonlocal close_calls
         close_calls += 1
-        real_close(mapping)  # type: ignore[arg-type]
         if close_calls == 1:
             raise OSError("injected old-mapping cleanup failure")
+        real_close(mapping)  # type: ignore[arg-type]
 
     monkeypatch.setattr(
-        segment_store_module._MappedSegment, "close", close_then_fail_once
+        segment_store_module._MappedSegment, "close", fail_before_close_once
     )
     with pytest.raises(OSError, match="injected"):
         store.spill_staged()
@@ -674,9 +1112,11 @@ def test_committed_publish_clears_staging_when_old_mapping_close_fails(
     assert committed.generation == first.generation + 1
     assert committed.object_count == 2
     assert store.staged_count == 0
+    assert len(store._retired_mappings) == 1
 
     monkeypatch.setattr(segment_store_module._MappedSegment, "close", real_close)
     assert store.spill_staged() == committed
+    assert store._retired_mappings == []
     store.close()
 
     restarted = ImmutableSegmentStore(root, lazy_payloads=True)

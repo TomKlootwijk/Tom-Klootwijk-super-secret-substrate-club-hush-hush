@@ -1,7 +1,9 @@
 # Progressive proof campaign
 
-The campaign is ordered to expose correctness defects before expensive runs.
-Passing a phase is required before starting the next.
+Production campaign deployment is ordered to expose correctness defects before
+expensive runs. Bounded implementation and validation slices from later phases
+may be developed early, but campaign execution does not advance until every
+prior phase's exit criterion passes.
 
 ## Phase 0 — reproduce the release
 
@@ -26,39 +28,78 @@ Exit criterion: zero mismatches and reproducible seeds.
 
 The bounded Python components now validate collision fallback, canonical
 structurally shared PSK roots, root-backed transitions, immutable exact-object
-segments, and atomic restart. Phase 2 remains open because `ProofNumberDAG`
-still uses flat histories and the segment layer has not yet demonstrated
-resident-memory-bounded NVMe spill at campaign scale.
+segments, atomic restart, live mapped-read integrity checks, and external tip
+pinning. A second bounded DAG carries the persistent roots through exact 2×2
+restart and matches uninterrupted proofs under forced digest collisions. The
+deterministic M2 storage gate demonstrates zero retained Python payload bytes
+after bounded fixture spills. A compact codec now stores all DAG histories as
+one shared forest, and an exact two-phase generation wrapper prevents forked
+work replacement when its preparation is externally journaled. Live proof
+nodes now keep immutable history-root handles rather than serialized history
+artifacts, and compact restart preserves physical forest sharing. Phase 2
+remains open because those roots are not paged through segment handles; the
+segment layer has not bounded peak RSS,
+mappings/handles, cumulative metadata, or recovery at campaign scale.
 
 - [done, bounded] Implement collision-checked content-addressed boards.
 - [done, bounded] Implement a persistent superko set with Merkle roots.
 - [done, bounded] Demonstrate restart-safe immutable host segments.
+- [done, bounded] Demonstrate restart-safe persistent-root DAG semantics.
 - [done, bounded] Inject index collisions and verify exact equality prevents
   corruption.
-- Integrate persistent roots and segments into the proof DAG.
+- [done, bounded checkpoint] Replace repeated durable per-state history
+  artifacts with one compact shared forest and verify the bytes through a
+  segment-backed restart.
+- [done, bounded live handles] Replace retained per-state serialized history
+  artifacts with immutable forest-root handles in the persistent proof DAG.
+- Page live history/proof records through bounded segment handles.
 - Add resident-memory-bounded NVMe spill/restart and campaign recovery tooling.
 
-Exit criterion: checkpoint round-trip reproduces all proof numbers and roots.
+Exit criterion: exact checkpoint round-trip reproduces all proof numbers and
+roots, and live proof/history paging has explicit resident-memory,
+mapping/handle, metadata-growth, and recovery bounds.
 
 ## Phase 3 — proof-number coordinator
 
-The same bounded slice validates proof-number DAG recomputation across restart,
-but does not count as the production C++ DFPN coordinator or its certificate
-verifier.
+The flat and persistent-root Python slices validate proof-number DAG
+recomputation across restart. A native exact host-memory DAG now accepts sizes
+1×1 through 19×19 and matches the Python oracle's deterministic partial and
+completed 2×2 graph fingerprints, with exact full-state identity,
+transposition reuse, most-proving selection, and saturating proof arithmetic.
+Its pinned two-expansion canonical 19×19 preflight is `UNKNOWN` (`PN=1`,
+`DN=361`). A bounded binary native checkpoint now resumes only from an explicit
+path plus external full-file SHA pin, semantically reconstructs the entire DAG,
+and publishes immutable exact-prefix generations. It still materializes the
+entire DAG and checkpoint in host memory and has no production TT records, CUDA
+integration, or certificate verifier; it therefore does not count as the
+production C++ DFPN coordinator.
 
-- Port threshold PNS/DFPN to C++.
+- [done, bounded] Port threshold proof-number DAG semantics to C++ for 1×1..19×19.
 - Add TT bounds keyed by complete state identity.
-- Add deterministic work selection and saturating arithmetic.
-- Re-solve 2×2 and progressively larger tractable fixtures.
+- [done, bounded] Add deterministic work selection and saturating arithmetic.
+- [done, bounded] Add strict native checkpoint/restart with externally pinned,
+  content-addressed generations.
+- Add independent certificate verification.
+- [done, bounded] Match both completed 2×2 threshold graphs to Python.
+- Solve and independently verify progressively larger tractable fixtures.
 
 Exit criterion: independent verifier accepts every fixture.
 
 ## Phase 4 — CUDA exact expansion
 
-- Add group/liberty/capture kernels.
-- Add exact batched child encoding.
-- Keep superko on CPU initially, then migrate only with collision-safe lookup.
-- Differential-test every CUDA child against Python and C++ CPU references.
+- [done, bounded] Harden and differentially verify the packed occupancy-mask
+  primitive across deterministic protocol cases, pre-enqueued stream pairs,
+  the production grid-stride boundary, input alias/immutability, tail bounds,
+  and invalid arguments (zero mismatches; occupancy only).
+- [done, bounded] Add deterministic fixed-slot local groups, liberties,
+  simultaneous captures, own-liberty/no-suicide handling, and child bitplanes;
+  CPU-recompute every point and retain CPU exact PSK/pass/metadata authority
+  (25,281 unique slots, 50,562 across two parity modes, zero mismatches).
+- Benchmark the occupancy primitive under campaign-shaped batches.
+- Scale the differential gate from this bounded slice to 10,000,000 adversarial
+  and randomized point slots and measure campaign-shaped throughput.
+- Integrate verified batches into the proof coordinator only after that gate;
+  migrate superko from CPU only with collision-safe exact lookup.
 
 Exit criterion: no mismatch across randomized and adversarial ko/capture suites.
 

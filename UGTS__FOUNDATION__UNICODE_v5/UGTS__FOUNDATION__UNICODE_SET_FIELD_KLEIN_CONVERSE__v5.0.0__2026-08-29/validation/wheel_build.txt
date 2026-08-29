@@ -1,0 +1,10 @@
+WARNING: The directory '/home/oai/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing /mnt/data/UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: ugts-unicode-set-field-klein-converse
+  Building wheel for ugts-unicode-set-field-klein-converse (pyproject.toml): started
+  Building wheel for ugts-unicode-set-field-klein-converse (pyproject.toml): finished with status 'done'
+  Created wheel for ugts-unicode-set-field-klein-converse: filename=ugts_unicode_set_field_klein_converse-5.0.0-py3-none-any.whl size=15110 sha256=1cf5f485f837469b1a072d7b95eb7b3132660d8c6a335a86b841adf8c5e93d05
+  Stored in directory: /tmp/pip-ephem-wheel-cache-495ge3gw/wheels/a7/37/06/935a5f96e1bf7958fafcbd5b171dcb13620d8934e4060c4019
+Successfully built ugts-unicode-set-field-klein-converse

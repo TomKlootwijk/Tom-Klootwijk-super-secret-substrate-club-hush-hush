@@ -406,17 +406,33 @@ def init_campaign(
 ) -> dict[str, Any]:
     db_path = Path(db_path)
     shard_dir = Path(shard_dir)
-    if db_path.exists() and not force:
-        raise FileExistsError(f"campaign database already exists: {db_path}")
+    sidecars = tuple(
+        Path(str(db_path) + suffix) for suffix in ("-wal", "-shm", "-journal")
+    )
+    existing_shards = tuple(sorted(shard_dir.glob("root-*.json")))
+    if not force:
+        if db_path.exists():
+            raise FileExistsError(f"campaign database already exists: {db_path}")
+        existing_sidecars = tuple(path for path in sidecars if path.exists())
+        if existing_sidecars:
+            raise FileExistsError(
+                "campaign database sidecar artifacts already exist; "
+                "pass force=True only for an explicit reset: "
+                + ", ".join(str(path) for path in existing_sidecars)
+            )
+        if existing_shards:
+            raise FileExistsError(
+                "campaign shard artifacts already exist; pass force=True only for "
+                f"an explicit reset: {shard_dir}"
+            )
     if db_path.exists():
         db_path.unlink()
-    for suffix in ("-wal", "-shm"):
-        sidecar = Path(str(db_path) + suffix)
+    for sidecar in sidecars:
         if sidecar.exists():
             sidecar.unlink()
     db_path.parent.mkdir(parents=True, exist_ok=True)
     shard_dir.mkdir(parents=True, exist_ok=True)
-    for old in shard_dir.glob("root-*.json"):
+    for old in existing_shards:
         old.unlink()
 
     root = Position.from_fen(root_fen)

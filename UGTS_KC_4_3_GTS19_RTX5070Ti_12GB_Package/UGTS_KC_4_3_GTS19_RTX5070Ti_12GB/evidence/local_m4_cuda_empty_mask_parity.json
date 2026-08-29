@@ -1,0 +1,24 @@
+{
+  "aliased_input_launches": 2,
+  "canary_checks": 320,
+  "cases": 13,
+  "compute_capability": "12.0",
+  "cpp_cuda_compared_words": 33580510,
+  "device_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "format": "ugts-go19-cuda-empty-mask-parity-v2",
+  "grid_stride_cpp_cuda_compared_words": 33554434,
+  "grid_stride_extra_words": 257,
+  "grid_stride_launches": 2,
+  "input_immutability_compared_words": 33606586,
+  "mismatches": 0,
+  "negative_argument_checks": 12,
+  "production_grid_capacity_words": 16776960,
+  "protocol_cpp_cuda_compared_words": 26076,
+  "python_cuda_compared_words": 13038,
+  "root_status": "UNKNOWN",
+  "stream_modes": [
+    "default",
+    "dual",
+    "nondefault"
+  ]
+}

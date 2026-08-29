@@ -1,5 +1,6 @@
 #include "graph_vm.hpp"
 
+#include <bit>
 #include <cmath>
 #include <cstdint>
 #include <exception>
@@ -22,7 +23,7 @@ int fail(std::string_view message) {
 } // namespace
 
 int main(int argc, char** argv) {
-    if (argc != 2) return fail("expected one KCVG pack path");
+    if (argc != 3) return fail("expected valid and invalid KCVG pack paths");
     std::ifstream stream(argv[1], std::ios::binary);
     if (!stream) return fail("could not open KCVG pack");
     std::vector<std::uint8_t> bytes;
@@ -48,6 +49,9 @@ int main(int argc, char** argv) {
     vm.ready(nodes);
     if (!vm.issues().empty()) return fail("ready reported a runtime issue");
     if (!near(nodes[1].translation.x, 3.5f)) return fail("ready did not edit explicit player component");
+    if (std::bit_cast<std::uint32_t>(nodes[2].translation.y) != 0xc0f72cb8u) {
+        return fail("opcode 21 Repeatable Random Number did not match the binary32 golden");
+    }
     if (!near(nodes[1].velocity.x, 2.0f) || !near(nodes[1].velocity.z, 3.0f)) {
         return fail("portable Apply Force did not update 3D velocity");
     }
@@ -82,6 +86,26 @@ int main(int argc, char** argv) {
     if (exitEvents.size()!=2 || exitEvents[1].kind!="player_exited" ||
         exitEvents[1].source!=2 || exitEvents[1].target!=1)
         return fail("world trigger exit context was incorrect");
+
+    std::ifstream invalidStream(argv[2], std::ios::binary);
+    if (!invalidStream) return fail("could not open invalid-seed KCVG pack");
+    std::vector<std::uint8_t> invalidBytes;
+    for (char value = 0; invalidStream.get(value);) {
+        invalidBytes.push_back(static_cast<std::uint8_t>(static_cast<unsigned char>(value)));
+    }
+    kc::GraphVm invalidVm;
+    try {
+        invalidVm.load(invalidBytes, nodes.size());
+    } catch (const std::exception& error) {
+        std::cerr << "FAIL graph VM world binding: " << error.what() << '\n';
+        return 1;
+    }
+    invalidVm.ready(nodes);
+    const auto invalidIssues = invalidVm.issues();
+    if (invalidIssues.size() != 1 ||
+        invalidIssues[0].code != kc::GraphVmError::InvalidSeedNumber) {
+        return fail("opcode 21 accepted linked binary32 value 392.1");
+    }
 
     std::cout << "PASS graph VM world binding\n";
     return 0;

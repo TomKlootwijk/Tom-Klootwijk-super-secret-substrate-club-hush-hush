@@ -1,0 +1,583 @@
+{
+  "count": 64,
+  "mechanisms": [
+    {
+      "definition": "Component-scoped major release identity with legacy UGTS-KC 5.0 alias.",
+      "domain": "release",
+      "id": "USF001",
+      "legacy_id": "M886",
+      "name": "Release identity",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Content-hashed source and parent register without raw-source redistribution.",
+      "domain": "source",
+      "id": "USF002",
+      "legacy_id": "M887",
+      "name": "Source register",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "One content-addressed record co-addresses literal, glyph, semantics and field action.",
+      "domain": "referential",
+      "id": "USF003",
+      "legacy_id": "M888",
+      "name": "OperatorCell",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Exact Unicode scalar sequence is a canonical cold-atlas lookup key.",
+      "domain": "unicode",
+      "id": "USF004",
+      "legacy_id": "M889",
+      "name": "Unicode scalar key",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "UTF-8 spelling is recorded and round-tripped without ASCII aliasing.",
+      "domain": "unicode",
+      "id": "USF005",
+      "legacy_id": "M890",
+      "name": "UTF-8 literal key",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "NFC is explicit; compatibility normalization is not silently applied.",
+      "domain": "unicode",
+      "id": "USF006",
+      "legacy_id": "M891",
+      "name": "NFC normalization profile",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Every operator declares domain, codomain, arity and type parameters.",
+      "domain": "typing",
+      "id": "USF007",
+      "legacy_id": "M892",
+      "name": "Typed signature",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "One semantic port order is authoritative for each converse family.",
+      "domain": "typing",
+      "id": "USF008",
+      "legacy_id": "M893",
+      "name": "Canonical argument order",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Surface operands map explicitly to canonical semantic ports.",
+      "domain": "typing",
+      "id": "USF009",
+      "legacy_id": "M894",
+      "name": "Surface argument map",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Literal dispatch selects a bounded typed semantic kernel.",
+      "domain": "semantics",
+      "id": "USF010",
+      "legacy_id": "M895",
+      "name": "Semantic evaluator",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A versioned capsule-union field represents the literal operator shape.",
+      "domain": "geometry",
+      "id": "USF011",
+      "legacy_id": "M896",
+      "name": "Canonical glyph SDF",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Operator records declare predicates or sign-compatible field transforms.",
+      "domain": "field",
+      "id": "USF012",
+      "legacy_id": "M897",
+      "name": "Set-field action",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Direct and converse cells reference each other by stable operator ID.",
+      "domain": "relation",
+      "id": "USF013",
+      "legacy_id": "M898",
+      "name": "Converse link",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Every cell carries a canonical SHA-256 content address.",
+      "domain": "integrity",
+      "id": "USF014",
+      "legacy_id": "M899",
+      "name": "Operator content hash",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Source motif, engineering normalization and measured evidence stay distinct.",
+      "domain": "provenance",
+      "id": "USF015",
+      "legacy_id": "M900",
+      "name": "Provenance class",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Exact SDF, metric field, bound, residual, membership field and oracle remain distinct.",
+      "domain": "exactness",
+      "id": "USF016",
+      "legacy_id": "M901",
+      "name": "Capability class",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "phi_A = d(x,A) - d(x,X\\A) under a declared metric profile.",
+      "domain": "field",
+      "id": "USF017",
+      "legacy_id": "M902",
+      "name": "Signed set field",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Finite or non-metric sets can use a signed membership field.",
+      "domain": "field",
+      "id": "USF018",
+      "legacy_id": "M903",
+      "name": "Characteristic fallback",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "x in A iff phi_A(x) <= 0 under the selected boundary policy.",
+      "domain": "relation",
+      "id": "USF019",
+      "legacy_id": "M904",
+      "name": "Membership predicate",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "x notin A is the typed negation of membership.",
+      "domain": "relation",
+      "id": "USF020",
+      "legacy_id": "M905",
+      "name": "Nonmembership predicate",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A subseteq B is a quantified emptiness claim over A\\B.",
+      "domain": "relation",
+      "id": "USF021",
+      "legacy_id": "M906",
+      "name": "Subset predicate",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Proper inclusion adds non-equality to subset.",
+      "domain": "relation",
+      "id": "USF022",
+      "legacy_id": "M907",
+      "name": "Proper subset predicate",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A=B is mutual inclusion under a common universe/profile.",
+      "domain": "relation",
+      "id": "USF023",
+      "legacy_id": "M908",
+      "name": "Set equality",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Emptiness is exact only when the domain proof is complete.",
+      "domain": "relation",
+      "id": "USF024",
+      "legacy_id": "M909",
+      "name": "Empty-set predicate",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "min(phi_A,phi_B) preserves the union sign.",
+      "domain": "field",
+      "id": "USF025",
+      "legacy_id": "M910",
+      "name": "Union field",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "max(phi_A,phi_B) preserves the intersection sign.",
+      "domain": "field",
+      "id": "USF026",
+      "legacy_id": "M911",
+      "name": "Intersection field",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "-phi_A reverses inside and outside.",
+      "domain": "field",
+      "id": "USF027",
+      "legacy_id": "M912",
+      "name": "Complement field",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "max(phi_A,-phi_B) preserves the sign of A\\B.",
+      "domain": "field",
+      "id": "USF028",
+      "legacy_id": "M913",
+      "name": "Difference field",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A sign-correct max/min formula represents A triangle B.",
+      "domain": "field",
+      "id": "USF029",
+      "legacy_id": "M914",
+      "name": "Symmetric-difference field",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Composed fields never inherit exact-distance status without proof.",
+      "domain": "exactness",
+      "id": "USF030",
+      "legacy_id": "M915",
+      "name": "Field capability downgrade",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Exhaustive finite checks may issue exact relation certificates.",
+      "domain": "proof",
+      "id": "USF031",
+      "legacy_id": "M916",
+      "name": "Finite-universe proof",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Continuous global claims require analytic, interval or certified-cover evidence.",
+      "domain": "proof",
+      "id": "USF032",
+      "legacy_id": "M917",
+      "name": "Interval/analytic proof",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A sampled LUT result is bounded evidence, not universal inclusion proof.",
+      "domain": "proof",
+      "id": "USF033",
+      "legacy_id": "M918",
+      "name": "Sample-only nonproof",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "One transform reflects chart, swaps ports and toggles converse state.",
+      "domain": "topology",
+      "id": "USF034",
+      "legacy_id": "M919",
+      "name": "Klein-converse transform",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "U maps to U-smile while preserving truth after operand exchange.",
+      "domain": "topology",
+      "id": "USF035",
+      "legacy_id": "M920",
+      "name": "Operator converse",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Typed endpoints reverse rather than being reinterpreted in place.",
+      "domain": "topology",
+      "id": "USF036",
+      "legacy_id": "M921",
+      "name": "Operand swap",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Canonical converse glyph is the x-reflection of the direct glyph.",
+      "domain": "geometry",
+      "id": "USF037",
+      "legacy_id": "M922",
+      "name": "Glyph reflection",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "theta maps to pi-theta on the reflective profile.",
+      "domain": "topology",
+      "id": "USF038",
+      "legacy_id": "M923",
+      "name": "Angular reflection",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "kappa is a semantic/topological selector and not an integrity bit.",
+      "domain": "topology",
+      "id": "USF039",
+      "legacy_id": "M924",
+      "name": "Orientation selector",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Applying the Klein-converse transform twice returns the original state.",
+      "domain": "topology",
+      "id": "USF040",
+      "legacy_id": "M925",
+      "name": "Involution law",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Boundary gluing declares the actual orientation-reversing quotient.",
+      "domain": "topology",
+      "id": "USF041",
+      "legacy_id": "M926",
+      "name": "Reflective quotient",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A pi rotation remains distinct from a reflective Klein gluing.",
+      "domain": "topology",
+      "id": "USF042",
+      "legacy_id": "M927",
+      "name": "Half-turn distinction",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "The full literal record remains content-addressed outside hot SIMD state.",
+      "domain": "atlas",
+      "id": "USF043",
+      "legacy_id": "M928",
+      "name": "Cold Unicode atlas",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A batch-local codebook maps four-bit slots to exact atlas cells.",
+      "domain": "atlas",
+      "id": "USF044",
+      "legacy_id": "M929",
+      "name": "Hot 16-slot codebook",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Unassigned local codes reject rather than aliasing silently.",
+      "domain": "atlas",
+      "id": "USF045",
+      "legacy_id": "M930",
+      "name": "Reserved-slot rejection",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Hot mappings are bound to the exact cold atlas.",
+      "domain": "integrity",
+      "id": "USF046",
+      "legacy_id": "M931",
+      "name": "Codebook content hash",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "A corrected 32-bit execution record carries local deltas and flags.",
+      "domain": "packing",
+      "id": "USF047",
+      "legacy_id": "M932",
+      "name": "Packed Set-Field Node 32",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Bit 31 checks payload parity and remains separate from kappa.",
+      "domain": "integrity",
+      "id": "USF048",
+      "legacy_id": "M933",
+      "name": "Integrity parity",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "operator_id=(family<<1)|kappa enables converse-pair locality.",
+      "domain": "packing",
+      "id": "USF049",
+      "legacy_id": "M934",
+      "name": "Family/kappa extraction",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "An explicit int8 delta requires a stream scale/bias contract.",
+      "domain": "packing",
+      "id": "USF050",
+      "legacy_id": "M935",
+      "name": "Signed log-radius delta",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "An 8-bit angular delta has a declared 256-bin period.",
+      "domain": "packing",
+      "id": "USF051",
+      "legacy_id": "M936",
+      "name": "Cyclic angle delta",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Eight bits represent a bounded branch fragment, not an unbounded tree.",
+      "domain": "grammar",
+      "id": "USF052",
+      "legacy_id": "M937",
+      "name": "Grammar path fragment",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Two bits carry profile-defined local status with declared meaning.",
+      "domain": "packing",
+      "id": "USF053",
+      "legacy_id": "M938",
+      "name": "Local field flags",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Bit zero is decoded and tested rather than silently dropped.",
+      "domain": "packing",
+      "id": "USF054",
+      "legacy_id": "M939",
+      "name": "Active bit",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Atlas, codebook, chart, quantization and error contracts travel with nodes.",
+      "domain": "stream",
+      "id": "USF055",
+      "legacy_id": "M940",
+      "name": "Stream header",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Stream-level CRC supplements per-node parity and content hashes.",
+      "domain": "integrity",
+      "id": "USF056",
+      "legacy_id": "M941",
+      "name": "Block CRC",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Dependency-free scalar decoding is the conformance authority.",
+      "domain": "runtime",
+      "id": "USF057",
+      "legacy_id": "M942",
+      "name": "Scalar oracle",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Boolean selectors expand to full-lane masks before blending.",
+      "domain": "simd",
+      "id": "USF058",
+      "legacy_id": "M943",
+      "name": "Branchless mask expansion",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Eight-lane extraction is specified behind the scalar oracle.",
+      "domain": "simd",
+      "id": "USF059",
+      "legacy_id": "M944",
+      "name": "AVX2 profile",
+      "provenance": "engineering-derived",
+      "validation": "specified-contract"
+    },
+    {
+      "definition": "Four-lane ARM decoding is a specified backend target.",
+      "domain": "simd",
+      "id": "USF060",
+      "legacy_id": "M945",
+      "name": "NEON profile",
+      "provenance": "engineering-derived",
+      "validation": "specified-contract"
+    },
+    {
+      "definition": "Angular/radial errors are calculated from the declared profile.",
+      "domain": "quantization",
+      "id": "USF061",
+      "legacy_id": "M946",
+      "name": "Quantization certificate",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Packed evaluation is accepted only below the relevant event margin.",
+      "domain": "guard",
+      "id": "USF062",
+      "legacy_id": "M947",
+      "name": "Event-margin guard",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Pure operator evaluation cannot bypass support, compatibility and commit.",
+      "domain": "authority",
+      "id": "USF063",
+      "legacy_id": "M948",
+      "name": "UGTS authority handoff",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    },
+    {
+      "definition": "Claims fail closed on hash, type, parity, exactness or evidence violations.",
+      "domain": "validation",
+      "id": "USF064",
+      "legacy_id": "M949",
+      "name": "Validation and kill criteria",
+      "provenance": "engineering-derived",
+      "validation": "implemented-and-tested"
+    }
+  ],
+  "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+  "schema_id": "ugts.mechanism-catalog@5.0.0"
+}

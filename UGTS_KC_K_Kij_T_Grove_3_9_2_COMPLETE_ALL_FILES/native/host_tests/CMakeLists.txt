@@ -22,8 +22,33 @@ add_executable(
     graph_vm_tests
     graph_vm_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
 )
 target_include_directories(graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    nearest_tag_graph_vm_tests
+    nearest_tag_graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+)
+target_include_directories(nearest_tag_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    nearest_in_cone_graph_vm_tests
+    nearest_in_cone_graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+)
+target_include_directories(nearest_in_cone_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    timer_graph_vm_tests
+    timer_graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+)
+target_include_directories(timer_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
 add_executable(
     trigger_area_tests
@@ -42,11 +67,17 @@ target_include_directories(scatter_population_tests PRIVATE "${UGTS_ANDROID_CPP_
 if(MSVC)
     target_compile_options(touch_router_tests PRIVATE /W4 /permissive-)
     target_compile_options(graph_vm_tests PRIVATE /W4 /permissive-)
+    target_compile_options(nearest_tag_graph_vm_tests PRIVATE /W4 /permissive-)
+    target_compile_options(nearest_in_cone_graph_vm_tests PRIVATE /W4 /permissive-)
+    target_compile_options(timer_graph_vm_tests PRIVATE /W4 /permissive-)
     target_compile_options(trigger_area_tests PRIVATE /W4 /permissive-)
     target_compile_options(scatter_population_tests PRIVATE /W4 /permissive-)
 else()
     target_compile_options(touch_router_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(nearest_tag_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(nearest_in_cone_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(timer_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(trigger_area_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(scatter_population_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()

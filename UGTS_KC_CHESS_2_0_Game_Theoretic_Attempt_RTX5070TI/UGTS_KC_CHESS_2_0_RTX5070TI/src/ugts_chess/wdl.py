@@ -27,6 +27,7 @@ from .game_state import (
     current_claim_actions,
     game_state_sha256,
     intended_move_claims,
+    validate_history_reachability,
 )
 from .game_theory import WDL
 from .hashing import canonical_json_bytes
@@ -82,6 +83,25 @@ class ChildObligation:
         }
 
 
+def _canonical_claim_obligation(
+    code: str,
+    *,
+    move: str | None = None,
+    san: str | None = None,
+) -> ChildObligation:
+    suffix = "current" if move is None else move
+    return ChildObligation(
+        action_id=f"claim:{code}:{suffix}",
+        kind="claim",
+        move=move,
+        san=san,
+        claim_code=code,
+        child_value=WDL.DRAW,
+        value_for_parent=WDL.DRAW,
+        exact=True,
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class WDLNode:
     state_hash: str
@@ -130,10 +150,53 @@ class WDLResult:
         return self.root.exact
 
     def certificate_bundle(self) -> dict[str, object]:
-        ordered = sorted(self.node_store, key=lambda node: node.certificate_hash)
+        # Search may explore several losing branches before it discovers the
+        # single witness retained by an exact WIN root.  Those abandoned nodes
+        # are not certificate evidence and must not be serialized as trusted
+        # extras.  Emit exactly the root-reachable closure, failing closed if
+        # the in-memory store is duplicate or a retained edge is dangling.
+        by_hash: dict[str, WDLNode] = {}
+        for node in self.node_store:
+            if node.certificate_hash in by_hash:
+                raise ValueError("WDL node store contains a duplicate certificate hash")
+            by_hash[node.certificate_hash] = node
+        if by_hash.get(self.root.certificate_hash) != self.root:
+            raise ValueError("WDL root certificate is missing from the node store")
+
+        reachable: set[str] = set()
+        active: set[str] = set()
+        pending: list[tuple[str, bool]] = [(self.root.certificate_hash, False)]
+        while pending:
+            certificate_hash, exiting = pending.pop()
+            if exiting:
+                active.remove(certificate_hash)
+                reachable.add(certificate_hash)
+                continue
+            if certificate_hash in reachable:
+                continue
+            if certificate_hash in active:
+                raise ValueError("cycle in WDL certificate graph")
+            node = by_hash.get(certificate_hash)
+            if node is None:
+                raise ValueError("WDL certificate graph references a missing node")
+            active.add(certificate_hash)
+            pending.append((certificate_hash, True))
+            for child in reversed(node.children):
+                child_hash = child.child_certificate_hash
+                if child_hash is not None:
+                    if child_hash not in by_hash:
+                        raise ValueError(
+                            "WDL certificate graph references a missing child node"
+                        )
+                    if child_hash in active:
+                        raise ValueError("cycle in WDL certificate graph")
+                    if child_hash not in reachable:
+                        pending.append((child_hash, False))
+
+        ordered = [by_hash[key] for key in sorted(reachable)]
         return {
             "schema": BUNDLE_SCHEMA,
-            "rules_profile": "fide-classical-2023-claims-as-actions-v2",
+            "rules_profile": RULE_PROFILE_ID,
             "root_certificate_hash": self.root.certificate_hash,
             "root_state_hash": self.root.state_hash,
             "root_value": self.root.value.value,
@@ -233,17 +296,7 @@ class BoundedWDLSolver:
 
     @staticmethod
     def _claim_obligation(code: str, *, move: str | None = None, san: str | None = None) -> ChildObligation:
-        suffix = "current" if move is None else move
-        return ChildObligation(
-            action_id=f"claim:{code}:{suffix}",
-            kind="claim",
-            move=move,
-            san=san,
-            claim_code=code,
-            child_value=WDL.DRAW,
-            value_for_parent=WDL.DRAW,
-            exact=True,
-        )
+        return _canonical_claim_obligation(code, move=move, san=san)
 
     def _cutoff_node(
         self,
@@ -397,6 +450,13 @@ class BoundedWDLSolver:
     ) -> WDLResult:
         if max_plies < 0:
             raise ValueError("max_plies must be non-negative")
+        if history is not None and not isinstance(history, HistoryContext):
+            raise TypeError("history must be a HistoryContext")
+        root_history = HistoryContext.initial(position) if history is None else history
+        canonical_history = _history_from_record(root_history.record())
+        if canonical_history != root_history:
+            raise ValueError("history context is not canonical")
+        validate_history_reachability(position, root_history)
         self.nodes = 0
         self.cache_hits = 0
         self.cutoffs = 0
@@ -404,7 +464,7 @@ class BoundedWDLSolver:
         self.store.clear()
         self.deadline = None if self.time_limit is None else time.monotonic() + max(0.001, self.time_limit)
         start = time.monotonic()
-        root = self._solve(position, history or HistoryContext.initial(position), max_plies)
+        root = self._solve(position, root_history, max_plies)
         return WDLResult(
             root=root,
             nodes=self.nodes,
@@ -516,8 +576,10 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
         expected_state_hash = game_state_sha256(position, history)
         if record.get("state_hash") != expected_state_hash:
             raise WDLVerificationError(f"state hash mismatch in node {cert_hash}")
-        if history.occurrence(position) < 1:
-            raise WDLVerificationError("current position is absent from its history context")
+        try:
+            validate_history_reachability(position, history)
+        except ValueError as exc:
+            raise WDLVerificationError(str(exc)) from exc
 
         moves = sorted(legal_moves(position), key=lambda move: move.uci())
         automatic = automatic_status(position, history)
@@ -543,7 +605,7 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
             return value
 
         move_records: dict[str, Mapping[str, object]] = {}
-        supplied_claims: set[tuple[str | None, str]] = set()
+        supplied_claim_records: list[dict[str, object]] = []
         action_ids: set[str] = set()
         for child in raw_children:
             if not isinstance(child, Mapping):
@@ -564,7 +626,7 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
                     or child.get("exact") is not True
                 ):
                     raise WDLVerificationError("claim action must be an exact draw")
-                supplied_claims.add((move_text, code))
+                supplied_claim_records.append(dict(child))
             elif kind == "move":
                 move_text = child.get("move")
                 if not isinstance(move_text, str) or move_text in move_records:
@@ -573,13 +635,41 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
             else:
                 raise WDLVerificationError("unknown child action kind")
 
-        expected_claims: set[tuple[str | None, str]] = {(None, code) for code in claims}
+        expected_claim_records = [
+            _canonical_claim_obligation(code).record() for code in claims
+        ]
         by_uci = {move.uci(): move for move in moves}
         for move in moves:
             child_position = apply_move(position, move)
             child_history = history.push(child_position)
+            san = move_to_san(position, move)
             for code in intended_move_claims(child_position, child_history):
-                expected_claims.add((move.uci(), code))
+                expected_claim_records.append(
+                    _canonical_claim_obligation(
+                        code,
+                        move=move.uci(),
+                        san=san,
+                    ).record()
+                )
+
+        expected_claims_by_id = {
+            str(record["action_id"]): record for record in expected_claim_records
+        }
+
+        def verify_claim_records(*, complete: bool) -> None:
+            expected_indices: list[int] = []
+            for supplied in supplied_claim_records:
+                action_id = supplied.get("action_id")
+                expected = expected_claims_by_id.get(str(action_id))
+                if expected is None or supplied != expected:
+                    raise WDLVerificationError(
+                        "claim action does not match its canonical record"
+                    )
+                expected_indices.append(expected_claim_records.index(expected))
+            if expected_indices != sorted(expected_indices):
+                raise WDLVerificationError("claim actions are not in canonical order")
+            if complete and supplied_claim_records != expected_claim_records:
+                raise WDLVerificationError("claim-action coverage mismatch")
 
         def verify_move_record(move_text: str, child_record: Mapping[str, object]) -> WDL:
             if move_text not in by_uci:
@@ -616,6 +706,10 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
             if value == WDL.WIN:
                 if coverage != "witness" or len(move_records) != 1:
                     raise WDLVerificationError("WIN certificate must contain one move witness")
+                if supplied_claim_records:
+                    raise WDLVerificationError(
+                        "WIN witness coverage must not contain claim-action records"
+                    )
                 converted = verify_move_record(*next(iter(move_records.items())))
                 if converted != WDL.WIN:
                     raise WDLVerificationError("WIN witness does not reach an exact child LOSS")
@@ -623,12 +717,11 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
             else:
                 if coverage != "complete" or set(move_records) != set(by_uci):
                     raise WDLVerificationError("LOSS/DRAW certificate lacks complete legal-move coverage")
-                if supplied_claims != expected_claims:
-                    raise WDLVerificationError("claim-action coverage mismatch")
+                verify_claim_records(complete=True)
                 values = [verify_move_record(move_text, move_records[move_text]) for move_text in sorted(move_records)]
                 if any(item == WDL.UNKNOWN for item in values):
                     raise WDLVerificationError("exact certificate references an unknown child")
-                has_draw = bool(expected_claims) or any(item == WDL.DRAW for item in values)
+                has_draw = bool(expected_claim_records) or any(item == WDL.DRAW for item in values)
                 if values and all(item == WDL.LOSS for item in values) and not has_draw:
                     derived = WDL.LOSS
                 elif values and not any(item == WDL.WIN for item in values) and has_draw:
@@ -645,8 +738,7 @@ def verify_wdl_certificate(bundle: Mapping[str, object], *, allow_unknown_root: 
             # allowed, but any supplied move must be legal and internally sound.
             for move_text, child_record in move_records.items():
                 verify_move_record(move_text, child_record)
-            if not supplied_claims.issubset(expected_claims):
-                raise WDLVerificationError("cutoff node contains an invalid claim action")
+            verify_claim_records(complete=False)
             unknown_count += 1
 
         active.remove(cert_hash)

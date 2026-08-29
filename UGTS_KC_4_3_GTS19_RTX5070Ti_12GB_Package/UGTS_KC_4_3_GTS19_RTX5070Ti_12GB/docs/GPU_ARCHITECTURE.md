@@ -34,19 +34,33 @@ Metadata is stored separately so batches remain structure-of-arrays.
 
 ## Version 4.3 CUDA boundary
 
-`cpp/cuda/packed_kernels.cu` computes exact empty masks. It deliberately does not
-claim full legality. A proof-authoritative CUDA expansion must add:
+`cpp/cuda/packed_kernels.cu` preserves the original exact empty-mask API and now
+also exposes a sibling asynchronous, fixed-slot pre-superko transition kernel.
+For canonical no-suicide rules it deterministically performs:
 
 1. connected-component/group labeling;
 2. opponent capture resolution;
 3. post-capture own liberties;
 4. suicide policy;
-5. exact superko lookup;
-6. deterministic child encoding;
-7. CPU-reference differential tests.
+5. deterministic child bitplane encoding.
 
-Until all seven pass, the GPU output is a candidate list and the CPU reference
-must verify each committed child.
+The lower-level output remains untrusted until its stream completes and the
+error word, every status/count, and every child word have passed CPU replay.
+`cuda_verified_expander.cu` recomputes every board point, including GPU rejects,
+so a GPU false negative cannot hide a legal move. It fails closed on any CUDA,
+protocol, memory-shape, sentinel, or parity error. The CPU alone handles pass,
+exact raw-board positional-superko membership, previous-board/pass/ply/history
+metadata, and all proof updates.
+
+The target-laptop v1 gate is bounded: 25,281 unique point slots and 50,562
+default/nondefault Python/C++/CUDA point comparisons, plus a 524,533-candidate
+dual-stream grid-stride guard, all with zero mismatches. It has not reached the
+10,000,000-slot M4 exit gate, is not wired into proof search, and establishes no
+throughput or solved-result claim. The dense 19×19 device representation uses
+36,606 bytes per input state plus one batch error word; the adapter queries
+`cudaMemGetInfo`, retains an 18% free-memory reserve, admits at most 16% of the
+post-reserve amount for this workspace, and rejects rather than silently
+shrinking or partially evaluating a batch.
 
 ## Free-memory allocation
 

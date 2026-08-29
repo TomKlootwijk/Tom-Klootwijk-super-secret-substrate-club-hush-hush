@@ -47,6 +47,38 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
 
         document.begin_play()
         self.assertIsNone(document.logic_trace("dash_lesson", "player"))
+        find_goal = document.logic_trace("find_goal_lesson", None)
+        self.assertIsInstance(find_goal, LogicTraceSnapshot)
+        assert find_goal is not None
+        self.assertEqual(find_goal.trigger, "ready")
+        self.assertEqual(
+            tuple(entry.node_id for entry in find_goal.trace),
+            ("when_game_starts", "find_goal", "remember_nearby_goal"),
+        )
+        self.assertIs(find_goal.trace[1].outputs["found"], True)
+        self.assertEqual(find_goal.trace[1].outputs["entity"], "goal")
+        find_goal_ahead = document.logic_trace("find_goal_ahead_lesson", None)
+        self.assertIsInstance(find_goal_ahead, LogicTraceSnapshot)
+        assert find_goal_ahead is not None
+        self.assertEqual(find_goal_ahead.trigger, "ready")
+        self.assertEqual(
+            tuple(entry.node_id for entry in find_goal_ahead.trace),
+            ("when_game_starts", "find_goal_ahead", "remember_goal_ahead"),
+        )
+        self.assertIs(find_goal_ahead.trace[1].outputs["found"], True)
+        self.assertEqual(find_goal_ahead.trace[1].outputs["entity"], "goal")
+        repeatable = document.logic_trace("repeatable_number_lesson", "floor")
+        self.assertIsInstance(repeatable, LogicTraceSnapshot)
+        assert repeatable is not None
+        self.assertEqual(repeatable.trigger, "ready")
+        self.assertEqual(
+            tuple(entry.node_id for entry in repeatable.trace),
+            ("when_game_starts", "pick_garden_number", "remember_garden_number"),
+        )
+        self.assertEqual(
+            repeatable.trace[1].outputs["value"],
+            -7.724208831787109,
+        )
         document.step_play({"space"})
 
         snapshot = document.logic_trace("dash_lesson", "player")
@@ -68,7 +100,10 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
             ),
         )
         self.assertIs(document.latest_logic_trace("dash_lesson"), snapshot)
-        self.assertEqual(document.logic_traces(), (snapshot,))
+        self.assertEqual(
+            document.logic_traces(),
+            (find_goal, find_goal_ahead, repeatable, snapshot),
+        )
         self.assertIs(changes[-1], snapshot)
         with self.assertRaises(FrozenInstanceError):
             snapshot.trigger = "changed"  # type: ignore[misc]
@@ -82,7 +117,9 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
         self.assertIs(document.logic_trace("dash_lesson", "player"), snapshot)
         document.begin_play()
         self.assertIsNone(document.logic_trace("dash_lesson", "player"))
-        self.assertIsNone(changes[-1])
+        new_repeatable = document.logic_trace("repeatable_number_lesson", "floor")
+        self.assertIsInstance(new_repeatable, LogicTraceSnapshot)
+        self.assertIs(changes[-1], new_repeatable)
 
     def test_trigger_trace_is_harvested_in_the_transition_frame(self) -> None:
         project = first_steps_mobile3d_project()
@@ -119,6 +156,36 @@ class EditorLogicTraceDocumentTests(unittest.TestCase):
         )
         document.step_play(set())
         self.assertIs(document.logic_trace("goal_area_lesson", "goal"), snapshot)
+
+    def test_timer_trace_appears_only_when_it_rings_and_resets_with_play(self) -> None:
+        document = EditorDocument()
+        document.create(first_steps_mobile3d_project())
+        document.begin_play()
+
+        for _ in range(119):
+            document.step_play(set())
+        self.assertIsNone(document.logic_trace("timer_lesson", None))
+
+        state, _ = document.step_play(set())
+        snapshot = document.logic_trace("timer_lesson", None)
+        self.assertIsInstance(snapshot, LogicTraceSnapshot)
+        assert snapshot is not None
+        self.assertEqual(snapshot.trigger, "tick")
+        self.assertEqual(
+            tuple(entry.node_id for entry in snapshot.trace),
+            ("every_second", "remember_timer_rings"),
+        )
+        self.assertEqual(snapshot.trace[0].outputs["count"], 1.0)
+        self.assertEqual(snapshot.trace[0].outputs["remaining"], 0.0)
+        self.assertEqual(state["__world__"]["timer_rings"], 1.0)
+
+        document.stop_play()
+        document.begin_play()
+        self.assertIsNone(document.logic_trace("timer_lesson", None))
+        for _ in range(119):
+            state, _ = document.step_play(set())
+        self.assertIsNone(document.logic_trace("timer_lesson", None))
+        self.assertEqual(state["__world__"]["timer_rings"], 0)
 
     def test_two_dimensional_preview_uses_the_same_trace_cache(self) -> None:
         document = EditorDocument()

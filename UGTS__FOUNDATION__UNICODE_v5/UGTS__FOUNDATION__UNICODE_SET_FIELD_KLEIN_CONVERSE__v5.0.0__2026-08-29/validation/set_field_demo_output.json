@@ -1,0 +1,127 @@
+{
+  "A": [
+    1,
+    2,
+    3,
+    6
+  ],
+  "B": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "union": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "intersection": [
+    3,
+    6
+  ],
+  "A_minus_B": [
+    1,
+    2
+  ],
+  "symmetric_difference": [
+    1,
+    2,
+    4,
+    5
+  ],
+  "records": [
+    {
+      "x": 0,
+      "phi_A": 1.0,
+      "phi_B": 1.0,
+      "A": false,
+      "B": false,
+      "union": false,
+      "intersection": false,
+      "A_minus_B": false,
+      "symmetric_difference": false
+    },
+    {
+      "x": 1,
+      "phi_A": -1.0,
+      "phi_B": 1.0,
+      "A": true,
+      "B": false,
+      "union": true,
+      "intersection": false,
+      "A_minus_B": true,
+      "symmetric_difference": true
+    },
+    {
+      "x": 2,
+      "phi_A": -1.0,
+      "phi_B": 1.0,
+      "A": true,
+      "B": false,
+      "union": true,
+      "intersection": false,
+      "A_minus_B": true,
+      "symmetric_difference": true
+    },
+    {
+      "x": 3,
+      "phi_A": -1.0,
+      "phi_B": -1.0,
+      "A": true,
+      "B": true,
+      "union": true,
+      "intersection": true,
+      "A_minus_B": false,
+      "symmetric_difference": false
+    },
+    {
+      "x": 4,
+      "phi_A": 1.0,
+      "phi_B": -1.0,
+      "A": false,
+      "B": true,
+      "union": true,
+      "intersection": false,
+      "A_minus_B": false,
+      "symmetric_difference": true
+    },
+    {
+      "x": 5,
+      "phi_A": 1.0,
+      "phi_B": -1.0,
+      "A": false,
+      "B": true,
+      "union": true,
+      "intersection": false,
+      "A_minus_B": false,
+      "symmetric_difference": true
+    },
+    {
+      "x": 6,
+      "phi_A": -1.0,
+      "phi_B": -1.0,
+      "A": true,
+      "B": true,
+      "union": true,
+      "intersection": true,
+      "A_minus_B": false,
+      "symmetric_difference": false
+    },
+    {
+      "x": 7,
+      "phi_A": 1.0,
+      "phi_B": 1.0,
+      "A": false,
+      "B": false,
+      "union": false,
+      "intersection": false,
+      "A_minus_B": false,
+      "symmetric_difference": false
+    }
+  ],
+  "capability_note": "The finite field is exact as a signed membership field; min/max composition preserves sign, not a claim of Euclidean distance."
+}

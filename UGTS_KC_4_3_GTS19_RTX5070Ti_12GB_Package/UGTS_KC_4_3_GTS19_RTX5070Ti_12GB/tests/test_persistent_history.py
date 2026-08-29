@@ -118,6 +118,36 @@ def test_constant_digest_retains_distinct_exact_boards_and_deduplicates() -> Non
     assert history.insert(root, BOARDS_2X2[0]) is root
 
 
+def test_roots_equal_is_structural_and_never_materializes_members(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    history = PersistentHistory(
+        2,
+        digest_fn=lambda _board: bytes(32),
+        digest_name="structural-root-equality-collision-test",
+    )
+    first = _root_with_boards(history, BOARDS_2X2[:3])
+    equivalent = _root_with_boards(
+        history,
+        tuple(reversed(BOARDS_2X2[:3])),
+    )
+    different = _root_with_boards(
+        history,
+        (BOARDS_2X2[0], BOARDS_2X2[1], BOARDS_2X2[3]),
+    )
+    assert first._node is not equivalent._node
+
+    def fail_if_materialized(
+        _self: PersistentHistory,
+        _root: object,
+    ) -> tuple[bytes, ...]:
+        raise AssertionError("roots_equal materialized exact members")
+
+    monkeypatch.setattr(PersistentHistory, "members", fail_if_materialized)
+    assert history.roots_equal(first, equivalent)
+    assert not history.roots_equal(first, different)
+
+
 def test_roundtrip_rehydrates_complete_exact_root_deterministically(
     tmp_path: Path,
 ) -> None:

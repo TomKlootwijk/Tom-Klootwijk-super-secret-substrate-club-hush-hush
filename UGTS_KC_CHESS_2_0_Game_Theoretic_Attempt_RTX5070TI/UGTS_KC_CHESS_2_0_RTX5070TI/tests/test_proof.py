@@ -8,6 +8,8 @@ import unittest
 from jsonschema import Draft202012Validator
 
 from ugts_chess.constants import WHITE
+from ugts_chess.game_state import HistoryContext, game_state_sha256
+from ugts_chess.hashing import repetition_key
 from ugts_chess.position import Position
 from ugts_chess.proof import MateProver, verify_mate_certificate
 
@@ -59,10 +61,12 @@ class MateProofTests(unittest.TestCase):
 
     def test_06_root_hash_tamper_fails(self) -> None:
         cert = MateProver().prove(Position.from_fen(self.FEN), max_plies=3).certificate
-        cert = copy.deepcopy(cert)
-        cert["root_hash"] = "f" * 64
-        with self.assertRaises(ValueError):
-            verify_mate_certificate(cert)
+        for field in ("root_hash", "root_game_state_sha256"):
+            with self.subTest(field=field):
+                tampered = copy.deepcopy(cert)
+                tampered[field] = "f" * 64
+                with self.assertRaises(ValueError):
+                    verify_mate_certificate(tampered)
 
     def test_07_attacker_draw_claim_move_does_not_hide_later_mate(self) -> None:
         position = Position.from_fen("kr6/2K5/1Q6/8/8/8/8/8 w - - 99 1")
@@ -129,6 +133,90 @@ class MateProofTests(unittest.TestCase):
         duplicate["root_history_counts"].append(copy.deepcopy(duplicate["root_history_counts"][0]))
         with self.assertRaisesRegex(ValueError, "unique and sorted"):
             verify_mate_certificate(duplicate)
+
+    def test_12_mate_identity_and_defender_claim_are_history_bound(self) -> None:
+        position = Position.from_fen("8/8/8/1Q6/8/k7/8/2K5 b - - 1 1")
+        current_key = repetition_key(position)
+        once = HistoryContext(((current_key, 1),))
+        threefold = HistoryContext(((current_key, 3),))
+
+        proved = MateProver().prove(
+            position,
+            max_plies=2,
+            attacker=WHITE,
+            history=once,
+        )
+        claimable = MateProver().prove(
+            position,
+            max_plies=2,
+            attacker=WHITE,
+            history=threefold,
+        )
+        self.assertEqual(proved.status, "proved")
+        self.assertEqual(claimable.status, "not_forced_within_horizon")
+        self.assertEqual(
+            proved.certificate["root_hash"],
+            claimable.certificate["root_hash"],
+        )
+        self.assertNotEqual(
+            proved.certificate["root_game_state_sha256"],
+            claimable.certificate["root_game_state_sha256"],
+        )
+        self.assertTrue(verify_mate_certificate(proved.certificate)["valid"])
+
+        forged = copy.deepcopy(proved.certificate)
+        forged["root_history_counts"] = threefold.record()
+        forged["root_game_state_sha256"] = game_state_sha256(position, threefold)
+        with self.assertRaisesRegex(ValueError, "defender has an available draw claim"):
+            verify_mate_certificate(forged)
+
+    def test_13_noncurrent_fivefold_history_is_unreachable(self) -> None:
+        position = Position.from_fen(self.FEN)
+        current_key = repetition_key(position)
+        ended_key = "0" * 64
+        self.assertNotEqual(ended_key, current_key)
+        forged_history = HistoryContext(
+            tuple(sorted(((current_key, 1), (ended_key, 5))))
+        )
+
+        with self.assertRaisesRegex(ValueError, "already ended automatically"):
+            MateProver().prove(
+                position,
+                max_plies=3,
+                history=forged_history,
+            )
+
+        certificate = copy.deepcopy(
+            MateProver().prove(position, max_plies=3).certificate
+        )
+        certificate["root_history_counts"] = forged_history.record()
+        certificate["root_game_state_sha256"] = game_state_sha256(
+            position,
+            forged_history,
+        )
+        with self.assertRaisesRegex(ValueError, "non-current position at five occurrences"):
+            verify_mate_certificate(certificate)
+
+    def test_14_current_fivefold_is_terminal_with_checkmate_precedence(self) -> None:
+        ongoing = Position.from_fen(self.FEN)
+        ongoing_history = HistoryContext(((repetition_key(ongoing), 5),))
+        result = MateProver().prove(
+            ongoing,
+            max_plies=3,
+            history=ongoing_history,
+        )
+        self.assertEqual(result.status, "not_forced_within_horizon")
+
+        checkmate = Position.from_fen("kQ6/2K5/8/8/8/8/8/8 b - - 0 1")
+        mate_history = HistoryContext(((repetition_key(checkmate), 5),))
+        certificate = MateProver().prove(
+            checkmate,
+            max_plies=1,
+            attacker=WHITE,
+            history=mate_history,
+        ).certificate
+        self.assertEqual(certificate["status"], "proved")
+        self.assertTrue(verify_mate_certificate(certificate)["valid"])
 
 
 if __name__ == "__main__":

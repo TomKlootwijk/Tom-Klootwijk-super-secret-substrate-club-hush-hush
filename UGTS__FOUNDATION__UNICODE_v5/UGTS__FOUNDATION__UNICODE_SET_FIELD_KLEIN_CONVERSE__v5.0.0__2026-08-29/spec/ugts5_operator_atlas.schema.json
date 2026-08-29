@@ -1,0 +1,120 @@
+{
+  "$defs": {
+    "operator": {
+      "properties": {
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "converse_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "family_id": {
+          "maximum": 7,
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "kappa": {
+          "enum": [
+            0,
+            1,
+            null
+          ],
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "unicode": {
+          "properties": {
+            "literal": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "normalization": {
+              "const": "NFC"
+            },
+            "scalars": {
+              "items": {
+                "pattern": "^U\\+[0-9A-F]{4,6}$",
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "utf8_hex": {
+              "pattern": "^[0-9a-f]+$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "literal",
+            "scalars",
+            "utf8_hex",
+            "normalization"
+          ],
+          "type": "object"
+        },
+        "version": {
+          "const": "5.0.0"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "unicode",
+        "syntax",
+        "typing",
+        "semantic",
+        "glyph",
+        "exactness",
+        "content_hash"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://ugts.example/schema/operator-atlas-5.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "atlas_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "atlas_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "operators": {
+      "items": {
+        "$ref": "#/$defs/operator"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema_id": {
+      "const": "ugts.operator-atlas.schema@5.0.0"
+    },
+    "version": {
+      "const": "5.0.0"
+    }
+  },
+  "required": [
+    "schema_id",
+    "atlas_id",
+    "version",
+    "operators",
+    "atlas_hash"
+  ],
+  "title": "UGTS 5.0 Unicode Operator Atlas",
+  "type": "object"
+}

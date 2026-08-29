@@ -11,7 +11,9 @@ from PySide6.QtCore import QPointF, QRectF, Qt, Signal
 from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QCheckBox,
     QComboBox,
+    QDoubleSpinBox,
     QFrame,
     QGraphicsItem,
     QGraphicsObject,
@@ -31,6 +33,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..visual_graph import BUILTIN_NODE_REGISTRY, PortDirection, PortKind, VisualGraph
+from .document import GraphAuthoringContext
 
 
 @dataclass(frozen=True)
@@ -49,10 +52,14 @@ _FRIENDLY_NODE_NAMES = {
     "event.ready": ("When Game Starts", "Events"),
     "event.tick": ("Every Frame", "Events"),
     "event.input_pressed": ("When Button Pressed", "Events"),
+    "event.timer": ("When Timer Rings", "Events"),
     "flow.branch": ("If This Is True", "Choices"),
     "value.constant": ("A Value", "Values"),
+    "value.seeded_number": ("Repeatable Random Number", "Values"),
     "value.state": ("Read Score or Game Value", "Values"),
     "value.component": ("Read Object Setting", "Values"),
+    "query.nearest_tag": ("Find Nearby Object", "Sensing"),
+    "query.nearest_in_cone": ("Find Object Ahead", "Sensing"),
     "compare": ("Compare Two Things", "Choices"),
     "action.set_state": ("Change Score or Game Value", "Game Actions"),
     "action.set_component": ("Change Object Setting", "Game Actions"),
@@ -61,9 +68,23 @@ _FRIENDLY_NODE_NAMES = {
     "action.set_active": ("Show or Hide Object", "Game Actions"),
     "action.despawn": ("Remove Object", "Game Actions"),
 }
+_FRIENDLY_NODE_DESCRIPTIONS = {
+    "event.timer": (
+        "Waits for the saved number of seconds, then starts the connected blocks. "
+        "Turn Repeat on to ring again and again while this object is active."
+    ),
+    "query.nearest_in_cone": (
+        "Finds the nearest chosen kind of object in a saved facing direction. "
+        "Facing and View width use the same compact values on desktop, web, and phone."
+    ),
+}
+_LITERAL_ONLY_INPUTS = {
+    "event.timer": frozenset({"seconds", "repeat"}),
+}
 _CATEGORY_COLORS = {
     "Events": "#5ac8fa", "Choices": "#c792ea", "Values": "#f6c85f",
     "Math": "#f0a45d", "Movement": "#78e6a3", "Game Actions": "#ff8fab",
+    "Sensing": "#64d8cb",
 }
 
 
@@ -88,6 +109,34 @@ _BOOLEAN_CHOICES = (
     (True, "Yes", "Store the boolean value true"),
     (False, "No", "Store the boolean value false"),
 )
+_PORTABLE_TAG_CHOICES = (
+    ("player", "Player", "Find objects tagged as the player"),
+    ("collectible", "Collectible", "Find coins, crystals, and other pickups"),
+    ("goal", "Goal", "Find the nearest goal or finish object"),
+    ("decorative", "Decoration", "Find a display-only scene object"),
+    ("hazard", "Hazard", "Find the nearest dangerous object"),
+)
+_CONE_WIDTH_CHOICES = (
+    (0.8660253882408142, "Narrow · 60°", "A focused 60-degree view"),
+    (0.7071067690849304, "Normal · 90°", "A balanced 90-degree view"),
+    (0.0, "Wide · 180°", "Everything in the facing half of the world"),
+)
+_CONE_DIRECTIONS = {
+    "2d": (
+        ((1.0, 0.0, 0.0), "Right", "Toward the right side of the scene"),
+        ((-1.0, 0.0, 0.0), "Left", "Toward the left side of the scene"),
+        ((0.0, 1.0, 0.0), "Down", "Toward the bottom of the scene"),
+        ((0.0, -1.0, 0.0), "Up", "Toward the top of the scene"),
+    ),
+    "3d": (
+        ((0.0, 0.0, -1.0), "Forward", "Forward along negative Z"),
+        ((0.0, 0.0, 1.0), "Back", "Back along positive Z"),
+        ((1.0, 0.0, 0.0), "Right", "Right along positive X"),
+        ((-1.0, 0.0, 0.0), "Left", "Left along negative X"),
+        ((0.0, 1.0, 0.0), "Up", "Up along positive Y"),
+        ((0.0, -1.0, 0.0), "Down", "Down along negative Y"),
+    ),
+}
 _ACTION_CHOICES = {
     "2d": (
         ("dash", "Dash", "Space, Shift, gamepad, or the Dash touch button"),
@@ -159,6 +208,7 @@ _PROPERTY_LABELS = {
     "action": "Button / action",
     "active": "Object is active",
     "component": "Object part",
+    "cone": "Facing + view",
     "condition": "Condition",
     "default": "Fallback value",
     "entity": "Object ID",
@@ -166,11 +216,20 @@ _PROPERTY_LABELS = {
     "force": "Push amount",
     "key": "Game value name",
     "kind": "Message name",
+    "largest": "Largest",
     "operator": "Compare using",
+    "origin": "Search from",
+    "pick_number": "Pick number",
     "payload": "Message details",
     "source": "Sender object ID",
+    "smallest": "Smallest",
+    "tag": "Object kind",
     "target": "Receiver object ID",
+    "radius": "Search distance",
+    "repeat": "Repeat",
+    "seconds": "Seconds",
     "value": "Value",
+    "world_number": "World number",
 }
 
 
@@ -254,11 +313,19 @@ def _node_templates() -> tuple[NodeTemplate, ...]:
             definition.type,
             (definition.label, "Math" if definition.category == "Math" else definition.category),
         )
-        inputs = tuple(port.name for port in definition.ports if port.direction is PortDirection.INPUT)
+        literal_only = _LITERAL_ONLY_INPUTS.get(definition.type, frozenset())
+        inputs = tuple(
+            port.name
+            for port in definition.ports
+            if port.direction is PortDirection.INPUT and port.name not in literal_only
+        )
         outputs = tuple(port.name for port in definition.ports if port.direction is PortDirection.OUTPUT)
         result.append(
             NodeTemplate(
-                definition.type, label, category, definition.description,
+                definition.type,
+                label,
+                category,
+                _FRIENDLY_NODE_DESCRIPTIONS.get(definition.type, definition.description),
                 _CATEGORY_COLORS.get(category, "#91a4b7"), inputs, outputs,
                 dict(definition.default_properties),
             )
@@ -752,6 +819,13 @@ class VisualGraphScene(QGraphicsScene):
         source, destination = (start, target) if start.direction == "output" else (target, start)
         if source.direction != "output" or destination.direction != "input":
             return
+        literal_only = _LITERAL_ONLY_INPUTS.get(destination.node.template.key, frozenset())
+        if destination.name in literal_only:
+            self.connectionRejected.emit(
+                "Set Seconds and Repeat in When Timer Rings settings. "
+                "Those values are saved in the block and cannot use a wire."
+            )
+            return
         source_definition = BUILTIN_NODE_REGISTRY.get(source.node.template.key)
         target_definition = BUILTIN_NODE_REGISTRY.get(destination.node.template.key)
         source_port = None if source_definition is None else source_definition.port(PortDirection.OUTPUT, source.name)
@@ -970,6 +1044,9 @@ class NodePropertiesPanel(QWidget):
         super().__init__(parent)
         self.node: GraphNode | None = None
         self.project_kind: str | None = None
+        self._entity_context_known = False
+        self._entity_owner_id: str | None = None
+        self._entity_choices: tuple[tuple[str, str], ...] = ()
         self._updating = False
         self._read_only = False
         self._editors: dict[str, QWidget] = {}
@@ -1014,6 +1091,25 @@ class NodePropertiesPanel(QWidget):
             return
         self.project_kind = kind
         if self.node is not None:
+            self.set_node(self.node)
+
+    def set_entity_context(
+        self,
+        owner_id: str | None,
+        choices: tuple[tuple[str, str], ...],
+    ) -> None:
+        """Provide scene IDs for child-safe entity inputs in sensing blocks."""
+
+        normalized = tuple((str(value), str(label)) for value, label in choices)
+        changed = (
+            not self._entity_context_known
+            or owner_id != self._entity_owner_id
+            or normalized != self._entity_choices
+        )
+        self._entity_context_known = True
+        self._entity_owner_id = owner_id
+        self._entity_choices = normalized
+        if changed and self.node is not None:
             self.set_node(self.node)
 
     def editor_for(self, key: str) -> QWidget | None:
@@ -1125,6 +1221,44 @@ class NodePropertiesPanel(QWidget):
                 "Choose a button action available to this kind of project.",
             )
 
+        if node.template.key in {"query.nearest_tag", "query.nearest_in_cone"} and key == "origin":
+            choices: tuple[tuple[Any, str, str], ...] = ()
+            if not self._entity_context_known or self._entity_owner_id is not None:
+                choices += ((
+                    None,
+                    "This object",
+                    "Start at the object that owns these Logic Blocks",
+                ),)
+            choices += tuple(
+                (
+                    entity_id,
+                    label,
+                    f"Start at project object: {entity_id}",
+                )
+                for entity_id, label in self._entity_choices
+            )
+            if (
+                isinstance(value, str)
+                and value
+                and not any(choice[0] == value for choice in choices)
+            ):
+                choices += ((
+                    value,
+                    f"{self._friendly_value(value)} (chosen object)",
+                    f"Start at project object: {value}",
+                ),)
+            return PropertyChoiceSpec(
+                choices,
+                "Choose This object, or type another project object ID.",
+                editable=True,
+            )
+
+        if node.template.key in {"query.nearest_tag", "query.nearest_in_cone"} and key == "tag":
+            return PropertyChoiceSpec(
+                _PORTABLE_TAG_CHOICES,
+                "These five object kinds stay identical in desktop, web, and phone builds.",
+            )
+
         if node.template.key in {"value.component", "action.set_component"} and key == "component":
             choices = tuple(
                 (
@@ -1218,6 +1352,122 @@ class NodePropertiesPanel(QWidget):
             )
         return combo
 
+    def _make_timer_seconds_editor(self, key: str, value: Any) -> QDoubleSpinBox:
+        editor = QDoubleSpinBox()
+        editor.setObjectName(f"GraphProperty_{key}")
+        editor.setProperty("graph_property_key", key)
+        editor.setAccessibleName("Seconds before the timer rings")
+        editor.setRange(0.001, 86_400.0)
+        editor.setDecimals(3)
+        editor.setSingleStep(0.25)
+        editor.setSuffix(" seconds")
+        editor.setKeyboardTracking(False)
+        editor.setToolTip(
+            "How long to wait before this event rings. Choose more than 0 seconds, "
+            "up to one day (86,400 seconds)."
+        )
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError):
+            numeric = 1.0
+        editor.setValue(min(86_400.0, max(0.001, numeric)))
+        editor.setEnabled(not self._read_only)
+        editor.editingFinished.connect(
+            lambda property_key=key, control=editor: self._commit_property(
+                property_key, float(control.value())
+            )
+        )
+        return editor
+
+    def _make_timer_repeat_editor(self, key: str, value: Any) -> QCheckBox:
+        editor = QCheckBox("Ring again and again")
+        editor.setObjectName(f"GraphProperty_{key}")
+        editor.setProperty("graph_property_key", key)
+        editor.setAccessibleName("Repeat this timer")
+        editor.setToolTip(
+            "On: restart the timer after every ring. Off: ring only once each time "
+            "the graph binding becomes active."
+        )
+        editor.setChecked(bool(value))
+        editor.setEnabled(not self._read_only)
+        editor.toggled.connect(
+            lambda checked, property_key=key: self._commit_property(
+                property_key, bool(checked)
+            )
+        )
+        return editor
+
+    def _make_cone_editor(self, key: str, value: Any) -> QWidget:
+        default_axis = (0.0, 0.0, -1.0) if self.project_kind == "3d" else (1.0, 0.0, 0.0)
+        try:
+            values = tuple(float(item) for item in value)
+        except (TypeError, ValueError):
+            values = (*default_axis, 0.7071067690849304)
+        if len(values) != 4:
+            values = (*default_axis, 0.7071067690849304)
+        current_axis = tuple(values[:3])
+        current_width = values[3]
+
+        editor = QWidget()
+        editor.setObjectName(f"GraphProperty_{key}")
+        editor.setProperty("graph_property_key", key)
+        editor.setAccessibleName("Facing direction and view width")
+        layout = QHBoxLayout(editor)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(5)
+
+        direction = QComboBox()
+        direction.setObjectName("GraphProperty_cone_direction")
+        direction.setAccessibleName("Facing direction")
+        direction.setToolTip(
+            "Choose a world-space direction. It stays exact and does not depend on the object's rotation."
+        )
+        choices = _CONE_DIRECTIONS.get(self.project_kind or "2d", _CONE_DIRECTIONS["2d"])
+        for axis, label, tooltip in choices:
+            direction.addItem(f"Facing: {label}", axis)
+            direction.setItemData(direction.count() - 1, tooltip, Qt.ItemDataRole.ToolTipRole)
+        direction_index = direction.findData(current_axis)
+        if direction_index < 0:
+            direction.addItem("Facing: Custom (kept)", current_axis)
+            direction_index = direction.count() - 1
+        direction.setCurrentIndex(direction_index)
+
+        width = QComboBox()
+        width.setObjectName("GraphProperty_cone_width")
+        width.setAccessibleName("View width")
+        width.setToolTip(
+            "Choose how wide the search view is. The saved value is an exact portable cosine."
+        )
+        for cosine, label, tooltip in _CONE_WIDTH_CHOICES:
+            width.addItem(f"View: {label}", cosine)
+            width.setItemData(width.count() - 1, tooltip, Qt.ItemDataRole.ToolTipRole)
+        width_index = width.findData(current_width)
+        if width_index < 0:
+            width.addItem("View: Custom (kept)", current_width)
+            width_index = width.count() - 1
+        width.setCurrentIndex(width_index)
+
+        direction.setEnabled(not self._read_only)
+        width.setEnabled(not self._read_only)
+        layout.addWidget(direction, 1)
+        layout.addWidget(width, 1)
+
+        def commit_cone(_index: int = -1) -> None:
+            if self._updating or self._read_only:
+                return
+            axis = direction.currentData()
+            cosine = width.currentData()
+            if not isinstance(axis, (tuple, list)) or len(axis) != 3:
+                return
+            self._commit_property(
+                key,
+                [float(axis[0]), float(axis[1]), float(axis[2]), float(cosine)],
+            )
+
+        direction.currentIndexChanged.connect(commit_cone)
+        width.currentIndexChanged.connect(commit_cone)
+        return editor
+
     def set_node(self, node: GraphNode | None) -> None:
         self._updating = True
         try:
@@ -1237,11 +1487,15 @@ class NodePropertiesPanel(QWidget):
             if not node.properties:
                 self.hint.setText("This block has no values to change. Connect its dots to use it.")
                 return
-            self.hint.setText(
-                "View-only while the game is running. Stop it to change this block."
-                if self._read_only
-                else "Choose friendly options or double-click an open value. Changes stay undoable."
-            )
+            if self._read_only:
+                hint = "View-only while the game is running. Stop it to change this block."
+            elif node.template.key == "event.timer":
+                hint = "Choose when it rings and whether it starts waiting again after each ring."
+            elif node.template.key == "query.nearest_in_cone":
+                hint = "Choose what to find, how far to look, and the saved Facing and View width."
+            else:
+                hint = "Choose friendly options or double-click an open value. Changes stay undoable."
+            self.hint.setText(hint)
             for key, value in node.properties.items():
                 label = _PROPERTY_LABELS.get(key, key.replace("_", " ").title())
                 item = QTreeWidgetItem([label, self._display(value)])
@@ -1251,14 +1505,32 @@ class NodePropertiesPanel(QWidget):
                 self._items[key] = item
                 self.values.addTopLevelItem(item)
                 choice_spec = self._choice_spec(node, key, value)
-                if choice_spec is not None:
+                if node.template.key == "event.timer" and key == "seconds":
+                    editor = self._make_timer_seconds_editor(key, value)
+                    self._editors[key] = editor
+                    self.values.setItemWidget(item, 1, editor)
+                    item.setToolTip(1, editor.toolTip())
+                elif node.template.key == "event.timer" and key == "repeat":
+                    editor = self._make_timer_repeat_editor(key, value)
+                    self._editors[key] = editor
+                    self.values.setItemWidget(item, 1, editor)
+                    item.setToolTip(1, editor.toolTip())
+                elif node.template.key == "query.nearest_in_cone" and key == "cone":
+                    editor = self._make_cone_editor(key, value)
+                    self._editors[key] = editor
+                    self.values.setItemWidget(item, 1, editor)
+                    item.setToolTip(
+                        1,
+                        "Facing uses an exact world direction; View width is Narrow, Normal, or Wide.",
+                    )
+                elif choice_spec is not None:
                     editor = self._make_choice_editor(key, value, choice_spec)
                     self._editors[key] = editor
                     self.values.setItemWidget(item, 1, editor)
                     item.setToolTip(1, choice_spec.tooltip)
                 elif not isinstance(value, Mapping) and not self._read_only:
                     item.setFlags(item.flags() | Qt.ItemFlag.ItemIsEditable)
-                    if key in {"entity", "source", "target"}:
+                    if key in {"entity", "origin", "source", "target"}:
                         item.setToolTip(1, "Double-click to type a project object ID; custom IDs are allowed")
                     elif key in {"key", "kind"}:
                         item.setToolTip(1, "Double-click to type a custom project name")
@@ -1284,10 +1556,16 @@ class NodePropertiesPanel(QWidget):
                 parsed = combo.currentData()
             else:
                 parsed = combo.currentText().strip()
-            if not parsed:
+            if (
+                not parsed
+                and self.node.template.key in {"query.nearest_tag", "query.nearest_in_cone"}
+                and key == "origin"
+            ):
+                parsed = None
+            elif not parsed:
                 self._updating = True
                 combo.setCurrentText(self._display(original))
-                combo.setToolTip("A message name cannot be empty; the previous value was kept")
+                combo.setToolTip("This value cannot be empty; the previous value was kept")
                 self._updating = False
                 return
         else:
@@ -1380,6 +1658,7 @@ class LastRunPanel(QWidget):
 
 class GraphPage(QWidget):
     graphEdited = Signal(object)
+    graphRequested = Signal(str)
     helpRequested = Signal(str)
 
     def __init__(self, parent=None) -> None:
@@ -1391,13 +1670,19 @@ class GraphPage(QWidget):
         bar.setObjectName("GraphToolbar")
         bar_layout = QHBoxLayout(bar)
         bar_layout.setContentsMargins(12, 8, 12, 8)
-        hint = QLabel("Tip: drag from one dot to another to make the game flow.")
-        hint.setObjectName("MutedLabel")
+        self.context_label = QLabel("Project Logic")
+        self.context_label.setObjectName("MutedLabel")
+        self.context_label.setWordWrap(True)
+        self.graph_choice = QComboBox()
+        self.graph_choice.setObjectName("LogicGraphChoice")
+        self.graph_choice.setToolTip("Choose which Logic Blocks graph belongs on this object")
+        self.graph_choice.hide()
         self.delete_button = QPushButton("Delete Selected")
         self.delete_button.setToolTip("Removes only the selected block or connection")
         self.frame_button = QPushButton("Show All")
         self.frame_button.setToolTip("Fits every block on screen")
-        bar_layout.addWidget(hint, 1)
+        bar_layout.addWidget(self.context_label, 1)
+        bar_layout.addWidget(self.graph_choice)
         bar_layout.addWidget(self.delete_button)
         bar_layout.addWidget(self.frame_button)
         self.palette = NodePalette()
@@ -1432,8 +1717,13 @@ class GraphPage(QWidget):
         self.graph_scene.connectionRejected.connect(self.helpRequested)
         self.graph_scene.selectionChanged.connect(self._selection_changed)
         self.last_run.nodeRequested.connect(self.focus_trace_node)
+        self.graph_choice.currentIndexChanged.connect(self._graph_choice_changed)
         self._project_kind: str | None = None
         self._read_only = False
+        self._context_problem: str | None = None
+        self._context_persisted = True
+        self._query_default_origin: str | None = None
+        self._updating_context = False
         self._trace_snapshot: object | None = None
         self.trace_step_count = 0
         self.trace_count = 0
@@ -1451,15 +1741,67 @@ class GraphPage(QWidget):
         """Keep the graph inspectable while preventing every editor mutation."""
 
         self._read_only = bool(read_only)
-        self.graph_scene.set_read_only(self._read_only)
-        self.properties.set_read_only(self._read_only)
-        self.palette.setEnabled(not self._read_only)
-        self.delete_button.setEnabled(not self._read_only)
+        self._refresh_editability()
+
+    def _refresh_editability(self) -> None:
+        blocked = self._read_only or self._context_problem is not None
+        self.graph_scene.set_read_only(blocked)
+        self.properties.set_read_only(blocked)
+        self.palette.setEnabled(not blocked)
+        self.delete_button.setEnabled(not blocked)
+        self.graph_choice.setEnabled(not self._read_only)
+        if self._read_only:
+            tooltip = "Stop the game before deleting logic blocks"
+        elif self._context_problem is not None:
+            tooltip = self._context_problem
+        else:
+            tooltip = "Removes only the selected block or connection"
         self.delete_button.setToolTip(
-            "Stop the game before deleting logic blocks"
-            if self._read_only
-            else "Removes only the selected block or connection"
+            tooltip
         )
+
+    def set_context(self, context: GraphAuthoringContext) -> None:
+        """Show an explicit owner and exact one-of-many bound graph choice."""
+
+        self._context_problem = context.creation_problem
+        self._context_persisted = context.persisted
+        self._query_default_origin = (
+            None if context.owner_id is not None else context.default_origin_id
+        )
+        self.properties.set_entity_context(
+            context.owner_id, context.entity_choices
+        )
+        self._updating_context = True
+        try:
+            self.graph_choice.clear()
+            for graph_id, label in context.choices:
+                self.graph_choice.addItem(label, graph_id)
+            index = self.graph_choice.findData(context.active_graph_id)
+            if index >= 0:
+                self.graph_choice.setCurrentIndex(index)
+            self.graph_choice.setVisible(len(context.choices) > 1)
+        finally:
+            self._updating_context = False
+
+        if context.creation_problem is not None:
+            message = context.creation_problem
+        elif not context.persisted:
+            message = "Pick a block to give this object its own logic."
+        elif len(context.choices) > 1:
+            message = "Choose one of this object's Logic Blocks graphs."
+        else:
+            message = "Drag from one dot to another to make the game flow."
+        self.context_label.setText(f"{context.owner_label} — {message}")
+        self.context_label.setToolTip(message)
+        self.load_data(context.graph)
+        self._refresh_editability()
+
+    def _graph_choice_changed(self, index: int) -> None:
+        if self._updating_context or index < 0:
+            return
+        graph_id = self.graph_choice.itemData(index)
+        if isinstance(graph_id, str) and graph_id:
+            self.graphRequested.emit(graph_id)
 
     def _clear_trace_presentation(self, *, drop_snapshot: bool = True) -> None:
         for node in self.graph_scene.nodes.values():
@@ -1623,6 +1965,9 @@ class GraphPage(QWidget):
     def add_template(self, key: str) -> None:
         if self._read_only:
             return
+        if self._context_problem is not None:
+            self.helpRequested.emit(self._context_problem)
+            return
         template = TEMPLATE_BY_KEY.get(key)
         if template is None:
             return
@@ -1631,6 +1976,16 @@ class GraphPage(QWidget):
         properties = None
         if self._project_kind == "3d" and key == "action.set_component":
             properties = {"entity": None, "component": "transform", "field": "translation", "value": [0, 0, 0]}
+        elif key in {"query.nearest_tag", "query.nearest_in_cone"}:
+            properties = {"origin": self._query_default_origin}
+            if key == "query.nearest_in_cone":
+                direction = [0.0, 0.0, -1.0] if self._project_kind == "3d" else [1.0, 0.0, 0.0]
+                properties["cone"] = [
+                    direction[0],
+                    direction[1],
+                    direction[2],
+                    0.7071067690849304,
+                ]
         node = self.graph_scene.add_node(
             template,
             center - QPointF(105, 50) + offset,

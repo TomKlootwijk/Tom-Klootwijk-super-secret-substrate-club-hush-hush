@@ -1,0 +1,24 @@
+{
+  "$id": "https://ugts.example/schema/release-record-5.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "canonical_identity": {
+      "const": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+    },
+    "component_type": {
+      "const": "foundation"
+    },
+    "version": {
+      "const": "5.0.0"
+    }
+  },
+  "required": [
+    "canonical_identity",
+    "component_type",
+    "version",
+    "chronology_key",
+    "parents",
+    "artifact_policy"
+  ],
+  "type": "object"
+}

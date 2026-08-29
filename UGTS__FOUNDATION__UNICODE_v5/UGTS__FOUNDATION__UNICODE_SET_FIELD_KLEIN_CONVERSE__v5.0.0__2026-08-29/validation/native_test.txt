@@ -1,0 +1,2 @@
+UGTS5 native PackedNode32: PASS
+word=0xb77e4d2d flipped=0xbf79bd2d

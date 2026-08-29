@@ -1,6 +1,6 @@
-# Attribution Notice — 3.9.1
+# Attribution Notice — 3.9.2
 
-Prepared as the **UGTS-KC 3.9.1 Tom Klootwijk Signature Edition**.
+Prepared as the **UGTS-KC 3.9.2 Tom Klootwijk Signature Edition**.
 
 Requester-supplied attribution:
 
@@ -10,3 +10,33 @@ Requester-supplied attribution:
 The supplied identity details and ownership/authorship assertions are not independently verified.
 “Signature Edition” is a product/release label, not a cryptographic signature, legal certification
 or proof of identity. SHA-256 files and manifests demonstrate artifact integrity only.
+
+## UGTS Spatial KD cone-gate provenance
+
+The portable `query.nearest_in_cone` radial/angular gate is adapted from the
+GSP4 engineering implementation in the sibling `gsp4_spatial_kd_v0.5.0`
+repository. UGTS-KC replaces its geographic coordinates, PyTorch tensors and
+runtime trigonometry with an explicit world-space axis and fully specified
+binary32 rounding so desktop, browser and Android builds can share the result.
+
+MIT License
+
+Copyright (c) 2026 UGTS Spatial KD contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

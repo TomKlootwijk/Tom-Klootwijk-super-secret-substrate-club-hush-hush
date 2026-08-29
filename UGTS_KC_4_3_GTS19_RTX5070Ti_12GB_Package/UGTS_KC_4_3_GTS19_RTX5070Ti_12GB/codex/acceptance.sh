@@ -55,6 +55,7 @@ ctest --test-dir build-acceptance --build-config Release --output-on-failure
 
 python scripts/parity_gate.py evidence/local_m1_cpp_python_parity_v2_1m.json
 python scripts/storage_gate.py --validate evidence/local_m2_storage_gate.json
+python scripts/persistent_pndag_gate.py --validate evidence/local_m2_persistent_pndag_gate.json
 python scripts/claim_gate.py --expect-unknown evidence/acceptance_19x19_bounded.json
 python scripts/verify_release.py --quick \
   --attempt evidence/acceptance_19x19_bounded.json

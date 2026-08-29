@@ -1,0 +1,54 @@
+{
+  "raw_sources_redistributed": false,
+  "schema_id": "ugts.source-register@5.0.0",
+  "sources": [
+    {
+      "filename": "mandible-broad-set-math-operator-CE-logo-like-simd256.pdf",
+      "id": "S0",
+      "sha256": "6149e3d398c22b53d0664ba2f624c046d6260506f9ac009dfb2b2572afb3d18c",
+      "use": "Immediate Unicode/SDF/log-polar/SIMD source motif"
+    },
+    {
+      "filename": "UGTS_KC_3_6_Tom_Klootwijk.pdf",
+      "id": "S1",
+      "sha256": "e21433cd8378368dafe4ae278d3c9c364725e45ae7fd75b743328bd2d6003a46",
+      "use": "Literal content-addressed definitions and operation order"
+    },
+    {
+      "filename": "UGTS_KC_3_6_1_BEA_Tom_Klootwijk.pdf",
+      "id": "S2",
+      "sha256": "ac857c9c01f5f4e93edbc8657d2d549a085d939dd1cedce3829ab62bc1dca096",
+      "use": "Representation profile, glyph SDF and typed semantic evaluator separation"
+    },
+    {
+      "filename": "UGTS_KC_3_6_2_SCLP_Tom_Klootwijk.pdf",
+      "id": "S3",
+      "sha256": "6987490a0a7b7ed76b0091057a2e69ab831fee786434a0b4219782923f5ea580",
+      "use": "Log-polar chart, finite packing, half-turn/Klein distinction"
+    },
+    {
+      "filename": "Unified_Geometric_Topological_Substrate_GPU_Native_Addendum.pdf",
+      "id": "S4",
+      "sha256": "3a6b6c57118ca4e2d7d7e577508c3477a095d133791f3708cb56a054285225d2",
+      "use": "Packed-state, one-bit and hardware evidence discipline"
+    },
+    {
+      "filename": "UGTS_KC_4_2_General_Operator_Order_Addendum(1).pdf",
+      "id": "S5",
+      "sha256": "413ef9568330e253ebb8e42cbc756257f3c138485f2d9697de48324b92f28efe",
+      "use": "General typed operator record and explicit order calculus"
+    },
+    {
+      "filename": "UGTS_KC_3_9_3_IQ_Field_Substrate_Tom_Klootwijk(1).pdf",
+      "id": "S6",
+      "sha256": "c0ae58652436476f77be3b1f94d4b82cf66f8ba3ca5ae25ad5f6706b217ed8d4",
+      "use": "Field exactness/capability and sign-preserving CSG boundary"
+    },
+    {
+      "filename": "UGTS_Versioning_Charter_Phase_1_Foundation_Chronology(1).pdf",
+      "id": "S7",
+      "sha256": "1b64495ed32a24a66f356652cb6fb1291d0727ab9bfa9174c994d757325f037b",
+      "use": "Component-scoped canonical identity and filename rule"
+    }
+  ]
+}

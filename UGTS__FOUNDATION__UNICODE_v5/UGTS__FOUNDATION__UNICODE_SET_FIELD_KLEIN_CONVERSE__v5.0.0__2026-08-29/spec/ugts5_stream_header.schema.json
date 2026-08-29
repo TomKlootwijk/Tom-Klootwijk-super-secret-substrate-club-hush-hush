@@ -1,0 +1,59 @@
+{
+  "$id": "https://ugts.example/schema/packed-stream-header-5.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "atlas_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "chart": {
+      "properties": {
+        "theta_bins": {
+          "const": 256
+        },
+        "theta_origin_code": {
+          "maximum": 255,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "wrap_profile": {
+          "const": "reflective-klein-converse-v1"
+        }
+      },
+      "required": [
+        "rho_origin",
+        "theta_origin_code",
+        "theta_bins",
+        "wrap_profile"
+      ],
+      "type": "object"
+    },
+    "codebook_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "codebook_id": {
+      "type": "string"
+    },
+    "error_contract": {
+      "type": "object"
+    },
+    "quantization": {
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "ugts.packed-set-field-node-stream@5.0.0"
+    }
+  },
+  "required": [
+    "schema_id",
+    "codebook_id",
+    "codebook_hash",
+    "atlas_hash",
+    "chart",
+    "quantization",
+    "error_contract"
+  ],
+  "title": "UGTS 5.0 Packed Set-Field Node Stream Header",
+  "type": "object"
+}

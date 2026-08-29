@@ -16,10 +16,11 @@ The record CRC covers the prefix, payload and stored SHA-256.  The SHA-256 is
 over the canonical payload alone and is the stable DAG/content identity.
 Readers stop at the first invalid frame.  Strict iteration raises rather than
 silently accepting a valid prefix; :func:`verify_frontier` reports the exact
-last-good/truncation boundary.  :func:`truncate_corrupt_tail` only discards an
-incomplete physical tail.  Integrity failures in complete frames, or an
-apparently torn frame followed by any independently valid frame, require
-operator restoration rather than destructive truncation.
+last-good/truncation boundary.  :func:`truncate_corrupt_tail` only removes an
+incomplete physical tail after durably preserving the exact suspect suffix in
+a content-addressed recovery sidecar.  Integrity failures in complete frames,
+or an apparently torn frame followed by any independently valid frame, require
+operator restoration rather than truncation.
 """
 from __future__ import annotations
 
@@ -35,7 +36,12 @@ from types import MappingProxyType
 from typing import Any, BinaryIO, Iterator, Mapping
 import zlib
 
-from .game_state import HistoryContext, RULE_PROFILE_ID, game_state_record
+from .game_state import (
+    HistoryContext,
+    RULE_PROFILE_ID,
+    game_state_record,
+    validate_history_reachability,
+)
 from .hashing import canonical_json_bytes, state_sha256
 from .position import Position
 
@@ -266,8 +272,7 @@ class FrontierRecord:
         # authored records as well as during independent decoding below.
         self.position.validate_structure()
         history = _canonical_history(self.history)
-        if history.occurrence(self.position) < 1:
-            raise ValueError("history context does not contain the current position")
+        validate_history_reachability(self.position, history)
         object.__setattr__(self, "history", history)
         object.__setattr__(self, "rule_profile_id", _validate_rule_profile_id(self.rule_profile_id))
         if self.parent_content_sha256 is not None and not _is_sha256_hex(self.parent_content_sha256):
@@ -398,6 +403,8 @@ class FrontierRecoveryResult:
     before: FrontierScanResult
     after: FrontierScanResult
     truncated_bytes: int
+    preserved_suffix_path: Path | None = None
+    preserved_suffix_sha256: str | None = None
 
 
 def _crc32(parts: tuple[bytes, ...]) -> int:
@@ -1022,6 +1029,97 @@ def _fsync_parent_directory(path: Path) -> None:
         os.close(descriptor)
 
 
+def _sha256_exact_region(stream: BinaryIO, offset: int, length: int) -> str:
+    """Hash exactly one file region or fail without accepting a short read."""
+
+    original_offset = stream.tell()
+    digest = hashlib.sha256()
+    remaining = length
+    try:
+        stream.seek(offset)
+        while remaining:
+            block = stream.read(min(1024 * 1024, remaining))
+            if not block:
+                raise FrontierRecoveryError("frontier changed while preserving its corrupt suffix")
+            digest.update(block)
+            remaining -= len(block)
+    finally:
+        stream.seek(original_offset)
+    return digest.hexdigest()
+
+
+def _preserve_invalid_suffix(
+    frontier_path: Path,
+    frontier_stream: BinaryIO,
+    *,
+    start_offset: int,
+    file_size: int,
+) -> tuple[Path, str]:
+    """Durably copy the exact suspect suffix before destructive truncation."""
+
+    suffix_length = file_size - start_offset
+    if suffix_length <= 0:
+        raise FrontierRecoveryError("recovery suffix is empty")
+    suffix_sha256 = _sha256_exact_region(frontier_stream, start_offset, suffix_length)
+    recovery_path = frontier_path.with_name(
+        f"{frontier_path.name}.recovery-{start_offset:016x}-{suffix_sha256}.bin"
+    )
+
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    if hasattr(os, "O_BINARY"):
+        flags |= os.O_BINARY
+    created = False
+    try:
+        try:
+            descriptor = os.open(recovery_path, flags, 0o600)
+        except FileExistsError:
+            descriptor = None
+        else:
+            created = True
+            copied_digest = hashlib.sha256()
+            remaining = suffix_length
+            frontier_stream.seek(start_offset)
+            with os.fdopen(descriptor, "wb", buffering=0) as recovery_stream:
+                while remaining:
+                    block = frontier_stream.read(min(1024 * 1024, remaining))
+                    if not block:
+                        raise FrontierRecoveryError(
+                            "frontier changed while copying its corrupt suffix"
+                        )
+                    _write_all(recovery_stream, block)
+                    copied_digest.update(block)
+                    remaining -= len(block)
+                recovery_stream.flush()
+                os.fsync(recovery_stream.fileno())
+            if copied_digest.hexdigest() != suffix_sha256:
+                raise FrontierRecoveryError("recovery suffix changed while it was copied")
+
+        try:
+            with recovery_path.open("r+b", buffering=0) as recovery_stream:
+                if os.fstat(recovery_stream.fileno()).st_size != suffix_length:
+                    raise FrontierRecoveryError("existing recovery sidecar has the wrong size")
+                recovery_sha256 = _sha256_exact_region(recovery_stream, 0, suffix_length)
+                if recovery_sha256 != suffix_sha256:
+                    raise FrontierRecoveryError("existing recovery sidecar has the wrong SHA-256")
+                os.fsync(recovery_stream.fileno())
+        except OSError as exc:
+            raise FrontierRecoveryError(f"recovery sidecar verification failed: {exc}") from exc
+        _fsync_parent_directory(recovery_path)
+
+        if os.fstat(frontier_stream.fileno()).st_size != file_size:
+            raise FrontierRecoveryError("frontier changed while its corrupt suffix was preserved")
+        if _sha256_exact_region(frontier_stream, start_offset, suffix_length) != suffix_sha256:
+            raise FrontierRecoveryError("frontier suffix changed after preservation")
+        return recovery_path, suffix_sha256
+    except BaseException:
+        if created:
+            try:
+                recovery_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+        raise
+
+
 class FrontierWriter:
     """Exclusively locked append handle with verification before every reopen.
 
@@ -1169,12 +1267,14 @@ def truncate_corrupt_tail(
     expected_rule_profile_id: str | None = RULE_PROFILE_ID,
     fsync: bool = True,
 ) -> FrontierRecoveryResult:
-    """Explicitly discard a genuinely incomplete physical record tail.
+    """Explicitly preserve, then remove, an incomplete physical record tail.
 
     Header/version/profile failures and complete-frame integrity failures are
     never truncated.  An apparent torn body is also refused if any later frame
     independently validates, preventing mid-journal bitrot from erasing a
-    durable authoritative suffix.
+    durable authoritative suffix.  Because the v1 format cannot distinguish a
+    torn final write from upward corruption of its length field, every removed
+    suffix is first fsynced to a content-addressed recovery sidecar.
     """
 
     frontier_path = Path(path)
@@ -1196,6 +1296,17 @@ def truncate_corrupt_tail(
             current_size = os.fstat(stream.fileno()).st_size
             if current_size != before.file_size:
                 raise FrontierRecoveryError("frontier changed after recovery scan")
+            try:
+                recovery_path, recovery_sha256 = _preserve_invalid_suffix(
+                    frontier_path,
+                    stream,
+                    start_offset=before.last_good_offset,
+                    file_size=before.file_size,
+                )
+            except FrontierRecoveryError:
+                raise
+            except OSError as exc:
+                raise FrontierRecoveryError(f"cannot preserve corrupt suffix: {exc}") from exc
             stream.truncate(before.last_good_offset)
             stream.flush()
             if fsync:
@@ -1209,6 +1320,8 @@ def truncate_corrupt_tail(
             before,
             after,
             before.file_size - before.last_good_offset,
+            recovery_path,
+            recovery_sha256,
         )
     finally:
         writer_lock.release()

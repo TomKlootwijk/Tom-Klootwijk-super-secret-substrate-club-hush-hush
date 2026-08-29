@@ -1,30 +1,67 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from contextlib import redirect_stdout
+import hashlib
 import io
 import json
 from pathlib import Path
+import struct
 import tempfile
 import unittest
 from unittest.mock import patch
 
+from jsonschema import Draft202012Validator, ValidationError
+
 import ugts_chess.gpu_qualification as gpu_qualification
 from ugts_chess.cli import main
 from ugts_chess.gpu_qualification import (
+    GPUQualificationRecordError,
+    QUALIFICATION_PROFILE,
+    QUALIFICATION_SCHEMA,
     QUALIFICATION_FIXTURES,
     build_qualification_corpus,
     corpus_sha256,
     parse_backend_evidence,
     qualify_gpu_move_generator,
+    validate_gpu_qualification_record_structure,
+    verify_gpu_qualification_record,
 )
+from ugts_chess.gpu_protocol import (
+    MAX_MOVES,
+    OUTPUT_HEADER,
+    OUTPUT_MAGIC,
+    encode_move16,
+    encode_position_batch,
+)
+from ugts_chess.rules import legal_moves
 
 
-def artifact_evidence(backend_flag: int = 1) -> dict[str, object]:
+def artifact_evidence(position_count: int, backend_flag: int = 1) -> dict[str, object]:
+    invocation_id = "a" * 32
+    invocation_dir = Path("C:/qualified/work") / f"run-{invocation_id}"
     return {
+        "invocation_id": invocation_id,
+        "invocation_dir": str(invocation_dir),
         "input_sha256": "1" * 64,
+        "input": {
+            "path": str(invocation_dir / "positions.ugcb"),
+            "count": position_count,
+            "record_size": 64,
+            "sha256": "1" * 64,
+        },
         "output_sha256": "2" * 64,
         "output_semantic_payload_sha256": "3" * 64,
         "output_backend_flag": backend_flag,
+        "output": {
+            "path": str(invocation_dir / "moves.ugmv"),
+            "count": position_count,
+            "backend_flag": backend_flag,
+            "backend": "cuda" if backend_flag == 1 else "cpu",
+            "bytes": 1024,
+            "sha256": "2" * 64,
+            "semantic_payload_sha256": "3" * 64,
+        },
         "executable": executable_evidence(),
     }
 
@@ -38,20 +75,27 @@ def executable_evidence(sha256: str = "4" * 64) -> dict[str, object]:
 
 
 def device_evidence(*, valid: bool = True) -> dict[str, object]:
+    payload = {
+        "cuda_compiled": True,
+        "device_available": valid,
+        "device_index": 0,
+        "name": "Test CUDA Device",
+        "compute_capability": "12.0",
+        "total_memory_bytes": 1024,
+        "multiprocessors": 1,
+        "error": "" if valid else "unavailable",
+    }
+    stdout = json.dumps(payload, separators=(",", ":"))
     return {
         "valid": valid,
         "validation_failures": [] if valid else ["cuda_device_unavailable"],
         "device_index": 0,
-        "payload": {
-            "cuda_compiled": True,
-            "device_available": valid,
-            "device_index": 0,
-            "name": "Test CUDA Device",
-            "compute_capability": "12.0",
-            "total_memory_bytes": 1024,
-            "multiprocessors": 1,
-            "error": "" if valid else "unavailable",
-        },
+        "payload": payload,
+        "parse_error": None,
+        "returncode": 0,
+        "stdout": stdout,
+        "stdout_sha256": hashlib.sha256(stdout.encode("utf-8")).hexdigest(),
+        "stderr": "",
         "executable": executable_evidence(),
         "claim_source": "same_executable_self_report",
         "independent_hardware_attestation": False,
@@ -154,7 +198,7 @@ class GPUQualificationTests(unittest.TestCase):
             if batch_index == 1:
                 mismatches = [{"index": 2, "fen": positions[2].to_fen(), "missing": ["e1g1"], "extra": []}]
             return {
-                **artifact_evidence(),
+                **artifact_evidence(len(positions)),
                 "executable_stdout": json.dumps(
                     {
                         "backend": backend,
@@ -215,7 +259,7 @@ class GPUQualificationTests(unittest.TestCase):
     def test_04_all_cuda_and_exact_qualifies(self, mocked_run_batch) -> None:
         def fake_run_batch(_executable, positions, _work_dir):
             return {
-                **artifact_evidence(),
+                **artifact_evidence(len(positions)),
                 "executable_stdout": json.dumps(
                     {
                         "backend": "cuda",
@@ -241,6 +285,8 @@ class GPUQualificationTests(unittest.TestCase):
             clock=lambda: next(ticks),
         )
         self.assertTrue(result["qualified"])
+        self.assertEqual(result["schema"], QUALIFICATION_SCHEMA)
+        self.assertEqual(result["profile"], QUALIFICATION_PROFILE)
         self.assertTrue(result["all_batches_cuda"])
         self.assertEqual(result["mismatches"], [])
         self.assertEqual(result["end_to_end_positions_per_second"], 32.0)
@@ -268,7 +314,7 @@ class GPUQualificationTests(unittest.TestCase):
         def fake_run_batch(_executable, positions, _work_dir):
             proposal_moves = len(positions) * 3
             return {
-                **artifact_evidence(),
+                **artifact_evidence(len(positions)),
                 "executable_stdout": json.dumps(
                     {
                         "backend": "cuda",
@@ -323,7 +369,7 @@ class GPUQualificationTests(unittest.TestCase):
         def fake_run_batch(_executable, positions, _work_dir):
             moves = len(positions) * 2
             return {
-                **artifact_evidence(backend_flag=0),
+                **artifact_evidence(len(positions), backend_flag=0),
                 "executable_stdout": json.dumps(
                     {
                         "backend": "cuda",
@@ -363,12 +409,15 @@ class GPUQualificationTests(unittest.TestCase):
     def test_07_missing_or_malformed_artifact_hashes_fail_gate(self, mocked_run_batch) -> None:
         def fake_run_batch(_executable, positions, _work_dir):
             moves = len(positions) * 2
+            evidence = artifact_evidence(len(positions))
+            evidence["input_sha256"] = "not-a-hash"
+            evidence["input"]["sha256"] = "not-a-hash"
+            evidence["output_sha256"] = None
+            evidence["output_semantic_payload_sha256"] = "A" * 64
+            evidence["output"]["sha256"] = None
+            evidence["output"]["semantic_payload_sha256"] = "A" * 64
             return {
-                "input_sha256": "not-a-hash",
-                "output_sha256": None,
-                "output_semantic_payload_sha256": "A" * 64,
-                "output_backend_flag": 1,
-                "executable": executable_evidence(),
+                **evidence,
                 "executable_stdout": json.dumps(
                     {
                         "backend": "cuda",
@@ -412,7 +461,7 @@ class GPUQualificationTests(unittest.TestCase):
         def fake_run_batch(_executable, positions, _work_dir):
             moves = len(positions) * 2
             return {
-                **artifact_evidence(),
+                **artifact_evidence(len(positions)),
                 "executable_stdout": json.dumps(
                     {
                         "backend": "cuda",
@@ -447,7 +496,7 @@ class GPUQualificationTests(unittest.TestCase):
     def test_09_changed_executable_identity_fails_otherwise_exact_gate(self, mocked_run_batch) -> None:
         def fake_run_batch(_executable, positions, _work_dir):
             moves = len(positions) * 2
-            evidence = artifact_evidence()
+            evidence = artifact_evidence(len(positions))
             evidence["executable"] = executable_evidence("5" * 64)
             return {
                 **evidence,
@@ -489,7 +538,7 @@ class GPUQualificationTests(unittest.TestCase):
         def fake_run_batch(_executable, positions, _work_dir):
             moves = len(positions) * 2
             return {
-                **artifact_evidence(),
+                **artifact_evidence(len(positions)),
                 "executable_stdout": json.dumps(
                     {
                         "backend": "cuda",
@@ -542,6 +591,164 @@ class GPUQualificationTests(unittest.TestCase):
         self.assertFalse(json.loads(stream.getvalue())["qualified"])
         self.assertEqual(mocked_qualify.call_args.kwargs["seed"], 42)
         self.assertEqual(mocked_qualify.call_args.kwargs["random_positions"], 3)
+
+    @patch("ugts_chess.gpu_qualification.run_batch")
+    def test_12_runtime_gate_rejects_downgrade_and_forged_batch_flags(self, mocked_run_batch) -> None:
+        def fake_run_batch(_executable, positions, work_dir):
+            invocation_id = "b" * 32
+            invocation_dir = Path(work_dir) / f"run-{invocation_id}"
+            invocation_dir.mkdir(parents=True)
+            input_path = invocation_dir / "positions.ugcb"
+            output_path = invocation_dir / "moves.ugmv"
+            input_bytes = encode_position_batch(positions)
+            input_path.write_bytes(input_bytes)
+
+            move_lists = [sorted(move.uci() for move in legal_moves(position)) for position in positions]
+            counts = [len(moves) for moves in move_lists]
+            slots: list[int] = []
+            for moves in move_lists:
+                slots.extend(encode_move16(move) for move in moves)
+                slots.extend([0] * (MAX_MOVES - len(moves)))
+            output_bytes = (
+                OUTPUT_HEADER.pack(OUTPUT_MAGIC, 1, 2, MAX_MOVES, len(positions), 1)
+                + struct.pack(f"<{len(counts)}H", *counts)
+                + struct.pack(f"<{len(slots)}H", *slots)
+            )
+            output_path.write_bytes(output_bytes)
+            input_sha256 = hashlib.sha256(input_bytes).hexdigest()
+            output_sha256 = hashlib.sha256(output_bytes).hexdigest()
+            semantic_sha256 = hashlib.sha256(output_bytes[OUTPUT_HEADER.size :]).hexdigest()
+            moves = sum(counts)
+            return {
+                "invocation_id": invocation_id,
+                "invocation_dir": str(invocation_dir),
+                "input_sha256": input_sha256,
+                "input": {
+                    "path": str(input_path),
+                    "count": len(positions),
+                    "record_size": 64,
+                    "sha256": input_sha256,
+                },
+                "output_sha256": output_sha256,
+                "output_semantic_payload_sha256": semantic_sha256,
+                "output_backend_flag": 1,
+                "output": {
+                    "path": str(output_path),
+                    "count": len(positions),
+                    "backend_flag": 1,
+                    "backend": "cuda",
+                    "bytes": len(output_bytes),
+                    "sha256": output_sha256,
+                    "semantic_payload_sha256": semantic_sha256,
+                },
+                "executable": executable_evidence(),
+                "positions": len(positions),
+                "executable_stdout": json.dumps(
+                    {
+                        "backend": "cuda",
+                        "positions": len(positions),
+                        "moves": moves,
+                        "seconds": 0.125,
+                        "cuda_fallback_reason": "",
+                    }
+                ),
+                "proposal_move_count": moves,
+                "verified_move_count": moves,
+                "mismatches": [],
+            }
+
+        mocked_run_batch.side_effect = fake_run_batch
+        ticks = iter((0.0, 0.5))
+        with tempfile.TemporaryDirectory() as temp:
+            record = qualify_gpu_move_generator(
+                "fake-gpu",
+                temp,
+                random_positions=0,
+                max_plies=1,
+                chunk_size=64,
+                clock=lambda: next(ticks),
+            )
+
+            self.assertTrue(validate_gpu_qualification_record_structure(record))
+            self.assertTrue(verify_gpu_qualification_record(record, "fake-gpu", fresh_device_probe=False))
+
+            downgraded = deepcopy(record)
+            downgraded["schema"] = "ugts-chess-cuda-movegen-qualification-v1"
+            with self.assertRaisesRegex(GPUQualificationRecordError, "unsupported qualification schema"):
+                validate_gpu_qualification_record_structure(downgraded)
+
+            forged = deepcopy(record)
+            forged["batches"][0]["executable_stdout"] = (
+                '{"backend":"cpu","positions":16,"moves":320,'
+                '"seconds":0.125,"cuda_fallback_reason":"no CUDA"}'
+            )
+            with self.assertRaisesRegex(GPUQualificationRecordError, "stdout contradicts backend"):
+                validate_gpu_qualification_record_structure(forged)
+
+            forged_device = deepcopy(record)
+            forged_device["device_probe"]["payload"]["device_available"] = False
+            with self.assertRaisesRegex(GPUQualificationRecordError, "CUDA is unavailable"):
+                validate_gpu_qualification_record_structure(forged_device)
+
+            output_path = Path(record["batches"][0]["output"]["path"])
+            output_path.write_bytes(output_path.read_bytes() + b"tampered")
+            with self.assertRaisesRegex(GPUQualificationRecordError, "retained output hash differs"):
+                verify_gpu_qualification_record(record, "fake-gpu", fresh_device_probe=False)
+
+    @patch("ugts_chess.gpu_qualification.run_batch")
+    def test_13_v2_json_schema_rejects_downgrade_and_removed_artifact_metadata(self, mocked_run_batch) -> None:
+        def fake_run_batch(_executable, positions, _work_dir):
+            moves = len(positions) * 3
+            return {
+                **artifact_evidence(len(positions)),
+                "executable_stdout": json.dumps(
+                    {
+                        "backend": "cuda",
+                        "positions": len(positions),
+                        "moves": moves,
+                        "seconds": 0.125,
+                        "cuda_fallback_reason": "",
+                    }
+                ),
+                "proposal_move_count": moves,
+                "verified_move_count": moves,
+                "mismatches": [],
+            }
+
+        mocked_run_batch.side_effect = fake_run_batch
+        ticks = iter((0.0, 0.5))
+        record = qualify_gpu_move_generator(
+            "fake-gpu",
+            "work",
+            random_positions=0,
+            max_plies=1,
+            chunk_size=64,
+            clock=lambda: next(ticks),
+        )
+        schema_path = Path(__file__).resolve().parents[1] / "spec" / "ugts_chess_gpu_qualification.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        Draft202012Validator.check_schema(schema)
+        validator = Draft202012Validator(schema)
+        validator.validate(record)
+
+        downgraded = deepcopy(record)
+        downgraded["schema"] = "ugts-chess-cuda-movegen-qualification-v1"
+        with self.assertRaises(ValidationError):
+            validator.validate(downgraded)
+
+        for removed_field in ("invocation_id", "invocation_dir", "input", "output"):
+            with self.subTest(removed_field=removed_field):
+                stripped = deepcopy(record)
+                del stripped["batches"][0][removed_field]
+                with self.assertRaises(ValidationError):
+                    validator.validate(stripped)
+
+        forged_passing_flags = deepcopy(record)
+        forged_passing_flags["batches"][0]["output_backend_flag"] = 0
+        forged_passing_flags["batches"][0]["output"]["backend_flag"] = 0
+        forged_passing_flags["batches"][0]["output"]["backend"] = "cpu"
+        with self.assertRaises(ValidationError):
+            validator.validate(forged_passing_flags)
 
 
 if __name__ == "__main__":

@@ -12,7 +12,9 @@ from ugts_kc3.editor.graph import (
     GraphNode,
     NodePropertiesPanel,
     TEMPLATE_BY_KEY,
+    VisualGraphScene,
 )
+from ugts_kc3.editor.document import SelectionRef
 from ugts_kc3.editor.main_window import EditorMainWindow
 from ugts_kc3.visual_graph import GraphNode as DataGraphNode, VisualGraph
 
@@ -53,6 +55,76 @@ class ContextualGraphPropertyTests(unittest.TestCase):
         self.assertIs(active.properties["active"], False)
         enabled.setCurrentText("Maybe")
         self.assertIs(active.properties["active"], False)
+
+    def test_repeatable_random_number_template_roundtrips_all_settings(self) -> None:
+        template = TEMPLATE_BY_KEY["value.seeded_number"]
+        self.assertEqual(template.title, "Repeatable Random Number")
+        self.assertEqual(template.category, "Values")
+        self.assertEqual(
+            dict(template.default_properties),
+            {"world_number": 1, "pick_number": 0, "smallest": 0.0, "largest": 1.0},
+        )
+        scene = VisualGraphScene()
+        scene.load_data(
+            {
+                "schema": VisualGraph.SCHEMA,
+                "id": "repeatable_editor",
+                "nodes": [
+                    {
+                        "id": "number",
+                        "type": "value.seeded_number",
+                        "position": [12, 34],
+                        "properties": {
+                            "world_number": 392,
+                            "pick_number": 7,
+                            "smallest": -10.0,
+                            "largest": 10.0,
+                        },
+                    }
+                ],
+                "links": [],
+            }
+        )
+        saved = scene.data()
+        restored = VisualGraph.from_dict(saved)
+        self.assertEqual(restored.nodes[0].type, "value.seeded_number")
+        self.assertEqual(
+            dict(restored.nodes[0].properties),
+            {"world_number": 392, "pick_number": 7, "smallest": -10.0, "largest": 10.0},
+        )
+
+    def test_find_nearby_object_has_child_safe_sensing_choices(self) -> None:
+        template = TEMPLATE_BY_KEY["query.nearest_tag"]
+        self.assertEqual(template.title, "Find Nearby Object")
+        self.assertEqual(template.category, "Sensing")
+        panel = NodePropertiesPanel()
+        panel.set_project_kind("3d")
+        nearby = GraphNode("nearby", template)
+        panel.set_node(nearby)
+
+        origin = panel.editor_for("origin")
+        tag = panel.editor_for("tag")
+        self.assertIsInstance(origin, QComboBox)
+        self.assertTrue(origin.isEditable())
+        self.assertIsNone(origin.itemData(0))
+        self.assertEqual(origin.itemText(0), "This object")
+        self.assertIsInstance(tag, QComboBox)
+        self.assertFalse(tag.isEditable())
+        self.assertEqual(
+            [tag.itemData(index) for index in range(tag.count())],
+            ["player", "collectible", "goal", "decorative", "hazard"],
+        )
+
+        tag.setCurrentIndex(tag.findData("hazard"))
+        self.assertEqual(nearby.properties["tag"], "hazard")
+        origin.setEditText("player")
+        origin.lineEdit().editingFinished.emit()
+        self.assertEqual(nearby.properties["origin"], "player")
+        origin = panel.editor_for("origin")
+        origin.setEditText("")
+        origin.lineEdit().editingFinished.emit()
+        self.assertIsNone(nearby.properties["origin"])
+        self.assertIsNone(panel.editor_for("radius"))
 
     def test_actions_and_component_fields_follow_project_context(self) -> None:
         panel = NodePropertiesPanel()
@@ -204,6 +276,43 @@ class ContextualGraphPropertyTests(unittest.TestCase):
                     for node in window.graph_page.graph_scene.nodes.values()
                 )
             )
+            self.assertTrue(window.document.validate().passed)
+        finally:
+            window.document.set_dirty(False)
+            window.close()
+            self.app.processEvents()
+
+    def test_world_sensing_uses_explicit_scene_object_picker_and_safe_default(self) -> None:
+        window = EditorMainWindow()
+        try:
+            window.new_3d_project()
+            window.document.set_selection(
+                SelectionRef("world_graph", "find_goal_lesson")
+            )
+            self.app.processEvents()
+            nearby = next(
+                node
+                for node in window.graph_page.graph_scene.nodes.values()
+                if node.template.key == "query.nearest_tag"
+            )
+            window.graph_page.graph_scene.clearSelection()
+            nearby.setSelected(True)
+            self.app.processEvents()
+            origin = window.graph_page.properties.editor_for("origin")
+            self.assertIsInstance(origin, QComboBox)
+            self.assertEqual(origin.findData(None), -1)
+            self.assertGreaterEqual(origin.findData("player"), 0)
+            self.assertEqual(origin.currentData(), "player")
+
+            existing = set(window.graph_page.graph_scene.nodes)
+            window.graph_page.add_template("query.nearest_tag")
+            self.app.processEvents()
+            added = next(
+                node
+                for node_id, node in window.graph_page.graph_scene.nodes.items()
+                if node_id not in existing
+            )
+            self.assertEqual(added.properties["origin"], "player")
             self.assertTrue(window.document.validate().passed)
         finally:
             window.document.set_dirty(False)

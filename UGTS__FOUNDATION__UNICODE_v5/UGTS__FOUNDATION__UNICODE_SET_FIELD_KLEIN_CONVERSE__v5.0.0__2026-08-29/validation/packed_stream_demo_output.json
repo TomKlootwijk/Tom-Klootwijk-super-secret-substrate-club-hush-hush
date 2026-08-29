@@ -1,0 +1,75 @@
+{
+  "path": "examples/sample_nodes.ug5n",
+  "node_count": 4,
+  "words": [
+    "0x87d881a9",
+    "0x881f81ab",
+    "0xb0020785",
+    "0x38060784"
+  ],
+  "decoded": [
+    {
+      "family": 0,
+      "kappa": 0,
+      "delta_rho": -5,
+      "delta_theta": 16,
+      "grammar_path": 53,
+      "local_flags": 0,
+      "active": true
+    },
+    {
+      "family": 0,
+      "kappa": 1,
+      "delta_rho": 3,
+      "delta_theta": 240,
+      "grammar_path": 53,
+      "local_flags": 1,
+      "active": true
+    },
+    {
+      "family": 3,
+      "kappa": 0,
+      "delta_rho": 0,
+      "delta_theta": 64,
+      "grammar_path": 240,
+      "local_flags": 2,
+      "active": true
+    },
+    {
+      "family": 3,
+      "kappa": 1,
+      "delta_rho": 0,
+      "delta_theta": 192,
+      "grammar_path": 240,
+      "local_flags": 2,
+      "active": false
+    }
+  ],
+  "header": {
+    "$schema": "../spec/ugts5_stream_header.schema.json",
+    "atlas_hash": "d4745a198469ff97665825f53d88cdbf8bad27687a3021c89177eedb83a55e91",
+    "chart": {
+      "rho_origin": -5.0,
+      "theta_bins": 256,
+      "theta_origin_code": 0,
+      "wrap_profile": "reflective-klein-converse-v1"
+    },
+    "codebook_hash": "3a279c68331d697f31e223b71eea898a4239d4da989b6f6d5c1dfd0dfcffb009",
+    "codebook_id": "ugts.set-core-16.v1",
+    "error_contract": {
+      "event_margin_rule": "numeric_error <= event_margin",
+      "max_theta_error_degrees": 0.703125
+    },
+    "grammar": {
+      "meaning": "bounded branch fragment",
+      "path_bits": 8
+    },
+    "quantization": {
+      "delta_rho_bias": 0,
+      "delta_rho_scale": 0.03125,
+      "rounding": "nearest",
+      "theta_bin_degrees": 1.40625
+    },
+    "schema_id": "ugts.packed-set-field-node-stream@5.0.0"
+  }
+}

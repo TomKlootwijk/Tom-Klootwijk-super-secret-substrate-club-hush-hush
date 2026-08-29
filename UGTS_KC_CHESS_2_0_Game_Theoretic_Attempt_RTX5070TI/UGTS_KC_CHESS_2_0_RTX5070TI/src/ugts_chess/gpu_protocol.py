@@ -203,23 +203,34 @@ def pack_position(position: Position, *, parent: int = 0, key_lo: int = 0, key_h
     )
 
 
-def write_position_batch(path: str | Path, positions: Iterable[Position]) -> dict[str, object]:
-    path = Path(path)
+def encode_position_batch(positions: Iterable[Position]) -> bytes:
+    """Return the canonical immutable bytes for one packed-position batch."""
+
     records = list(positions)
     payload = b"".join(pack_position(position, parent=index) for index, position in enumerate(records))
     header = INPUT_HEADER.pack(INPUT_MAGIC, 1, PACKED_POSITION.size, len(records), 0)
+    return header + payload
+
+
+def write_position_batch(path: str | Path, positions: Iterable[Position]) -> dict[str, object]:
+    path = Path(path)
+    raw = encode_position_batch(positions)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(header + payload)
+    path.write_bytes(raw)
+    _magic, _version, record_size, count, _flags = INPUT_HEADER.unpack_from(raw, 0)
     return {
         "path": str(path),
-        "count": len(records),
-        "record_size": PACKED_POSITION.size,
-        "sha256": hashlib.sha256(header + payload).hexdigest(),
+        "count": count,
+        "record_size": record_size,
+        "sha256": hashlib.sha256(raw).hexdigest(),
     }
 
 
-def read_move_batch(path: str | Path) -> list[list[str]]:
-    raw = Path(path).read_bytes()
+def decode_move_batch(raw: bytes) -> list[list[str]]:
+    """Decode one immutable move-batch byte string."""
+
+    if not isinstance(raw, bytes):
+        raise TypeError("move-batch payload must be bytes")
     if len(raw) < OUTPUT_HEADER.size:
         raise ValueError("truncated move batch")
     magic, version, move_size, max_moves, count, _flags = OUTPUT_HEADER.unpack_from(raw, 0)
@@ -242,16 +253,23 @@ def read_move_batch(path: str | Path) -> list[list[str]]:
     return result
 
 
+def read_move_batch(path: str | Path) -> list[list[str]]:
+    return decode_move_batch(Path(path).read_bytes())
+
+
 def run_batch(executable: str | Path, positions: list[Position], work_dir: str | Path) -> dict[str, object]:
-    work_dir = Path(work_dir)
-    work_dir.mkdir(parents=True, exist_ok=True)
-    input_path = work_dir / "positions.ugcb"
-    output_path = work_dir / "moves.ugmv"
+    work_root = Path(work_dir)
+    work_root.mkdir(parents=True, exist_ok=True)
+    invocation_id = uuid.uuid4().hex
+    invocation_dir = work_root / f"run-{invocation_id}"
+    invocation_dir.mkdir(exist_ok=False)
+    input_path = invocation_dir / "positions.ugcb"
+    output_path = invocation_dir / "moves.ugmv"
     # A successful no-op process must never inherit a prior run's answer.
-    # The unpredictable staging name also prevents accidental collisions with
-    # another invocation before the result is atomically published.
+    # The enclosing UUID directory prevents collisions between invocations;
+    # keep the staging basename short enough for legacy Windows native I/O.
     output_path.unlink(missing_ok=True)
-    staged_output_path = work_dir / f".moves.{uuid.uuid4().hex}.ugmv"
+    staged_output_path = invocation_dir / ".moves.tmp"
     input_meta = write_position_batch(input_path, positions)
     executable_before = executable_identity(executable)
     resolved_executable = str(executable_before["path"])
@@ -284,8 +302,11 @@ def run_batch(executable: str | Path, positions: list[Position], work_dir: str |
     if executable_before != executable_after:
         output_path.unlink(missing_ok=True)
         raise RuntimeError("GPU batch executable changed while the batch was running")
-    proposed = read_move_batch(output_path)
+    # Parse, compare, hash, and inspect the header from one immutable snapshot.
+    # A second filesystem read could otherwise be replaced concurrently and
+    # splice parity from one payload together with flags/hashes from another.
     output_bytes = output_path.read_bytes()
+    proposed = decode_move_batch(output_bytes)
     _magic, _version, _move_size, _max_moves, output_count, output_flags = OUTPUT_HEADER.unpack_from(
         output_bytes, 0
     )
@@ -323,6 +344,8 @@ def run_batch(executable: str | Path, positions: list[Position], work_dir: str |
                 }
             )
     return {
+        "invocation_id": invocation_id,
+        "invocation_dir": str(invocation_dir),
         "executable": executable_after,
         "executable_path": executable_after["path"],
         "executable_sha256": executable_after["sha256"],

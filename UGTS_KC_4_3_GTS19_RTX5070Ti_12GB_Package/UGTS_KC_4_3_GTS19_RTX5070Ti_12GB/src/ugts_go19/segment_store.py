@@ -98,6 +98,16 @@ class SegmentStoreSnapshot:
 
 
 @dataclass(frozen=True, slots=True)
+class _SealedSegment:
+    """One fsynced but not yet published immutable segment candidate."""
+
+    temporary_path: Path
+    sha256: str
+    byte_length: int
+    record_count: int
+
+
+@dataclass(frozen=True, slots=True)
 class _MemoryObjectRecord:
     ref: ObjectRef
     payload: bytes
@@ -122,19 +132,29 @@ class _MappedSegment:
             self._stream.close()
             raise
 
+    def _open_mapping(self) -> mmap.mmap:
+        mapping = self._mapping
+        if mapping is None:
+            raise SegmentStoreError("mapped immutable segment is closed")
+        return mapping
+
     @property
     def byte_length(self) -> int:
-        return len(self._mapping)
+        return len(self._open_mapping())
 
     def read(self, offset: int, length: int) -> bytes:
-        if offset < 0 or length < 0 or offset > len(self._mapping) - length:
+        mapping = self._open_mapping()
+        if offset < 0 or length < 0 or offset > len(mapping) - length:
             raise SegmentStoreError("mapped segment read is outside validated bounds")
-        return self._mapping[offset : offset + length]
+        return mapping[offset : offset + length]
 
     def sha256_hex(self) -> str:
+        mapping = self._open_mapping()
         digest = hashlib.sha256()
-        for offset in range(0, len(self._mapping), _IO_CHUNK_BYTES):
-            digest.update(self.read(offset, min(_IO_CHUNK_BYTES, len(self._mapping) - offset)))
+        for offset in range(0, len(mapping), _IO_CHUNK_BYTES):
+            digest.update(
+                mapping[offset : offset + min(_IO_CHUNK_BYTES, len(mapping) - offset)]
+            )
         return digest.hexdigest()
 
     def verified_read(self, offset: int, length: int) -> bytes:
@@ -147,17 +167,36 @@ class _MappedSegment:
         """
 
         payload = self.read(offset, length)
-        if self.sha256_hex() != self.expected_sha256:
-            raise SegmentStoreError(
-                "mapped immutable segment changed after validation"
-            )
+        self.verify_unchanged()
         return payload
 
+    def verify_unchanged(self) -> None:
+        """Reject a backing file that no longer matches its validated bytes."""
+
+        if self.sha256_hex() != self.expected_sha256:
+            raise SegmentStoreError("mapped immutable segment changed after validation")
+
     def close(self) -> None:
-        try:
-            self._mapping.close()
-        finally:
-            self._stream.close()
+        mapping = self._mapping
+        stream = self._stream
+        first_error: BaseException | None = None
+        if mapping is not None:
+            try:
+                mapping.close()
+            except BaseException as exc:  # pragma: no cover - OS-level fallback
+                first_error = exc
+            else:
+                self._mapping = None
+        if stream is not None:
+            try:
+                stream.close()
+            except BaseException as exc:  # pragma: no cover - OS-level fallback
+                if first_error is None:
+                    first_error = exc
+            else:
+                self._stream = None
+        if first_error is not None:
+            raise first_error
 
 
 @dataclass(frozen=True, slots=True)
@@ -188,59 +227,73 @@ def _record_chunk(record: _ObjectRecord, offset: int, length: int) -> bytes:
 def _record_bytes(record: _ObjectRecord) -> bytes:
     if isinstance(record, _MemoryObjectRecord):
         return record.payload
-    return record.segment.verified_read(
-        record.payload_offset, record.payload_length
-    )
+    return record.segment.verified_read(record.payload_offset, record.payload_length)
 
 
 def _record_equals_payload(record: _ObjectRecord, payload: bytes) -> bool:
     if _record_length(record) != len(payload):
         return False
     if isinstance(record, _DiskObjectRecord):
-        return _record_bytes(record) == payload
+        record.segment.verify_unchanged()
+    equal = True
     for offset in range(0, len(payload), _IO_CHUNK_BYTES):
         length = min(_IO_CHUNK_BYTES, len(payload) - offset)
         if _record_chunk(record, offset, length) != payload[offset : offset + length]:
-            return False
-    return True
+            equal = False
+            break
+    if isinstance(record, _DiskObjectRecord):
+        record.segment.verify_unchanged()
+    return equal
+
+
+def _verify_record_segments(*records: _ObjectRecord) -> None:
+    seen: set[int] = set()
+    for record in records:
+        if not isinstance(record, _DiskObjectRecord):
+            continue
+        identity = id(record.segment)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        record.segment.verify_unchanged()
 
 
 def _records_equal(first: _ObjectRecord, second: _ObjectRecord) -> bool:
     length = _record_length(first)
     if length != _record_length(second):
         return False
-    if isinstance(first, _DiskObjectRecord) or isinstance(
-        second, _DiskObjectRecord
-    ):
-        return _record_bytes(first) == _record_bytes(second)
+    _verify_record_segments(first, second)
+    equal = True
     for offset in range(0, length, _IO_CHUNK_BYTES):
         chunk_length = min(_IO_CHUNK_BYTES, length - offset)
         if _record_chunk(first, offset, chunk_length) != _record_chunk(
             second, offset, chunk_length
         ):
-            return False
-    return True
+            equal = False
+            break
+    _verify_record_segments(first, second)
+    return equal
 
 
 def _compare_record_payloads(first: _ObjectRecord, second: _ObjectRecord) -> int:
-    if isinstance(first, _DiskObjectRecord) or isinstance(
-        second, _DiskObjectRecord
-    ):
-        first_payload = _record_bytes(first)
-        second_payload = _record_bytes(second)
-        return (first_payload > second_payload) - (
-            first_payload < second_payload
-        )
+    _verify_record_segments(first, second)
     shared_length = min(_record_length(first), _record_length(second))
+    comparison = 0
     for offset in range(0, shared_length, _IO_CHUNK_BYTES):
         chunk_length = min(_IO_CHUNK_BYTES, shared_length - offset)
         first_chunk = _record_chunk(first, offset, chunk_length)
         second_chunk = _record_chunk(second, offset, chunk_length)
         if first_chunk != second_chunk:
-            return -1 if first_chunk < second_chunk else 1
-    first_length = _record_length(first)
-    second_length = _record_length(second)
-    return (first_length > second_length) - (first_length < second_length)
+            comparison = -1 if first_chunk < second_chunk else 1
+            break
+    if comparison == 0:
+        first_length = _record_length(first)
+        second_length = _record_length(second)
+        comparison = (first_length > second_length) - (
+            first_length < second_length
+        )
+    _verify_record_segments(first, second)
+    return comparison
 
 
 def _sha256_hex(data: bytes) -> str:
@@ -317,9 +370,7 @@ def _require_int(
 
 def _require_sha256(value: Any, label: str) -> str:
     if type(value) is not str or _HEX64.fullmatch(value) is None:
-        raise SegmentStoreError(
-            f"{label} must be lowercase 256-bit hexadecimal text"
-        )
+        raise SegmentStoreError(f"{label} must be lowercase 256-bit hexadecimal text")
     return value
 
 
@@ -343,15 +394,56 @@ def _fsync_directory(path: Path) -> None:
         os.close(descriptor)
 
 
+def _mkdir_durable(path: Path) -> None:
+    """Create a directory chain and persist every new parent entry on POSIX."""
+
+    missing: list[Path] = []
+    cursor = path
+    while not cursor.exists():
+        missing.append(cursor)
+        parent = cursor.parent
+        if parent == cursor:
+            raise OSError(f"cannot find an existing ancestor for {path}")
+        cursor = parent
+    if not cursor.is_dir():
+        raise NotADirectoryError(cursor)
+    # This is intentionally repeated even when ``cursor`` already exists.  It
+    # closes the retry gap where an earlier mkdir succeeded but its parent
+    # fsync failed before the constructor returned.
+    _fsync_directory(cursor.parent)
+    for directory in reversed(missing):
+        directory.mkdir()
+        _fsync_directory(directory.parent)
+
+
+def _fsync_file(path: Path) -> None:
+    """Flush an installed immutable file before it becomes reachable."""
+
+    # Windows' CRT rejects fsync on a read-only descriptor (EBADF), so request
+    # a writable handle without modifying the immutable bytes.
+    with path.open("r+b") as stream:
+        os.fsync(stream.fileno())
+
+
 def _write_fsynced_temp(directory: Path, prefix: str, data: bytes) -> Path:
     descriptor, raw_path = tempfile.mkstemp(prefix=prefix, dir=directory)
-    path = Path(raw_path)
     try:
-        with os.fdopen(descriptor, "wb") as stream:
-            stream.write(data)
+        path = Path(raw_path)
+    except BaseException:
+        os.close(descriptor)
+        os.unlink(raw_path)
+        raise
+    try:
+        stream = os.fdopen(descriptor, "wb")
+        descriptor = -1
+        with stream:
+            if stream.write(data) != len(data):
+                raise OSError("short write while publishing immutable metadata")
             stream.flush()
             os.fsync(stream.fileno())
     except BaseException:
+        if descriptor >= 0:
+            os.close(descriptor)
         try:
             path.unlink()
         except FileNotFoundError:
@@ -372,22 +464,92 @@ def _atomic_replace_bytes(path: Path, data: bytes) -> None:
             pass
 
 
-def _publish_immutable(path: Path, data: bytes) -> None:
-    """Atomically install immutable bytes or verify an existing equal file."""
+def _stream_file_sha256(path: Path) -> tuple[str, int]:
+    """Hash one file without materializing it as a single ``bytes`` value."""
+
+    digest = hashlib.sha256()
+    byte_length = 0
+    with path.open("rb") as stream:
+        while True:
+            chunk = stream.read(_IO_CHUNK_BYTES)
+            if not chunk:
+                break
+            digest.update(chunk)
+            byte_length += len(chunk)
+    return digest.hexdigest(), byte_length
+
+
+def _stream_files_equal(first: Path, second: Path) -> bool:
+    """Compare immutable-file candidates with at most two bounded chunks."""
 
     try:
-        existing = path.read_bytes()
+        if first.stat().st_size != second.stat().st_size:
+            return False
     except FileNotFoundError:
-        _atomic_replace_bytes(path, data)
-        # Detect storage faults and a concurrent non-cooperating writer before
-        # allowing this file to become reachable from a manifest.
-        if path.read_bytes() != data:
+        return False
+    with first.open("rb") as first_stream, second.open("rb") as second_stream:
+        while True:
+            first_chunk = first_stream.read(_IO_CHUNK_BYTES)
+            second_chunk = second_stream.read(_IO_CHUNK_BYTES)
+            if first_chunk != second_chunk:
+                return False
+            if not first_chunk:
+                return True
+
+
+def _publish_fsynced_temp(
+    path: Path,
+    temporary: Path,
+    *,
+    expected_file_sha256: str,
+    expected_byte_length: int,
+) -> None:
+    """Install a fsynced temp or stream-verify an equal immutable target.
+
+    ``expected_file_sha256`` protects the completed target against a storage
+    fault.  Exact streamed comparison, rather than the digest, decides whether
+    a pre-existing content-addressed file is the same immutable value.
+    """
+
+    try:
+        if path.exists():
+            if not _stream_files_equal(path, temporary):
+                raise SegmentStoreError(
+                    f"immutable content-addressed file conflicts: {path.name}"
+                )
+        else:
+            os.replace(temporary, path)
+
+        # Repeat both barriers even for an exact pre-existing target.  It may
+        # be the result of an earlier attempt whose rename succeeded but whose
+        # directory fsync failed; a successful retry must close that gap before
+        # a manifest or CURRENT pointer can make the file reachable.
+        _fsync_file(path)
+        _fsync_directory(path.parent)
+
+        actual_sha256, actual_byte_length = _stream_file_sha256(path)
+        if (
+            actual_sha256 != expected_file_sha256
+            or actual_byte_length != expected_byte_length
+        ):
             raise SegmentStoreError(f"immutable file verification failed: {path.name}")
-        return
-    if existing != data:
-        raise SegmentStoreError(
-            f"immutable content-addressed file conflicts: {path.name}"
-        )
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def _publish_immutable(path: Path, data: bytes) -> None:
+    """Atomically install immutable bytes or stream-verify an equal file."""
+
+    temporary = _write_fsynced_temp(path.parent, f".{path.name}.tmp-", data)
+    _publish_fsynced_temp(
+        path,
+        temporary,
+        expected_file_sha256=_sha256_hex(data),
+        expected_byte_length=len(data),
+    )
 
 
 class ImmutableSegmentStore:
@@ -413,8 +575,7 @@ class ImmutableSegmentStore:
         if type(lazy_payloads) is not bool:
             raise TypeError("lazy_payloads must be a boolean")
         if staged_memory_limit_bytes is not None and (
-            type(staged_memory_limit_bytes) is not int
-            or staged_memory_limit_bytes < 0
+            type(staged_memory_limit_bytes) is not int or staged_memory_limit_bytes < 0
         ):
             raise ValueError("staged_memory_limit_bytes must be a nonnegative integer")
         if staged_memory_limit_bytes is not None and not lazy_payloads:
@@ -433,9 +594,9 @@ class ImmutableSegmentStore:
         if digest_fn is None:
             if digest_name not in (None, "sha256"):
                 raise ValueError("a non-sha256 digest name requires digest_fn")
-            self._raw_digest_fn: DigestFunction = (
-                lambda raw: hashlib.sha256(raw).digest()
-            )
+            self._raw_digest_fn: DigestFunction = lambda raw: hashlib.sha256(
+                raw
+            ).digest()
             self.digest_name = "sha256"
             self._uses_builtin_sha256 = True
         else:
@@ -457,13 +618,14 @@ class ImmutableSegmentStore:
         self.segments_directory = self.root / "segments"
         self.manifests_directory = self.root / "manifests"
         self.pointer_path = self.root / "CURRENT"
-        self.root.mkdir(parents=True, exist_ok=True)
-        self.segments_directory.mkdir(exist_ok=True)
-        self.manifests_directory.mkdir(exist_ok=True)
+        _mkdir_durable(self.root)
+        _mkdir_durable(self.segments_directory)
+        _mkdir_durable(self.manifests_directory)
 
         self._records: dict[ObjectRef, list[_ObjectRecord]] = {}
         self._staged: dict[ObjectRef, list[_MemoryObjectRecord]] = {}
         self._mapped_segments: list[_MappedSegment] = []
+        self._retired_mappings: list[_MappedSegment] = []
         self._manifest: dict[str, Any] | None = None
         self.snapshot: SegmentStoreSnapshot | None = None
         self._closed = False
@@ -479,8 +641,9 @@ class ImmutableSegmentStore:
             self.snapshot is None
             or self.snapshot.manifest_sha256 != expected_manifest_sha256
         ):
-            mappings = self._mapped_segments
+            mappings = [*self._mapped_segments, *self._retired_mappings]
             self._mapped_segments = []
+            self._retired_mappings = []
             self._records.clear()
             try:
                 self._close_mappings(mappings)
@@ -529,9 +692,7 @@ class ImmutableSegmentStore:
 
     def _staged_payload_bytes_unchecked(self) -> int:
         return sum(
-            len(record.payload)
-            for bucket in self._staged.values()
-            for record in bucket
+            len(record.payload) for bucket in self._staged.values() for record in bucket
         )
 
     def _ensure_open(self) -> None:
@@ -550,6 +711,24 @@ class ImmutableSegmentStore:
         if first_error is not None:
             raise first_error
 
+    def _close_superseded_mappings(
+        self, mappings: Iterable[_MappedSegment] = ()
+    ) -> None:
+        """Close old mappings, retaining failures for an idempotent retry."""
+
+        pending = [*self._retired_mappings, *mappings]
+        self._retired_mappings = []
+        first_error: BaseException | None = None
+        for segment in pending:
+            try:
+                segment.close()
+            except BaseException as exc:  # pragma: no cover - injected/OS fallback
+                self._retired_mappings.append(segment)
+                if first_error is None:
+                    first_error = exc
+        if first_error is not None:
+            raise first_error
+
     def close(self, *, discard_staged: bool = False) -> None:
         """Close mappings; refuse to silently discard unpublished objects."""
 
@@ -561,8 +740,9 @@ class ImmutableSegmentStore:
             )
         if discard_staged:
             self._staged.clear()
-        mappings = self._mapped_segments
+        mappings = [*self._mapped_segments, *self._retired_mappings]
         self._mapped_segments = []
+        self._retired_mappings = []
         try:
             self._close_mappings(mappings)
         finally:
@@ -577,8 +757,12 @@ class ImmutableSegmentStore:
         self.close(discard_staged=exc_type is not None)
 
     def __del__(self) -> None:  # pragma: no cover - defensive resource release
-        mappings = getattr(self, "_mapped_segments", ())
+        mappings = [
+            *getattr(self, "_mapped_segments", ()),
+            *getattr(self, "_retired_mappings", ()),
+        ]
         self._mapped_segments = []
+        self._retired_mappings = []
         try:
             self._close_mappings(mappings)
         except BaseException:
@@ -605,9 +789,7 @@ class ImmutableSegmentStore:
         else:
             raise TypeError("digest_fn must return bytes or hexadecimal text")
         if _HEX64.fullmatch(digest) is None:
-            raise ValueError(
-                "digest_fn must return lowercase 256-bit hexadecimal text"
-            )
+            raise ValueError("digest_fn must return lowercase 256-bit hexadecimal text")
         return digest
 
     def object_ref(self, kind: str, payload: bytes) -> ObjectRef:
@@ -726,9 +908,9 @@ class ImmutableSegmentStore:
             raise ValueError("spill_staged requires disk-backed lazy_payloads mode")
         return self.publish()
 
-    def _serialize_segment(
+    def _ordered_segment_records(
         self, records: Iterable[_MemoryObjectRecord]
-    ) -> bytes:
+    ) -> list[_MemoryObjectRecord]:
         ordered = sorted(
             records,
             key=lambda record: (
@@ -742,17 +924,74 @@ class ImmutableSegmentStore:
         unique = {(record.ref.kind, record.payload) for record in ordered}
         if len(unique) != len(ordered):
             raise SegmentStoreError("segment contains duplicate exact objects")
-        chunks = [_SEGMENT_HEADER.pack(_SEGMENT_MAGIC, len(ordered))]
+        if len(ordered) > _UINT64_MAX:
+            raise OverflowError("segment record count exceeds uint64")
+        return ordered
+
+    def _seal_segment_to_temp(
+        self, records: Iterable[_MemoryObjectRecord]
+    ) -> _SealedSegment:
+        """Stream one deterministic segment into a unique fsynced temp file.
+
+        Staged payload objects remain resident by design, but sealing never
+        constructs a second segment-sized ``bytes`` value.  Hashing and writes
+        consume each immutable payload directly.
+        """
+
+        ordered = self._ordered_segment_records(records)
+        byte_length = _SEGMENT_HEADER.size
         for record in ordered:
-            chunks.append(
-                _RECORD_HEADER.pack(
-                    _KIND_TO_CODE[record.ref.kind],
-                    bytes.fromhex(record.ref.sha256),
-                    len(record.payload),
-                )
+            increment = _RECORD_HEADER.size + len(record.payload)
+            if byte_length > _UINT64_MAX - increment:
+                raise OverflowError("segment byte length exceeds uint64")
+            byte_length += increment
+
+        digest = hashlib.sha256()
+        descriptor, raw_path = tempfile.mkstemp(
+            prefix=".segment.tmp-", dir=self.segments_directory
+        )
+        try:
+            temporary_path = Path(raw_path)
+        except BaseException:
+            os.close(descriptor)
+            os.unlink(raw_path)
+            raise
+        try:
+            stream = os.fdopen(descriptor, "wb")
+            descriptor = -1
+            with stream:
+
+                def write_chunk(chunk: bytes) -> None:
+                    if stream.write(chunk) != len(chunk):
+                        raise OSError("short write while sealing immutable segment")
+                    digest.update(chunk)
+
+                header = _SEGMENT_HEADER.pack(_SEGMENT_MAGIC, len(ordered))
+                write_chunk(header)
+                for record in ordered:
+                    record_header = _RECORD_HEADER.pack(
+                        _KIND_TO_CODE[record.ref.kind],
+                        bytes.fromhex(record.ref.sha256),
+                        len(record.payload),
+                    )
+                    write_chunk(record_header)
+                    write_chunk(record.payload)
+                stream.flush()
+                os.fsync(stream.fileno())
+            return _SealedSegment(
+                temporary_path=temporary_path,
+                sha256=digest.hexdigest(),
+                byte_length=byte_length,
+                record_count=len(ordered),
             )
-            chunks.append(record.payload)
-        return b"".join(chunks)
+        except BaseException:
+            if descriptor >= 0:
+                os.close(descriptor)
+            try:
+                temporary_path.unlink()
+            except FileNotFoundError:
+                pass
+            raise
 
     def _parse_segment(
         self,
@@ -917,9 +1156,7 @@ class ImmutableSegmentStore:
         return complete, digest
 
     @staticmethod
-    def _verify_self_hash(
-        payload: dict[str, Any], hash_field: str, label: str
-    ) -> str:
+    def _verify_self_hash(payload: dict[str, Any], hash_field: str, label: str) -> str:
         supplied = _require_sha256(payload[hash_field], f"{label} hash")
         unhashed = dict(payload)
         unhashed.pop(hash_field)
@@ -1083,30 +1320,66 @@ class ImmutableSegmentStore:
         records: dict[ObjectRef, list[_ObjectRecord]] = {}
         exact_object_count = 0
         segment_hashes: list[str] = []
+        seen_segment_hashes: set[str] = set()
         mapped_segments: list[_MappedSegment] = []
+        new_mappings: list[_MappedSegment] = []
+        previous_mappings = self._mapped_segments
+        reusable_mappings = {
+            (segment.path, segment.expected_sha256): segment
+            for segment in previous_mappings
+        }
+        reused_mapping_ids: set[int] = set()
         entries = [
             self._validate_segment_entry(entry) for entry in manifest["segments"]
         ]
         try:
             for entry in entries:
                 digest = entry["segment_sha256"]
-                if digest in segment_hashes:
+                if digest in seen_segment_hashes:
                     raise SegmentStoreError("manifest repeats an immutable segment")
                 segment_hashes.append(digest)
+                seen_segment_hashes.add(digest)
                 path = self.segments_directory / entry["segment_file"]
                 if self.lazy_payloads:
-                    try:
-                        mapped = _MappedSegment(
-                            path, expected_sha256=digest
-                        )
-                    except FileNotFoundError as exc:
-                        raise SegmentStoreError(
-                            "referenced immutable segment is missing"
-                        ) from exc
-                    except (OSError, ValueError) as exc:
-                        raise SegmentStoreError(
-                            "referenced immutable segment cannot be mapped"
-                        ) from exc
+                    mapped = reusable_mappings.get((path, digest))
+                    if mapped is None:
+                        try:
+                            mapped = _MappedSegment(path, expected_sha256=digest)
+                        except FileNotFoundError as exc:
+                            raise SegmentStoreError(
+                                "referenced immutable segment is missing"
+                            ) from exc
+                        except (OSError, ValueError) as exc:
+                            raise SegmentStoreError(
+                                "referenced immutable segment cannot be mapped"
+                            ) from exc
+                        try:
+                            new_mappings.append(mapped)
+                        except BaseException:
+                            mapped.close()
+                            raise
+                    else:
+                        # The old mmap can survive a POSIX unlink/replace.  A
+                        # successful append must also prove that the current
+                        # pathname remains restartable under the manifest.
+                        try:
+                            path_sha256, path_byte_length = _stream_file_sha256(path)
+                        except FileNotFoundError as exc:
+                            raise SegmentStoreError(
+                                "referenced immutable segment is missing"
+                            ) from exc
+                        except OSError as exc:
+                            raise SegmentStoreError(
+                                "referenced immutable segment cannot be read"
+                            ) from exc
+                        if (
+                            path_sha256 != digest
+                            or path_byte_length != entry["byte_length"]
+                        ):
+                            raise SegmentStoreError(
+                                "reused segment pathname fails immutable verification"
+                            )
+                        reused_mapping_ids.add(id(mapped))
                     mapped_segments.append(mapped)
                     if mapped.byte_length != entry["byte_length"]:
                         raise SegmentStoreError(
@@ -1141,25 +1414,40 @@ class ImmutableSegmentStore:
                     exact_object_count += 1
         except BaseException:
             try:
-                self._close_mappings(mapped_segments)
+                self._close_mappings(new_mappings)
             except BaseException:
                 pass
             raise
 
-        if exact_object_count != manifest["object_count"]:
-            self._close_mappings(mapped_segments)
-            raise SegmentStoreError("manifest object count fails exact recount")
-        previous_mappings = self._mapped_segments
+        try:
+            if exact_object_count != manifest["object_count"]:
+                raise SegmentStoreError("manifest object count fails exact recount")
+            next_snapshot = SegmentStoreSnapshot(
+                generation=generation,
+                manifest_sha256=manifest_digest,
+                segment_sha256s=tuple(segment_hashes),
+                object_count=exact_object_count,
+            )
+            superseded_mappings = [
+                segment
+                for segment in previous_mappings
+                if id(segment) not in reused_mapping_ids
+            ]
+        except BaseException:
+            try:
+                self._close_mappings(new_mappings)
+            except BaseException:
+                pass
+            raise
+
+        # All allocating validation work is complete.  Publish the new in-memory
+        # view with reference assignments only, so allocation failure cannot
+        # leave manifest/records ahead of the public snapshot.
         self._records = records
         self._mapped_segments = mapped_segments
         self._manifest = manifest
-        self.snapshot = SegmentStoreSnapshot(
-            generation=generation,
-            manifest_sha256=manifest_digest,
-            segment_sha256s=tuple(segment_hashes),
-            object_count=exact_object_count,
-        )
-        self._close_mappings(previous_mappings)
+        self.snapshot = next_snapshot
+        self._close_superseded_mappings(superseded_mappings)
 
     def publish(self) -> SegmentStoreSnapshot:
         """Seal staged records and atomically publish a new verified snapshot."""
@@ -1168,27 +1456,31 @@ class ImmutableSegmentStore:
         if not self._staged:
             if self.snapshot is None:
                 raise ValueError("cannot publish an empty segment store")
+            self._close_superseded_mappings()
             return self.snapshot
         records: list[_MemoryObjectRecord] = [
             record for bucket in self._staged.values() for record in bucket
         ]
-        segment_raw = self._serialize_segment(records)
-        segment_sha256 = _sha256_hex(segment_raw)
-        segment_path = self.segments_directory / f"{segment_sha256}.seg"
-        _publish_immutable(segment_path, segment_raw)
-
         previous_segments = [] if self._manifest is None else self._manifest["segments"]
         previous_count = 0 if self._manifest is None else self._manifest["object_count"]
-        previous_hash = (
-            None if self.snapshot is None else self.snapshot.manifest_sha256
-        )
+        previous_hash = None if self.snapshot is None else self.snapshot.manifest_sha256
         generation = 1 if self.snapshot is None else self.snapshot.generation + 1
         if generation > _UINT64_MAX or previous_count > _UINT64_MAX - len(records):
             raise OverflowError("segment manifest uint64 counter exhausted")
+
+        sealed_segment = self._seal_segment_to_temp(records)
+        segment_path = self.segments_directory / f"{sealed_segment.sha256}.seg"
+        _publish_fsynced_temp(
+            segment_path,
+            sealed_segment.temporary_path,
+            expected_file_sha256=sealed_segment.sha256,
+            expected_byte_length=sealed_segment.byte_length,
+        )
+
         segment_entry = self._segment_entry(
-            segment_sha256,
-            len(segment_raw),
-            len(records),
+            sealed_segment.sha256,
+            sealed_segment.byte_length,
+            sealed_segment.record_count,
         )
         manifest_without_hash = {
             "format": MANIFEST_FORMAT,

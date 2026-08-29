@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugts-unicode-set-field-klein-converse"
+version = "5.0.0"
+description = "Reference implementation for UGTS Foundation 5.0 Unicode Set-Field and Klein-Converse Atlas"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Tom Klootwijk (requester-supplied project attribution)"}]
+dependencies = []
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.scripts]
+ugts5 = "ugts5.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

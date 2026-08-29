@@ -31,6 +31,12 @@ from .math3d import (
     quat_mul, quat_normalize, scale as vscale, sub,
 )
 from .scene import Asset, Scene, SceneMetadata, SceneNode
+from .scatter import (
+    ScatterError,
+    collect_scatter_project_spec,
+    scatter_instance_id,
+    scatter_instances,
+)
 from .visual_graph import VisualGraph, attach_graph
 
 Vec3 = tuple[float, float, float]
@@ -97,6 +103,109 @@ def visual_graph_binding_ids(raw: Any, label: str = "visual graph binding") -> t
     if len(normalized) != len(set(normalized)):
         raise ValueError(f"{label} cannot contain the same graph id more than once")
     return normalized
+
+
+_SCATTER_ENTITY_MUTATIONS = {
+    "action.set_component": "Change Object Setting",
+    "action.apply_force": "Push an Object",
+    "action.set_active": "Show or Hide Object",
+    "action.despawn": "Remove Object",
+}
+_OWNER_ENTITY_EVENTS = frozenset(
+    {
+        "event.ready",
+        "event.tick",
+        "event.input_pressed",
+        "event.trigger_enter",
+        "event.trigger_exit",
+    }
+)
+
+
+def _graph_mutation_targets(
+    graph: VisualGraph,
+    action_node: Any,
+    owners: set[str | None],
+) -> set[str] | None:
+    """Resolve fixed mutation targets; ``None`` means runtime-selected.
+
+    Populate Area instances live in an immutable native instance buffer.  A
+    target is therefore considered safe only when graph metadata proves that
+    it is a non-populated scene node (or the non-entity world binding).  This
+    deliberately treats state/component-derived entity ids as dynamic.
+    """
+
+    incoming = next(
+        (
+            link
+            for link in graph.links
+            if link.target_node == action_node.id and link.target_port == "entity"
+        ),
+        None,
+    )
+    if incoming is None:
+        literal = action_node.properties.get("entity")
+        if literal in (None, ""):
+            return {owner for owner in owners if owner is not None}
+        return {str(literal)}
+
+    source = next((node for node in graph.nodes if node.id == incoming.source_node), None)
+    if source is None:
+        return None
+    if source.type == "value.constant" and incoming.source_port == "value":
+        value = source.properties.get("value", 0)
+        return {value} if isinstance(value, str) else None
+    if source.type in _OWNER_ENTITY_EVENTS and incoming.source_port == "entity":
+        return {owner for owner in owners if owner is not None}
+    return None
+
+
+def _scatter_graph_mutation_messages(
+    graphs: Sequence[VisualGraph],
+    graph_owners: Mapping[str, set[str | None]],
+    prototype_ids: set[str],
+) -> tuple[tuple[str, str], ...]:
+    """Return child-friendly errors for graph writes into frozen populations."""
+
+    messages: list[tuple[str, str]] = []
+    for graph in graphs:
+        owners = graph_owners.get(graph.id, set())
+        if not owners:
+            # Stored but unbound graphs cannot execute.
+            continue
+        for node in graph.nodes:
+            friendly_action = _SCATTER_ENTITY_MUTATIONS.get(node.type)
+            if friendly_action is None:
+                continue
+            targets = _graph_mutation_targets(graph, node, owners)
+            path = f"metadata.visual_graphs.{graph.id}.nodes.{node.id}"
+            if targets is None:
+                names = ", ".join(repr(value) for value in sorted(prototype_ids))
+                object_word = "object" if len(prototype_ids) == 1 else "objects"
+                messages.append(
+                    (
+                        path,
+                        f"Logic Blocks graph {graph.id!r} uses {friendly_action} with an "
+                        f"object chosen while the game runs. It could change Populate Area "
+                        f"{object_word} {names}, whose phone-rendered copies are frozen. Choose "
+                        "a specific normal object for this block, or remove Populate Area first.",
+                    )
+                )
+                continue
+            unsafe = sorted(targets & prototype_ids)
+            if unsafe:
+                names = ", ".join(repr(value) for value in unsafe)
+                object_word = "object" if len(unsafe) == 1 else "objects"
+                copy_owner = "Its" if len(unsafe) == 1 else "Their"
+                messages.append(
+                    (
+                        path,
+                        f"Logic Blocks graph {graph.id!r} uses {friendly_action} on Populate "
+                        f"Area {object_word} {names}. {copy_owner} phone-rendered copies are frozen, so "
+                        "choose a normal object or remove Populate Area first.",
+                    )
+                )
+    return tuple(messages)
 
 
 def _normalized_json(value: Any) -> Any:
@@ -866,13 +975,16 @@ class Mobile3DProject:
                 f"projects support at most {MAX_TRIGGER_SENSORS} active trigger areas",
             )
         graphs: tuple[VisualGraph, ...] = ()
+        graphs_valid = True
         try:
             graphs = visual_graphs_from_metadata(self.metadata)
             for graph in graphs:
                 graph.validate()
         except (TypeError, ValueError) as exc:
+            graphs_valid = False
             error("graph.invalid", "metadata.visual_graphs", str(exc))
         graph_ids = {graph.id for graph in graphs}
+        graph_owners: dict[str, set[str | None]] = {}
         binding_count = 0
         for index, node in enumerate(self.nodes):
             raw_binding = node.metadata.get("visual_graph")
@@ -897,6 +1009,8 @@ class Mobile3DProject:
                         f"nodes[{index}].metadata.visual_graph",
                         graph_id,
                     )
+                else:
+                    graph_owners.setdefault(graph_id, set()).add(node.id)
         raw_world_bindings = self.metadata.get("world_graphs", ())
         try:
             world_bindings = visual_graph_binding_ids(
@@ -913,6 +1027,8 @@ class Mobile3DProject:
         for graph_id in world_bindings:
             if graph_id not in graph_ids:
                 error("graph.binding_unknown", "metadata.world_graphs", graph_id)
+            else:
+                graph_owners.setdefault(graph_id, set()).add(None)
         polar_profile_count = 0
         polar_component_count = 0
         try:
@@ -933,6 +1049,23 @@ class Mobile3DProject:
                         f"nodes[{item.node_index}].dynamic",
                         "packed kinematics are transform-authoritative; use a static node so physics does not overwrite them",
                     )
+        scatter_group_count = 0
+        scatter_total_instances = 0
+        scatter_generated_copies = 0
+        try:
+            scatter_spec = collect_scatter_project_spec(self)
+            scatter_group_count = len(scatter_spec.groups)
+            scatter_total_instances = scatter_spec.total_instances
+            scatter_generated_copies = scatter_spec.generated_copies
+        except ScatterError as exc:
+            error("scatter.invalid", "nodes[].metadata.scatter_population", str(exc))
+        else:
+            if graphs_valid and scatter_spec.groups:
+                prototype_ids = {group.prototype_id for group in scatter_spec.groups}
+                for path, message in _scatter_graph_mutation_messages(
+                    graphs, graph_owners, prototype_ids
+                ):
+                    error("scatter.graph_mutation", path, message)
         quality_ids: set[str] = set()
         for index, tier in enumerate(self.quality_tiers):
             try:
@@ -975,6 +1108,9 @@ class Mobile3DProject:
             "visual_graph_binding_count": binding_count,
             "packed_kinematic_profile_count": polar_profile_count,
             "packed_kinematic_component_count": polar_component_count,
+            "scatter_population_count": scatter_group_count,
+            "scatter_total_instance_count": scatter_total_instances,
+            "scatter_generated_copy_count": scatter_generated_copies,
             "initial_state_key_count": initial_state_count,
         }
         report = ProjectValidation3D(not issues, tuple(issues), metrics)
@@ -1119,6 +1255,33 @@ class Mobile3DProject:
                     },
                 )
             )
+        scatter_spec = collect_scatter_project_spec(self)
+        for group in scatter_spec.groups:
+            prototype = self.nodes[group.prototype_node_index]
+            asset_id = asset_ids[(prototype.mesh_id, prototype.material_id)]
+            for instance in scatter_instances(prototype, group):
+                scene.add_node(
+                    SceneNode(
+                        scatter_instance_id(prototype.id, instance.lineage),
+                        asset_id,
+                        local_transform=compose_trs(
+                            instance.translation, instance.rotation, instance.scale
+                        ),
+                        tags=frozenset({"decorative"}),
+                        lineage=(
+                            "scatter_population",
+                            prototype.id,
+                            str(instance.index),
+                            f"{instance.lineage:016x}",
+                        ),
+                        metadata={
+                            "render_only": True,
+                            "population_prototype": prototype.id,
+                            "population_index": instance.index,
+                            "population_lineage": f"{instance.lineage:016x}",
+                        },
+                    )
+                )
         return scene
 
     def instantiate_world(self) -> "GameWorld3D":

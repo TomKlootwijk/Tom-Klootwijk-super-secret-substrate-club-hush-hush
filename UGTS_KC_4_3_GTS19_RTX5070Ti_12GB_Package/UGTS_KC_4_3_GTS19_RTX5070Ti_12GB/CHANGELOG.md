@@ -35,18 +35,76 @@
   complete-edge audits, real transpositions, atomic self-hashed checkpoints,
   deterministic resume, and fresh-process proof-cache recomputation. This is a
   host-local vertical slice, not production DFPN or a 19×19 certificate.
+- Added a separate bounded C++17 1×1 through 19×19 proof-number DAG with exact canonical
+  state-byte identity, real transposition reuse, deterministic most-proving
+  selection, saturating uint64 recurrence, and graph fingerprints that match
+  the Python oracle for both completed 2×2 threshold fixtures. Its canonical
+  JSON CLI labels expansion-budget stops as `UNKNOWN` non-certificate attempts,
+  declares exact proof-arithmetic width/endianness, and fails closed on output
+  errors; the
+  pinned two-expansion 19×19 result is `UNKNOWN` (`PN=1`, `DN=361`). A bounded
+  native full-snapshot restart now uses external full-file pins and strict
+  semantic/lineage reload, but there is no paged campaign store, CUDA proof path,
+  or whole-game resource bound.
 - Added a bounded immutable PSK radix trie with insertion-order-independent
   Merkle roots, exact-byte collision leaves, structurally shared transitions,
   pinned restart validation, and a PSK engine that never reconstructs flat
   histories during moves. A bounded persistent-root tree PNS matches the exact,
   flat-PNS, and proof-DAG truth values on complete 1×1/2×2 thresholds.
+- Added `UGTS-PY-PERSISTENT-PSK-FOREST-v1`, a canonical multi-root artifact that
+  globally deduplicates exact boards and immutable trie nodes, preserves ordered
+  root references and structural sharing, rebuilds exact roots independently on
+  load, and fails closed on malformed shared-DAG references.
+- Added a restartable bounded persistent-root proof-number DAG. Canonical state
+  identity excludes campaign-only ply, audits complete legal edges, recomputes
+  cached proof numbers, survives injected
+  allocation/publication failures, and resumes both 2×2 threshold outcomes to
+  the exact uninterrupted graph. A compact evidence gate covers fresh objects
+  and simultaneous forced state/history digest collisions.
+- Replaced retained live per-node legacy state/history blobs with exact immutable
+  history-root handles while preserving every digest input, wire byte, graph
+  hash, and collision fallback. A 63-node fixture now retains zero serialized
+  artifacts (3,544,779 bytes remain transient when legacy bytes are requested).
+  Compact restart reuses its 1,163 validated physical trie nodes rather than
+  duplicating 6,558 summed per-root references.
+- Added immutable bounded persistent-PNDAG checkpoint generations with chained
+  exact run envelopes, exact node-prefix lineage validation, mandatory complete
+  external tip pins on restart, and exact verified-byte reload. Externally
+  journaled `prepare`/`commit_prepared` records make pre/post-`CURRENT` recovery
+  idempotent; larger counters can no longer replace a forked or solved graph.
+  Direct retries reconcile an already-installed intended `CURRENT`; ambiguous
+  post-replace failures expose the exact preparation through a dedicated
+  commit-uncertain exception instead of losing the recovery record.
+- Added a compact persistent-PNDAG checkpoint codec that stores one globally
+  shared exact history forest, delegates reconstructed semantics to the strict
+  legacy loader, and binds loader output back by exact reserialization. A
+  20-expansion 2×2 fixture shrank from 7,104,362 to 350,147 bytes (95.1%) while
+  remaining a fully materialized bounded snapshot rather than live DAG paging.
 - Added deterministic exact-object binary segments, append-only self-hashed
   manifests, and atomic `CURRENT` publication. Restart verifies every reachable
-  segment and exact object; this remains a single-writer storage slice rather
-  than production proof-DAG/NVMe integration.
-- Compiled the optional CUDA targets with CUDA 12.8 and ran the device probe on
-  the RTX 5070 Ti Laptop GPU (compute capability 12.0). The occupancy kernel has
-  not yet been reference-tested and is not proof-authoritative.
+  segment and exact object. Lazy mode drops retained Python payload copies after
+  spill, streams sealing without a duplicate full-segment value, detects
+  post-open segment mutation, supports an externally pinned tip, and has a
+  deterministic 19×19-shaped one-transition/collision evidence gate.
+  New directory entries are durably retried on POSIX, counter exhaustion is
+  checked before sealing, and append reload reuses existing mappings while
+  independently verifying each current pathname. This remains a single-writer
+  storage slice rather than production proof-DAG/NVMe integration.
+- Hardened the optional CUDA occupancy launch against shape/grid/index overflow,
+  documented its asynchronous device-buffer contract, and added a target-GPU
+  parity gate. CUDA 12.8 on the RTX 5070 Ti Laptop GPU (compute capability 12.0)
+  passed 13 protocol cases, 13,038 Python/CUDA and 33,580,510 total C++/CUDA
+  exact word comparisons, 33,606,586 input-immutability comparisons, 320 canary
+  checks, 12 negative checks, the real grid-stride cap, permitted input aliasing,
+  and Compute Sanitizer with zero mismatches/errors.
+- Added a sibling asynchronous pre-superko CUDA point-transition kernel with
+  deterministic group/liberty floods, simultaneous captures, canonical
+  no-suicide handling, and fixed-slot child bitplanes. A fail-closed C++ adapter
+  CPU-recomputes every point and keeps pass, exact PSK, metadata, and proof
+  authority on CPU. The bounded target-GPU v1 gate covered 25,281 unique slots
+  (50,562 across default/nondefault parity modes) plus 524,533 low-level
+  grid-stride candidates with zero mismatches; memcheck, racecheck, and initcheck
+  were clean. This is not the 10-million-slot M4 gate or a proof-path result.
 
 ### Foundational package
 

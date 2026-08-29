@@ -1,0 +1,71 @@
+{
+  "schema": "ugts-kc-android-profile-evidence-1",
+  "captured_at_local_date": "2026-08-29",
+  "artifact": {
+    "application_id": "org.ugts.games.my_mobile_3d_game.pocox7pro",
+    "apk_bytes": 1438457,
+    "apk_sha256": "2205b4c92cbba17fdec35dfd792ab1915dcf733acc3b1bdecb313a8a90f4aa43",
+    "installed_base_apk_hash_matched": true,
+    "version": "3.9.2-poco-x7-pro"
+  },
+  "device": {
+    "model": "2412DPC0AG",
+    "product": "rodin_eea",
+    "gpu": "Mali-G720 MC7",
+    "reported_ram_mb": 11312,
+    "display_mode_hz": 120.00001,
+    "native_profile": "poco_x7_pro_12gb",
+    "native_quality": "signature_ultra"
+  },
+  "workload": {
+    "kind": "idle-render baseline",
+    "duration_seconds": 64.9,
+    "sample_windows": 12,
+    "window_seconds": 5,
+    "surfaceflinger_latency_was_cleared_between_windows": true,
+    "input_was_injected": false,
+    "phone_settings_were_changed": false,
+    "usb_powered": true,
+    "limitation": "A Xiaomi system-sponsored overlay partially obscured the screen during capture; the UGTS NativeActivity remained the top resumed app and continued presenting its own surface."
+  },
+  "frames": {
+    "measured_intervals": 1512,
+    "display_period_ms": 8.3333,
+    "effective_fps": 120.15,
+    "frame_ms_p50": 8.393,
+    "frame_ms_p95": 10.032,
+    "frame_ms_p99": 11.144,
+    "intervals_over_1_5_vsync": 9
+  },
+  "memory_kib": {
+    "pss_min": 133713,
+    "pss_max": 134089,
+    "rss_min": 254002,
+    "rss_max": 254378
+  },
+  "thermal_and_battery": {
+    "android_thermal_status_end": 0,
+    "gpu_c_min": 48.0,
+    "gpu_c_max": 49.5,
+    "battery_c_min": 35.9,
+    "battery_c_max": 36.0,
+    "battery_level_start": 81,
+    "battery_level_end": 81
+  },
+  "process": {
+    "remained_alive": true,
+    "crash_buffer_lines": 0
+  },
+  "interpretation": {
+    "result": "passes this idle 120 Hz baseline",
+    "not_proven": [
+      "touch latency or feel",
+      "moving-camera or interaction-heavy frame pacing",
+      "long-duration thermal equilibrium",
+      "battery drain while unplugged",
+      "90 Hz and 60 Hz fallback modes",
+      "representative lower-tier Android devices"
+    ]
+  },
+  "tooling_note": "This capture used the precursor logic subsequently implemented as the tested `ugts-kc profile-android` command. The phone disconnected before the new command itself could be replayed against hardware."
+}

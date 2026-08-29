@@ -23,18 +23,20 @@ import subprocess
 import sys
 import tempfile
 from time import perf_counter
-from typing import Sequence
+from typing import Callable, Sequence
+import uuid
 
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from ugts_chess.gpu_protocol import (  # noqa: E402
+    INPUT_HEADER,
     MAX_MOVES,
     OUTPUT_HEADER,
     OUTPUT_MAGIC,
+    encode_position_batch,
     executable_identity,
-    write_position_batch,
 )
 from ugts_chess.gpu_qualification import (  # noqa: E402
     DEFAULT_SEED,
@@ -63,6 +65,122 @@ def _sha256_path(path: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _file_identity(path: Path) -> dict[str, object]:
+    """Hash one stable filesystem object and bind its resolved path and size."""
+
+    try:
+        resolved = path.resolve(strict=True)
+        before = resolved.stat()
+        sha256 = _sha256_path(resolved)
+        after = resolved.stat()
+    except OSError as exc:
+        raise BenchmarkError(f"cannot identify benchmark input {path}: {exc}") from exc
+    before_marker = (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+    after_marker = (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)
+    if before_marker != after_marker:
+        raise BenchmarkError(f"benchmark input changed while it was being hashed: {resolved}")
+    return {
+        "path": str(resolved),
+        "sha256": sha256,
+        "size_bytes": after.st_size,
+    }
+
+
+def require_stable_input_identity(
+    expected_identity: dict[str, object],
+    input_path: Path,
+) -> dict[str, object]:
+    """Fail unless the unique input's exact path, bytes, and size are unchanged."""
+
+    current_identity = _file_identity(input_path)
+    if current_identity != expected_identity:
+        raise BenchmarkError("benchmark input identity changed while evidence was being collected")
+    return current_identity
+
+
+def _create_unique_input_artifact(
+    output_dir: Path,
+    positions: Sequence[object],
+) -> tuple[Path, dict[str, object]]:
+    """Write a never-reused input file whose unpredictable name belongs to this run."""
+
+    raw = encode_position_batch(positions)
+    _magic, _version, record_size, count, _flags = INPUT_HEADER.unpack_from(raw)
+    invocation_id = uuid.uuid4().hex
+    input_path = output_dir / f"positions-{count}-{invocation_id}.ugcb"
+    try:
+        with input_path.open("xb") as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError as exc:
+        raise BenchmarkError(f"unique benchmark input unexpectedly already exists: {input_path}") from exc
+    identity = _file_identity(input_path)
+    expected_sha256 = hashlib.sha256(raw).hexdigest()
+    if identity["sha256"] != expected_sha256 or identity["size_bytes"] != len(raw):
+        input_path.unlink(missing_ok=True)
+        raise BenchmarkError("new benchmark input does not match the bytes generated in memory")
+    return input_path, {
+        **identity,
+        "count": count,
+        "record_size": record_size,
+        "invocation_id": invocation_id,
+        "unique_per_invocation": True,
+        "reused_existing_exact_file": False,
+        "storage_semantics": "unique per invocation; never reused or overwritten",
+    }
+
+
+def _publish_report_atomically(
+    report_path: Path,
+    report: dict[str, object],
+    *,
+    force: bool,
+    pre_publish_check: Callable[[], object] | None = None,
+) -> None:
+    """Publish complete JSON via a unique temporary file.
+
+    Without ``force``, a hard-link publication provides atomic no-overwrite
+    semantics even when two benchmark processes pass the early existence check.
+    """
+
+    temporary_handle = tempfile.NamedTemporaryFile(
+        mode="w",
+        encoding="utf-8",
+        newline="\n",
+        prefix=f".{report_path.stem}-",
+        suffix=".json.tmp",
+        dir=report_path.parent,
+        delete=False,
+    )
+    temporary_report = Path(temporary_handle.name)
+    try:
+        with temporary_handle:
+            json.dump(report, temporary_handle, indent=2, sort_keys=True)
+            temporary_handle.write("\n")
+            temporary_handle.flush()
+            os.fsync(temporary_handle.fileno())
+        if pre_publish_check is not None:
+            pre_publish_check()
+        if force:
+            os.replace(temporary_report, report_path)
+        else:
+            try:
+                os.link(temporary_report, report_path)
+            except FileExistsError as exc:
+                raise BenchmarkError(
+                    f"refusing to overwrite retained report published by another run: {report_path}; "
+                    "pass --force explicitly"
+                ) from exc
+            except OSError as exc:
+                raise BenchmarkError(
+                    f"filesystem cannot atomically publish the benchmark report without overwrite: {exc}"
+                ) from exc
+            temporary_report.unlink()
+    finally:
+        temporary_report.unlink(missing_ok=True)
 
 
 def _percentile(values: Sequence[float], fraction: float) -> float:
@@ -152,7 +270,10 @@ def _run_expansion(
     device: int,
     expected_positions: int,
     expected_moves: int | None = None,
+    expected_input_identity: dict[str, object] | None = None,
 ) -> dict[str, object]:
+    if expected_input_identity is not None:
+        require_stable_input_identity(expected_input_identity, input_path)
     command = [
         str(executable),
         "expand-batch",
@@ -166,7 +287,11 @@ def _run_expansion(
     if backend == "cpu":
         command.append("--cpu")
     started = perf_counter()
-    completed = _run_checked(command)
+    try:
+        completed = _run_checked(command)
+    finally:
+        if expected_input_identity is not None:
+            require_stable_input_identity(expected_input_identity, input_path)
     wall_seconds = perf_counter() - started
     parsed = _parse_native_result(
         completed.stdout.strip(),
@@ -316,7 +441,6 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
     _validate_range("device", args.device, 0, 64)
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    input_path = output_dir / f"positions-{args.positions}.ugcb"
     report_path = output_dir / f"benchmark-{args.positions}.json"
     if report_path.exists() and not args.force:
         raise BenchmarkError(f"refusing to overwrite retained report: {report_path}; pass --force explicitly")
@@ -327,33 +451,12 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
         max_plies=args.max_plies,
     )
     positions = [base_corpus[index % len(base_corpus)].position for index in range(args.positions)]
-    temporary_input_handle = tempfile.NamedTemporaryFile(
-        prefix=f".positions-{args.positions}-",
-        suffix=".ugcb.tmp",
-        dir=output_dir,
-        delete=False,
-    )
-    temporary_input_path = Path(temporary_input_handle.name)
-    temporary_input_handle.close()
-    try:
-        generated_meta = write_position_batch(temporary_input_path, positions)
-        input_reused = False
-        if input_path.exists() and not args.force:
-            existing_sha256 = _sha256_path(input_path)
-            if existing_sha256 != generated_meta["sha256"] or input_path.stat().st_size != temporary_input_path.stat().st_size:
-                raise BenchmarkError(
-                    f"existing input does not match the deterministic recipe: {input_path}; "
-                    "choose another output directory or pass --force explicitly"
-                )
-            input_reused = True
-        else:
-            os.replace(temporary_input_path, input_path)
-        input_meta = dict(generated_meta)
-    finally:
-        if temporary_input_path.exists():
-            temporary_input_path.unlink()
-    input_meta["path"] = str(input_path)
-    input_meta["reused_existing_exact_file"] = input_reused
+    input_path, input_meta = _create_unique_input_artifact(output_dir, positions)
+    initial_input_identity = {
+        key: input_meta[key]
+        for key in ("path", "sha256", "size_bytes")
+    }
+    require_stable_input_identity(initial_input_identity, input_path)
 
     device_info = _capture_json([str(executable), "device-info", "--device", str(args.device)])
     target_device_validation = validate_rtx5070ti_device_info(
@@ -387,6 +490,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
             backend="cuda",
             device=args.device,
             expected_positions=args.positions,
+            expected_input_identity=initial_input_identity,
         )
         cpu_parity_run = _run_expansion(
             executable,
@@ -396,6 +500,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
             device=args.device,
             expected_positions=args.positions,
             expected_moves=int(cuda_parity_run["moves"]),
+            expected_input_identity=initial_input_identity,
         )
         cuda_file = _read_output(cuda_output)
         cpu_file = _read_output(cpu_output)
@@ -421,6 +526,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
                         device=args.device,
                         expected_positions=args.positions,
                         expected_moves=int(cuda_parity_run["moves"]),
+                        expected_input_identity=initial_input_identity,
                     )
                 )
 
@@ -433,6 +539,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
                 device=args.device,
                 expected_positions=args.positions,
                 expected_moves=int(cuda_parity_run["moves"]),
+                expected_input_identity=initial_input_identity,
             )
             for _ in range(args.cuda_runs)
         ]
@@ -445,6 +552,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
                 device=args.device,
                 expected_positions=args.positions,
                 expected_moves=int(cuda_parity_run["moves"]),
+                expected_input_identity=initial_input_identity,
             )
             for _ in range(args.cpu_runs)
         ]
@@ -452,6 +560,9 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
     post_smi = _capture_text(smi_command) if smi_command else None
     final_executable_identity = executable_identity(executable)
     require_stable_executable_identity(initial_executable_identity, final_executable_identity)
+    final_input_identity = require_stable_input_identity(initial_input_identity, input_path)
+    input_meta["final_identity"] = final_input_identity
+    input_meta["identity_stable_through_benchmark"] = True
     cuda_native = [float(run["seconds"]) for run in cuda_runs]
     cpu_native = [float(run["seconds"]) for run in cpu_runs]
     cuda_wall = [float(run["process_wall_seconds"]) for run in cuda_runs]
@@ -460,7 +571,7 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
     cpu_p50 = _percentile(cpu_native, 0.50)
     moves = int(cuda_parity_run["moves"])
     report: dict[str, object] = {
-        "schema": "ugts-chess-rtx-batch-benchmark-v3",
+        "schema": "ugts-chess-rtx-batch-benchmark-v4",
         "created_at_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "reproduction": {
             "script": str(Path(__file__).resolve()),
@@ -540,6 +651,14 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
             "cudaSetDevice, device allocation/free, H2D, kernel execution/synchronization, and D2H. Process-wall "
             "samples include process startup, input parsing, and output handling to the OS null device."
         ),
+        "timing_isolation": {
+            "exclusive_gpu_access_enforced": False,
+            "concurrent_workloads_monitored": False,
+            "interpretation": (
+                "Timing samples are a local snapshot and may be perturbed by concurrent GPU, CPU, thermal, or "
+                "power-management activity. Artifact isolation does not provide workload isolation."
+            ),
+        },
         "claim_boundary": (
             "This is a local packed-move microbenchmark and exact CPU/CUDA payload comparison, not sustained "
             "thermal evidence, playing-strength evidence, or a chess solution. Device name and compute capability "
@@ -547,9 +666,12 @@ def benchmark(args: argparse.Namespace) -> dict[str, object]:
             "independently attest which hardware performed the expansion."
         ),
     }
-    temporary_report = report_path.with_suffix(report_path.suffix + ".tmp")
-    temporary_report.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    os.replace(temporary_report, report_path)
+    _publish_report_atomically(
+        report_path,
+        report,
+        force=args.force,
+        pre_publish_check=lambda: require_stable_input_identity(initial_input_identity, input_path),
+    )
     return report
 
 
@@ -565,7 +687,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--cpu-runs", type=int, default=10)
     parser.add_argument("--warmups", type=int, default=2, help="unmeasured warmups per backend")
     parser.add_argument("--device", type=int, default=0)
-    parser.add_argument("--force", action="store_true", help="replace same-name input/report evidence")
+    parser.add_argument("--force", action="store_true", help="replace same-name report evidence")
     return parser
 
 

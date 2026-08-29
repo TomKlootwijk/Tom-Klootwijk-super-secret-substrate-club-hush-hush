@@ -1,0 +1,26 @@
+{
+  "compute_capability": "12.0",
+  "cuda_compiler": "12.8.61",
+  "device_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "error_exitcode": 99,
+  "error_summary": 0,
+  "evaluator_exit_code": 0,
+  "format": "ugts-go19-cuda-compute-sanitizer-evidence-v1",
+  "input_protocol": "UGTS_EMPTY_MASK_INPUT_V1",
+  "input_protocol_bytes": 254898,
+  "input_protocol_sha256": "e60977a01df07840cfe6a79d95ef67342f74dba75ff566d7833fa2b0fc26e9a5",
+  "limitations": [
+    "memcheck covers the bounded occupancy evaluator and its direct production-grid-stride fixture",
+    "this artifact does not validate Go captures, suicide, superko, legal children, proof search, or performance",
+    "zero sanitizer errors do not establish the unrestricted 19x19 result"
+  ],
+  "root_status": "UNKNOWN",
+  "sanitizer": "NVIDIA Compute Sanitizer 2025.1.0.0 build 35351055",
+  "sanitizer_tool": "memcheck",
+  "source_sha256": {
+    "cpp/cuda/packed_kernels.cu": "791d6ad286e648b9f4e6ef97e24741ebbc51b569714ca963563f4d295f7549dd",
+    "cpp/cuda/packed_kernels.cuh": "991f4d114f8496e77918569ed0cf9310c8da7acc7647a6b974980c41c6b97d12",
+    "cpp/tests/cuda_empty_mask_eval.cu": "207ca52c10ffdf8cefd1996addf9af11a7dfbe93b032e98faac9812b8680f3f5",
+    "cpp/tests/cuda_empty_mask_parity.py": "7cded4c4c7be06ef127b33e02ccc21435ebdef89fe431a9c7b35a13e44de59ae"
+  }
+}

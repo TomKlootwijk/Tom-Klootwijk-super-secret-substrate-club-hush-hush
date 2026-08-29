@@ -1,0 +1,78 @@
+{
+  "compute_capability": "12.0",
+  "cuda_compiler": "12.8.61",
+  "device_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "error_exitcode": 99,
+  "format": "ugts-go19-cuda-local-transition-compute-sanitizer-evidence-v1",
+  "guard_fixture": {
+    "aliased_input_launches": 1,
+    "canary_checks": 100,
+    "child_word_comparisons": 21660,
+    "dirty_tail_states": 1,
+    "dual_stream_launches": 2,
+    "grid_stride_candidates": 524533,
+    "grid_stride_extra_candidates": 253,
+    "grid_stride_slot_comparisons": 524533,
+    "input_immutability_comparisons": 18993,
+    "invalid_player_states": 1,
+    "mismatches": 0,
+    "overlapping_plane_states": 1,
+    "production_grid_capacity_candidates": 524280,
+    "reverse_sync_checks": 1
+  },
+  "limitations": [
+    "this is a bounded pre-superko local point-transition slice, not the 10,000,000-slot M4 gate",
+    "CPU recomputation remains authoritative for every point, pass, exact positional superko, metadata, and proof updates",
+    "the dense 19x19 device layout costs 36,606 bytes per state and no throughput claim is made",
+    "zero sanitizer errors and zero bounded parity mismatches do not establish the unrestricted 19x19 result"
+  ],
+  "root_status": "UNKNOWN",
+  "runs": {
+    "guard_initcheck": {
+      "error_summary": 0,
+      "exit_code": 0
+    },
+    "guard_memcheck": {
+      "error_summary": 0,
+      "exit_code": 0
+    },
+    "guard_racecheck": {
+      "errors": 0,
+      "exit_code": 0,
+      "hazards": 0,
+      "warnings": 0
+    },
+    "nineteen_adversarial_evaluator_memcheck": {
+      "candidate_slots": 707,
+      "compared_child_words": 8484,
+      "error_summary": 0,
+      "exit_code": 0,
+      "fixture_labels": [
+        "nineteen-empty",
+        "capture-360-tail-point",
+        "suicide-361-group",
+        "word-and-tail-boundaries"
+      ],
+      "globally_legal_slots": 707,
+      "negative_argument_checks": 10,
+      "occupied_slots": 736,
+      "protocol_bytes": 5899,
+      "protocol_sha256": "9695a6bcc4239615df870e6acf3eba59232a18fc7f4dd8f5b0ba09da2a7e03b7",
+      "states": 4,
+      "stream_mode": "nondefault",
+      "suicide_slots": 1,
+      "superko_rejections": 0,
+      "verified_point_slots": 1444
+    }
+  },
+  "sanitizer": "NVIDIA Compute Sanitizer 2025.1.0.0 build 35351055",
+  "source_sha256": {
+    "cpp/cuda/cuda_verified_expander.cu": "5ea27ba2403a80a09dc846b1f9b22a6e5891992316ffe8ad939c22f2afbead7f",
+    "cpp/cuda/packed_kernels.cu": "791d6ad286e648b9f4e6ef97e24741ebbc51b569714ca963563f4d295f7549dd",
+    "cpp/cuda/packed_kernels.cuh": "991f4d114f8496e77918569ed0cf9310c8da7acc7647a6b974980c41c6b97d12",
+    "cpp/include/ugts_go19/cuda_verified_expander.hpp": "6f047a79612c82c231a7ffd4ca47562a094afbc11f9944d574a490f806b7b3e5",
+    "cpp/tests/cuda_local_transition_eval.cu": "5719053935f7aaf8b368e22f417f15f9cfaf9e5638e234a2d1506b22027bc6c4",
+    "cpp/tests/cuda_local_transition_guards.cu": "2878fa314fff7dd503a8a090231a9b679712bbd2dce3c6dc7900b5a59c18fd37",
+    "cpp/tests/cuda_local_transition_parity.py": "7e03af812200bc8b6407be5d395d1ad8a7ac24f799337a570b6d4522db008fa7"
+  }
+}

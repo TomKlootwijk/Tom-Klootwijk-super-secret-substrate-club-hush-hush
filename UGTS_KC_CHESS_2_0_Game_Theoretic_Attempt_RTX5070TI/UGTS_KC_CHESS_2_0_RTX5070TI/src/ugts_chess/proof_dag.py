@@ -7,8 +7,9 @@ history, and the one supported FIDE rule profile.  Compact 64-bit keys are
 non-unique lookup hints and are always checked against the full node record.
 
 This module deliberately stores only ``UNKNOWN``.  It does not expose an API
-that can promote a state to WIN/DRAW/LOSS: a future proof-store integration
-must bind an independently verified certificate before changing that schema.
+that can mutate a state to WIN/DRAW/LOSS.  The append-only
+:mod:`ugts_chess.verified_overlay` binds independently verified certificates
+to exact nodes and exposes effective values without changing this schema.
 """
 from __future__ import annotations
 
@@ -18,7 +19,7 @@ import json
 import os
 from pathlib import Path
 import sqlite3
-from typing import Any, Iterator
+from typing import Any, Iterable, Iterator
 
 from .frontier import (
     FrontierEntry,
@@ -26,6 +27,10 @@ from .frontier import (
     FrontierReader,
     FrontierRecord,
     FrontierWriter,
+    MAX_RECORD_PAYLOAD_BYTES,
+    RECORD_CRC32_SIZE,
+    RECORD_PREFIX_SIZE,
+    RECORD_SHA256_SIZE,
 )
 from .game_state import HistoryContext, RULE_PROFILE_ID, automatic_status
 from .game_theory import WDL
@@ -37,6 +42,13 @@ from .rules import apply_move, parse_uci_move
 DAG_INDEX_SCHEMA = "ugts-chess-proof-dag-index-1.0"
 DAG_NODE_SCHEMA = "ugts-chess-proof-dag-node-1.0"
 SQLITE_USER_VERSION = 1
+MAX_MOVE_APPEND_BATCH = 4096
+MAX_MOVE_APPEND_BATCH_BYTES = (
+    MAX_RECORD_PAYLOAD_BYTES
+    + RECORD_PREFIX_SIZE
+    + RECORD_SHA256_SIZE
+    + RECORD_CRC32_SIZE
+)
 
 _META_KEYS = frozenset(
     {
@@ -59,9 +71,11 @@ class ProofDAGIntegrityError(ProofDAGError):
 class ProofDAGCommitError(ProofDAGError):
     """Raised after an append/index transaction could not finish cleanly.
 
-    The journal may contain a durable record that SQLite has not indexed yet.
-    Close and reopen the DAG; deterministic suffix replay will recover exactly
-    that crash state when the existing SQLite rows are still a valid prefix.
+    The journal may contain one or more complete records that SQLite has not
+    indexed yet, or a torn final batch frame when physical writing itself
+    failed.  Close and reopen the DAG; deterministic suffix replay recovers a
+    fully valid suffix when the existing SQLite rows are still a valid prefix.
+    A torn frame remains fail-closed and needs explicit preserved-tail recovery.
     """
 
 
@@ -128,8 +142,35 @@ def _node_identity_record(record: FrontierRecord) -> dict[str, object]:
     }
 
 
-def _node_sha256(record: FrontierRecord) -> str:
+def node_identity_sha256(
+    position: Position,
+    history: HistoryContext,
+    *,
+    rule_profile_id: str = RULE_PROFILE_ID,
+) -> str:
+    """Return the full content address used by :class:`ProofDAG` nodes.
+
+    This is deliberately stronger than the semantic game-state hash: the
+    canonical FEN (including its fullmove counter), complete repetition
+    history, and exact rules profile are all covered.  Callers that replay a
+    DAG edge can therefore compare the independently derived child identity
+    without relying on SQLite's compact lookup key.
+    """
+
+    record = FrontierRecord(
+        position,
+        history,
+        rule_profile_id=rule_profile_id,
+    )
     return hashlib.sha256(canonical_json_bytes(_node_identity_record(record))).hexdigest()
+
+
+def _node_sha256(record: FrontierRecord) -> str:
+    return node_identity_sha256(
+        record.position,
+        record.history,
+        rule_profile_id=record.rule_profile_id,
+    )
 
 
 def _move_uci_from_action(action: object) -> str:
@@ -188,6 +229,58 @@ class DAGAppendResult:
     node: DAGNode
     edge: DAGEdge
     appended: bool
+
+
+@dataclass(frozen=True, slots=True)
+class DAGMoveAppendRequest:
+    """One caller-supplied exact move transition for batch validation.
+
+    The parent occurrence must already exist in the durable DAG prefix.  Batch
+    requests cannot name an edge created by an earlier item in the same batch.
+    Child position and history are comparison data; :class:`ProofDAG` derives
+    both independently from the exact parent and canonical UCI token.
+    """
+
+    child_position: Position
+    child_history: HistoryContext
+    parent_frontier_content_sha256: str
+    uci: str
+    lineage: Any = None
+
+
+@dataclass(frozen=True, slots=True)
+class DAGMoveBatchAppendResult:
+    """Ordered batch outcomes and exact authoritative prefix boundaries."""
+
+    results: tuple[DAGAppendResult, ...]
+    frontier_record_count_before: int
+    frontier_record_count_after: int
+    frontier_size_before: int
+    frontier_size_after: int
+
+    @property
+    def request_count(self) -> int:
+        return len(self.results)
+
+    @property
+    def appended_count(self) -> int:
+        return sum(result.appended for result in self.results)
+
+    @property
+    def appended_record_indexes(self) -> tuple[int, ...]:
+        return tuple(
+            result.edge.frontier_record_index
+            for result in self.results
+            if result.appended
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class _PreparedMoveAppend:
+    request: DAGMoveAppendRequest
+    record: FrontierRecord
+    payload_bytes: bytes
+    content_sha256: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -1080,6 +1173,364 @@ class ProofDAG:
         assert node is not None
         return DAGAppendResult(node, edge, True)
 
+    def _exact_parent_for_move(
+        self,
+        parent_frontier_content_sha256: str,
+    ) -> tuple[str, DAGNode]:
+        parent_frontier_content_sha256 = _require_sha256(
+            parent_frontier_content_sha256,
+            label="parent frontier content address",
+        )
+        parent_edge = self.get_edge(parent_frontier_content_sha256)
+        if parent_edge is None:
+            raise ValueError("parent frontier content address is not indexed")
+        parent = self.get_node(parent_edge.child_node_sha256)
+        if parent is None:
+            raise ProofDAGIntegrityError("indexed parent edge has no exact parent node")
+        return parent_frontier_content_sha256, parent
+
+    def _validated_move_record_for_parent(
+        self,
+        child_position: Position,
+        child_history: HistoryContext,
+        *,
+        parent_frontier_content_sha256: str,
+        parent: DAGNode,
+        uci: str,
+        lineage: Any = None,
+    ) -> FrontierRecord:
+        expected_position, expected_history = self._derive_move_child(parent, uci)
+        if not isinstance(child_position, Position):
+            raise TypeError("child_position must be a Position")
+        if (
+            child_position.to_fen() != expected_position.to_fen()
+            or child_position != expected_position
+        ):
+            raise ValueError("supplied child position differs from exact legal move result")
+        try:
+            supplied = FrontierRecord(
+                child_position,
+                child_history,
+                rule_profile_id=self.rule_profile_id,
+            )
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"supplied child state is invalid: {exc}") from exc
+        expected = FrontierRecord(
+            expected_position,
+            expected_history,
+            parent_content_sha256=parent_frontier_content_sha256,
+            action={"kind": "move", "uci": uci},
+            lineage=lineage,
+            rule_profile_id=self.rule_profile_id,
+        )
+        if supplied.history != expected_history:
+            raise ValueError(
+                "supplied child history differs from parent HistoryContext.push(child)"
+            )
+        if (
+            supplied.position_sha256 != expected.position_sha256
+            or supplied.game_state_sha256 != expected.game_state_sha256
+        ):
+            raise ValueError("supplied child fails exact position/game-state identity match")
+        payload = expected.payload_bytes()
+        if len(payload) > MAX_RECORD_PAYLOAD_BYTES:
+            raise ValueError(
+                f"frontier record payload is {len(payload)} bytes; maximum is "
+                f"{MAX_RECORD_PAYLOAD_BYTES}"
+            )
+        return expected
+
+    def _validated_move_record(
+        self,
+        child_position: Position,
+        child_history: HistoryContext,
+        *,
+        parent_frontier_content_sha256: str,
+        uci: str,
+        lineage: Any = None,
+    ) -> FrontierRecord:
+        """Prevalidate one exact move request without writing either authority."""
+
+        parent_frontier_content_sha256, parent = self._exact_parent_for_move(
+            parent_frontier_content_sha256
+        )
+        return self._validated_move_record_for_parent(
+            child_position,
+            child_history,
+            parent_frontier_content_sha256=parent_frontier_content_sha256,
+            parent=parent,
+            uci=uci,
+            lineage=lineage,
+        )
+
+    @staticmethod
+    def _bounded_move_batch(
+        requests: Iterable[DAGMoveAppendRequest],
+    ) -> tuple[DAGMoveAppendRequest, ...]:
+        try:
+            iterator = iter(requests)
+        except TypeError as exc:
+            raise TypeError("requests must be an iterable of DAGMoveAppendRequest") from exc
+        items: list[DAGMoveAppendRequest] = []
+        for item in iterator:
+            if len(items) >= MAX_MOVE_APPEND_BATCH:
+                raise ValueError(
+                    f"move append batch exceeds maximum {MAX_MOVE_APPEND_BATCH} requests"
+                )
+            if not isinstance(item, DAGMoveAppendRequest):
+                raise TypeError("every batch item must be a DAGMoveAppendRequest")
+            items.append(item)
+        return tuple(items)
+
+    def _existing_result_for_record(
+        self,
+        payload_bytes: bytes,
+        content_sha256: str,
+    ) -> DAGAppendResult | None:
+        row = self._edge_row(content_sha256)
+        if row is None:
+            return None
+        edge = self._checked_edge_from_row(row)
+        entry = FrontierReader(self.frontier_path).read_entry_at(
+            edge.frame_offset,
+            expected_content_sha256=content_sha256,
+        )
+        if entry.record.payload_bytes() != payload_bytes:
+            raise ProofDAGIntegrityError(
+                "frontier SHA-256 collision between distinct canonical records"
+            )
+        node = self.get_node(edge.child_node_sha256)
+        if node is None:
+            raise ProofDAGIntegrityError("existing batch edge has no exact child node")
+        return DAGAppendResult(node, edge, False)
+
+    def append_moves_batch(
+        self,
+        requests: Iterable[DAGMoveAppendRequest],
+    ) -> DAGMoveBatchAppendResult:
+        """Append a deterministic bounded move batch with one frontier fsync.
+
+        Every request and its complete canonical frontier payload is validated
+        before the SQLite transaction begins or any frontier byte is written.
+        Exact pre-existing records and later identical requests are returned in
+        request order with ``appended=False`` and create no duplicate bytes.
+        Distinct lineages remain distinct occurrences, matching
+        :meth:`append_move` semantics.
+
+        All parent occurrences must belong to the prefix present before the
+        batch.  The method writes unique-new frames contiguously without fsync,
+        performs one frontier sync, indexes every frame in one SQLite
+        transaction, updates the boundary once, and commits once.  A failure
+        after the first write attempt poisons the handle.  Fully written frames
+        form the same replayable suffix used by ordinary append recovery; a
+        physically torn final frame still requires explicit frontier recovery.
+        The aggregate encoded-frame budget is bounded before mutation.  The
+        underlying writer retains its per-frame lock; callers must not treat a
+        single ``ProofDAG`` handle as a concurrently thread-safe batch object.
+        """
+
+        if self._failed_append:
+            raise ProofDAGCommitError("reopen the proof DAG after the failed append")
+        batch = self._bounded_move_batch(requests)
+
+        prepared: list[_PreparedMoveAppend] = []
+        payload_by_sha256: dict[str, bytes] = {}
+        first_request_index: dict[str, int] = {}
+        parent_cache: dict[str, tuple[str, DAGNode]] = {}
+        aggregate_encoded_bytes = 0
+        for index, request in enumerate(batch):
+            cached_parent = parent_cache.get(request.parent_frontier_content_sha256)
+            if cached_parent is None:
+                cached_parent = self._exact_parent_for_move(
+                    request.parent_frontier_content_sha256
+                )
+                parent_cache[cached_parent[0]] = cached_parent
+            canonical_parent_sha256, parent = cached_parent
+            record = self._validated_move_record_for_parent(
+                request.child_position,
+                request.child_history,
+                parent_frontier_content_sha256=canonical_parent_sha256,
+                parent=parent,
+                uci=request.uci,
+                lineage=request.lineage,
+            )
+            payload = record.payload_bytes()
+            content_sha256 = hashlib.sha256(payload).hexdigest()
+            aggregate_encoded_bytes += (
+                RECORD_PREFIX_SIZE
+                + len(payload)
+                + RECORD_SHA256_SIZE
+                + RECORD_CRC32_SIZE
+            )
+            if aggregate_encoded_bytes > MAX_MOVE_APPEND_BATCH_BYTES:
+                raise ValueError(
+                    "move append batch encoded bytes exceed maximum "
+                    f"{MAX_MOVE_APPEND_BATCH_BYTES}"
+                )
+            prior_payload = payload_by_sha256.get(content_sha256)
+            if prior_payload is not None and prior_payload != payload:
+                raise ProofDAGIntegrityError(
+                    "frontier SHA-256 collision inside move append batch"
+                )
+            payload_by_sha256.setdefault(content_sha256, payload)
+            first_request_index.setdefault(content_sha256, index)
+            prepared.append(
+                _PreparedMoveAppend(request, record, payload, content_sha256)
+            )
+
+        metadata = self._validated_metadata()
+        boundary_count = self._db.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
+        boundary_size = self.frontier_path.stat().st_size
+        if int(metadata["indexed_record_count"]) != boundary_count:
+            raise ProofDAGIntegrityError("SQLite count changed before batch append")
+        if int(metadata["indexed_frontier_size"]) != boundary_size:
+            raise ProofDAGIntegrityError("frontier/SQLite boundary changed before batch append")
+
+        resolved: dict[str, DAGAppendResult] = {}
+        unique_new: list[_PreparedMoveAppend] = []
+        seen_new: set[str] = set()
+        for item in prepared:
+            content_sha256 = item.content_sha256
+            if content_sha256 in resolved or content_sha256 in seen_new:
+                continue
+            existing = self._existing_result_for_record(
+                item.payload_bytes,
+                content_sha256,
+            )
+            if existing is not None:
+                resolved[content_sha256] = existing
+            else:
+                seen_new.add(content_sha256)
+                unique_new.append(item)
+
+        if not unique_new:
+            ordered = tuple(resolved[item.content_sha256] for item in prepared)
+            return DAGMoveBatchAppendResult(
+                results=ordered,
+                frontier_record_count_before=boundary_count,
+                frontier_record_count_after=boundary_count,
+                frontier_size_before=boundary_size,
+                frontier_size_after=boundary_size,
+            )
+
+        write_attempted = False
+        frontier_synced = False
+        entries: list[FrontierEntry] = []
+        writer = self._frontier_writer
+        try:
+            self._db.execute("BEGIN IMMEDIATE")
+            metadata = self._validated_metadata()
+            edge_count = self._db.execute("SELECT COUNT(*) FROM edges").fetchone()[0]
+            frontier_size = self.frontier_path.stat().st_size
+            if edge_count != boundary_count or frontier_size != boundary_size:
+                raise ProofDAGIntegrityError(
+                    "proof DAG boundary moved after batch prevalidation"
+                )
+            if int(metadata["indexed_record_count"]) != edge_count:
+                raise ProofDAGIntegrityError("SQLite count changed before batch write")
+            if int(metadata["indexed_frontier_size"]) != frontier_size:
+                raise ProofDAGIntegrityError(
+                    "frontier/SQLite boundary changed before batch write"
+                )
+
+            next_offset = frontier_size
+            for ordinal, item in enumerate(unique_new, start=edge_count):
+                write_attempted = True
+                entry = writer.append(item.record, fsync=False)
+                if (
+                    entry.record_index != ordinal
+                    or entry.frame_offset != next_offset
+                    or entry.content_sha256 != item.content_sha256
+                ):
+                    raise ProofDAGIntegrityError(
+                        "frontier writer returned a noncontiguous batch append"
+                    )
+                entries.append(entry)
+                next_offset = entry.frame_end_offset
+
+            writer.sync()
+            frontier_synced = True
+            for entry in entries:
+                self._insert_entry(entry)
+            self._db.execute(
+                "UPDATE metadata SET value = ? WHERE key = 'indexed_record_count'",
+                (str(edge_count + len(entries)),),
+            )
+            self._db.execute(
+                "UPDATE metadata SET value = ? WHERE key = 'indexed_frontier_size'",
+                (str(next_offset),),
+            )
+            self._db.execute("COMMIT")
+
+            if self.frontier_path.stat().st_size != next_offset:
+                raise ProofDAGIntegrityError(
+                    "frontier size changed after committed batch append"
+                )
+            for item in unique_new:
+                edge = self.get_edge(item.content_sha256)
+                if edge is None:
+                    raise ProofDAGIntegrityError(
+                        "committed batch edge is absent from the exact index"
+                    )
+                node = self.get_node(edge.child_node_sha256)
+                if node is None:
+                    raise ProofDAGIntegrityError(
+                        "committed batch edge has no exact child node"
+                    )
+                resolved[item.content_sha256] = DAGAppendResult(
+                    node,
+                    edge,
+                    True,
+                )
+
+            ordered_results: list[DAGAppendResult] = []
+            new_hashes = {item.content_sha256 for item in unique_new}
+            for index, item in enumerate(prepared):
+                base = resolved[item.content_sha256]
+                appended = (
+                    item.content_sha256 in new_hashes
+                    and first_request_index[item.content_sha256] == index
+                )
+                ordered_results.append(DAGAppendResult(base.node, base.edge, appended))
+            return DAGMoveBatchAppendResult(
+                results=tuple(ordered_results),
+                frontier_record_count_before=edge_count,
+                frontier_record_count_after=edge_count + len(entries),
+                frontier_size_before=frontier_size,
+                frontier_size_after=next_offset,
+            )
+        except BaseException as exc:
+            rollback_failure: BaseException | None = None
+            if self._db.in_transaction:
+                try:
+                    self._db.execute("ROLLBACK")
+                except BaseException as rollback_exc:
+                    rollback_failure = rollback_exc
+            if write_attempted or rollback_failure is not None:
+                self._failed_append = True
+                try:
+                    self.close()
+                except BaseException:
+                    pass
+                if write_attempted:
+                    durability = (
+                        "the complete frontier batch was synced"
+                        if frontier_synced
+                        else "the frontier may contain a complete or torn batch prefix"
+                    )
+                else:
+                    durability = "the SQLite batch transaction could not be rolled back"
+                rollback_detail = (
+                    "; SQLite rollback also failed"
+                    if rollback_failure is not None
+                    else ""
+                )
+                raise ProofDAGCommitError(
+                    f"{durability}{rollback_detail}; reopen to replay a valid suffix or explicitly "
+                    "recover a torn final frame"
+                ) from exc
+            raise
+
     def append_move(
         self,
         child_position: Position,
@@ -1099,50 +1550,19 @@ class ProofDAG:
         are deliberately outside this state-edge API.
         """
 
-        parent_frontier_content_sha256 = _require_sha256(
-            parent_frontier_content_sha256,
-            label="parent frontier content address",
-        )
-        parent_edge = self.get_edge(parent_frontier_content_sha256)
-        if parent_edge is None:
-            raise ValueError("parent frontier content address is not indexed")
-        parent = self.get_node(parent_edge.child_node_sha256)
-        if parent is None:
-            raise ProofDAGIntegrityError("indexed parent edge has no exact parent node")
-
-        expected_position, expected_history = self._derive_move_child(parent, uci)
-        if not isinstance(child_position, Position):
-            raise TypeError("child_position must be a Position")
-        if child_position.to_fen() != expected_position.to_fen() or child_position != expected_position:
-            raise ValueError("supplied child position differs from exact legal move result")
-        try:
-            supplied = FrontierRecord(
-                child_position,
-                child_history,
-                rule_profile_id=self.rule_profile_id,
-            )
-        except (TypeError, ValueError) as exc:
-            raise ValueError(f"supplied child state is invalid: {exc}") from exc
-        expected = FrontierRecord(
-            expected_position,
-            expected_history,
-            rule_profile_id=self.rule_profile_id,
-        )
-        if supplied.history != expected_history:
-            raise ValueError(
-                "supplied child history differs from parent HistoryContext.push(child)"
-            )
-        if (
-            supplied.position_sha256 != expected.position_sha256
-            or supplied.game_state_sha256 != expected.game_state_sha256
-        ):
-            raise ValueError("supplied child fails exact position/game-state identity match")
-        return self._append_record(
-            expected_position,
-            expected_history,
+        expected = self._validated_move_record(
+            child_position,
+            child_history,
             parent_frontier_content_sha256=parent_frontier_content_sha256,
-            action={"kind": "move", "uci": uci},
+            uci=uci,
             lineage=lineage,
+        )
+        return self._append_record(
+            expected.position,
+            expected.history,
+            parent_frontier_content_sha256=expected.parent_content_sha256,
+            action=expected.action,
+            lineage=expected.lineage,
         )
 
     def append_state(
@@ -1206,9 +1626,14 @@ __all__ = [
     "DAGAppendResult",
     "DAGAuditReport",
     "DAGEdge",
+    "DAGMoveAppendRequest",
+    "DAGMoveBatchAppendResult",
     "DAGNode",
+    "MAX_MOVE_APPEND_BATCH",
+    "MAX_MOVE_APPEND_BATCH_BYTES",
     "ProofDAG",
     "ProofDAGCommitError",
     "ProofDAGError",
     "ProofDAGIntegrityError",
+    "node_identity_sha256",
 ]

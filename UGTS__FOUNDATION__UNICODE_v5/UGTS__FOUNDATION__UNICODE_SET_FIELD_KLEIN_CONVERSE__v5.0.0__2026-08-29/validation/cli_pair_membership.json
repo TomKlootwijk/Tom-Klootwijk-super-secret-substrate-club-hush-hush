@@ -1,0 +1,15 @@
+{
+  "literal": "∈",
+  "operator_id": "set.membership.element-of",
+  "surface_argument_order": [
+    "element",
+    "container"
+  ],
+  "canonical_argument_order": [
+    "element",
+    "container"
+  ],
+  "converse_literal": "∋",
+  "kappa": 0,
+  "glyph_profile": "ugts.canonical.capsule-glyph.v1"
+}

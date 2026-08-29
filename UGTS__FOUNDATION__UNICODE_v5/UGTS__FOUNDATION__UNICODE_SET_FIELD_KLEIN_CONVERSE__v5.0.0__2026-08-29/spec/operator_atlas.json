@@ -1,0 +1,1891 @@
+{
+  "$schema": "./ugts5_operator_atlas.schema.json",
+  "atlas_hash": "d4745a198469ff97665825f53d88cdbf8bad27687a3021c89177eedb83a55e91",
+  "atlas_id": "ugts.unicode-set-field-klein-converse.atlas",
+  "canonical_release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+  "generated": "2026-08-29",
+  "normalization": "NFC",
+  "operators": [
+    {
+      "content_hash": "b33c913acd01f8d9fe32885a1f4f08ccb5dfc738ee9d14068997e117971043c9",
+      "converse_id": "set.membership.contains-as-member",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 0,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_central_bar",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.membership.element-of",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "phi_container(element) <= 0",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "membership"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "element",
+          "container"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "element",
+          "container"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Element[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Element[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∈",
+        "names": [
+          "ELEMENT OF"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2208"
+        ],
+        "utf8_hex": "e28888"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "dfd070fb3b1cb3356d9142cd186e724a54354071e211118981fd432839f8ec84",
+      "converse_id": "set.membership.element-of",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 0,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_central_bar",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.membership.contains-as-member",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "phi_container(element) <= 0",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "membership"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "element",
+          "container"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "container",
+          "element"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Element[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Element[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∋",
+        "names": [
+          "CONTAINS AS MEMBER"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+220B"
+        ],
+        "utf8_hex": "e2888b"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "54bbb6d9fc4795ef177fb7fa6563b97ee2f4f977d223b530da6398cfac4134f4",
+      "converse_id": "set.membership.does-not-contain-as-member",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 1,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_central_bar_and_slash",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.membership.not-element-of",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "phi_container(element) > 0",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "nonmembership"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "element",
+          "container"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "element",
+          "container"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Element[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Element[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∉",
+        "names": [
+          "NOT AN ELEMENT OF"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2209"
+        ],
+        "utf8_hex": "e28889"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "9087ac9802c5af967f4345ca77bb573e03968a7ee177c453d4e9533f1b8ace09",
+      "converse_id": "set.membership.not-element-of",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 1,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_central_bar_and_slash",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.membership.does-not-contain-as-member",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "phi_container(element) > 0",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "nonmembership"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "element",
+          "container"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "container",
+          "element"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Element[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Element[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∌",
+        "names": [
+          "DOES NOT CONTAIN AS MEMBER"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+220C"
+        ],
+        "utf8_hex": "e2888c"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "48118b319ff12d87cea044f71f69234a0ae513cd63a0f02185a52e28c95bd2bb",
+      "converse_id": "set.inclusion.proper-superset",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 2,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.proper-subset",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B and A != B",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "proper_subset"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊂",
+        "names": [
+          "SUBSET OF"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2282"
+        ],
+        "utf8_hex": "e28a82"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "8491529bee798a63ddefaef68b87f70a4a10df5d778362dbbc810e594e21b478",
+      "converse_id": "set.inclusion.proper-subset",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 2,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.proper-superset",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B and A != B",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "proper_subset"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "superset",
+          "subset"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊃",
+        "names": [
+          "SUPERSET OF"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2283"
+        ],
+        "utf8_hex": "e28a83"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "e8e8e120aa24e122428238bc6b622e1851827c233b956e5a1fecea18c1344077",
+      "converse_id": "set.inclusion.superset-or-equal",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 3,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_lower_bar",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.subset-or-equal",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "subset_or_equal"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊆",
+        "names": [
+          "SUBSET OF OR EQUAL TO"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2286"
+        ],
+        "utf8_hex": "e28a86"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "704ffcc587638d213e384217efe35a5a7ec4de4fbe39c147417d141e5053933f",
+      "converse_id": "set.inclusion.subset-or-equal",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 3,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_lower_bar",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.superset-or-equal",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "subset_or_equal"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "superset",
+          "subset"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊇",
+        "names": [
+          "SUPERSET OF OR EQUAL TO"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2287"
+        ],
+        "utf8_hex": "e28a87"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "d3ca7b7308d25b5372df0bc1b767a70885ebcb9a6609b593cd3633523d89bc74",
+      "converse_id": "set.inclusion.not-proper-superset",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 4,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_slash",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.not-proper-subset",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "not (A subseteq B and A != B)",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "not_proper_subset"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊄",
+        "names": [
+          "NOT A SUBSET OF"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2284"
+        ],
+        "utf8_hex": "e28a84"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "5dbbcec9f72400874323c8b64b5d9bf68ff09ed49597378c4854d08e2697d82c",
+      "converse_id": "set.inclusion.not-proper-subset",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 4,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_slash",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.not-proper-superset",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "not (A subseteq B and A != B)",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "not_proper_subset"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "superset",
+          "subset"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊅",
+        "names": [
+          "NOT A SUPERSET OF"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2285"
+        ],
+        "utf8_hex": "e28a85"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "ade228ceb934bb3fb889e4074f6f2258dfa94df63c03432a482acaf5051bd0b9",
+      "converse_id": "set.inclusion.not-superset-or-equal",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 5,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_lower_bar_and_slash",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.not-subset-or-equal",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "not (A subseteq B)",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "not_subset_or_equal"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊈",
+        "names": [
+          "NEITHER A SUBSET OF NOR EQUAL TO"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2288"
+        ],
+        "utf8_hex": "e28a88"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "e1bd92cd18964b7cfc3b7f42bc1f213b73e551dc1693170ed3898d652fcbbb35",
+      "converse_id": "set.inclusion.not-subset-or-equal",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 5,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_lower_bar_and_slash",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.not-superset-or-equal",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "not (A subseteq B)",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "not_subset_or_equal"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "superset",
+          "subset"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊉",
+        "names": [
+          "NEITHER A SUPERSET OF NOR EQUAL TO"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2289"
+        ],
+        "utf8_hex": "e28a89"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "c220b540822ceb7361275834e1de156079faba361ba31bbb94d0ac752b1f5e9f",
+      "converse_id": "set.inclusion.superset-with-not-equal",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 6,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_not-equal_bar",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.subset-with-not-equal",
+      "kappa": 0,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B and A != B",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "proper_subset_variant"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊊",
+        "names": [
+          "SUBSET OF WITH NOT EQUAL TO"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+228A"
+        ],
+        "utf8_hex": "e28a8a"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "cfb1c5f8802c797d997b8bb94ed808ca61bd9011f6ca3a9cabc40544a5e516ca",
+      "converse_id": "set.inclusion.subset-with-not-equal",
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "continuous_global_relation": "certificate_required",
+        "font_glyph": "profile_bound",
+        "semantic": "exact_finite_or_profile_bounded"
+      },
+      "family_id": 6,
+      "field_action": {
+        "capability_ladder": [
+          "exact_sdf",
+          "metric_signed_set_field",
+          "conservative_distance_bound",
+          "implicit_signed_residual",
+          "signed_membership_field",
+          "symbolic_membership_oracle"
+        ],
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_port_orientation_witness",
+        "mirror_axis": "x=0",
+        "mirror_law": "G_converse(-x,y) = G_direct(x,y)",
+        "primitive": "open_ellipse_with_not-equal_bar",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.inclusion.superset-with-not-equal",
+      "kappa": 1,
+      "klein": {
+        "involution": true,
+        "kappa_map": "kappa' = kappa xor 1",
+        "operand_map": "(a,b) -> (b,a)",
+        "orientation_map": "o' = -o",
+        "theta_map": "theta' = (pi - theta) mod 2pi",
+        "transform_id": "ugts.klein-converse.reflect-swap-toggle.v1"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+        "source_motif": "Unicode set-operator converse, glyph mirror, packed parity/topology selector"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B and A != B",
+        "converse_law": "E_converse(b,a) = E_direct(a,b)",
+        "kernel": "proper_subset_variant"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "subset",
+          "superset"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "superset",
+          "subset"
+        ],
+        "surface_to_canonical": [
+          1,
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "⊋",
+        "names": [
+          "SUPERSET OF WITH NOT EQUAL TO"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+228B"
+        ],
+        "utf8_hex": "e28a8b"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "e727371ee1074c8842e31c4bec1290a6423a7b6b49750499e19065c1a322b816",
+      "converse_id": null,
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "composed_field": "capability_may_downgrade",
+        "semantic": "exact_for_declared_set_model"
+      },
+      "family_id": null,
+      "field_action": {
+        "distance_warning": "min/max/negation preserves sign but not always exact Euclidean distance",
+        "kind": "field_transform",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_operator_shape",
+        "primitive": "lower_arc",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.algebra.union",
+      "kappa": null,
+      "klein": {
+        "role": "not_converse_paired_in_set-core-16"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+      },
+      "semantic": {
+        "canonical_formula": "phi_union = min(phi_A, phi_B)",
+        "kernel": "union"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Set[T]",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∪",
+        "names": [
+          "UNION"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+222A"
+        ],
+        "utf8_hex": "e288aa"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "48c63c25898beeaad56eb7c18b89f0099e729bf9dcfe83452550a71e0c01d4cf",
+      "converse_id": null,
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "composed_field": "capability_may_downgrade",
+        "semantic": "exact_for_declared_set_model"
+      },
+      "family_id": null,
+      "field_action": {
+        "distance_warning": "min/max/negation preserves sign but not always exact Euclidean distance",
+        "kind": "field_transform",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_operator_shape",
+        "primitive": "upper_arc",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.algebra.intersection",
+      "kappa": null,
+      "klein": {
+        "role": "not_converse_paired_in_set-core-16"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+      },
+      "semantic": {
+        "canonical_formula": "phi_intersection = max(phi_A, phi_B)",
+        "kernel": "intersection"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Set[T]",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∩",
+        "names": [
+          "INTERSECTION"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2229"
+        ],
+        "utf8_hex": "e288a9"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "a7c04592aeaa8ca3ed3ee423b2180e726c4b6d15dda7de0a9edfab6c5c19e7bf",
+      "converse_id": null,
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "composed_field": "capability_may_downgrade",
+        "semantic": "exact_for_declared_set_model"
+      },
+      "family_id": null,
+      "field_action": {
+        "distance_warning": "min/max/negation preserves sign but not always exact Euclidean distance",
+        "kind": "field_transform",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_operator_shape",
+        "primitive": "diagonal_set_minus",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.algebra.difference",
+      "kappa": null,
+      "klein": {
+        "role": "not_converse_paired_in_set-core-16"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+      },
+      "semantic": {
+        "canonical_formula": "phi_A_minus_B = max(phi_A, -phi_B)",
+        "kernel": "difference"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Set[T]",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∖",
+        "names": [
+          "SET MINUS"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2216"
+        ],
+        "utf8_hex": "e28896"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "ad6ca8ccef2eaf7dcc3dc8999bc7ecdeebb9fb75e74352595a6c4b8b5493266a",
+      "converse_id": null,
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "composed_field": "capability_may_downgrade",
+        "semantic": "exact_for_declared_set_model"
+      },
+      "family_id": null,
+      "field_action": {
+        "distance_warning": "min/max/negation preserves sign but not always exact Euclidean distance",
+        "kind": "field_transform",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_operator_shape",
+        "primitive": "complement_mark",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.algebra.complement",
+      "kappa": null,
+      "klein": {
+        "role": "not_converse_paired_in_set-core-16"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+      },
+      "semantic": {
+        "canonical_formula": "phi_complement = -phi_A",
+        "kernel": "complement"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "arg0"
+        ],
+        "fixity": "prefix",
+        "semantic_arity": 1,
+        "surface_argument_order": [
+          "arg0"
+        ],
+        "surface_to_canonical": [
+          0
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]"
+        ],
+        "codomain": "Set[T]",
+        "domain": [
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∁",
+        "names": [
+          "COMPLEMENT"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2201"
+        ],
+        "utf8_hex": "e28881"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "2ea30d88c4c7717390c113310c8e5eaa10d774e8cf88d3a15fef0c1b1782d38c",
+      "converse_id": null,
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "composed_field": "capability_may_downgrade",
+        "semantic": "exact_for_declared_set_model"
+      },
+      "family_id": null,
+      "field_action": {
+        "distance_warning": "min/max/negation preserves sign but not always exact Euclidean distance",
+        "kind": "field_transform",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_operator_shape",
+        "primitive": "slashed_ellipse",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.literal.empty",
+      "kappa": null,
+      "klein": {
+        "role": "not_converse_paired_in_set-core-16"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+      },
+      "semantic": {
+        "canonical_formula": "members = empty",
+        "kernel": "empty_set"
+      },
+      "syntax": {
+        "canonical_argument_order": [],
+        "fixity": "literal",
+        "semantic_arity": 0,
+        "surface_argument_order": [],
+        "surface_to_canonical": []
+      },
+      "typing": {
+        "canonical_domain": [],
+        "codomain": "Set[T]",
+        "domain": [],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "∅",
+        "names": [
+          "EMPTY SET"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+2205"
+        ],
+        "utf8_hex": "e28885"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "content_hash": "5ff0dacad17acb06bb5675c8b65f0a5d2cc53969ef359be8e8ee40964c9b1058",
+      "converse_id": null,
+      "exactness": {
+        "canonical_glyph": "exact_sdf_to_finite_capsule_union",
+        "composed_field": "capability_may_downgrade",
+        "semantic": "exact_for_declared_set_model"
+      },
+      "family_id": null,
+      "field_action": {
+        "distance_warning": "min/max/negation preserves sign but not always exact Euclidean distance",
+        "kind": "predicate",
+        "sign_convention": "negative_inside_zero_boundary_positive_outside"
+      },
+      "glyph": {
+        "bbox": [
+          -1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "font_exactness": "not_claimed",
+        "geometry_role": "literal_operator_shape",
+        "primitive": "parallel_bars",
+        "profile_id": "ugts.canonical.capsule-glyph.v1",
+        "stroke_radius": 0.075
+      },
+      "id": "set.relation.equality",
+      "kappa": null,
+      "klein": {
+        "role": "not_converse_paired_in_set-core-16"
+      },
+      "provenance": {
+        "class": "engineering-derived",
+        "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0"
+      },
+      "semantic": {
+        "canonical_formula": "A subseteq B and B subseteq A",
+        "kernel": "set_equality"
+      },
+      "syntax": {
+        "canonical_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "fixity": "infix",
+        "semantic_arity": 2,
+        "surface_argument_order": [
+          "arg0",
+          "arg1"
+        ],
+        "surface_to_canonical": [
+          0,
+          1
+        ]
+      },
+      "typing": {
+        "canonical_domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "codomain": "Bool",
+        "domain": [
+          "Set[T]",
+          "Set[T]"
+        ],
+        "type_parameters": [
+          "T"
+        ]
+      },
+      "unicode": {
+        "literal": "=",
+        "names": [
+          "EQUALS SIGN"
+        ],
+        "normalization": "NFC",
+        "scalars": [
+          "U+003D"
+        ],
+        "utf8_hex": "3d"
+      },
+      "version": "5.0.0"
+    }
+  ],
+  "schema_id": "ugts.operator-atlas.schema@5.0.0",
+  "unicode_identity_rule": "exact scalar sequence is the cold-atlas key",
+  "version": "5.0.0"
+}

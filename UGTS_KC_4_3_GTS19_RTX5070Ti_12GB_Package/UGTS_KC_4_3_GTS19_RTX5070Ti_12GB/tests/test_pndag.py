@@ -324,6 +324,19 @@ def test_checkpoint_interchange_integers_are_portably_bounded(tmp_path: Path) ->
     with pytest.raises(ValueError, match="komi2 must fit signed 64-bit"):
         ProofNumberDAG(huge_komi_rules, threshold2=1)
 
+    for edge_komi2 in (-(1 << 63), (1 << 63) - 1):
+        overflow_score_rules = Rules(
+            size=2,
+            komi2=edge_komi2,
+            superko="positional_superko",
+            allow_suicide=False,
+            scoring="area",
+            passes_to_end=2,
+            profile_id="terminal-score-overflow-rejected",
+        )
+        with pytest.raises(ValueError, match="possible score2 range"):
+            ProofNumberDAG(overflow_score_rules, threshold2=1)
+
     checkpoint = tmp_path / "portable.json"
     ProofNumberDAG(rules, threshold2=1).save_checkpoint(checkpoint)
     payload = _read_checkpoint(checkpoint)

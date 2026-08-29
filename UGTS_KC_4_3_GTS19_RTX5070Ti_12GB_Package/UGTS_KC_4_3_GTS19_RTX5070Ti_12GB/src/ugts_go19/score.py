@@ -91,3 +91,15 @@ def area_score(board: bytes, rules: Rules) -> AreaScore:
 
 def area_score2(board: bytes, rules: Rules) -> int:
     return area_score(board, rules).score2
+
+
+def possible_area_score2_bounds(rules: Rules) -> tuple[int, int]:
+    """Return inclusive score2 extrema implied by board size and komi.
+
+    Area difference is always in ``[-size**2, size**2]``.  Keeping this
+    inexpensive envelope explicit lets serialized proof engines reject rule
+    tuples whose terminal score arithmetic would overflow a signed-64 verifier.
+    """
+
+    points = rules.size * rules.size
+    return -2 * points - rules.komi2, 2 * points - rules.komi2

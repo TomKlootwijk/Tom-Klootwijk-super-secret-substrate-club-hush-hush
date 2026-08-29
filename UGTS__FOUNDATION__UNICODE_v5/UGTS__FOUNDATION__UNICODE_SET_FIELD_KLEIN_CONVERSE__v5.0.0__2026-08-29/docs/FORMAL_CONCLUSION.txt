@@ -1,0 +1,1 @@
+A Unicode operator is no longer merely text and no longer merely an icon. It is a content-addressed, executable geometric rule cell whose literal codepoint resolves both its canonical shape and its typed operation. A Klein-converse parity flip mirrors the shape, reverses the typed ports and selects the converse Unicode spelling while preserving the mathematical truth value.

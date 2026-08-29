@@ -1,0 +1,8 @@
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/touch_router_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/graph_vm_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/nearest_tag_graph_vm_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/timer_graph_vm_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/trigger_area_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/scatter_population_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/ALL_BUILD.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-timer-op23-vs/CMakeFiles/ZERO_CHECK.dir

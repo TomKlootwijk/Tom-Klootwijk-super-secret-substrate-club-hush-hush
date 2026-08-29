@@ -11,6 +11,7 @@
     "status",
     "root_fen",
     "root_hash",
+    "root_game_state_sha256",
     "attacker",
     "max_plies",
     "tree"
@@ -23,6 +24,7 @@
     "status": {"enum": ["proved", "not_forced_within_horizon"]},
     "root_fen": {"type": "string"},
     "root_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "root_game_state_sha256": {"$ref": "#/$defs/hash"},
     "attacker": {"enum": ["white", "black"]},
     "max_plies": {"type": "integer", "minimum": 1},
     "explored_nodes": {"type": "integer", "minimum": 0},

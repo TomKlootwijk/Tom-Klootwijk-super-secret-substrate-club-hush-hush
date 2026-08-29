@@ -5,7 +5,12 @@ from dataclasses import dataclass
 from typing import Any
 
 from .constants import WHITE, color_name, opposite
-from .game_state import RULE_PROFILE_ID
+from .game_state import (
+    RULE_PROFILE_ID,
+    HistoryContext,
+    game_state_sha256,
+    validate_history_reachability,
+)
 from .hashing import repetition_key, state_sha256
 from .position import Position
 from .rules import apply_move, in_check, insufficient_material, legal_moves, move_to_san, parse_uci_move
@@ -21,6 +26,28 @@ class MateProofResult:
 
     def to_dict(self) -> dict[str, Any]:
         return self.certificate
+
+
+def _history_from_record(record: object) -> HistoryContext:
+    if not isinstance(record, list):
+        raise ValueError("root_history_counts must be an explicit list")
+    pairs: list[tuple[str, int]] = []
+    for item in record:
+        if not isinstance(item, list) or len(item) != 2:
+            raise ValueError("root_history_counts contains a malformed entry")
+        key, count = item
+        if (
+            not isinstance(key, str)
+            or len(key) != 64
+            or any(character not in "0123456789abcdef" for character in key)
+        ):
+            raise ValueError("root history repetition key must be a lowercase SHA-256 digest")
+        if isinstance(count, bool) or not isinstance(count, int) or not 1 <= count <= 5:
+            raise ValueError("root history occurrence counts must be integers in 1..5")
+        pairs.append((key, count))
+    if pairs != sorted(pairs) or len({key for key, _ in pairs}) != len(pairs):
+        raise ValueError("root_history_counts must be unique and sorted")
+    return HistoryContext(tuple(pairs))
 
 
 class MateProver:
@@ -151,23 +178,35 @@ class MateProver:
         self.memo[memo_key] = result
         return result
 
-    def prove(self, position: Position, *, max_plies: int, attacker: int | None = None) -> MateProofResult:
+    def prove(
+        self,
+        position: Position,
+        *,
+        max_plies: int,
+        attacker: int | None = None,
+        history: HistoryContext | None = None,
+    ) -> MateProofResult:
         if max_plies < 1:
             raise ValueError("max_plies must be at least 1")
         attacker = position.turn if attacker is None else attacker
+        if history is not None and not isinstance(history, HistoryContext):
+            raise TypeError("history must be a HistoryContext")
+        root_history = HistoryContext.initial(position) if history is None else history
+        root_history = _history_from_record(root_history.record())
+        validate_history_reachability(position, root_history)
         self.nodes = 0
         self.memo.clear()
-        root_rep = repetition_key(position)
-        ok, tree = self._prove(position, attacker, max_plies, {root_rep: 1})
+        ok, tree = self._prove(position, attacker, max_plies, dict(root_history.counts))
         status = "proved" if ok else "not_forced_within_horizon"
         certificate: dict[str, Any] = {
             "$schema": "ugts-chess-mate-proof-2.0",
             "schema_version": "2.0.0",
             "rules_profile": "fide-classical-2023-claims-as-actions-v2",
-            "root_history_counts": [[root_rep, 1]],
+            "root_history_counts": root_history.record(),
             "status": status,
             "root_fen": position.to_fen(),
             "root_hash": state_sha256(position),
+            "root_game_state_sha256": game_state_sha256(position, root_history),
             "attacker": color_name(attacker),
             "max_plies": max_plies,
             "explored_nodes": self.nodes,
@@ -187,6 +226,10 @@ def _verify_node(position: Position, node: dict[str, Any], attacker: int, depth:
     role = node.get("role")
     legal = legal_moves(position)
     rep_key = repetition_key(position)
+    validate_history_reachability(
+        position,
+        HistoryContext(tuple(sorted(path_counts.items()))),
+    )
     occurrences = path_counts.get(rep_key, 0)
     # Checkmate and stalemate end the game before automatic draw rules are
     # considered.  In particular, FIDE 9.6.2 makes a mating move decisive even
@@ -277,6 +320,11 @@ def verify_mate_certificate(certificate: dict[str, Any]) -> dict[str, Any]:
     root = Position.from_fen(str(certificate["root_fen"]))
     if certificate.get("root_hash") != state_sha256(root):
         raise ValueError("root hash mismatch")
+    history = _history_from_record(certificate.get("root_history_counts"))
+    validate_history_reachability(root, history)
+    expected_game_state_hash = game_state_sha256(root, history)
+    if certificate.get("root_game_state_sha256") != expected_game_state_hash:
+        raise ValueError("root game-state hash mismatch")
     attacker_name = certificate.get("attacker")
     attacker = WHITE if attacker_name == "white" else 1 if attacker_name == "black" else -1
     if attacker not in (0, 1):
@@ -288,30 +336,13 @@ def verify_mate_certificate(certificate: dict[str, Any]) -> dict[str, Any]:
     tree = certificate.get("tree")
     if not isinstance(tree, dict):
         raise ValueError("certificate lacks proof tree")
-    root_key = repetition_key(root)
-    history_record = certificate.get("root_history_counts")
-    if not isinstance(history_record, list):
-        raise ValueError("root_history_counts must be an explicit list")
-    pairs: list[tuple[str, int]] = []
-    for item in history_record:
-        if not isinstance(item, list) or len(item) != 2:
-            raise ValueError("root_history_counts contains a malformed entry")
-        key, count = item
-        if not isinstance(key, str) or len(key) != 64 or any(character not in "0123456789abcdef" for character in key):
-            raise ValueError("root history repetition key must be a lowercase SHA-256 digest")
-        if isinstance(count, bool) or not isinstance(count, int) or not 1 <= count <= 5:
-            raise ValueError("root history occurrence counts must be integers in 1..5")
-        pairs.append((key, count))
-    if pairs != sorted(pairs) or len({key for key, _ in pairs}) != len(pairs):
-        raise ValueError("root_history_counts must be unique and sorted")
-    path_counts = dict(pairs)
-    if path_counts.get(root_key, 0) < 1:
-        raise ValueError("root history omits the root position")
+    path_counts = dict(history.counts)
     nodes = _verify_node(root, tree, attacker, 0, max_plies, path_counts)
     return {
         "valid": True,
         "verified_nodes": nodes,
         "root_hash": state_sha256(root),
+        "root_game_state_sha256": expected_game_state_hash,
         "attacker": color_name(attacker),
         "max_plies": max_plies,
     }

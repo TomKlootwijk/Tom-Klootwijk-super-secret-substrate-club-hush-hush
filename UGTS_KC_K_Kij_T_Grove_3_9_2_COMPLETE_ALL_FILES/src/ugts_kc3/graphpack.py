@@ -12,12 +12,13 @@ import hashlib
 import math
 from pathlib import Path
 import struct
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from .mobile3d import Mobile3DProject
 from .visual_graph import (
     BUILTIN_NODE_REGISTRY,
     GraphNode,
+    PORTABLE_QUERY_TAGS,
     PortDirection,
     PortKind,
     VisualGraph,
@@ -73,6 +74,10 @@ NODE_OPCODES: dict[str, int] = {
     "action.apply_force": 18,
     "event.trigger_enter": 19,
     "event.trigger_exit": 20,
+    "value.seeded_number": 21,
+    "query.nearest_tag": 22,
+    "event.timer": 23,
+    "query.nearest_in_cone": 24,
 }
 OPCODE_TYPES = {opcode: type_id for type_id, opcode in NODE_OPCODES.items()}
 
@@ -82,10 +87,14 @@ NODE_INPUTS: dict[str, tuple[str, ...]] = {
     "event.input_pressed": ("action",),
     "event.trigger_enter": (),
     "event.trigger_exit": (),
+    "event.timer": ("seconds", "repeat"),
     "flow.branch": ("condition",),
     # Constant's saved value is an internal VM input even though it is an output
     # property in the editor registry.
     "value.constant": ("value",),
+    "value.seeded_number": ("world_number", "pick_number", "smallest", "largest"),
+    "query.nearest_tag": ("origin", "tag", "radius"),
+    "query.nearest_in_cone": ("origin", "tag", "radius", "cone"),
     "value.state": ("key", "default"),
     "value.component": ("entity", "component", "field", "default"),
     "math.add": ("a", "b"),
@@ -107,8 +116,12 @@ NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
     "event.input_pressed": ("action", "value", "entity"),
     "event.trigger_enter": ("sensor", "player", "entity"),
     "event.trigger_exit": ("sensor", "player", "entity"),
+    "event.timer": ("count", "remaining", "entity"),
     "flow.branch": (),
     "value.constant": ("value",),
+    "value.seeded_number": ("value",),
+    "query.nearest_tag": ("found", "entity", "distance"),
+    "query.nearest_in_cone": ("found", "entity", "distance"),
     "value.state": ("value",),
     "value.component": ("value",),
     "math.add": ("result",),
@@ -132,8 +145,12 @@ NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
     "event.input_pressed": ("out",),
     "event.trigger_enter": ("out",),
     "event.trigger_exit": ("out",),
+    "event.timer": ("out",),
     "flow.branch": ("true", "false"),
     "value.constant": (),
+    "value.seeded_number": (),
+    "query.nearest_tag": (),
+    "query.nearest_in_cone": (),
     "value.state": (),
     "value.component": (),
     "math.add": (),
@@ -548,6 +565,36 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
                     f"input action {action!r} is not available in the Android template; "
                     f"use one of {', '.join(sorted(ANDROID_INPUT_ACTIONS))}",
                 )
+        if node.type == "event.timer":
+            seconds = by_name["seconds"]
+            repeat = by_name["repeat"]
+            if seconds.source_node is not None or seconds.literal is None:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "When Timer Rings Seconds must be saved on the block, not connected",
+                )
+            if repeat.source_node is not None or repeat.literal is None:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "When Timer Rings Repeat must be saved on the block, not connected",
+                )
+            if (
+                seconds.literal.tag != VALUE_NUMBER
+                or not 0.0 < float(seconds.literal.payload) <= 86400.0
+            ):
+                raise _fail(
+                    graph.id,
+                    node,
+                    "When Timer Rings Seconds must be a finite positive number up to 86400",
+                )
+            if repeat.literal.tag != VALUE_BOOL:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "When Timer Rings Repeat must be true or false",
+                )
         if node.type in {"value.state", "action.set_state"}:
             key = _literal_text(graph.id, node, "key", by_name["key"])
             if not key:
@@ -565,6 +612,79 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
             index = input_names.index("operator")
             input_specs[index] = _InputSpec(literal=_ValueSpec(VALUE_STRING, canonical))
             by_name["operator"] = input_specs[index]
+        if node.type in {"query.nearest_tag", "query.nearest_in_cone"}:
+            tag = by_name["tag"]
+            if tag.literal is not None:
+                if tag.literal.tag != VALUE_STRING:
+                    raise _fail(graph.id, node, "tag must be saved as text or connected")
+                if tag.literal.payload not in PORTABLE_QUERY_TAGS:
+                    raise _fail(
+                        graph.id,
+                        node,
+                        "tag must be player, collectible, goal, decorative, or hazard",
+                    )
+            radius = by_name["radius"]
+            if radius.literal is not None:
+                if radius.literal.tag != VALUE_NUMBER:
+                    raise _fail(graph.id, node, "radius must be a number or connected")
+                radius_value = float(radius.literal.payload)
+                if radius_value < 0.0:
+                    raise _fail(graph.id, node, "radius must be non-negative")
+                try:
+                    _f32(radius_value * radius_value, "radius squared")
+                except GraphPackError as error:
+                    raise _fail(
+                        graph.id,
+                        node,
+                        "radius is too large for deterministic Android distance math",
+                    ) from error
+            if node.type == "query.nearest_in_cone":
+                cone = by_name["cone"]
+                if cone.literal is not None:
+                    if cone.literal.tag != VALUE_VEC4:
+                        raise _fail(
+                            graph.id,
+                            node,
+                            "cone must be a Vector4 or connected",
+                        )
+                    axis_squared = 0.0
+                    try:
+                        for component in cone.literal.payload[:3]:
+                            term = _f32(component * component, "cone axis squared")
+                            axis_squared = _f32(
+                                axis_squared + term, "cone axis squared"
+                            )
+                        cosine = float(cone.literal.payload[3])
+                    except GraphPackError as error:
+                        raise _fail(
+                            graph.id,
+                            node,
+                            "cone is too large for deterministic Android math",
+                        ) from error
+                    if axis_squared <= 0.0:
+                        raise _fail(
+                            graph.id,
+                            node,
+                            "cone Facing direction must not be zero",
+                        )
+                    try:
+                        axis_length = _f32(
+                            math.sqrt(axis_squared), "cone axis length"
+                        )
+                        for component in cone.literal.payload[:3]:
+                            _f32(component / axis_length, "normalized cone axis")
+                    except (GraphPackError, ZeroDivisionError) as error:
+                        raise _fail(
+                            graph.id,
+                            node,
+                            "cone Facing direction cannot be normalized on Android",
+                        ) from error
+                    if not -1.0 <= cosine <= 1.0:
+                        raise _fail(
+                            graph.id,
+                            node,
+                            "cone View width must use a minimum cosine from -1 to 1",
+                        )
         if node.type in {"value.component", "action.set_component"}:
             component = _literal_text(graph.id, node, "component", by_name["component"])
             field = _literal_text(graph.id, node, "field", by_name["field"])
@@ -593,7 +713,7 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
             if by_name["payload"].source_node is not None:
                 raise _fail(graph.id, node, "Android emit_event payload cannot be connected")
         for name, spec in zip(input_names, input_specs):
-            if name not in {"entity", "source", "target"} or spec.literal is None:
+            if name not in {"entity", "origin", "source", "target"} or spec.literal is None:
                 continue
             if spec.literal.tag == VALUE_STRING and spec.literal.payload:
                 if spec.literal.payload not in scene_ids:
@@ -931,8 +1051,9 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
     for graph in graphs:
         start, count = graph["node_start"], graph["node_count"]
         for node_index in range(start, start + count):
-            _, input_start, node_inputs, flow_start, flow_zero, flow_one = nodes[node_index]
-            for token in inputs[input_start:input_start + node_inputs]:
+            type_id, input_start, node_inputs, flow_start, flow_zero, flow_one = nodes[node_index]
+            node_tokens = inputs[input_start:input_start + node_inputs]
+            for token in node_tokens:
                 kind = token >> 30
                 payload = token & 0xFFFF
                 output = (token >> 16) & 0xFF
@@ -947,6 +1068,24 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
                         raise GraphPackError("visual-graph source output ordinal is invalid")
                 else:
                     raise GraphPackError("visual-graph input token kind is reserved")
+            if type_id == "event.timer":
+                if any(token >> 30 != 0 for token in node_tokens):
+                    raise GraphPackError(
+                        "When Timer Rings inputs must be packed literals, not links"
+                    )
+                seconds_tag, seconds = values[node_tokens[0] & 0xFFFF]
+                repeat_tag, _ = values[node_tokens[1] & 0xFFFF]
+                if (
+                    seconds_tag != VALUE_NUMBER
+                    or not 0.0 < float(seconds) <= 86400.0
+                ):
+                    raise GraphPackError(
+                        "When Timer Rings Seconds must be a finite positive number up to 86400"
+                    )
+                if repeat_tag != VALUE_BOOL:
+                    raise GraphPackError(
+                        "When Timer Rings Repeat must be true or false"
+                    )
             for target in flows[flow_start:flow_start + flow_zero + flow_one]:
                 if target >= count:
                     raise GraphPackError("visual-graph flow target is invalid")

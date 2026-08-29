@@ -16,6 +16,7 @@ from ugts_kc3.graphpack import (
     GRAPH_PACK_ASSET,
     GRAPH_PACK_MAGIC,
     GraphPackError,
+    NODE_OPCODES,
     compile_graph_pack_bytes,
     inspect_graph_pack,
     write_graph_pack,
@@ -80,6 +81,7 @@ class GraphPackTests(unittest.TestCase):
             GraphNode("pressed", "event.input_pressed", {"action": "jump"}),
             GraphNode("branch", "flow.branch", {"condition": True}),
             GraphNode("constant", "value.constant", {"value": [1, 2, 3]}),
+            GraphNode("repeatable", "value.seeded_number"),
             GraphNode("state", "value.state", {"key": "score", "default": 0}),
             GraphNode("component", "value.component", {"component": "transform", "field": "translation"}),
             GraphNode("add", "math.add"),
@@ -97,8 +99,44 @@ class GraphPackTests(unittest.TestCase):
         project = blank_mobile3d_project()
         _attach(project, VisualGraph("portable", nodes))
         info = inspect_graph_pack(compile_graph_pack_bytes(project))
-        self.assertEqual(info["node_count"], 18)
+        self.assertEqual(info["node_count"], 19)
         self.assertEqual(info["state_keys"], ["score"])
+        self.assertEqual(NODE_OPCODES["value.seeded_number"], 21)
+
+    def test_repeatable_number_pack_keeps_all_four_dynamic_sources(self):
+        nodes = (
+            GraphNode("ready", "event.ready"),
+            GraphNode("world", "value.constant", {"value": 392.000001}),
+            GraphNode("pick", "value.constant", {"value": 7}),
+            GraphNode("low", "value.constant", {"value": -10}),
+            GraphNode("high", "value.constant", {"value": 10}),
+            GraphNode("number", "value.seeded_number"),
+            GraphNode("remember", "action.set_state", {"key": "draw"}),
+        )
+        links = (
+            GraphLink("ready", "out", "remember", "in"),
+            GraphLink("world", "value", "number", "world_number"),
+            GraphLink("pick", "value", "number", "pick_number"),
+            GraphLink("low", "value", "number", "smallest"),
+            GraphLink("high", "value", "number", "largest"),
+            GraphLink("number", "value", "remember", "value"),
+        )
+        project = blank_mobile3d_project()
+        _attach(project, VisualGraph("repeatable", nodes, links))
+        packed = compile_graph_pack_bytes(project)
+        info = inspect_graph_pack(packed)
+        self.assertEqual(info["node_count"], 7)
+        self.assertEqual(info["state_keys"], ["draw"])
+        self.assertEqual(compile_graph_pack_bytes(Mobile3DProject.from_dict(project.to_dict())), packed)
+        canonical_nodes = tuple(
+            GraphNode(node.id, node.type, {"value": 392 if node.id == "world" else 7})
+            if node.id in {"world", "pick"}
+            else node
+            for node in nodes
+        )
+        canonical_project = blank_mobile3d_project()
+        _attach(canonical_project, VisualGraph("repeatable", canonical_nodes, links))
+        self.assertEqual(compile_graph_pack_bytes(canonical_project), packed)
 
     def test_many_nodes_remain_small(self):
         actions = tuple(

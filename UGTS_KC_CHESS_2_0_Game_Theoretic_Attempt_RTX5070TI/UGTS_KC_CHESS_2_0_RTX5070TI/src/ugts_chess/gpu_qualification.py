@@ -9,15 +9,24 @@ attestation because the executable controls its device and backend reports.
 """
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 import hashlib
 import json
 import math
 from pathlib import Path
+import tempfile
 from time import perf_counter
 from typing import Callable
 
-from .gpu_protocol import executable_identity, probe_cuda_device, run_batch
+from .gpu_protocol import (
+    OUTPUT_HEADER,
+    decode_move_batch,
+    encode_position_batch,
+    executable_identity,
+    probe_cuda_device,
+    run_batch,
+)
 from .position import Position, START_FEN
 from .rules import apply_move, legal_moves
 
@@ -26,6 +35,12 @@ DEFAULT_RANDOM_POSITIONS = 64
 DEFAULT_MAX_PLIES = 80
 DEFAULT_CHUNK_SIZE = 32
 CUDA_BACKEND_ALLOWLIST = frozenset({"cuda", "cuda-packed-candidate-sm-runtime"})
+QUALIFICATION_SCHEMA = "ugts-chess-cuda-movegen-qualification-v2"
+QUALIFICATION_PROFILE = "exact-binary-device-self-report-oracle-parity-v2"
+
+
+class GPUQualificationRecordError(ValueError):
+    """Raised when a retained qualification record is not proof-gating evidence."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -243,6 +258,435 @@ def _is_sha256(value: object) -> bool:
     )
 
 
+def validate_gpu_qualification_record_structure(record: Mapping[str, object]) -> bool:
+    """Validate the v2 shape, deterministic corpus, and internal consistency.
+
+    This deliberately does *not* prove that a run happened.  A retained record
+    is replay-qualified only by :func:`verify_gpu_qualification_record`, which
+    requires caller-selected executable bytes and the retained batch artifacts.
+    """
+
+    def reject(message: str) -> None:
+        raise GPUQualificationRecordError(message)
+
+    def require(condition: bool, message: str) -> None:
+        if not condition:
+            reject(message)
+
+    def is_int(value: object, *, minimum: int = 0) -> bool:
+        return not isinstance(value, bool) and isinstance(value, int) and value >= minimum
+
+    def identity(value: object, label: str) -> Mapping[str, object]:
+        require(isinstance(value, Mapping), f"{label} is not an object")
+        assert isinstance(value, Mapping)
+        require(isinstance(value.get("path"), str) and bool(str(value["path"])), f"{label}.path is invalid")
+        require(_is_sha256(value.get("sha256")), f"{label}.sha256 is invalid")
+        require(is_int(value.get("size_bytes"), minimum=1), f"{label}.size_bytes is invalid")
+        return value
+
+    require(isinstance(record, Mapping), "qualification record is not an object")
+    require(record.get("schema") == QUALIFICATION_SCHEMA, "unsupported qualification schema")
+    require(record.get("profile") == QUALIFICATION_PROFILE, "unsupported qualification profile")
+    require(record.get("qualified") is True, "qualification record is not passing")
+    require(record.get("authority") == "python_exact_oracle_via_gpu_protocol.run_batch", "authority is invalid")
+    require(record.get("gpu_execution_independently_attested") is False, "attestation boundary is invalid")
+    require(record.get("device_claim_source") == "same_executable_self_report", "device claim source is invalid")
+
+    executable = identity(record.get("executable"), "executable")
+    final_executable = identity(record.get("final_executable"), "final_executable")
+    require(final_executable == executable, "final executable identity differs")
+    require(record.get("executable_identity_stable") is True, "executable identity is not stable")
+    require(record.get("executable_identity_failure_count") == 0, "executable identity failure count is nonzero")
+    require(record.get("executable_identity_failures") == [], "executable identity failure list is nonempty")
+
+    device_probe = record.get("device_probe")
+    require(isinstance(device_probe, Mapping), "device_probe is not an object")
+    assert isinstance(device_probe, Mapping)
+    require(record.get("device_probe_valid") is True, "device probe is not valid")
+    require(device_probe.get("valid") is True, "device probe payload is not valid")
+    require(device_probe.get("validation_failures") == [], "device probe has failures")
+    require(device_probe.get("claim_source") == "same_executable_self_report", "device probe claim source is invalid")
+    require(device_probe.get("independent_hardware_attestation") is False, "device probe attestation is invalid")
+    require(identity(device_probe.get("executable"), "device_probe.executable") == executable, "device probe executable differs")
+    require(device_probe.get("returncode") == 0, "device probe return code is nonzero")
+    require(device_probe.get("parse_error") is None, "device probe parse error is present")
+    require(_is_sha256(device_probe.get("stdout_sha256")), "device probe stdout hash is invalid")
+    device_payload = device_probe.get("payload")
+    require(isinstance(device_payload, Mapping), "device probe payload is not an object")
+    assert isinstance(device_payload, Mapping)
+    require(device_payload.get("cuda_compiled") is True, "device probe says CUDA is not compiled")
+    require(device_payload.get("device_available") is True, "device probe says CUDA is unavailable")
+    require(device_payload.get("device_index") == device_probe.get("device_index"), "device indices differ")
+    require(
+        isinstance(device_payload.get("name"), str) and bool(str(device_payload["name"]).strip()),
+        "device name is invalid",
+    )
+    capability = device_payload.get("compute_capability")
+    require(
+        isinstance(capability, str)
+        and len(capability.split(".")) == 2
+        and all(part.isdigit() for part in capability.split(".")),
+        "compute capability is invalid",
+    )
+    require(is_int(device_payload.get("total_memory_bytes"), minimum=1), "device memory is invalid")
+    require(is_int(device_payload.get("multiprocessors"), minimum=1), "multiprocessor count is invalid")
+    require(device_payload.get("error") == "", "device probe error is nonempty")
+    device_stdout = device_probe.get("stdout")
+    require(isinstance(device_stdout, str), "device probe stdout is invalid")
+    try:
+        parsed_device_stdout = json.loads(device_stdout)
+    except json.JSONDecodeError as exc:
+        reject(f"device probe stdout is not JSON: {exc}")
+    require(parsed_device_stdout == device_payload, "device probe stdout and payload differ")
+
+    allowlist = sorted(CUDA_BACKEND_ALLOWLIST)
+    require(record.get("cuda_backend_allowlist") == allowlist, "CUDA backend allowlist differs")
+    require(record.get("failure_reasons") == [], "qualification has failure reasons")
+    require(record.get("all_batches_cuda") is True, "not all batches are CUDA")
+    require(record.get("all_batches_claim_allowlisted_cuda") is True, "a backend claim is not allowlisted")
+    require(record.get("fallback_batches") == [], "qualification contains fallback batches")
+    require(record.get("backend_evidence_count_consistent") is True, "backend counts are inconsistent")
+    require(record.get("backend_evidence_failure_count") == 0, "backend failure count is nonzero")
+    require(record.get("backend_evidence_failures") == [], "backend failures are present")
+    require(record.get("artifact_evidence_consistent") is True, "artifact evidence is inconsistent")
+    require(record.get("artifact_evidence_failure_count") == 0, "artifact failure count is nonzero")
+    require(record.get("artifact_evidence_failures") == [], "artifact failures are present")
+    require(record.get("mismatch_count") == 0, "oracle mismatch count is nonzero")
+    require(record.get("mismatches") == [], "oracle mismatches are present")
+    require(record.get("native_cuda_metrics_complete") is True, "native CUDA metrics are incomplete")
+
+    batches = record.get("batches")
+    require(isinstance(batches, list) and bool(batches), "batches must be a nonempty array")
+    assert isinstance(batches, list)
+    require(record.get("batch_count") == len(batches), "batch_count differs from batches")
+    position_count = record.get("position_count")
+    unique_position_count = record.get("unique_position_count")
+    require(is_int(position_count, minimum=1), "position_count is invalid")
+    require(is_int(unique_position_count, minimum=1), "unique_position_count is invalid")
+    assert isinstance(position_count, int) and isinstance(unique_position_count, int)
+    require(unique_position_count <= position_count, "unique_position_count exceeds position_count")
+    seed = record.get("seed")
+    random_position_count = record.get("random_position_count")
+    max_random_plies = record.get("max_random_plies")
+    chunk_size = record.get("chunk_size")
+    require(is_int(seed), "seed is invalid")
+    require(is_int(random_position_count), "random_position_count is invalid")
+    require(is_int(max_random_plies, minimum=1), "max_random_plies is invalid")
+    require(is_int(chunk_size, minimum=1), "chunk_size is invalid")
+    assert isinstance(seed, int)
+    assert isinstance(random_position_count, int)
+    assert isinstance(max_random_plies, int)
+    assert isinstance(chunk_size, int)
+    require(record.get("generator") == "splitmix64-v1/sorted-legal-uci-index", "generator is invalid")
+    require(record.get("corpus_hash_encoding") == "sha256(ordered canonical FEN + LF)", "corpus hash encoding differs")
+    rebuilt_corpus = build_qualification_corpus(
+        seed=seed,
+        random_positions=random_position_count,
+        max_plies=max_random_plies,
+    )
+    require(len(rebuilt_corpus) == position_count, "position_count differs from rebuilt corpus")
+    require(
+        len({item.position.to_fen() for item in rebuilt_corpus}) == unique_position_count,
+        "unique_position_count differs from rebuilt corpus",
+    )
+    require(record.get("fixture_count") == len(QUALIFICATION_FIXTURES), "fixture_count differs")
+    require(record.get("corpus_sha256") == corpus_sha256(rebuilt_corpus), "corpus_sha256 differs from recipe")
+    expected_batch_count = (position_count + chunk_size - 1) // chunk_size
+    require(len(batches) == expected_batch_count, "batch count differs from chunk recipe")
+
+    expected_start = 0
+    total_proposal_moves = 0
+    total_verified_moves = 0
+    parsed_backends: set[str] = set()
+    for batch_index, batch_value in enumerate(batches):
+        require(isinstance(batch_value, Mapping), f"batch {batch_index} is not an object")
+        assert isinstance(batch_value, Mapping)
+        batch = batch_value
+        require(batch.get("batch_index") == batch_index, f"batch {batch_index} index is not canonical")
+        batch_start = expected_start
+        require(batch.get("global_start_index") == batch_start, f"batch {batch_index} start is not contiguous")
+        positions = batch.get("positions")
+        require(is_int(positions, minimum=1), f"batch {batch_index} position count is invalid")
+        assert isinstance(positions, int)
+        expected_start += positions
+        require(batch.get("global_stop_index") == expected_start, f"batch {batch_index} stop is inconsistent")
+        expected_entries = rebuilt_corpus[batch_start:expected_start]
+        expected_input_bytes = encode_position_batch(entry.position for entry in expected_entries)
+        expected_input_sha256 = hashlib.sha256(expected_input_bytes).hexdigest()
+
+        proposal_moves = batch.get("proposal_move_count")
+        verified_moves = batch.get("verified_move_count")
+        require(is_int(proposal_moves), f"batch {batch_index} proposal count is invalid")
+        require(is_int(verified_moves), f"batch {batch_index} verified count is invalid")
+        assert isinstance(proposal_moves, int) and isinstance(verified_moves, int)
+        require(verified_moves == proposal_moves, f"batch {batch_index} move counts differ")
+        total_proposal_moves += proposal_moves
+        total_verified_moves += verified_moves
+
+        backend = batch.get("backend")
+        require(isinstance(backend, str) and backend in CUDA_BACKEND_ALLOWLIST, f"batch {batch_index} backend is invalid")
+        parsed_backends.add(backend)
+        require(batch.get("cuda_backend") is True, f"batch {batch_index} is not CUDA")
+        require(batch.get("fallback_detected") is False, f"batch {batch_index} reports fallback")
+        require(batch.get("fallback_reason") == "", f"batch {batch_index} fallback reason is nonempty")
+        require(batch.get("backend_parse_error") is None, f"batch {batch_index} backend evidence did not parse")
+        require(batch.get("native_positions") == positions, f"batch {batch_index} native positions differ")
+        require(batch.get("native_moves") == proposal_moves, f"batch {batch_index} native moves differ")
+        native_seconds = batch.get("native_seconds")
+        require(
+            not isinstance(native_seconds, bool)
+            and isinstance(native_seconds, (int, float))
+            and math.isfinite(float(native_seconds))
+            and float(native_seconds) > 0.0,
+            f"batch {batch_index} native duration is invalid",
+        )
+        require(batch.get("native_positions_match_batch_size") is True, f"batch {batch_index} position flag differs")
+        require(batch.get("native_moves_match_proposal_count") is True, f"batch {batch_index} proposal flag differs")
+        require(batch.get("native_moves_match_verified_count") is True, f"batch {batch_index} verified flag differs")
+        require(batch.get("native_count_consistent") is True, f"batch {batch_index} native counts are inconsistent")
+        require(batch.get("backend_evidence_count_failures") == [], f"batch {batch_index} has count failures")
+        require(batch.get("input_sha256") == expected_input_sha256, f"batch {batch_index} input hash differs from corpus")
+        require(_is_sha256(batch.get("output_sha256")), f"batch {batch_index} output hash is invalid")
+        require(
+            _is_sha256(batch.get("output_semantic_payload_sha256")),
+            f"batch {batch_index} semantic output hash is invalid",
+        )
+        require(batch.get("output_backend_flag") == 1, f"batch {batch_index} output is not tagged CUDA")
+        require(identity(batch.get("executable"), f"batch {batch_index}.executable") == executable, f"batch {batch_index} executable differs")
+        require(
+            batch.get("executable_identity_matches_qualification") is True,
+            f"batch {batch_index} executable-match flag differs",
+        )
+        require(batch.get("artifact_evidence_consistent") is True, f"batch {batch_index} artifact evidence differs")
+        require(batch.get("artifact_evidence_failures") == [], f"batch {batch_index} artifact failures are present")
+
+        invocation_id = batch.get("invocation_id")
+        require(
+            isinstance(invocation_id, str)
+            and len(invocation_id) == 32
+            and all(character in "0123456789abcdef" for character in invocation_id),
+            f"batch {batch_index} invocation ID is invalid",
+        )
+        invocation_dir = batch.get("invocation_dir")
+        require(isinstance(invocation_dir, str) and bool(invocation_dir), f"batch {batch_index} invocation dir is invalid")
+        assert isinstance(invocation_dir, str)
+        invocation_path = Path(invocation_dir).resolve()
+
+        input_meta = batch.get("input")
+        output_meta = batch.get("output")
+        require(isinstance(input_meta, Mapping), f"batch {batch_index} input metadata is absent")
+        require(isinstance(output_meta, Mapping), f"batch {batch_index} output metadata is absent")
+        assert isinstance(input_meta, Mapping) and isinstance(output_meta, Mapping)
+        input_path = input_meta.get("path")
+        output_path = output_meta.get("path")
+        require(isinstance(input_path, str), f"batch {batch_index} input path is invalid")
+        require(isinstance(output_path, str), f"batch {batch_index} output path is invalid")
+        assert isinstance(input_path, str) and isinstance(output_path, str)
+        require(Path(input_path).resolve() == invocation_path / "positions.ugcb", f"batch {batch_index} input path escapes invocation dir")
+        require(Path(output_path).resolve() == invocation_path / "moves.ugmv", f"batch {batch_index} output path escapes invocation dir")
+        require(input_meta.get("count") == positions, f"batch {batch_index} input metadata count differs")
+        require(input_meta.get("sha256") == expected_input_sha256, f"batch {batch_index} input metadata hash differs")
+        require(output_meta.get("count") == positions, f"batch {batch_index} output metadata count differs")
+        require(output_meta.get("backend_flag") == 1, f"batch {batch_index} output metadata flag differs")
+        require(output_meta.get("backend") == "cuda", f"batch {batch_index} output metadata backend differs")
+        require(output_meta.get("sha256") == batch.get("output_sha256"), f"batch {batch_index} output metadata hash differs")
+        require(
+            output_meta.get("semantic_payload_sha256") == batch.get("output_semantic_payload_sha256"),
+            f"batch {batch_index} output semantic metadata hash differs",
+        )
+        require(is_int(output_meta.get("bytes"), minimum=1), f"batch {batch_index} output byte count is invalid")
+
+        stdout = batch.get("executable_stdout")
+        require(isinstance(stdout, str), f"batch {batch_index} stdout is invalid")
+        assert isinstance(stdout, str)
+        parsed_evidence = parse_backend_evidence(stdout)
+        evidence_pairs = {
+            "backend": "backend",
+            "fallback_reason": "fallback_reason",
+            "parse_error": "backend_parse_error",
+            "cuda_backend": "cuda_backend",
+            "fallback_detected": "fallback_detected",
+            "native_positions": "native_positions",
+            "native_moves": "native_moves",
+            "native_seconds": "native_seconds",
+        }
+        for parsed_key, batch_key in evidence_pairs.items():
+            require(
+                parsed_evidence[parsed_key] == batch.get(batch_key),
+                f"batch {batch_index} stdout contradicts {batch_key}",
+            )
+
+    require(expected_start == position_count, "batch positions do not cover the corpus")
+    require(record.get("proposal_move_count") == total_proposal_moves, "proposal move total differs")
+    require(record.get("verified_move_count") == total_verified_moves, "verified move total differs")
+    require(record.get("native_cuda_position_count") == position_count, "native CUDA position total differs")
+    require(record.get("native_cuda_move_count") == total_proposal_moves, "native CUDA move total differs")
+    require(record.get("native_cuda_batch_count") == len(batches), "native CUDA batch total differs")
+    require(record.get("parsed_backends") == sorted(parsed_backends), "parsed backend summary differs")
+    return True
+
+
+def verify_gpu_qualification_record(
+    record: Mapping[str, object],
+    expected_executable: str | Path,
+    *,
+    fresh_device_probe: bool = True,
+) -> bool:
+    """Replay a retained v2 qualification against caller-selected binary bytes.
+
+    The deterministic corpus and every retained input/output artifact are
+    reconstructed or reread exactly once.  The caller-selected executable is
+    then run again on every batch in fresh isolated directories; its fresh
+    exact outputs must match both the retained bytes and the Python legal-move
+    oracle.  A fresh device probe is performed by default.  CUDA execution is
+    still self-reported by the executable, not independently attested.
+    """
+
+    validate_gpu_qualification_record_structure(record)
+
+    def require(condition: bool, message: str) -> None:
+        if not condition:
+            raise GPUQualificationRecordError(message)
+
+    initial_executable = executable_identity(expected_executable)
+    require(initial_executable == record["executable"], "caller-selected executable identity differs")
+
+    device_probe_record = record["device_probe"]
+    assert isinstance(device_probe_record, Mapping)
+    if fresh_device_probe:
+        device_index = device_probe_record["device_index"]
+        assert isinstance(device_index, int) and not isinstance(device_index, bool)
+        fresh_probe = probe_cuda_device(str(initial_executable["path"]), device=device_index)
+        require(fresh_probe.get("valid") is True, "fresh device probe failed")
+        require(fresh_probe.get("executable") == initial_executable, "fresh device probe used different bytes")
+        fresh_payload = fresh_probe.get("payload")
+        retained_payload = device_probe_record.get("payload")
+        require(isinstance(fresh_payload, Mapping), "fresh device payload is invalid")
+        assert isinstance(fresh_payload, Mapping) and isinstance(retained_payload, Mapping)
+        for key in ("cuda_compiled", "device_available", "device_index", "name", "compute_capability"):
+            require(fresh_payload.get(key) == retained_payload.get(key), f"fresh device identity differs at {key}")
+
+    seed = record["seed"]
+    random_position_count = record["random_position_count"]
+    max_random_plies = record["max_random_plies"]
+    assert isinstance(seed, int) and not isinstance(seed, bool)
+    assert isinstance(random_position_count, int) and not isinstance(random_position_count, bool)
+    assert isinstance(max_random_plies, int) and not isinstance(max_random_plies, bool)
+    corpus = build_qualification_corpus(
+        seed=seed,
+        random_positions=random_position_count,
+        max_plies=max_random_plies,
+    )
+
+    batches = record["batches"]
+    assert isinstance(batches, list)
+    for batch_index, batch_value in enumerate(batches):
+        assert isinstance(batch_value, Mapping)
+        batch = batch_value
+        start = batch["global_start_index"]
+        stop = batch["global_stop_index"]
+        assert isinstance(start, int) and isinstance(stop, int)
+        positions = [entry.position for entry in corpus[start:stop]]
+        expected_input = encode_position_batch(positions)
+
+        input_meta = batch["input"]
+        output_meta = batch["output"]
+        assert isinstance(input_meta, Mapping) and isinstance(output_meta, Mapping)
+        input_path = Path(str(input_meta["path"]))
+        output_path = Path(str(output_meta["path"]))
+        try:
+            input_bytes = input_path.read_bytes()
+            output_bytes = output_path.read_bytes()
+        except OSError as exc:
+            raise GPUQualificationRecordError(f"batch {batch_index} artifact read failed: {exc}") from exc
+
+        require(input_bytes == expected_input, f"batch {batch_index} input bytes differ from deterministic corpus")
+        require(
+            hashlib.sha256(input_bytes).hexdigest() == batch["input_sha256"],
+            f"batch {batch_index} retained input hash differs",
+        )
+        require(
+            hashlib.sha256(output_bytes).hexdigest() == batch["output_sha256"],
+            f"batch {batch_index} retained output hash differs",
+        )
+        require(
+            hashlib.sha256(output_bytes[OUTPUT_HEADER.size :]).hexdigest()
+            == batch["output_semantic_payload_sha256"],
+            f"batch {batch_index} retained semantic hash differs",
+        )
+        require(len(output_bytes) == output_meta["bytes"], f"batch {batch_index} output byte size differs")
+        try:
+            proposed = decode_move_batch(output_bytes)
+        except ValueError as exc:
+            raise GPUQualificationRecordError(f"batch {batch_index} output cannot be decoded: {exc}") from exc
+        require(len(proposed) == len(positions), f"batch {batch_index} output position count differs")
+        _magic, _version, _move_size, _max_moves, _count, backend_flag = OUTPUT_HEADER.unpack_from(output_bytes, 0)
+        require(backend_flag == 1, f"batch {batch_index} retained output is not tagged CUDA")
+
+        proposal_count = 0
+        for local_index, (position, proposal_moves) in enumerate(zip(positions, proposed, strict=True)):
+            exact_moves = sorted(move.uci() for move in legal_moves(position))
+            require(
+                sorted(proposal_moves) == exact_moves,
+                f"batch {batch_index} position {local_index} differs from Python oracle",
+            )
+            proposal_count += len(proposal_moves)
+        require(proposal_count == batch["proposal_move_count"], f"batch {batch_index} proposal total differs")
+        require(proposal_count == batch["verified_move_count"], f"batch {batch_index} verified total differs")
+
+    with tempfile.TemporaryDirectory(prefix="ugts-gpu-qualification-replay-") as replay_root_name:
+        replay_root = Path(replay_root_name)
+        for batch_index, batch_value in enumerate(batches):
+            assert isinstance(batch_value, Mapping)
+            batch = batch_value
+            start = batch["global_start_index"]
+            stop = batch["global_stop_index"]
+            assert isinstance(start, int) and isinstance(stop, int)
+            positions = [entry.position for entry in corpus[start:stop]]
+            try:
+                fresh_result = run_batch(
+                    str(initial_executable["path"]),
+                    positions,
+                    replay_root / f"batch-{batch_index:06d}",
+                )
+            except (OSError, RuntimeError, ValueError) as exc:
+                raise GPUQualificationRecordError(
+                    f"batch {batch_index} fresh executable replay failed: {exc}"
+                ) from exc
+
+            require(fresh_result.get("executable") == initial_executable, f"batch {batch_index} fresh executable differs")
+            require(fresh_result.get("mismatches") == [], f"batch {batch_index} fresh replay differs from oracle")
+            require(fresh_result.get("positions") == len(positions), f"batch {batch_index} fresh position count differs")
+            require(
+                fresh_result.get("proposal_move_count") == batch["proposal_move_count"],
+                f"batch {batch_index} fresh proposal count differs",
+            )
+            require(
+                fresh_result.get("verified_move_count") == batch["verified_move_count"],
+                f"batch {batch_index} fresh verified count differs",
+            )
+            require(fresh_result.get("input_sha256") == batch["input_sha256"], f"batch {batch_index} fresh input differs")
+            require(fresh_result.get("output_sha256") == batch["output_sha256"], f"batch {batch_index} fresh output differs")
+            require(
+                fresh_result.get("output_semantic_payload_sha256")
+                == batch["output_semantic_payload_sha256"],
+                f"batch {batch_index} fresh semantic output differs",
+            )
+            require(fresh_result.get("output_backend_flag") == 1, f"batch {batch_index} fresh output is not CUDA-tagged")
+            fresh_evidence = parse_backend_evidence(str(fresh_result.get("executable_stdout", "")))
+            require(fresh_evidence["cuda_backend"] is True, f"batch {batch_index} fresh backend is not CUDA")
+            require(fresh_evidence["fallback_detected"] is False, f"batch {batch_index} fresh replay reports fallback")
+            require(fresh_evidence["native_positions"] == len(positions), f"batch {batch_index} fresh native positions differ")
+            require(
+                fresh_evidence["native_moves"] == batch["proposal_move_count"],
+                f"batch {batch_index} fresh native moves differ",
+            )
+
+    final_executable = executable_identity(str(initial_executable["path"]))
+    require(final_executable == initial_executable, "caller-selected executable changed during replay")
+    return True
+
+
 def qualify_gpu_move_generator(
     executable: str | Path,
     work_dir: str | Path,
@@ -303,6 +747,10 @@ def qualify_gpu_move_generator(
         output_sha256 = result.get("output_sha256")
         output_semantic_sha256 = result.get("output_semantic_payload_sha256")
         output_backend_flag = result.get("output_backend_flag")
+        invocation_id = result.get("invocation_id")
+        invocation_dir = result.get("invocation_dir")
+        input_meta = result.get("input")
+        output_meta = result.get("output")
         batch_executable = result.get("executable")
         batch_executable_identity_matches = batch_executable == initial_executable
         proposal_moves = int(result.get("proposal_move_count", 0))
@@ -355,6 +803,29 @@ def qualify_gpu_move_generator(
         if not _is_sha256(output_semantic_sha256):
             artifact_failures.append("output_semantic_payload_sha256_missing_or_invalid")
         if (
+            not isinstance(invocation_id, str)
+            or len(invocation_id) != 32
+            or any(character not in "0123456789abcdef" for character in invocation_id)
+        ):
+            artifact_failures.append("invocation_id_missing_or_invalid")
+        if not isinstance(invocation_dir, str) or not invocation_dir:
+            artifact_failures.append("invocation_dir_missing_or_invalid")
+        if not isinstance(input_meta, Mapping):
+            artifact_failures.append("input_metadata_missing_or_invalid")
+        else:
+            if input_meta.get("sha256") != input_sha256 or input_meta.get("count") != len(entries):
+                artifact_failures.append("input_metadata_inconsistent")
+        if not isinstance(output_meta, Mapping):
+            artifact_failures.append("output_metadata_missing_or_invalid")
+        else:
+            if (
+                output_meta.get("sha256") != output_sha256
+                or output_meta.get("semantic_payload_sha256") != output_semantic_sha256
+                or output_meta.get("count") != len(entries)
+                or output_meta.get("backend_flag") != output_backend_flag
+            ):
+                artifact_failures.append("output_metadata_inconsistent")
+        if (
             isinstance(output_backend_flag, bool)
             or not isinstance(output_backend_flag, int)
             or output_backend_flag not in (0, 1)
@@ -404,6 +875,8 @@ def qualify_gpu_move_generator(
 
         batch_record: dict[str, object] = {
             "batch_index": batch_index,
+            "invocation_id": invocation_id,
+            "invocation_dir": invocation_dir,
             "global_start_index": start,
             "global_stop_index": start + len(entries),
             "positions": len(entries),
@@ -424,9 +897,11 @@ def qualify_gpu_move_generator(
             "native_count_consistent": native_count_consistent,
             "backend_evidence_count_failures": count_consistency_failures,
             "input_sha256": input_sha256,
+            "input": input_meta,
             "output_sha256": output_sha256,
             "output_semantic_payload_sha256": output_semantic_sha256,
             "output_backend_flag": output_backend_flag,
+            "output": output_meta,
             "executable": batch_executable,
             "executable_identity_matches_qualification": batch_executable_identity_matches,
             "artifact_evidence_consistent": artifact_evidence_consistent,
@@ -514,8 +989,9 @@ def qualify_gpu_move_generator(
         for index, fixture in enumerate(QUALIFICATION_FIXTURES)
     ]
     backends = sorted({str(batch["backend"]) for batch in batches if batch["backend"] is not None})
-    return {
-        "schema": "ugts-chess-cuda-movegen-qualification-v1",
+    record: dict[str, object] = {
+        "schema": QUALIFICATION_SCHEMA,
+        "profile": QUALIFICATION_PROFILE,
         "qualified": qualified,
         "failure_reasons": failure_reasons,
         "authority": "python_exact_oracle_via_gpu_protocol.run_batch",
@@ -592,3 +1068,4 @@ def qualify_gpu_move_generator(
         "mismatches": mismatches,
         "batches": batches,
     }
+    return record

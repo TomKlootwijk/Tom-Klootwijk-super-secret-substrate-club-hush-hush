@@ -1,0 +1,14 @@
+{
+  "figures": [
+    "architecture.png",
+    "atlas_codebook_packing.png",
+    "exactness_ladder.png",
+    "glyph_converse_plate.png",
+    "klein_converse_square.png",
+    "operator_cell.png",
+    "packed_node_layout.png",
+    "release_parent_graph.png",
+    "set_field_algebra.png",
+    "validation_summary.png"
+  ]
+}

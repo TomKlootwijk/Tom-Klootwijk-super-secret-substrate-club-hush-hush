@@ -30,7 +30,8 @@ logic graph. It is deliberately small enough to understand in one sitting.
 ## 2. Learn the five places
 
 - **Scene Tree** lists the things in the current scene.
-- **Scene** is where you select and move them.
+- **Scene** is where you select them, drag 2D objects, or use the red X, green Y and blue Z handles
+  to place Mobile 3D objects.
 - **Inspector** changes position, rotation and size, plus existing pictures, shapes, materials,
   simple Mobile 3D movement patterns and bounded decorative Populate Areas.
 - **Logic Blocks** connects readable blocks instead of asking you to type code.
@@ -54,7 +55,8 @@ and adds zero bytes to a web, glTF or Android build.
 
 ## 4. Change one block
 
-Open **Logic Blocks**, select the yellow **A Value** block and change `1` to `2`. Press Play again. Each dash
+Select **Player**, open **Logic Blocks**, select the yellow **A Value** block and change `1` to `2`.
+Press Play again. Each dash
 now adds two. That is a complete first program:
 
 ```text
@@ -74,6 +76,35 @@ Connections are checked before they run. The editor explains incompatible dots i
 Project** reports the exact saved graph/node problem before a build.
 Graphs also have a step limit, so an accidental loop stops with an explanation instead of freezing.
 
+Logic Blocks always follows the selected owner. Select a 2D or 3D object that has no logic yet and
+you will see an empty workspace—not another object's graph and not a hidden starter graph. The
+project is unchanged until the first real edit, such as adding a block; that edit creates and binds
+the object's graph in one Undo step. Undo removes both the new graph and its binding. If an object
+already owns several graphs, use the chooser in the Logic Blocks header to pick the exact one. A
+Populate Area prototype is deliberately read-only here because static population prototypes cannot
+own Logic Blocks; turn Populate Area off first if the authored object needs behavior.
+
+Under **Sensing**, **Find Nearby Object** asks where to start (**Origin**), what portable tag to find
+(Player, Collectible, Goal, Decorative or Hazard), and an inclusive **Radius**. It returns whether a
+match was found, the nearest active/alive matching object and its distance. The origin itself is not
+a result; equal-distance matches use object ID for a repeatable tie-break. Its compact native
+encoding is append-only opcode 22, with the same behavior in desktop, retained HTML5 and Android.
+
+**Find Object Ahead** adds one child-safe **Facing** direction and **View width** to those rules. The
+saved value is a Vector4 containing world-axis X/Y/Z plus minimum cosine. The runtime uses exact
+binary32 GSP4 cone math without trigonometry; rotating or scaling Origin does not rotate or resize the
+cone. A new 2D block starts at world Right, a new 3D block at world Forward, and advanced graphs may
+link the Vector4 directly. Its compact encoding is append-only opcode 24.
+
+Under **Events**, **When Timer Rings** starts a graph after a simple delay. Set **Seconds** directly
+on the block from more than 0 through 86,400; it starts at 1 second. Leave **Repeat** on to ring again
+after each period, or turn it off to ring once. Its **Count**, **Remaining** and **Entity** outputs can
+feed ordinary action blocks. The timer follows this graph binding's active fixed updates: disabling
+its owning object pauses the timer but not the game, and Ready or Restart begins it again from zero.
+It never emits more than one ring in an update or hides a suspended program in the save file. The
+same block settings and behavior are checked in the editor, desktop Play, retained HTML5 and native
+Android; its compact encoding is append-only opcode 23.
+
 Mobile 3D also has **Trigger Enter** and **Trigger Exit** event blocks. They run once when the active
 player crosses a sensor area's edge and provide friendly `Sensor`, `Player` and bound `Entity` values.
 The same roots run in desktop Play and the native Android player without adding a collision push.
@@ -90,12 +121,34 @@ entry and false on exit. Its orbit is driven by a compact two-word log-polar ECS
 shared sub-kilobyte lookup asset. These behaviors preview in the editor and run in the native phone
 player. Its supported Logic Blocks compile into bounded native graph bytecode.
 
+Expand **World Logic** in the Scene Tree and select **Find the Goal**. Its Sensing block explicitly
+starts from **Player**, looks for **Goal** within **9 m**, and feeds `Found` into **Set World State**
+under the key `nearby_goal`. Keeping Player explicit is important: World Logic has no owning object
+to use as an implicit origin. Change the search distance, press Play, and use Logic Trail to see the
+result without building a list of every goal yourself.
+
+Open **Find the Goal Ahead** next. It uses **Find Object Ahead** with the saved 3D Forward world axis
+and Normal width, then writes `goal_ahead`. The starter player begins aligned with that world
+direction; if you later turn the player, choose a new saved Direction because the cone does not follow
+Origin rotation.
+
+Still under **World Logic**, open **Count the Timer Rings**. Its repeating one-second **When Timer
+Rings** block sends **Count** straight into **Set World State** as `timer_rings`. This is the readable
+way to teach “once every second”; you do not need to connect Every Frame to a hand-built counter.
+
 Select a non-dynamic Mobile 3D object and find **Movement Pattern** in the Inspector. Choose **Off**,
 **Orbit**, **Spiral Out** or **Spiral In**, then set a radius, turn speed and start angle. The editor
 keeps the packed words hidden, shows the approximate storage cost, and makes the change undoable. All
 movers using the Studio profile share one lookup table; Android adds exactly 24 sparse bytes per
 moving node. Movement Pattern stays disabled on a dynamic object because physics already controls
 that object's position.
+
+To place a 3D object directly, select it and drag one of the thick colored handles: red is X, green is
+Y and blue is Z. The mesh, handles and Inspector position preview the move while the project record
+stays untouched; releasing creates exactly one Undo step. Starting Play cancels an unfinished preview
+and hides the handles. An object with a Movement Pattern keeps X and Z locked because the pattern owns
+those coordinates, but its green Y handle remains available. Hover or click a locked handle for the
+plain-language explanation, or choose **Off / Static** before placing it freely.
 
 Select **Crystal Garden** in the Scene Tree. It is one saved static crystal with **Populate Area**
 turned on; the starter recipe shows 18 display objects. Change **Objects in group** or **World
@@ -140,6 +193,28 @@ phase. The generated Android project lives beside the saved project at
 stopped, or the APK installed but Android could not open it; a successful run ends with the game on
 the phone.
 
+Leave the deployed game running and its screen on, then choose **Check Phone** or press
+`Ctrl+Shift+P`. The editor remains responsive while a bounded 30-second ADB check reads frame cadence,
+game-process memory, GPU temperature when Android exposes it and the app's crash buffer. Output
+reports those measurements and any warnings; CLI JSON also retains available RSS, battery and Android
+thermal fields. The check injects no touch input, changes no game/device setting and does not edit the
+project. It clears only SurfaceFlinger's diagnostic latency history between sample windows. A
+disconnected phone, a game that is not running, or a screen with no active game surface produces a
+plain-language stop message rather than a partial success.
+
+The current opcode-24 APK has been built and inspected locally, but ADB reported zero connected
+devices, so it has not yet been freshly installed, launched or profiled. It is 1,460,361 bytes with
+SHA-256 `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`; local inspection verifies
+the expected package/SDK/GLES/ARM64/debug-v2-signing metadata and exact embedded current sidecars.
+The preceding opcode-23 build remains preserved as
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
+`C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`.
+The preserved 1,441,929-byte opcode-22
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk`—not this timer-capable build—owns the
+120.23 effective FPS, 10.118 ms p95, thermal-status-0 30-second baseline. A still earlier APK owns the
+64.9-second idle baseline. Neither short baseline replaces a fresh opcode-24 device run or
+interaction-heavy/touch, unplugged, long-duration and fallback-tier testing.
+
 Generate and compile a direct-device Poco build with:
 
 ```powershell
@@ -152,6 +227,8 @@ authorization prompt, and run:
 ```powershell
 python -m ugts_kc3 android-devices
 python -m ugts_kc3 build-android examples\grove_k_kij_t_3d\project.json build\MyAndroidGame --install
+# With that deployed game running and its screen on:
+python -m ugts_kc3 profile-android org.ugts.games.k_kij_t_grove_mali_g720_mc7_arena_3d.pocox7pro --seconds 30 --json
 ```
 
 Debug builds are for learning and owner-device testing. Publishing needs your own private release key.

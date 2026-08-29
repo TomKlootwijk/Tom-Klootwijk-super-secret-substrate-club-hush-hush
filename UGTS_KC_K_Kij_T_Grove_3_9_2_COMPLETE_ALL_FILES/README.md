@@ -18,7 +18,36 @@ undoable project resources. For non-dynamic Mobile 3D nodes, **Movement Pattern*
 Spiral Out and Spiral In without exposing packed hexadecimal words. Orbit and spiral movers share one
 binary16 log-polar lookup profile; each authored mover becomes two unsigned 64-bit words and one
 24-byte sparse Android record. Dynamic nodes are guarded because physics already owns their transform.
-Logic Blocks are editable typed data, not generated source hidden behind the GUI.
+Logic Blocks are editable typed data, not generated source hidden behind the GUI. They are also
+selection-owned: choosing a 2D or 3D object opens only that object's logic. An object with no binding
+shows a genuinely blank graph; its first meaningful graph edit creates and binds that graph as the
+same undoable operation, and Undo removes both again. If an object intentionally owns several graphs,
+the Logic Blocks header provides an exact chooser. A **Populate Area** prototype cannot own Logic
+Blocks; turn Populate Area off before attaching logic.
+
+The now-24-block vocabulary includes **When Timer Rings** under **Events**. Set **Seconds** on the block
+to a finite positive binary32 value up to 86,400 (default 1 second), and leave **Repeat** on by
+default or turn it off for one ring. Each binding counts only its own active fixed updates: an
+inactive entity pauses its timer while the rest of the world continues, and Ready or a game restart
+resets it. The block can ring at most once per update and exposes **Count**, **Remaining** and the
+bound **Entity** without serializing or suspending a running graph. The child-facing editor controls,
+desktop Preview, retained 2D HTML5 VM, compact `KCVG001` opcode 23 and native Android VM share that
+contract.
+
+The vocabulary also includes **Find Nearby Object** under **Sensing**. Choose an explicit
+**Origin** (the graph's object or another project object), one portable tag—Player, Collectible, Goal,
+Decorative or Hazard—and an inclusive radius. The block ignores the origin and any inactive or dead
+candidate, returns the nearest matching object, and resolves equal-distance results by deterministic
+object ID. Its result and error rules match in desktop Preview, retained 2D HTML5 and native Android;
+`KCVG001` stores it as compact opcode 22.
+
+Append-only opcode 24 adds **Find Object Ahead** (`query.nearest_in_cone`) under **Sensing**. It keeps
+the same portable tag, inclusive radius, filtering, nearest-result and tie rules, then applies a
+source-aligned binary32 GSP4 cone. **Cone** is one explicit Vector4 containing world-axis X/Y/Z and
+the minimum accepted cosine. The axis is normalized deterministically; no runtime trigonometry is
+used, and rotating or scaling Origin does not turn or resize the saved world-space cone. The editor's
+2D Right and 3D Forward presets write exact child-safe literals, while advanced graphs may link an
+arbitrary finite nonzero axis and a minimum cosine from -1 through 1.
 
 During desktop Preview, the **Logic Blocks** tab stays open in read-only mode. Its **Last Run** panel
 and block badges show execution order, values, chosen flow and errors from the current graph. The trail
@@ -58,6 +87,19 @@ nodes, while native GLES draws generated copies with instancing and may keep a d
 under its visible-node quality budget. The current implementation does not prevent overlaps and has
 no per-copy frustum culling or LOD. Mobile 3D and Populate Area do not have a browser runtime; the
 retained HTML5 workflow remains the 2D path.
+
+The same starter now includes **World Logic → Find the Goal**. Its **Find Nearby Object** block names
+**Player** as the Origin, searches the **Goal** tag through an inclusive **9 m** radius, and stores the
+`found` result in world state as `nearby_goal`. The explicit origin makes the lesson valid as
+whole-scene logic rather than relying on a hidden object binding.
+
+**World Logic → Find the Goal Ahead** uses **Find Object Ahead** with the saved 3D Forward world axis
+and Normal width, then stores `goal_ahead`. The starter's initial player orientation makes that fixed
+world direction a readable first lesson; turning Origin would not rotate the cone.
+
+Its second world lesson, **Count the Timer Rings**, connects a repeating one-second **When Timer
+Rings** block directly to `timer_rings`. It teaches periodic behavior without asking a child to build
+an Every Frame counter or introducing hidden suspended state.
 
 ## Retained 3.9.1 substrate — Tom Klootwijk Signature Edition
 ## Vector Art, Deterministic 2D/3D Game Runtime and Native Android Source Target
@@ -120,8 +162,15 @@ preflights the one authorized ADB device, pins that device's serial for the enti
 under the saved project's `.ugts-studio/deploy/<project-id>-android` folder, installs the APK and opens
 the game. It reads the exact flavor-aware `applicationId` emitted by Gradle and launches
 `<applicationId>/android.app.NativeActivity`; it does not guess a package name. Output distinguishes a
-build failure from an install failure and from an APK that installed but could not be opened. You can
-still open `android/UGTSKCKKijTGrove` in Android Studio.
+build failure from an install failure and from an APK that installed but could not be opened. Open
+the newly generated deployment/build folder in Android Studio for the current runtime;
+`android/UGTSKCKKijTGrove` is a retained earlier arena snapshot. With the deployed game already running and
+the phone screen on, **Check Phone** (`Ctrl+Shift+P`) starts a nonblocking 30-second ADB profile. It
+reports frame cadence, process memory, GPU temperature when Android exposes it and app crash-buffer
+warnings in Output. It injects no input, changes no device/game settings and does not touch the
+project; only SurfaceFlinger's diagnostic latency history is cleared between sample windows. The
+same read-only diagnostic is available through `profile-android`; CLI JSON retains additional
+available RSS, battery and thermal fields.
 The checked-in native project contains a
 66-node interactive arena, `NativeActivity` lifecycle, fixed-step movement/gameplay, touch,
 keyboard and gamepad input, camera orbit/pinch, asset-loaded GLSL ES 3 shaders, depth/culling,
@@ -170,13 +219,37 @@ print(world.state_hash())
 - Mobile 3D Trigger Enter/Exit roots and sensor overlap behavior have desktop/native parity, with
   explicit sensor and per-step dispatch caps.
 - Wheel/source distributions build and install in a fresh environment.
-- The HTML5 runtime executes the full current 20-block graph vocabulary, including sensor Trigger
-  Enter/Exit context, and passes headless JavaScript runtime checks.
-- All 412 Python regression tests, the native scatter/pointer-ID/Trigger Area harnesses and the editor 2D/3D
-  authoring smoke pass.
-- The actual child-friendly first-steps project compiles from this repository's long Windows path
-  to a 1,436,161-byte ARM64 Poco debug APK. Its two native learner graphs, packed log-polar asset and
-  18-object population recipe are 496, 914 and 60 bytes respectively.
+- The HTML5 runtime executes the full current 24-block graph vocabulary, including Repeatable Random
+  Number, Find Nearby Object, Find Object Ahead, When Timer Rings and sensor Trigger Enter/Exit context, and passes
+  headless JavaScript runtime checks.
+- The full suite passes 483 tests plus 87 subtests in 59.77 seconds. Focused opcode-24 verification
+  passes 14 tests plus 25 subtests; targeted Ruff, launcher/editor smokes and all native-host targets
+  also pass.
+- The child-friendly first-steps source currently emits six visual graphs with 23 nodes and six
+  bindings, including three world bindings. Fresh execution sets `goal_ahead=true` and produces state
+  SHA-256 `71df205686c92c217c3b1e23ad00929a331d07b5bb43e64d27023ec17d490a9c`. Its 1,085-byte
+  `KCVG001` has SHA-256 `2c5c6edb0c804da7fb2b6edab8c6beab12ccd2dac8b4e743d03c6194aff4af27`;
+  the 914-byte `KCPK392` and 60-byte `KCSP392` retain SHA-256
+  `8a45ddbf874d918cedaeb0161e80fef3314c2c2b0b21a45da90e22a18c4dd313` and
+  `e95bde225571ab5f6eac3b9c04cb1bd332a0c95c740b377ac2dee30460dd2fd1`, for 2,059 bytes combined.
+- The canonical opcode-24 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk` is locally built and
+  inspected at 1,460,361 bytes with SHA-256
+  `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`. Package/version/SDK/GLES,
+  ARM64-only native code, debug-certificate v2 signing and the embedded current sidecars are verified.
+  ADB reported zero devices, so this build has no fresh install, launch or profile claim.
+- The preceding opcode-23 artifact is preserved separately as
+  `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-timer-op23-debug.apk`, 1,443,529 bytes with SHA-256
+  `C502D88CFD7EE4A8F824E0F4EC2A3D6C2938DE080F79F0ACB8E9288CC9BFBD83`; it is not the current source APK.
+- The most recently installed/profiled First Steps APK is the preceding opcode-22 artifact. It is
+  preserved as `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk`, 1,441,929 bytes with SHA-256
+  `7F3080834EDB56EAAB0BFE8AEA1B1AD2D634C1AA7C4EB314C5B614760E48454F`. Local inspection verifies v2
+  signing, minimum SDK 26, target SDK 36, GLES3 and package
+  `org.ugts.games.my_mobile_3d_game.pocox7pro`; the same 1,441,929 bytes are installed, cold-launched
+  and hash-matched on the Poco. It does not contain **When Timer Rings**.
+- The retained 30-second profile of that preceding APK measured 120.23 effective FPS, 10.118 ms p95,
+  132,590–138,573 KiB PSS, 44.634–45.511 °C reported GPU temperature, thermal status 0, no crash
+  lines and no warnings. This is a short opcode-22-scene baseline, not timer-capable device evidence
+  or a sustained performance claim.
 
 Current release evidence is summarized in [`docs/BUILD_STATUS_3_9_2.md`](docs/BUILD_STATUS_3_9_2.md).
 The `validation/` folder retains earlier captured evidence.
@@ -188,7 +261,8 @@ The `validation/` folder retains earlier captured evidence.
 - `src/ugts_kc3/polarpack.py` — sparse KCPK392 packed-movement asset and shared UGLUT2 profiles.
 - `src/ugts_kc3/scatter.py` / `scatterpack.py` — deterministic decorative populations and KCSP392.
 - `src/ugts_kc3/android_template/` — packaged NativeActivity/GLES3 template.
-- `android/UGTSKCKKijTGrove/` — generated Android Studio source project.
+- `android/UGTSKCKKijTGrove/` — retained earlier signature-arena Android source snapshot; regenerate
+  from the packaged template for the current graph/polar/population runtime.
 - `examples/tom_signature_arena_3d/` — editable project, native pack and glTF.
 - `examples/elizabeth_vector_quest/` — retained 2D browser game.
 - `spec/` — schemas, contracts and mechanism catalogs through M449.
@@ -199,12 +273,17 @@ The `validation/` folder retains earlier captured evidence.
 
 ## Evidence boundary
 
-The current ARM64 POCO-targeted APK was compiled with the local Android SDK/NDK; its SHA-256 is
-`0696375DD496ADC6D71505749BB760E4EBF7F05D2A76030F0B38577BD022B3DD`. An authorized physical
-Xiaomi `2412DPC0AG` / `rodin` was detected as a Mali-G720 MC7, and the GUI deploy path installed and
-launched UGTS 3.9.2 on it. The phone disconnected before sustained frame, memory, touch and thermal
-capture, and the exact current hash above has not yet been confirmed on-device. Vulkan remains a future
-backend hook. 4D is a design-contract TODO only.
+The canonical 1,460,361-byte opcode-24 ARM64 Poco APK is built and locally inspected, including exact
+embedded current sidecars, but ADB reported zero devices so it has not been freshly installed or
+profiled. The preserved 1,441,929-byte opcode-22
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-installed-base.apk` was installed, cold-launched,
+hash-matched and given a 30-second baseline on a Xiaomi `2412DPC0AG` / `rodin`. An
+even earlier 3.9.2 build produced the retained 64.9-second idle-render baseline described in
+[`docs/BUILD_STATUS_3_9_2.md`](docs/BUILD_STATUS_3_9_2.md). Neither installed artifact demonstrates
+the new opcode-24 cone query on a physical device. A fresh opcode-24 install/launch/profile,
+interaction-heavy/touch, unplugged battery, long-duration thermal, 60/90 Hz fallback and
+lower-tier-device evidence remain. Vulkan
+remains a future backend hook. 4D is a design-contract TODO only.
 
 ## Attribution
 

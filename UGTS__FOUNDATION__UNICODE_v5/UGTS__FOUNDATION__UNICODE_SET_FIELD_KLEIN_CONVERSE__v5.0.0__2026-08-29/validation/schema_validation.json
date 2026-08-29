@@ -1,0 +1,20 @@
+[
+  {
+    "schema": "ugts5_operator_atlas.schema.json",
+    "instance": "operator_atlas.json",
+    "errors": [],
+    "status": "PASS"
+  },
+  {
+    "schema": "ugts5_hot_codebook.schema.json",
+    "instance": "hot_codebook_set_core_16.json",
+    "errors": [],
+    "status": "PASS"
+  },
+  {
+    "schema": "ugts5_release_record.schema.json",
+    "instance": "release_record.json",
+    "errors": [],
+    "status": "PASS"
+  }
+]

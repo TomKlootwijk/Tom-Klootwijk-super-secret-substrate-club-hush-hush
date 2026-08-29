@@ -6,13 +6,25 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ugts_chess.frontier import FrontierIntegrityError, FrontierRecord, FrontierWriter
+import ugts_chess.frontier as frontier_module
+from ugts_chess.frontier import (
+    FrontierIntegrityError,
+    FrontierRecord,
+    FrontierWriter,
+    recover_frontier,
+)
 from ugts_chess.game_state import HistoryContext, RULE_PROFILE_ID
 from ugts_chess.game_theory import WDL
 from ugts_chess.hashing import compact_key64, repetition_key
 from ugts_chess.position import Position
-from ugts_chess.proof_dag import ProofDAG, ProofDAGCommitError, ProofDAGIntegrityError
-from ugts_chess.rules import apply_uci
+from ugts_chess.proof_dag import (
+    DAGMoveAppendRequest,
+    MAX_MOVE_APPEND_BATCH,
+    ProofDAG,
+    ProofDAGCommitError,
+    ProofDAGIntegrityError,
+)
+from ugts_chess.rules import apply_uci, legal_moves
 
 
 class ProofDAGTests(unittest.TestCase):
@@ -231,6 +243,15 @@ class ProofDAGTests(unittest.TestCase):
         with ProofDAG(self.database, self.frontier) as dag:
             with self.assertRaisesRegex(ValueError, "does not contain the current position"):
                 dag.append_root(self.root, HistoryContext((("f" * 64, 1),)))
+            ended_history = HistoryContext(
+                tuple(
+                    sorted(
+                        ((repetition_key(self.root), 1), ("0" * 64, 5))
+                    )
+                )
+            )
+            with self.assertRaisesRegex(ValueError, "already ended automatically"):
+                dag.append_root(self.root, ended_history)
         self.assertEqual(RULE_PROFILE_ID, "fide-classical-2023-claims-as-actions-v2")
         self.assertIsInstance(compact_key64(self.root), int)
 
@@ -420,6 +441,358 @@ class ProofDAGTests(unittest.TestCase):
             self.assertEqual(observer.execute("SELECT COUNT(*) FROM edges").fetchone()[0], 2)
         finally:
             observer.close()
+
+    def _batch_request(
+        self,
+        parent,
+        uci: str,
+        *,
+        lineage: object = None,
+    ) -> DAGMoveAppendRequest:
+        child = apply_uci(parent.node.position, uci)
+        return DAGMoveAppendRequest(
+            child_position=child,
+            child_history=parent.node.history.push(child),
+            parent_frontier_content_sha256=parent.edge.frontier_content_sha256,
+            uci=uci,
+            lineage=lineage,
+        )
+
+    def test_19_batch_is_one_sync_one_transaction_ordered_and_exactly_deduplicated(self) -> None:
+        with ProofDAG(self.database, self.frontier) as dag:
+            root = dag.append_root(self.root, self.root_history, lineage="root")
+            first = self._batch_request(root, "a2a3", lineage="first")
+            second = self._batch_request(root, "a2a4", lineage="second")
+            distinct_occurrence = self._batch_request(
+                root,
+                "a2a4",
+                lineage="different-lineage",
+            )
+            statements: list[str] = []
+            dag._db.set_trace_callback(statements.append)
+            writer = dag._frontier_writer
+            original_append = writer.append
+            original_sync = writer.sync
+            with (
+                patch.object(writer, "append", wraps=original_append) as append_mock,
+                patch.object(writer, "sync", wraps=original_sync) as sync_mock,
+            ):
+                result = dag.append_moves_batch(
+                    (first, first, second, distinct_occurrence)
+                )
+            dag._db.set_trace_callback(None)
+
+            self.assertEqual([item.appended for item in result.results], [True, False, True, True])
+            self.assertEqual(result.request_count, 4)
+            self.assertEqual(result.appended_count, 3)
+            self.assertEqual(result.appended_record_indexes, (1, 2, 3))
+            self.assertEqual(
+                [item.edge.frontier_record_index for item in result.results],
+                [1, 1, 2, 3],
+            )
+            self.assertEqual(result.frontier_record_count_before, 1)
+            self.assertEqual(result.frontier_record_count_after, 4)
+            self.assertEqual(append_mock.call_count, 3)
+            self.assertTrue(
+                all(call.kwargs.get("fsync") is False for call in append_mock.call_args_list)
+            )
+            self.assertEqual(sync_mock.call_count, 1)
+            normalized = [statement.strip().upper() for statement in statements]
+            self.assertEqual(normalized.count("BEGIN IMMEDIATE"), 1)
+            self.assertEqual(normalized.count("COMMIT"), 1)
+            self.assertEqual(normalized.count("ROLLBACK"), 0)
+            self.assertTrue(dag.audit().valid)
+
+            stable_bytes = self.frontier.read_bytes()
+            statements.clear()
+            dag._db.set_trace_callback(statements.append)
+            with (
+                patch.object(writer, "append", wraps=original_append) as append_mock,
+                patch.object(writer, "sync", wraps=original_sync) as sync_mock,
+            ):
+                duplicate = dag.append_moves_batch(
+                    (first, first, second, distinct_occurrence)
+                )
+                empty = dag.append_moves_batch(())
+            dag._db.set_trace_callback(None)
+            self.assertEqual(duplicate.appended_count, 0)
+            self.assertEqual(empty.request_count, 0)
+            self.assertEqual(append_mock.call_count, 0)
+            self.assertEqual(sync_mock.call_count, 0)
+            self.assertFalse(
+                any(
+                    statement.strip().upper() in {"BEGIN IMMEDIATE", "COMMIT"}
+                    for statement in statements
+                )
+            )
+            self.assertEqual(self.frontier.read_bytes(), stable_bytes)
+
+    def test_20_batch_prevalidates_every_request_before_writing(self) -> None:
+        with ProofDAG(self.database, self.frontier) as dag:
+            root = dag.append_root(self.root, self.root_history)
+            valid = self._batch_request(root, "a2a3")
+            expected_second = self._batch_request(root, "a2a4")
+            invalid = DAGMoveAppendRequest(
+                child_position=valid.child_position,
+                child_history=expected_second.child_history,
+                parent_frontier_content_sha256=root.edge.frontier_content_sha256,
+                uci="a2a4",
+            )
+            bytes_before = self.frontier.read_bytes()
+            audit_before = dag.audit().require_valid()
+            with self.assertRaisesRegex(ValueError, "child position differs"):
+                dag.append_moves_batch((valid, invalid))
+            self.assertEqual(self.frontier.read_bytes(), bytes_before)
+            self.assertEqual(dag.audit().require_valid(), audit_before)
+
+            original_metadata = dag._validated_metadata
+            metadata_calls = 0
+
+            def fail_inside_transaction():
+                nonlocal metadata_calls
+                metadata_calls += 1
+                if metadata_calls == 2:
+                    raise RuntimeError("injected pre-write transaction failure")
+                return original_metadata()
+
+            with (
+                patch.object(
+                    dag,
+                    "_validated_metadata",
+                    side_effect=fail_inside_transaction,
+                ),
+                self.assertRaisesRegex(RuntimeError, "pre-write transaction failure"),
+            ):
+                dag.append_moves_batch((valid,))
+            self.assertFalse(dag.closed)
+            self.assertEqual(self.frontier.read_bytes(), bytes_before)
+            self.assertEqual(dag.audit().require_valid(), audit_before)
+
+            # Failures before the first frontier write do not poison the handle.
+            appended = dag.append_move(
+                valid.child_position,
+                valid.child_history,
+                parent_frontier_content_sha256=valid.parent_frontier_content_sha256,
+                uci=valid.uci,
+            )
+            self.assertTrue(appended.appended)
+
+    def test_21_synced_batch_index_failure_is_poisoned_and_fully_replayed(self) -> None:
+        requests: tuple[DAGMoveAppendRequest, ...]
+        with ProofDAG(self.database, self.frontier) as dag:
+            root = dag.append_root(self.root, self.root_history, lineage="root")
+            requests = tuple(
+                self._batch_request(root, move.uci(), lineage={"uci": move.uci()})
+                for move in legal_moves(self.root)[:3]
+            )
+            original_insert = dag._insert_entry
+            insert_count = 0
+
+            def fail_second_insert(entry):
+                nonlocal insert_count
+                insert_count += 1
+                if insert_count == 2:
+                    raise RuntimeError("injected batch index failure")
+                return original_insert(entry)
+
+            with (
+                patch.object(dag, "_insert_entry", side_effect=fail_second_insert),
+                self.assertRaisesRegex(
+                    ProofDAGCommitError,
+                    "complete frontier batch was synced",
+                ),
+            ):
+                dag.append_moves_batch(requests)
+            self.assertTrue(dag.closed)
+            with self.assertRaisesRegex(ProofDAGCommitError, "reopen"):
+                dag.append_moves_batch(requests)
+            with self.assertRaisesRegex(ProofDAGCommitError, "reopen"):
+                dag.append_root(self.root, self.root_history, lineage="blocked")
+
+        with ProofDAG(self.database, self.frontier) as recovered:
+            audit = recovered.audit().require_valid()
+            self.assertEqual(audit.frontier_record_count, 4)
+            outgoing = recovered.outgoing_edges(root.node.node_sha256)
+            self.assertEqual(
+                [edge.action["uci"] for edge in outgoing],
+                [request.uci for request in requests],
+            )
+            replay = recovered.append_moves_batch(requests)
+            self.assertEqual(replay.appended_count, 0)
+
+    def test_22_interrupted_batch_prefix_retry_matches_uninterrupted_bytes(self) -> None:
+        interrupted_database = self.database
+        interrupted_frontier = self.frontier
+        with ProofDAG(interrupted_database, interrupted_frontier) as dag:
+            root = dag.append_root(self.root, self.root_history, lineage="root")
+            requests = tuple(
+                self._batch_request(root, move.uci(), lineage={"uci": move.uci()})
+                for move in legal_moves(self.root)[:3]
+            )
+            writer = dag._frontier_writer
+            original_append = writer.append
+            append_count = 0
+
+            def fail_before_second(record, *, fsync=None):
+                nonlocal append_count
+                append_count += 1
+                if append_count == 2:
+                    raise RuntimeError("injected second-frame failure")
+                return original_append(record, fsync=fsync)
+
+            with (
+                patch.object(writer, "append", side_effect=fail_before_second),
+                self.assertRaisesRegex(ProofDAGCommitError, "batch prefix"),
+            ):
+                dag.append_moves_batch(requests)
+
+        with ProofDAG(interrupted_database, interrupted_frontier) as recovered:
+            prefix = recovered.audit().require_valid()
+            self.assertEqual(prefix.frontier_record_count, 2)
+            retried = recovered.append_moves_batch(requests)
+            self.assertEqual(
+                [item.appended for item in retried.results],
+                [False, True, True],
+            )
+            interrupted_bytes = interrupted_frontier.read_bytes()
+
+        clean_database = self.root_history_path("clean.sqlite3")
+        clean_frontier = self.root_history_path("clean.frontier")
+        with ProofDAG(clean_database, clean_frontier) as clean:
+            clean_root = clean.append_root(self.root, self.root_history, lineage="root")
+            clean_requests = tuple(
+                self._batch_request(
+                    clean_root,
+                    move.uci(),
+                    lineage={"uci": move.uci()},
+                )
+                for move in legal_moves(self.root)[:3]
+            )
+            clean.append_moves_batch(clean_requests)
+            clean_bytes = clean_frontier.read_bytes()
+        self.assertEqual(interrupted_bytes, clean_bytes)
+
+    def root_history_path(self, name: str) -> Path:
+        return self.database.parent / name
+
+    def test_23_intra_batch_parent_and_oversized_batches_fail_before_writes(self) -> None:
+        with ProofDAG(self.database, self.frontier) as dag:
+            root = dag.append_root(self.root, self.root_history)
+            first = self._batch_request(root, "a2a3", lineage="first")
+            prospective_record = FrontierRecord(
+                first.child_position,
+                first.child_history,
+                parent_content_sha256=first.parent_frontier_content_sha256,
+                action={"kind": "move", "uci": first.uci},
+                lineage=first.lineage,
+            )
+            grandchild_move = legal_moves(first.child_position)[0]
+            grandchild = apply_uci(first.child_position, grandchild_move.uci())
+            intra_batch = DAGMoveAppendRequest(
+                child_position=grandchild,
+                child_history=first.child_history.push(grandchild),
+                parent_frontier_content_sha256=prospective_record.content_sha256,
+                uci=grandchild_move.uci(),
+            )
+            before = self.frontier.read_bytes()
+            with self.assertRaisesRegex(ValueError, "not indexed"):
+                dag.append_moves_batch((first, intra_batch))
+            self.assertEqual(self.frontier.read_bytes(), before)
+
+            with self.assertRaisesRegex(ValueError, "exceeds maximum"):
+                dag.append_moves_batch(
+                    first for _ in range(MAX_MOVE_APPEND_BATCH + 1)
+                )
+            self.assertEqual(self.frontier.read_bytes(), before)
+
+            with (
+                patch("ugts_chess.proof_dag.MAX_MOVE_APPEND_BATCH_BYTES", 1),
+                self.assertRaisesRegex(ValueError, "encoded bytes exceed maximum"),
+            ):
+                dag.append_moves_batch((first,))
+            self.assertEqual(self.frontier.read_bytes(), before)
+            self.assertTrue(dag.audit().valid)
+
+    def test_24_sync_exception_after_durable_flush_poisoned_then_replays(self) -> None:
+        with ProofDAG(self.database, self.frontier) as dag:
+            root = dag.append_root(self.root, self.root_history)
+            requests = tuple(
+                self._batch_request(root, move.uci(), lineage=move.uci())
+                for move in legal_moves(self.root)[:2]
+            )
+            writer = dag._frontier_writer
+            original_sync = writer.sync
+
+            def sync_then_fail() -> None:
+                original_sync()
+                raise RuntimeError("injected error after durable frontier sync")
+
+            with (
+                patch.object(writer, "sync", side_effect=sync_then_fail),
+                self.assertRaisesRegex(ProofDAGCommitError, "frontier may contain"),
+            ):
+                dag.append_moves_batch(requests)
+            self.assertTrue(dag.closed)
+            with self.assertRaisesRegex(ProofDAGCommitError, "reopen"):
+                dag.append_moves_batch(requests)
+
+        with ProofDAG(self.database, self.frontier) as recovered:
+            audit = recovered.audit().require_valid()
+            self.assertEqual(audit.frontier_record_count, 3)
+            self.assertEqual(
+                [
+                    edge.action["uci"]
+                    for edge in recovered.outgoing_edges(root.node.node_sha256)
+                ],
+                [request.uci for request in requests],
+            )
+
+    def test_25_torn_second_batch_frame_requires_preserved_tail_recovery(self) -> None:
+        with ProofDAG(self.database, self.frontier) as dag:
+            root = dag.append_root(self.root, self.root_history)
+            requests = tuple(
+                self._batch_request(root, move.uci(), lineage=move.uci())
+                for move in legal_moves(self.root)[:2]
+            )
+            writer = dag._frontier_writer
+            original_append = writer.append
+            append_count = 0
+
+            def tear_second_frame(record, *, fsync=None):
+                nonlocal append_count
+                append_count += 1
+                if append_count == 1:
+                    return original_append(record, fsync=fsync)
+                frame, _, _ = frontier_module._encode_frame(record)
+                stream = writer._stream
+                self.assertIsNotNone(stream)
+                stream.write(frame[: len(frame) // 2])  # type: ignore[union-attr]
+                stream.flush()  # type: ignore[union-attr]
+                raise OSError("injected torn second batch frame")
+
+            with (
+                patch.object(writer, "append", side_effect=tear_second_frame),
+                self.assertRaisesRegex(ProofDAGCommitError, "torn batch prefix"),
+            ):
+                dag.append_moves_batch(requests)
+            self.assertTrue(dag.closed)
+
+        with self.assertRaises(FrontierIntegrityError):
+            ProofDAG(self.database, self.frontier)
+        recovery = recover_frontier(self.frontier)
+        self.assertGreater(recovery.truncated_bytes, 0)
+        self.assertIsNotNone(recovery.preserved_suffix_path)
+        self.assertTrue(recovery.preserved_suffix_path.exists())  # type: ignore[union-attr]
+
+        with ProofDAG(self.database, self.frontier) as recovered:
+            prefix = recovered.audit().require_valid()
+            self.assertEqual(prefix.frontier_record_count, 2)
+            retried = recovered.append_moves_batch(requests)
+            self.assertEqual(
+                [result.appended for result in retried.results],
+                [False, True],
+            )
+            self.assertTrue(recovered.audit().valid)
 
 
 if __name__ == "__main__":

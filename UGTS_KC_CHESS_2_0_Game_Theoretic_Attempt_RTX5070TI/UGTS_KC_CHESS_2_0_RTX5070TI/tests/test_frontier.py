@@ -207,8 +207,12 @@ class FrontierFormatTests(unittest.TestCase):
         with self.assertRaises(FrontierIntegrityError):
             FrontierWriter(self.path)
 
+        expected_suffix = self.path.read_bytes()[report.last_good_offset :]
         recovery = truncate_corrupt_tail(self.path)
         self.assertEqual(recovery.truncated_bytes, report.invalid_suffix_bytes)
+        self.assertIsNotNone(recovery.preserved_suffix_path)
+        self.assertEqual(recovery.preserved_suffix_path.read_bytes(), expected_suffix)  # type: ignore[union-attr]
+        self.assertEqual(recovery.preserved_suffix_sha256, hashlib.sha256(expected_suffix).hexdigest())
         self.assertTrue(recovery.after.valid)
         self.assertEqual(read_frontier(self.path), (root,))
 
@@ -274,6 +278,44 @@ class FrontierFormatTests(unittest.TestCase):
         with self.assertRaises(FrontierRecoveryError):
             truncate_corrupt_tail(self.path)
         self.assertEqual(self.path.stat().st_size, original_size)
+
+    def test_06c_final_upward_length_corruption_is_preserved_before_truncation(self) -> None:
+        root, _, first, second = self.write_pair()
+        with self.path.open("r+b") as stream:
+            stream.seek(second.frame_offset + 4)  # type: ignore[attr-defined]
+            stream.write(struct.pack(">I", second.payload_length + 1))  # type: ignore[attr-defined]
+
+        report = verify_frontier(self.path)
+        self.assertEqual(report.issue.code, "torn_record_body")  # type: ignore[union-attr]
+        self.assertTrue(report.issue.recoverable_tail)  # type: ignore[union-attr]
+        self.assertEqual(report.last_good_offset, first.frame_end_offset)  # type: ignore[attr-defined]
+        expected_suffix = self.path.read_bytes()[report.last_good_offset :]
+
+        recovery = truncate_corrupt_tail(self.path)
+
+        self.assertEqual(read_frontier(self.path), (root,))
+        self.assertEqual(recovery.truncated_bytes, len(expected_suffix))
+        self.assertIsNotNone(recovery.preserved_suffix_path)
+        self.assertEqual(recovery.preserved_suffix_path.read_bytes(), expected_suffix)  # type: ignore[union-attr]
+        self.assertEqual(recovery.preserved_suffix_sha256, hashlib.sha256(expected_suffix).hexdigest())
+
+    def test_06d_conflicting_recovery_sidecar_refuses_to_truncate(self) -> None:
+        _, _, first, second = self.write_pair()
+        with self.path.open("r+b") as stream:
+            stream.truncate(second.frame_end_offset - 7)  # type: ignore[attr-defined]
+        original = self.path.read_bytes()
+        suffix = original[first.frame_end_offset :]  # type: ignore[attr-defined]
+        suffix_sha256 = hashlib.sha256(suffix).hexdigest()
+        recovery_path = self.path.with_name(
+            f"{self.path.name}.recovery-{first.frame_end_offset:016x}-{suffix_sha256}.bin"  # type: ignore[attr-defined]
+        )
+        recovery_path.write_bytes(b"conflicting sidecar")
+
+        with self.assertRaisesRegex(FrontierRecoveryError, "wrong size"):
+            truncate_corrupt_tail(self.path)
+
+        self.assertEqual(self.path.read_bytes(), original)
+        self.assertEqual(recovery_path.read_bytes(), b"conflicting sidecar")
 
     def test_07_reconstruction_hashes_are_checked_after_frame_hashes(self) -> None:
         _, _, _, second = self.write_pair()
@@ -493,6 +535,46 @@ class FrontierFormatTests(unittest.TestCase):
                 report = verify_frontier(path)
                 self.assertEqual(report.issue.code, "record_payload_invalid")  # type: ignore[union-attr]
                 self.assertIn(expected_message, report.issue.message)  # type: ignore[union-attr]
+
+    def test_16_constructor_and_decoder_reject_history_after_fivefold_end(self) -> None:
+        current_key = repetition_key(self.root)
+        ended_key = "0" * 64
+        self.assertNotEqual(ended_key, current_key)
+        unreachable = HistoryContext(
+            tuple(sorted(((current_key, 1), (ended_key, 5))))
+        )
+        with self.assertRaisesRegex(ValueError, "already ended automatically"):
+            FrontierRecord(self.root, unreachable)
+
+        reachable = HistoryContext(
+            tuple(sorted(((current_key, 1), (ended_key, 4))))
+        )
+        record = FrontierRecord(self.root, reachable)
+        path = Path(self.temporary.name) / "already-ended-history.ugtsf"
+        with FrontierWriter(path) as writer:
+            entry = writer.append(record)
+        with path.open("r+b") as stream:
+            stream.seek(entry.frame_offset)
+            frame = bytearray(stream.read(entry.frame_length))
+            payload_start = RECORD_PREFIX_SIZE
+            payload_end = payload_start + entry.payload_length
+            payload = bytes(frame[payload_start:payload_end])
+            old_fragment = f'["{ended_key}",4]'.encode("ascii")
+            new_fragment = f'["{ended_key}",5]'.encode("ascii")
+            self.assertIn(old_fragment, payload)
+            payload = payload.replace(old_fragment, new_fragment, 1)
+            frame[payload_start:payload_end] = payload
+            frame[payload_end : payload_end + RECORD_SHA256_SIZE] = hashlib.sha256(
+                payload
+            ).digest()
+            crc = zlib.crc32(frame[:-RECORD_CRC32_SIZE]) & 0xFFFFFFFF
+            frame[-RECORD_CRC32_SIZE:] = struct.pack(">I", crc)
+            stream.seek(entry.frame_offset)
+            stream.write(frame)
+
+        report = verify_frontier(path)
+        self.assertEqual(report.issue.code, "record_payload_invalid")  # type: ignore[union-attr]
+        self.assertIn("already ended automatically", report.issue.message)  # type: ignore[union-attr]
 
 
 if __name__ == "__main__":

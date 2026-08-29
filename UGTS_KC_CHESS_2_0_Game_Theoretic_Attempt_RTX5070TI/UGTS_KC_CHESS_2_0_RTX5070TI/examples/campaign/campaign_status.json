@@ -20,7 +20,7 @@
   "game_solved": false,
   "game_solved_scope": "declared_campaign_root_only",
   "is_classical_initial_root": true,
-  "last_event_hash": "ae4112a41cc7570de5dd8ffcb7e0e2941e19bd3b7968adad47df4bf0bbf7e855",
+  "last_event_hash": "8acd74ea3abb5d43603281c9239121bed7ea484a745cba8e417864e62768cad2",
   "last_event_sequence": 1,
   "obligations": 20,
   "root_automatic_code": "ongoing",

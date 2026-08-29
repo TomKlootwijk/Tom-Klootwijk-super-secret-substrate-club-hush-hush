@@ -1,4 +1,4 @@
-ugts_chess2_native_tests 1 0.281299
-ugts_chess2_cli_selftest 1 0.141683
-ugts_chess_gpu_selftest 1 0.068954
+ugts_chess2_native_tests 3 0.0849338
+ugts_chess2_cli_selftest 3 0.0421815
+ugts_chess_gpu_selftest 3 0.0167328
 ---

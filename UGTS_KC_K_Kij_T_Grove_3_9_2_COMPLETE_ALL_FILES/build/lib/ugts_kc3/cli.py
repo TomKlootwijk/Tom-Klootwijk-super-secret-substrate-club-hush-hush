@@ -16,9 +16,9 @@ from .androidbuild import (
     build_apk,
     install_apk,
     list_android_devices,
+    profile_android_app,
     supported_variants,
 )
-from .game_input import InputFrame
 from .mobile3d import InputFrame3D, Mobile3DProject
 from .project import GameProject
 from .templates import (
@@ -167,6 +167,17 @@ def _parser() -> argparse.ArgumentParser:
     )
     devices.add_argument("--json", action="store_true", dest="as_json")
 
+    phone_profile = sub.add_parser(
+        "profile-android",
+        help="measure a running Android game's frames, memory and thermals",
+    )
+    phone_profile.add_argument("application_id")
+    phone_profile.add_argument("--seconds", type=float, default=30.0)
+    phone_profile.add_argument("--sample-seconds", type=float, default=5.0)
+    phone_profile.add_argument("--serial")
+    phone_profile.add_argument("--json", action="store_true", dest="as_json")
+    phone_profile.add_argument("--output", type=Path)
+
     pack_ecs = sub.add_parser(
         "pack-ecs", help="compress project/ECS/graph JSON into a small UGECS1 file"
     )
@@ -248,6 +259,39 @@ def main(argv: list[str] | None = None) -> int:
                 for device in devices:
                     label = f" ({device.model})" if device.model else ""
                     print(f"{device.serial}\t{device.state}{label}")
+            return 0
+
+        if args.command == "profile-android":
+            result = profile_android_app(
+                args.application_id,
+                serial=args.serial,
+                seconds=args.seconds,
+                sample_seconds=args.sample_seconds,
+            )
+            payload = result.to_dict()
+            if args.output is not None:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(
+                    json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            if args.as_json:
+                print(json.dumps(payload, indent=2, sort_keys=True))
+            else:
+                print(result.summary)
+                print(
+                    f"  {result.effective_fps:.2f} FPS · "
+                    f"p95 {result.frame_ms_p95:.2f} ms · "
+                    f"{result.frame_intervals} measured intervals"
+                )
+                if result.pss_kib_max is not None:
+                    print(f"  peak process memory {result.pss_kib_max / 1024:.1f} MiB PSS")
+                if result.gpu_c_max is not None:
+                    print(f"  peak reported GPU temperature {result.gpu_c_max:.1f} °C")
+                for warning in result.warnings:
+                    print(f"  ! {warning}")
+                if args.output is not None:
+                    print(f"  saved {args.output}")
             return 0
 
         if args.command == "pack-ecs":

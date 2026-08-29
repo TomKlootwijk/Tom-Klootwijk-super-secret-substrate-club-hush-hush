@@ -57,6 +57,41 @@ cmake --build build-cpu --config Release
 ctest --test-dir build-cpu --output-on-failure
 ```
 
+The native suite now includes an exact host-memory proof-number DAG for board
+sizes 1×1 through 19×19. It uses complete canonical state bytes for identity,
+deterministic most-proving selection, saturating 64-bit proof arithmetic, and
+real transposition reuse. Its completed 2×2 threshold graphs match the Python
+oracle's canonical SHA-256 graph regression fingerprints; those hashes pin the
+tested artifacts but do not establish state identity. The native CLI exposes
+bounded work directly:
+
+```text
+build-cpu/Release/ugts_go_pndag.exe 19 15 1 2
+```
+
+On the canonical empty root that two-expansion command returns `UNKNOWN` with
+proof/disproof numbers `1/361`, 725 nodes, 724 edges, and graph SHA-256
+`03dfd8263b423501147a0be09d2ccd1e23f51c2923992ed177da277740849618`.
+Its canonical JSON labels itself a non-certificate bounded attempt. The native
+DAG also has a separate bounded binary checkpoint mode:
+
+```text
+build-cpu/Release/ugts_go_pndag.exe 19 15 1 1 --checkpoint-dir campaign
+build-cpu/Release/ugts_go_pndag.exe 19 15 1 1 --checkpoint-dir campaign \
+  --resume-checkpoint campaign/checkpoints/<full-sha256>.pndag \
+  --expected-checkpoint-sha256 <full-sha256>
+```
+
+Resume never scans for `CURRENT` or the newest file: retain the returned path
+and complete-file SHA outside the store, then supply both, while keeping its
+hash-linked predecessor files beside it and publishing continuations back to the
+same store. Loading regenerates legal edges and
+proof caches and validates the chain back to generation one before accepting the
+graph; publication creates immutable content-addressed generations. The entire
+DAG and full checkpoint buffer still live in host memory, and there are no
+production TT bounds, CUDA expansion, or independent certificate extraction,
+so this is not a 19×19 solution. A bounded budget stop remains `UNKNOWN`.
+
 ## Configure the optional CUDA scaffolding
 
 The build deliberately uses `native` architecture detection rather than assuming a compute capability from a marketing name.
@@ -67,12 +102,52 @@ cmake -S cpp -B build-cuda \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CUDA_ARCHITECTURES=native
 cmake --build build-cuda --config Release
+ctest --test-dir build-cuda -C Release --output-on-failure
 ./build-cuda/ugts_go19_gpu_probe
 ```
 
 On Windows, run the probe from the selected configuration directory if the generator places executables under `Release/`.
 
-The CUDA kernel currently computes batched empty-point masks from packed bitplanes. It is a validated accelerator boundary, **not** yet a complete proof-authoritative legality kernel. Candidate moves must still pass capture, own-liberty, suicide, and exact-superko guards.
+The original CUDA API still computes batched empty-point masks from packed
+bitplanes. Its target-laptop gate covers 13 deterministic protocol cases, genuinely
+pre-enqueued dual streams, the 16,776,960-word production grid-stride boundary,
+aliased inputs, input immutability, tail masking, canaries, and invalid arguments.
+It completed 13,038 Python/CUDA and 33,580,510 total C++/CUDA exact word
+comparisons, plus 33,606,586 input-immutability comparisons, with zero
+mismatches; Compute Sanitizer reported zero errors. This validates the unchanged
+occupancy primitive, not full legality.
+
+A sibling asynchronous kernel now deterministically evaluates every fixed point
+slot for groups, liberties, simultaneous captures, post-capture own liberty,
+canonical no-suicide rejection, and child bitplanes. Its fail-closed adapter
+does not trust either GPU accepts or rejects: after stream synchronization the
+C++ rules engine recomputes every point, compares every local status/count/child
+word, and alone applies exact positional superko and game metadata. Pass and
+proof updates remain CPU-only. On the target GPU, the bounded independent gate
+covered 124 states and 25,281 unique point slots across sizes 1, 2, 3, 5, 9,
+and 19; the default/nondefault parity modes made 50,562 Python/C++/CUDA point
+comparisons with zero mismatches. Low-level dual-stream guards crossed the
+524,280-candidate production grid capacity with 524,533 exact slot comparisons,
+and Compute Sanitizer memcheck, racecheck, and initcheck were clean. This is a
+bounded pre-superko transition slice, not the still-open 10,000,000-slot M4
+gate, a throughput result, a proof-path integration, or a 19×19 solution.
+The target-run summary is archived at
+`evidence/local_m4_cuda_empty_mask_parity.json`, and the source-pinned memcheck
+result is `evidence/local_m4_cuda_compute_sanitizer.json`. The local-transition
+counterparts are `evidence/local_m4_cuda_local_transition_parity.json` and
+`evidence/local_m4_cuda_local_transition_compute_sanitizer.json`.
+
+Rerun the bounded parity gates with:
+
+```bash
+python cpp/tests/cuda_empty_mask_parity.py \
+  --evaluator build-cuda/ugts_go_cuda_empty_mask_eval \
+  --output evidence/local_m4_cuda_empty_mask_parity.json
+python cpp/tests/cuda_local_transition_parity.py \
+  --evaluator build-cuda/ugts_go_cuda_local_transition_eval \
+  --guard-evaluator build-cuda/ugts_go_cuda_local_transition_guards \
+  --output evidence/local_m4_cuda_local_transition_parity.json
+```
 
 ## Laptop-safe memory policy
 
@@ -100,22 +175,47 @@ python -m ugts_go19 pndag-tiny --size 2 --komi2 1 --threshold2 1 \
 This command rejects boards above 2×2 and is not the production 19×19 search or
 a standalone proof certificate.
 
-The next M2 storage primitives are also present as bounded Python components:
+The M2 storage primitives are also present as bounded Python components:
 `PersistentHistory` supplies canonical structurally shared PSK roots,
+including a compact multi-root forest artifact that globally deduplicates exact
+boards and immutable trie nodes,
 `persistent_engine` applies exact moves without rebuilding flat repetition sets,
 `PersistentProofNumberSearch` proves the complete 1×1/2×2 threshold fixtures on
-those roots, and `ImmutableSegmentStore` publishes exact board/history bytes
-through immutable binary segments and append-only manifests. Tests cover fresh-store order
-independence, injected index collisions, pinned restart, torn/corrupt files, and
-19×19-shaped one-move state data. These components are not yet wired into
-`ProofNumberDAG` and do not make the 19×19 root solved.
+those roots, `PersistentProofNumberDAG` checkpoints and resumes a transposition
+DAG over the same exact roots without retaining per-node serialized history
+artifacts, its compact checkpoint codec replaces repeated on-disk histories with
+one shared forest and preserves that physical sharing after load, its
+checkpoint-generation store adds
+exact-prefix-validated immutable generations plus externally journalable
+two-phase recovery, and
+`ImmutableSegmentStore` publishes exact board/history bytes through immutable
+binary segments and append-only manifests.
+Tests cover
+fresh-store order independence, injected index collisions, pinned restart,
+post-open mapped-file mutation, torn/corrupt files, and 19×19-shaped one-move
+state data. The command below deterministically reruns that bounded storage
+evidence. Zero retained segment payload bytes after its spill and zero retained
+serialized state/history bytes in live proof nodes are not peak-RSS or campaign
+total-memory bounds: boards, trie nodes, proof nodes, and transient checkpoint
+bytes remain in host RAM. The compact codec reduces durable duplication but
+still reconstructs a fully materialized legacy checkpoint; live objects are not
+paged from the segment store. The persistent-PNDAG gate stores each compact
+snapshot as one opaque segment object, forces lazy spill and pinned restart,
+and strictly reloads identical `UNKNOWN` graph facts; this is an adapter test,
+not live-node paging. None of these bounded components makes the 19×19 root
+solved.
+
+```bash
+python scripts/storage_gate.py --validate evidence/local_m2_storage_gate.json
+python scripts/persistent_pndag_gate.py --validate evidence/local_m2_persistent_pndag_gate.json
+```
 
 ```bash
 ugts-go19 plan-memory --free-vram-gib 10
 python scripts/hardware_probe.py
 ```
 
-## What Codex should do first
+## Continuing the campaign with Codex
 
 Read these files in order:
 
@@ -126,7 +226,11 @@ Read these files in order:
 5. `codex/TASKS.md`
 6. `codex/PROMPT_FOR_CODEX.md`
 
-Then run `codex/acceptance.sh`. The first implementation goal is not “solve 19×19.” It is **bit-for-bit equivalence** between Python and C++ transitions on randomized legal traces, followed by a full CUDA legality batch that is checked against both references.
+Then run `codex/acceptance.sh`. Python/C++ transition parity is complete. The
+current priorities are to turn the audited bounded native full-snapshot restart
+into resource-bounded live-DAG paging, add an independent certificate verifier,
+and build a full CUDA legal-child batch checked against both exact CPU
+references. None may convert a resource stop into a solved claim.
 
 ## Proof-status vocabulary
 

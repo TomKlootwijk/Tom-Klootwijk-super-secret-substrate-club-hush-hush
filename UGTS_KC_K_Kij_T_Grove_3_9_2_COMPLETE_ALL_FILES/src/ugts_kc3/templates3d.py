@@ -111,7 +111,7 @@ def blank_mobile3d_project(
 def first_steps_mobile3d_project(
     title: str = "My First UGTS Mobile Game", author: str = ""
 ) -> Mobile3DProject:
-    """A phone-ready lesson with input and Trigger Area logic blocks."""
+    """A phone-ready lesson with input, timer, sensing and Trigger Area logic."""
     project = blank_mobile3d_project(title, author)
     graph = VisualGraph(
         "dash_lesson",
@@ -179,6 +179,146 @@ def first_steps_mobile3d_project(
             "android_supported": True,
         },
     )
+    repeatable_graph = VisualGraph(
+        "repeatable_number_lesson",
+        (
+            GraphNode("when_game_starts", "event.ready", {}, (0, 80)),
+            GraphNode(
+                "pick_garden_number",
+                "value.seeded_number",
+                {
+                    "world_number": 392,
+                    "pick_number": 7,
+                    "smallest": -10.0,
+                    "largest": 10.0,
+                },
+                (0, 230),
+            ),
+            GraphNode(
+                "remember_garden_number",
+                "action.set_state",
+                {"key": "repeatable_number"},
+                (340, 80),
+            ),
+        ),
+        (
+            GraphLink("when_game_starts", "out", "remember_garden_number", "in"),
+            GraphLink("pick_garden_number", "value", "remember_garden_number", "value"),
+        ),
+        {
+            "title": "Pick the same garden number everywhere",
+            "lesson": "The same World and Pick numbers always make the same result on desktop, web and phone.",
+            "beginner": True,
+            "android_supported": True,
+        },
+    )
+    nearby_goal_graph = VisualGraph(
+        "find_goal_lesson",
+        (
+            GraphNode("when_game_starts", "event.ready", {}, (0, 80)),
+            GraphNode(
+                "find_goal",
+                "query.nearest_tag",
+                {"origin": "player", "tag": "goal", "radius": 9.0},
+                (0, 230),
+            ),
+            GraphNode(
+                "remember_nearby_goal",
+                "action.set_state",
+                {"key": "nearby_goal"},
+                (360, 80),
+            ),
+        ),
+        (
+            GraphLink(
+                "when_game_starts", "out", "remember_nearby_goal", "in"
+            ),
+            GraphLink(
+                "find_goal", "found", "remember_nearby_goal", "value"
+            ),
+        ),
+        {
+            "title": "Find the Goal",
+            "lesson": (
+                "World Logic asks the ECS for the closest active Goal within "
+                "9 metres of Player and remembers whether one was found."
+            ),
+            "beginner": True,
+            "android_supported": True,
+        },
+    )
+    ahead_goal_graph = VisualGraph(
+        "find_goal_ahead_lesson",
+        (
+            GraphNode("when_game_starts", "event.ready", {}, (0, 80)),
+            GraphNode(
+                "find_goal_ahead",
+                "query.nearest_in_cone",
+                {
+                    "origin": "player",
+                    "tag": "goal",
+                    "radius": 9.0,
+                    "cone": [0.0, 0.0, -1.0, 0.7071067690849304],
+                },
+                (0, 230),
+            ),
+            GraphNode(
+                "remember_goal_ahead",
+                "action.set_state",
+                {"key": "goal_ahead"},
+                (360, 80),
+            ),
+        ),
+        (
+            GraphLink(
+                "when_game_starts", "out", "remember_goal_ahead", "in"
+            ),
+            GraphLink(
+                "find_goal_ahead", "found", "remember_goal_ahead", "value"
+            ),
+        ),
+        {
+            "title": "Find the Goal Ahead",
+            "lesson": (
+                "World Logic uses a compact radial-and-angular ECS gate to find "
+                "the closest Goal in Player's saved Forward view."
+            ),
+            "beginner": True,
+            "android_supported": True,
+        },
+    )
+    timer_graph = VisualGraph(
+        "timer_lesson",
+        (
+            GraphNode(
+                "every_second",
+                "event.timer",
+                {"seconds": 1.0, "repeat": True},
+                (0, 80),
+            ),
+            GraphNode(
+                "remember_timer_rings",
+                "action.set_state",
+                {"key": "timer_rings"},
+                (360, 80),
+            ),
+        ),
+        (
+            GraphLink("every_second", "out", "remember_timer_rings", "in"),
+            GraphLink(
+                "every_second", "count", "remember_timer_rings", "value"
+            ),
+        ),
+        {
+            "title": "Count the Timer Rings",
+            "lesson": (
+                "A one-second whole-scene timer stores its ring count without "
+                "building a hidden counter from Every Frame blocks."
+            ),
+            "beginner": True,
+            "android_supported": True,
+        },
+    )
     orbit_profile = LogPolarProfile(
         r0=1.0, rho_min=-3.0, rho_max=3.0, core_radius=1.0e-5
     )
@@ -217,6 +357,17 @@ def first_steps_mobile3d_project(
             },
         )
         if node.id == "goal"
+        else replace(
+            node,
+            metadata={
+                **node.metadata,
+                "visual_graph": repeatable_graph.id,
+                "description": (
+                    "This safe floor owns the beginner Repeatable Random Number graph."
+                ),
+            },
+        )
+        if node.id == "floor"
         else node
         for node in project.nodes
     )
@@ -246,8 +397,27 @@ def first_steps_mobile3d_project(
     project.metadata = {
         **project.metadata,
         "template": "first-steps-mobile-3d",
-        "visual_graphs": [graph.to_dict(), trigger_graph.to_dict()],
-        "initial_state": {"score": 0, "inside_goal": False},
+        "visual_graphs": [
+            graph.to_dict(),
+            trigger_graph.to_dict(),
+            repeatable_graph.to_dict(),
+            nearby_goal_graph.to_dict(),
+            ahead_goal_graph.to_dict(),
+            timer_graph.to_dict(),
+        ],
+        "world_graphs": [
+            nearby_goal_graph.id,
+            ahead_goal_graph.id,
+            timer_graph.id,
+        ],
+        "initial_state": {
+            "score": 0,
+            "inside_goal": False,
+            "repeatable_number": 0.0,
+            "nearby_goal": False,
+            "goal_ahead": False,
+            "timer_rings": 0,
+        },
         "packed_kinematic_profiles": {
             "lesson_orbit": {
                 "profile": orbit_profile.to_dict(),
@@ -264,6 +434,10 @@ def first_steps_mobile3d_project(
                 "Select Goal to see Trigger Enter and Trigger Exit Logic Blocks.",
                 "The orbiting goal uses a two-word log-polar ECS component and one shared tiny LUT.",
                 "Select Crystal Garden and change Populate Area's object count or World number.",
+                "Select Floor, open Pick the same garden number everywhere, and change Pick number; Logic Trail shows the repeatable result.",
+                "Select World Logic, open Find the Goal, and change its Search distance; it uses the ECS instead of a long object list.",
+                "Open Find the Goal Ahead and choose Facing and View width; the compact cone uses exact phone-safe numbers instead of hidden trigonometry.",
+                "In World Logic, open Count the Timer Rings; When Timer Rings replaces a difficult Every Frame counter and works identically on phone.",
                 "Use Deploy to Phone when you are ready; UGTS builds, installs, and opens it.",
             ],
         },

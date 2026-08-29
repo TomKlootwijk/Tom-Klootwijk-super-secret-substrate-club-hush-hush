@@ -1,0 +1,32 @@
+{
+  "$id": "https://ugts.example/schema/hot-codebook-5.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "atlas_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "codebook_hash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "entries": {
+      "items": {
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "maxItems": 16,
+      "minItems": 16,
+      "type": "array"
+    }
+  },
+  "required": [
+    "codebook_id",
+    "atlas_hash",
+    "entries",
+    "codebook_hash"
+  ],
+  "type": "object"
+}

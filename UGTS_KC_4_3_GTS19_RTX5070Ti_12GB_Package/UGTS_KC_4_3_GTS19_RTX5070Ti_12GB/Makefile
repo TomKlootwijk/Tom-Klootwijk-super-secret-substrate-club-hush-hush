@@ -19,6 +19,7 @@ acceptance:
 evidence:
 	$(PYTHON) scripts/parity_gate.py evidence/local_m1_cpp_python_parity_v2_1m.json
 	$(PYTHON) scripts/storage_gate.py --validate evidence/local_m2_storage_gate.json
+	$(PYTHON) scripts/persistent_pndag_gate.py --validate evidence/local_m2_persistent_pndag_gate.json
 
 manifest:
 	$(PYTHON) scripts/make_manifest.py

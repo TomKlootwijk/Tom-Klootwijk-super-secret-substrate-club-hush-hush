@@ -12,9 +12,9 @@
     "best_move": "b1b5",
     "completed": true,
     "depth": 4,
-    "elapsed_seconds": 0.44483360002050176,
+    "elapsed_seconds": 0.40553049999289215,
     "nodes": 1195,
-    "nodes_per_second": 4475,
+    "nodes_per_second": 4909,
     "principal_variation_san": [
       "Qb5",
       "Ka2",

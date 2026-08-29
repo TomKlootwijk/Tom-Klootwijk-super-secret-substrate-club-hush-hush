@@ -5,6 +5,7 @@
   "max_plies": 3,
   "proof_semantics": "OR nodes choose one legal attacker move; AND nodes enumerate every legal defender reply and reject defender draw-claim actions; leaves are checkmate.",
   "root_fen": "8/8/8/8/8/k7/8/1QK5 w - - 0 1",
+  "root_game_state_sha256": "f4ebcb977a20259c49fa6d7023e28cb7c43a051b5bc471b6eb54892aaa87dcd4",
   "root_hash": "64500465593f60fd69f567e84cd79634d272857edd9aad90b056123f04270b16",
   "root_history_counts": [
     [

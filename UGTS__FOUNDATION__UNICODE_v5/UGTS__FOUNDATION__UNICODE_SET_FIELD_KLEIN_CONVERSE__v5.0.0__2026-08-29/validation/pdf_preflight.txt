@@ -1,0 +1,6 @@
+PDF: /mnt/data/UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29/report/UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29.pdf
+Pages: 31
+Encrypted: False
+Openable (PyMuPDF): True
+Likely scanned: False
+XFA present: False

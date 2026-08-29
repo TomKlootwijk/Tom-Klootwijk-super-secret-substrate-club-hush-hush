@@ -1,0 +1,10 @@
+^C:\TOM KLOOTWIJK SUPER SECRET SUBSTRATE CLUB HUSH HUSH\UGTS_KC_K_KIJ_T_GROVE_3_9_2_COMPLETE_ALL_FILES\BUILD\NATIVE-HOST-CONE\CMAKEFILES\566908FF58A41A59BDD6AEB31DB72CA8\GENERATE.STAMP.RULE
+setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe "-SC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests" "-BC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-cone" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-host-cone/ugts_kc_host_touch_tests.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

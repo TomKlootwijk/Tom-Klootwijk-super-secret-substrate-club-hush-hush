@@ -27,6 +27,7 @@ from ..mobile3d import (
     Mobile3DProject,
     Node3DRecord,
     Transform3DRecord,
+    visual_graphs_from_metadata,
 )
 from ..objimport import load_wavefront_obj
 from ..packed_kinematics import (
@@ -39,8 +40,20 @@ from ..packed_kinematics import (
     PolarPose,
     packed_kinematic_codecs_from_dict,
 )
-from ..project import EntitySpec, GameProject, GameSceneSpec
-from ..visual_graph import VisualGraph
+from ..project import (
+    EntitySpec,
+    GameProject,
+    GameSceneSpec,
+    visual_graph_binding_ids,
+    visual_graphs_from_rules,
+)
+from ..scatter import (
+    SCATTER_METADATA_KEY,
+    ScatterError,
+    ScatterPopulation,
+    validate_scatter_prototype,
+)
+from ..visual_graph import GraphExecutionError, TraceEntry, VisualGraph
 
 
 GRAPHS_KEY = "visual_graphs"
@@ -60,6 +73,7 @@ _STUDIO_MOVEMENT_RANGE = MotionRange(
 )
 _STUDIO_MOVEMENT_LUT_RESOLUTION = 128
 _SPIRAL_LOG_RATE = 0.2
+_CURRENT_GRAPH_SELECTION = object()
 
 
 def studio_movement_profile_config() -> dict[str, Any]:
@@ -85,6 +99,58 @@ class SelectionRef:
     kind: str
     object_id: str
     scene_id: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class GraphAuthoringContext:
+    """Exact Logic Blocks workspace for the current owner selection.
+
+    ``graph`` may be a transient blank graph when an object has no binding yet.
+    That transient value is deliberately not written until the first meaningful
+    graph edit.  ``choices`` follows authored binding order so an object with
+    more than one graph never falls through to an unrelated project graph.
+    """
+
+    graph: dict[str, Any]
+    choices: tuple[tuple[str, str], ...]
+    active_graph_id: str
+    persisted: bool
+    owner_label: str
+    owner_id: str | None
+    entity_choices: tuple[tuple[str, str], ...]
+    default_origin_id: str | None
+    creation_problem: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class GraphStorageSnapshot:
+    """Small exact undo snapshot for graph records and owner metadata."""
+
+    kind: str
+    scene_id: str | None
+    container: dict[str, Any]
+    object_metadata: tuple[tuple[str, dict[str, Any]], ...]
+
+
+@dataclass(frozen=True, slots=True)
+class LogicTraceSnapshot:
+    """One useful, read-only Logic Blocks execution captured from Preview.
+
+    Snapshots deliberately live outside the project model.  ``sequence`` is a
+    per-preview recency counter for editor presentation, not simulation state.
+    """
+
+    graph_id: str
+    owner_id: str | None
+    trigger: str
+    steps: int
+    trace: tuple[TraceEntry, ...]
+    completed: bool
+    sequence: int
+
+    @property
+    def key(self) -> tuple[str, str | None]:
+        return self.graph_id, self.owner_id
 
 
 def quaternion_to_euler_degrees(rotation: tuple[float, float, float, float]) -> tuple[float, float, float]:
@@ -131,6 +197,7 @@ class EditorDocument(QObject):
     transformChanged = Signal(object)
     graphChanged = Signal()
     structureChanged = Signal()
+    logicTraceChanged = Signal(object)
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -143,6 +210,9 @@ class EditorDocument(QObject):
         self._extra_top_level: dict[str, Any] = {}
         self._runtime_world: Any | None = None
         self._previous_input: InputFrame | None = None
+        self._logic_traces: dict[tuple[str, str | None], LogicTraceSnapshot] = {}
+        self._logic_trace_results: dict[tuple[str, str | None], object] = {}
+        self._logic_trace_sequence = 0
         self.play_warnings: list[str] = []
 
     @property
@@ -195,6 +265,7 @@ class EditorDocument(QObject):
         self.selection = None
         self._runtime_world = None
         self._previous_input = None
+        self._clear_logic_traces()
         self._dirty = bool(as_copy)
         self.projectLoaded.emit()
         self.documentChanged.emit(self._dirty)
@@ -214,6 +285,7 @@ class EditorDocument(QObject):
         self.selection = None
         self._runtime_world = None
         self._previous_input = None
+        self._clear_logic_traces()
         self._extra_top_level = {}
         self._dirty = True
         self.projectLoaded.emit()
@@ -273,6 +345,21 @@ class EditorDocument(QObject):
     def set_selection(self, selection: SelectionRef | None) -> None:
         if selection == self.selection:
             return
+        if (
+            isinstance(self.project, GameProject)
+            and selection is not None
+            and selection.kind == "world_graph"
+            and selection.scene_id in self.project.scenes
+            and selection.scene_id != self.current_scene_id
+        ):
+            # A World Logic item belongs to its scene. Activate that scene
+            # without an intermediate empty selection so Preview runs the
+            # graph the child just chose.
+            self.current_scene_id = selection.scene_id
+            self.selection = selection
+            self.sceneChanged.emit(selection.scene_id)
+            self.selectionChanged.emit(selection)
+            return
         self.selection = selection
         self.selectionChanged.emit(selection)
 
@@ -285,6 +372,8 @@ class EditorDocument(QObject):
     def entity(self, selection: SelectionRef | None = None) -> EntitySpec | Node3DRecord | None:
         selection = selection or self.selection
         if selection is None or self.project is None:
+            return None
+        if selection.kind not in {"entity", "node"}:
             return None
         if isinstance(self.project, GameProject):
             scene = self.project.scenes.get(selection.scene_id or self.current_scene_id or "")
@@ -667,9 +756,6 @@ class EditorDocument(QObject):
             return None
         raw_component = selected.metadata.get(MOVEMENT_COMPONENT_KEY)
         profiles = self.movement_profiles()
-        default_codec = PackedKinematicCodec(
-            _STUDIO_MOVEMENT_PROFILE, _STUDIO_MOVEMENT_RANGE
-        )
         x, _y, z = selected.transform.translation
         authored_radius = math.hypot(x, z)
         authored_angle = math.degrees(math.atan2(z, x)) % 360.0
@@ -906,6 +992,98 @@ class EditorDocument(QObject):
         self.structureChanged.emit()
         self.set_selection(selection)
 
+    def population_state(
+        self, selection: SelectionRef | None = None
+    ) -> dict[str, Any] | None:
+        """Describe one node's compact, static Populate Area recipe."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return None
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return None
+        raw = selected.metadata.get(SCATTER_METADATA_KEY)
+        population = ScatterPopulation()
+        saved_error = ""
+        if raw is not None:
+            try:
+                if not isinstance(raw, Mapping):
+                    raise ScatterError("the saved population recipe is not an object")
+                population = ScatterPopulation.from_mapping(raw)
+            except ScatterError as exc:
+                saved_error = str(exc)
+        safety_error = ""
+        try:
+            validate_scatter_prototype(selected)
+        except ScatterError as exc:
+            safety_error = str(exc)
+        quality_budget = 0
+        for tier in self.project.quality_tiers:
+            if tier.id == self.project.start_quality:
+                quality_budget = int(tier.max_visible_nodes)
+                break
+        return {
+            "enabled": raw is not None,
+            "valid": not saved_error and not safety_error,
+            "can_enable": not safety_error,
+            "instance_count": population.instance_count,
+            "seed": population.seed,
+            "size_x": population.size[0],
+            "size_y": population.size[1],
+            "size_z": population.size[2],
+            "scale_min": population.scale_min,
+            "scale_max": population.scale_max,
+            "random_yaw": population.random_yaw,
+            "recipe_bytes": 36,
+            "shared_header_bytes": 24,
+            "quality_budget": quality_budget,
+            "over_start_budget": population.instance_count > max(0, quality_budget),
+            "error": saved_error or safety_error,
+        }
+
+    def record_with_population(
+        self,
+        selection: SelectionRef,
+        values: Mapping[str, Any],
+    ) -> Node3DRecord:
+        """Return one project-validated node with a sparse population recipe."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Populate Area is available in mobile 3D projects.")
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            raise ValueError("Choose a 3D object before using Populate Area.")
+        enabled = values.get("enabled", False)
+        if not isinstance(enabled, bool):
+            raise ValueError("Populate this object must be on or off.")
+        metadata = copy.deepcopy(selected.metadata)
+        if enabled:
+            population = ScatterPopulation.from_mapping(
+                {
+                    "instance_count": values.get("instance_count", 8),
+                    "seed": values.get("seed", 1),
+                    "size": [
+                        values.get("size_x", 8.0),
+                        values.get("size_y", 0.0),
+                        values.get("size_z", 8.0),
+                    ],
+                    "scale_min": values.get("scale_min", 0.85),
+                    "scale_max": values.get("scale_max", 1.15),
+                    "random_yaw": values.get("random_yaw", True),
+                }
+            )
+            metadata[SCATTER_METADATA_KEY] = population.to_dict()
+        else:
+            metadata.pop(SCATTER_METADATA_KEY, None)
+        updated = replace(selected, metadata=metadata)
+        updated.validate()
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = tuple(
+            updated if node.id == selected.id else node for node in candidate.nodes
+        )
+        candidate.validate()
+        return updated
+
     def record_with_resource(
         self,
         selection: SelectionRef,
@@ -1102,141 +1280,682 @@ class EditorDocument(QObject):
             return selected.to_dict()
         return {}
 
-    def graph_data(self) -> dict[str, Any]:
-        if isinstance(self.project, GameProject):
-            scene = self.scene()
-            values = [] if scene is None else scene.rules.get(GRAPHS_KEY, [])
-            legacy = None if scene is None else scene.rules.get(BINDING_KEY)
-        elif isinstance(self.project, Mobile3DProject):
-            values = self.project.metadata.get(GRAPHS_KEY, [])
-            legacy = self.project.metadata.get(BINDING_KEY)
-        else:
-            values, legacy = [], None
-        if not isinstance(values, (list, tuple)):
-            values = []
-        if not values and isinstance(legacy, Mapping):
-            values = [legacy]
-        binding = None
-        selected = self.entity()
-        if isinstance(selected, (EntitySpec, Node3DRecord)):
-            binding = selected.metadata.get(BINDING_KEY)
-        candidate = next(
-            (item for item in values if isinstance(item, Mapping) and item.get("id") == binding),
-            next((item for item in values if isinstance(item, Mapping)), None),
-        )
-        if candidate is None:
-            base = self.current_scene_id or getattr(self.project, "id", "scene")
-            return VisualGraph(id=f"{base}_logic").to_dict()
-        raw = copy.deepcopy(dict(candidate))
-        # One early editor preview used connections/from_node keys. Migrate it in memory.
-        if "connections" in raw and "links" not in raw:
-            raw["links"] = [
-                {
-                    "source_node": item.get("from_node"), "source_port": item.get("from_port"),
-                    "target_node": item.get("to_node"), "target_port": item.get("to_port"),
-                }
-                for item in raw.get("connections", []) if isinstance(item, Mapping)
-            ]
-            raw.pop("connections", None)
-        raw.setdefault("schema", VisualGraph.SCHEMA)
-        raw.setdefault("id", f"{self.current_scene_id or 'scene'}_logic")
-        raw.setdefault("metadata", {})
-        return VisualGraph.from_dict(raw).to_dict()
+    def world_graph_ids(self, scene_id: str | None = None) -> tuple[str, ...]:
+        """Return the explicitly world-bound graph ids for one authored scene."""
 
-    def set_graph_data(self, graph: Mapping[str, Any]) -> None:
+        if isinstance(self.project, GameProject):
+            scene = self.scene(scene_id)
+            raw = None if scene is None else scene.rules.get("world_graphs")
+            where = f"scene {scene_id or self.current_scene_id or ''} world Logic Blocks"
+        elif isinstance(self.project, Mobile3DProject):
+            raw = self.project.metadata.get("world_graphs")
+            where = "mobile 3D world Logic Blocks"
+        else:
+            return ()
+        try:
+            return visual_graph_binding_ids(raw, where)
+        except (TypeError, ValueError):
+            # The editor can open an invalid project so Check Project can explain
+            # it.  A malformed binding must not make the whole Scene Tree fail.
+            return ()
+
+    def graph_title(self, graph_id: str, scene_id: str | None = None) -> str | None:
+        """Return an authored learner-facing graph title when one is available."""
+
+        try:
+            if isinstance(self.project, GameProject):
+                scene = self.scene(scene_id)
+                graphs = () if scene is None else visual_graphs_from_rules(scene.rules)
+            elif isinstance(self.project, Mobile3DProject):
+                graphs = visual_graphs_from_metadata(self.project.metadata)
+            else:
+                return None
+        except (TypeError, ValueError):
+            return None
+        graph = next((item for item in graphs if item.id == str(graph_id)), None)
+        if graph is None:
+            return None
+        title = str(graph.metadata.get("title", "")).strip()
+        return title or None
+
+    @staticmethod
+    def _friendly_graph_name(value: str) -> str:
+        return str(value).replace("_", " ").replace("-", " ").strip().title()
+
+    def _graph_scene_id(self, selection: SelectionRef | None) -> str | None:
+        if not isinstance(self.project, GameProject):
+            return None
+        if selection is not None and selection.scene_id:
+            return selection.scene_id
+        return self.current_scene_id
+
+    def _raw_graph_values(self, scene_id: str | None = None) -> list[dict[str, Any]]:
+        """Return detached graphs while accepting every supported storage form."""
+
+        if isinstance(self.project, GameProject):
+            scene = self.scene(scene_id)
+            raw: Any = None if scene is None else scene.rules.get(GRAPHS_KEY)
+            if raw is None and scene is not None:
+                raw = scene.rules.get(BINDING_KEY)
+        elif isinstance(self.project, Mobile3DProject):
+            raw = self.project.metadata.get(GRAPHS_KEY)
+            if raw is None:
+                raw = self.project.metadata.get(BINDING_KEY)
+        else:
+            return []
+        if raw is None:
+            return []
+        if isinstance(raw, Mapping):
+            if "nodes" in raw or "schema" in raw:
+                values: list[Any] = [raw]
+            else:
+                values = []
+                for graph_id, value in sorted(raw.items(), key=lambda pair: str(pair[0])):
+                    if not isinstance(value, Mapping):
+                        raise TypeError(f"visual graph {graph_id!r} must be an object")
+                    item = copy.deepcopy(dict(value))
+                    item.setdefault("id", str(graph_id))
+                    values.append(item)
+        elif isinstance(raw, (list, tuple)):
+            values = list(raw)
+        else:
+            raise TypeError("visual_graphs must be a list or object")
+
+        result: list[dict[str, Any]] = []
+        for value in values:
+            if not isinstance(value, Mapping):
+                raise TypeError("each visual graph must be an object")
+            graph = copy.deepcopy(dict(value))
+            # One early editor preview used connections/from_node keys. Migrate
+            # it in memory without changing the saved project until an edit.
+            if "connections" in graph and "links" not in graph:
+                graph["links"] = [
+                    {
+                        "source_node": item.get("from_node"),
+                        "source_port": item.get("from_port"),
+                        "target_node": item.get("to_node"),
+                        "target_port": item.get("to_port"),
+                    }
+                    for item in graph.get("connections", [])
+                    if isinstance(item, Mapping)
+                ]
+                graph.pop("connections", None)
+            graph.setdefault("schema", VisualGraph.SCHEMA)
+            graph.setdefault("metadata", {})
+            result.append(VisualGraph.from_dict(graph).to_dict())
+        ids = [str(item["id"]) for item in result]
+        if len(ids) != len(set(ids)):
+            raise ValueError("project contains duplicate visual graph ids")
+        return sorted(result, key=lambda item: str(item["id"]))
+
+    def graph_binding_ids(
+        self,
+        selection: SelectionRef | None | object = _CURRENT_GRAPH_SELECTION,
+    ) -> tuple[str, ...]:
+        """Return exact graph ids owned by an object or selected World Logic."""
+
+        context_selection = self.selection if selection is _CURRENT_GRAPH_SELECTION else selection
+        if context_selection is None:
+            return ()
+        if not isinstance(context_selection, SelectionRef):
+            raise TypeError("Logic graph selection context must be a SelectionRef or None.")
+        if context_selection.kind == "world_graph":
+            return (context_selection.object_id,)
+        selected = self.entity(context_selection)
+        if not isinstance(selected, (EntitySpec, Node3DRecord)):
+            return ()
+        return visual_graph_binding_ids(
+            selected.metadata.get(BINDING_KEY),
+            f"{context_selection.kind} {selected.id} Logic Blocks",
+        )
+
+    def collision_free_graph_id(self, label: str, scene_id: str | None = None) -> str:
+        """Make a readable graph id unique inside the active graph store."""
+
+        base = self._friendly_id_base(f"{label}_logic", "object_logic")
+        try:
+            used = {str(item["id"]) for item in self._raw_graph_values(scene_id)}
+        except (TypeError, ValueError):
+            used = set()
+        if base not in used:
+            return base
+        suffix = 2
+        while f"{base}_{suffix}" in used:
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def graph_authoring_context(
+        self, active_graph_id: str | None = None
+    ) -> GraphAuthoringContext:
+        """Resolve the visible graph without borrowing another object's logic."""
+
+        selection = self.selection
+        scene_id = self._graph_scene_id(selection)
+        collection_problem: str | None = None
+        try:
+            graphs = self._raw_graph_values(scene_id)
+        except (TypeError, ValueError) as exc:
+            graphs = []
+            collection_problem = f"Saved Logic Blocks need repair: {exc}"
+        graph_by_id = {str(item["id"]): item for item in graphs}
+
+        binding_problem: str | None = None
+        if selection is not None and selection.kind == "world_graph":
+            bound_ids = (selection.object_id,)
+            owner_label = "World Logic"
+        elif selection is not None and selection.kind in {"entity", "node"}:
+            try:
+                bound_ids = self.graph_binding_ids(selection)
+            except (TypeError, ValueError) as exc:
+                bound_ids = ()
+                binding_problem = f"This object's Logic Blocks binding needs repair: {exc}"
+            owner_label = f"Logic for {self._friendly_graph_name(selection.object_id)}"
+        else:
+            bound_ids = tuple(graph_by_id)
+            owner_label = "Project Logic"
+
+        if active_graph_id in bound_ids:
+            graph_id = str(active_graph_id)
+        elif bound_ids:
+            graph_id = bound_ids[0]
+        elif selection is not None and selection.kind in {"entity", "node"}:
+            graph_id = self.collision_free_graph_id(selection.object_id, scene_id)
+        else:
+            base = self.current_scene_id or getattr(self.project, "id", "scene")
+            graph_id = self.collision_free_graph_id(str(base), scene_id)
+
+        persisted = graph_id in graph_by_id
+        if persisted:
+            graph = copy.deepcopy(graph_by_id[graph_id])
+        else:
+            title = (
+                f"{self._friendly_graph_name(selection.object_id)} Logic"
+                if selection is not None and selection.kind in {"entity", "node"}
+                else self._friendly_graph_name(graph_id)
+            )
+            graph = VisualGraph(id=graph_id, metadata={"title": title}).to_dict()
+
+        def graph_label(value: str) -> str:
+            saved = graph_by_id.get(value)
+            if saved is not None:
+                metadata = saved.get("metadata", {})
+                if isinstance(metadata, Mapping):
+                    title = str(metadata.get("title", "")).strip()
+                    if title:
+                        return title
+            return self._friendly_graph_name(value)
+
+        choices = tuple((value, graph_label(value)) for value in bound_ids)
+        records = self.scene_objects(scene_id)
+        entity_choices = tuple(
+            (str(record.id), self._friendly_graph_name(str(record.id)))
+            for record in records
+        )
+        owner_id = (
+            selection.object_id
+            if selection is not None and selection.kind in {"entity", "node"}
+            else None
+        )
+        default_origin_id: str | None = None
+        project = self.project
+        if isinstance(project, (GameProject, Mobile3DProject)):
+            default_origin_id = next(
+                (
+                    str(record.id)
+                    for record in records
+                    if "player" in getattr(record, "tags", ())
+                ),
+                None,
+            )
+        if default_origin_id is None and entity_choices:
+            default_origin_id = entity_choices[0][0]
+        creation_problem = collection_problem or binding_problem
+        selected = self.entity(selection) if selection is not None else None
+        if (
+            creation_problem is None
+            and not persisted
+            and isinstance(selected, Node3DRecord)
+            and selected.metadata.get(SCATTER_METADATA_KEY) is not None
+        ):
+            creation_problem = (
+                f"{self._friendly_graph_name(selected.id)} uses Populate Area. "
+                "Turn Populate Area off before attaching Logic Blocks."
+            )
+        return GraphAuthoringContext(
+            graph=graph,
+            choices=choices,
+            active_graph_id=graph_id,
+            persisted=persisted,
+            owner_label=owner_label,
+            owner_id=owner_id,
+            entity_choices=entity_choices,
+            default_origin_id=default_origin_id,
+            creation_problem=creation_problem,
+        )
+
+    def graph_data(self, active_graph_id: str | None = None) -> dict[str, Any]:
+        """Return the exact current graph, including an unsaved blank context."""
+
+        return copy.deepcopy(self.graph_authoring_context(active_graph_id).graph)
+
+    def graph_storage_snapshot(
+        self, selection: SelectionRef | None
+    ) -> GraphStorageSnapshot:
+        """Capture the exact graph container and all potential owner metadata."""
+
+        if isinstance(self.project, GameProject):
+            scene_id = self._graph_scene_id(selection)
+            scene = self.scene(scene_id)
+            if scene is None:
+                raise ValueError("Choose a 2D scene before editing Logic Blocks.")
+            return GraphStorageSnapshot(
+                "2d",
+                scene.id,
+                copy.deepcopy(dict(scene.rules)),
+                tuple(
+                    (entity.id, copy.deepcopy(dict(entity.metadata)))
+                    for entity in scene.entities
+                ),
+            )
+        if isinstance(self.project, Mobile3DProject):
+            return GraphStorageSnapshot(
+                "3d",
+                None,
+                copy.deepcopy(dict(self.project.metadata)),
+                tuple(
+                    (node.id, copy.deepcopy(dict(node.metadata)))
+                    for node in self.project.nodes
+                ),
+            )
+        raise RuntimeError("Open a project before editing Logic Blocks.")
+
+    def restore_graph_storage(
+        self,
+        snapshot: GraphStorageSnapshot,
+        *,
+        bindings_changed: bool = False,
+    ) -> None:
+        """Restore one exact graph/binding snapshot for Undo or Redo."""
+
+        metadata = {object_id: value for object_id, value in snapshot.object_metadata}
+        if snapshot.kind == "2d" and isinstance(self.project, GameProject):
+            scene = self.scene(snapshot.scene_id)
+            if scene is None or set(metadata) != {entity.id for entity in scene.entities}:
+                raise ValueError("The scene changed before its Logic Blocks could be restored.")
+            entities = tuple(
+                replace(entity, metadata=copy.deepcopy(metadata[entity.id]))
+                for entity in scene.entities
+            )
+            self.project.scenes[scene.id] = replace(
+                scene,
+                rules=copy.deepcopy(snapshot.container),
+                entities=entities,
+            )
+        elif snapshot.kind == "3d" and isinstance(self.project, Mobile3DProject):
+            if set(metadata) != {node.id for node in self.project.nodes}:
+                raise ValueError("The scene changed before its Logic Blocks could be restored.")
+            self.project.metadata = copy.deepcopy(snapshot.container)
+            self.project.nodes = tuple(
+                replace(node, metadata=copy.deepcopy(metadata[node.id]))
+                for node in self.project.nodes
+            )
+        else:
+            raise ValueError("That Logic Blocks snapshot belongs to another project type.")
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.graphChanged.emit()
+        if bindings_changed:
+            self.structureChanged.emit()
+
+    def set_graph_data(
+        self,
+        graph: Mapping[str, Any],
+        selection: SelectionRef | None | object = _CURRENT_GRAPH_SELECTION,
+    ) -> None:
+        context_selection = (
+            self.selection
+            if selection is _CURRENT_GRAPH_SELECTION
+            else selection
+        )
+        if context_selection is not None and not isinstance(
+            context_selection, SelectionRef
+        ):
+            raise TypeError("Logic graph selection context must be a SelectionRef or None.")
         payload = VisualGraph.from_dict(graph).to_dict()
         graph_id = str(payload["id"])
+        binding_changed = False
+
+        def with_binding(raw: Any, label: str) -> tuple[Any, bool]:
+            bindings = visual_graph_binding_ids(raw, label)
+            if graph_id in bindings:
+                return copy.deepcopy(raw), False
+            if not bindings:
+                return graph_id, True
+            return [*bindings, graph_id], True
+
         if isinstance(self.project, GameProject):
-            scene = self.scene()
+            scene_id = self._graph_scene_id(context_selection)
+            scene = self.scene(scene_id)
             if scene is None:
                 return
             rules = copy.deepcopy(dict(scene.rules))
-            existing_graph_ids = {
-                str(item.get("id")) for item in rules.get(GRAPHS_KEY, [])
-                if isinstance(item, Mapping) and item.get("id") is not None
-            }
-            should_bind = graph_id not in existing_graph_ids
-            graphs: list[dict[str, Any]] = []
-            replaced = False
-            for item in rules.get(GRAPHS_KEY, []):
-                if not isinstance(item, Mapping):
-                    continue
-                if item.get("id") == graph_id:
-                    if not replaced:
-                        graphs.append(payload)
-                        replaced = True
-                    continue
-                graphs.append(copy.deepcopy(dict(item)))
-            if not replaced:
+            stored_graphs = self._raw_graph_values(scene.id)
+            existing_graph_ids = {str(item["id"]) for item in stored_graphs}
+            graphs = [
+                payload if str(item["id"]) == graph_id else copy.deepcopy(item)
+                for item in stored_graphs
+            ]
+            if graph_id not in existing_graph_ids:
                 graphs.append(payload)
-            rules[GRAPHS_KEY] = graphs
+            rules[GRAPHS_KEY] = sorted(graphs, key=lambda item: str(item["id"]))
             rules.pop(BINDING_KEY, None)
-            binding_id = None
-            if should_bind and self.selection is not None and self.selection.scene_id in (None, scene.id):
-                binding_id = self.selection.object_id
-            if should_bind and binding_id is None:
+            binding_id: str | None = None
+            if (
+                context_selection is not None
+                and context_selection.kind == "entity"
+                and context_selection.scene_id in (None, scene.id)
+            ):
+                binding_id = context_selection.object_id
+            if (
+                graph_id not in existing_graph_ids
+                and binding_id is None
+                and not (
+                    context_selection is not None
+                    and context_selection.kind == "world_graph"
+                )
+            ):
                 wanted = str(scene.rules.get("player_id", ""))
                 binding_id = wanted if any(item.id == wanted for item in scene.entities) else None
-            if should_bind and binding_id is None:
+            if (
+                graph_id not in existing_graph_ids
+                and binding_id is None
+                and not (
+                    context_selection is not None
+                    and context_selection.kind == "world_graph"
+                )
+            ):
                 binding_id = next((item.id for item in scene.entities if "transform" in item.components), None)
             entities: list[EntitySpec] = []
             for entity in scene.entities:
                 if entity.id == binding_id:
                     metadata = copy.deepcopy(dict(entity.metadata))
-                    metadata[BINDING_KEY] = graph_id
-                    entity = replace(entity, metadata=metadata)
+                    binding, changed = with_binding(
+                        metadata.get(BINDING_KEY),
+                        f"entity {entity.id} Logic Blocks",
+                    )
+                    if changed:
+                        metadata[BINDING_KEY] = binding
+                        entity = replace(entity, metadata=metadata)
+                        binding_changed = True
                 entities.append(entity)
             self.project.scenes[scene.id] = replace(scene, rules=rules, entities=tuple(entities))
         elif isinstance(self.project, Mobile3DProject):
             metadata = copy.deepcopy(self.project.metadata)
-            existing_graph_ids = {
-                str(item.get("id")) for item in metadata.get(GRAPHS_KEY, [])
-                if isinstance(item, Mapping) and item.get("id") is not None
-            }
-            should_bind = graph_id not in existing_graph_ids
-            graphs = []
-            replaced = False
-            for item in metadata.get(GRAPHS_KEY, []):
-                if not isinstance(item, Mapping):
-                    continue
-                if item.get("id") == graph_id:
-                    if not replaced:
-                        graphs.append(payload)
-                        replaced = True
-                    continue
-                graphs.append(copy.deepcopy(dict(item)))
-            if not replaced:
+            stored_graphs = self._raw_graph_values()
+            existing_graph_ids = {str(item["id"]) for item in stored_graphs}
+            graphs = [
+                payload if str(item["id"]) == graph_id else copy.deepcopy(item)
+                for item in stored_graphs
+            ]
+            if graph_id not in existing_graph_ids:
                 graphs.append(payload)
-            metadata[GRAPHS_KEY] = graphs
+            metadata[GRAPHS_KEY] = sorted(graphs, key=lambda item: str(item["id"]))
             metadata.pop(BINDING_KEY, None)
-            self.project.metadata = metadata
-            binding_id = self.selection.object_id if should_bind and self.selection is not None else None
-            if should_bind and binding_id is None:
+            binding_id = (
+                context_selection.object_id
+                if context_selection is not None
+                and context_selection.kind == "node"
+                else None
+            )
+            world_selection = bool(
+                context_selection is not None
+                and context_selection.kind == "world_graph"
+            )
+            if graph_id not in existing_graph_ids and binding_id is None and not world_selection:
                 binding_id = next((node.id for node in self.project.nodes if "player" in node.tags), None)
-            if should_bind and binding_id is None and self.project.nodes:
+            if (
+                graph_id not in existing_graph_ids
+                and binding_id is None
+                and self.project.nodes
+                and not world_selection
+            ):
                 binding_id = self.project.nodes[0].id
             nodes: list[Node3DRecord] = []
             for node in self.project.nodes:
                 if node.id == binding_id:
                     node_metadata = copy.deepcopy(node.metadata)
-                    node_metadata[BINDING_KEY] = graph_id
-                    node = replace(node, metadata=node_metadata)
+                    binding, changed = with_binding(
+                        node_metadata.get(BINDING_KEY),
+                        f"node {node.id} Logic Blocks",
+                    )
+                    if changed:
+                        if node_metadata.get(SCATTER_METADATA_KEY) is not None:
+                            raise ValueError(
+                                f"{self._friendly_graph_name(node.id)} uses Populate Area. "
+                                "Turn Populate Area off before attaching Logic Blocks."
+                            )
+                        node_metadata[BINDING_KEY] = binding
+                        node = replace(node, metadata=node_metadata)
+                        binding_changed = True
                 nodes.append(node)
+            self.project.metadata = metadata
             self.project.nodes = tuple(nodes)
         else:
             return
+        self._runtime_world = None
         self.set_dirty(True)
         self.graphChanged.emit()
+        if binding_changed:
+            self.structureChanged.emit()
+
+    def logic_trace(
+        self, graph_id: str, owner_id: str | None = None
+    ) -> LogicTraceSnapshot | None:
+        """Return the cached Preview trail for one exact graph/owner binding."""
+
+        return self._logic_traces.get((str(graph_id), None if owner_id is None else str(owner_id)))
+
+    def latest_logic_trace(self, graph_id: str | None = None) -> LogicTraceSnapshot | None:
+        """Return the newest useful Preview trail, optionally for one graph."""
+
+        wanted = None if graph_id is None else str(graph_id)
+        candidates = (
+            snapshot
+            for snapshot in self._logic_traces.values()
+            if wanted is None or snapshot.graph_id == wanted
+        )
+        return max(candidates, key=lambda snapshot: snapshot.sequence, default=None)
+
+    def logic_traces(self) -> tuple[LogicTraceSnapshot, ...]:
+        """Return all useful Preview trails from oldest to newest."""
+
+        return tuple(sorted(self._logic_traces.values(), key=lambda snapshot: snapshot.sequence))
+
+    def _clear_logic_traces(self) -> None:
+        """Clear presentation-only trails without touching project dirty state."""
+
+        self._logic_traces.clear()
+        self._logic_trace_results.clear()
+        self._logic_trace_sequence = 0
+        self.logicTraceChanged.emit(None)
+
+    @staticmethod
+    def _useful_logic_result(result: Any) -> bool:
+        """Ignore idle event polling while retaining activated flow and errors."""
+
+        if not bool(getattr(result, "completed", True)):
+            return True
+        return any(
+            str(getattr(entry, "status", "ok")) != "ok"
+            or bool(getattr(entry, "error", None))
+            or bool(getattr(entry, "flow_outputs", ()))
+            for entry in getattr(result, "trace", ())
+        )
+
+    def _store_logic_trace(
+        self,
+        graph_id: str,
+        owner_id: str | None,
+        result: Any,
+        *,
+        result_marker: object | None = None,
+    ) -> bool:
+        """Store and announce one useful result exactly once."""
+
+        if not self._useful_logic_result(result):
+            return False
+        key = (str(graph_id), None if owner_id is None else str(owner_id))
+        marker = result if result_marker is None else result_marker
+        if self._logic_trace_results.get(key) is marker:
+            return False
+        trace = tuple(getattr(result, "trace", ()))
+        if not all(isinstance(entry, TraceEntry) for entry in trace):
+            return False
+        self._logic_trace_sequence += 1
+        snapshot = LogicTraceSnapshot(
+            key[0],
+            key[1],
+            str(getattr(result, "trigger", "preview")),
+            int(getattr(result, "steps", len(trace))),
+            trace,
+            bool(getattr(result, "completed", True)),
+            self._logic_trace_sequence,
+        )
+        self._logic_trace_results[key] = marker
+        self._logic_traces[key] = snapshot
+        self.logicTraceChanged.emit(snapshot)
+        return True
+
+    def _capture_logic_traces(self) -> bool:
+        """Harvest the newest results before a later fixed step can replace them."""
+
+        world = self._runtime_world
+        changed = False
+        for binding in tuple(getattr(world, "visual_graph_bindings", ()) if world is not None else ()):
+            runtime = getattr(binding, "runtime", None)
+            result = getattr(runtime, "last_result", None)
+            graph = getattr(runtime, "graph", None)
+            graph_id = getattr(graph, "id", None)
+            if result is None or not graph_id:
+                continue
+            changed = self._store_logic_trace(
+                str(graph_id), getattr(binding, "entity_id", None), result
+            ) or changed
+        return changed
+
+    def _authored_logic_graphs(self) -> tuple[VisualGraph, ...]:
+        """Return graphs solely to identify a Ready error from a partial build."""
+
+        try:
+            if isinstance(self.project, GameProject):
+                scene = self.scene()
+                return () if scene is None else visual_graphs_from_rules(scene.rules)
+            if isinstance(self.project, Mobile3DProject):
+                return visual_graphs_from_metadata(self.project.metadata)
+        except (TypeError, ValueError):
+            pass
+        return ()
+
+    def _logic_graph_owners(self, graph_id: str) -> tuple[str | None, ...]:
+        """Resolve authored owners for a trace raised before a world was returned."""
+
+        owners: list[str | None] = []
+        if isinstance(self.project, GameProject):
+            scene = self.scene()
+            if scene is None:
+                return ()
+            try:
+                if graph_id in visual_graph_binding_ids(
+                    scene.rules.get("world_graphs"), "world Logic Blocks"
+                ):
+                    owners.append(None)
+                for entity in scene.entities:
+                    if graph_id in visual_graph_binding_ids(
+                        entity.metadata.get(BINDING_KEY), f"{entity.id} Logic Blocks"
+                    ):
+                        owners.append(entity.id)
+            except (TypeError, ValueError):
+                return tuple(owners)
+        elif isinstance(self.project, Mobile3DProject):
+            try:
+                if graph_id in visual_graph_binding_ids(
+                    self.project.metadata.get("world_graphs"), "world Logic Blocks"
+                ):
+                    owners.append(None)
+                for node in self.project.nodes:
+                    if graph_id in visual_graph_binding_ids(
+                        node.metadata.get(BINDING_KEY), f"{node.id} Logic Blocks"
+                    ):
+                        owners.append(node.id)
+            except (TypeError, ValueError):
+                return tuple(owners)
+        return tuple(owners)
+
+    def _capture_unbound_logic_error(
+        self, error: GraphExecutionError, trigger: str
+    ) -> bool:
+        """Keep a Ready trace even if project instantiation never returned a world."""
+
+        trace = tuple(error.trace)
+        if not trace:
+            return False
+        traced_nodes = {entry.node_id for entry in trace}
+        candidates = [
+            graph
+            for graph in self._authored_logic_graphs()
+            if traced_nodes.issubset({node.id for node in graph.nodes})
+        ]
+        if not candidates:
+            return False
+        current_id = str(self.graph_data().get("id", ""))
+        graph = next((item for item in candidates if item.id == current_id), candidates[0])
+        owners = self._logic_graph_owners(graph.id)
+        owner: str | None = None
+        traced_owner = next(
+            (
+                str(value)
+                for entry in trace
+                for values in (entry.outputs, entry.inputs)
+                if (value := values.get("entity")) not in (None, "")
+            ),
+            None,
+        )
+        if traced_owner in owners:
+            owner = traced_owner
+        elif self.selection is not None and self.selection.object_id in owners:
+            owner = self.selection.object_id
+        elif len(owners) == 1:
+            owner = owners[0]
+
+        class _IncompleteResult:
+            completed = False
+
+            def __init__(self) -> None:
+                self.trigger = trigger
+                self.trace = trace
+                self.steps = max((entry.step for entry in trace), default=0)
+
+        return self._store_logic_trace(
+            graph.id, owner, _IncompleteResult(), result_marker=error
+        )
 
     def begin_play(self) -> None:
+        self._clear_logic_traces()
         self.play_warnings = []
-        if isinstance(self.project, GameProject):
-            self._runtime_world = self.project.instantiate_world(self.current_scene_id)
-        elif isinstance(self.project, Mobile3DProject):
-            self._runtime_world = self.project.instantiate_world()
-        else:
-            raise RuntimeError("Open a project before pressing Play.")
-        self._previous_input = None
+        self._runtime_world = None
+        try:
+            if isinstance(self.project, GameProject):
+                self._runtime_world = self.project.instantiate_world(self.current_scene_id)
+            elif isinstance(self.project, Mobile3DProject):
+                self._runtime_world = self.project.instantiate_world()
+            else:
+                raise RuntimeError("Open a project before pressing Play.")
+            self._previous_input = None
+        except GraphExecutionError as exc:
+            self._capture_unbound_logic_error(exc, "ready")
+            raise
+        finally:
+            self._capture_logic_traces()
 
     def stop_play(self) -> None:
         self._runtime_world = None
@@ -1247,56 +1966,62 @@ class EditorDocument(QObject):
 
         if self._runtime_world is None:
             return {}, ()
-        left = "left" in pressed_keys or "a" in pressed_keys
-        right = "right" in pressed_keys or "d" in pressed_keys
-        up = "up" in pressed_keys or "w" in pressed_keys
-        down = "down" in pressed_keys or "s" in pressed_keys
-        if isinstance(self.project, GameProject):
-            values = {
-                "move_x": float(right) - float(left),
-                "move_y": float(down) - float(up),
-                "dash": float("space" in pressed_keys),
-                "jump": float("space" in pressed_keys),
-                "action": float("enter" in pressed_keys),
+        try:
+            left = "left" in pressed_keys or "a" in pressed_keys
+            right = "right" in pressed_keys or "d" in pressed_keys
+            up = "up" in pressed_keys or "w" in pressed_keys
+            down = "down" in pressed_keys or "s" in pressed_keys
+            if isinstance(self.project, GameProject):
+                values = {
+                    "move_x": float(right) - float(left),
+                    "move_y": float(down) - float(up),
+                    "dash": float("space" in pressed_keys),
+                    "jump": float("space" in pressed_keys),
+                    "action": float("enter" in pressed_keys),
+                }
+                frame = self.project.input_map.frame_from_actions(values, self._previous_input)
+                self._previous_input = frame
+                events = self._runtime_world.step(frame)
+                state: dict[str, dict[str, Any]] = {}
+                for entity_id, entity in self._runtime_world.entities.items():
+                    transform = entity.components.get("transform")
+                    if isinstance(transform, Transform2D) and entity.active:
+                        state[entity_id] = {
+                            "position": transform.position,
+                            "rotation": transform.rotation,
+                            "scale": transform.scale,
+                        }
+                state["__world__"] = copy.deepcopy(self._runtime_world.state)
+                return state, events
+            frame3d = InputFrame3D(
+                float(right) - float(left),
+                float(down) - float(up),
+                jump=bool({"space", "j"} & pressed_keys),
+                action=bool({"space", "enter", "shift"} & pressed_keys),
+            )
+            events = self._runtime_world.step(frame3d)
+            state = {
+                entity_id: {
+                    "translation": entity.position,
+                    "rotation": entity.rotation,
+                    "scale": entity.scale,
+                }
+                for entity_id, entity in self._runtime_world.entities.items()
+                if entity.alive
             }
-            frame = self.project.input_map.frame_from_actions(values, self._previous_input)
-            self._previous_input = frame
-            events = self._runtime_world.step(frame)
-            state: dict[str, dict[str, Any]] = {}
-            for entity_id, entity in self._runtime_world.entities.items():
-                transform = entity.components.get("transform")
-                if isinstance(transform, Transform2D) and entity.active:
-                    state[entity_id] = {
-                        "position": transform.position,
-                        "rotation": transform.rotation,
-                        "scale": transform.scale,
-                    }
             state["__world__"] = copy.deepcopy(self._runtime_world.state)
             return state, events
-        frame3d = InputFrame3D(
-            float(right) - float(left),
-            float(down) - float(up),
-            jump=bool({"space", "j"} & pressed_keys),
-            action=bool({"space", "enter", "shift"} & pressed_keys),
-        )
-        events = self._runtime_world.step(frame3d)
-        state = {
-            entity_id: {
-                "translation": entity.position,
-                "rotation": entity.rotation,
-                "scale": entity.scale,
-            }
-            for entity_id, entity in self._runtime_world.entities.items()
-            if entity.alive
-        }
-        state["__world__"] = copy.deepcopy(self._runtime_world.state)
-        return state, events
+        finally:
+            # Trigger graphs run after pre-physics and are replaced by the next
+            # fixed-step poll, so the editor must harvest them before returning.
+            self._capture_logic_traces()
 
 
 __all__ = [
     "BINDING_KEY",
     "EditorDocument",
     "GRAPHS_KEY",
+    "LogicTraceSnapshot",
     "SelectionRef",
     "euler_degrees_to_quaternion",
     "quaternion_to_euler_degrees",

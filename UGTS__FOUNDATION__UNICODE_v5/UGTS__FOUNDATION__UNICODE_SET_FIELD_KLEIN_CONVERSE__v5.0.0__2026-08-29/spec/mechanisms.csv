@@ -1,0 +1,65 @@
+id,legacy_id,domain,name,definition,provenance,validation
+USF001,M886,release,Release identity,Component-scoped major release identity with legacy UGTS-KC 5.0 alias.,engineering-derived,implemented-and-tested
+USF002,M887,source,Source register,Content-hashed source and parent register without raw-source redistribution.,engineering-derived,implemented-and-tested
+USF003,M888,referential,OperatorCell,"One content-addressed record co-addresses literal, glyph, semantics and field action.",engineering-derived,implemented-and-tested
+USF004,M889,unicode,Unicode scalar key,Exact Unicode scalar sequence is a canonical cold-atlas lookup key.,engineering-derived,implemented-and-tested
+USF005,M890,unicode,UTF-8 literal key,UTF-8 spelling is recorded and round-tripped without ASCII aliasing.,engineering-derived,implemented-and-tested
+USF006,M891,unicode,NFC normalization profile,NFC is explicit; compatibility normalization is not silently applied.,engineering-derived,implemented-and-tested
+USF007,M892,typing,Typed signature,"Every operator declares domain, codomain, arity and type parameters.",engineering-derived,implemented-and-tested
+USF008,M893,typing,Canonical argument order,One semantic port order is authoritative for each converse family.,engineering-derived,implemented-and-tested
+USF009,M894,typing,Surface argument map,Surface operands map explicitly to canonical semantic ports.,engineering-derived,implemented-and-tested
+USF010,M895,semantics,Semantic evaluator,Literal dispatch selects a bounded typed semantic kernel.,engineering-derived,implemented-and-tested
+USF011,M896,geometry,Canonical glyph SDF,A versioned capsule-union field represents the literal operator shape.,engineering-derived,implemented-and-tested
+USF012,M897,field,Set-field action,Operator records declare predicates or sign-compatible field transforms.,engineering-derived,implemented-and-tested
+USF013,M898,relation,Converse link,Direct and converse cells reference each other by stable operator ID.,engineering-derived,implemented-and-tested
+USF014,M899,integrity,Operator content hash,Every cell carries a canonical SHA-256 content address.,engineering-derived,implemented-and-tested
+USF015,M900,provenance,Provenance class,"Source motif, engineering normalization and measured evidence stay distinct.",engineering-derived,implemented-and-tested
+USF016,M901,exactness,Capability class,"Exact SDF, metric field, bound, residual, membership field and oracle remain distinct.",engineering-derived,implemented-and-tested
+USF017,M902,field,Signed set field,"phi_A = d(x,A) - d(x,X\A) under a declared metric profile.",engineering-derived,implemented-and-tested
+USF018,M903,field,Characteristic fallback,Finite or non-metric sets can use a signed membership field.,engineering-derived,implemented-and-tested
+USF019,M904,relation,Membership predicate,x in A iff phi_A(x) <= 0 under the selected boundary policy.,engineering-derived,implemented-and-tested
+USF020,M905,relation,Nonmembership predicate,x notin A is the typed negation of membership.,engineering-derived,implemented-and-tested
+USF021,M906,relation,Subset predicate,A subseteq B is a quantified emptiness claim over A\B.,engineering-derived,implemented-and-tested
+USF022,M907,relation,Proper subset predicate,Proper inclusion adds non-equality to subset.,engineering-derived,implemented-and-tested
+USF023,M908,relation,Set equality,A=B is mutual inclusion under a common universe/profile.,engineering-derived,implemented-and-tested
+USF024,M909,relation,Empty-set predicate,Emptiness is exact only when the domain proof is complete.,engineering-derived,implemented-and-tested
+USF025,M910,field,Union field,"min(phi_A,phi_B) preserves the union sign.",engineering-derived,implemented-and-tested
+USF026,M911,field,Intersection field,"max(phi_A,phi_B) preserves the intersection sign.",engineering-derived,implemented-and-tested
+USF027,M912,field,Complement field,-phi_A reverses inside and outside.,engineering-derived,implemented-and-tested
+USF028,M913,field,Difference field,"max(phi_A,-phi_B) preserves the sign of A\B.",engineering-derived,implemented-and-tested
+USF029,M914,field,Symmetric-difference field,A sign-correct max/min formula represents A triangle B.,engineering-derived,implemented-and-tested
+USF030,M915,exactness,Field capability downgrade,Composed fields never inherit exact-distance status without proof.,engineering-derived,implemented-and-tested
+USF031,M916,proof,Finite-universe proof,Exhaustive finite checks may issue exact relation certificates.,engineering-derived,implemented-and-tested
+USF032,M917,proof,Interval/analytic proof,"Continuous global claims require analytic, interval or certified-cover evidence.",engineering-derived,implemented-and-tested
+USF033,M918,proof,Sample-only nonproof,"A sampled LUT result is bounded evidence, not universal inclusion proof.",engineering-derived,implemented-and-tested
+USF034,M919,topology,Klein-converse transform,"One transform reflects chart, swaps ports and toggles converse state.",engineering-derived,implemented-and-tested
+USF035,M920,topology,Operator converse,U maps to U-smile while preserving truth after operand exchange.,engineering-derived,implemented-and-tested
+USF036,M921,topology,Operand swap,Typed endpoints reverse rather than being reinterpreted in place.,engineering-derived,implemented-and-tested
+USF037,M922,geometry,Glyph reflection,Canonical converse glyph is the x-reflection of the direct glyph.,engineering-derived,implemented-and-tested
+USF038,M923,topology,Angular reflection,theta maps to pi-theta on the reflective profile.,engineering-derived,implemented-and-tested
+USF039,M924,topology,Orientation selector,kappa is a semantic/topological selector and not an integrity bit.,engineering-derived,implemented-and-tested
+USF040,M925,topology,Involution law,Applying the Klein-converse transform twice returns the original state.,engineering-derived,implemented-and-tested
+USF041,M926,topology,Reflective quotient,Boundary gluing declares the actual orientation-reversing quotient.,engineering-derived,implemented-and-tested
+USF042,M927,topology,Half-turn distinction,A pi rotation remains distinct from a reflective Klein gluing.,engineering-derived,implemented-and-tested
+USF043,M928,atlas,Cold Unicode atlas,The full literal record remains content-addressed outside hot SIMD state.,engineering-derived,implemented-and-tested
+USF044,M929,atlas,Hot 16-slot codebook,A batch-local codebook maps four-bit slots to exact atlas cells.,engineering-derived,implemented-and-tested
+USF045,M930,atlas,Reserved-slot rejection,Unassigned local codes reject rather than aliasing silently.,engineering-derived,implemented-and-tested
+USF046,M931,integrity,Codebook content hash,Hot mappings are bound to the exact cold atlas.,engineering-derived,implemented-and-tested
+USF047,M932,packing,Packed Set-Field Node 32,A corrected 32-bit execution record carries local deltas and flags.,engineering-derived,implemented-and-tested
+USF048,M933,integrity,Integrity parity,Bit 31 checks payload parity and remains separate from kappa.,engineering-derived,implemented-and-tested
+USF049,M934,packing,Family/kappa extraction,operator_id=(family<<1)|kappa enables converse-pair locality.,engineering-derived,implemented-and-tested
+USF050,M935,packing,Signed log-radius delta,An explicit int8 delta requires a stream scale/bias contract.,engineering-derived,implemented-and-tested
+USF051,M936,packing,Cyclic angle delta,An 8-bit angular delta has a declared 256-bin period.,engineering-derived,implemented-and-tested
+USF052,M937,grammar,Grammar path fragment,"Eight bits represent a bounded branch fragment, not an unbounded tree.",engineering-derived,implemented-and-tested
+USF053,M938,packing,Local field flags,Two bits carry profile-defined local status with declared meaning.,engineering-derived,implemented-and-tested
+USF054,M939,packing,Active bit,Bit zero is decoded and tested rather than silently dropped.,engineering-derived,implemented-and-tested
+USF055,M940,stream,Stream header,"Atlas, codebook, chart, quantization and error contracts travel with nodes.",engineering-derived,implemented-and-tested
+USF056,M941,integrity,Block CRC,Stream-level CRC supplements per-node parity and content hashes.,engineering-derived,implemented-and-tested
+USF057,M942,runtime,Scalar oracle,Dependency-free scalar decoding is the conformance authority.,engineering-derived,implemented-and-tested
+USF058,M943,simd,Branchless mask expansion,Boolean selectors expand to full-lane masks before blending.,engineering-derived,implemented-and-tested
+USF059,M944,simd,AVX2 profile,Eight-lane extraction is specified behind the scalar oracle.,engineering-derived,specified-contract
+USF060,M945,simd,NEON profile,Four-lane ARM decoding is a specified backend target.,engineering-derived,specified-contract
+USF061,M946,quantization,Quantization certificate,Angular/radial errors are calculated from the declared profile.,engineering-derived,implemented-and-tested
+USF062,M947,guard,Event-margin guard,Packed evaluation is accepted only below the relevant event margin.,engineering-derived,implemented-and-tested
+USF063,M948,authority,UGTS authority handoff,"Pure operator evaluation cannot bypass support, compatibility and commit.",engineering-derived,implemented-and-tested
+USF064,M949,validation,Validation and kill criteria,"Claims fail closed on hash, type, parity, exactness or evidence violations.",engineering-derived,implemented-and-tested

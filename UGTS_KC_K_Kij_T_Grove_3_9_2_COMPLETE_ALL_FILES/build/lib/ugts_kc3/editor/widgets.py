@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from PySide6.QtCore import QSignalBlocker, Qt, QUrl, Signal
 from PySide6.QtGui import QColor, QDesktopServices
@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QPushButton,
     QScrollArea,
+    QSpinBox,
     QStackedWidget,
     QTabWidget,
     QTreeWidget,
@@ -61,6 +62,7 @@ class InspectorPanel(QWidget):
     resourceEdited = Signal(str, str)
     movementPatternEdited = Signal(object)
     triggerAreaEdited = Signal(object)
+    populationEdited = Signal(object)
     messageRequested = Signal(str)
 
     def __init__(self, parent=None) -> None:
@@ -73,6 +75,9 @@ class InspectorPanel(QWidget):
         self._movement_display_values: dict[str, float] = {}
         self._trigger_values: dict[str, float] = {}
         self._trigger_display_values: dict[str, float] = {}
+        self._population_values: dict[str, float] = {}
+        self._population_display_values: dict[str, float] = {}
+        self._population_can_enable = False
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         self.scroll_area = QScrollArea()
@@ -258,6 +263,75 @@ class InspectorPanel(QWidget):
         root.addWidget(self.movement_box)
         self.movement_box.hide()
 
+        self.population_box = QGroupBox("Populate Area")
+        population_layout = QVBoxLayout(self.population_box)
+        population_layout.setContentsMargins(8, 12, 8, 8)
+        population_layout.setSpacing(6)
+        self.population_explanation = QLabel()
+        self.population_explanation.setObjectName("MutedLabel")
+        self.population_explanation.setWordWrap(True)
+        population_layout.addWidget(self.population_explanation)
+        self.population_enabled = QCheckBox("Populate this object")
+        self.population_enabled.setObjectName("PopulationEnabledCheck")
+        self.population_enabled.setToolTip(
+            "Make deterministic static display copies without duplicating saved objects"
+        )
+        population_layout.addWidget(self.population_enabled)
+        self.population_form = QFormLayout()
+        self.population_form.setFieldGrowthPolicy(
+            QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow
+        )
+        self.population_count = QSpinBox()
+        self.population_count.setObjectName("PopulationCount")
+        self.population_count.setRange(2, 256)
+        self.population_count.setKeyboardTracking(False)
+        self.population_count.setToolTip("Copy 1 is the object you placed; the rest appear when shown")
+        self.population_seed = QDoubleSpinBox()
+        self.population_seed.setObjectName("PopulationSeed")
+        self.population_seed.setDecimals(0)
+        self.population_seed.setRange(0, 4_294_967_295)
+        self.population_seed.setSingleStep(1)
+        self.population_seed.setKeyboardTracking(False)
+        self.population_seed.setToolTip("The same world number always makes the same layout")
+        self.population_size_x = _spin(0.5)
+        self.population_size_y = _spin(0.5)
+        self.population_size_z = _spin(0.5)
+        for name, widget in (
+            ("PopulationWidth", self.population_size_x),
+            ("PopulationHeight", self.population_size_y),
+            ("PopulationDepth", self.population_size_z),
+        ):
+            widget.setObjectName(name)
+            widget.setRange(0.0, 100_000.0)
+            widget.setDecimals(2)
+            widget.setSuffix(" units")
+        self.population_scale_min = _spin(0.05)
+        self.population_scale_max = _spin(0.05)
+        for name, widget in (
+            ("PopulationScaleMin", self.population_scale_min),
+            ("PopulationScaleMax", self.population_scale_max),
+        ):
+            widget.setObjectName(name)
+            widget.setRange(0.05, 8.0)
+            widget.setDecimals(2)
+        self.population_random_yaw = QCheckBox("Turn copies randomly")
+        self.population_random_yaw.setObjectName("PopulationRandomYawCheck")
+        self.population_form.addRow("Objects in group", self.population_count)
+        self.population_form.addRow("World number", self.population_seed)
+        self.population_form.addRow("Area width", self.population_size_x)
+        self.population_form.addRow("Area height", self.population_size_y)
+        self.population_form.addRow("Area depth", self.population_size_z)
+        self.population_form.addRow("Smallest size", self.population_scale_min)
+        self.population_form.addRow("Largest size", self.population_scale_max)
+        self.population_form.addRow("", self.population_random_yaw)
+        population_layout.addLayout(self.population_form)
+        self.population_cost = QLabel()
+        self.population_cost.setObjectName("MutedLabel")
+        self.population_cost.setWordWrap(True)
+        population_layout.addWidget(self.population_cost)
+        root.addWidget(self.population_box)
+        self.population_box.hide()
+
         self.quick_info = QLabel()
         self.quick_info.setObjectName("MutedLabel")
         self.quick_info.setWordWrap(True)
@@ -301,6 +375,18 @@ class InspectorPanel(QWidget):
             self.movement_angle,
         ):
             widget.editingFinished.connect(self._emit_movement_pattern)
+        self.population_enabled.toggled.connect(self._population_changed)
+        self.population_random_yaw.toggled.connect(self._population_changed)
+        self.population_count.editingFinished.connect(self._emit_population)
+        for widget in (
+            self.population_seed,
+            self.population_size_x,
+            self.population_size_y,
+            self.population_size_z,
+            self.population_scale_min,
+            self.population_scale_max,
+        ):
+            widget.editingFinished.connect(self._emit_population)
 
     def clear(self) -> None:
         self._selection = None
@@ -311,6 +397,7 @@ class InspectorPanel(QWidget):
         self.appearance_box.hide()
         self.trigger_box.hide()
         self.movement_box.hide()
+        self.population_box.hide()
         self._set_packed_transform_guard(False)
         self.vector_asset_combo.clear()
         self.mesh_combo.clear()
@@ -322,6 +409,10 @@ class InspectorPanel(QWidget):
         self.movement_cost.clear()
         self._movement_values.clear()
         self._movement_display_values.clear()
+        self._population_values.clear()
+        self._population_display_values.clear()
+        self.population_explanation.clear()
+        self.population_cost.clear()
         self.quick_info.clear()
         self.details.clear()
 
@@ -331,6 +422,18 @@ class InspectorPanel(QWidget):
             self._selection = selection
             if selection is None:
                 self.clear()
+                return
+            if selection.kind == "world_graph":
+                self.clear()
+                self._selection = selection
+                self.title.setText("World Logic")
+                self.subtitle.setText(
+                    f"{friendly(selection.object_id)} · runs for the whole scene"
+                )
+                self.quick_info.setText(
+                    "Open Logic Blocks to edit this graph. It is not attached to "
+                    "one object, so Preview shows only its whole-scene Logic Trail."
+                )
                 return
             details = document.object_details(selection)
             transform = document.transform(selection)
@@ -343,6 +446,7 @@ class InspectorPanel(QWidget):
             self._set_appearance(document, selected)
             self._set_trigger_area(document.trigger_area_state(selection))
             self._set_movement_pattern(document.movement_pattern_state(selection))
+            self._set_population(document.population_state(selection))
             if tags:
                 self.quick_info.setText("Tags: " + ", ".join(friendly(str(tag)) for tag in tags))
             elif role_names:
@@ -378,6 +482,26 @@ class InspectorPanel(QWidget):
                     widget.setValue(float(value))
         finally:
             self._updating = False
+
+    def preview_3d_translation(
+        self, object_id: str, translation: Sequence[float]
+    ) -> bool:
+        """Show a gizmo drag without emitting or changing the document model."""
+
+        if (
+            self._selection is None
+            or self._selection.object_id != str(object_id)
+            or self._mode != "3d"
+            or len(translation) != 3
+        ):
+            return False
+        self._updating = True
+        try:
+            for widget, value in zip((self.x3, self.y3, self.z3), translation):
+                widget.setValue(float(value))
+        finally:
+            self._updating = False
+        return True
 
     @staticmethod
     def _fill_resource_combo(combo: QComboBox, resource_ids: list[str], current_id: str) -> None:
@@ -696,6 +820,121 @@ class InspectorPanel(QWidget):
             values[key] = value
         self.movementPatternEdited.emit(values)
 
+    def _set_population(self, state: Mapping[str, Any] | None) -> None:
+        self.population_box.hide()
+        self._population_values.clear()
+        self._population_display_values.clear()
+        self._population_can_enable = False
+        if state is None:
+            return
+        self.population_box.show()
+        enabled = bool(state.get("enabled", False))
+        self._population_can_enable = bool(state.get("can_enable", False))
+        self.population_enabled.setChecked(enabled)
+        # A conflicting/old recipe must always remain removable.
+        self.population_enabled.setEnabled(enabled or self._population_can_enable)
+        self._population_values = {
+            "instance_count": float(state.get("instance_count", 8)),
+            "seed": float(state.get("seed", 1)),
+            "size_x": float(state.get("size_x", 8.0)),
+            "size_y": float(state.get("size_y", 0.0)),
+            "size_z": float(state.get("size_z", 8.0)),
+            "scale_min": float(state.get("scale_min", 0.85)),
+            "scale_max": float(state.get("scale_max", 1.15)),
+        }
+        self.population_count.setValue(int(self._population_values["instance_count"]))
+        self.population_seed.setValue(self._population_values["seed"])
+        for key, widget in (
+            ("size_x", self.population_size_x),
+            ("size_y", self.population_size_y),
+            ("size_z", self.population_size_z),
+            ("scale_min", self.population_scale_min),
+            ("scale_max", self.population_scale_max),
+        ):
+            widget.setValue(self._population_values[key])
+        self.population_random_yaw.setChecked(bool(state.get("random_yaw", True)))
+        self._population_display_values = {
+            "instance_count": float(self.population_count.value()),
+            "seed": self.population_seed.value(),
+            "size_x": self.population_size_x.value(),
+            "size_y": self.population_size_y.value(),
+            "size_z": self.population_size_z.value(),
+            "scale_min": self.population_scale_min.value(),
+            "scale_max": self.population_scale_max.value(),
+        }
+        error = str(state.get("error", ""))
+        if error:
+            self.population_explanation.setText(error)
+        elif enabled:
+            count = int(self._population_values["instance_count"])
+            self.population_explanation.setText(
+                f"One saved object becomes {count} static display objects when playing "
+                "or building. Copies share the same shape and material."
+            )
+        else:
+            self.population_explanation.setText(
+                "Turn this on to fill an area with compact, repeatable display copies. "
+                "Use ordinary Duplicate when copies need gameplay or Logic Blocks."
+            )
+        recipe_bytes = int(state.get("recipe_bytes", 36))
+        header_bytes = int(state.get("shared_header_bytes", 24))
+        budget = int(state.get("quality_budget", 0))
+        cost = (
+            f"Compact Android recipe: {recipe_bytes} bytes for this group plus one "
+            f"shared {header_bytes}-byte header; copies are generated at load time."
+        )
+        if bool(state.get("over_start_budget", False)) and budget:
+            cost += f" The starting quality shows a deterministic prefix of up to {budget} objects."
+        self.population_cost.setText(cost)
+        self._refresh_population_controls()
+
+    def _refresh_population_controls(self) -> None:
+        editable = self.population_enabled.isChecked() and self._population_can_enable
+        for widget in (
+            self.population_count,
+            self.population_seed,
+            self.population_size_x,
+            self.population_size_y,
+            self.population_size_z,
+            self.population_scale_min,
+            self.population_scale_max,
+            self.population_random_yaw,
+        ):
+            widget.setEnabled(editable)
+
+    def _population_changed(self, _value: Any = None) -> None:
+        if self._updating or self._selection is None:
+            return
+        self._refresh_population_controls()
+        self._emit_population()
+
+    def _emit_population(self) -> None:
+        if self._updating or self._selection is None:
+            return
+        displayed = {
+            "instance_count": float(self.population_count.value()),
+            "seed": self.population_seed.value(),
+            "size_x": self.population_size_x.value(),
+            "size_y": self.population_size_y.value(),
+            "size_z": self.population_size_z.value(),
+            "scale_min": self.population_scale_min.value(),
+            "scale_max": self.population_scale_max.value(),
+        }
+        values: dict[str, Any] = {
+            "enabled": self.population_enabled.isChecked(),
+            "random_yaw": self.population_random_yaw.isChecked(),
+        }
+        for key, displayed_value in displayed.items():
+            value = (
+                self._population_values.get(key, displayed_value)
+                if displayed_value == self._population_display_values.get(key)
+                else displayed_value
+            )
+            if key in {"instance_count", "seed"}:
+                value = int(value)
+            values[key] = value
+        self.populationEdited.emit(values)
+
     def _emit_resource(self, resource_kind: str, combo: QComboBox) -> None:
         if self._updating or self._selection is None or combo.currentIndex() < 0:
             return
@@ -876,6 +1115,33 @@ class HierarchyPanel(QWidget):
                     item.setData(0, Qt.ItemDataRole.UserRole, SelectionRef("entity", entity.id, scene_id))
                     item.setToolTip(0, f"Project ID: {entity.id}")
                     scene_item.addChild(item)
+                world_graph_ids = document.world_graph_ids(scene_id)
+                if world_graph_ids:
+                    logic_item = QTreeWidgetItem(["World Logic", "Whole Scene"])
+                    logic_item.setExpanded(True)
+                    logic_item.setToolTip(
+                        0,
+                        "Logic Blocks that run for the whole scene instead of one object",
+                    )
+                    scene_item.addChild(logic_item)
+                    for graph_id in world_graph_ids:
+                        item = QTreeWidgetItem(
+                            [
+                                document.graph_title(graph_id, scene_id)
+                                or friendly(graph_id),
+                                "World Logic",
+                            ]
+                        )
+                        item.setData(
+                            0,
+                            Qt.ItemDataRole.UserRole,
+                            SelectionRef("world_graph", graph_id, scene_id),
+                        )
+                        item.setToolTip(
+                            0,
+                            f"Whole-scene Logic Blocks · Project ID: {graph_id}",
+                        )
+                        logic_item.addChild(item)
         else:
             scene_item = QTreeWidgetItem(["Main 3D Scene", "3D Scene"])
             scene_item.setExpanded(True)
@@ -898,6 +1164,29 @@ class HierarchyPanel(QWidget):
                 else:
                     item.setToolTip(0, f"Mesh: {node.mesh_id} · Material: {node.material_id}")
                 scene_item.addChild(item)
+            world_graph_ids = document.world_graph_ids()
+            if world_graph_ids:
+                logic_item = QTreeWidgetItem(["World Logic", "Whole Scene"])
+                logic_item.setExpanded(True)
+                logic_item.setToolTip(
+                    0,
+                    "Logic Blocks that run for the whole scene instead of one object",
+                )
+                scene_item.addChild(logic_item)
+                for graph_id in world_graph_ids:
+                    item = QTreeWidgetItem(
+                        [document.graph_title(graph_id) or friendly(graph_id), "World Logic"]
+                    )
+                    item.setData(
+                        0,
+                        Qt.ItemDataRole.UserRole,
+                        SelectionRef("world_graph", graph_id),
+                    )
+                    item.setToolTip(
+                        0,
+                        f"Whole-scene Logic Blocks · Project ID: {graph_id}",
+                    )
+                    logic_item.addChild(item)
         self.tree.resizeColumnToContents(0)
         del blocker
 
@@ -923,7 +1212,11 @@ class HierarchyPanel(QWidget):
 
     def _update_authoring_buttons(self) -> None:
         can_add = self._has_document and self._authoring_enabled
-        can_edit_selection = can_add and self._selection is not None
+        can_edit_selection = (
+            can_add
+            and self._selection is not None
+            and self._selection.kind in {"entity", "node"}
+        )
         self.add_button.setEnabled(can_add)
         self.add_trigger_button.setEnabled(can_add and self._is_3d_document)
         self.duplicate_button.setEnabled(can_edit_selection)
@@ -931,6 +1224,7 @@ class HierarchyPanel(QWidget):
 
     def _current_changed(self, current: QTreeWidgetItem | None, previous=None) -> None:
         if current is None:
+            self.selectionRequested.emit(None)
             return
         selection = current.data(0, Qt.ItemDataRole.UserRole)
         scene_id = current.data(0, Qt.ItemDataRole.UserRole + 1)
@@ -938,6 +1232,8 @@ class HierarchyPanel(QWidget):
             self.selectionRequested.emit(selection)
         elif scene_id:
             self.sceneRequested.emit(str(scene_id))
+        else:
+            self.selectionRequested.emit(None)
 
     def _filter(self, text: str) -> None:
         query = text.casefold().strip()
@@ -1074,10 +1370,27 @@ class AssetsProjectPanel(QTabWidget):
                         ]
                     )
                 )
+            population_nodes = [
+                node
+                for node in project.nodes
+                if isinstance(node.metadata.get("scatter_population"), Mapping)
+            ]
+            populations = self._category("Populated Areas", len(population_nodes))
+            for node in population_nodes:
+                raw_population = node.metadata.get("scatter_population", {})
+                count = raw_population.get("instance_count", "?")
+                populations.addChild(
+                    QTreeWidgetItem(
+                        [
+                            friendly(node.id),
+                            f"{count} display objects · 36-byte recipe",
+                        ]
+                    )
+                )
             profiles = self._category("Android Devices", len(project.target_profiles))
             for profile in project.target_profiles:
                 profiles.addChild(QTreeWidgetItem([profile.label, f"{profile.target_refresh_hz} Hz target"]))
-            for category in (meshes, materials, triggers, movement, profiles):
+            for category in (meshes, materials, triggers, movement, populations, profiles):
                 self.assets.addTopLevelItem(category)
         try:
             report = document.validate()

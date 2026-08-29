@@ -31,14 +31,18 @@ from ugts_go19.persistent_engine import (
     apply_move_detailed as persistent_apply_move_detailed,
     initial_state as persistent_initial_state,
 )
-from ugts_go19.persistent_history import PersistentHistory, roots_exactly_equal
+from ugts_go19.persistent_history import (
+    HistoryRoot,
+    PersistentHistory,
+    roots_exactly_equal,
+)
 from ugts_go19.rules import Rules
 from ugts_go19.segment_store import DigestCollisionError, ImmutableSegmentStore
 from ugts_go19.state import State
 
 
-EVIDENCE_FORMAT = "UGTS-M2-STORAGE-EVIDENCE-v1"
-GENERATOR = "deterministic-19x19-one-move-storage-restart-v1"
+EVIDENCE_FORMAT = "UGTS-M2-STORAGE-EVIDENCE-v2"
+GENERATOR = "deterministic-19x19-one-move-storage-restart-v2"
 ROOT_STATUS = "UNKNOWN"
 SCOPE = "bounded exact storage and one-transition acceptance only"
 LIMITATIONS = (
@@ -46,7 +50,9 @@ LIMITATIONS = (
     "uses the host Python persistent history and local immutable segment store",
     "hashes are indexes and verification aids; exact bytes establish identity",
     "resident_payload_bytes is a post-spill store counter, not peak RSS or a total-memory bound",
-    "segment sealing may materialize a full fixture segment; mmap handles and metadata are not bounded",
+    "streaming seal avoids a second full segment, but mmap handles, metadata, and restart indexes are not bounded",
+    "the compact forest is one bounded full JSON artifact, not an incremental campaign graph or checkpoint",
+    "the segment store treats forest bytes as opaque; exact semantic validation happens after readback",
     "campaign-scale NVMe behavior, first-publication recovery, and external tip management are out of scope",
     "does not search, prove, disprove, or estimate the canonical 19x19 root",
 )
@@ -62,7 +68,7 @@ CANONICAL_RULES = {
 BOARD_SIZE = 19
 BOARD_BYTES = BOARD_SIZE * BOARD_SIZE
 CENTER_MOVE = 9 * BOARD_SIZE + 9
-PRIMARY_STAGED_MEMORY_LIMIT_BYTES = 20_500
+PRIMARY_STAGED_MEMORY_LIMIT_BYTES = 21_000
 COLLISION_STAGED_MEMORY_LIMIT_BYTES = 400
 COLLISION_DIGEST_NAME = "constant-a5-storage-gate-v1"
 COLLISION_DIGEST_HEX = "a5" * 32
@@ -81,7 +87,13 @@ TOP_LEVEL_KEYS = frozenset(
     }
 )
 CASE_KEYS = frozenset(
-    {"move", "persistent_engine_parity", "persistent_history", "segment_store"}
+    {
+        "move",
+        "persistent_engine_parity",
+        "persistent_history",
+        "persistent_history_forest",
+        "segment_store",
+    }
 )
 HISTORY_KEYS = frozenset(
     {
@@ -98,6 +110,28 @@ HISTORY_KEYS = frozenset(
         "serialized_byte_count",
         "serialized_file_sha256",
         "trusted_root_pin_verifications",
+    }
+)
+FOREST_KEYS = frozenset(
+    {
+        "artifact_sha256",
+        "board_record_count",
+        "canonical_across_fresh_stores",
+        "deduplicated_board_record_count",
+        "deduplicated_node_record_count",
+        "exact_root_roundtrips",
+        "node_record_count",
+        "ordered_member_counts",
+        "ordered_root_sha256s",
+        "root_count",
+        "separate_root_board_record_count",
+        "separate_root_node_record_count",
+        "separate_root_serialized_byte_count",
+        "serialized_byte_count",
+        "serialized_byte_savings",
+        "serialized_file_sha256",
+        "shared_node_identity_count",
+        "trusted_pin_verifications",
     }
 )
 PARITY_KEYS = frozenset(
@@ -122,15 +156,17 @@ STORE_KEYS = frozenset(
         "mapped_segment_count_after_restart",
         "object_count",
         "object_refs",
-        "pinned_history_rehydrate_member_count",
-        "pinned_history_rehydrate_root_sha256",
+        "pinned_forest_artifact_sha256",
+        "pinned_forest_rehydrate_member_counts",
+        "pinned_forest_rehydrate_root_sha256s",
+        "pinned_forest_shared_node_identity_count",
         "resident_payload_bytes_after_restart",
         "resident_payload_bytes_after_spill",
         "segment_sha256s",
         "staged_memory_limit_bytes",
     }
 )
-OBJECT_REF_KEYS = frozenset({"empty_board", "history", "one_move_board"})
+OBJECT_REF_KEYS = frozenset({"empty_board", "history_forest", "one_move_board"})
 COLLISION_KEYS = frozenset(
     {
         "ambiguous_digest_only_read_rejected",
@@ -191,6 +227,16 @@ def _require_sha256_list(value: Any, expected_length: int, label: str) -> list[s
     return result
 
 
+def _require_exact_int_list(
+    value: Any, expected: list[int], label: str
+) -> list[int]:
+    if type(value) is not list or len(value) != len(expected):
+        raise ValueError(f"{label} must contain exactly {len(expected)} integers")
+    for index, (actual, pinned) in enumerate(zip(value, expected, strict=True)):
+        _require_exact_int(actual, pinned, f"{label}[{index}]")
+    return value
+
+
 def _require_true(value: Any, label: str) -> None:
     if value is not True:
         raise ValueError(f"{label} must be boolean true")
@@ -203,13 +249,34 @@ def _assert_runtime_rules() -> Rules:
     return rules
 
 
+def _root_node_identity_set(root: HistoryRoot) -> frozenset[int]:
+    """Return exact in-process node identities reachable from one root."""
+
+    pending = [] if root._node is None else [root._node]
+    identities: set[int] = set()
+    while pending:
+        node = pending.pop()
+        identity = id(node)
+        if identity in identities:
+            continue
+        identities.add(identity)
+        pending.extend(child for _slot, child in getattr(node, "children", ()))
+    return frozenset(identities)
+
+
+def _shared_node_identity_count(first: HistoryRoot, second: HistoryRoot) -> int:
+    return len(_root_node_identity_set(first) & _root_node_identity_set(second))
+
+
 def _exercise_primary_store(
     directory: Path,
     *,
     empty_board: bytes,
     one_move_board: bytes,
-    serialized_history: bytes,
-    trusted_root_sha256: str,
+    serialized_forest: bytes,
+    trusted_artifact_sha256: str,
+    trusted_root_sha256s: tuple[str, str],
+    expected_root_members: tuple[tuple[bytes, ...], tuple[bytes, ...]],
 ) -> dict[str, Any]:
     store = ImmutableSegmentStore(
         directory,
@@ -218,9 +285,9 @@ def _exercise_primary_store(
     )
     empty_ref = store.stage_board(empty_board)
     one_move_ref = store.stage_board(one_move_board)
-    history_ref = store.stage_history(serialized_history)
+    forest_ref = store.stage_history(serialized_forest)
 
-    # The history object fits the explicit bound by itself, but staging it
+    # The forest object fits the explicit bound by itself, but staging it
     # forces the two boards to an immutable first segment.
     auto_snapshot = store.snapshot
     if auto_snapshot is None or auto_snapshot.generation != 1:
@@ -243,18 +310,24 @@ def _exercise_primary_store(
         exact_payloads = (
             restarted.read(empty_ref, expected_payload=empty_board),
             restarted.read(one_move_ref, expected_payload=one_move_board),
-            restarted.read(history_ref, expected_payload=serialized_history),
+            restarted.read(forest_ref, expected_payload=serialized_forest),
         )
-        if exact_payloads != (empty_board, one_move_board, serialized_history):
+        if exact_payloads != (empty_board, one_move_board, serialized_forest):
             raise AssertionError("fresh restart changed exact object bytes")
         rehydrated_history = PersistentHistory(BOARD_SIZE)
-        rehydrated_root = rehydrated_history.deserialize_root(
-            exact_payloads[2], expected_root_sha256=trusted_root_sha256
+        rehydrated_roots = rehydrated_history.deserialize_forest(
+            exact_payloads[2],
+            expected_artifact_sha256=trusted_artifact_sha256,
+            expected_root_sha256s=trusted_root_sha256s,
         )
-        if rehydrated_history.members(rehydrated_root) != tuple(
-            sorted((empty_board, one_move_board))
-        ):
-            raise AssertionError("pinned history rehydrate changed exact members")
+        rehydrated_members = tuple(
+            rehydrated_history.members(root) for root in rehydrated_roots
+        )
+        if rehydrated_members != expected_root_members:
+            raise AssertionError("pinned forest rehydrate changed exact members")
+        shared_node_count = _shared_node_identity_count(*rehydrated_roots)
+        if shared_node_count <= 0:
+            raise AssertionError("pinned forest rehydrate lost immutable sharing")
         if restarted.resident_payload_bytes != 0:
             raise AssertionError("restart retained full payload bytes in host objects")
         result = {
@@ -270,11 +343,17 @@ def _exercise_primary_store(
             "object_count": final_snapshot.object_count,
             "object_refs": {
                 "empty_board": empty_ref.as_dict(),
-                "history": history_ref.as_dict(),
+                "history_forest": forest_ref.as_dict(),
                 "one_move_board": one_move_ref.as_dict(),
             },
-            "pinned_history_rehydrate_member_count": rehydrated_root.count,
-            "pinned_history_rehydrate_root_sha256": rehydrated_root.root_sha256,
+            "pinned_forest_artifact_sha256": trusted_artifact_sha256,
+            "pinned_forest_rehydrate_member_counts": [
+                root.count for root in rehydrated_roots
+            ],
+            "pinned_forest_rehydrate_root_sha256s": [
+                root.root_sha256 for root in rehydrated_roots
+            ],
+            "pinned_forest_shared_node_identity_count": shared_node_count,
             "resident_payload_bytes_after_restart": restarted.resident_payload_bytes,
             "resident_payload_bytes_after_spill": resident_after_spill,
             "segment_sha256s": list(final_snapshot.segment_sha256s),
@@ -379,6 +458,7 @@ def generate_storage_evidence(work_directory: str | Path) -> dict[str, Any]:
     if not all(exact_fields):
         raise AssertionError("persistent transition differs from the flat exact oracle")
 
+    initial_serialized = history.serialize_root(persistent_initial.history_root)
     serialized = history.serialize_root(persistent_child.history_root)
     pinned = PersistentHistory(BOARD_SIZE)
     pinned_root = pinned.deserialize_root(
@@ -389,6 +469,31 @@ def generate_storage_evidence(work_directory: str | Path) -> dict[str, Any]:
         history, persistent_child.history_root, pinned, pinned_root
     ):
         raise AssertionError("trusted-pin roundtrip changed exact history members")
+
+    forest_roots = (
+        persistent_initial.history_root,
+        persistent_child.history_root,
+    )
+    serialized_forest = history.serialize_forest(forest_roots)
+    forest_payload = json.loads(serialized_forest.decode("utf-8"))
+    trusted_forest = PersistentHistory(BOARD_SIZE)
+    trusted_forest_roots = trusted_forest.deserialize_forest(
+        serialized_forest,
+        expected_artifact_sha256=forest_payload["artifact_sha256"],
+        expected_root_sha256s=tuple(root.root_sha256 for root in forest_roots),
+    )
+    if not all(
+        roots_exactly_equal(history, source, trusted_forest, loaded)
+        for source, loaded in zip(forest_roots, trusted_forest_roots, strict=True)
+    ):
+        raise AssertionError("trusted forest roundtrip changed exact root members")
+    source_shared_node_count = _shared_node_identity_count(*forest_roots)
+    if (
+        source_shared_node_count <= 0
+        or _shared_node_identity_count(*trusted_forest_roots)
+        != source_shared_node_count
+    ):
+        raise AssertionError("trusted forest roundtrip changed immutable sharing")
 
     reverse_history = PersistentHistory(BOARD_SIZE)
     reverse_root = reverse_history.empty_root
@@ -421,7 +526,68 @@ def generate_storage_evidence(work_directory: str | Path) -> dict[str, Any]:
     if not canonical_across_fresh_stores:
         raise AssertionError("history root depends on allocation or insertion order")
 
+    fresh_forest_history = PersistentHistory(BOARD_SIZE)
+    fresh_forest_initial = fresh_forest_history.insert(
+        fresh_forest_history.empty_root, persistent_initial.board
+    )
+    fresh_forest_child = fresh_forest_history.insert(
+        fresh_forest_history.empty_root, persistent_child.board
+    )
+    fresh_forest_child = fresh_forest_history.insert(
+        fresh_forest_child, persistent_initial.board
+    )
+    forest_canonical_across_fresh_stores = (
+        fresh_forest_history.serialize_forest(
+            (fresh_forest_initial, fresh_forest_child)
+        )
+        == serialized_forest
+    )
+    if not forest_canonical_across_fresh_stores:
+        raise AssertionError("history forest depends on allocation or insertion order")
+
     history_payload = json.loads(serialized.decode("utf-8"))
+    initial_history_payload = json.loads(initial_serialized.decode("utf-8"))
+    separate_board_record_count = (
+        initial_history_payload["board_record_count"]
+        + history_payload["board_record_count"]
+    )
+    separate_node_record_count = (
+        initial_history_payload["node_record_count"]
+        + history_payload["node_record_count"]
+    )
+    separate_serialized_byte_count = len(initial_serialized) + len(serialized)
+    deduplicated_board_record_count = (
+        separate_board_record_count - forest_payload["board_record_count"]
+    )
+    deduplicated_node_record_count = (
+        separate_node_record_count - forest_payload["node_record_count"]
+    )
+    serialized_byte_savings = (
+        separate_serialized_byte_count - len(serialized_forest)
+    )
+    if (
+        deduplicated_board_record_count <= 0
+        or deduplicated_node_record_count != source_shared_node_count
+        or serialized_byte_savings <= 0
+    ):
+        raise AssertionError("bounded forest did not preserve expected compact sharing")
+
+    expected_root_members = tuple(history.members(root) for root in forest_roots)
+    segment_store_result = _exercise_primary_store(
+        work / "primary",
+        empty_board=persistent_initial.board,
+        one_move_board=persistent_child.board,
+        serialized_forest=serialized_forest,
+        trusted_artifact_sha256=forest_payload["artifact_sha256"],
+        trusted_root_sha256s=tuple(root.root_sha256 for root in forest_roots),
+        expected_root_members=expected_root_members,
+    )
+    if (
+        segment_store_result["pinned_forest_shared_node_identity_count"]
+        != source_shared_node_count
+    ):
+        raise AssertionError("segment restart changed compact forest sharing")
+
     result = {
         "case": {
             "move": CENTER_MOVE,
@@ -447,13 +613,35 @@ def generate_storage_evidence(work_directory: str | Path) -> dict[str, Any]:
                 "serialized_file_sha256": _sha256(serialized),
                 "trusted_root_pin_verifications": 2,
             },
-            "segment_store": _exercise_primary_store(
-                work / "primary",
-                empty_board=persistent_initial.board,
-                one_move_board=persistent_child.board,
-                serialized_history=serialized,
-                trusted_root_sha256=persistent_child.history_root.root_sha256,
-            ),
+            "persistent_history_forest": {
+                "artifact_sha256": forest_payload["artifact_sha256"],
+                "board_record_count": forest_payload["board_record_count"],
+                "canonical_across_fresh_stores": (
+                    forest_canonical_across_fresh_stores
+                ),
+                "deduplicated_board_record_count": (
+                    deduplicated_board_record_count
+                ),
+                "deduplicated_node_record_count": deduplicated_node_record_count,
+                "exact_root_roundtrips": 4,
+                "node_record_count": forest_payload["node_record_count"],
+                "ordered_member_counts": [root.count for root in forest_roots],
+                "ordered_root_sha256s": [
+                    root.root_sha256 for root in forest_roots
+                ],
+                "root_count": forest_payload["root_count"],
+                "separate_root_board_record_count": separate_board_record_count,
+                "separate_root_node_record_count": separate_node_record_count,
+                "separate_root_serialized_byte_count": (
+                    separate_serialized_byte_count
+                ),
+                "serialized_byte_count": len(serialized_forest),
+                "serialized_byte_savings": serialized_byte_savings,
+                "serialized_file_sha256": _sha256(serialized_forest),
+                "shared_node_identity_count": source_shared_node_count,
+                "trusted_pin_verifications": 2,
+            },
+            "segment_store": segment_store_result,
         },
         "collision_case": _exercise_collision_store(work / "collision"),
         "evidence_format": EVIDENCE_FORMAT,
@@ -526,6 +714,70 @@ def validate_storage_evidence(payload: Any) -> None:
     if history_hashes["initial_root_sha256"] == history_hashes["one_move_root_sha256"]:
         raise ValueError("initial and one-move history roots must differ")
 
+    forest = _require_keys(
+        case["persistent_history_forest"],
+        FOREST_KEYS,
+        "persistent_history_forest",
+    )
+    exact_forest_counts = {
+        "board_record_count": 2,
+        "deduplicated_board_record_count": 1,
+        "deduplicated_node_record_count": 32,
+        "exact_root_roundtrips": 4,
+        "node_record_count": 66,
+        "root_count": 2,
+        "separate_root_board_record_count": 3,
+        "separate_root_node_record_count": 98,
+        "separate_root_serialized_byte_count": 30_918,
+        "serialized_byte_count": 20_915,
+        "serialized_byte_savings": 10_003,
+        "shared_node_identity_count": 32,
+        "trusted_pin_verifications": 2,
+    }
+    for field, expected in exact_forest_counts.items():
+        _require_exact_int(
+            forest[field], expected, f"persistent_history_forest.{field}"
+        )
+    _require_true(
+        forest["canonical_across_fresh_stores"],
+        "persistent_history_forest.canonical_across_fresh_stores",
+    )
+    _require_exact_int_list(
+        forest["ordered_member_counts"],
+        [1, 2],
+        "persistent_history_forest.ordered_member_counts",
+    )
+    forest_root_hashes = _require_sha256_list(
+        forest["ordered_root_sha256s"],
+        2,
+        "persistent_history_forest.ordered_root_sha256s",
+    )
+    if forest_root_hashes != [
+        history_hashes["initial_root_sha256"],
+        history_hashes["one_move_root_sha256"],
+    ]:
+        raise ValueError("forest ordered roots do not match the exact root pins")
+    forest_artifact_sha256 = _require_sha256(
+        forest["artifact_sha256"],
+        "persistent_history_forest.artifact_sha256",
+    )
+    _require_sha256(
+        forest["serialized_file_sha256"],
+        "persistent_history_forest.serialized_file_sha256",
+    )
+    if (
+        forest["node_record_count"] + forest["deduplicated_node_record_count"]
+        != forest["separate_root_node_record_count"]
+        or forest["board_record_count"]
+        + forest["deduplicated_board_record_count"]
+        != forest["separate_root_board_record_count"]
+        or forest["serialized_byte_count"] + forest["serialized_byte_savings"]
+        != forest["separate_root_serialized_byte_count"]
+        or forest["shared_node_identity_count"]
+        != forest["deduplicated_node_record_count"]
+    ):
+        raise ValueError("forest compactness and sharing counts are inconsistent")
+
     parity = _require_keys(
         case["persistent_engine_parity"], PARITY_KEYS, "persistent_engine_parity"
     )
@@ -556,7 +808,7 @@ def validate_storage_evidence(payload: Any) -> None:
         "history_object_count": 1,
         "mapped_segment_count_after_restart": 2,
         "object_count": 3,
-        "pinned_history_rehydrate_member_count": 2,
+        "pinned_forest_shared_node_identity_count": 32,
         "resident_payload_bytes_after_restart": 0,
         "resident_payload_bytes_after_spill": 0,
         "staged_memory_limit_bytes": PRIMARY_STAGED_MEMORY_LIMIT_BYTES,
@@ -565,16 +817,33 @@ def validate_storage_evidence(payload: Any) -> None:
         _require_exact_int(store[field], expected, f"segment_store.{field}")
     _require_sha256(store["manifest_sha256"], "segment_store.manifest_sha256")
     _require_sha256_list(store["segment_sha256s"], 2, "segment_store.segment_sha256s")
-    if store["pinned_history_rehydrate_root_sha256"] != history_hashes["one_move_root_sha256"]:
-        raise ValueError("segment history rehydrate does not match the trusted root pin")
+    _require_exact_int_list(
+        store["pinned_forest_rehydrate_member_counts"],
+        [1, 2],
+        "segment_store.pinned_forest_rehydrate_member_counts",
+    )
+    restarted_root_hashes = _require_sha256_list(
+        store["pinned_forest_rehydrate_root_sha256s"],
+        2,
+        "segment_store.pinned_forest_rehydrate_root_sha256s",
+    )
+    if restarted_root_hashes != forest_root_hashes:
+        raise ValueError("segment forest rehydrate does not match ordered root pins")
+    if store["pinned_forest_artifact_sha256"] != forest_artifact_sha256:
+        raise ValueError("segment forest rehydrate does not match the artifact pin")
+    if (
+        store["pinned_forest_shared_node_identity_count"]
+        != forest["shared_node_identity_count"]
+    ):
+        raise ValueError("segment forest rehydrate changed immutable sharing")
 
     refs = _require_keys(store["object_refs"], OBJECT_REF_KEYS, "object_refs")
     ref_hashes = {
         "empty_board": _validate_object_ref(
             refs["empty_board"], "board", "object_refs.empty_board"
         ),
-        "history": _validate_object_ref(
-            refs["history"], "history", "object_refs.history"
+        "history_forest": _validate_object_ref(
+            refs["history_forest"], "history", "object_refs.history_forest"
         ),
         "one_move_board": _validate_object_ref(
             refs["one_move_board"], "board", "object_refs.one_move_board"

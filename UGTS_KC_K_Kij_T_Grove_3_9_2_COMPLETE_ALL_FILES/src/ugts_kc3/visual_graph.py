@@ -16,6 +16,21 @@ import json
 import math
 from typing import Any, Callable, ClassVar, Iterable, Iterator, Mapping, MutableMapping, Sequence
 
+from .scatter import ScatterError, f32, repeatable_number
+
+
+# Android scene packs currently preserve these five gameplay tags as native
+# bits.  Spatial graph queries deliberately share that portable vocabulary so
+# a graph cannot appear to work on desktop while silently missing on a phone.
+PORTABLE_QUERY_TAGS = (
+    "player",
+    "collectible",
+    "goal",
+    "decorative",
+    "hazard",
+)
+_PORTABLE_QUERY_TAG_SET = frozenset(PORTABLE_QUERY_TAGS)
+
 
 class FrozenDict(Mapping[str, Any]):
     """A tiny recursively-frozen mapping used by graph records.
@@ -517,10 +532,11 @@ def _value_matches_type(value: Any, data_type: str) -> bool:
         return isinstance(value, bool)
     if data_type == "mapping":
         return isinstance(value, Mapping)
-    if data_type == "vector2":
+    vector_lengths = {"vector2": 2, "vector3": 3, "vector4": 4}
+    if data_type in vector_lengths:
         return (
             isinstance(value, (tuple, list))
-            and len(value) == 2
+            and len(value) == vector_lengths[data_type]
             and all(isinstance(item, (int, float)) and not isinstance(item, bool) and math.isfinite(float(item)) for item in value)
         )
     return True  # Custom symbolic types are enforced by their registered executor.
@@ -634,6 +650,196 @@ def _validation_issues(graph: VisualGraph, registry: NodeRegistry) -> tuple[Grap
                     )
                 )
 
+        if node.type == "value.seeded_number":
+            static: dict[str, Any] = {}
+            for name in ("world_number", "pick_number", "smallest", "largest"):
+                if (node.id, name) in incoming_data:
+                    continue
+                port = definition.port(PortDirection.INPUT, name)
+                assert port is not None
+                supplied, literal = _node_property(definition, node, name, port)
+                if supplied:
+                    static[name] = literal
+            for name, label in (
+                ("world_number", "World number"),
+                ("pick_number", "Pick number"),
+            ):
+                value = static.get(name)
+                invalid = False
+                if name in static and _value_matches_type(value, "number"):
+                    try:
+                        canonical = f32(value)
+                    except ScatterError:
+                        invalid = True
+                    else:
+                        invalid = (
+                            canonical != math.trunc(canonical)
+                            or not 0 <= canonical <= 65535
+                        )
+                if invalid:
+                    issues.append(
+                        GraphValidationIssue(
+                            "repeatable_number_index",
+                            f"Repeatable Random Number {label} must be a whole number from 0 to 65535.",
+                            node.id,
+                        )
+                    )
+            rounded: dict[str, float] = {}
+            for name, label in (("smallest", "Smallest"), ("largest", "Largest")):
+                value = static.get(name)
+                if name not in static or not _value_matches_type(value, "number"):
+                    continue
+                try:
+                    rounded[name] = f32(value)
+                except ScatterError:
+                    issues.append(
+                        GraphValidationIssue(
+                            "repeatable_number_bound",
+                            f"Repeatable Random Number {label} must be a finite number that fits on this device.",
+                            node.id,
+                        )
+                    )
+            if (
+                "smallest" in rounded
+                and "largest" in rounded
+                and rounded["smallest"] > rounded["largest"]
+            ):
+                issues.append(
+                    GraphValidationIssue(
+                        "repeatable_number_range",
+                        "Repeatable Random Number Smallest must not be bigger than Largest.",
+                        node.id,
+                    )
+                )
+
+        if node.type == "event.timer":
+            for name, label in (("seconds", "Seconds"), ("repeat", "Repeat")):
+                indexes = incoming_data.get((node.id, name), ())
+                if indexes:
+                    issues.append(
+                        GraphValidationIssue(
+                            "timer_literal_only",
+                            f"When Timer Rings {label} must be set on the block, not connected from another block.",
+                            node.id,
+                            indexes[0],
+                        )
+                    )
+            if (node.id, "seconds") not in incoming_data:
+                port = definition.port(PortDirection.INPUT, "seconds")
+                assert port is not None
+                supplied, literal = _node_property(
+                    definition, node, "seconds", port
+                )
+                if supplied and _value_matches_type(literal, "number"):
+                    invalid = False
+                    try:
+                        seconds = f32(literal)
+                    except ScatterError:
+                        invalid = True
+                    else:
+                        invalid = not 0.0 < seconds <= 86400.0
+                    if invalid:
+                        issues.append(
+                            GraphValidationIssue(
+                                "timer_seconds",
+                                "When Timer Rings Seconds must be a finite positive number up to 86400.",
+                                node.id,
+                            )
+                        )
+
+        if node.type == "query.nearest_tag":
+            if (node.id, "tag") not in incoming_data:
+                port = definition.port(PortDirection.INPUT, "tag")
+                assert port is not None
+                supplied, literal = _node_property(definition, node, "tag", port)
+                if (
+                    supplied
+                    and _value_matches_type(literal, "string")
+                    and literal not in _PORTABLE_QUERY_TAG_SET
+                ):
+                    issues.append(
+                        GraphValidationIssue(
+                            "nearest_tag_value",
+                            "Find Nearby Object Tag must be player, collectible, goal, decorative, or hazard.",
+                            node.id,
+                        )
+                    )
+            if (node.id, "radius") not in incoming_data:
+                port = definition.port(PortDirection.INPUT, "radius")
+                assert port is not None
+                supplied, literal = _node_property(definition, node, "radius", port)
+                if supplied and _value_matches_type(literal, "number"):
+                    invalid = False
+                    try:
+                        radius = f32(literal)
+                        f32(radius * radius)
+                    except ScatterError:
+                        invalid = True
+                    else:
+                        invalid = radius < 0.0
+                    if invalid:
+                        issues.append(
+                            GraphValidationIssue(
+                                "nearest_tag_radius",
+                                "Find Nearby Object Radius must be a finite non-negative number that fits on this device.",
+                                node.id,
+                            )
+                        )
+
+        if node.type == "query.nearest_in_cone":
+            if (node.id, "tag") not in incoming_data:
+                port = definition.port(PortDirection.INPUT, "tag")
+                assert port is not None
+                supplied, literal = _node_property(definition, node, "tag", port)
+                if (
+                    supplied
+                    and _value_matches_type(literal, "string")
+                    and literal not in _PORTABLE_QUERY_TAG_SET
+                ):
+                    issues.append(
+                        GraphValidationIssue(
+                            "nearest_in_cone_tag_value",
+                            "Find Object Ahead Tag must be player, collectible, goal, decorative, or hazard.",
+                            node.id,
+                        )
+                    )
+            if (node.id, "radius") not in incoming_data:
+                port = definition.port(PortDirection.INPUT, "radius")
+                assert port is not None
+                supplied, literal = _node_property(definition, node, "radius", port)
+                if supplied and _value_matches_type(literal, "number"):
+                    invalid = False
+                    try:
+                        radius = f32(literal)
+                        f32(radius * radius)
+                    except ScatterError:
+                        invalid = True
+                    else:
+                        invalid = radius < 0.0
+                    if invalid:
+                        issues.append(
+                            GraphValidationIssue(
+                                "nearest_in_cone_radius",
+                                "Find Object Ahead Radius must be a finite non-negative number that fits on this device.",
+                                node.id,
+                            )
+                        )
+            if (node.id, "cone") not in incoming_data:
+                port = definition.port(PortDirection.INPUT, "cone")
+                assert port is not None
+                supplied, literal = _node_property(definition, node, "cone", port)
+                if supplied and _value_matches_type(literal, "vector4"):
+                    try:
+                        _portable_cone(literal)
+                    except ValueError as error:
+                        issues.append(
+                            GraphValidationIssue(
+                                "nearest_in_cone_value",
+                                f"Find Object Ahead Cone {error}.",
+                                node.id,
+                            )
+                        )
+
     _, cyclic = _data_order(graph, registry, valid_data_links)
     if cyclic:
         names = ", ".join(repr(node_id) for node_id in cyclic)
@@ -687,15 +893,24 @@ class GraphContext:
     dt: float = 0.0
     event_name: str = ""
     payload: Mapping[str, Any] = field(default_factory=FrozenDict)
+    active_step: int = 0
 
     def __post_init__(self) -> None:
         dt = float(self.dt)
         if not math.isfinite(dt) or dt < 0:
             raise ValueError("graph context dt must be finite and non-negative")
+        active_step = self.active_step
+        if (
+            not isinstance(active_step, int)
+            or isinstance(active_step, bool)
+            or active_step < 0
+        ):
+            raise ValueError("graph context active_step must be a non-negative integer")
         object.__setattr__(self, "entity_id", None if self.entity_id is None else str(self.entity_id))
         object.__setattr__(self, "dt", dt)
         object.__setattr__(self, "event_name", str(self.event_name))
         object.__setattr__(self, "payload", _freeze_json(dict(self.payload), "graph event payload"))
+        object.__setattr__(self, "active_step", active_step)
 
     @property
     def entity(self) -> Any:
@@ -814,6 +1029,10 @@ class GraphRuntime:
             self._outgoing_flow[key] = tuple(sorted(links, key=lambda item: (self._rank.get(item.target_node, 0), item.target_node, item.target_port, item.id)))
         self.last_result: ExecutionResult | None = None
         self.last_trace: tuple[TraceEntry, ...] = ()
+        # Direct GraphRuntime users get the same timer lifecycle as an attached
+        # GraphBinding.  Bindings pass their own counter explicitly so one
+        # runtime can still be shared safely by multiple entity owners.
+        self._active_step = 0
 
     def execute(self, trigger: str, context: GraphContext, *, max_steps: int | None = None) -> ExecutionResult:
         """Dispatch ``ready``, ``tick``, input, or another registered event."""
@@ -824,12 +1043,19 @@ class GraphRuntime:
         limit = self.max_steps if max_steps is None else max_steps
         if not isinstance(limit, int) or isinstance(limit, bool) or limit < 1:
             raise ValueError("max_steps must be a positive integer")
+        if trigger_name == "ready":
+            self._active_step = 0
+        elif trigger_name == "tick" and context.active_step == 0:
+            self._active_step += 1
+            context = replace(context, active_step=self._active_step)
         state = _RunState(trigger_name, context.for_event(trigger_name), limit)
         queue: deque[tuple[str, str | None]] = deque()
         roots = []
         for node in self.graph.nodes:
             event = self.registry.definition(node.type).event
-            if event == trigger_name or (trigger_name == "tick" and event == "input_pressed"):
+            if event == trigger_name or (
+                trigger_name == "tick" and event in {"input_pressed", "timer"}
+            ):
                 roots.append(node.id)
         for node_id in sorted(roots, key=lambda item: (self._rank[item], item)):
             queue.append((node_id, None))
@@ -866,9 +1092,31 @@ class GraphRuntime:
         *,
         entity_id: str | None = None,
         payload: Mapping[str, Any] | None = None,
+        active_step: int | None = None,
     ) -> ExecutionResult:
         step_dt = float(getattr(world, "fixed_dt", 0.0) if dt is None else dt)
-        return self.execute("tick", GraphContext(world, entity_id, input_frame, step_dt, payload=payload or {}))
+        if active_step is None:
+            self._active_step += 1
+            step = self._active_step
+        else:
+            if (
+                not isinstance(active_step, int)
+                or isinstance(active_step, bool)
+                or active_step < 1
+            ):
+                raise ValueError("active_step must be a positive integer during tick")
+            step = active_step
+        return self.execute(
+            "tick",
+            GraphContext(
+                world,
+                entity_id,
+                input_frame,
+                step_dt,
+                payload=payload or {},
+                active_step=step,
+            ),
+        )
 
     def event(
         self,
@@ -977,8 +1225,10 @@ class GraphBinding:
     ready_result: ExecutionResult | None = None
     last_result: ExecutionResult | None = None
     last_input_frame: Any = None
+    active_step: int = 0
 
     def run_ready(self) -> ExecutionResult:
+        self.active_step = 0
         self.ready_result = self.runtime.ready(self.world, entity_id=self.entity_id)
         return self.ready_result
 
@@ -998,8 +1248,15 @@ class GraphBinding:
 
     def update(self, world: Any, dt: float, input_frame: Any) -> None:
         if self.owner_is_active():
+            self.active_step += 1
             self.last_input_frame = input_frame
-            self.last_result = self.runtime.tick(world, dt, input_frame, entity_id=self.entity_id)
+            self.last_result = self.runtime.tick(
+                world,
+                dt,
+                input_frame,
+                entity_id=self.entity_id,
+                active_step=self.active_step,
+            )
 
     def handle_trigger(self, event: Any) -> None:
         """Dispatch player/sensor transitions to world or matching sensor graphs."""
@@ -1088,6 +1345,262 @@ def _entity_id(context: GraphContext, value: Any) -> str:
     return entity_id
 
 
+def _portable_f32(value: Any, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} must be a finite number that fits on this device")
+    try:
+        return f32(value)
+    except ScatterError as error:
+        raise ValueError(
+            f"{label} must be a finite number that fits on this device"
+        ) from error
+
+
+def _entity_position3(
+    context: GraphContext,
+    entity_id: str,
+    *,
+    required: bool,
+) -> tuple[float, float, float] | None:
+    getter = getattr(context.world, "get", None)
+    transform = getter(entity_id, "transform") if callable(getter) else None
+    if transform is None:
+        if required:
+            raise ValueError(f"entity {entity_id!r} has no transform position")
+        return None
+    if isinstance(transform, Mapping):
+        position = transform.get("position", transform.get("translation"))
+    else:
+        position = getattr(transform, "position", None)
+        if position is None:
+            position = getattr(transform, "translation", None)
+    if (
+        not isinstance(position, Sequence)
+        or isinstance(position, (str, bytes, bytearray))
+        or len(position) not in (2, 3)
+    ):
+        if required:
+            raise ValueError(f"entity {entity_id!r} has no 2D or 3D transform position")
+        return None
+    coordinates = tuple(
+        _portable_f32(value, f"entity {entity_id!r} transform position")
+        for value in position
+    )
+    if len(coordinates) == 2:
+        return coordinates[0], coordinates[1], 0.0
+    return coordinates[0], coordinates[1], coordinates[2]
+
+
+def _portable_cone(
+    value: Any,
+) -> tuple[tuple[float, float, float], float]:
+    """Canonicalize ``(axis xyz, minimum cosine)`` for portable cone queries.
+
+    The axis is deliberately supplied in world space.  This keeps the saved
+    graph compact (one Vector4), avoids platform-specific trigonometry, and
+    gives the Python, browser, and native runtimes the same binary32 gate.
+    """
+
+    if (
+        not isinstance(value, Sequence)
+        or isinstance(value, (str, bytes, bytearray))
+        or len(value) != 4
+    ):
+        raise ValueError("must contain a three-number Facing direction and View width")
+    values = tuple(_portable_f32(item, "cone") for item in value)
+    axis_squared = 0.0
+    try:
+        for component in values[:3]:
+            axis_squared = f32(axis_squared + f32(component * component))
+    except ScatterError as error:
+        raise ValueError("is too large for deterministic device math") from error
+    if axis_squared <= 0.0:
+        raise ValueError("Facing direction must not be zero")
+    if not -1.0 <= values[3] <= 1.0:
+        raise ValueError("View width must use a minimum cosine from -1 to 1")
+    try:
+        axis_length = f32(math.sqrt(axis_squared))
+        axis = tuple(f32(component / axis_length) for component in values[:3])
+    except (ScatterError, ZeroDivisionError) as error:
+        raise ValueError("Facing direction cannot be normalized on this device") from error
+    return (axis[0], axis[1], axis[2]), values[3]
+
+
+def _portable_cone_support(
+    delta: tuple[float, float, float],
+    squared: float,
+    axis: tuple[float, float, float],
+    cosine: float,
+) -> bool:
+    # Mirror GSP4's componentwise normalized direction and clamp_min(1e-6)
+    # gate, with an explicit binary32 rounding point after every operation.
+    try:
+        distance = f32(math.sqrt(squared))
+        denominator = max(distance, f32(1.0e-6))
+        direction = tuple(f32(component / denominator) for component in delta)
+        cosine_to_axis = 0.0
+        for index in range(3):
+            cosine_to_axis = f32(
+                cosine_to_axis + f32(direction[index] * axis[index])
+            )
+    except ScatterError as error:
+        raise ValueError("cone is too large for deterministic device math") from error
+    return cosine_to_axis >= cosine
+
+
+def _nearest_tag(
+    context: GraphContext,
+    node: GraphNode,
+    inputs: Mapping[str, Any],
+) -> NodeResult:
+    tag = inputs["tag"]
+    if not isinstance(tag, str) or tag not in _PORTABLE_QUERY_TAG_SET:
+        raise ValueError(
+            "tag must be player, collectible, goal, decorative, or hazard"
+        )
+    radius = _portable_f32(inputs["radius"], "radius")
+    if radius < 0.0:
+        raise ValueError("radius must be non-negative")
+    try:
+        radius_squared = f32(radius * radius)
+    except ScatterError as error:
+        raise ValueError(
+            "radius must be a finite non-negative number that fits on this device"
+        ) from error
+
+    origin_id = _entity_id(context, inputs.get("origin"))
+    origin = _entity_position3(context, origin_id, required=True)
+    assert origin is not None
+    entities = getattr(context.world, "entities", {})
+    if not isinstance(entities, Mapping):
+        raise TypeError("the graph world does not expose an entity mapping")
+
+    best_id: str | None = None
+    best_squared: float | None = None
+    for raw_id in sorted(entities, key=lambda value: str(value).encode("utf-8")):
+        candidate_id = str(raw_id)
+        if candidate_id == origin_id:
+            continue
+        candidate = entities[raw_id]
+        if (
+            candidate is None
+            or not bool(getattr(candidate, "alive", True))
+            or not bool(getattr(candidate, "active", True))
+            or tag not in getattr(candidate, "tags", ())
+        ):
+            continue
+        position = _entity_position3(context, candidate_id, required=False)
+        if position is None:
+            continue
+        squared = 0.0
+        for axis in range(3):
+            delta = f32(position[axis] - origin[axis])
+            term = f32(delta * delta)
+            squared = f32(squared + term)
+        if squared > radius_squared:
+            continue
+        if (
+            best_squared is None
+            or squared < best_squared
+            or (
+                squared == best_squared
+                and best_id is not None
+                and candidate_id.encode("utf-8") < best_id.encode("utf-8")
+            )
+        ):
+            best_id = candidate_id
+            best_squared = squared
+
+    if best_id is None or best_squared is None:
+        return NodeResult({"found": False, "entity": None, "distance": None})
+    return NodeResult(
+        {
+            "found": True,
+            "entity": best_id,
+            "distance": f32(math.sqrt(best_squared)),
+        }
+    )
+
+
+def _nearest_in_cone(
+    context: GraphContext,
+    node: GraphNode,
+    inputs: Mapping[str, Any],
+) -> NodeResult:
+    tag = inputs["tag"]
+    if not isinstance(tag, str) or tag not in _PORTABLE_QUERY_TAG_SET:
+        raise ValueError(
+            "tag must be player, collectible, goal, decorative, or hazard"
+        )
+    radius = _portable_f32(inputs["radius"], "radius")
+    if radius < 0.0:
+        raise ValueError("radius must be non-negative")
+    try:
+        radius_squared = f32(radius * radius)
+    except ScatterError as error:
+        raise ValueError(
+            "radius must be a finite non-negative number that fits on this device"
+        ) from error
+    axis, cosine = _portable_cone(inputs["cone"])
+
+    origin_id = _entity_id(context, inputs.get("origin"))
+    origin = _entity_position3(context, origin_id, required=True)
+    assert origin is not None
+    entities = getattr(context.world, "entities", {})
+    if not isinstance(entities, Mapping):
+        raise TypeError("the graph world does not expose an entity mapping")
+
+    best_id: str | None = None
+    best_squared: float | None = None
+    for raw_id in sorted(entities, key=lambda value: str(value).encode("utf-8")):
+        candidate_id = str(raw_id)
+        if candidate_id == origin_id:
+            continue
+        candidate = entities[raw_id]
+        if (
+            candidate is None
+            or not bool(getattr(candidate, "alive", True))
+            or not bool(getattr(candidate, "active", True))
+            or tag not in getattr(candidate, "tags", ())
+        ):
+            continue
+        position = _entity_position3(context, candidate_id, required=False)
+        if position is None:
+            continue
+        delta = tuple(f32(position[index] - origin[index]) for index in range(3))
+        squared = 0.0
+        try:
+            for component in delta:
+                squared = f32(squared + f32(component * component))
+        except ScatterError as error:
+            raise ValueError("candidate distance is too large for deterministic device math") from error
+        if squared > radius_squared or not _portable_cone_support(
+            delta, squared, axis, cosine
+        ):
+            continue
+        if (
+            best_squared is None
+            or squared < best_squared
+            or (
+                squared == best_squared
+                and best_id is not None
+                and candidate_id.encode("utf-8") < best_id.encode("utf-8")
+            )
+        ):
+            best_id = candidate_id
+            best_squared = squared
+
+    if best_id is None or best_squared is None:
+        return NodeResult({"found": False, "entity": None, "distance": None})
+    return NodeResult(
+        {
+            "found": True,
+            "entity": best_id,
+            "distance": f32(math.sqrt(best_squared)),
+        }
+    )
+
+
 def _read_field(value: Any, path: str, default: Any = NO_DEFAULT) -> Any:
     if not path:
         return value
@@ -1138,6 +1651,68 @@ def _event_tick(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any
     return NodeResult({"dt": context.dt, "tick": int(getattr(context.world, "tick", 0)), "entity": context.entity_id}, ("out",))
 
 
+def _event_timer(
+    context: GraphContext,
+    node: GraphNode,
+    inputs: Mapping[str, Any],
+) -> NodeResult:
+    """Poll a compact fixed-step timer without storing suspended graph state."""
+
+    try:
+        seconds = f32(inputs["seconds"])
+    except ScatterError as error:
+        raise ValueError(
+            "When Timer Rings Seconds must be a finite positive number up to 86400."
+        ) from error
+    if not 0.0 < seconds <= 86400.0:
+        raise ValueError(
+            "When Timer Rings Seconds must be a finite positive number up to 86400."
+        )
+    repeat = inputs["repeat"]
+    if not isinstance(repeat, bool):
+        raise TypeError("When Timer Rings Repeat must be true or false.")
+    try:
+        step_dt = f32(context.dt)
+    except ScatterError as error:
+        raise ValueError(
+            "When Timer Rings needs a positive fixed-step duration."
+        ) from error
+    if step_dt <= 0.0:
+        raise ValueError("When Timer Rings needs a positive fixed-step duration.")
+    try:
+        period = max(1, math.ceil(f32(seconds / step_dt)))
+    except (OverflowError, ScatterError) as error:
+        raise ValueError(
+            "When Timer Rings could not fit this duration into fixed updates."
+        ) from error
+
+    step = context.active_step
+    if repeat:
+        remainder = step % period
+        rings = step // period
+        ringing = step > 0 and remainder == 0
+        remaining_steps = 0 if ringing else period - remainder
+    else:
+        ringing = step == period
+        rings = 0 if step < period else 1
+        remaining_steps = max(0, period - step)
+    try:
+        count = f32(rings)
+        remaining = (
+            0.0
+            if remaining_steps == 0
+            else f32(f32(remaining_steps) * step_dt)
+        )
+    except ScatterError as error:
+        raise ValueError(
+            "When Timer Rings could not fit this duration into fixed updates."
+        ) from error
+    return NodeResult(
+        {"count": count, "remaining": remaining, "entity": context.entity_id},
+        ("out",) if ringing else (),
+    )
+
+
 def _event_input_pressed(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
     action = str(inputs["action"])
     frame = context.input_frame
@@ -1166,6 +1741,23 @@ def _branch(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -
 
 def _constant(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
     return NodeResult({"value": _thaw(node.properties.get("value", 0))})
+
+
+def _repeatable_number(
+    context: GraphContext,
+    node: GraphNode,
+    inputs: Mapping[str, Any],
+) -> NodeResult:
+    return NodeResult(
+        {
+            "value": repeatable_number(
+                inputs["world_number"],
+                inputs["pick_number"],
+                inputs["smallest"],
+                inputs["largest"],
+            )
+        }
+    )
 
 
 def _state(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
@@ -1298,6 +1890,23 @@ def create_builtin_registry() -> NodeRegistry:
             _event_tick, event="tick",
         ),
         NodeDefinition(
+            "event.timer",
+            "When Timer Rings",
+            "Events",
+            "Rings after a saved number of seconds; optionally repeats on the binding's active fixed updates.",
+            (
+                _in_data("seconds", "number", required=True),
+                _in_data("repeat", "boolean", required=True),
+                _out_flow(),
+                _out_data("count", "number", "How many times this timer has rung."),
+                _out_data("remaining", "number", "Fixed-step seconds until its next ring."),
+                _out_data("entity", "entity", "The bound entity id, if any."),
+            ),
+            _event_timer,
+            {"seconds": 1.0, "repeat": True},
+            event="timer",
+        ),
+        NodeDefinition(
             "event.input_pressed", "Input Pressed", "Events", "Runs on the frame an input action crosses its pressed threshold.",
             (_in_data("action", "string", required=True), _out_flow(), _out_data("action", "string"), _out_data("value", "number"), _out_data("entity", "entity")),
             _event_input_pressed, {"action": "accept"}, event="input_pressed",
@@ -1321,6 +1930,21 @@ def create_builtin_registry() -> NodeRegistry:
             (_out_data("value"),), _constant, {"value": 0},
         ),
         NodeDefinition(
+            "value.seeded_number",
+            "Repeatable Random Number",
+            "Values",
+            "Picks the same number for the same World number and Pick number on desktop, web and phone.",
+            (
+                _in_data("world_number", "number", required=True),
+                _in_data("pick_number", "number", required=True),
+                _in_data("smallest", "number", required=True),
+                _in_data("largest", "number", required=True),
+                _out_data("value", "number"),
+            ),
+            _repeatable_number,
+            {"world_number": 1, "pick_number": 0, "smallest": 0.0, "largest": 1.0},
+        ),
+        NodeDefinition(
             "value.state", "World State", "Values", "Reads a key from GameWorld.state.",
             (_in_data("key", "string", required=True), _in_data("default"), _out_data("value")), _state, {"key": "score", "default": None},
         ),
@@ -1328,6 +1952,47 @@ def create_builtin_registry() -> NodeRegistry:
             "value.component", "Component Value", "Values", "Reads a component or a dotted component field from an entity.",
             (_in_data("entity", "entity"), _in_data("component", "string", required=True), _in_data("field", "string"), _in_data("default"), _out_data("value")),
             _component, {"entity": None, "component": "transform", "field": "position", "default": None},
+        ),
+        NodeDefinition(
+            "query.nearest_tag",
+            "Find Nearby Object",
+            "Sensing",
+            "Finds the closest active object with a portable gameplay tag inside an inclusive radius.",
+            (
+                _in_data("origin", "entity"),
+                _in_data("tag", "string", required=True),
+                _in_data("radius", "number", required=True),
+                _out_data("found", "boolean", "True when a matching object was found."),
+                _out_data("entity", "entity", "The closest matching object, or null."),
+                _out_data("distance", "any", "Binary32 center distance, or null."),
+            ),
+            _nearest_tag,
+            {"origin": None, "tag": "goal", "radius": 10.0},
+        ),
+        NodeDefinition(
+            "query.nearest_in_cone",
+            "Find Object Ahead",
+            "Sensing",
+            (
+                "Finds the closest active tagged object inside an inclusive radius "
+                "and a saved world-space view cone."
+            ),
+            (
+                _in_data("origin", "entity"),
+                _in_data("tag", "string", required=True),
+                _in_data("radius", "number", required=True),
+                _in_data(
+                    "cone",
+                    "vector4",
+                    required=True,
+                    description="World-space Facing XYZ plus the minimum accepted cosine.",
+                ),
+                _out_data("found", "boolean", "True when a matching object was found."),
+                _out_data("entity", "entity", "The closest matching object, or null."),
+                _out_data("distance", "any", "Binary32 center distance, or null."),
+            ),
+            _nearest_in_cone,
+            {"origin": None, "tag": "goal", "radius": 10.0, "cone": (0.0, 0.0, -1.0, 0.7071067690849304)},
         ),
         NodeDefinition(
             "math.add", "Add", "Math", "Adds two numbers.",
@@ -1407,6 +2072,7 @@ __all__ = [
     "PortDefinition",
     "PortDirection",
     "PortKind",
+    "PORTABLE_QUERY_TAGS",
     "TraceEntry",
     "VisualGraph",
     "attach_graph",

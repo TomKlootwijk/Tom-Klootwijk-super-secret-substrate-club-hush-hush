@@ -1,0 +1,150 @@
+{
+  "claims": [
+    {
+      "claim": "Unicode literal can key shape and functionality",
+      "disposition": "ADMIT",
+      "id": "USF-C01",
+      "reason": "The same content-addressed cell co-addresses literal, glyph, evaluator and field action."
+    },
+    {
+      "claim": "Geometry and semantics are identical",
+      "disposition": "REJECT",
+      "id": "USF-C02",
+      "reason": "They remain typed faces of one record; equality requires an explicit map/certificate."
+    },
+    {
+      "claim": "Set theory can use signed set fields",
+      "disposition": "ADMIT_WITH_CAPABILITY",
+      "id": "USF-C03",
+      "reason": "Exact SDF is one capability; finite, metric, residual and oracle profiles are distinct."
+    },
+    {
+      "claim": "Membership is a local sign query",
+      "disposition": "ADMIT",
+      "id": "USF-C04",
+      "reason": "Under a declared set-field profile, x in A iff phi_A(x)<=0."
+    },
+    {
+      "claim": "Every subset claim is O(1)",
+      "disposition": "REJECT",
+      "id": "USF-C05",
+      "reason": "Global inclusion is quantified and needs finite exhaustion or a continuous-domain proof."
+    },
+    {
+      "claim": "Converse pairs share one kernel",
+      "disposition": "ADMIT",
+      "id": "USF-C06",
+      "reason": "Surface operand maps and typed endpoints make the reuse exact."
+    },
+    {
+      "claim": "Klein flip is merely a bit shift",
+      "disposition": "CORRECT",
+      "id": "USF-C07",
+      "reason": "The bit selects an involution that also swaps operands and reflects the chart."
+    },
+    {
+      "claim": "Klein-converse preserves truth",
+      "disposition": "ADMIT",
+      "id": "USF-C08",
+      "reason": "E_converse(b,a)=E_direct(a,b) for registered relation pairs."
+    },
+    {
+      "claim": "A half-turn is a Klein reflection",
+      "disposition": "REJECT",
+      "id": "USF-C09",
+      "reason": "Rotation and orientation-reversing gluing remain distinct profiles."
+    },
+    {
+      "claim": "One bit can be both integrity and topology",
+      "disposition": "REJECT",
+      "id": "USF-C10",
+      "reason": "Integrity parity and kappa are separate logical and physical fields."
+    },
+    {
+      "claim": "Canonical glyph converse is a mirror",
+      "disposition": "ADMIT_PROFILE_BOUND",
+      "id": "USF-C11",
+      "reason": "True for the UGTS canonical capsule profile; font-exact profiles may differ."
+    },
+    {
+      "claim": "Unicode codepoint alone fixes font appearance",
+      "disposition": "REJECT",
+      "id": "USF-C12",
+      "reason": "Font, size, stroke, threshold and rendering policy remain profile data."
+    },
+    {
+      "claim": "Four-bit operator ID is globally unique",
+      "disposition": "REJECT",
+      "id": "USF-C13",
+      "reason": "It is only a hot codebook slot bound to an atlas hash."
+    },
+    {
+      "claim": "Packed node is complete world state",
+      "disposition": "REJECT",
+      "id": "USF-C14",
+      "reason": "Definitions, header, lineage, uncertainty and hashes remain external."
+    },
+    {
+      "claim": "One parity bit detects all corruption",
+      "disposition": "REJECT",
+      "id": "USF-C15",
+      "reason": "It detects odd payload bit flips; CRC/hash layers cover stronger integrity roles."
+    },
+    {
+      "claim": "32-bit record reduces traffic",
+      "disposition": "ADMIT_CONDITIONAL",
+      "id": "USF-C16",
+      "reason": "Only under a measured workload and an error/equivalence contract."
+    },
+    {
+      "claim": "Eight-bit angle gives 1.40625 degree bins",
+      "disposition": "ADMIT",
+      "id": "USF-C17",
+      "reason": "360/256 with round-to-nearest maximum half-bin error 0.703125 degrees."
+    },
+    {
+      "claim": "Composed min/max fields remain exact SDFs",
+      "disposition": "REJECT",
+      "id": "USF-C18",
+      "reason": "Sign is preserved, exact-distance status may be lost."
+    },
+    {
+      "claim": "Sampled LUT proves continuous emptiness",
+      "disposition": "REJECT",
+      "id": "USF-C19",
+      "reason": "Sampling can miss features between samples unless a certificate closes the gap."
+    },
+    {
+      "claim": "SIMD branchless selection is always faster",
+      "disposition": "REJECT",
+      "id": "USF-C20",
+      "reason": "Backend choice depends on branch cost, coherence and target measurement."
+    },
+    {
+      "claim": "AVX2 eight-lane extraction is feasible",
+      "disposition": "ADMIT_AS_PROFILE",
+      "id": "USF-C21",
+      "reason": "Correct extraction and full-lane masks are supplied; target throughput remains benchmarked evidence."
+    },
+    {
+      "claim": "Deterministic parity is true randomness",
+      "disposition": "REJECT",
+      "id": "USF-C22",
+      "reason": "Deterministic bits provide repeatable selection or checks, not entropy."
+    },
+    {
+      "claim": "16 KB stores arbitrary worlds",
+      "disposition": "REJECT",
+      "id": "USF-C23",
+      "reason": "Small atlases and repetitive grammars may fit; arbitrary information does not."
+    },
+    {
+      "claim": "This release enumerates all Unicode mathematics",
+      "disposition": "REJECT",
+      "id": "USF-C24",
+      "reason": "The schema is extensible; the shipped atlas is a bounded set-theory foundation."
+    }
+  ],
+  "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+  "schema_id": "ugts.claims-ledger@5.0.0"
+}

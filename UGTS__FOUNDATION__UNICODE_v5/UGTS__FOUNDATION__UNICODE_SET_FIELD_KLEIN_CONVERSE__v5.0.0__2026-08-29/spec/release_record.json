@@ -1,0 +1,64 @@
+{
+  "$schema": "./ugts5_release_record.schema.json",
+  "artifact_policy": {
+    "authoritative_sequence": [
+      "support",
+      "compatibility",
+      "guard",
+      "verified_proposal",
+      "deterministic_commit",
+      "lineage"
+    ],
+    "private_identifiers_included": false,
+    "projection_downstream": true,
+    "raw_sources_redistributed": false
+  },
+  "atlas_hash": "d4745a198469ff97665825f53d88cdbf8bad27687a3021c89177eedb83a55e91",
+  "atlas_id": "ugts.unicode-set-field-klein-converse.atlas",
+  "canonical_display_name": "UGTS Foundation / Unicode Set-Field and Klein-Converse Atlas 5.0.0",
+  "canonical_identity": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+  "chronology_key": "2026-08-29T00:00:00+02:00",
+  "codename": "USF-KCA",
+  "component_type": "foundation",
+  "formal_conclusion": "A Unicode operator is no longer merely text and no longer merely an icon. It is a content-addressed, executable geometric rule cell whose literal codepoint resolves both its canonical shape and its typed operation. A Klein-converse parity flip mirrors the shape, reverses the typed ports and selects the converse Unicode spelling while preserving the mathematical truth value.",
+  "hot_codebook_hash": "3a279c68331d697f31e223b71eea898a4239d4da989b6f6d5c1dfd0dfcffb009",
+  "hot_codebook_id": "ugts.set-core-16.v1",
+  "legacy_alias": "UGTS-KC 5.0",
+  "mechanism_namespace": {
+    "continuity_parent": "UGTS-KC 4.2 General Operator and Order Addendum M630-M885",
+    "legacy_continuity": "M886-M949",
+    "primary": "USF001-USF064"
+  },
+  "parents": [
+    {
+      "identity": "ugts.formal.literal-referential@3.6.0",
+      "relationship": "extends-concept"
+    },
+    {
+      "identity": "ugts.formal.bea@3.6.1",
+      "relationship": "extends-representation-profile"
+    },
+    {
+      "identity": "ugts.profile.sclp@3.6.2",
+      "relationship": "extends-log-polar-and-reflective-klein"
+    },
+    {
+      "identity": "ugts.compute.gpu-native@1.1.0",
+      "relationship": "retains-packed-evidence-discipline"
+    },
+    {
+      "identity": "ugts.operator.general-order@4.2.0",
+      "relationship": "extends-operator-record-and-order"
+    },
+    {
+      "identity": "ugts.profile.iq-field@3.9.3",
+      "relationship": "retains-field-capability-discipline"
+    }
+  ],
+  "release_date": "2026-08-29",
+  "source_motif": {
+    "filename": "mandible-broad-set-math-operator-CE-logo-like-simd256.pdf",
+    "sha256": "6149e3d398c22b53d0664ba2f624c046d6260506f9ac009dfb2b2572afb3d18c"
+  },
+  "version": "5.0.0"
+}

@@ -107,6 +107,7 @@
   },
   "$id": "https://example.invalid/ugts-chess-campaign-snapshot-2.0.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Structural transport validation only. A solve claim is trustworthy only after runtime verify_campaign replay and verification of its immutable certificate/checker/shard artifacts; JSON Schema does not prove the chess result.",
   "additionalProperties": false,
   "allOf": [
     {
@@ -289,7 +290,9 @@
             "properties": {
               "audit_valid": {"const": true},
               "game_solved": {"const": true},
-              "is_classical_initial_root": {"const": true}
+              "is_classical_initial_root": {"const": true},
+              "root_wdl": {"not": {"const": "unknown"}},
+              "verified_children": {"minimum": 1}
             }
           }
         }

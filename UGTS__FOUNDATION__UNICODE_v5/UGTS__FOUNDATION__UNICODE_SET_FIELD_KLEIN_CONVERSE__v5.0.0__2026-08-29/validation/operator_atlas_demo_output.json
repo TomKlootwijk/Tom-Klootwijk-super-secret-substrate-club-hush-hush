@@ -1,0 +1,62 @@
+{
+  "release": "ugts.foundation.unicode-set-field-klein-converse@5.0.0",
+  "atlas_hash": "d4745a198469ff97665825f53d88cdbf8bad27687a3021c89177eedb83a55e91",
+  "rows": [
+    {
+      "slot": 0,
+      "literal": "∈",
+      "operator_id": "set.membership.element-of",
+      "kappa": 0,
+      "result": true,
+      "converse_literal": "∋"
+    },
+    {
+      "slot": 1,
+      "literal": "∋",
+      "operator_id": "set.membership.contains-as-member",
+      "kappa": 1,
+      "result": true,
+      "converse_literal": "∈"
+    },
+    {
+      "slot": 2,
+      "literal": "∉",
+      "operator_id": "set.membership.not-element-of",
+      "kappa": 0,
+      "result": true,
+      "converse_literal": "∌"
+    },
+    {
+      "slot": 4,
+      "literal": "⊂",
+      "operator_id": "set.inclusion.proper-subset",
+      "kappa": 0,
+      "result": true,
+      "converse_literal": "⊃"
+    },
+    {
+      "slot": 5,
+      "literal": "⊃",
+      "operator_id": "set.inclusion.proper-superset",
+      "kappa": 1,
+      "result": true,
+      "converse_literal": "⊂"
+    },
+    {
+      "slot": 6,
+      "literal": "⊆",
+      "operator_id": "set.inclusion.subset-or-equal",
+      "kappa": 0,
+      "result": true,
+      "converse_literal": "⊇"
+    },
+    {
+      "slot": 7,
+      "literal": "⊇",
+      "operator_id": "set.inclusion.superset-or-equal",
+      "kappa": 1,
+      "result": true,
+      "converse_literal": "⊆"
+    }
+  ]
+}

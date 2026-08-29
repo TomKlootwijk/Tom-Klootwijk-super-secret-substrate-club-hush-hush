@@ -11,10 +11,47 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtWidgets import QApplication
 
+from ugts_kc3.androidbuild import AndroidProfileResult
 from ugts_kc3.editor.document import SelectionRef
-from ugts_kc3.editor.main_window import BuildWorker, EditorMainWindow
+from ugts_kc3.editor.main_window import (
+    BuildWorker,
+    EditorMainWindow,
+    PhoneProfileWorker,
+)
 from ugts_kc3.mobile3d import Mobile3DProject, Node3DRecord
 from ugts_kc3.project import EntitySpec, GameProject
+
+
+def _smooth_phone_result() -> AndroidProfileResult:
+    return AndroidProfileResult(
+        application_id="org.ugts.games.my_mobile_3d_game.pocox7pro",
+        serial="poco-1",
+        model="POCO X7 Pro",
+        requested_seconds=30.0,
+        samples=6,
+        frame_intervals=720,
+        display_period_ms=8.3333,
+        effective_fps=119.82,
+        frame_ms_p50=8.36,
+        frame_ms_p95=9.91,
+        frame_ms_p99=11.2,
+        intervals_over_1_5_vsync=2,
+        pss_kib_min=133_000,
+        pss_kib_max=134_000,
+        rss_kib_min=250_000,
+        rss_kib_max=252_000,
+        gpu_c_min=47.0,
+        gpu_c_max=49.5,
+        battery_c_min=35.0,
+        battery_c_max=36.0,
+        battery_level_start=81,
+        battery_level_end=81,
+        thermal_status_max=0,
+        pid=123,
+        crash_buffer_lines=0,
+        summary="Smooth 120 Hz baseline",
+        warnings=(),
+    )
 
 
 class EditorSceneAuthoringTests(unittest.TestCase):
@@ -319,6 +356,47 @@ class EditorSceneAuthoringTests(unittest.TestCase):
                 destination,
                 project_path.parent / ".ugts-studio" / "deploy" / f"{project.id}-android",
             )
+
+    def test_phone_profile_worker_uses_read_only_profiler_arguments(self) -> None:
+        result = _smooth_phone_result()
+        worker = PhoneProfileWorker(
+            result.application_id, seconds=5, sample_seconds=2
+        )
+        finished: list[object] = []
+        failed: list[str] = []
+        worker.finished.connect(finished.append)
+        worker.failed.connect(failed.append)
+        with patch(
+            "ugts_kc3.editor.main_window.profile_android_app",
+            return_value=result,
+        ) as profile:
+            worker.run()
+        profile.assert_called_once_with(
+            result.application_id, seconds=5.0, sample_seconds=2.0
+        )
+        self.assertEqual(finished, [result])
+        self.assertEqual(failed, [])
+
+    def test_check_phone_action_targets_poco_flavor_and_reports_friendly_metrics(self) -> None:
+        self.window.new_2d_project()
+        self.assertFalse(self.window.profile_phone_action.isEnabled())
+        self.window.document.set_dirty(False)
+        self.window.new_3d_project()
+        self.assertTrue(self.window.profile_phone_action.isEnabled())
+        with patch.object(self.window, "_start_phone_profile") as start:
+            self.window.profile_running_phone()
+        start.assert_called_once_with(
+            "org.ugts.games.my_mobile_3d_game.pocox7pro"
+        )
+
+        self.window.build_output.output.clear()
+        self.window._profile_finished(_smooth_phone_result())
+        messages = self.window.build_output.output.toPlainText()
+        self.assertIn("Smooth 120 Hz baseline on POCO X7 Pro", messages)
+        self.assertIn("119.82 FPS", messages)
+        self.assertIn("Game memory (PSS): 129.9–130.9 MiB", messages)
+        self.assertIn("GPU temperature: 47.0–49.5 °C", messages)
+        self.assertEqual(self.window.status_message.text(), "Phone check passed.")
 
     def test_successful_phone_deploy_reports_that_game_is_running(self) -> None:
         self.window.new_3d_project()

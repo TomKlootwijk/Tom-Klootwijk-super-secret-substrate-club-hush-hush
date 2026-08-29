@@ -1,0 +1,640 @@
+{
+  "claim_boundary": "This is a local packed-move microbenchmark and exact CPU/CUDA payload comparison, not sustained thermal evidence, playing-strength evidence, or a chess solution. Device name and compute capability are self-reported by the content-hashed executable and are checked for target consistency, but do not independently attest which hardware performed the expansion.",
+  "corpus": {
+    "base_corpus_sha256": "347f42b1b1cf237f328237cac197ee45d4d2b0cbcd507a91e5c2a6c3e7040e49",
+    "base_position_count": 528,
+    "expansion": "repeat ordered base corpus cyclically, truncate to positions",
+    "fixture_count": 16,
+    "generator": "splitmix64-v1/sorted-legal-uci-index",
+    "max_random_plies": 80,
+    "random_position_count": 512,
+    "seed": 12591142
+  },
+  "created_at_utc": "2026-08-29T09:43:56.517144Z",
+  "device": {
+    "device_info": {
+      "compute_capability": "12.0",
+      "cuda_compiled": true,
+      "device_available": true,
+      "device_index": 0,
+      "error": "",
+      "free_memory_bytes": 11561598976,
+      "max_threads_per_block": 1024,
+      "multiprocessors": 46,
+      "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+      "total_memory_bytes": 12820480000,
+      "warp_size": 32
+    },
+    "identity_claim_source": "benchmarked_executable_device_info_self_report",
+    "independent_hardware_attestation": false,
+    "nvidia_smi_after": "2026/08/29 11:43:56.502, NVIDIA GeForce RTX 5070 Ti Laptop GPU, 591.59, P8, 51, 12.06, [N/A], 12227, 413",
+    "nvidia_smi_before": "2026/08/29 11:43:43.400, NVIDIA GeForce RTX 5070 Ti Laptop GPU, 591.59, P8, 51, 8.08, [N/A], 12227, 413",
+    "target_validation": {
+      "checks": {
+        "compute_capability_matches": true,
+        "cuda_compiled": true,
+        "device_available": true,
+        "device_index_matches": true,
+        "device_info_error_empty": true,
+        "device_name_matches_rtx5070ti": true,
+        "multiprocessor_count_is_positive": true,
+        "payload_is_object": true,
+        "total_memory_is_positive": true
+      },
+      "claim_source": "benchmarked_executable_device_info_self_report",
+      "expected_compute_capability": "12.0",
+      "expected_device_index": 0,
+      "failures": [],
+      "independent_hardware_attestation": false,
+      "reported_compute_capability": "12.0",
+      "reported_device_index": 0,
+      "reported_name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+      "target_device": "NVIDIA GeForce RTX 5070 Ti (desktop or laptop)",
+      "target_name_pattern": "^NVIDIA\\s+GeForce\\s+RTX\\s+5070\\s+Ti(?:\\s+Laptop)?(?:\\s+GPU)?$",
+      "valid": true
+    }
+  },
+  "executable": {
+    "final_identity": {
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\cpp\\build\\rtx5070ti-release\\ugts-chess-gpu.exe",
+      "sha256": "5fac510a7f8f80cb0797849cc4062b1864e0a4c0a02db5acf017d2a744895f77",
+      "size_bytes": 232960
+    },
+    "identity_stable_through_benchmark": true,
+    "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\cpp\\build\\rtx5070ti-release\\ugts-chess-gpu.exe",
+    "sha256": "5fac510a7f8f80cb0797849cc4062b1864e0a4c0a02db5acf017d2a744895f77",
+    "size_bytes": 232960
+  },
+  "host": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "power_scheme": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+    "python": "3.13.11"
+  },
+  "input": {
+    "count": 131072,
+    "final_identity": {
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\validation\\device\\throughput-v4\\positions-131072-d08cb239c170415796b4a66f4eed50b8.ugcb",
+      "sha256": "40fc2db41d438f7b254702c7ecb94ecc0909bf7a3ebe526affef4a2c5689463f",
+      "size_bytes": 8388672
+    },
+    "identity_stable_through_benchmark": true,
+    "invocation_id": "d08cb239c170415796b4a66f4eed50b8",
+    "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\validation\\device\\throughput-v4\\positions-131072-d08cb239c170415796b4a66f4eed50b8.ugcb",
+    "record_size": 64,
+    "reused_existing_exact_file": false,
+    "sha256": "40fc2db41d438f7b254702c7ecb94ecc0909bf7a3ebe526affef4a2c5689463f",
+    "size_bytes": 8388672,
+    "storage_semantics": "unique per invocation; never reused or overwritten",
+    "unique_per_invocation": true
+  },
+  "measured_runs": {
+    "cpu": [
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4767766000004485,
+        "seconds": 0.400815
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4941164000192657,
+        "seconds": 0.413823
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.46768490003887564,
+        "seconds": 0.397499
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4859288999577984,
+        "seconds": 0.410876
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.5053027999820188,
+        "seconds": 0.398392
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4700029999949038,
+        "seconds": 0.399335
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4744257000274956,
+        "seconds": 0.397247
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4750087999855168,
+        "seconds": 0.396011
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4646290999953635,
+        "seconds": 0.390647
+      },
+      {
+        "backend": "cpu",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.4699216000153683,
+        "seconds": 0.396105
+      }
+    ],
+    "cuda": [
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.1974233000073582,
+        "seconds": 0.096014
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.17690800002310425,
+        "seconds": 0.090555
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18662920000497252,
+        "seconds": 0.094423
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18881010002223775,
+        "seconds": 0.090786
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18852109997533262,
+        "seconds": 0.095172
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18306549999397248,
+        "seconds": 0.094449
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.17663180001545697,
+        "seconds": 0.089155
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.1858858999912627,
+        "seconds": 0.095215
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18090450001182035,
+        "seconds": 0.092483
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18065120000392199,
+        "seconds": 0.089774
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18331560003571212,
+        "seconds": 0.090446
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18264419998740777,
+        "seconds": 0.091582
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.17933880002237856,
+        "seconds": 0.092035
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.17789170000469312,
+        "seconds": 0.087728
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.1808655000058934,
+        "seconds": 0.091263
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18632909998996183,
+        "seconds": 0.090272
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.1812696999986656,
+        "seconds": 0.090444
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.17816999997012317,
+        "seconds": 0.090584
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.19479539996245876,
+        "seconds": 0.092188
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18720200000097975,
+        "seconds": 0.092566
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18722930003423244,
+        "seconds": 0.093003
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18191189999924973,
+        "seconds": 0.092091
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18267449998529628,
+        "seconds": 0.091285
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18656579998787493,
+        "seconds": 0.088531
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.19121349998749793,
+        "seconds": 0.091019
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18814079998992383,
+        "seconds": 0.093152
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18709790002321824,
+        "seconds": 0.09164
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.17901120003079996,
+        "seconds": 0.088696
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.19295310002053156,
+        "seconds": 0.096429
+      },
+      {
+        "backend": "cuda",
+        "cuda_fallback_reason": "",
+        "moves": 3973989,
+        "positions": 131072,
+        "process_wall_seconds": 0.18226640002103522,
+        "seconds": 0.088794
+      }
+    ]
+  },
+  "measurement_boundary": "The native timer excludes input parsing, host output assembly, and file I/O. The CUDA path includes cudaSetDevice, device allocation/free, H2D, kernel execution/synchronization, and D2H. Process-wall samples include process startup, input parsing, and output handling to the OS null device.",
+  "native_seconds": {
+    "cpu": {
+      "max": 0.413823,
+      "min": 0.390647,
+      "p50": 0.3979455,
+      "p95": 0.41249685,
+      "p99": 0.41355777,
+      "raw": [
+        0.400815,
+        0.413823,
+        0.397499,
+        0.410876,
+        0.398392,
+        0.399335,
+        0.397247,
+        0.396011,
+        0.390647,
+        0.396105
+      ],
+      "sample_count": 10
+    },
+    "cuda": {
+      "max": 0.096429,
+      "min": 0.087728,
+      "p50": 0.0914335,
+      "p95": 0.09565445,
+      "p99": 0.09630865000000001,
+      "raw": [
+        0.096014,
+        0.090555,
+        0.094423,
+        0.090786,
+        0.095172,
+        0.094449,
+        0.089155,
+        0.095215,
+        0.092483,
+        0.089774,
+        0.090446,
+        0.091582,
+        0.092035,
+        0.087728,
+        0.091263,
+        0.090272,
+        0.090444,
+        0.090584,
+        0.092188,
+        0.092566,
+        0.093003,
+        0.092091,
+        0.091285,
+        0.088531,
+        0.091019,
+        0.093152,
+        0.09164,
+        0.088696,
+        0.096429,
+        0.088794
+      ],
+      "sample_count": 30
+    }
+  },
+  "parity": {
+    "comparison": "counts and all 256 move slots per position; excludes 64-byte header backend flag",
+    "cpu_output": {
+      "backend_flag": 0,
+      "bytes": 67371072,
+      "full_sha256": "edd48513af111c89705ab631694aed623d064f156e3eec56854d142a987a6466",
+      "moves": 3973989,
+      "positions": 131072,
+      "semantic_payload_sha256": "86fc33c24bf328c3dfa86d3ca087a4076651c3e9be963514415488afe69c6e1b"
+    },
+    "cpu_run": {
+      "backend": "cpu",
+      "cuda_fallback_reason": "",
+      "moves": 3973989,
+      "positions": 131072,
+      "process_wall_seconds": 0.51620420004474,
+      "seconds": 0.395751
+    },
+    "cuda_output": {
+      "backend_flag": 1,
+      "bytes": 67371072,
+      "full_sha256": "d58e56553adaea4b010dcf34e7a1ea6288616edd765e7eaf4eebae26ebc2a655",
+      "moves": 3973989,
+      "positions": 131072,
+      "semantic_payload_sha256": "86fc33c24bf328c3dfa86d3ca087a4076651c3e9be963514415488afe69c6e1b"
+    },
+    "cuda_run": {
+      "backend": "cuda",
+      "cuda_fallback_reason": "",
+      "moves": 3973989,
+      "positions": 131072,
+      "process_wall_seconds": 0.2762563999858685,
+      "seconds": 0.109631
+    },
+    "moves": 3973989,
+    "positions": 131072,
+    "semantic_payload_identical": true
+  },
+  "process_wall_seconds": {
+    "cpu": {
+      "max": 0.5053027999820188,
+      "min": 0.4646290999953635,
+      "p50": 0.4747172500065062,
+      "p95": 0.5002689199987799,
+      "p99": 0.504296023985371,
+      "raw": [
+        0.4767766000004485,
+        0.4941164000192657,
+        0.46768490003887564,
+        0.4859288999577984,
+        0.5053027999820188,
+        0.4700029999949038,
+        0.4744257000274956,
+        0.4750087999855168,
+        0.4646290999953635,
+        0.4699216000153683
+      ],
+      "sample_count": 10
+    },
+    "cuda": {
+      "max": 0.1974233000073582,
+      "min": 0.17663180001545697,
+      "p50": 0.1831905500148423,
+      "p95": 0.19396636498859152,
+      "p99": 0.19666120899433737,
+      "raw": [
+        0.1974233000073582,
+        0.17690800002310425,
+        0.18662920000497252,
+        0.18881010002223775,
+        0.18852109997533262,
+        0.18306549999397248,
+        0.17663180001545697,
+        0.1858858999912627,
+        0.18090450001182035,
+        0.18065120000392199,
+        0.18331560003571212,
+        0.18264419998740777,
+        0.17933880002237856,
+        0.17789170000469312,
+        0.1808655000058934,
+        0.18632909998996183,
+        0.1812696999986656,
+        0.17816999997012317,
+        0.19479539996245876,
+        0.18720200000097975,
+        0.18722930003423244,
+        0.18191189999924973,
+        0.18267449998529628,
+        0.18656579998787493,
+        0.19121349998749793,
+        0.18814079998992383,
+        0.18709790002321824,
+        0.17901120003079996,
+        0.19295310002053156,
+        0.18226640002103522
+      ],
+      "sample_count": 30
+    }
+  },
+  "reproduction": {
+    "arguments": {
+      "cpu_runs": 10,
+      "cuda_runs": 30,
+      "device": 0,
+      "max_plies": 80,
+      "positions": 131072,
+      "random_count": 512,
+      "seed": 12591142,
+      "warmups_per_backend": 2
+    },
+    "script": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_CHESS_2_0_Game_Theoretic_Attempt_RTX5070TI\\UGTS_KC_CHESS_2_0_RTX5070TI\\scripts\\benchmark_rtx5070ti.py",
+    "script_sha256": "d893b74945264976c3da75f5d38526a727a60fe2b6530af98c840376945fcb5e"
+  },
+  "schema": "ugts-chess-rtx-batch-benchmark-v4",
+  "throughput_at_native_p50": {
+    "cpu_moves_per_second": 9986264.450785346,
+    "cpu_positions_per_second": 329371.73557685665,
+    "cuda_moves_per_second": 43463161.75143684,
+    "cuda_positions_per_second": 1433522.7241656503,
+    "cuda_speedup_over_cpu": 4.352294290385909
+  },
+  "timing_isolation": {
+    "concurrent_workloads_monitored": false,
+    "exclusive_gpu_access_enforced": false,
+    "interpretation": "Timing samples are a local snapshot and may be perturbed by concurrent GPU, CPU, thermal, or power-management activity. Artifact isolation does not provide workload isolation."
+  },
+  "warmups": [
+    {
+      "backend": "cuda",
+      "cuda_fallback_reason": "",
+      "moves": 3973989,
+      "positions": 131072,
+      "process_wall_seconds": 0.2152940999949351,
+      "seconds": 0.108053
+    },
+    {
+      "backend": "cuda",
+      "cuda_fallback_reason": "",
+      "moves": 3973989,
+      "positions": 131072,
+      "process_wall_seconds": 0.20004289998905733,
+      "seconds": 0.10019
+    },
+    {
+      "backend": "cpu",
+      "cuda_fallback_reason": "",
+      "moves": 3973989,
+      "positions": 131072,
+      "process_wall_seconds": 0.4773562000482343,
+      "seconds": 0.399554
+    },
+    {
+      "backend": "cpu",
+      "cuda_fallback_reason": "",
+      "moves": 3973989,
+      "positions": 131072,
+      "process_wall_seconds": 0.47747349995188415,
+      "seconds": 0.398142
+    }
+  ]
+}

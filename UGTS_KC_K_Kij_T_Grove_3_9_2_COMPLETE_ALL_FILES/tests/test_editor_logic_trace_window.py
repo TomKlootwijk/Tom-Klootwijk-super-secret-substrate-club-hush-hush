@@ -89,6 +89,29 @@ class EditorLogicTraceWindowTests(unittest.TestCase):
             "Logic Blocks",
         )
 
+    def test_selecting_floor_opens_the_repeatable_number_ready_trail(self) -> None:
+        self.window.document.set_selection(SelectionRef("node", "floor"))
+        self.assertEqual(
+            self.window.graph_page.graph_scene.property("graph_id"),
+            "repeatable_number_lesson",
+        )
+        self.window.play()
+        self.window.play_timer.stop()
+
+        snapshot = self.window.document.logic_trace(
+            "repeatable_number_lesson", "floor"
+        )
+        self.assertIsNotNone(snapshot)
+        self.assertEqual(self.window.graph_page.trace_count, 3)
+        self.assertEqual(
+            self.window.editor_tabs.tabText(self.window._logic_tab_index),
+            "Logic Blocks • 3 ran",
+        )
+        number = self.window.graph_page.graph_scene.nodes["pick_garden_number"]
+        self.assertEqual(number.trace_summary, "Value: -7.724")
+        assert snapshot is not None
+        self.assertEqual(snapshot.trace[1].outputs["value"], -7.724208831787109)
+
     def test_selected_idle_owner_never_shows_another_owners_trail(self) -> None:
         project = first_steps_mobile3d_project()
         nodes = []

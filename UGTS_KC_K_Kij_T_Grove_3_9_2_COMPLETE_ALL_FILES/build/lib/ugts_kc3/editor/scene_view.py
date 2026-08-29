@@ -1,11 +1,12 @@
 """QGraphicsView scene authoring previews for UGTS 2D and mobile 3D."""
 from __future__ import annotations
 
+from dataclasses import dataclass
 import math
 import re
 from typing import Any, Callable, Mapping, Sequence
 
-from PySide6.QtCore import QPointF, QRectF, Qt, Signal
+from PySide6.QtCore import QPointF, QRectF, Qt, QTimer, Signal
 from PySide6.QtGui import (
     QBrush,
     QColor,
@@ -13,6 +14,7 @@ from PySide6.QtGui import (
     QLinearGradient,
     QPainter,
     QPainterPath,
+    QPainterPathStroker,
     QPen,
     QPolygonF,
     QRadialGradient,
@@ -22,6 +24,7 @@ from PySide6.QtWidgets import (
     QGraphicsDropShadowEffect,
     QGraphicsItem,
     QGraphicsItemGroup,
+    QGraphicsObject,
     QGraphicsPathItem,
     QGraphicsRectItem,
     QGraphicsScene,
@@ -32,6 +35,7 @@ from PySide6.QtWidgets import (
 from ..math3d import compose_trs, transform_point
 from ..mobile3d import Mobile3DProject, Node3DRecord
 from ..project import EntitySpec, GameProject
+from ..scatter import ScatterError, collect_scatter_project_spec, scatter_instances
 from ..vector2d import LinearGradient, RadialGradient, VectorAsset2D, VectorPath
 from .document import EditorDocument
 
@@ -201,6 +205,17 @@ class ProjectedMeshItem(QGraphicsItem):
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
         self.setToolTip(f"{_friendly_name(object_id)}\nClick to inspect its 3D transform")
 
+    def set_faces(self, faces: list[tuple[float, QPolygonF, QColor]]) -> None:
+        """Replace projected geometry without rebuilding the QGraphicsScene."""
+
+        self.prepareGeometryChange()
+        self.faces = sorted(faces, key=lambda item: item[0], reverse=True)
+        bounds = QRectF()
+        for _, polygon, _ in self.faces:
+            bounds = bounds.united(polygon.boundingRect())
+        self._bounds = bounds.adjusted(-3, -3, 3, 3)
+        self.update()
+
     def boundingRect(self) -> QRectF:  # type: ignore[override]
         return self._bounds
 
@@ -223,11 +238,181 @@ class ProjectedMeshItem(QGraphicsItem):
             painter.drawPolygon(polygon)
 
 
+class TranslationGizmoHandle(QGraphicsObject):
+    """One wide, child-readable 3D translation axis handle."""
+
+    def __init__(
+        self,
+        object_id: str,
+        axis: str,
+        color: QColor,
+        active_tooltip: str,
+        authority_lock_reason: str | None,
+        on_begin: Callable[["TranslationGizmoHandle", QPointF], bool],
+        on_preview: Callable[["TranslationGizmoHandle", QPointF], None],
+        on_finish: Callable[["TranslationGizmoHandle", QPointF], None],
+        on_help: Callable[[str], None],
+    ) -> None:
+        super().__init__()
+        self.object_id = object_id
+        self.axis = axis
+        self.color = QColor(color)
+        self.active_tooltip = active_tooltip
+        self.authority_lock_reason = authority_lock_reason
+        self.projection_lock_reason: str | None = None
+        self._on_begin = on_begin
+        self._on_preview = on_preview
+        self._on_finish = on_finish
+        self._on_help = on_help
+        self._endpoint = QPointF(24.0, 0.0)
+        self._shape = QPainterPath()
+        self._bounds = QRectF()
+        self._dragging = False
+        self._locked_press = False
+        self.setData(10, object_id)
+        self.setData(11, axis)
+        self.setAcceptedMouseButtons(Qt.MouseButton.LeftButton)
+        self.setAcceptHoverEvents(True)
+        self.setZValue(2_000_000)
+        self._rebuild_shape()
+        self._refresh_interaction()
+
+    @property
+    def endpoint(self) -> QPointF:
+        return QPointF(self._endpoint)
+
+    @property
+    def locked_reason(self) -> str | None:
+        return self.authority_lock_reason or self.projection_lock_reason
+
+    @property
+    def locked(self) -> bool:
+        return self.locked_reason is not None
+
+    def drag_point(self) -> QPointF:
+        """Return a stable point inside the handle's wide hit target."""
+
+        return self._endpoint * 0.72
+
+    def set_geometry(
+        self,
+        origin: QPointF,
+        endpoint: QPointF,
+        *,
+        projection_lock_reason: str | None = None,
+    ) -> None:
+        self.prepareGeometryChange()
+        self._endpoint = QPointF(endpoint)
+        self.projection_lock_reason = projection_lock_reason
+        self._rebuild_shape(prepared=True)
+        self.setPos(origin)
+        self._refresh_interaction()
+        self.update()
+
+    def _rebuild_shape(self, *, prepared: bool = False) -> None:
+        if not prepared:
+            self.prepareGeometryChange()
+        centre_line = QPainterPath()
+        centre_line.moveTo(0.0, 0.0)
+        centre_line.lineTo(self._endpoint)
+        stroker = QPainterPathStroker()
+        stroker.setWidth(18.0)
+        hit_shape = stroker.createStroke(centre_line)
+        knob = QPainterPath()
+        knob.addEllipse(self._endpoint, 9.0, 9.0)
+        self._shape = hit_shape.united(knob)
+        label_bounds = QRectF(
+            self._endpoint.x() - 18.0,
+            self._endpoint.y() - 24.0,
+            42.0,
+            44.0,
+        )
+        self._bounds = self._shape.boundingRect().united(label_bounds).adjusted(-2, -2, 2, 2)
+
+    def _refresh_interaction(self) -> None:
+        reason = self.locked_reason
+        self.setToolTip(reason or self.active_tooltip)
+        self.setCursor(
+            Qt.CursorShape.ForbiddenCursor if reason else Qt.CursorShape.OpenHandCursor
+        )
+
+    def boundingRect(self) -> QRectF:  # type: ignore[override]
+        return self._bounds
+
+    def shape(self) -> QPainterPath:  # type: ignore[override]
+        return self._shape
+
+    def paint(self, painter: QPainter, option, widget=None) -> None:  # type: ignore[override]
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        color = QColor(self.color)
+        if self.locked:
+            color.setAlpha(105)
+        pen = QPen(
+            color,
+            4.0,
+            Qt.PenStyle.DashLine if self.locked else Qt.PenStyle.SolidLine,
+            Qt.PenCapStyle.RoundCap,
+        )
+        pen.setCosmetic(True)
+        painter.setPen(pen)
+        painter.setBrush(color)
+        painter.drawLine(QPointF(), self._endpoint)
+        painter.drawEllipse(self._endpoint, 6.5, 6.5)
+        painter.setPen(QPen(color.lighter(125), 1.0))
+        painter.drawText(self._endpoint + QPointF(8.0, -8.0), self.axis.upper())
+
+    def mousePressEvent(self, event) -> None:  # type: ignore[override]
+        if event.button() != Qt.MouseButton.LeftButton:
+            event.ignore()
+            return
+        if self.locked:
+            self._locked_press = True
+            self._on_help(self.locked_reason or "This handle is locked for now.")
+            event.accept()
+            return
+        self._dragging = self._on_begin(self, event.scenePos())
+        if self._dragging:
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+        event.accept()
+
+    def mouseMoveEvent(self, event) -> None:  # type: ignore[override]
+        if self._locked_press:
+            event.accept()
+            return
+        if self._dragging:
+            self._on_preview(self, event.scenePos())
+            event.accept()
+            return
+        event.ignore()
+
+    def mouseReleaseEvent(self, event) -> None:  # type: ignore[override]
+        self._locked_press = False
+        if self._dragging:
+            self._dragging = False
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
+            self._on_finish(self, event.scenePos())
+        event.accept()
+
+
+@dataclass
+class _TranslationDrag:
+    object_id: str
+    axis: str
+    axis_index: int
+    press_position: QPointF
+    screen_direction: QPointF
+    projected_pixels_per_unit: float
+    base_translation: tuple[float, float, float]
+    current_translation: tuple[float, float, float]
+
+
 class SceneViewport(QGraphicsView):
     """Editable 2D scene view and projected 3D mesh preview."""
 
     selectionRequested = Signal(str)
     entityMoved = Signal(str, object, object)
+    translationPreviewed = Signal(str, object)
+    gizmoHelpRequested = Signal(str)
     mouseScenePosition = Signal(float, float)
 
     def __init__(self, parent=None) -> None:
@@ -256,8 +441,20 @@ class SceneViewport(QGraphicsView):
         self._pan_origin = QPointF()
         self._mesh_items: dict[str, ProjectedMeshItem] = {}
         self._mesh_runtime_transforms: dict[str, tuple[Any, ...]] = {}
+        self._gizmo_handles: dict[str, TranslationGizmoHandle] = {}
+        self._translation_drag: _TranslationDrag | None = None
         self.pressed_keys: set[str] = set()
         self.scene().selectionChanged.connect(self._scene_selection_changed)
+
+    @property
+    def gizmo_handles(self) -> tuple[TranslationGizmoHandle, ...]:
+        """Expose the three current handles for accessibility and focused tests."""
+
+        return tuple(
+            self._gizmo_handles[axis]
+            for axis in ("x", "y", "z")
+            if axis in self._gizmo_handles
+        )
 
     def set_document(self, document: EditorDocument | None) -> None:
         self._document = document
@@ -267,11 +464,17 @@ class SceneViewport(QGraphicsView):
         self.refresh()
 
     def set_playing(self, playing: bool) -> None:
+        if playing:
+            self._cancel_translation_drag()
         self._playing = playing
         self.pressed_keys.clear()
         for item in self.scene().items():
             if isinstance(item, EntityGraphicsItem):
                 item.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable, not playing)
+        if playing:
+            self._remove_3d_gizmo()
+        else:
+            self._rebuild_3d_gizmo_for_selection()
 
     def set_runtime_state(self, state: Mapping[str, Mapping[str, Any]] | None) -> None:
         self._runtime_state = state
@@ -288,7 +491,11 @@ class SceneViewport(QGraphicsView):
 
     def set_selected_id(self, object_id: str | None) -> None:
         if object_id == self._selected_id:
+            if not self._playing and not self._gizmo_handles:
+                self._rebuild_3d_gizmo_for_selection()
             return
+        self._cancel_translation_drag()
+        self._remove_3d_gizmo()
         self._selected_id = object_id
         # Selection must not rebuild/clear the scene from inside an item's mouse
         # handler: Qt would delete the very C++ object still processing the click.
@@ -318,12 +525,15 @@ class SceneViewport(QGraphicsView):
                 item.update()
         finally:
             self._rendering = False
+        self._rebuild_3d_gizmo_for_selection()
 
     def refresh(self, keep_view: bool = True) -> None:
         transform = QTransform(self.transform())
         center = self.mapToScene(self.viewport().rect().center())
         self._rendering = True
         try:
+            self._translation_drag = None
+            self._gizmo_handles.clear()
             self.scene().clear()
             self._mesh_items.clear()
             self._mesh_runtime_transforms.clear()
@@ -608,10 +818,62 @@ class SceneViewport(QGraphicsView):
                 tuple(transform.get("rotation", node.transform.rotation)),
                 tuple(transform.get("scale", node.transform.scale)),
             )
-        if self._selected_id:
+        generated_total = 0
+        generated_shown = 0
+        preview_remaining = 256
+        try:
+            population_spec = collect_scatter_project_spec(project)
+            generated_total = population_spec.generated_copies
+            for group in population_spec.groups:
+                prototype = project.nodes[group.prototype_node_index]
+                copies = scatter_instances(prototype, group)
+                group_limit = min(64, preview_remaining)
+                for instance in copies[:group_limit]:
+                    runtime = {
+                        "translation": instance.translation,
+                        "rotation": instance.rotation,
+                        "scale": instance.scale,
+                    }
+                    faces = self._project_node_faces(
+                        project, prototype, projector, runtime
+                    )
+                    if not faces:
+                        continue
+                    item = ProjectedMeshItem(
+                        prototype.id, faces, prototype.id == self._selected_id
+                    )
+                    item.setData(3, "population_copy")
+                    item.setToolTip(
+                        f"{_friendly_name(prototype.id)} · generated copy "
+                        f"{instance.index + 1} of {group.population.instance_count}\n"
+                        "Click to edit the one compact Populate Area recipe"
+                    )
+                    item.setZValue(-sum(face[0] for face in faces) / len(faces))
+                    self.scene().addItem(item)
+                    generated_shown += 1
+                preview_remaining -= min(len(copies), group_limit)
+                if preview_remaining <= 0:
+                    break
+        except ScatterError:
+            # The Inspector and Project Check surface the friendly validation
+            # message; the viewport stays usable while the recipe is repaired.
+            generated_total = 0
+            generated_shown = 0
+        if self._selected_id and not self._playing:
             self._add_3d_gizmo(projector, project, self._selected_id)
 
-        title = QGraphicsSimpleTextItem(f"3D Scene  •  {project.title}  •  {len(project.nodes)} objects")
+        if generated_total:
+            population_text = (
+                f"{generated_total} generated"
+                if generated_shown == generated_total
+                else f"{generated_total} generated · {generated_shown} shown"
+            )
+            object_text = f"{len(project.nodes)} authored · {population_text}"
+        else:
+            object_text = f"{len(project.nodes)} objects"
+        title = QGraphicsSimpleTextItem(
+            f"3D Scene  •  {project.title}  •  {object_text}"
+        )
         title.setBrush(QColor("#d4e7f7"))
         title.setPos(22, 18)
         title.setZValue(1000000)
@@ -719,30 +981,234 @@ class SceneViewport(QGraphicsView):
         node = next((item for item in project.nodes if item.id == object_id), None)
         if node is None:
             return
-        runtime = self._runtime_state.get(node.id) if self._runtime_state else None
-        origin3d = node.transform.translation if runtime is None else runtime.get("translation", node.transform.translation)
+        packed_movement = isinstance(node.metadata.get("packed_kinematic"), Mapping)
+        directions = {
+            "x": "left or right",
+            "y": "up or down",
+            "z": "forward or backward",
+        }
+        colors = {"x": QColor("#ff647c"), "y": QColor("#71e59a"), "z": QColor("#62a8ff")}
+        for axis in ("x", "y", "z"):
+            lock_reason = None
+            if packed_movement and axis in {"x", "z"}:
+                lock_reason = (
+                    f"Movement Pattern controls {_friendly_name(node.id)} on {axis.upper()}. "
+                    "Choose Off / Static in the Inspector before dragging this handle."
+                )
+            handle = TranslationGizmoHandle(
+                node.id,
+                axis,
+                colors[axis],
+                (
+                    f"Drag {axis.upper()} to move {_friendly_name(node.id)} "
+                    f"{directions[axis]}. Release to keep one undoable move."
+                ),
+                lock_reason,
+                self._begin_translation_drag,
+                self._preview_translation_drag,
+                self._finish_translation_drag,
+                self.gizmoHelpRequested.emit,
+            )
+            self.scene().addItem(handle)
+            self._gizmo_handles[axis] = handle
+        self._update_gizmo_geometry(projector, node, node.transform.translation)
+
+    def _remove_3d_gizmo(self) -> None:
+        for handle in tuple(self._gizmo_handles.values()):
+            if handle.scene() is self.scene():
+                self.scene().removeItem(handle)
+        self._gizmo_handles.clear()
+
+    def _rebuild_3d_gizmo_for_selection(self) -> None:
+        self._remove_3d_gizmo()
+        document = self._document
+        if (
+            self._playing
+            or self._selected_id is None
+            or document is None
+            or not isinstance(document.project, Mobile3DProject)
+        ):
+            return
+        projector = _PerspectiveProjector(document.project, 1280.0, 720.0)
+        self._add_3d_gizmo(projector, document.project, self._selected_id)
+
+    @staticmethod
+    def _axis_vector(axis: str, length: float = 1.0) -> tuple[float, float, float]:
+        if axis == "x":
+            return length, 0.0, 0.0
+        if axis == "y":
+            return 0.0, length, 0.0
+        return 0.0, 0.0, length
+
+    def _update_gizmo_geometry(
+        self,
+        projector: _PerspectiveProjector,
+        node: Node3DRecord,
+        translation: Sequence[float],
+    ) -> None:
+        origin3d = tuple(float(value) for value in translation)
         origin = projector.project(origin3d)
         if origin is None:
+            for handle in self._gizmo_handles.values():
+                handle.setVisible(False)
             return
-        axes = (
-            ((1.2, 0, 0), QColor("#ff647c"), "X"),
-            ((0, 1.2, 0), QColor("#71e59a"), "Y"),
-            ((0, 0, 1.2), QColor("#62a8ff"), "Z"),
-        )
-        for delta, color, label_text in axes:
-            end3d = tuple(origin3d[index] + delta[index] for index in range(3))
-            end = projector.project(end3d)
-            if end is None:
-                continue
-            line = self.scene().addLine(
-                origin[0].x(), origin[0].y(), end[0].x(), end[0].y(), QPen(color, 3)
+        fallback_offsets = {
+            "x": QPointF(28.0, 0.0),
+            "y": QPointF(0.0, -28.0),
+            "z": QPointF(20.0, 20.0),
+        }
+        for axis, handle in self._gizmo_handles.items():
+            delta = self._axis_vector(axis, 1.2)
+            endpoint3d = tuple(origin3d[index] + delta[index] for index in range(3))
+            endpoint = projector.project(endpoint3d)
+            projection_reason = None
+            offset = fallback_offsets[axis]
+            if endpoint is not None:
+                candidate = endpoint[0] - origin[0]
+                length = math.hypot(candidate.x(), candidate.y())
+                if length >= 5.0:
+                    offset = candidate
+                else:
+                    projection_reason = (
+                        f"{axis.upper()} points almost toward the camera in this view. "
+                        f"Use Position {axis.upper()} in the Inspector."
+                    )
+            else:
+                projection_reason = (
+                    f"{axis.upper()} cannot be dragged from this camera view. "
+                    f"Use Position {axis.upper()} in the Inspector."
+                )
+            handle.set_geometry(
+                origin[0], offset, projection_lock_reason=projection_reason
             )
-            line.setZValue(999999)
-            label = QGraphicsSimpleTextItem(label_text)
-            label.setBrush(color)
-            label.setPos(end[0] + QPointF(3, -8))
-            label.setZValue(1000000)
-            self.scene().addItem(label)
+            handle.setVisible(not self._playing)
+
+    def _begin_translation_drag(
+        self, handle: TranslationGizmoHandle, press_position: QPointF
+    ) -> bool:
+        document = self._document
+        if (
+            self._playing
+            or document is None
+            or not isinstance(document.project, Mobile3DProject)
+            or handle.object_id != self._selected_id
+            or handle.locked
+        ):
+            return False
+        node = next(
+            (item for item in document.project.nodes if item.id == handle.object_id), None
+        )
+        if node is None:
+            return False
+        projector = _PerspectiveProjector(document.project, 1280.0, 720.0)
+        base = tuple(float(value) for value in node.transform.translation)
+        origin = projector.project(base)
+        unit_delta = self._axis_vector(handle.axis)
+        unit_endpoint = projector.project(
+            tuple(base[index] + unit_delta[index] for index in range(3))
+        )
+        if origin is None or unit_endpoint is None:
+            return False
+        projected = unit_endpoint[0] - origin[0]
+        projected_length = math.hypot(projected.x(), projected.y())
+        if projected_length <= 1.0e-6:
+            return False
+        self._translation_drag = _TranslationDrag(
+            handle.object_id,
+            handle.axis,
+            {"x": 0, "y": 1, "z": 2}[handle.axis],
+            QPointF(press_position),
+            QPointF(projected.x() / projected_length, projected.y() / projected_length),
+            projected_length,
+            base,
+            base,
+        )
+        return True
+
+    def _preview_translation_drag(
+        self, handle: TranslationGizmoHandle, position: QPointF
+    ) -> None:
+        drag = self._translation_drag
+        if (
+            self._playing
+            or drag is None
+            or drag.object_id != handle.object_id
+            or drag.axis != handle.axis
+        ):
+            return
+        pointer_delta = position - drag.press_position
+        projected_delta = (
+            pointer_delta.x() * drag.screen_direction.x()
+            + pointer_delta.y() * drag.screen_direction.y()
+        )
+        world_delta = projected_delta / drag.projected_pixels_per_unit
+        values = list(drag.base_translation)
+        values[drag.axis_index] = max(
+            -1_000_000.0,
+            min(1_000_000.0, values[drag.axis_index] + world_delta),
+        )
+        translation = tuple(values)
+        if translation == drag.current_translation:
+            return
+        drag.current_translation = translation
+        self._apply_translation_preview(drag.object_id, translation)
+
+    def _apply_translation_preview(
+        self, object_id: str, translation: tuple[float, float, float]
+    ) -> None:
+        document = self._document
+        if document is None or not isinstance(document.project, Mobile3DProject):
+            return
+        project = document.project
+        node = next((item for item in project.nodes if item.id == object_id), None)
+        mesh_item = self._mesh_items.get(object_id)
+        if node is None:
+            return
+        projector = _PerspectiveProjector(project, 1280.0, 720.0)
+        runtime = {
+            "translation": translation,
+            "rotation": node.transform.rotation,
+            "scale": node.transform.scale,
+        }
+        faces = self._project_node_faces(project, node, projector, runtime)
+        if mesh_item is not None:
+            mesh_item.set_faces(faces)
+            if faces:
+                mesh_item.setZValue(-sum(face[0] for face in faces) / len(faces))
+        self._mesh_runtime_transforms[object_id] = (
+            translation,
+            tuple(node.transform.rotation),
+            tuple(node.transform.scale),
+        )
+        self._update_gizmo_geometry(projector, node, translation)
+        self.translationPreviewed.emit(object_id, translation)
+
+    def _finish_translation_drag(
+        self, handle: TranslationGizmoHandle, position: QPointF
+    ) -> None:
+        drag = self._translation_drag
+        if drag is None or drag.object_id != handle.object_id or drag.axis != handle.axis:
+            return
+        self._preview_translation_drag(handle, position)
+        drag = self._translation_drag
+        self._translation_drag = None
+        if drag is None or drag.current_translation == drag.base_translation:
+            return
+        object_id = drag.object_id
+        before = tuple(drag.base_translation)
+        after = tuple(drag.current_translation)
+        # TransformCommand synchronously refreshes the viewport. Queue the
+        # release so this handle is never deleted inside its own mouse event.
+        QTimer.singleShot(
+            0,
+            lambda: self.entityMoved.emit(object_id, before, after),
+        )
+
+    def _cancel_translation_drag(self) -> None:
+        drag = self._translation_drag
+        self._translation_drag = None
+        if drag is not None and drag.current_translation != drag.base_translation:
+            self._apply_translation_preview(drag.object_id, drag.base_translation)
 
     def _scene_selection_changed(self) -> None:
         if self._rendering:
@@ -817,4 +1283,4 @@ class SceneViewport(QGraphicsView):
         super().keyReleaseEvent(event)
 
 
-__all__ = ["SceneViewport"]
+__all__ = ["SceneViewport", "TranslationGizmoHandle"]

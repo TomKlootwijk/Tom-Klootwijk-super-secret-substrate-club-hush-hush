@@ -41,49 +41,85 @@ Gate: zero differences; every prior difference has a minimized fixture.
 Bounded vertical slices now include the host-local `ProofNumberDAG`, a canonical
 structurally shared `PersistentHistory`, a PSK transition adapter that consumes
 history roots without materializing flat sets, a bounded persistent-root tree
-PNS, and an immutable exact-object segment/manifest store. They remain Python
-validation components and are not yet the proof DAG's production storage path.
+PNS, a restartable persistent-root proof-number DAG, and an immutable exact-object
+segment/manifest store. They remain Python validation components. Live DAG nodes
+now retain immutable history-root handles rather than full serialized state/
+history artifacts, and compact load keeps the validated forest physically
+shared. The complete forest and proof graph still reside in host RAM and do not
+page through the segment path.
 
 - [x] Design immutable collision-checked board objects (bounded Python slice).
 - [x] Implement persistent superko set in host RAM (bounded Python slice).
+- [x] Serialize many history versions as one exact shared forest (bounded slice).
+- [x] Carry persistent roots through a restartable proof DAG (bounded Python slice).
+- [x] Add compact shared-forest PNDAG checkpoints (bounded Python slice).
+- [x] Remove retained per-node serialized history artifacts and preserve
+      shared forest roots after compact restart (bounded Python slice).
+- [x] Add exact-prefix immutable checkpoint generations, pinned resume, and
+      externally journaled two-phase recovery (bounded slice).
 - [x] Add Merkle root and content-addressed segment format (bounded Python slice).
-- [ ] Add NVMe spill and restart.
+- [ ] Add campaign-scale live-DAG NVMe paging/restart with explicit resource
+      bounds.
 - [x] Inject deliberate hash collisions and prove equality fallback works.
 
-Bounded component gate: exact history members and roots survive restart and
-injected index collisions. M2 remains open until the proof DAG uses this path and
-storage can spill/restart under an explicit resident-memory bound.
+Bounded component gates: `scripts/storage_gate.py` deterministically replays a
+canonical 19×19-shaped initial/one-move transition, pinned history rehydrate,
+threshold-forced lazy spill, fresh restart, and injected collision fallback.
+`scripts/persistent_pndag_gate.py` checks interrupted/resumed 2×2 threshold
+proofs, compact shared-history checkpoints, exact graph equivalence, fresh
+DAG/history objects, generation recovery, segment-backed byte rehydrate, atomic
+publication failure, and simultaneous state/history digest collisions. The
+storage gate
+proves zero retained Python payload bytes after each fixture spill; the DAG
+fixture separately proves zero retained serialized state/history artifacts.
+Neither is a campaign peak-RSS or total-metadata bound. M2 remains open until
+live persistent DAG records page through compact segment handles and
+campaign-scale memory, mapping/handle, metadata-growth, and recovery costs have
+explicit bounds.
 
 ## M3 — Production DFPN
 
-The bounded Python PNDAG now exercises saturating proof arithmetic, real shared
-states, complete-edge auditing, and interrupted-versus-uninterrupted 2×2
-equivalence. These are fixture-level semantics only; no production C++ DFPN item
-below is complete.
+The bounded Python PNDAGs exercise saturating proof arithmetic, real shared
+states, persistent-root transitions, complete-edge auditing, and
+interrupted-versus-uninterrupted 2×2 equivalence. A native exact host-memory DAG
+now accepts sizes 1×1 through 19×19 and matches the Python flat-DAG graph
+fingerprints for both tested completed 2×2 thresholds. Its canonical
+two-expansion empty-19×19 run remains `UNKNOWN` with `PN=1`, `DN=361`, 725
+nodes, and 724 edges. A strict content-addressed native full-snapshot restart
+slice now exists, but these remain bounded semantics; the production C++ DFPN
+coordinator, campaign-scale paged store, and verifier are not complete.
 
-- [ ] Port proof/disproof semantics to C++.
-- [ ] Add most-proving selection, thresholds, and saturating arithmetic.
+- [x] Port proof/disproof semantics to C++ (bounded host-memory 1×1 through
+      19×19 slice).
+- [x] Add most-proving selection, thresholds, and saturating arithmetic
+      (bounded host-memory slice).
 - [ ] Add complete-state TT with exact/lower/upper records where applicable.
-- [ ] Add deterministic checkpoint/resume.
+- [x] Add deterministic checkpoint/resume (bounded native full-snapshot slice;
+      externally pinned and strict, not campaign-scale paging).
 - [ ] Match Python exact results on all tractable fixtures.
 
 Gate: independent process verifies fixtures after resume.
 
 ## M4 — Exact CUDA expansion
 
-- [ ] Preserve and benchmark the occupancy-mask kernel.
-- [ ] Add deterministic group and liberty kernels.
-- [ ] Add captures and own-liberty/suicide guard.
-- [ ] Encode children without race-dependent ordering.
-- [ ] Verify every GPU child against CPU; reject on mismatch.
-- [ ] Add batched exact-superko lookup or retain CPU verification.
+- [x] Preserve, harden, and exact-reference-test the occupancy-mask kernel
+      (bounded primitive; zero mismatches on the target GPU).
+- [ ] Benchmark occupancy under campaign-shaped batches.
+- [x] Add deterministic group and liberty kernel (bounded local slice).
+- [x] Add captures and canonical own-liberty/no-suicide guard (bounded slice).
+- [x] Encode fixed-slot children without race-dependent ordering (bounded slice).
+- [x] CPU-recompute every point, including GPU rejects, and fail on mismatch.
+- [x] Retain exact-superko, pass, metadata, and proof authority on CPU initially.
 - [ ] Auto-size memory from `cudaMemGetInfo`.
 
-Gate: 10 million randomized/adversarial child comparisons, zero differences.
+The current v1 evidence is 25,281 unique point slots and 50,562 comparisons
+across two parity modes, zero differences. Gate remains: 10 million
+randomized/adversarial child comparisons, zero differences.
 
 ## M5 — Proof-safe reductions
 
-- [ ] Full-history D4 canonicalization with move transform inversion.
+- [ ] Integrate existing full-history D4 canonicalization and inverse move
+      transforms into the production proof-DAG/certificate path.
 - [ ] Exact lower/upper score intervals.
 - [ ] Unconditional-life/territory witness format.
 - [ ] Certified local separators and interface states.

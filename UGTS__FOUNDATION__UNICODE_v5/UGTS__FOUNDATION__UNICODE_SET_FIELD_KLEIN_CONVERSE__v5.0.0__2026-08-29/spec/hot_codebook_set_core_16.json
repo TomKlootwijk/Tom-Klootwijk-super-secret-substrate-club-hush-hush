@@ -1,0 +1,130 @@
+{
+  "$schema": "./ugts5_hot_codebook.schema.json",
+  "atlas_hash": "d4745a198469ff97665825f53d88cdbf8bad27687a3021c89177eedb83a55e91",
+  "atlas_id": "ugts.unicode-set-field-klein-converse.atlas",
+  "codebook_hash": "3a279c68331d697f31e223b71eea898a4239d4da989b6f6d5c1dfd0dfcffb009",
+  "codebook_id": "ugts.set-core-16.v1",
+  "entries": [
+    {
+      "family": 0,
+      "kappa": 0,
+      "literal": "∈",
+      "operator_content_hash": "b33c913acd01f8d9fe32885a1f4f08ccb5dfc738ee9d14068997e117971043c9",
+      "operator_id": "set.membership.element-of",
+      "slot": 0
+    },
+    {
+      "family": 0,
+      "kappa": 1,
+      "literal": "∋",
+      "operator_content_hash": "dfd070fb3b1cb3356d9142cd186e724a54354071e211118981fd432839f8ec84",
+      "operator_id": "set.membership.contains-as-member",
+      "slot": 1
+    },
+    {
+      "family": 1,
+      "kappa": 0,
+      "literal": "∉",
+      "operator_content_hash": "54bbb6d9fc4795ef177fb7fa6563b97ee2f4f977d223b530da6398cfac4134f4",
+      "operator_id": "set.membership.not-element-of",
+      "slot": 2
+    },
+    {
+      "family": 1,
+      "kappa": 1,
+      "literal": "∌",
+      "operator_content_hash": "9087ac9802c5af967f4345ca77bb573e03968a7ee177c453d4e9533f1b8ace09",
+      "operator_id": "set.membership.does-not-contain-as-member",
+      "slot": 3
+    },
+    {
+      "family": 2,
+      "kappa": 0,
+      "literal": "⊂",
+      "operator_content_hash": "48118b319ff12d87cea044f71f69234a0ae513cd63a0f02185a52e28c95bd2bb",
+      "operator_id": "set.inclusion.proper-subset",
+      "slot": 4
+    },
+    {
+      "family": 2,
+      "kappa": 1,
+      "literal": "⊃",
+      "operator_content_hash": "8491529bee798a63ddefaef68b87f70a4a10df5d778362dbbc810e594e21b478",
+      "operator_id": "set.inclusion.proper-superset",
+      "slot": 5
+    },
+    {
+      "family": 3,
+      "kappa": 0,
+      "literal": "⊆",
+      "operator_content_hash": "e8e8e120aa24e122428238bc6b622e1851827c233b956e5a1fecea18c1344077",
+      "operator_id": "set.inclusion.subset-or-equal",
+      "slot": 6
+    },
+    {
+      "family": 3,
+      "kappa": 1,
+      "literal": "⊇",
+      "operator_content_hash": "704ffcc587638d213e384217efe35a5a7ec4de4fbe39c147417d141e5053933f",
+      "operator_id": "set.inclusion.superset-or-equal",
+      "slot": 7
+    },
+    {
+      "family": 4,
+      "kappa": 0,
+      "literal": "⊄",
+      "operator_content_hash": "d3ca7b7308d25b5372df0bc1b767a70885ebcb9a6609b593cd3633523d89bc74",
+      "operator_id": "set.inclusion.not-proper-subset",
+      "slot": 8
+    },
+    {
+      "family": 4,
+      "kappa": 1,
+      "literal": "⊅",
+      "operator_content_hash": "5dbbcec9f72400874323c8b64b5d9bf68ff09ed49597378c4854d08e2697d82c",
+      "operator_id": "set.inclusion.not-proper-superset",
+      "slot": 9
+    },
+    {
+      "family": 5,
+      "kappa": 0,
+      "literal": "⊈",
+      "operator_content_hash": "ade228ceb934bb3fb889e4074f6f2258dfa94df63c03432a482acaf5051bd0b9",
+      "operator_id": "set.inclusion.not-subset-or-equal",
+      "slot": 10
+    },
+    {
+      "family": 5,
+      "kappa": 1,
+      "literal": "⊉",
+      "operator_content_hash": "e1bd92cd18964b7cfc3b7f42bc1f213b73e551dc1693170ed3898d652fcbbb35",
+      "operator_id": "set.inclusion.not-superset-or-equal",
+      "slot": 11
+    },
+    {
+      "family": 6,
+      "kappa": 0,
+      "literal": "⊊",
+      "operator_content_hash": "c220b540822ceb7361275834e1de156079faba361ba31bbb94d0ac752b1f5e9f",
+      "operator_id": "set.inclusion.subset-with-not-equal",
+      "slot": 12
+    },
+    {
+      "family": 6,
+      "kappa": 1,
+      "literal": "⊋",
+      "operator_content_hash": "cfb1c5f8802c797d997b8bb94ed808ca61bd9011f6ca3a9cabc40544a5e516ca",
+      "operator_id": "set.inclusion.superset-with-not-equal",
+      "slot": 13
+    },
+    null,
+    null
+  ],
+  "operator_id_rule": "operator_id = (family << 1) | kappa",
+  "reserved_slots": [
+    14,
+    15
+  ],
+  "schema_id": "ugts.hot-codebook.schema@5.0.0",
+  "version": "1.0.0"
+}

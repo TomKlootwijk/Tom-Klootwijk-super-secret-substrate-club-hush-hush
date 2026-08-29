@@ -63,6 +63,36 @@ class HistoryContext:
         return hashlib.sha256(canonical_json_bytes(self.record())).hexdigest()
 
 
+def validate_history_reachability(position: Position, history: HistoryContext) -> None:
+    """Reject count summaries that necessarily describe play after game end.
+
+    ``HistoryContext`` intentionally stores unordered repetition counts, not a
+    chronological game score.  It therefore cannot prove full historical
+    reachability.  It can prove one important state impossible: once any
+    position has occurred five times, the automatic fivefold draw ends the
+    game while that position is current, so it cannot later appear as a
+    non-current history entry.
+
+    A count of five for the current position remains admissible here.  The
+    caller must pass it through ``automatic_status`` so checkmate/stalemate
+    precedence and automatic-draw semantics are applied normally.
+    """
+
+    if not isinstance(position, Position):
+        raise TypeError("position must be a Position")
+    if not isinstance(history, HistoryContext):
+        raise TypeError("history must be a HistoryContext")
+    current_key = repetition_key(position)
+    if history.occurrence(position) < 1:
+        raise ValueError("history context does not contain the current position")
+    for key, count in history.counts:
+        if key != current_key and count >= 5:
+            raise ValueError(
+                "history contains a non-current position at five occurrences; "
+                "the game had already ended automatically"
+            )
+
+
 @dataclass(frozen=True, slots=True)
 class AutomaticStatus:
     terminal: bool

@@ -1,4 +1,5 @@
 from dataclasses import replace
+import struct
 import unittest
 
 from ugts_kc3.graphpack import compile_graph_pack_bytes, inspect_graph_pack
@@ -52,6 +53,18 @@ class Mobile3DVisualGraphTests(unittest.TestCase):
         self.assertTrue(report.passed, report.to_dict())
         self.assertEqual(project.metadata["template"], "first-steps-mobile-3d")
         world = project.instantiate_world()
+        self.assertEqual(
+            struct.unpack("<I", struct.pack("<f", world.state["repeatable_number"]))[0],
+            0xC0F72CB8,
+        )
+        self.assertIs(world.state["nearby_goal"], True)
+        self.assertIs(world.state["goal_ahead"], True)
+        timer_world = project.instantiate_world()
+        for _ in range(119):
+            timer_world.step()
+        self.assertEqual(timer_world.state["timer_rings"], 0)
+        timer_world.step()
+        self.assertEqual(timer_world.state["timer_rings"], 1)
         goal_before = world.require("goal").position
         world.step(InputFrame3D(action=True))
         self.assertEqual(world.state["score"], 1)
@@ -71,10 +84,15 @@ class Mobile3DVisualGraphTests(unittest.TestCase):
             packed["graphs"],
             [
                 {"id": "dash_lesson", "node_count": 6, "max_steps": 1024},
+                {"id": "find_goal_ahead_lesson", "node_count": 3, "max_steps": 1024},
+                {"id": "find_goal_lesson", "node_count": 3, "max_steps": 1024},
                 {"id": "goal_area_lesson", "node_count": 6, "max_steps": 1024},
+                {"id": "repeatable_number_lesson", "node_count": 3, "max_steps": 1024},
+                {"id": "timer_lesson", "node_count": 2, "max_steps": 1024},
             ],
         )
-        self.assertEqual(packed["binding_count"], 2)
+        self.assertEqual(packed["binding_count"], 6)
+        self.assertEqual(packed["world_binding_count"], 3)
         polar = inspect_polar_pack(
             compile_polar_pack_bytes(project), node_count=len(project.nodes)
         )

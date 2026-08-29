@@ -37,14 +37,31 @@ The runtime currently uses OpenGL ES 3.0. Vulkan is declared optional and reserv
 ## Visual graph boundary
 
 When the source project contains bound visual graphs, export adds the compact `visual_graphs.kcvg`
-asset. The C++20 VM supports Ready, Tick, Input Pressed, Branch, constants/state/NodeData component
-reads, scalar math/comparisons, Set State, Set Component, Emit Event, Set Active and Despawn.
+asset. The C++20 VM's append-only vocabulary currently contains 23 block types: Ready, Tick, When
+Timer Rings, Input Pressed, Trigger Enter/Exit, Branch, constants/state/NodeData component reads,
+Repeatable Random Number, Find Nearby Object, scalar math/comparisons, Set State, Set Component, Emit
+Event, Apply Force, Set Active and Despawn.
+
+`KCVG001` opcode 22 is **Find Nearby Object**. It searches from an explicit object—or from the bound
+owner when available—for the nearest active, alive entity with one portable tag: `player`,
+`collectible`, `goal`, `decorative` or `hazard`. The radius is finite, non-negative and inclusive;
+the origin excludes itself, 2D entities use Z=0, and equal-distance results use UTF-8 entity-id order
+so desktop, web and native Android agree. World Logic has no owner and must name its origin.
+
+`KCVG001` opcode 23 is **When Timer Rings**. Its Seconds and Repeat settings are packed literals:
+Seconds is finite positive binary32 through 86,400 and defaults to 1, while Repeat is boolean and
+defaults to true. Each sparse graph binding owns an active fixed-step count. Inactive entity owners
+pause only their binding; world logic continues, and Ready/restart resets the count. One-shot and
+repeating timers emit at most one ring per update and expose count, remaining fixed-step seconds and
+bound entity. The runtime derives this lifecycle without serialized timer clocks, suspended graphs
+or continuations.
+
 NodeData paths are transform position/translation/scale/rotation (and numeric fields), velocity,
 angular velocity, alive and active. Event payloads must currently be empty; events are delivered to a
-bounded native queue and Android log, and their Python event-record output cannot be linked. The 2D
-Apply Force node, mapping literals, dynamic configuration ports and other component paths fail export
-with an explicit error instead of being ignored. This first native path requires per-node bindings;
-project-level `world_graphs` bindings remain desktop-only.
+bounded native queue and Android log, and their Python event-record output cannot be linked. Mapping
+literals, dynamic configuration ports and other component paths fail export with an explicit error
+instead of being ignored. Both per-node graph bindings and sparse project-level `world_graphs`
+bindings run in the native VM.
 
 ## Packed polar ECS boundary
 
@@ -56,3 +73,15 @@ motion, writes X/Z and heading-as-Y-yaw into that node's existing `NodeData`, an
 graphs and gameplay physics. Authored Y, scale, velocity, collider and material stay untouched. The
 runtime bounds profile/component/LUT counts and rejects truncated packs, unknown references,
 noncanonical signed motion lanes, invalid samples and trailing bytes before starting content.
+
+## Packed static population boundary
+
+A static decorative prototype may carry one bounded **Populate Area** recipe. Export stores each
+group in the optional `scatter_populations.kcsp` (`KCSP392`) sidecar and native GLES draws its
+deterministic binary32 transforms with instancing. Counts are capped at 2–256 objects per group,
+64 groups and 1,024 population objects per project; increasing a count preserves the existing
+SplitMix64-derived prefix.
+
+Population copies are render-only, not independent gameplay entities. Validation therefore rejects
+prototypes that are dynamic or moving, use a collider, Trigger Area, gameplay tag, Logic Blocks or a
+Movement Pattern. Projects without a population emit no KCSP asset.

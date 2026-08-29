@@ -1,0 +1,424 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ugts-chess-gpu-qualification-v2.schema.json",
+  "title": "UGTS Chess CUDA move-generator qualification v2",
+  "description": "Structural transport validation for v2 CUDA qualification evidence. A passing schema does not attest GPU execution; replay verification against caller-selected executable bytes and retained artifacts remains mandatory.",
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "size_bytes": {"type": "integer", "minimum": 1}
+      },
+      "required": ["path", "sha256", "size_bytes"]
+    },
+    "latency_distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "p50": {"type": "number", "minimum": 0},
+        "p95": {"type": "number", "minimum": 0},
+        "p99": {"type": "number", "minimum": 0},
+        "measurement": {"type": "string", "minLength": 1}
+      },
+      "required": ["p50", "p95", "p99", "measurement"]
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "global_index": {"type": "integer", "minimum": 0},
+        "name": {"type": "string", "minLength": 1},
+        "category": {"type": "string", "minLength": 1},
+        "fen": {"type": "string", "minLength": 1},
+        "perft_depth": {"type": ["integer", "null"], "minimum": 1},
+        "perft_nodes": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "required": ["global_index", "name", "category", "fen", "perft_depth", "perft_nodes"]
+    },
+    "device_payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "cuda_compiled": {"type": "boolean"},
+        "device_available": {"type": "boolean"},
+        "device_index": {"type": "integer", "minimum": 0},
+        "name": {"type": "string", "minLength": 1},
+        "compute_capability": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+$"},
+        "total_memory_bytes": {"type": "integer", "minimum": 1},
+        "multiprocessors": {"type": "integer", "minimum": 1},
+        "error": {"type": "string"}
+      },
+      "required": [
+        "cuda_compiled",
+        "device_available",
+        "device_index",
+        "name",
+        "compute_capability",
+        "total_memory_bytes",
+        "multiprocessors",
+        "error"
+      ]
+    },
+    "device_probe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "valid": {"type": "boolean"},
+        "validation_failures": {"type": "array", "items": {"type": "string"}},
+        "device_index": {"type": "integer", "minimum": 0},
+        "payload": {
+          "oneOf": [
+            {"$ref": "#/$defs/device_payload"},
+            {"type": "null"}
+          ]
+        },
+        "parse_error": {"type": ["string", "null"]},
+        "returncode": {"type": "integer"},
+        "stdout": {"type": "string"},
+        "stdout_sha256": {"$ref": "#/$defs/hash"},
+        "stderr": {"type": "string"},
+        "executable": {"$ref": "#/$defs/identity"},
+        "claim_source": {"const": "same_executable_self_report"},
+        "independent_hardware_attestation": {"const": false}
+      },
+      "required": [
+        "valid",
+        "validation_failures",
+        "device_index",
+        "payload",
+        "parse_error",
+        "returncode",
+        "stdout",
+        "stdout_sha256",
+        "stderr",
+        "executable",
+        "claim_source",
+        "independent_hardware_attestation"
+      ]
+    },
+    "input_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "count": {"type": "integer", "minimum": 1},
+        "record_size": {"const": 64},
+        "sha256": {"$ref": "#/$defs/hash"}
+      },
+      "required": ["path", "count", "record_size", "sha256"]
+    },
+    "output_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "count": {"type": "integer", "minimum": 1},
+        "backend_flag": {"type": "integer", "enum": [0, 1]},
+        "backend": {"enum": ["cpu", "cuda"]},
+        "bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "semantic_payload_sha256": {"$ref": "#/$defs/hash"}
+      },
+      "required": [
+        "path",
+        "count",
+        "backend_flag",
+        "backend",
+        "bytes",
+        "sha256",
+        "semantic_payload_sha256"
+      ]
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "batch_index": {"type": "integer", "minimum": 0},
+        "invocation_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+        "invocation_dir": {"type": "string", "minLength": 1},
+        "global_start_index": {"type": "integer", "minimum": 0},
+        "global_stop_index": {"type": "integer", "minimum": 1},
+        "positions": {"type": "integer", "minimum": 1},
+        "proposal_move_count": {"type": "integer", "minimum": 0},
+        "verified_move_count": {"type": "integer", "minimum": 0},
+        "end_to_end_latency_ms": {"type": "number", "minimum": 0},
+        "backend": {"type": ["string", "null"]},
+        "fallback_reason": {"type": "string"},
+        "backend_parse_error": {"type": ["string", "null"]},
+        "cuda_backend": {"type": "boolean"},
+        "fallback_detected": {"type": "boolean"},
+        "native_positions": {"type": ["integer", "null"], "minimum": 0},
+        "native_moves": {"type": ["integer", "null"], "minimum": 0},
+        "native_seconds": {"type": ["number", "null"], "minimum": 0},
+        "native_positions_match_batch_size": {"type": ["boolean", "null"]},
+        "native_moves_match_proposal_count": {"type": ["boolean", "null"]},
+        "native_moves_match_verified_count": {"type": ["boolean", "null"]},
+        "native_count_consistent": {"type": ["boolean", "null"]},
+        "backend_evidence_count_failures": {"type": "array", "items": {"type": "string"}},
+        "input_sha256": {"$ref": "#/$defs/hash"},
+        "input": {"$ref": "#/$defs/input_artifact"},
+        "output_sha256": {"$ref": "#/$defs/hash"},
+        "output_semantic_payload_sha256": {"$ref": "#/$defs/hash"},
+        "output_backend_flag": {"type": "integer", "enum": [0, 1]},
+        "output": {"$ref": "#/$defs/output_artifact"},
+        "executable": {"$ref": "#/$defs/identity"},
+        "executable_identity_matches_qualification": {"type": "boolean"},
+        "artifact_evidence_consistent": {"type": "boolean"},
+        "artifact_evidence_failures": {"type": "array", "items": {"type": "string"}},
+        "native_cuda_latency_ms": {"type": ["number", "null"], "minimum": 0},
+        "executable_stdout": {"type": "string"}
+      },
+      "required": [
+        "batch_index",
+        "invocation_id",
+        "invocation_dir",
+        "global_start_index",
+        "global_stop_index",
+        "positions",
+        "proposal_move_count",
+        "verified_move_count",
+        "end_to_end_latency_ms",
+        "backend",
+        "fallback_reason",
+        "backend_parse_error",
+        "cuda_backend",
+        "fallback_detected",
+        "native_positions",
+        "native_moves",
+        "native_seconds",
+        "native_positions_match_batch_size",
+        "native_moves_match_proposal_count",
+        "native_moves_match_verified_count",
+        "native_count_consistent",
+        "backend_evidence_count_failures",
+        "input_sha256",
+        "input",
+        "output_sha256",
+        "output_semantic_payload_sha256",
+        "output_backend_flag",
+        "output",
+        "executable",
+        "executable_identity_matches_qualification",
+        "artifact_evidence_consistent",
+        "artifact_evidence_failures",
+        "native_cuda_latency_ms",
+        "executable_stdout"
+      ]
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "ugts-chess-cuda-movegen-qualification-v2"},
+    "profile": {"const": "exact-binary-device-self-report-oracle-parity-v2"},
+    "qualified": {"type": "boolean"},
+    "failure_reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "authority": {"const": "python_exact_oracle_via_gpu_protocol.run_batch"},
+    "executable": {"$ref": "#/$defs/identity"},
+    "final_executable": {"$ref": "#/$defs/identity"},
+    "executable_identity_stable": {"type": "boolean"},
+    "executable_identity_failure_count": {"type": "integer", "minimum": 0},
+    "executable_identity_failures": {"type": "array", "items": {"type": "object"}},
+    "device_probe": {"$ref": "#/$defs/device_probe"},
+    "device_probe_valid": {"type": "boolean"},
+    "device_claim_source": {"const": "same_executable_self_report"},
+    "cuda_backend_allowlist": {
+      "const": ["cuda", "cuda-packed-candidate-sm-runtime"]
+    },
+    "gpu_execution_independently_attested": {"const": false},
+    "attestation_boundary": {"type": "string", "minLength": 1},
+    "seed": {"type": "integer", "minimum": 0},
+    "generator": {"const": "splitmix64-v1/sorted-legal-uci-index"},
+    "corpus_sha256": {"$ref": "#/$defs/hash"},
+    "corpus_hash_encoding": {"const": "sha256(ordered canonical FEN + LF)"},
+    "position_count": {"type": "integer", "minimum": 1},
+    "unique_position_count": {"type": "integer", "minimum": 1},
+    "fixture_count": {"type": "integer", "minimum": 1},
+    "random_position_count": {"type": "integer", "minimum": 0},
+    "max_random_plies": {"type": "integer", "minimum": 1},
+    "fixtures": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/fixture"}},
+    "chunk_size": {"type": "integer", "minimum": 1},
+    "batch_count": {"type": "integer", "minimum": 1},
+    "end_to_end_batch_latency_ms": {"$ref": "#/$defs/latency_distribution"},
+    "end_to_end_elapsed_seconds": {"type": "number", "minimum": 0},
+    "end_to_end_positions_per_second": {"type": "number", "minimum": 0},
+    "end_to_end_moves_per_second": {"type": "number", "minimum": 0},
+    "native_cuda_latency_ms": {"$ref": "#/$defs/latency_distribution"},
+    "native_cuda_elapsed_seconds": {"type": "number", "minimum": 0},
+    "native_cuda_positions_per_second": {"type": "number", "minimum": 0},
+    "native_cuda_moves_per_second": {"type": "number", "minimum": 0},
+    "native_cuda_position_count": {"type": "integer", "minimum": 0},
+    "native_cuda_move_count": {"type": "integer", "minimum": 0},
+    "native_cuda_batch_count": {"type": "integer", "minimum": 0},
+    "native_cuda_metrics_complete": {"type": "boolean"},
+    "proposal_move_count": {"type": "integer", "minimum": 0},
+    "verified_move_count": {"type": "integer", "minimum": 0},
+    "parsed_backends": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string"}
+    },
+    "all_batches_cuda": {"type": "boolean"},
+    "all_batches_claim_allowlisted_cuda": {"type": "boolean"},
+    "fallback_batches": {"type": "array", "items": {"type": "object"}},
+    "backend_evidence_count_consistent": {"type": "boolean"},
+    "backend_evidence_failure_count": {"type": "integer", "minimum": 0},
+    "backend_evidence_failures": {"type": "array", "items": {"type": "object"}},
+    "artifact_evidence_consistent": {"type": "boolean"},
+    "artifact_evidence_failure_count": {"type": "integer", "minimum": 0},
+    "artifact_evidence_failures": {"type": "array", "items": {"type": "object"}},
+    "mismatch_count": {"type": "integer", "minimum": 0},
+    "mismatches": {"type": "array", "items": {"type": "object"}},
+    "batches": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/batch"}}
+  },
+  "required": [
+    "schema",
+    "profile",
+    "qualified",
+    "failure_reasons",
+    "authority",
+    "executable",
+    "final_executable",
+    "executable_identity_stable",
+    "executable_identity_failure_count",
+    "executable_identity_failures",
+    "device_probe",
+    "device_probe_valid",
+    "device_claim_source",
+    "cuda_backend_allowlist",
+    "gpu_execution_independently_attested",
+    "attestation_boundary",
+    "seed",
+    "generator",
+    "corpus_sha256",
+    "corpus_hash_encoding",
+    "position_count",
+    "unique_position_count",
+    "fixture_count",
+    "random_position_count",
+    "max_random_plies",
+    "fixtures",
+    "chunk_size",
+    "batch_count",
+    "end_to_end_batch_latency_ms",
+    "end_to_end_elapsed_seconds",
+    "end_to_end_positions_per_second",
+    "end_to_end_moves_per_second",
+    "native_cuda_latency_ms",
+    "native_cuda_elapsed_seconds",
+    "native_cuda_positions_per_second",
+    "native_cuda_moves_per_second",
+    "native_cuda_position_count",
+    "native_cuda_move_count",
+    "native_cuda_batch_count",
+    "native_cuda_metrics_complete",
+    "proposal_move_count",
+    "verified_move_count",
+    "parsed_backends",
+    "all_batches_cuda",
+    "all_batches_claim_allowlisted_cuda",
+    "fallback_batches",
+    "backend_evidence_count_consistent",
+    "backend_evidence_failure_count",
+    "backend_evidence_failures",
+    "artifact_evidence_consistent",
+    "artifact_evidence_failure_count",
+    "artifact_evidence_failures",
+    "mismatch_count",
+    "mismatches",
+    "batches"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {"qualified": {"const": true}},
+        "required": ["qualified"]
+      },
+      "then": {
+        "properties": {
+          "failure_reasons": {"maxItems": 0},
+          "executable_identity_stable": {"const": true},
+          "executable_identity_failure_count": {"const": 0},
+          "executable_identity_failures": {"maxItems": 0},
+          "device_probe_valid": {"const": true},
+          "device_probe": {
+            "properties": {
+              "valid": {"const": true},
+              "validation_failures": {"maxItems": 0},
+              "parse_error": {"type": "null"},
+              "returncode": {"const": 0},
+              "payload": {
+                "allOf": [
+                  {"$ref": "#/$defs/device_payload"},
+                  {
+                    "properties": {
+                      "cuda_compiled": {"const": true},
+                      "device_available": {"const": true},
+                      "error": {"const": ""}
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "native_cuda_elapsed_seconds": {"type": "number", "exclusiveMinimum": 0},
+          "native_cuda_position_count": {"type": "integer", "minimum": 1},
+          "native_cuda_batch_count": {"type": "integer", "minimum": 1},
+          "native_cuda_metrics_complete": {"const": true},
+          "all_batches_cuda": {"const": true},
+          "all_batches_claim_allowlisted_cuda": {"const": true},
+          "fallback_batches": {"maxItems": 0},
+          "backend_evidence_count_consistent": {"const": true},
+          "backend_evidence_failure_count": {"const": 0},
+          "backend_evidence_failures": {"maxItems": 0},
+          "artifact_evidence_consistent": {"const": true},
+          "artifact_evidence_failure_count": {"const": 0},
+          "artifact_evidence_failures": {"maxItems": 0},
+          "mismatch_count": {"const": 0},
+          "mismatches": {"maxItems": 0},
+          "parsed_backends": {
+            "minItems": 1,
+            "items": {"enum": ["cuda", "cuda-packed-candidate-sm-runtime"]}
+          },
+          "batches": {
+            "items": {
+              "properties": {
+                "backend": {"enum": ["cuda", "cuda-packed-candidate-sm-runtime"]},
+                "fallback_reason": {"const": ""},
+                "backend_parse_error": {"type": "null"},
+                "cuda_backend": {"const": true},
+                "fallback_detected": {"const": false},
+                "native_positions": {"type": "integer", "minimum": 1},
+                "native_moves": {"type": "integer", "minimum": 0},
+                "native_seconds": {"type": "number", "exclusiveMinimum": 0},
+                "native_positions_match_batch_size": {"const": true},
+                "native_moves_match_proposal_count": {"const": true},
+                "native_moves_match_verified_count": {"const": true},
+                "native_count_consistent": {"const": true},
+                "backend_evidence_count_failures": {"maxItems": 0},
+                "output_backend_flag": {"const": 1},
+                "output": {
+                  "properties": {
+                    "backend_flag": {"const": 1},
+                    "backend": {"const": "cuda"}
+                  }
+                },
+                "executable_identity_matches_qualification": {"const": true},
+                "artifact_evidence_consistent": {"const": true},
+                "artifact_evidence_failures": {"maxItems": 0},
+                "native_cuda_latency_ms": {"type": "number", "exclusiveMinimum": 0}
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

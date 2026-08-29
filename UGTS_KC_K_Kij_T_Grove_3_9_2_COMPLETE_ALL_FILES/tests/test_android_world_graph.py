@@ -59,6 +59,16 @@ def _world_graph() -> VisualGraph:
             {"entity": "player", "component": "transform", "field": "translation.y", "value": 7.0},
         ),
         GraphNode("push", "action.apply_force", {"entity": "player", "force": [4.0, 6.0]}),
+        GraphNode("world_number", "value.constant", {"value": 392.000001}),
+        GraphNode("pick_number", "value.constant", {"value": 7}),
+        GraphNode("smallest", "value.constant", {"value": -10.0}),
+        GraphNode("largest", "value.constant", {"value": 10.0}),
+        GraphNode("repeatable", "value.seeded_number"),
+        GraphNode(
+            "place_repeatable",
+            "action.set_component",
+            {"entity": "goal", "component": "transform", "field": "translation.y"},
+        ),
         GraphNode("announce", "action.emit_event", {"kind": "world_ready", "payload": {}}),
         GraphNode("trigger_enter", "event.trigger_enter"),
         GraphNode("trigger_exit", "event.trigger_exit"),
@@ -69,6 +79,12 @@ def _world_graph() -> VisualGraph:
         GraphLink("ready", "out", "set_x", "in"),
         GraphLink("set_x", "out", "push", "in"),
         GraphLink("push", "out", "announce", "in"),
+        GraphLink("ready", "out", "place_repeatable", "in"),
+        GraphLink("world_number", "value", "repeatable", "world_number"),
+        GraphLink("pick_number", "value", "repeatable", "pick_number"),
+        GraphLink("smallest", "value", "repeatable", "smallest"),
+        GraphLink("largest", "value", "repeatable", "largest"),
+        GraphLink("repeatable", "value", "place_repeatable", "value"),
         GraphLink("ready", "entity", "announce", "source"),
         GraphLink("tick", "out", "set_y", "in"),
         GraphLink("trigger_enter", "out", "announce_enter", "in"),
@@ -115,6 +131,27 @@ def _sensor_graph() -> VisualGraph:
     )
 
 
+def _invalid_seed_graph() -> VisualGraph:
+    return VisualGraph(
+        "invalid_seed",
+        (
+            GraphNode("ready", "event.ready"),
+            GraphNode("fraction", "value.constant", {"value": 392.1}),
+            GraphNode("repeatable", "value.seeded_number"),
+            GraphNode(
+                "place",
+                "action.set_component",
+                {"entity": "goal", "component": "transform", "field": "translation.y"},
+            ),
+        ),
+        (
+            GraphLink("ready", "out", "place", "in"),
+            GraphLink("fraction", "value", "repeatable", "world_number"),
+            GraphLink("repeatable", "value", "place", "value"),
+        ),
+    )
+
+
 class AndroidWorldGraphTests(unittest.TestCase):
     @unittest.skipUnless(shutil.which("cmake"), "CMake is required for the host graph-VM test")
     def test_world_graph_executes_in_host_cpp_and_ignores_entity_lifecycle(self) -> None:
@@ -133,10 +170,18 @@ class AndroidWorldGraphTests(unittest.TestCase):
         self.assertEqual(info["binding_count"], 3)
         self.assertEqual(info["world_binding_count"], 1)
 
+        invalid_project = blank_mobile3d_project()
+        invalid_graph = _invalid_seed_graph()
+        invalid_project.metadata["visual_graphs"] = [invalid_graph.to_dict()]
+        invalid_project.metadata["world_graphs"] = invalid_graph.id
+        invalid_packed = compile_graph_pack_bytes(invalid_project)
+
         with tempfile.TemporaryDirectory() as temporary:
             temporary_path = Path(temporary)
             pack_path = temporary_path / "world_graph.kcvg"
             pack_path.write_bytes(packed)
+            invalid_pack_path = temporary_path / "invalid_seed.kcvg"
+            invalid_pack_path.write_bytes(invalid_packed)
             build = temporary_path / "build"
             configured = subprocess.run(
                 ["cmake", "-S", str(HOST_TESTS), "-B", str(build)],
@@ -159,7 +204,7 @@ class AndroidWorldGraphTests(unittest.TestCase):
             )
             self.assertTrue(candidates, "CMake did not produce the graph-VM test executable")
             executed = subprocess.run(
-                [str(candidates[0]), str(pack_path)],
+                [str(candidates[0]), str(pack_path), str(invalid_pack_path)],
                 cwd=ROOT,
                 text=True,
                 capture_output=True,

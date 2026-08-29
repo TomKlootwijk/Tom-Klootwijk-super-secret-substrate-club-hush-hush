@@ -28,19 +28,25 @@ from PySide6.QtWidgets import (
 )
 
 from ..androidbuild import (
+    AndroidProfileResult,
     build_apk,
     install_apk,
     launch_android_app,
+    profile_android_app,
     select_android_device,
 )
-from ..androidexport import build_android_project, write_mobile3d_gltf
+from ..androidexport import (
+    android_application_id,
+    build_android_project,
+    write_mobile3d_gltf,
+)
 from ..graphpack import GraphPackError, compile_graph_pack_bytes
 from ..mobile3d import Mesh3DRecord, Mobile3DProject
 from ..project import GameProject
 from ..templates import first_steps_project
 from ..templates3d import first_steps_mobile3d_project
 from ..webexport import build_html5
-from .document import EditorDocument, SelectionRef
+from .document import EditorDocument, LogicTraceSnapshot, SelectionRef
 from .graph import GraphPage
 from .scene_view import SceneViewport
 from .widgets import (
@@ -51,7 +57,6 @@ from .widgets import (
     WelcomePage,
     friendly,
 )
-
 
 def _same_transform(a: Mapping[str, Any] | None, b: Mapping[str, Any] | None) -> bool:
     if a is None or b is None or set(a) != set(b):
@@ -75,6 +80,39 @@ def _safe_build_slug(value: Any) -> str:
         for character in str(value)
     )
     return text.strip("_-")[:64] or "game"
+
+
+def _phone_profile_lines(result: AndroidProfileResult) -> tuple[str, ...]:
+    """Turn one technical capture into short, child-readable Output messages."""
+
+    device = result.model or result.serial
+    headline = (
+        f"{result.summary} on {device}: {result.effective_fps:.2f} FPS, "
+        f"middle frame {result.frame_ms_p50:.3f} ms, slow-frame edge "
+        f"{result.frame_ms_p95:.3f} ms."
+    )
+    details = [
+        headline,
+        (
+            f"Watched {result.frame_intervals} frame gaps in {result.samples} samples; "
+            f"{result.intervals_over_1_5_vsync} missed the active display rhythm."
+        ),
+    ]
+    if result.pss_kib_min is not None and result.pss_kib_max is not None:
+        details.append(
+            "Game memory (PSS): "
+            f"{result.pss_kib_min / 1024:.1f}–{result.pss_kib_max / 1024:.1f} MiB."
+        )
+    if result.gpu_c_min is not None and result.gpu_c_max is not None:
+        details.append(
+            f"GPU temperature: {result.gpu_c_min:.1f}–{result.gpu_c_max:.1f} °C."
+        )
+    if result.crash_buffer_lines:
+        details.append(
+            f"Android reported {result.crash_buffer_lines} crash-buffer line(s) for this run."
+        )
+    details.extend(result.warnings)
+    return tuple(details)
 
 
 class TransformCommand(QUndoCommand):
@@ -111,14 +149,32 @@ class GraphCommand(QUndoCommand):
         self.document = document
         self.before = copy.deepcopy(dict(before))
         self.after = copy.deepcopy(dict(after))
+        self.selection = document.selection
         self.before_dirty = document.is_dirty
+        self.before_storage = document.graph_storage_snapshot(self.selection)
+        self.after_storage = None
+        self.bindings_changed = False
 
     def undo(self) -> None:
-        self.document.set_graph_data(self.before)
+        self.document.restore_graph_storage(
+            self.before_storage,
+            bindings_changed=self.bindings_changed,
+        )
         self.document.set_dirty(self.before_dirty)
 
     def redo(self) -> None:
-        self.document.set_graph_data(self.after)
+        if self.after_storage is None:
+            self.document.set_graph_data(self.after, self.selection)
+            self.after_storage = self.document.graph_storage_snapshot(self.selection)
+            self.bindings_changed = (
+                self.before_storage.object_metadata
+                != self.after_storage.object_metadata
+            )
+            return
+        self.document.restore_graph_storage(
+            self.after_storage,
+            bindings_changed=self.bindings_changed,
+        )
 
 
 class SceneObjectsCommand(QUndoCommand):
@@ -271,6 +327,38 @@ class BuildWorker(QObject):
             self.failed.emit(str(exc))
 
 
+class PhoneProfileWorker(QObject):
+    """Run the read-only ADB sampler away from Qt's GUI thread."""
+
+    finished = Signal(object)
+    failed = Signal(str)
+
+    def __init__(
+        self,
+        application_id: str,
+        *,
+        seconds: float = 30.0,
+        sample_seconds: float = 5.0,
+    ) -> None:
+        super().__init__()
+        self.application_id = application_id
+        self.seconds = float(seconds)
+        self.sample_seconds = float(sample_seconds)
+
+    @Slot()
+    def run(self) -> None:
+        try:
+            self.finished.emit(
+                profile_android_app(
+                    self.application_id,
+                    seconds=self.seconds,
+                    sample_seconds=self.sample_seconds,
+                )
+            )
+        except Exception as exc:
+            self.failed.emit(str(exc))
+
+
 class EditorMainWindow(QMainWindow):
     """Godot-inspired, dockable authoring window for both UGTS project models."""
 
@@ -284,10 +372,15 @@ class EditorMainWindow(QMainWindow):
         self.document = EditorDocument(self)
         self.undo_stack = QUndoStack(self)
         self._playing = False
+        self._active_graph_id: str | None = None
+        self._logic_trace_snapshot: LogicTraceSnapshot | None = None
+        self._preserve_logic_trace_on_stop = False
         self._frame_count = 0
         self._fps_started = time.perf_counter()
         self._build_thread: QThread | None = None
         self._build_worker: BuildWorker | None = None
+        self._profile_thread: QThread | None = None
+        self._profile_worker: PhoneProfileWorker | None = None
         self._create_central_area()
         self._create_docks()
         self._create_actions()
@@ -328,8 +421,8 @@ class EditorMainWindow(QMainWindow):
         scene_layout.addWidget(scene_bar)
         scene_layout.addWidget(self.viewport, 1)
         self.graph_page = GraphPage()
-        self.editor_tabs.addTab(scene_page, "Scene")
-        self.editor_tabs.addTab(self.graph_page, "Logic Blocks")
+        self._scene_tab_index = self.editor_tabs.addTab(scene_page, "Scene")
+        self._logic_tab_index = self.editor_tabs.addTab(self.graph_page, "Logic Blocks")
         self.central_stack.addWidget(self.welcome)
         self.central_stack.addWidget(self.editor_tabs)
         self.setCentralWidget(self.central_stack)
@@ -441,6 +534,11 @@ class EditorMainWindow(QMainWindow):
             self.deploy_to_phone,
             "Build, install, and open the game on the one authorized ADB phone",
         )
+        self.profile_phone_action = self._action(
+            "Check Phone", QStyle.StandardPixmap.SP_DialogApplyButton, "Ctrl+Shift+P",
+            self.profile_running_phone,
+            "Measure the running phone game's frame pace, memory, and heat for 30 seconds",
+        )
         self.fit_action = self._action(
             "Fit Scene", QStyle.StandardPixmap.SP_DesktopIcon, "F", self.viewport.fit_scene,
             "Show the whole scene",
@@ -453,6 +551,7 @@ class EditorMainWindow(QMainWindow):
             self.validate_action,
             self.build_action,
             self.deploy_action,
+            self.profile_phone_action,
         ):
             action.setEnabled(False)
 
@@ -470,7 +569,7 @@ class EditorMainWindow(QMainWindow):
         project_menu = self.menuBar().addMenu("Project")
         project_menu.addActions([
             self.play_action, self.stop_action, self.validate_action,
-            self.build_action, self.deploy_action,
+            self.build_action, self.deploy_action, self.profile_phone_action,
         ])
         view_menu = self.menuBar().addMenu("View")
         view_menu.addAction(self.fit_action)
@@ -503,6 +602,10 @@ class EditorMainWindow(QMainWindow):
         deploy_widget = toolbar.widgetForAction(self.deploy_action)
         if deploy_widget is not None:
             deploy_widget.setObjectName("DeployButton")
+        toolbar.addAction(self.profile_phone_action)
+        profile_widget = toolbar.widgetForAction(self.profile_phone_action)
+        if profile_widget is not None:
+            profile_widget.setObjectName("ProfileButton")
 
     def _create_status_bar(self) -> None:
         self.status_message = QLabel("Ready — open a project or start with a template")
@@ -526,14 +629,18 @@ class EditorMainWindow(QMainWindow):
         self.hierarchy.deleteRequested.connect(self._delete_scene_object)
         self.viewport.selectionRequested.connect(self._viewport_selected)
         self.viewport.entityMoved.connect(self._viewport_moved)
+        self.viewport.translationPreviewed.connect(self._viewport_translation_previewed)
+        self.viewport.gizmoHelpRequested.connect(self._gentle_message)
         self.viewport.mouseScenePosition.connect(
             lambda x, y: self.status_message.setText(f"Scene position  X {x:.1f}   Y {y:.1f}")
         )
         self.inspector.transformEdited.connect(self._inspector_transform_edited)
         self.inspector.resourceEdited.connect(self._inspector_resource_edited)
         self.inspector.triggerAreaEdited.connect(self._inspector_trigger_area_edited)
+        self.inspector.populationEdited.connect(self._inspector_population_edited)
         self.inspector.movementPatternEdited.connect(self._inspector_movement_pattern_edited)
         self.graph_page.graphEdited.connect(self._graph_edited)
+        self.graph_page.graphRequested.connect(self._graph_requested)
         self.graph_page.helpRequested.connect(self._gentle_message)
         self.build_output.buildRequested.connect(self._build_requested)
         self.editor_tabs.currentChanged.connect(self._tab_changed)
@@ -544,6 +651,7 @@ class EditorMainWindow(QMainWindow):
         self.document.transformChanged.connect(self._transform_changed)
         self.document.graphChanged.connect(self._graph_changed)
         self.document.structureChanged.connect(self._structure_changed)
+        self.document.logicTraceChanged.connect(self._logic_trace_changed)
 
     def _show_welcome_state(self) -> None:
         self.central_stack.setCurrentWidget(self.welcome)
@@ -551,6 +659,8 @@ class EditorMainWindow(QMainWindow):
         self.assets_project.set_document(None)
         self.inspector.clear()
         self.build_output.set_kind(None)
+        self._set_logic_read_only(False)
+        self._clear_logic_trace()
 
     @staticmethod
     def _repository_root() -> Path:
@@ -709,13 +819,16 @@ class EditorMainWindow(QMainWindow):
             return False
 
     def _document_loaded(self) -> None:
+        self._active_graph_id = None
         self.central_stack.setCurrentWidget(self.editor_tabs)
         self.hierarchy.set_document(self.document)
         self.assets_project.set_document(self.document)
         self.inspector.clear()
         self.viewport.set_document(self.document)
         self.graph_page.set_project_kind(self.document.kind)
-        self.graph_page.load_data(self.document.graph_data())
+        self._load_graph_context()
+        self._set_logic_read_only(False)
+        self._clear_logic_trace()
         self.build_output.set_kind(self.document.kind)
         self.build_output.append(
             f"Opened {self.document.display_name} as a {'2D' if self.document.kind == '2d' else 'mobile 3D'} project.",
@@ -729,6 +842,7 @@ class EditorMainWindow(QMainWindow):
             action.setEnabled(True)
         self.import_3d_shape_action.setEnabled(self.document.kind == "3d")
         self.deploy_action.setEnabled(self.document.kind == "3d")
+        self.profile_phone_action.setEnabled(self.document.kind == "3d")
         self._update_title()
         self._gentle_message("Ready. Choose an object on the left or click it in the scene.")
 
@@ -743,24 +857,33 @@ class EditorMainWindow(QMainWindow):
         self.setWindowTitle(f"{marker}{self.document.display_name} — UGTS Studio")
 
     def _scene_changed(self, scene_id: str) -> None:
+        self._active_graph_id = None
         self.hierarchy.set_document(self.document)
         self.viewport.refresh(keep_view=False)
-        self.graph_page.load_data(self.document.graph_data())
+        self._load_graph_context()
+        self._refresh_logic_trace()
         self.scene_label.setText(f"Scene: {friendly(scene_id)}")
         self._gentle_message(f"Showing {friendly(scene_id)}.")
 
     def _selection_changed(self, selection: SelectionRef | None) -> None:
+        self._active_graph_id = None
         self.hierarchy.set_selection(selection)
         self.inspector.set_selection(self.document, selection)
-        self.viewport.set_selected_id(None if selection is None else selection.object_id)
+        self.viewport.set_selected_id(
+            None
+            if selection is None or selection.kind == "world_graph"
+            else selection.object_id
+        )
         if selection is None:
             self.status_message.setText("Choose an object to edit it")
+        elif selection.kind == "world_graph":
+            self.status_message.setText(
+                f"World Logic: {friendly(selection.object_id)} — runs for the whole scene"
+            )
         else:
             self.status_message.setText(f"Selected {friendly(selection.object_id)}")
-            current_graph_id = str(self.graph_page.graph_scene.property("graph_id") or "")
-            wanted = self.document.graph_data()
-            if str(wanted.get("id", "")) != current_graph_id:
-                self.graph_page.load_data(wanted)
+        self._load_graph_context()
+        self._refresh_logic_trace()
 
     def _selection_for_record(self, object_id: str) -> SelectionRef:
         kind = "entity" if self.document.kind == "2d" else "node"
@@ -894,14 +1017,85 @@ class EditorMainWindow(QMainWindow):
         self.inspector.set_selection(self.document, self.document.selection)
 
     def _graph_edited(self, graph: Mapping[str, Any]) -> None:
-        before = self.document.graph_data()
+        if self._playing:
+            # A queued editor signal must never replace the runtime snapshot.
+            self._load_graph_context()
+            self._refresh_logic_trace()
+            return
+        context = self.document.graph_authoring_context(self._active_graph_id)
+        if context.creation_problem is not None:
+            self._load_graph_context()
+            self._gentle_message(context.creation_problem)
+            return
+        before = context.graph
         after = dict(graph)
         if before == after:
             return
         self.undo_stack.push(GraphCommand(self.document, before, after))
 
+    def _load_graph_context(self) -> None:
+        if not self.document.is_loaded:
+            return
+        context = self.document.graph_authoring_context(self._active_graph_id)
+        self._active_graph_id = context.active_graph_id
+        self.graph_page.set_context(context)
+
+    def _graph_requested(self, graph_id: str) -> None:
+        if self._playing:
+            return
+        self._active_graph_id = str(graph_id)
+        self._load_graph_context()
+        self._refresh_logic_trace()
+
     def _graph_changed(self) -> None:
-        self.graph_page.load_data(self.document.graph_data())
+        self._load_graph_context()
+        self._refresh_logic_trace()
+
+    def _set_logic_read_only(self, read_only: bool) -> None:
+        """Keep the Logic tab visible while preventing Preview-time edits."""
+
+        self.graph_page.set_read_only(read_only)
+        self.editor_tabs.setTabEnabled(self._logic_tab_index, True)
+
+    def _logic_trace_for_current_context(self) -> LogicTraceSnapshot | None:
+        """Return the newest trail relevant to the graph currently on screen."""
+
+        if not self.document.is_loaded:
+            return None
+        graph_id = str(self.graph_page.graph_scene.property("graph_id") or "")
+        if not graph_id:
+            return None
+        selection = self.document.selection
+        if selection is None:
+            return None
+        if selection.kind == "world_graph":
+            return self.document.logic_trace(graph_id, None)
+        if selection.kind in {"entity", "node"}:
+            # A graph may be bound to several objects. Never present another
+            # object's or the world's run as if it belonged to this object.
+            return self.document.logic_trace(graph_id, selection.object_id)
+        return None
+
+    def _show_logic_trace(self, snapshot: LogicTraceSnapshot | None) -> None:
+        self._logic_trace_snapshot = snapshot
+        self.graph_page.show_trace(snapshot)
+        count = self.graph_page.trace_count
+        title = "Logic Blocks" if count <= 0 else f"Logic Blocks • {count} ran"
+        self.editor_tabs.setTabText(self._logic_tab_index, title)
+
+    def _clear_logic_trace(self) -> None:
+        self._show_logic_trace(None)
+
+    def _refresh_logic_trace(self) -> None:
+        self._show_logic_trace(self._logic_trace_for_current_context())
+
+    def _logic_trace_changed(self, snapshot: LogicTraceSnapshot | None) -> None:
+        if self._preserve_logic_trace_on_stop:
+            return
+        if snapshot is None:
+            self._clear_logic_trace()
+        else:
+            self._refresh_logic_trace()
 
     def _viewport_selected(self, object_id: str) -> None:
         kind = "entity" if self.document.kind == "2d" else "node"
@@ -913,11 +1107,47 @@ class EditorMainWindow(QMainWindow):
         kind = "entity" if self.document.kind == "2d" else "node"
         selection = SelectionRef(kind, object_id, self.document.current_scene_id)
         before = self.document.transform(selection)
-        if before is None or "position" not in before:
+        if before is None:
             return
         after = copy.deepcopy(before)
-        after["position"] = (float(new_position.x()), float(new_position.y()))
+        if "position" in before:
+            after["position"] = (float(new_position.x()), float(new_position.y()))
+        elif "translation" in before:
+            try:
+                translation = tuple(float(value) for value in new_position)
+            except (TypeError, ValueError):
+                return
+            if len(translation) != 3:
+                return
+            after["translation"] = translation
+        else:
+            return
+        if _same_transform(before, after):
+            return
         self.undo_stack.push(TransformCommand(self.document, selection, before, after))
+        if "translation" in after:
+            self._gentle_message(
+                f"Moved {friendly(object_id)}. Undo brings it straight back."
+            )
+
+    def _viewport_translation_previewed(
+        self, object_id: str, translation: object
+    ) -> None:
+        selection = self.document.selection
+        if (
+            self._playing
+            or selection is None
+            or selection.object_id != object_id
+        ):
+            return
+        try:
+            values = tuple(float(value) for value in translation)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            return
+        if self.inspector.preview_3d_translation(object_id, values):
+            self.status_message.setText(
+                f"Placing {friendly(object_id)} — release to keep one undoable move"
+            )
 
     def _inspector_transform_edited(self, transform: Mapping[str, Any]) -> None:
         selection = self.document.selection
@@ -1008,6 +1238,56 @@ class EditorMainWindow(QMainWindow):
             self.build_output.append(f"Trigger Area change paused: {exc}", "warning")
             self._gentle_message(str(exc))
 
+    def _inspector_population_edited(self, values: Mapping[str, Any]) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        try:
+            before = tuple(self.document.scene_objects())
+            index = next(
+                item_index
+                for item_index, record in enumerate(before)
+                if record.id == selection.object_id
+            )
+            updated = self.document.record_with_population(selection, values)
+            # Node3DRecord deliberately excludes metadata from dataclass
+            # equality, while Populate Area is stored entirely in metadata.
+            if updated.to_dict() == before[index].to_dict():
+                return
+            after = before[:index] + (updated,) + before[index + 1 :]
+            enabled = bool(values.get("enabled", False))
+            count = 0
+            if enabled:
+                raw_population = updated.metadata.get("scatter_population", {})
+                count = int(
+                    raw_population.get("instance_count", values.get("instance_count", 8))
+                )
+            command_text = (
+                f"Populate {friendly(selection.object_id)} with {count} Display Objects"
+                if enabled
+                else f"Remove {friendly(selection.object_id)} Populate Area"
+            )
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    command_text,
+                    before,
+                    after,
+                    selection,
+                    selection,
+                    None,
+                )
+            )
+            self._gentle_message(
+                f"One saved object becomes {count} display objects."
+                if enabled
+                else f"Removed Populate Area from {friendly(selection.object_id)}."
+            )
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Populate Area change paused: {exc}", "warning")
+            self._gentle_message(str(exc))
+
     def _inspector_movement_pattern_edited(self, values: Mapping[str, Any]) -> None:
         selection = self.document.selection
         if selection is None or self._playing:
@@ -1054,30 +1334,48 @@ class EditorMainWindow(QMainWindow):
             self.inspector.set_selection(self.document, selection)
 
     def _tab_changed(self, index: int) -> None:
-        if index == 1 and self.document.is_loaded:
-            self.graph_page.load_data(self.document.graph_data())
-            self._gentle_message("Logic Blocks: double-click a block, then drag between its dots.")
+        if index == self._logic_tab_index and self.document.is_loaded:
+            self._load_graph_context()
+            self._refresh_logic_trace()
+            self._gentle_message(
+                "Logic Trail is updating live. Press Stop when you want to edit blocks."
+                if self._playing
+                else "Logic Blocks: double-click a block, then drag between its dots."
+            )
+        elif self.document.is_loaded:
+            self._refresh_logic_trace()
 
     def play(self) -> None:
         if not self.document.is_loaded or self._playing:
             return
+        self._clear_logic_trace()
         try:
             self.document.begin_play()
         except Exception as exc:
+            # begin_play() may retain a useful Ready-error trail even though it
+            # cannot return a runtime world. Keep that new run visible.
+            snapshot = self._logic_trace_for_current_context()
+            self._show_logic_trace(snapshot)
             QMessageBox.warning(self, "Preview could not start", str(exc))
             return
         self._playing = True
-        self.editor_tabs.setCurrentIndex(0)
-        self.editor_tabs.setTabEnabled(1, False)
+        self.editor_tabs.setCurrentIndex(self._scene_tab_index)
+        self._set_logic_read_only(True)
+        self._refresh_logic_trace()
         self.inspector.setEnabled(False)
         self.hierarchy.set_authoring_enabled(False)
         self.viewport.set_playing(True)
+        # set_playing() cancels any transient gizmo preview. The preview signal
+        # is ignored once Preview owns the UI, so restore the Inspector from
+        # the authoritative document before giving focus to the game.
+        self.inspector.set_selection(self.document, self.document.selection)
         self.viewport.setFocus()
         self.play_action.setEnabled(False)
         self.stop_action.setEnabled(True)
         self.save_action.setEnabled(False)
         self.import_3d_shape_action.setEnabled(False)
         self.deploy_action.setEnabled(False)
+        self.profile_phone_action.setEnabled(False)
         self._frame_count = 0
         self._fps_started = time.perf_counter()
         self.play_timer.start()
@@ -1090,6 +1388,7 @@ class EditorMainWindow(QMainWindow):
         try:
             state, events = self.document.step_play(self.viewport.pressed_keys)
             self.viewport.set_runtime_state(state)
+            self._refresh_logic_trace()
             world_state = state.get("__world__", {})
             if "score" in world_state:
                 self.status_message.setText(f"Playing — Score {world_state['score']}")
@@ -1112,11 +1411,17 @@ class EditorMainWindow(QMainWindow):
         if not self._playing:
             return
         self.play_timer.stop()
-        self.document.stop_play()
+        retained_trace = self._logic_trace_snapshot
+        self._preserve_logic_trace_on_stop = True
+        try:
+            self.document.stop_play()
+        finally:
+            self._preserve_logic_trace_on_stop = False
         self._playing = False
         self.viewport.set_playing(False)
         self.viewport.set_runtime_state(None)
-        self.editor_tabs.setTabEnabled(1, True)
+        self._set_logic_read_only(False)
+        self._show_logic_trace(retained_trace)
         self.inspector.setEnabled(True)
         self.hierarchy.set_authoring_enabled(True)
         self.play_action.setEnabled(True)
@@ -1124,6 +1429,10 @@ class EditorMainWindow(QMainWindow):
         self.save_action.setEnabled(True)
         self.import_3d_shape_action.setEnabled(self.document.kind == "3d")
         self.deploy_action.setEnabled(self.document.kind == "3d")
+        self.profile_phone_action.setEnabled(
+            self.document.kind == "3d" and self._profile_thread is None
+            and self._build_thread is None
+        )
         self.status_fps.setText("Preview idle")
         self.build_output.append("Preview stopped; project edits were kept separate.", "good")
         self._gentle_message("Back in edit mode.")
@@ -1192,8 +1501,54 @@ class EditorMainWindow(QMainWindow):
         )
         self._build_requested("android-install", destination)
 
+    def profile_running_phone(self) -> None:
+        """Measure a deployed Poco build without changing or controlling the phone."""
+
+        project = self.document.project
+        if not isinstance(project, Mobile3DProject) or self._playing:
+            self.build_output.append(
+                "Open a Mobile 3D project before checking a running phone.", "warning"
+            )
+            return
+        if self._build_thread is not None or self._profile_thread is not None:
+            return
+        application_id = android_application_id(project.id) + ".pocox7pro"
+        self._start_phone_profile(application_id)
+
+    def _start_phone_profile(self, application_id: str) -> None:
+        """Start one GUI-owned worker after the public preflight has succeeded."""
+
+        self.build_output.set_busy(True)
+        self.build_action.setEnabled(False)
+        self.deploy_action.setEnabled(False)
+        self.profile_phone_action.setEnabled(False)
+        self.build_output.append(
+            "Checking the running phone for 30 seconds. Keep the game visible and the screen on."
+        )
+        self.output_dock.raise_()
+        self._gentle_message("Checking phone smoothness, memory, and heat…")
+        thread = QThread(self)
+        worker = PhoneProfileWorker(application_id)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.finished.connect(self._profile_finished)
+        worker.failed.connect(self._profile_failed)
+        worker.finished.connect(thread.quit)
+        worker.failed.connect(thread.quit)
+        thread.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._profile_thread_cleared)
+        self._profile_thread = thread
+        self._profile_worker = worker
+        thread.start()
+
     def _build_requested(self, target: str, destination_override: Path | None = None) -> None:
-        if not self.document.is_loaded or not target or self._build_thread is not None:
+        if (
+            not self.document.is_loaded
+            or not target
+            or self._build_thread is not None
+            or self._profile_thread is not None
+        ):
             return
         project = self.document.project
         assert project is not None
@@ -1238,6 +1593,7 @@ class EditorMainWindow(QMainWindow):
         self.build_output.set_busy(True)
         self.build_action.setEnabled(False)
         self.deploy_action.setEnabled(False)
+        self.profile_phone_action.setEnabled(False)
         self.build_output.append(f"Building {self.build_output.target.currentText()}…")
         thread = QThread(self)
         worker = BuildWorker(snapshot, target, destination)
@@ -1300,6 +1656,46 @@ class EditorMainWindow(QMainWindow):
         self._build_worker = None
         self.build_action.setEnabled(self.document.is_loaded and not self._playing)
         self.deploy_action.setEnabled(self.document.kind == "3d" and not self._playing)
+        self.profile_phone_action.setEnabled(
+            self.document.kind == "3d" and not self._playing
+            and self._profile_thread is None
+        )
+
+    @Slot(object)
+    def _profile_finished(self, value: object) -> None:
+        result = value
+        if not isinstance(result, AndroidProfileResult):
+            self._profile_failed("The phone returned an unreadable profile result.")
+            return
+        self.build_output.set_busy(False)
+        lines = _phone_profile_lines(result)
+        tone = "good" if not result.warnings else "warning"
+        for index, line in enumerate(lines):
+            self.build_output.append(line, tone if index == 0 else "info")
+        self.output_dock.raise_()
+        self._gentle_message(
+            "Phone check passed."
+            if not result.warnings
+            else "Phone check finished — review the notes below."
+        )
+
+    @Slot(str)
+    def _profile_failed(self, message: str) -> None:
+        self.build_output.set_busy(False)
+        self.build_output.append(f"Phone check stopped: {message}", "warning")
+        self.output_dock.raise_()
+        self._gentle_message(
+            "Connect the phone, open the deployed game, and try Check Phone again."
+        )
+
+    @Slot()
+    def _profile_thread_cleared(self) -> None:
+        self._profile_thread = None
+        self._profile_worker = None
+        self.build_action.setEnabled(self.document.is_loaded and not self._playing)
+        phone_ready = self.document.kind == "3d" and not self._playing
+        self.deploy_action.setEnabled(phone_ready and self._build_thread is None)
+        self.profile_phone_action.setEnabled(phone_ready)
 
     def _gentle_message(self, message: str) -> None:
         self.status_message.setText(message)
@@ -1331,6 +1727,13 @@ class EditorMainWindow(QMainWindow):
             )
             event.ignore()
             return
+        if self._profile_thread is not None and self._profile_thread.isRunning():
+            QMessageBox.information(
+                self, "A phone check is still running",
+                "Please wait for the 30-second phone check to finish before closing UGTS Studio.",
+            )
+            event.ignore()
+            return
         if self._maybe_save():
             self.stop()
             event.accept()
@@ -1341,6 +1744,7 @@ class EditorMainWindow(QMainWindow):
 __all__ = [
     "EditorMainWindow",
     "GraphCommand",
+    "PhoneProfileWorker",
     "SceneObjectsCommand",
     "TransformCommand",
 ]

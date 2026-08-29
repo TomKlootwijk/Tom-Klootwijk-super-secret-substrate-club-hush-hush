@@ -56,9 +56,12 @@ class PNSResult:
 def _sat_add(values: list[int]) -> int:
     total = 0
     for value in values:
-        total += value
-        if total >= INF:
-            return INF
+        if type(value) is not int or not 0 <= value <= INF:
+            raise ValueError("proof number is outside uint64")
+        if total > INF - value:
+            total = INF
+        else:
+            total += value
     return total
 
 

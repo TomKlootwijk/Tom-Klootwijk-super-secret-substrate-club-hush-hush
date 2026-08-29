@@ -42,6 +42,8 @@ QToolButton:disabled, QPushButton:disabled { color: #65758a; background: #151e2b
 #StopButton { background: #6c2b3c; border-color: #d85b79; color: white; font-weight: 600; }
 #DeployButton { background: #155b76; border-color: #38bde7; color: white; font-weight: 700; padding: 7px 14px; }
 #DeployButton:hover { background: #197493; }
+#ProfileButton { background: #3b315f; border-color: #8f78d8; color: white; font-weight: 650; }
+#ProfileButton:hover { background: #4a3c78; }
 QDockWidget { color: #cbd9e9; font-weight: 600; }
 QDockWidget::title {
     background: #111c2a;

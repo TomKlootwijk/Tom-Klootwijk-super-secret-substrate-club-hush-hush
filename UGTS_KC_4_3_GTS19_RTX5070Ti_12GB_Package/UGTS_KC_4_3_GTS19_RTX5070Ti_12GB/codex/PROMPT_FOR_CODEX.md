@@ -11,11 +11,16 @@ root status is UNKNOWN. Do not claim otherwise.
 M1 C++ semantic parity is complete and archived under the v2 evidence gate.
 Continue **M2 — persistent exact history** from `codex/TASKS.md`. The bounded
 canonical PSK trie, root-backed transition/tree-PNS adapters, and immutable
-lazy segment/restart layer are implemented and tested. The next task is to wire
-those exact roots and disk-backed objects into the restartable proof DAG, then
-bound metadata/mmap handles and add campaign recovery semantics. Keep the Python
-engine as oracle. Do not start CUDA proof work before the integrated M2 identity
-and persistence gates pass.
+lazy segment/restart layer are implemented and tested. A bounded restartable
+persistent-root PNDAG now matches uninterrupted 2×2 threshold proofs, but its
+live state bytes duplicate complete history artifacts. A compact shared-forest
+checkpoint codec, exact-prefix immutable generations, externally journaled
+two-phase recovery, and bounded segment-backed rehydrate are implemented, but
+they still fully materialize snapshots. The next task is to replace live
+duplicates with disk-backed forest/segment handles and then bound peak RAM,
+metadata growth, mmap handles, and recovery work. Keep the Python engine as
+oracle. Do not start CUDA proof work before the integrated M2 identity and
+persistence gates pass.
 
 Requirements:
 

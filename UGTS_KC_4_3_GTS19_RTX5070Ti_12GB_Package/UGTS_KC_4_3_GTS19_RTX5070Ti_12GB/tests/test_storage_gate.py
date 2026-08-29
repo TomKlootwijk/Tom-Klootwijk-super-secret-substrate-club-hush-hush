@@ -47,6 +47,7 @@ def test_archive_records_exact_restart_spill_pin_and_collision_checks() -> None:
     payload = _archived()
     case = payload["case"]
     history = case["persistent_history"]
+    forest = case["persistent_history_forest"]
     parity = case["persistent_engine_parity"]
     store = case["segment_store"]
     collision = payload["collision_case"]
@@ -57,6 +58,25 @@ def test_archive_records_exact_restart_spill_pin_and_collision_checks() -> None:
     assert history["one_move_member_count"] == 2
     assert history["canonical_across_fresh_stores"] is True
     assert history["trusted_root_pin_verifications"] == 2
+    assert forest["root_count"] == 2
+    assert forest["ordered_member_counts"] == [1, 2]
+    assert forest["ordered_root_sha256s"] == [
+        history["initial_root_sha256"],
+        history["one_move_root_sha256"],
+    ]
+    assert forest["separate_root_board_record_count"] == 3
+    assert forest["board_record_count"] == 2
+    assert forest["deduplicated_board_record_count"] == 1
+    assert forest["separate_root_node_record_count"] == 98
+    assert forest["node_record_count"] == 66
+    assert forest["deduplicated_node_record_count"] == 32
+    assert forest["shared_node_identity_count"] == 32
+    assert forest["separate_root_serialized_byte_count"] == 30_918
+    assert forest["serialized_byte_count"] == 20_915
+    assert forest["serialized_byte_savings"] == 10_003
+    assert forest["canonical_across_fresh_stores"] is True
+    assert forest["trusted_pin_verifications"] == 2
+    assert forest["exact_root_roundtrips"] == 4
     assert parity["matched_exact_field_count"] == 8
     assert parity["exact_history_members_equal"] is True
 
@@ -66,9 +86,12 @@ def test_archive_records_exact_restart_spill_pin_and_collision_checks() -> None:
     assert store["resident_payload_bytes_after_spill"] == 0
     assert store["resident_payload_bytes_after_restart"] == 0
     assert store["exact_reads_after_restart"] == 3
-    assert store["pinned_history_rehydrate_root_sha256"] == history[
-        "one_move_root_sha256"
+    assert store["pinned_forest_artifact_sha256"] == forest["artifact_sha256"]
+    assert store["pinned_forest_rehydrate_member_counts"] == [1, 2]
+    assert store["pinned_forest_rehydrate_root_sha256s"] == forest[
+        "ordered_root_sha256s"
     ]
+    assert store["pinned_forest_shared_node_identity_count"] == 32
     assert len(store["segment_sha256s"]) == 2
 
     assert collision["index_digest"] == COLLISION_DIGEST_HEX
@@ -100,6 +123,7 @@ def test_validator_rejects_noncanonical_or_unpinned_envelopes(mutation) -> None:
     (
         (("case", "move"), True),
         (("case", "persistent_history", "board_bytes"), True),
+        (("case", "persistent_history_forest", "node_record_count"), True),
         (("case", "persistent_engine_parity", "captured"), False),
         (("case", "segment_store", "object_count"), True),
         (("collision_case", "object_count"), True),
@@ -119,15 +143,32 @@ def test_validator_does_not_accept_booleans_as_exact_integers(
 
 def test_validator_rejects_broken_cross_field_and_collision_invariants() -> None:
     payload = copy.deepcopy(_archived())
-    payload["case"]["segment_store"]["pinned_history_rehydrate_root_sha256"] = (
-        "0" * 64
-    )
-    with pytest.raises(ValueError, match="trusted root pin"):
+    payload["case"]["segment_store"]["pinned_forest_rehydrate_root_sha256s"][
+        1
+    ] = "0" * 64
+    with pytest.raises(ValueError, match="ordered root pins"):
         validate_storage_evidence(payload)
 
     payload = copy.deepcopy(_archived())
-    payload["case"]["segment_store"]["object_refs"]["history"]["kind"] = "board"
+    payload["case"]["segment_store"]["pinned_forest_artifact_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="artifact pin"):
+        validate_storage_evidence(payload)
+
+    payload = copy.deepcopy(_archived())
+    payload["case"]["segment_store"]["object_refs"]["history_forest"][
+        "kind"
+    ] = "board"
     with pytest.raises(ValueError, match="kind"):
+        validate_storage_evidence(payload)
+
+    payload = copy.deepcopy(_archived())
+    payload["case"]["persistent_history_forest"]["ordered_root_sha256s"].reverse()
+    with pytest.raises(ValueError, match="ordered roots"):
+        validate_storage_evidence(payload)
+
+    payload = copy.deepcopy(_archived())
+    payload["case"]["persistent_history_forest"]["serialized_byte_savings"] += 1
+    with pytest.raises(ValueError, match="integer|compactness"):
         validate_storage_evidence(payload)
 
     payload = copy.deepcopy(_archived())
@@ -210,4 +251,3 @@ def test_cli_generation_is_canonical_and_revalidates(tmp_path: Path) -> None:
         check=False,
     )
     assert validate.returncode == 0, validate.stderr
-

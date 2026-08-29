@@ -16,6 +16,26 @@ Every build includes:
 
 The generated game includes a fixed-step accumulator, Canvas vector rendering, gradients, transform/camera handling, broad-phase and narrow-phase collision, player controller, hazards, collectibles, particles, procedural audio/music, HUD, keyboard/gamepad/touch input, pause/restart/mute, local save/load, best score and F3 diagnostics.
 
+The retained 2D browser VM executes the full current 24-block vocabulary. **Find Nearby Object** uses
+the same explicit/bound origin, five portable tags, inclusive radius, active/alive nearest selection
+and deterministic object-ID tie-break as desktop and native opcode 22. This parity covers the graph
+operation; there is still no Mobile 3D browser player.
+
+**Find Object Ahead** is append-only native-pack opcode 24 and runs in this retained browser VM too.
+Its Vector4 stores world-axis X/Y/Z plus minimum cosine. Browser `Math.fround` follows the shared,
+source-aligned GSP4 normalization and candidate-direction schedule before the inclusive cosine gate.
+There is no runtime trigonometry; rotating or scaling Origin does not change the saved cone. In 2D,
+the editor's Right/Left/Down/Up presets map to +X/-X/+Y/-Y in the canvas's Y-down world.
+
+**When Timer Rings** is append-only opcode 23 in compact native packs and has the same browser
+contract. **Seconds** is a literal finite positive binary32 value through 86,400 (default 1), and
+**Repeat** is a literal boolean (default true). Every browser graph binding counts its own active
+fixed updates. An inactive entity pauses that binding while the world keeps updating; Ready and game
+restart reset it. The block rings at most once per update and exposes count, remaining fixed-step
+seconds and bound entity. Browser save data does not serialize a timer clock or suspended graph, so a
+restart begins the timer lifecycle again. Headless parity fixtures cover desktop, browser, KCVG and
+native Android behavior.
+
 ## Browser persistence
 
 Local storage keys are namespaced by `project.metadata.id`. Save data is intended for convenience, not security. Changing the project ID creates a separate storage namespace.

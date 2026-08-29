@@ -1,18 +1,28 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import redirect_stdout
 import io
 import json
 from pathlib import Path
+import subprocess
+import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
 from scripts.benchmark_rtx5070ti import (
     BenchmarkError,
+    _create_unique_input_artifact,
+    _file_identity,
+    _publish_report_atomically,
+    _run_expansion,
     main,
     require_stable_executable_identity,
+    require_stable_input_identity,
     validate_rtx5070ti_device_info,
 )
+from ugts_chess.position import Position
 
 
 def device_payload(
@@ -117,6 +127,103 @@ class RTX5070TiBenchmarkDeviceValidationTests(unittest.TestCase):
         self.assertTrue(payload["parity_passed"])
         self.assertNotIn("qualified", payload)
         self.assertFalse(payload["gpu_execution_independently_attested"])
+
+    def test_07_concurrent_runs_create_distinct_immutable_inputs(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_name:
+            output_dir = Path(temp_name)
+            workers = 4
+            barrier = threading.Barrier(workers)
+
+            def create_input() -> tuple[Path, dict[str, object]]:
+                barrier.wait(timeout=5)
+                return _create_unique_input_artifact(output_dir, [Position.initial()])
+
+            with ThreadPoolExecutor(max_workers=workers) as executor:
+                results = list(executor.map(lambda _: create_input(), range(workers)))
+
+            paths = [path for path, _meta in results]
+            self.assertEqual(len(set(paths)), workers)
+            self.assertTrue(all(path.is_file() for path in paths))
+            self.assertEqual(len({meta["sha256"] for _path, meta in results}), 1)
+            self.assertTrue(all(meta["unique_per_invocation"] for _path, meta in results))
+            self.assertTrue(all(not meta["reused_existing_exact_file"] for _path, meta in results))
+
+    def test_08_mutation_during_native_run_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_name:
+            output_dir = Path(temp_name)
+            input_path, _meta = _create_unique_input_artifact(output_dir, [Position.initial()])
+            identity = _file_identity(input_path)
+
+            def mutate_input(_command: object) -> subprocess.CompletedProcess[str]:
+                raw = bytearray(input_path.read_bytes())
+                raw[-1] ^= 1
+                input_path.write_bytes(raw)
+                return subprocess.CompletedProcess(
+                    args=[],
+                    returncode=0,
+                    stdout=(
+                        '{"backend":"cuda","positions":1,"moves":20,'
+                        '"seconds":0.001,"cuda_fallback_reason":""}'
+                    ),
+                    stderr="",
+                )
+
+            with patch("scripts.benchmark_rtx5070ti._run_checked", side_effect=mutate_input):
+                with self.assertRaisesRegex(BenchmarkError, "input identity changed"):
+                    _run_expansion(
+                        Path("gpu.exe"),
+                        input_path,
+                        output_dir / "moves.ugmv",
+                        backend="cuda",
+                        device=0,
+                        expected_positions=1,
+                        expected_input_identity=identity,
+                    )
+
+    def test_09_atomic_publication_rejects_concurrent_overwrite(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_name:
+            report_path = Path(temp_name) / "benchmark-1.json"
+            barrier = threading.Barrier(2)
+
+            def publish(marker: int) -> tuple[str, int]:
+                barrier.wait(timeout=5)
+                try:
+                    _publish_report_atomically(report_path, {"marker": marker}, force=False)
+                except BenchmarkError:
+                    return "rejected", marker
+                return "published", marker
+
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                outcomes = list(executor.map(publish, (1, 2)))
+
+            self.assertEqual([status for status, _marker in outcomes].count("published"), 1)
+            self.assertEqual([status for status, _marker in outcomes].count("rejected"), 1)
+            published_marker = next(marker for status, marker in outcomes if status == "published")
+            self.assertEqual(json.loads(report_path.read_text(encoding="utf-8")), {"marker": published_marker})
+            self.assertEqual(list(report_path.parent.glob("*.tmp")), [])
+
+    def test_10_prepublication_input_mutation_prevents_report(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_name:
+            output_dir = Path(temp_name)
+            input_path, _meta = _create_unique_input_artifact(output_dir, [Position.initial()])
+            identity = _file_identity(input_path)
+            report_path = output_dir / "benchmark-1.json"
+
+            def mutate_then_check() -> None:
+                raw = bytearray(input_path.read_bytes())
+                raw[-1] ^= 1
+                input_path.write_bytes(raw)
+                require_stable_input_identity(identity, input_path)
+
+            with self.assertRaisesRegex(BenchmarkError, "input identity changed"):
+                _publish_report_atomically(
+                    report_path,
+                    {"schema": "ugts-chess-rtx-batch-benchmark-v4"},
+                    force=False,
+                    pre_publish_check=mutate_then_check,
+                )
+            self.assertFalse(report_path.exists())
+            self.assertEqual(list(output_dir.glob("*.tmp")), [])
 
 
 if __name__ == "__main__":

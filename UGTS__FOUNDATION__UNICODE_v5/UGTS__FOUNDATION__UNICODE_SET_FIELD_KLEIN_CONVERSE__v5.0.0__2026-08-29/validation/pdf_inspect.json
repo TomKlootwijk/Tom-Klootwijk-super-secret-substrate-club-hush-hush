@@ -1,0 +1,27 @@
+{
+  "path": "/mnt/data/UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29/report/UGTS__FOUNDATION__UNICODE_SET_FIELD_KLEIN_CONVERSE__v5.0.0__2026-08-29.pdf",
+  "pages": 31,
+  "encrypted": false,
+  "page_sizes": [
+    {
+      "width_pt": 595,
+      "height_pt": 842,
+      "count": 31
+    }
+  ],
+  "metadata": {
+    "/Creator": "LaTeX with hyperref",
+    "/Title": "UGTS Foundation 5.0 - Unicode Set-Field and Klein-Converse Atlas",
+    "/Subject": "Content-addressed Unicode operators, signed set fields, Klein-converse parity and packed log-polar LUT execution",
+    "/Author": "Prepared for Tom Klootwijk",
+    "/Keywords": "UGTS, Unicode, signed distance field, set theory, Klein bottle, SIMD, log-polar, operator atlas",
+    "/Producer": "xdvipdfmx (20240305)",
+    "/CreationDate": "D:20260829120157Z"
+  },
+  "outline_items": 88,
+  "form_fields": 0,
+  "attachments": 0,
+  "annotations": 88,
+  "poppler_pdfinfo": "Title:           UGTS Foundation 5.0 - Unicode Set-Field and Klein-Converse Atlas\nSubject:         Content-addressed Unicode operators, signed set fields, Klein-converse parity and packed log-polar LUT execution\nKeywords:        UGTS, Unicode, signed distance field, set theory, Klein bottle, SIMD, log-polar, operator atlas\nAuthor:          Prepared for Tom Klootwijk\nCreator:         LaTeX with hyperref\nProducer:        xdvipdfmx (20240305)\nCreationDate:    Sat Aug 29 12:01:57 2026 UTC\nCustom Metadata: no\nMetadata Stream: no\nTagged:          no\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           31\nEncrypted:       no\nPage size:       595.28 x 841.89 pts (A4)\nPage rot:        0\nFile size:       1863535 bytes\nOptimized:       no\nPDF version:     1.5",
+  "poppler_pdffonts": "name                                 type              encoding         emb sub uni object ID\n------------------------------------ ----------------- ---------------- --- --- --- ---------\nFPFPBO+DejaVuSans-Bold               CID TrueType      Identity-H       yes yes yes      6  0\nWJRVNZ+DejaVuSans                    CID TrueType      Identity-H       yes yes yes      8  0\nGHTIKV+DejaVuSansMono                CID TrueType      Identity-H       yes yes yes     12  0\nKWHLFP+DejaVuSans-Oblique            CID TrueType      Identity-H       yes yes yes     19  0\nQSPKAC+LatinModernMath-Regular-Identity-H CID Type 0C       Identity-H       yes yes yes     52  0"
+}

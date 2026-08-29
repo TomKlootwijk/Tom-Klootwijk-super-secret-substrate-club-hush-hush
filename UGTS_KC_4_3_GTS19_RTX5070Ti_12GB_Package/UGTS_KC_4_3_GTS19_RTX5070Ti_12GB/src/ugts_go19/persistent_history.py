@@ -3,7 +3,8 @@
 This is a deliberately small, non-production vertical slice.  It stores exact
 one-byte-per-point Go boards in a persistent 256-way radix trie over a 256-bit
 index digest.  Digests select a collision bucket; raw board bytes decide
-membership.  It does not implement NVMe segments, a WAL, or a Merkle forest.
+membership.  Its compact multi-root forest is still a bounded host-RAM JSON
+artifact; this module does not implement NVMe segments or a WAL.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from .digests import canonical_json_bytes, sha256_hex
 
 
 SERIALIZATION_FORMAT = "UGTS-PY-PERSISTENT-PSK-v1"
+FOREST_SERIALIZATION_FORMAT = "UGTS-PY-PERSISTENT-PSK-FOREST-v1"
 BOARD_RECORD_FORMAT = "UGTS-PY-PSK-BOARD-v1"
 BRANCH_RECORD_FORMAT = "UGTS-PY-PSK-BRANCH-v1"
 LEAF_RECORD_FORMAT = "UGTS-PY-PSK-LEAF-v1"
@@ -232,6 +234,41 @@ def _decode_json(raw: bytes) -> dict[str, Any]:
     return payload
 
 
+def _atomic_save_bytes(path: str | Path, serialized: bytes) -> None:
+    """Atomically publish already-serialized bytes for one sequential writer."""
+
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=destination.parent,
+        prefix=f".{destination.name}.tmp-{os.getpid()}-",
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            descriptor = -1
+            written = stream.write(serialized)
+            if written != len(serialized):
+                raise OSError("short history artifact write")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+        if os.name == "posix":
+            flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
+            directory_fd = os.open(destination.parent, flags)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+
 class PersistentHistory:
     """Persistent exact PSK set for host-RAM validation.
 
@@ -275,6 +312,10 @@ class PersistentHistory:
         self._owner = object()
         self._digest_index: dict[str, list[_BoardObject]] = {}
         self._exact_index: dict[bytes, _BoardObject] = {}
+        # Single-writer insertion journal used only while a caller has an
+        # active speculative graph-expansion transaction.
+        self._intern_journal: list[_BoardObject] = []
+        self._intern_transaction_token: object | None = None
 
     @property
     def empty_root(self) -> HistoryRoot:
@@ -317,18 +358,48 @@ class PersistentHistory:
         if existing is not None:
             return existing
         digest = self._digest(raw)
-        bucket = self._digest_index.setdefault(digest, [])
-        for board in bucket:
-            if board.raw == raw:
-                return board
+        bucket = self._digest_index.get(digest)
+        if bucket is not None:
+            for board in bucket:
+                if board.raw == raw:
+                    return board
         board = _BoardObject(
             raw=raw,
             index_digest=digest,
             content_sha256=_board_content_sha256(self.board_size, raw),
         )
-        bucket.append(board)
-        bucket.sort(key=lambda item: item.raw)
-        self._exact_index[raw] = board
+        new_bucket = bucket is None
+        if new_bucket:
+            # Construct the immutable object before publishing an empty bucket:
+            # an allocation failure must not strand cache metadata.
+            bucket = []
+        insert_at = len(bucket)
+        for index, candidate in enumerate(bucket):
+            if raw < candidate.raw:
+                insert_at = index
+                break
+        try:
+            if new_bucket:
+                self._digest_index[digest] = bucket
+            # Insert directly at the canonical position.  Sorting the complete
+            # collision bucket can allocate and may leave pre-existing entries
+            # reordered if interrupted.
+            bucket.insert(insert_at, board)
+            self._exact_index[raw] = board
+            if self._intern_transaction_token is not None:
+                self._intern_journal.append(board)
+        except BaseException:
+            if self._intern_journal and self._intern_journal[-1] is board:
+                self._intern_journal.pop()
+            if self._exact_index.get(raw) is board:
+                del self._exact_index[raw]
+            for index, candidate in enumerate(bucket):
+                if candidate is board:
+                    del bucket[index]
+                    break
+            if not bucket and self._digest_index.get(digest) is bucket:
+                del self._digest_index[digest]
+            raise
         return board
 
     def _adopt_verified_board(self, board: _BoardObject) -> _BoardObject:
@@ -343,13 +414,92 @@ class PersistentHistory:
             ):
                 raise ValueError("exact board has conflicting verified metadata")
             return existing
-        bucket = self._digest_index.setdefault(board.index_digest, [])
-        if any(candidate.raw == board.raw for candidate in bucket):
-            raise ValueError("exact board index is internally inconsistent")
-        bucket.append(board)
-        bucket.sort(key=lambda item: item.raw)
-        self._exact_index[board.raw] = board
+        bucket = self._digest_index.get(board.index_digest)
+        if bucket is not None:
+            for candidate in bucket:
+                if candidate.raw == board.raw:
+                    raise ValueError("exact board index is internally inconsistent")
+        new_bucket = bucket is None
+        if new_bucket:
+            bucket = []
+        insert_at = len(bucket)
+        for index, candidate in enumerate(bucket):
+            if board.raw < candidate.raw:
+                insert_at = index
+                break
+        try:
+            if new_bucket:
+                self._digest_index[board.index_digest] = bucket
+            bucket.insert(insert_at, board)
+            self._exact_index[board.raw] = board
+            if self._intern_transaction_token is not None:
+                self._intern_journal.append(board)
+        except BaseException:
+            if self._intern_journal and self._intern_journal[-1] is board:
+                self._intern_journal.pop()
+            if self._exact_index.get(board.raw) is board:
+                del self._exact_index[board.raw]
+            for index, candidate in enumerate(bucket):
+                if candidate is board:
+                    del bucket[index]
+                    break
+            if (
+                not bucket
+                and self._digest_index.get(board.index_digest) is bucket
+            ):
+                del self._digest_index[board.index_digest]
+            raise
         return board
+
+    def _begin_intern_transaction(self) -> object:
+        """Begin one non-nested single-writer speculative cache transaction."""
+
+        if self._intern_transaction_token is not None:
+            raise RuntimeError("a history intern transaction is already active")
+        if self._intern_journal:
+            raise ValueError("history intern journal is internally inconsistent")
+        token = object()
+        self._intern_transaction_token = token
+        return token
+
+    def _commit_intern_transaction(self, token: object) -> None:
+        """Keep transaction additions and release their temporary journal."""
+
+        if token is not self._intern_transaction_token:
+            raise ValueError("history intern transaction token is invalid")
+        self._intern_journal.clear()
+        self._intern_transaction_token = None
+
+    def _rollback_intern_transaction(self, token: object) -> None:
+        """Discard transaction cache objects in reverse insertion order.
+
+        Callers must first discard every speculative root that could reference
+        these objects. This is an internal single-writer transaction primitive,
+        not a general concurrent cache API.
+        """
+
+        if token is not self._intern_transaction_token:
+            raise ValueError("history intern transaction token is invalid")
+        while self._intern_journal:
+            board = self._intern_journal[-1]
+            if self._exact_index.get(board.raw) is not board:
+                raise ValueError("history intern journal is internally inconsistent")
+            bucket = self._digest_index.get(board.index_digest)
+            if bucket is None:
+                raise ValueError("history digest bucket disappeared during rollback")
+            bucket_index = None
+            for index, candidate in enumerate(bucket):
+                if candidate is board:
+                    bucket_index = index
+                    break
+            if bucket_index is None:
+                raise ValueError("history board disappeared from its digest bucket")
+            del self._exact_index[board.raw]
+            del bucket[bucket_index]
+            if not bucket:
+                del self._digest_index[board.index_digest]
+            self._intern_journal.pop()
+        self._intern_transaction_token = None
 
     def _require_root(self, root: HistoryRoot) -> None:
         if not isinstance(root, HistoryRoot):
@@ -470,9 +620,70 @@ class PersistentHistory:
         return tuple(sorted(boards))
 
     def roots_equal(self, first: HistoryRoot, second: HistoryRoot) -> bool:
-        """Compare exact members, never only Merkle roots or trie paths."""
+        """Compare exact immutable tries, never only their Merkle roots.
 
-        return self.members(first) == self.members(second)
+        The digest and Merkle fields are safe negative filters: equal exact
+        values necessarily produce equal metadata.  Equal metadata is never
+        sufficient, however, so the final comparison walks branch slots and
+        exact leaf board bytes.  This retains collision independence without
+        materializing or sorting the complete member set.
+        """
+
+        self._require_root(first)
+        self._require_root(second)
+        if first._node is second._node:
+            return True
+        if first.count != second.count or first.root_sha256 != second.root_sha256:
+            return False
+        if first._node is None or second._node is None:
+            return first._node is second._node
+
+        stack: list[tuple[_TrieNode, _TrieNode]] = [
+            (first._node, second._node)
+        ]
+        while stack:
+            first_node, second_node = stack.pop()
+            if first_node is second_node:
+                continue
+            if type(first_node) is not type(second_node):
+                return False
+            if isinstance(first_node, _Leaf):
+                if not isinstance(second_node, _Leaf):
+                    return False
+                if (
+                    first_node.depth != second_node.depth
+                    or first_node.index_digest != second_node.index_digest
+                    or first_node.count != second_node.count
+                    or len(first_node.boards) != len(second_node.boards)
+                ):
+                    return False
+                if any(
+                    first_board.raw != second_board.raw
+                    for first_board, second_board in zip(
+                        first_node.boards,
+                        second_node.boards,
+                        strict=True,
+                    )
+                ):
+                    return False
+                continue
+            if not isinstance(second_node, _Branch):
+                return False
+            if (
+                first_node.depth != second_node.depth
+                or first_node.count != second_node.count
+                or len(first_node.children) != len(second_node.children)
+            ):
+                return False
+            for (first_slot, first_child), (second_slot, second_child) in zip(
+                first_node.children,
+                second_node.children,
+                strict=True,
+            ):
+                if first_slot != second_slot:
+                    return False
+                stack.append((first_child, second_child))
+        return True
 
     def shared_node_count(self, first: HistoryRoot, second: HistoryRoot) -> int:
         """Count immutable trie node objects shared by two versions."""
@@ -652,35 +863,169 @@ class PersistentHistory:
     def save_root(self, path: str | Path, root: HistoryRoot) -> None:
         """Atomically publish one root artifact for a sequential writer."""
 
-        destination = Path(path)
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        serialized = self.serialize_root(root)
-        descriptor, temporary_name = tempfile.mkstemp(
-            dir=destination.parent,
-            prefix=f".{destination.name}.tmp-{os.getpid()}-",
+        _atomic_save_bytes(path, self.serialize_root(root))
+
+    def _forest_payload_without_hash(
+        self, roots: Iterable[HistoryRoot]
+    ) -> dict[str, Any]:
+        """Build one exact table shared by an ordered sequence of roots."""
+
+        root_sequence = tuple(roots)
+        nodes_by_identity: dict[int, _TrieNode] = {}
+        boards_by_raw: dict[bytes, _BoardObject] = {}
+        for root in root_sequence:
+            nodes, boards = self._validate_root_content(root)
+            for node in nodes:
+                nodes_by_identity.setdefault(id(node), node)
+            for board in boards:
+                previous = boards_by_raw.get(board.raw)
+                if previous is not None and (
+                    previous.index_digest != board.index_digest
+                    or previous.content_sha256 != board.content_sha256
+                ):
+                    raise ValueError("exact board has conflicting forest metadata")
+                boards_by_raw.setdefault(board.raw, board)
+
+        boards = sorted(
+            boards_by_raw.values(),
+            key=lambda board: (board.index_digest, board.raw),
         )
-        temporary = Path(temporary_name)
-        try:
-            with os.fdopen(descriptor, "wb") as stream:
-                descriptor = -1
-                stream.write(serialized)
-                stream.flush()
-                os.fsync(stream.fileno())
-            os.replace(temporary, destination)
-            if os.name == "posix":
-                flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0)
-                directory_fd = os.open(destination.parent, flags)
-                try:
-                    os.fsync(directory_fd)
-                finally:
-                    os.close(directory_fd)
-        finally:
-            if descriptor >= 0:
-                os.close(descriptor)
-            try:
-                temporary.unlink()
-            except FileNotFoundError:
-                pass
+        board_ids = {board.raw: board_id for board_id, board in enumerate(boards)}
+
+        # Canonical node ids are assigned bottom-up.  Exact board ids and
+        # already-canonical child ids form the key, so neither allocation nor
+        # root traversal order can affect the shared node table.  Hashes remain
+        # verification metadata and are never used as the deduplication key.
+        nodes_at_depth: dict[int, list[_TrieNode]] = {}
+        for node in nodes_by_identity.values():
+            nodes_at_depth.setdefault(node.depth, []).append(node)
+        node_ids_by_identity: dict[int, int] = {}
+        node_records: list[dict[str, Any]] = []
+        for depth in range(_LEAF_DEPTH, -1, -1):
+            semantic_groups: dict[tuple[Any, ...], list[_TrieNode]] = {}
+            for node in nodes_at_depth.get(depth, []):
+                if isinstance(node, _Leaf):
+                    key: tuple[Any, ...] = (
+                        "leaf",
+                        node.index_digest,
+                        tuple(board_ids[board.raw] for board in node.boards),
+                    )
+                else:
+                    try:
+                        child_refs = tuple(
+                            (slot, node_ids_by_identity[id(child)])
+                            for slot, child in node.children
+                        )
+                    except KeyError as exc:
+                        raise ValueError(
+                            "forest branch references an unvalidated child"
+                        ) from exc
+                    key = ("branch", child_refs)
+                semantic_groups.setdefault(key, []).append(node)
+
+            for key in sorted(semantic_groups):
+                equivalent_nodes = semantic_groups[key]
+                representative = equivalent_nodes[0]
+                node_id = len(node_records)
+                for node in equivalent_nodes:
+                    node_ids_by_identity[id(node)] = node_id
+                if isinstance(representative, _Leaf):
+                    record: dict[str, Any] = {
+                        "boards": [
+                            {
+                                "board_id": board_ids[board.raw],
+                                "content_sha256": board.content_sha256,
+                                "raw_hex": board.raw.hex(),
+                            }
+                            for board in representative.boards
+                        ],
+                        "content_sha256": representative.content_sha256,
+                        "count": representative.count,
+                        "depth": representative.depth,
+                        "id": node_id,
+                        "index_digest": representative.index_digest,
+                        "kind": "leaf",
+                    }
+                else:
+                    record = {
+                        "children": [
+                            {
+                                "child_id": node_ids_by_identity[id(child)],
+                                "child_sha256": child.content_sha256,
+                                "slot": slot,
+                            }
+                            for slot, child in representative.children
+                        ],
+                        "content_sha256": representative.content_sha256,
+                        "count": representative.count,
+                        "depth": representative.depth,
+                        "id": node_id,
+                        "kind": "branch",
+                    }
+                node_records.append(record)
+
+        root_records: list[dict[str, Any]] = []
+        for root_id, root in enumerate(root_sequence):
+            root_records.append(
+                {
+                    "id": root_id,
+                    "member_count": root.count,
+                    "node_ref": (
+                        None
+                        if root._node is None
+                        else {
+                            "content_sha256": root._node.content_sha256,
+                            "node_id": node_ids_by_identity[id(root._node)],
+                        }
+                    ),
+                    "root_sha256": root.root_sha256,
+                }
+            )
+
+        return {
+            "board_bytes": self.board_bytes,
+            "board_record_count": len(boards),
+            "board_size": self.board_size,
+            "boards": [
+                {
+                    "content_sha256": board.content_sha256,
+                    "id": board_ids[board.raw],
+                    "index_digest": board.index_digest,
+                    "raw_hex": board.raw.hex(),
+                }
+                for board in boards
+            ],
+            "digest_index": {
+                "collision_checked": True,
+                "name": self.digest_name,
+            },
+            "format": FOREST_SERIALIZATION_FORMAT,
+            "node_record_count": len(node_records),
+            "nodes": node_records,
+            "root_count": len(root_records),
+            "roots": root_records,
+        }
+
+    def serialize_forest(self, roots: Iterable[HistoryRoot]) -> bytes:
+        """Serialize ordered roots with globally deduplicated immutable records.
+
+        The shared board/node tables are independent of input traversal and
+        allocation order.  The root-reference array intentionally preserves
+        caller order so a surrounding state table can use the same indexes.
+        """
+
+        payload = self._forest_payload_without_hash(roots)
+        payload["artifact_sha256"] = sha256_hex(canonical_json_bytes(payload))
+        return canonical_json_bytes(payload) + b"\n"
+
+    def save_forest(
+        self,
+        path: str | Path,
+        roots: Iterable[HistoryRoot],
+    ) -> None:
+        """Atomically publish one compact forest for a sequential writer."""
+
+        _atomic_save_bytes(path, self.serialize_forest(roots))
 
     @staticmethod
     def _verify_envelope(payload: dict[str, Any]) -> None:
@@ -709,6 +1054,34 @@ class PersistentHistory:
             raise ValueError("history artifact content hash mismatch")
         if payload["format"] != SERIALIZATION_FORMAT:
             raise ValueError("unsupported history serialization format")
+
+    @staticmethod
+    def _verify_forest_envelope(payload: dict[str, Any]) -> str:
+        _require_keys(
+            payload,
+            {
+                "artifact_sha256",
+                "board_bytes",
+                "board_record_count",
+                "board_size",
+                "boards",
+                "digest_index",
+                "format",
+                "node_record_count",
+                "nodes",
+                "root_count",
+                "roots",
+            },
+            "history forest artifact",
+        )
+        provided = _require_sha256(payload["artifact_sha256"], "artifact hash")
+        unhashed = dict(payload)
+        unhashed.pop("artifact_sha256")
+        if provided != sha256_hex(canonical_json_bytes(unhashed)):
+            raise ValueError("history forest artifact content hash mismatch")
+        if payload["format"] != FOREST_SERIALIZATION_FORMAT:
+            raise ValueError("unsupported history forest serialization format")
+        return provided
 
     def _rehydrate_payload(
         self,
@@ -1040,6 +1413,486 @@ class PersistentHistory:
             raise ValueError("returned history root differs from the verified root")
         return result
 
+    def _rehydrate_forest_payload(
+        self,
+        payload: dict[str, Any],
+        *,
+        expected_artifact_sha256: str | None,
+        expected_root_sha256s: Iterable[str] | None,
+    ) -> tuple[HistoryRoot, ...]:
+        """Verify a shared forest completely before adopting any records."""
+
+        stored_artifact_sha = self._verify_forest_envelope(payload)
+        if expected_artifact_sha256 is not None:
+            expected_artifact_sha256 = _require_sha256(
+                expected_artifact_sha256,
+                "expected artifact hash",
+            )
+            if stored_artifact_sha != expected_artifact_sha256:
+                raise ValueError(
+                    "history forest does not match the expected artifact"
+                )
+
+        size = _require_int(payload["board_size"], "board_size", minimum=1)
+        board_bytes = _require_int(
+            payload["board_bytes"], "board_bytes", minimum=1
+        )
+        if size != self.board_size or board_bytes != self.board_bytes:
+            raise ValueError("history forest artifact board size mismatch")
+        digest_index = _require_keys(
+            payload["digest_index"],
+            {"collision_checked", "name"},
+            "digest_index",
+        )
+        if digest_index["collision_checked"] is not True:
+            raise ValueError("history forest requires collision-checked indexing")
+        if digest_index["name"] != self.digest_name:
+            raise ValueError("history forest digest function mismatch")
+
+        declared_board_count = _require_int(
+            payload["board_record_count"],
+            "board_record_count",
+            minimum=0,
+        )
+        declared_node_count = _require_int(
+            payload["node_record_count"],
+            "node_record_count",
+            minimum=0,
+        )
+        declared_root_count = _require_int(
+            payload["root_count"], "root_count", minimum=0
+        )
+
+        raw_board_records = payload["boards"]
+        if not isinstance(raw_board_records, list):
+            raise ValueError("forest board records must be an array")
+        if len(raw_board_records) != declared_board_count:
+            raise ValueError("forest board record count mismatch")
+        board_objects: list[_BoardObject] = []
+        board_sort_keys: list[tuple[str, bytes]] = []
+        exact_raws: set[bytes] = set()
+        for expected_id, raw_record in enumerate(raw_board_records):
+            record = _require_keys(
+                raw_record,
+                {"content_sha256", "id", "index_digest", "raw_hex"},
+                "forest board record",
+            )
+            board_id = _require_int(record["id"], "board id", minimum=0)
+            if board_id != expected_id:
+                raise ValueError(
+                    "forest board record ids must be contiguous and ordered"
+                )
+            if type(record["raw_hex"]) is not str:
+                raise ValueError("forest board raw_hex must be text")
+            try:
+                raw = bytes.fromhex(record["raw_hex"])
+            except ValueError as exc:
+                raise ValueError("forest board raw_hex is invalid") from exc
+            if record["raw_hex"] != raw.hex():
+                raise ValueError(
+                    "forest board raw_hex must be canonical lowercase hex"
+                )
+            self._validate_board(raw)
+            if raw in exact_raws:
+                raise ValueError(
+                    "duplicate exact forest board records are not permitted"
+                )
+            exact_raws.add(raw)
+            index_digest = _require_sha256(
+                record["index_digest"], "forest board index digest"
+            )
+            if index_digest != self._digest(raw):
+                raise ValueError("forest board index digest mismatch")
+            content_hash = _require_sha256(
+                record["content_sha256"], "forest board content hash"
+            )
+            if content_hash != _board_content_sha256(self.board_size, raw):
+                raise ValueError("forest board content hash mismatch")
+            board_objects.append(_BoardObject(raw, index_digest, content_hash))
+            board_sort_keys.append((index_digest, raw))
+        if board_sort_keys != sorted(board_sort_keys):
+            raise ValueError("forest board records are not in canonical order")
+
+        raw_node_records = payload["nodes"]
+        if not isinstance(raw_node_records, list):
+            raise ValueError("forest node records must be an array")
+        if len(raw_node_records) != declared_node_count:
+            raise ValueError("forest node record count mismatch")
+
+        nodes: list[_TrieNode] = []
+        prefixes: list[bytes] = []
+        edges: list[tuple[int, ...]] = []
+        board_refs: list[tuple[int, ...]] = []
+        semantic_node_keys: set[tuple[Any, ...]] = set()
+        canonical_order_keys: list[tuple[Any, ...]] = []
+        for expected_id, raw_record in enumerate(raw_node_records):
+            if not isinstance(raw_record, dict):
+                raise ValueError("forest node record must be an object")
+            kind = raw_record.get("kind")
+            keys = (
+                {
+                    "boards",
+                    "content_sha256",
+                    "count",
+                    "depth",
+                    "id",
+                    "index_digest",
+                    "kind",
+                }
+                if kind == "leaf"
+                else {
+                    "children",
+                    "content_sha256",
+                    "count",
+                    "depth",
+                    "id",
+                    "kind",
+                }
+                if kind == "branch"
+                else set()
+            )
+            if not keys:
+                raise ValueError("forest node record has an unknown kind")
+            record = _require_keys(raw_record, keys, "forest node record")
+            node_id = _require_int(record["id"], "node id", minimum=0)
+            if node_id != expected_id:
+                raise ValueError(
+                    "forest node record ids must be contiguous and ordered"
+                )
+            depth = _require_int(record["depth"], "node depth", minimum=0)
+            declared_count = _require_int(
+                record["count"], "node count", minimum=1
+            )
+            declared_hash = _require_sha256(
+                record["content_sha256"], "node content hash"
+            )
+
+            if kind == "leaf":
+                if depth != _LEAF_DEPTH:
+                    raise ValueError(
+                        "forest leaf must occur at the complete digest depth"
+                    )
+                index_digest = _require_sha256(
+                    record["index_digest"], "forest leaf index digest"
+                )
+                raw_refs = record["boards"]
+                if not isinstance(raw_refs, list) or not raw_refs:
+                    raise ValueError(
+                        "forest leaf board references must be nonempty"
+                    )
+                selected: list[_BoardObject] = []
+                selected_ids: list[int] = []
+                selected_raws: list[bytes] = []
+                for raw_ref in raw_refs:
+                    ref = _require_keys(
+                        raw_ref,
+                        {"board_id", "content_sha256", "raw_hex"},
+                        "forest leaf board reference",
+                    )
+                    board_id = _require_int(
+                        ref["board_id"], "board_id", minimum=0
+                    )
+                    if not 0 <= board_id < len(board_objects):
+                        raise ValueError(
+                            "forest leaf references a missing board record"
+                        )
+                    board = board_objects[board_id]
+                    if ref["raw_hex"] != board.raw.hex():
+                        raise ValueError(
+                            "forest leaf board reference raw bytes mismatch"
+                        )
+                    if ref["content_sha256"] != board.content_sha256:
+                        raise ValueError(
+                            "forest leaf board reference content hash mismatch"
+                        )
+                    if board.index_digest != index_digest:
+                        raise ValueError(
+                            "forest leaf board digest does not match its path"
+                        )
+                    selected.append(board)
+                    selected_ids.append(board_id)
+                    selected_raws.append(board.raw)
+                if selected_raws != sorted(set(selected_raws)):
+                    raise ValueError(
+                        "forest leaf collision bucket is noncanonical or duplicated"
+                    )
+                node = _make_leaf(index_digest, selected)
+                if declared_count != len(selected):
+                    raise ValueError("forest leaf member count mismatch")
+                prefix = bytes.fromhex(index_digest)
+                child_ids: tuple[int, ...] = ()
+                referenced_board_ids = tuple(selected_ids)
+                semantic_key: tuple[Any, ...] = (
+                    depth,
+                    "leaf",
+                    index_digest,
+                    referenced_board_ids,
+                )
+                local_order_key: tuple[Any, ...] = (
+                    "leaf",
+                    index_digest,
+                    referenced_board_ids,
+                )
+            else:
+                if not 0 <= depth < _LEAF_DEPTH:
+                    raise ValueError(
+                        "forest branch depth is outside the digest path"
+                    )
+                raw_refs = record["children"]
+                if not isinstance(raw_refs, list) or not raw_refs:
+                    raise ValueError(
+                        "forest branch child references must be nonempty"
+                    )
+                selected_children: list[tuple[int, _TrieNode]] = []
+                selected_ids: list[int] = []
+                slots: list[int] = []
+                child_prefixes: list[bytes] = []
+                for raw_ref in raw_refs:
+                    ref = _require_keys(
+                        raw_ref,
+                        {"child_id", "child_sha256", "slot"},
+                        "forest branch child reference",
+                    )
+                    slot = _require_int(
+                        ref["slot"], "forest branch slot", minimum=0
+                    )
+                    if slot > 255:
+                        raise ValueError(
+                            "forest branch slot exceeds one digest byte"
+                        )
+                    child_id = _require_int(
+                        ref["child_id"], "child_id", minimum=0
+                    )
+                    if not 0 <= child_id < len(nodes):
+                        raise ValueError(
+                            "forest branch references a missing or cyclic child"
+                        )
+                    child = nodes[child_id]
+                    if child.depth != depth + 1:
+                        raise ValueError("forest branch child depth mismatch")
+                    if ref["child_sha256"] != child.content_sha256:
+                        raise ValueError(
+                            "forest branch child content hash mismatch"
+                        )
+                    child_prefix = prefixes[child_id]
+                    if (
+                        len(child_prefix) != depth + 1
+                        or child_prefix[depth] != slot
+                    ):
+                        raise ValueError(
+                            "forest branch slot does not match child digest path"
+                        )
+                    selected_children.append((slot, child))
+                    selected_ids.append(child_id)
+                    slots.append(slot)
+                    child_prefixes.append(child_prefix)
+                if slots != sorted(set(slots)):
+                    raise ValueError(
+                        "forest branch slots must be sorted and unique"
+                    )
+                common = child_prefixes[0][:depth]
+                if any(
+                    child_prefix[:depth] != common
+                    for child_prefix in child_prefixes
+                ):
+                    raise ValueError(
+                        "forest branch children do not share their radix prefix"
+                    )
+                node = _make_branch(depth, selected_children)
+                if declared_count != node.count:
+                    raise ValueError("forest branch member count mismatch")
+                prefix = common
+                child_ids = tuple(selected_ids)
+                referenced_board_ids = ()
+                child_key = tuple(zip(slots, selected_ids, strict=True))
+                semantic_key = (depth, "branch", child_key)
+                local_order_key = ("branch", child_key)
+
+            if node.content_sha256 != declared_hash:
+                raise ValueError("forest node content hash mismatch")
+            if semantic_key in semantic_node_keys:
+                raise ValueError(
+                    "duplicate immutable forest node records are not permitted"
+                )
+            semantic_node_keys.add(semantic_key)
+            canonical_order_keys.append((-depth, local_order_key))
+            nodes.append(node)
+            prefixes.append(prefix)
+            edges.append(child_ids)
+            board_refs.append(referenced_board_ids)
+
+        if canonical_order_keys != sorted(canonical_order_keys):
+            raise ValueError("forest node records are not in canonical order")
+
+        raw_root_records = payload["roots"]
+        if not isinstance(raw_root_records, list):
+            raise ValueError("forest root records must be an array")
+        if len(raw_root_records) != declared_root_count:
+            raise ValueError("forest root record count mismatch")
+
+        root_node_ids: list[int | None] = []
+        stored_root_hashes: list[str] = []
+        for expected_id, raw_record in enumerate(raw_root_records):
+            record = _require_keys(
+                raw_record,
+                {"id", "member_count", "node_ref", "root_sha256"},
+                "forest root record",
+            )
+            root_id = _require_int(record["id"], "root id", minimum=0)
+            if root_id != expected_id:
+                raise ValueError(
+                    "forest root record ids must be contiguous and ordered"
+                )
+            declared_members = _require_int(
+                record["member_count"], "root member_count", minimum=0
+            )
+            stored_root_sha = _require_sha256(
+                record["root_sha256"], "forest root hash"
+            )
+            root_ref = record["node_ref"]
+            if root_ref is None:
+                if declared_members != 0:
+                    raise ValueError("empty forest root has nonzero members")
+                root_node: _TrieNode | None = None
+                root_node_id: int | None = None
+            else:
+                ref = _require_keys(
+                    root_ref,
+                    {"content_sha256", "node_id"},
+                    "forest root reference",
+                )
+                root_node_id = _require_int(
+                    ref["node_id"], "root node id", minimum=0
+                )
+                if not 0 <= root_node_id < len(nodes):
+                    raise ValueError("forest root references a missing node")
+                root_node = nodes[root_node_id]
+                if root_node.depth != 0 or prefixes[root_node_id] != b"":
+                    raise ValueError(
+                        "forest root node does not span the complete digest trie"
+                    )
+                if ref["content_sha256"] != root_node.content_sha256:
+                    raise ValueError("forest root reference content hash mismatch")
+                if root_node.count != declared_members:
+                    raise ValueError("forest root member count mismatch")
+            calculated_root_sha = _root_content_sha256(
+                self.board_size, self.digest_name, root_node
+            )
+            if calculated_root_sha != stored_root_sha:
+                raise ValueError("forest root hash mismatch")
+            root_node_ids.append(root_node_id)
+            stored_root_hashes.append(stored_root_sha)
+
+        if expected_root_sha256s is not None:
+            try:
+                expected_roots = tuple(expected_root_sha256s)
+            except TypeError as exc:
+                raise TypeError("expected root hashes must be iterable") from exc
+            validated_expected = tuple(
+                _require_sha256(value, "expected forest root hash")
+                for value in expected_roots
+            )
+            if tuple(stored_root_hashes) != validated_expected:
+                raise ValueError(
+                    "history forest does not match the expected ordered roots"
+                )
+
+        # The record checks above are compositional: child ids precede parents,
+        # every child has the next depth and exact derived digest prefix, branch
+        # slots are unique, and leaf boards exactly match the complete path.
+        # Therefore a physical node (and hence an exact board) cannot occur
+        # twice beneath one root: two paths would first diverge at distinct
+        # slots, which require distinct prefixes.  One union traversal is thus
+        # sufficient for reachability; retaining a member-id set and rebuilding
+        # every growing root would make a version chain quadratic.
+        reachable_nodes: set[int] = set()
+        reachable_boards: set[int] = set()
+        stack = [node_id for node_id in root_node_ids if node_id is not None]
+        while stack:
+            node_id = stack.pop()
+            if node_id in reachable_nodes:
+                continue
+            reachable_nodes.add(node_id)
+            reachable_boards.update(board_refs[node_id])
+            stack.extend(edges[node_id])
+        if reachable_nodes != set(range(len(nodes))):
+            raise ValueError("history forest contains unreachable node records")
+        if reachable_boards != set(range(len(board_objects))):
+            raise ValueError("history forest contains unreachable board records")
+
+        # Adopt only after every hostile input check has passed, then rebuild
+        # the unique node table once so all returned roots retain its sharing.
+        transaction = self._begin_intern_transaction()
+        try:
+            adopted_boards = [
+                self._adopt_verified_board(board) for board in board_objects
+            ]
+            adopted_nodes: list[_TrieNode] = []
+            for node_id, node in enumerate(nodes):
+                if isinstance(node, _Leaf):
+                    adopted_node = _make_leaf(
+                        node.index_digest,
+                        (adopted_boards[item] for item in board_refs[node_id]),
+                    )
+                else:
+                    adopted_node = _make_branch(
+                        node.depth,
+                        (
+                            (slot, adopted_nodes[child_id])
+                            for (slot, _child), child_id in zip(
+                                node.children,
+                                edges[node_id],
+                                strict=True,
+                            )
+                        ),
+                    )
+                if adopted_node != node:
+                    raise ValueError(
+                        "adopted forest node differs from its verified record"
+                    )
+                adopted_nodes.append(adopted_node)
+            results = tuple(
+                HistoryRoot(
+                    self.board_size,
+                    self.digest_name,
+                    None if node_id is None else adopted_nodes[node_id],
+                    self._owner,
+                )
+                for node_id in root_node_ids
+            )
+            if tuple(root.root_sha256 for root in results) != tuple(
+                stored_root_hashes
+            ):
+                raise ValueError(
+                    "returned forest roots differ from the verified roots"
+                )
+            self._commit_intern_transaction(transaction)
+        except BaseException:
+            self._rollback_intern_transaction(transaction)
+            raise
+        return results
+
+    def deserialize_forest(
+        self,
+        raw: bytes,
+        *,
+        expected_artifact_sha256: str | None = None,
+        expected_root_sha256s: Iterable[str] | None = None,
+    ) -> tuple[HistoryRoot, ...]:
+        """Load a canonical compact forest into this history store.
+
+        ``expected_artifact_sha256`` pins the artifact's self-hashed canonical
+        payload.  ``expected_root_sha256s`` pins the ordered root-reference
+        sequence.  Exact records are still verified independently of hashes.
+        """
+
+        payload = _decode_json(raw)
+        return self._rehydrate_forest_payload(
+            payload,
+            expected_artifact_sha256=expected_artifact_sha256,
+            expected_root_sha256s=expected_root_sha256s,
+        )
+
     def deserialize_root(
         self,
         raw: bytes,
@@ -1062,6 +1915,62 @@ class PersistentHistory:
             Path(path).read_bytes(),
             expected_root_sha256=expected_root_sha256,
         )
+
+    @classmethod
+    def load_forest(
+        cls,
+        path: str | Path,
+        *,
+        digest_fn: DigestFunction | None = None,
+        digest_name: str | None = None,
+        expected_board_size: int | None = None,
+        expected_artifact_sha256: str | None = None,
+        expected_root_sha256s: Iterable[str] | None = None,
+    ) -> tuple["PersistentHistory", tuple[HistoryRoot, ...]]:
+        """Construct a store and load one canonical compact forest artifact."""
+
+        raw = Path(path).read_bytes()
+        payload = _decode_json(raw)
+        cls._verify_forest_envelope(payload)
+        board_size = _require_int(payload["board_size"], "board_size", minimum=1)
+        if expected_board_size is not None:
+            if type(expected_board_size) is not int:
+                raise TypeError("expected_board_size must be an integer")
+            if board_size != expected_board_size:
+                raise ValueError(
+                    "history forest does not match expected board size"
+                )
+        digest_index = _require_keys(
+            payload["digest_index"],
+            {"collision_checked", "name"},
+            "digest_index",
+        )
+        stored_digest_name = digest_index["name"]
+        if type(stored_digest_name) is not str or not stored_digest_name:
+            raise ValueError("history forest digest name must be nonempty text")
+        if digest_fn is None:
+            if stored_digest_name != "sha256":
+                raise ValueError(
+                    "history forest requires its injected digest function"
+                )
+            configured_name: str | None = "sha256"
+        else:
+            configured_name = (
+                digest_name if digest_name is not None else "injected"
+            )
+            if configured_name != stored_digest_name:
+                raise ValueError("history forest digest function name mismatch")
+        history = cls(
+            board_size,
+            digest_fn=digest_fn,
+            digest_name=configured_name,
+        )
+        roots = history._rehydrate_forest_payload(
+            payload,
+            expected_artifact_sha256=expected_artifact_sha256,
+            expected_root_sha256s=expected_root_sha256s,
+        )
+        return history, roots
 
     @classmethod
     def load(
@@ -1130,6 +2039,7 @@ def roots_exactly_equal(
     return first_history.members(first_root) == second_history.members(second_root)
 
 __all__ = [
+    "FOREST_SERIALIZATION_FORMAT",
     "HistoryRoot",
     "PersistentHistory",
     "PersistentPSKSet",
