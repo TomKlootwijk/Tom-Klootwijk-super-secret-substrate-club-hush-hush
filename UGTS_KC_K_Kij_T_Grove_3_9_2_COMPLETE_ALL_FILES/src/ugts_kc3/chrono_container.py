@@ -44,9 +44,25 @@ _DIRECTORY_ENTRY = struct.Struct("<8sIIQQQQQ32s16s8s")
 
 _CONTENT_DIGEST_OFFSET = 216
 
-MAX_UGTC4D_BYTES = 1 << 40
-MAX_UGTC4D_SECTIONS = 1_000_000
-MAX_SECTION_BYTES = 1 << 36
+MAX_UGTC4D_BYTES = 1 << 34
+MAX_UGTC4D_SECTIONS = 4096
+MAX_SECTION_BYTES = 1 << 32
+
+REQUIRED_SECTION_KINDS = (
+    "MANIFEST",
+    "OPERATOR",
+    "UGLUT2",
+    "TRAVERS",
+    "FRAME",
+    "OBSERVE",
+    "HYPOTHES",
+    "GEOMETRY",
+    "NOVELTY",
+    "CHECKPNT",
+    "SCENE3D",
+)
+SINGLETON_SECTION_KINDS = frozenset(set(REQUIRED_SECTION_KINDS) - {"FRAME"})
+KNOWN_SECTION_KINDS = frozenset((*REQUIRED_SECTION_KINDS, "METROLOG"))
 
 
 def _align(value: int, alignment: int = UGTC4D_ALIGNMENT) -> int:
@@ -80,7 +96,10 @@ def _kind_bytes(kind: str) -> bytes:
         encoded = kind.encode("ascii")
     except UnicodeEncodeError as error:
         raise ChronoCodecError("UGTC4D section kind must be ASCII") from error
-    if any(character < 0x30 or character > 0x5A for character in encoded):
+    if any(
+        not (0x30 <= character <= 0x39 or 0x41 <= character <= 0x5A)
+        for character in encoded
+    ):
         raise ChronoCodecError(
             "UGTC4D section kind must use uppercase ASCII letters/digits"
         )
@@ -107,15 +126,21 @@ def _semantic_address(
     record_start: int,
     record_count: int,
     logical_bytes: int,
-    stored_digest: bytes,
+    logical_digest: bytes,
 ) -> bytes:
+    semantic_flags = flags & ~SECTION_FLAG_RUN_TOKENS
     preimage = (
         b"UGTC4D-section-semantics-v1\0"
         + kind_bytes
         + struct.pack(
-            "<IIQQQ", version, flags, record_start, record_count, logical_bytes
+            "<IIQQQ",
+            version,
+            semantic_flags,
+            record_start,
+            record_count,
+            logical_bytes,
         )
-        + stored_digest
+        + logical_digest
     )
     return hashlib.sha256(preimage).digest()[:16]
 
@@ -234,7 +259,7 @@ class Ugtc4dSection:
             self.record_start,
             self.record_count,
             self.logical_bytes,
-            self.stored_sha256,
+            hashlib.sha256(self.logical()).digest(),
         )
 
 
@@ -294,6 +319,8 @@ class Ugtc4dHeader:
             raise ChronoCodecError("UGTC4D chart values must be finite")
         if self.r0 <= 0 or self.core_radius <= 0 or self.rho_min >= self.rho_max:
             raise ChronoCodecError("UGTC4D log-polar profile is invalid")
+        if self.center_x != (self.width - 1) * 0.5 or self.center_y != (self.height - 1) * 0.5:
+            raise ChronoCodecError("UGTC4D 0.1 requires the canonical centered pixel chart")
         if not 16 <= self.lut_resolution <= 4096:
             raise ChronoCodecError("UGTC4D UGLUT2 resolution is invalid")
         _digest_hex(self.source_sha256, "source_sha256")
@@ -407,19 +434,7 @@ def build_ugtc4d_bytes(
 def inspect_ugtc4d_bytes(
     data: bytes | bytearray | memoryview,
     *,
-    required_kinds: Iterable[str] = (
-        "MANIFEST",
-        "OPERATOR",
-        "UGLUT2",
-        "POLARPIX",
-        "FRAME",
-        "OBSERVE",
-        "HYPOTHES",
-        "GEOMETRY",
-        "NOVELTY",
-        "CHECKPNT",
-        "SCENE3D",
-    ),
+    required_kinds: Iterable[str] = REQUIRED_SECTION_KINDS,
 ) -> Ugtc4dInspection:
     raw = bytes(data)
     if not UGTC4D_HEADER_BYTES <= len(raw) <= MAX_UGTC4D_BYTES:
@@ -508,8 +523,9 @@ def inspect_ugtc4d_bytes(
     header.validate()
 
     sections: list[Ugtc4dSection] = []
-    occupied: list[tuple[int, int]] = []
     previous_key: tuple[bytes, int] | None = None
+    previous_stored_end = header_bytes
+    expected_stored_offset = _align(previous_stored_end)
     offset = directory_offset
     for _index in range(section_count):
         (
@@ -535,6 +551,10 @@ def inspect_ugtc4d_bytes(
             raise ChronoCodecError("UGTC4D directory reserved bytes are nonzero")
         if stored_offset % UGTC4D_ALIGNMENT:
             raise ChronoCodecError("UGTC4D section is not aligned")
+        if stored_offset != expected_stored_offset:
+            raise ChronoCodecError("UGTC4D section offsets/padding are noncanonical")
+        if any(raw[previous_stored_end:stored_offset]):
+            raise ChronoCodecError("UGTC4D section alignment padding is nonzero")
         stored_end = stored_offset + stored_bytes
         if (
             stored_offset < header_bytes
@@ -542,24 +562,11 @@ def inspect_ugtc4d_bytes(
             or stored_bytes > MAX_SECTION_BYTES
         ):
             raise ChronoCodecError("UGTC4D section range is invalid")
-        for prior_start, prior_end in occupied:
-            if stored_offset < prior_end and prior_start < stored_end:
-                raise ChronoCodecError("UGTC4D sections overlap")
-        occupied.append((stored_offset, stored_end))
+        previous_stored_end = stored_end
+        expected_stored_offset = _align(previous_stored_end)
         stored = raw[stored_offset:stored_end]
         if hashlib.sha256(stored).digest() != stored_digest:
             raise ChronoCodecError("UGTC4D section SHA-256 mismatch")
-        expected_address = _semantic_address(
-            kind_raw,
-            version,
-            section_flags,
-            record_start,
-            record_count,
-            logical_bytes,
-            stored_digest,
-        )
-        if semantic_address != expected_address:
-            raise ChronoCodecError("UGTC4D section semantic address mismatch")
         section = Ugtc4dSection(
             kind,
             version,
@@ -570,12 +577,37 @@ def inspect_ugtc4d_bytes(
             stored,
         )
         section.validate()
+        expected_address = section.semantic_address
+        if semantic_address != expected_address:
+            raise ChronoCodecError("UGTC4D section semantic address mismatch")
         sections.append(section)
+
+    if directory_offset != expected_stored_offset:
+        raise ChronoCodecError("UGTC4D directory offset is noncanonical")
+    if any(raw[previous_stored_end:directory_offset]):
+        raise ChronoCodecError("UGTC4D directory alignment padding is nonzero")
 
     kinds = {section.kind for section in sections}
     missing = sorted(set(required_kinds) - kinds)
     if missing:
         raise ChronoCodecError("UGTC4D is missing required sections: " + ", ".join(missing))
+    counts: dict[str, int] = {}
+    for section in sections:
+        counts[section.kind] = counts.get(section.kind, 0) + 1
+        if section.kind not in KNOWN_SECTION_KINDS and not (
+            section.flags & SECTION_FLAG_OPTIONAL
+        ):
+            raise ChronoCodecError(
+                f"UGTC4D contains unknown mandatory section {section.kind}"
+            )
+    duplicate_singletons = sorted(
+        kind for kind in SINGLETON_SECTION_KINDS if counts.get(kind, 0) != 1
+    )
+    if duplicate_singletons:
+        raise ChronoCodecError(
+            "UGTC4D singleton section count mismatch: "
+            + ", ".join(duplicate_singletons)
+        )
     frames = [section for section in sections if section.kind == "FRAME"]
     if len(frames) != frame_count:
         raise ChronoCodecError("UGTC4D FRAME section count disagrees with its header")

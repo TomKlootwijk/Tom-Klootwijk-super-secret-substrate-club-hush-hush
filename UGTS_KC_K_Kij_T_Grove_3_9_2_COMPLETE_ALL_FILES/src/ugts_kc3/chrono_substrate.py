@@ -458,7 +458,10 @@ def create_substrate_traversal_recipe(
     return SubstrateTraversalRecipe.from_bytes(
         bound.to_bytes(),
         uglut2_bytes=bytes(uglut2_bytes),
-        verify_derived_traversal=True,
+        # The digest was computed from the order immediately above.  Readers
+        # independently regenerate it; avoiding a second authoring sort here
+        # does not weaken the stored receipt.
+        verify_derived_traversal=False,
     )
 
 

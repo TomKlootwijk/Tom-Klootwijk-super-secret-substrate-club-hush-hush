@@ -6,6 +6,8 @@ import numpy as np
 import pytest
 
 from ugts_kc3.chrono_prediction import (
+    PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
     PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
     PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN,
     build_substrate_prediction_plan,
@@ -47,6 +49,8 @@ def _frames() -> tuple[np.ndarray, np.ndarray]:
     [
         PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
         PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
     ],
 )
 def test_substrate_prediction_round_trip(predictor: int) -> None:
@@ -137,3 +141,45 @@ def test_temporal_cuda_encoder_matches_cpu_oracle_when_available() -> None:
         max_vram_mib=256,
     )
     assert np.array_equal(actual, expected)
+
+
+@pytest.mark.parametrize(
+    "predictor",
+    [
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    ],
+)
+def test_cartesian_median_substrate_order_cuda_matches_cpu(predictor: int) -> None:
+    torch = pytest.importorskip("torch")
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA is unavailable")
+    lut, recipe, plan = _fixture()
+    first, second = _frames()
+    polar = np.stack(
+        [
+            gather_rgb_substrate_numpy(frame, recipe, lut, traversal=plan.traversal)
+            for frame in (first, second)
+        ]
+    )
+    expected = np.stack(
+        [
+            np.frombuffer(
+                encode_substrate_prediction_numpy(
+                    frame,
+                    plan,
+                    predictor=predictor,
+                ),
+                dtype=np.uint8,
+            ).reshape(3, plan.pixel_count)
+            for frame in polar
+        ]
+    )
+    actual, receipt = encode_substrate_prediction_cuda(
+        polar,
+        plan,
+        predictor=predictor,
+        max_vram_mib=256,
+    )
+    assert np.array_equal(actual, expected)
+    assert receipt["integer_byte_exact"] is True

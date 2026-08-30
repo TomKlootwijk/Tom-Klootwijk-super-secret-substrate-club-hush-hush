@@ -23,10 +23,18 @@ from .chrono_substrate import (
 
 PREDICTOR_SUBSTRATE_MEDIAN_GREEN = 10
 PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN = 11
+PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER = 12
+PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER = 13
 PREDICTOR_NAMES = {
     PREDICTOR_SUBSTRATE_MEDIAN_GREEN: "SUBSTRATE_MEDIAN_GREEN_PLANAR_MOD256",
     PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN: (
         "TEMPORAL_THEN_SUBSTRATE_MEDIAN_GREEN_PLANAR_MOD256"
+    ),
+    PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER: (
+        "CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ADDRESSED_PLANAR_MOD256"
+    ),
+    PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER: (
+        "CARTESIAN_MEDIAN_GREEN_LUMA_LIFT_SUBSTRATE_ADDRESSED_PLANAR_MOD256"
     ),
 }
 
@@ -205,6 +213,37 @@ def _inverse_green_delta_numpy(transformed: Any) -> Any:
     return result
 
 
+def _green_luma_lift_numpy(rgb: Any) -> Any:
+    """Exact new codec lift: Y=G+floor((s8(R-G)+s8(B-G))/4)."""
+
+    import numpy as np
+
+    signed = rgb.astype(np.int16)
+    cr = ((signed[:, 0] - signed[:, 1] + 128) & 255) - 128
+    cb = ((signed[:, 2] - signed[:, 1] + 128) & 255) - 128
+    quarter = np.floor_divide(cr + cb, 4)
+    result = np.empty_like(rgb)
+    result[:, 0] = (signed[:, 1] + quarter) & 255
+    result[:, 1] = cr & 255
+    result[:, 2] = cb & 255
+    return result
+
+
+def _inverse_green_luma_lift_numpy(transformed: Any) -> Any:
+    import numpy as np
+
+    lanes = transformed.astype(np.int16)
+    cr = ((lanes[:, 1] + 128) & 255) - 128
+    cb = ((lanes[:, 2] + 128) & 255) - 128
+    quarter = np.floor_divide(cr + cb, 4)
+    green = (lanes[:, 0] - quarter) & 255
+    result = np.empty_like(transformed)
+    result[:, 1] = green
+    result[:, 0] = (green + cr) & 255
+    result[:, 2] = (green + cb) & 255
+    return result
+
+
 def _median_prediction_numpy(values: Any, plan: SubstratePredictionPlan) -> Any:
     import numpy as np
 
@@ -223,6 +262,39 @@ def _median_prediction_numpy(values: Any, plan: SubstratePredictionPlan) -> Any:
     return prediction
 
 
+def _cartesian_median_residual_numpy(
+    polar_rgb: Any,
+    plan: SubstratePredictionPlan,
+    *,
+    lifted: bool,
+) -> Any:
+    import numpy as np
+
+    cartesian_rgb = np.empty((plan.pixel_count, 3), dtype=np.uint8)
+    cartesian_rgb[plan.traversal.astype(np.int64)] = polar_rgb
+    values = (
+        _green_luma_lift_numpy(cartesian_rgb)
+        if lifted
+        else _green_delta_numpy(cartesian_rgb)
+    ).reshape(plan.height, plan.width, 3)
+    a = np.zeros_like(values, dtype=np.int16)
+    b = np.zeros_like(values, dtype=np.int16)
+    c = np.zeros_like(values, dtype=np.int16)
+    a[:, 1:] = values[:, :-1]
+    b[1:, :] = values[:-1, :]
+    c[1:, 1:] = values[:-1, :-1]
+    low = np.minimum(a, b)
+    high = np.maximum(a, b)
+    prediction = np.maximum(low, np.minimum(high, a + b - c)).astype(np.uint8)
+    # Canonical one-dimensional boundary rules retain causality at the top
+    # row and left edge without inventing samples outside the raster.
+    prediction[0, 0] = 0
+    prediction[0, 1:] = values[0, :-1]
+    prediction[1:, 0] = values[:-1, 0]
+    residual = values - prediction
+    return residual.reshape(-1, 3)[plan.traversal.astype(np.int64)]
+
+
 def encode_substrate_prediction_numpy(
     polar_rgb: Any,
     plan: SubstratePredictionPlan,
@@ -235,6 +307,19 @@ def encode_substrate_prediction_numpy(
     import numpy as np
 
     current = _green_delta_numpy(_require_polar_rgb(polar_rgb, plan))
+    if predictor in (
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    ):
+        residual = _cartesian_median_residual_numpy(
+            _require_polar_rgb(polar_rgb, plan),
+            plan,
+            lifted=(
+                predictor
+                == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER
+            ),
+        )
+        return np.ascontiguousarray(residual.T).tobytes()
     if predictor == PREDICTOR_SUBSTRATE_MEDIAN_GREEN:
         values = current
     elif predictor == PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN:
@@ -282,6 +367,30 @@ if _njit is not None:
                 values[ordinal, channel] = total % 256
         return values
 
+    @_njit(cache=True)
+    def _decode_cartesian_prediction_numba(residual):  # pragma: no cover
+        height, width, _channels = residual.shape
+        values = _np.empty((height, width, 3), dtype=_np.uint8)
+        for y in range(height):
+            for x in range(width):
+                for channel in range(3):
+                    if y == 0 and x == 0:
+                        prediction = _np.int64(0)
+                    elif y == 0:
+                        prediction = _np.int64(values[y, x - 1, channel])
+                    elif x == 0:
+                        prediction = _np.int64(values[y - 1, x, channel])
+                    else:
+                        a = _np.int64(values[y, x - 1, channel])
+                        b = _np.int64(values[y - 1, x, channel])
+                        c = _np.int64(values[y - 1, x - 1, channel])
+                        low = min(a, b)
+                        high = max(a, b)
+                        prediction = max(low, min(high, a + b - c))
+                    total = _np.int64(residual[y, x, channel]) + prediction
+                    values[y, x, channel] = total % 256
+        return values
+
 
 def decode_substrate_prediction_numpy(
     residual_bytes: bytes | bytearray | memoryview,
@@ -303,6 +412,44 @@ def decode_substrate_prediction_numpy(
             f"substrate residual length mismatch: expected {expected}, got {len(raw)}"
         )
     residual = np.frombuffer(raw, dtype=np.uint8).reshape(3, plan.pixel_count).T
+    if predictor in (
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    ):
+        cartesian_residual = np.empty((plan.pixel_count, 3), dtype=np.uint8)
+        cartesian_residual[plan.traversal.astype(np.int64)] = residual
+        cartesian_residual = cartesian_residual.reshape(plan.height, plan.width, 3)
+        if _njit is not None:
+            values = _decode_cartesian_prediction_numba(cartesian_residual)
+        else:  # pragma: no cover
+            values = np.empty_like(cartesian_residual)
+            for y in range(plan.height):
+                for x in range(plan.width):
+                    if y == 0 and x == 0:
+                        prediction = np.zeros(3, dtype=np.int16)
+                    elif y == 0:
+                        prediction = values[y, x - 1].astype(np.int16)
+                    elif x == 0:
+                        prediction = values[y - 1, x].astype(np.int16)
+                    else:
+                        aa = values[y, x - 1].astype(np.int16)
+                        bb = values[y - 1, x].astype(np.int16)
+                        cc = values[y - 1, x - 1].astype(np.int16)
+                        prediction = np.maximum(
+                            np.minimum(aa, bb),
+                            np.minimum(np.maximum(aa, bb), aa + bb - cc),
+                        )
+                    values[y, x] = (
+                        cartesian_residual[y, x].astype(np.int16) + prediction
+                    ) & 255
+        transformed = values.reshape(plan.pixel_count, 3)
+        rgb_cartesian = (
+            _inverse_green_luma_lift_numpy(transformed)
+            if predictor
+            == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER
+            else _inverse_green_delta_numpy(transformed)
+        )
+        return rgb_cartesian[plan.traversal.astype(np.int64)].copy()
     if _njit is not None:
         values = _decode_prediction_numba(
             residual,
@@ -363,7 +510,11 @@ def encode_substrate_prediction_cuda(
         previous_source = np.asarray(previous_polar_frames)
         if previous_source.shape != source.shape or previous_source.dtype != np.uint8:
             raise ChronoPredictionError("CUDA temporal previous-frame batch shape mismatch")
-    elif predictor == PREDICTOR_SUBSTRATE_MEDIAN_GREEN:
+    elif predictor in (
+        PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    ):
         previous_source = None
     else:
         raise ChronoPredictionError(f"unsupported substrate predictor {predictor}")
@@ -377,6 +528,22 @@ def encode_substrate_prediction_cuda(
 
     def transform(array: Any) -> Any:
         tensor = torch.as_tensor(array, device=device)
+        if predictor == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER:
+            signed = tensor.to(torch.int16)
+            cr = torch.bitwise_and(
+                signed[:, :, 0] - signed[:, :, 1] + 128, 255
+            ) - 128
+            cb = torch.bitwise_and(
+                signed[:, :, 2] - signed[:, :, 1] + 128, 255
+            ) - 128
+            quarter = torch.div(cr + cb, 4, rounding_mode="floor")
+            result = torch.empty_like(tensor)
+            result[:, :, 0] = torch.bitwise_and(
+                signed[:, :, 1] + quarter, 255
+            ).to(torch.uint8)
+            result[:, :, 1] = torch.bitwise_and(cr, 255).to(torch.uint8)
+            result[:, :, 2] = torch.bitwise_and(cb, 255).to(torch.uint8)
+            return result
         result = torch.empty_like(tensor)
         result[:, :, 0] = tensor[:, :, 1]
         result[:, :, 1] = tensor[:, :, 0] - tensor[:, :, 1]
@@ -384,6 +551,50 @@ def encode_substrate_prediction_cuda(
         return result
 
     values = transform(source)
+    if predictor in (
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    ):
+        traversal = torch.as_tensor(
+            plan.traversal.astype(np.int64), device=device
+        )
+        cartesian = torch.empty_like(values)
+        cartesian[:, traversal, :] = values
+        cartesian = cartesian.reshape(
+            source.shape[0], plan.height, plan.width, 3
+        )
+        aa = torch.zeros_like(cartesian, dtype=torch.int16)
+        bb = torch.zeros_like(cartesian, dtype=torch.int16)
+        cc = torch.zeros_like(cartesian, dtype=torch.int16)
+        aa[:, :, 1:, :] = cartesian[:, :, :-1, :]
+        bb[:, 1:, :, :] = cartesian[:, :-1, :, :]
+        cc[:, 1:, 1:, :] = cartesian[:, :-1, :-1, :]
+        prediction = torch.maximum(
+            torch.minimum(aa, bb),
+            torch.minimum(torch.maximum(aa, bb), aa + bb - cc),
+        ).to(torch.uint8)
+        prediction[:, 0, 0, :] = 0
+        prediction[:, 0, 1:, :] = cartesian[:, 0, :-1, :]
+        prediction[:, 1:, 0, :] = cartesian[:, :-1, 0, :]
+        residual_cartesian = (cartesian - prediction).reshape(
+            source.shape[0], plan.pixel_count, 3
+        )
+        residual = residual_cartesian[:, traversal, :].permute(0, 2, 1).contiguous()
+        result = residual.cpu().numpy()
+        torch.cuda.synchronize(device)
+        peak = float(torch.cuda.max_memory_allocated(device)) / (1024 * 1024)
+        if peak > max_vram_mib:
+            raise ChronoPredictionError("CUDA substrate prediction exceeded its workspace")
+        return result, {
+            "backend": "torch-cuda-cartesian-median-substrate-addressed",
+            "device": torch.cuda.get_device_name(device),
+            "compute_capability": list(torch.cuda.get_device_capability(device)),
+            "batch_frames": int(source.shape[0]),
+            "predictor": PREDICTOR_NAMES[predictor],
+            "peak_mib": peak,
+            "workspace_limit_mib": int(max_vram_mib),
+            "integer_byte_exact": True,
+        }
     if previous_source is not None:
         values = values - transform(previous_source)
     parent = torch.as_tensor(plan.parent.astype(np.int64), device=device)
@@ -423,6 +634,8 @@ def encode_substrate_prediction_cuda(
 __all__ = [
     "ChronoPredictionError",
     "PREDICTOR_NAMES",
+    "PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER",
+    "PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER",
     "PREDICTOR_SUBSTRATE_MEDIAN_GREEN",
     "PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN",
     "SubstratePredictionPlan",
