@@ -300,6 +300,8 @@ class SubstrateTraversalRecipe:
 def _derive_order(
     recipe: SubstrateTraversalRecipe,
     uglut2_bytes: bytes,
+    *,
+    include_coordinate_codes: bool = False,
 ) -> Any:
     try:
         import numpy as np
@@ -428,7 +430,34 @@ def _derive_order(
     ).astype(np.uint32)
     if order.size != count or np.unique(order).size != count:
         raise ChronoSubstrateError("derived substrate traversal is not a full bijection")
+    if include_coordinate_codes:
+        return order, rho20, theta18
     return order
+
+
+def derive_substrate_coordinate_codes(
+    recipe: SubstrateTraversalRecipe,
+    uglut2_bytes: bytes,
+    *,
+    verify_digest: bool = True,
+) -> tuple[Any, Any]:
+    """Regenerate the authoritative per-pixel ``rho20/theta18`` codes.
+
+    This executes the same integer UGLUT2 midpoint/wedge program as the
+    traversal derivation.  The arrays are runtime state, never a serialized
+    per-pixel lookup table.
+    """
+
+    order, rho20, theta18 = _derive_order(
+        recipe,
+        bytes(uglut2_bytes),
+        include_coordinate_codes=True,
+    )
+    if verify_digest:
+        digest = _sha256(order.astype("<u4", copy=False).tobytes()).hex()
+        if digest != recipe.traversal_sha256:
+            raise ChronoSubstrateError("regenerated traversal SHA-256 mismatch")
+    return rho20, theta18
 
 
 def create_substrate_traversal_recipe(
@@ -607,6 +636,7 @@ __all__ = [
     "TRAVERSAL_OPERATOR_MEANING",
     "TRAVERSAL_RECIPE_BYTES",
     "create_substrate_traversal_recipe",
+    "derive_substrate_coordinate_codes",
     "derive_substrate_traversal",
     "gather_rgb_substrate_cuda",
     "gather_rgb_substrate_numpy",

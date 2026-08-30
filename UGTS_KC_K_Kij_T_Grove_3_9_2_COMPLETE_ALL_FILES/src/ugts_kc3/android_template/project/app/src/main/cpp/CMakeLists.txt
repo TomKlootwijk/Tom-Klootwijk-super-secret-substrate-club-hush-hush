@@ -95,6 +95,7 @@ if(UGTS_KC_GSP4_SEED_CAMERA)
         chrono_scene_binding.cpp
         chrono_capture_queue.cpp
         chrono_camera_recorder.cpp
+        chrono_vulkan_residual.cpp
         chrono_seed_capture_session.cpp
         "${CMAKE_CURRENT_BINARY_DIR}/ugyuvs1/ugtc4d_decoder.cpp"
         "${CMAKE_CURRENT_BINARY_DIR}/ugyuvs1/seeded_uglut2_traversal.cpp"
@@ -126,6 +127,12 @@ target_compile_options(ugts_kc_native PRIVATE
     -Wall -Wextra -Wpedantic
     ${UGTS_KC_DEBUG_PATH_OPTIONS}
 )
+if(UGTS_KC_GSP4_SEED_CAMERA)
+    # The physical debug APK retains symbols but must sustain the authoritative
+    # 720p/30 capture spool and complete post-capture exact replay in practical
+    # time. Optimization does not alter the integer/file ABI.
+    target_compile_options(ugts_kc_native PRIVATE "$<$<CONFIG:Debug>:-O2>")
+endif()
 
 target_link_options(ugts_kc_native PRIVATE
     "-Wl,--build-id=sha1"
@@ -140,7 +147,10 @@ target_link_libraries(ugts_kc_native
     dl
 )
 if(UGTS_KC_GSP4_SEED_CAMERA)
-    target_link_libraries(ugts_kc_native camera2ndk mediandk)
+    # libmediandk is AImageReader capture plumbing only. The seed flavor has
+    # no AMediaCodec/AMediaExtractor source or symbol; Vulkan performs the
+    # integer UGCODE24-420 residual transform on the physical GPU.
+    target_link_libraries(ugts_kc_native camera2ndk mediandk vulkan)
 else()
     target_link_libraries(ugts_kc_native mediandk)
 endif()

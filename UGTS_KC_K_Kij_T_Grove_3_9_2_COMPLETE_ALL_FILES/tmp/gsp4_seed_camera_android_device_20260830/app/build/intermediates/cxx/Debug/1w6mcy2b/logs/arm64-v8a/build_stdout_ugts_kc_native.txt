@@ -1,46 +1,40 @@
 ninja: Entering directory `C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\.cxx\Debug\1w6mcy2b\arm64-v8a'
-[1/31] Building C object CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o
-[2/31] Linking C static library libnative_app_glue.a
-[3/31] Building CXX object CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o
-[4/31] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o
-[5/31] Building CXX object CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o
-[6/31] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o
-[7/31] Building CXX object CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o
-[8/31] Building CXX object CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o
-[9/31] Building CXX object CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o
-[10/31] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o
-[11/31] Building CXX object CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o
-[12/31] Building CXX object CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o
-[13/31] Building CXX object CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o
-[14/31] Building CXX object CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o
-[15/31] Building CXX object CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o
-[16/31] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o
-[17/31] Building CXX object CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o
-[18/31] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o
-[19/31] Building CXX object CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o
-[20/31] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_scene_binding.cpp.o
-[21/31] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_capture_queue.cpp.o
-[22/31] Building CXX object CMakeFiles/ugts_kc_native.dir/main.cpp.o
+[1/32] Building C object CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o
+[2/32] Linking C static library libnative_app_glue.a
+[3/32] Building CXX object CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o
+[4/32] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o
+[5/32] Building CXX object CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o
+[6/32] Building CXX object CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o
+[7/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o
+[8/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_capture_sha256.cpp.o
+[9/32] Building CXX object CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o
+[10/32] Building CXX object CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o
+[11/32] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o
+[12/32] Building CXX object CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o
+[13/32] Building CXX object CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o
+[14/32] Building CXX object CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o
+[15/32] Building CXX object CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o
+[16/32] Building CXX object CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o
+[17/32] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o
+[18/32] Building CXX object CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o
+[19/32] Building CXX object CMakeFiles/ugts_kc_native.dir/main.cpp.o
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/src/main/cpp/main.cpp:29:5: warning: 'app_dummy' is deprecated: Calls to app_dummy are no longer necessary. See https://github.com/android-ndk/ndk/issues/381. [-Wdeprecated-declarations]
-   29 |     app_dummy();
-      |     ^
+   29 |     app_dummy();
+      |     ^
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/.cxx/Debug/1w6mcy2b/arm64-v8a/android_native_app_glue.h:340:5: note: 'app_dummy' has been explicitly marked deprecated here
   340 |     deprecated("Calls to app_dummy are no longer necessary. See "
       |     ^
 1 warning generated.
-[23/31] Building CXX object CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o
-[24/31] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_capture_sha256.cpp.o
-[25/31] Building CXX object CMakeFiles/ugts_kc_native.dir/engine.cpp.o
-[26/31] Building CXX object CMakeFiles/ugts_kc_native.dir/ugyuvs1/seeded_uglut2_traversal.cpp.o
-[27/31] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_camera_recorder.cpp.o
-[28/31] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_seed_capture_session.cpp.o
-[29/31] Building CXX object CMakeFiles/ugts_kc_native.dir/ugyuvs1/yuv_seed_capture.cpp.o
-C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/.cxx/Debug/1w6mcy2b/arm64-v8a/ugyuvs1/yuv_seed_capture.cpp:56:25: warning: unused variable 'MaxNoveltyWorkerCount' [-Wunused-const-variable]
-   56 | constexpr std::uint32_t MaxNoveltyWorkerCount = 64u;
-      |                         ^~~~~~~~~~~~~~~~~~~~~
-C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/.cxx/Debug/1w6mcy2b/arm64-v8a/ugyuvs1/yuv_seed_capture.cpp:57:25: warning: unused variable 'MaxNoveltyInFlightBlocks' [-Wunused-const-variable]
-   57 | constexpr std::uint32_t MaxNoveltyInFlightBlocks = 256u;
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~
-2 warnings generated.
-[30/31] Building CXX object CMakeFiles/ugts_kc_native.dir/ugyuvs1/ugtc4d_decoder.cpp.o
-[31/31] Linking CXX shared library "C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\build\intermediates\cxx\Debug\1w6mcy2b\obj\arm64-v8a\libugts_kc_native.so"
+[20/32] Building CXX object CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o
+[21/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_capture_queue.cpp.o
+[22/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_scene_binding.cpp.o
+[23/32] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o
+[24/32] Building CXX object CMakeFiles/ugts_kc_native.dir/ugyuvs1/seeded_uglut2_traversal.cpp.o
+[25/32] Building CXX object CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o
+[26/32] Building CXX object CMakeFiles/ugts_kc_native.dir/engine.cpp.o
+[27/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_vulkan_residual.cpp.o
+[28/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_seed_capture_session.cpp.o
+[29/32] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_camera_recorder.cpp.o
+[30/32] Building CXX object CMakeFiles/ugts_kc_native.dir/ugyuvs1/yuv_seed_capture.cpp.o
+[31/32] Building CXX object CMakeFiles/ugts_kc_native.dir/ugyuvs1/ugtc4d_decoder.cpp.o
+[32/32] Linking CXX shared library "C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\build\intermediates\cxx\Debug\1w6mcy2b\obj\arm64-v8a\libugts_kc_native.so"

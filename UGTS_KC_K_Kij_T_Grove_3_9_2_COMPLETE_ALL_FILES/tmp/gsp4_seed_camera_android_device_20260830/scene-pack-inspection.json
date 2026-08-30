@@ -56,7 +56,7 @@
       "tag_mask": 4
     }
   ],
-  "project_hash": "412d7023c5c1c7a3eef4dd4ad20ddc45372af676b2b3d1df008939e3622fe1bc",
+  "project_hash": "a7c7b3672965d3a19784b7aec00fabdd30c397e56dafac4fab1d2a181eb3ccc2",
   "project_id": "my_mobile_3d_game",
   "qualities": [
     {
@@ -92,7 +92,7 @@
   ],
   "quality_count": 5,
   "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
-  "sha256": "2e8031fe7890db2df4e490b84489bb9d6fa85665c5aba426d2e6c5d3b28c9174",
+  "sha256": "c66be9f67083fe24b301b5172418a0e40118fbe35d57d78ecee04b9e1840a154",
   "start_quality": "balanced",
   "target_count": 4,
   "targets": [

@@ -3,11 +3,17 @@
 #include <algorithm>
 #include <array>
 #include <cerrno>
+#include <condition_variable>
 #include <cstdio>
 #include <cstring>
+#include <deque>
+#include <exception>
 #include <fstream>
+#include <functional>
 #include <limits>
+#include <mutex>
 #include <stdexcept>
+#include <thread>
 #include <utility>
 
 #ifdef _WIN32
@@ -47,6 +53,8 @@ constexpr std::uint32_t NoveltyDense = 1u;
 constexpr std::uint32_t NoveltySparseBitmask = 2u;
 constexpr std::uint32_t NoveltySparseGaps = 3u;
 constexpr std::uint32_t NoPreviousOrdinal = 0xffffffffu;
+constexpr std::uint32_t MaxNoveltyWorkerCount = 64u;
+constexpr std::uint32_t MaxNoveltyInFlightBlocks = 256u;
 
 [[noreturn]] void fail(const std::string& message) {
     throw std::runtime_error("UGYUVS1 capture: " + message);
@@ -524,6 +532,157 @@ std::vector<std::uint8_t> buildNoveltyBlock(
     return header;
 }
 
+struct NoveltyBlockBuild {
+    std::vector<std::uint8_t> logicalResidual;
+    std::vector<std::uint8_t> serialized;
+    std::uint64_t noveltyEventCount = 0u;
+    std::uint32_t representation = NoveltyZero;
+};
+
+// Persistent fixed-size workers plus a fixed-size submission queue. Results
+// are retained for at most one bounded batch and consumed in block-ordinal
+// order, so scheduling can never affect the canonical file byte order.
+class BoundedNoveltyBlockPool final {
+public:
+    using Builder = std::function<NoveltyBlockBuild(std::size_t)>;
+    using Consumer = std::function<void(NoveltyBlockBuild&&)>;
+
+    BoundedNoveltyBlockPool(
+        std::uint32_t workerCount,
+        std::uint32_t maxInFlightBlocks
+    ) : maxInFlightBlocks_(maxInFlightBlocks) {
+        try {
+            workers_.reserve(workerCount);
+            for (std::uint32_t index = 0u; index < workerCount; ++index) {
+                workers_.emplace_back([this] { workerLoop(); });
+            }
+        } catch (...) {
+            {
+                std::lock_guard<std::mutex> lock(queueMutex_);
+                stopping_ = true;
+            }
+            queueReady_.notify_all();
+            for (auto& worker : workers_) {
+                if (worker.joinable()) worker.join();
+            }
+            throw;
+        }
+    }
+
+    ~BoundedNoveltyBlockPool() {
+        {
+            std::lock_guard<std::mutex> lock(queueMutex_);
+            stopping_ = true;
+        }
+        queueReady_.notify_all();
+        queueSpace_.notify_all();
+        for (auto& worker : workers_) {
+            if (worker.joinable()) worker.join();
+        }
+    }
+
+    BoundedNoveltyBlockPool(const BoundedNoveltyBlockPool&) = delete;
+    BoundedNoveltyBlockPool& operator=(const BoundedNoveltyBlockPool&) = delete;
+
+    void buildOrdered(
+        std::size_t blockCount,
+        const Builder& build,
+        const Consumer& consume
+    ) {
+        for (std::size_t batchFirst = 0u; batchFirst < blockCount;
+             batchFirst += maxInFlightBlocks_) {
+            const auto batchCount = std::min<std::size_t>(
+                maxInFlightBlocks_, blockCount - batchFirst);
+            struct BatchState {
+                explicit BatchState(std::size_t count)
+                    : results(count), remaining(count) {}
+                std::vector<NoveltyBlockBuild> results;
+                std::mutex mutex;
+                std::condition_variable finished;
+                std::size_t remaining;
+                std::exception_ptr failure;
+            };
+            auto state = std::make_shared<BatchState>(batchCount);
+            std::size_t submitted = 0u;
+            std::exception_ptr submissionFailure;
+            try {
+                for (; submitted < batchCount; ++submitted) {
+                    const auto local = submitted;
+                    const auto global = batchFirst + local;
+                    enqueue([state, &build, local, global] {
+                        std::exception_ptr failure;
+                        try {
+                            state->results[local] = build(global);
+                        } catch (...) {
+                            failure = std::current_exception();
+                        }
+                        std::lock_guard<std::mutex> lock(state->mutex);
+                        if (failure != nullptr && state->failure == nullptr) {
+                            state->failure = failure;
+                        }
+                        --state->remaining;
+                        if (state->remaining == 0u) state->finished.notify_one();
+                    });
+                }
+            } catch (...) {
+                submissionFailure = std::current_exception();
+                std::lock_guard<std::mutex> lock(state->mutex);
+                state->remaining -= batchCount - submitted;
+                if (state->remaining == 0u) state->finished.notify_one();
+            }
+            {
+                std::unique_lock<std::mutex> lock(state->mutex);
+                state->finished.wait(lock, [&state] {
+                    return state->remaining == 0u;
+                });
+            }
+            if (submissionFailure != nullptr) std::rethrow_exception(submissionFailure);
+            if (state->failure != nullptr) std::rethrow_exception(state->failure);
+            for (auto& result : state->results) consume(std::move(result));
+        }
+    }
+
+private:
+    using Task = std::function<void()>;
+
+    void enqueue(Task task) {
+        {
+            std::unique_lock<std::mutex> lock(queueMutex_);
+            queueSpace_.wait(lock, [this] {
+                return stopping_ || tasks_.size() < maxInFlightBlocks_;
+            });
+            require(!stopping_, "novelty worker pool is stopping");
+            tasks_.push_back(std::move(task));
+        }
+        queueReady_.notify_one();
+    }
+
+    void workerLoop() {
+        while (true) {
+            Task task;
+            {
+                std::unique_lock<std::mutex> lock(queueMutex_);
+                queueReady_.wait(lock, [this] {
+                    return stopping_ || !tasks_.empty();
+                });
+                if (stopping_ && tasks_.empty()) return;
+                task = std::move(tasks_.front());
+                tasks_.pop_front();
+            }
+            queueSpace_.notify_one();
+            task();
+        }
+    }
+
+    std::size_t maxInFlightBlocks_;
+    std::vector<std::thread> workers_;
+    std::deque<Task> tasks_;
+    std::mutex queueMutex_;
+    std::condition_variable queueReady_;
+    std::condition_variable queueSpace_;
+    bool stopping_ = false;
+};
+
 std::uint8_t residualByte(std::uint8_t current, std::uint8_t previous) {
     return static_cast<std::uint8_t>(static_cast<unsigned>(current) - previous);
 }
@@ -569,6 +728,7 @@ struct YuvSeedCaptureWriter::Impl {
     std::FILE* file = nullptr;
     std::string partialPath;
     YuvSeedCaptureProfile profile;
+    std::unique_ptr<BoundedNoveltyBlockPool> noveltyPool;
     SeededUglut2Traversal traversal;
     std::vector<std::uint32_t> lineageSeeds;
     Sha256Digest recipeSha{};
@@ -619,6 +779,12 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
     require(profile.noveltyBlockLumaAddresses >= 1u &&
                 profile.noveltyBlockLumaAddresses <= 65536u,
             "novelty block luma-address count is invalid");
+    require(profile.noveltyWorkerCount >= 1u &&
+                profile.noveltyWorkerCount <= MaxNoveltyWorkerCount,
+            "novelty worker count is invalid");
+    require(profile.noveltyMaxInFlightBlocks >= profile.noveltyWorkerCount &&
+                profile.noveltyMaxInFlightBlocks <= MaxNoveltyInFlightBlocks,
+            "novelty in-flight block bound is invalid");
     require(!profile.literalUglut2.empty(), "literal UGLUT2 bytes are required");
     if (auto* existing = openFile(partialPath, "rb")) {
         std::fclose(existing);
@@ -627,6 +793,9 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
     auto impl = std::make_unique<Impl>();
     impl->partialPath = partialPath;
     impl->profile = profile;
+    impl->noveltyPool = std::make_unique<BoundedNoveltyBlockPool>(
+        profile.noveltyWorkerCount,
+        profile.noveltyMaxInFlightBlocks);
     impl->traversal = regenerateSeededUglut2Traversal(
         profile.width,
         profile.height,
@@ -693,6 +862,20 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
 YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
     const Yuv420p8FrameView& view
 ) {
+    return appendImpl(view, nullptr);
+}
+
+YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendPreparedResidual(
+    const Yuv420p8FrameView& view,
+    ByteView canonicalOwnerResidual
+) {
+    return appendImpl(view, &canonicalOwnerResidual);
+}
+
+YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
+    const Yuv420p8FrameView& view,
+    const ByteView* preparedResidual
+) {
     require(impl_ != nullptr && !impl_->closed, "writer is closed");
     require(view.sensorTimestampNs >= 0 && view.sensorTimestampNs > impl_->lastPts,
             "sensor timestamps must be strictly increasing");
@@ -733,60 +916,111 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
                 previousV.size() == current.v.size(),
             "previous executable state has the wrong plane sizes");
 
+    const auto expectedLogicalLanes =
+        current.y.size() + current.u.size() + current.v.size();
+    if (preparedResidual != nullptr) {
+        require(preparedResidual->data != nullptr,
+                "prepared residual pointer is null");
+        require(preparedResidual->size == expectedLogicalLanes,
+                "prepared residual has the wrong canonical owner-only lane count");
+    }
     std::vector<std::uint8_t> fullResidual;
-    fullResidual.reserve(current.y.size() + current.u.size() + current.v.size());
-    std::vector<std::uint8_t> noveltyPayload;
-    std::uint64_t noveltyEventCount = 0u;
-    std::array<std::uint32_t, 4u> representationCounts{};
-    std::uint32_t blockOrdinal = 0u;
+    fullResidual.reserve(expectedLogicalLanes);
+    if (preparedResidual != nullptr) {
+        fullResidual.assign(
+            preparedResidual->data,
+            preparedResidual->data + preparedResidual->size);
+    }
+    std::vector<std::size_t> blockResidualOffsets;
+    const auto traversalAddresses = impl_->traversal.polarOrdinalToCartesian.size();
+    const auto blockCapacity = impl_->profile.noveltyBlockLumaAddresses;
+    blockResidualOffsets.reserve(
+        (traversalAddresses + blockCapacity - 1u) / blockCapacity + 1u);
+    std::size_t logicalLaneOffset = 0u;
     std::size_t ownerCount = 0u;
-    for (std::size_t first = 0u; first < impl_->traversal.polarOrdinalToCartesian.size();
-         first += impl_->profile.noveltyBlockLumaAddresses) {
+    for (std::size_t first = 0u; first < traversalAddresses; first += blockCapacity) {
+        blockResidualOffsets.push_back(logicalLaneOffset);
         const auto count = std::min<std::size_t>(
-            impl_->profile.noveltyBlockLumaAddresses,
-            impl_->traversal.polarOrdinalToCartesian.size() - first);
-        std::vector<std::uint8_t> blockResidual;
-        blockResidual.reserve(count * 2u);
+            blockCapacity, traversalAddresses - first);
         for (std::size_t local = 0u; local < count; ++local) {
             const auto address = impl_->traversal.polarOrdinalToCartesian[first + local];
             const auto x = address % width;
             const auto y = address / width;
-            blockResidual.push_back(residualByte(current.y[address], previousY[address]));
+            if (preparedResidual == nullptr) {
+                fullResidual.push_back(
+                    residualByte(current.y[address], previousY[address]));
+            }
+            ++logicalLaneOffset;
             if ((x & 1u) == 0u && (y & 1u) == 0u) {
-                const auto chroma = static_cast<std::size_t>(y / 2u) * chromaWidth + x / 2u;
-                blockResidual.push_back(residualByte(current.u[chroma], previousU[chroma]));
-                blockResidual.push_back(residualByte(current.v[chroma], previousV[chroma]));
+                const auto chroma =
+                    static_cast<std::size_t>(y / 2u) * chromaWidth + x / 2u;
+                if (preparedResidual == nullptr) {
+                    fullResidual.push_back(
+                        residualByte(current.u[chroma], previousU[chroma]));
+                    fullResidual.push_back(
+                        residualByte(current.v[chroma], previousV[chroma]));
+                }
+                logicalLaneOffset += 2u;
                 ++ownerCount;
             }
         }
-        noveltyEventCount += static_cast<std::uint64_t>(std::count_if(
-            blockResidual.begin(), blockResidual.end(),
-            [](std::uint8_t value) { return value != 0u; }));
-        fullResidual.insert(fullResidual.end(), blockResidual.begin(), blockResidual.end());
-        const auto predictor = checkpoint
-            ? YuvPredictorProgram::RawExactLane
-            : YuvPredictorProgram::PreviousSameAddress;
-        std::uint32_t selectedRepresentation = NoveltyZero;
-        const auto block = buildNoveltyBlock(
-            blockOrdinal++,
-            static_cast<std::uint32_t>(first),
-            static_cast<std::uint32_t>(count),
-            predictor,
-            blockLineageDigest(
-                ordinal,
-                impl_->lineageSeeds,
-                first,
-                count),
-            selectedRepresentation,
-            blockResidual);
-        require(selectedRepresentation < representationCounts.size(),
-                "novelty representation dispatch escaped count table");
-        ++representationCounts[selectedRepresentation];
-        noveltyPayload.insert(noveltyPayload.end(), block.begin(), block.end());
     }
+    blockResidualOffsets.push_back(logicalLaneOffset);
     require(ownerCount == current.u.size(), "canonical 2x2 chroma owner count mismatch");
-    require(fullResidual.size() == current.y.size() + current.u.size() + current.v.size(),
+    require(logicalLaneOffset == expectedLogicalLanes &&
+                fullResidual.size() == expectedLogicalLanes,
             "UGCODE24-420 logical residual length mismatch");
+    require(blockResidualOffsets.size() - 1u <=
+                std::numeric_limits<std::uint32_t>::max(),
+            "novelty block count exceeds uint32");
+    const auto blockCount = static_cast<std::uint32_t>(
+        blockResidualOffsets.size() - 1u);
+
+    std::vector<std::uint8_t> noveltyPayload;
+    std::uint64_t noveltyEventCount = 0u;
+    std::array<std::uint32_t, 4u> representationCounts{};
+    const auto predictor = checkpoint
+        ? YuvPredictorProgram::RawExactLane
+        : YuvPredictorProgram::PreviousSameAddress;
+    impl_->noveltyPool->buildOrdered(
+        blockCount,
+        [&](std::size_t blockOrdinal) {
+            NoveltyBlockBuild result{};
+            const auto first = blockOrdinal * blockCapacity;
+            const auto count = std::min<std::size_t>(
+                blockCapacity, traversalAddresses - first);
+            const auto residualFirst = blockResidualOffsets[blockOrdinal];
+            const auto residualEnd = blockResidualOffsets[blockOrdinal + 1u];
+            result.logicalResidual.assign(
+                fullResidual.begin() + static_cast<std::ptrdiff_t>(residualFirst),
+                fullResidual.begin() + static_cast<std::ptrdiff_t>(residualEnd));
+            result.noveltyEventCount = static_cast<std::uint64_t>(std::count_if(
+                result.logicalResidual.begin(), result.logicalResidual.end(),
+                [](std::uint8_t value) { return value != 0u; }));
+            result.serialized = buildNoveltyBlock(
+                static_cast<std::uint32_t>(blockOrdinal),
+                static_cast<std::uint32_t>(first),
+                static_cast<std::uint32_t>(count),
+                predictor,
+                blockLineageDigest(
+                    ordinal,
+                    impl_->lineageSeeds,
+                    first,
+                    count),
+                result.representation,
+                result.logicalResidual);
+            return result;
+        },
+        [&](NoveltyBlockBuild&& result) {
+            require(result.representation < representationCounts.size(),
+                    "novelty representation dispatch escaped count table");
+            ++representationCounts[result.representation];
+            noveltyEventCount += result.noveltyEventCount;
+            noveltyPayload.insert(
+                noveltyPayload.end(),
+                result.serialized.begin(),
+                result.serialized.end());
+        });
 
     auto statePreimage = digestPreimage("UGYUVS1-executable-seed-state-v1");
     appendDigest(statePreimage, impl_->staticSha);
@@ -811,7 +1045,7 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
     setU32(header, 16u, checkpoint ? FrameCheckpoint : 0u);
     setU32(header, 20u, ordinal);
     setU32(header, 24u, previousOrdinal);
-    setU32(header, 28u, blockOrdinal);
+    setU32(header, 28u, blockCount);
     setI64(header, 32u, view.sensorTimestampNs);
     setI64(header, 40u, view.frameNumber);
     setU64(header, 48u, framePayload.size());
@@ -856,6 +1090,9 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
     stats.denseBlockCount = representationCounts[NoveltyDense];
     stats.sparseBitmaskBlockCount = representationCounts[NoveltySparseBitmask];
     stats.sparseGapBlockCount = representationCounts[NoveltySparseGaps];
+    stats.noveltyWorkerCount = impl_->profile.noveltyWorkerCount;
+    stats.noveltyMaxInFlightBlocks =
+        impl_->profile.noveltyMaxInFlightBlocks;
     stats.preSubstrateSha256 = preSubstrateSha;
     return stats;
 }

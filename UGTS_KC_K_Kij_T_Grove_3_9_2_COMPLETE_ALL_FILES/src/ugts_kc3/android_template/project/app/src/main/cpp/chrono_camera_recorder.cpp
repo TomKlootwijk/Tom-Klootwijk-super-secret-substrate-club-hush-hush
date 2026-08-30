@@ -600,25 +600,26 @@ void ChronoCameraRecorder::onImageAvailable(void* context,AImageReader* reader) 
     auto* recorder=static_cast<ChronoCameraRecorder*>(context);
     if (!recorder || !reader) return;
     std::scoped_lock callbackLock(recorder->callbackMutex_);
-    for (;;) {
-        ScopedImage image;
-        const auto status=AImageReader_acquireNextImage(reader,&image.value);
-        if (status==AMEDIA_IMGREADER_NO_BUFFER_AVAILABLE) break;
-        if (status!=AMEDIA_OK || !image.value) {
-            recorder->fail(ChronoCaptureError::InvalidImage,"AImageReader acquireNextImage failed");
-            break;
-        }
-        recorder->imageCallbacks_.fetch_add(1u,std::memory_order_relaxed);
-        if (!recorder->acceptingImages_.load(std::memory_order_acquire)) continue;
-        if (!recorder->copyImage(image.value)) {
-            if (!recorder->frames_.failed())
-                recorder->fail(ChronoCaptureError::InvalidImage,"Camera2 image normalization failed");
-            else recorder->stopRequested_.store(true,std::memory_order_release);
-            break;
-        }
-        recorder->acceptedImages_.fetch_add(1u,std::memory_order_relaxed);
-        recorder->drainCondition_.notify_all();
+    // Consume exactly one image and yield. Some Camera2 implementations use
+    // one callback executor for image/result work; draining all buffered
+    // images here can starve the metadata timestamps needed to release slots.
+    ScopedImage image;
+    const auto status=AImageReader_acquireNextImage(reader,&image.value);
+    if (status==AMEDIA_IMGREADER_NO_BUFFER_AVAILABLE) return;
+    if (status!=AMEDIA_OK || !image.value) {
+        recorder->fail(ChronoCaptureError::InvalidImage,"AImageReader acquireNextImage failed");
+        return;
     }
+    recorder->imageCallbacks_.fetch_add(1u,std::memory_order_relaxed);
+    if (!recorder->acceptingImages_.load(std::memory_order_acquire)) return;
+    if (!recorder->copyImage(image.value)) {
+        if (!recorder->frames_.failed())
+            recorder->fail(ChronoCaptureError::InvalidImage,"Camera2 image normalization failed");
+        else recorder->stopRequested_.store(true,std::memory_order_release);
+        return;
+    }
+    recorder->acceptedImages_.fetch_add(1u,std::memory_order_relaxed);
+    recorder->drainCondition_.notify_all();
 }
 
 void ChronoCameraRecorder::rememberFrameNumber(

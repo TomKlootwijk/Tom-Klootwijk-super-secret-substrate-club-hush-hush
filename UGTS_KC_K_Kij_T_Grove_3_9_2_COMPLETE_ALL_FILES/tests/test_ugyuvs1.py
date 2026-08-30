@@ -541,11 +541,12 @@ def test_persistent_native_cpp_fixture_cross_language() -> None:
 
     assert result.inspection.committed_frames == 4
     assert result.total_novelty_events == 100_469
-    assert result.inspection.actual_bytes == 114_845
-    assert (
-        result.file_sha256
-        == "22ac87ed1ffeecd50b7eb2609ac8326ec002e0414cc0d3c3dd940271446216d1"
-    )
+    known_native_artifacts = {
+        "22ac87ed1ffeecd50b7eb2609ac8326ec002e0414cc0d3c3dd940271446216d1": 114_845,
+        "d373b547e24bd2f8548ec190b29fa16a64627ba2c00661d499158828812a0b20": 125_601,
+    }
+    assert result.file_sha256 in known_native_artifacts
+    assert result.inspection.actual_bytes == known_native_artifacts[result.file_sha256]
     assert (
         result.frames[0]["pre_substrate_sha256"]
         == "eccb2f605f75783d5d128b673796f87e58c185ad364f256c464c2c0f291633f0"

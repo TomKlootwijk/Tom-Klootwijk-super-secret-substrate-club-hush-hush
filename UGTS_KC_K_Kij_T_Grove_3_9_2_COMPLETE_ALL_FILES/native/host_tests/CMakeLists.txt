@@ -176,10 +176,28 @@ set_property(TARGET ugtc4d_decoder_tests PROPERTY CXX_STANDARD_REQUIRED ON)
 find_package(Threads REQUIRED)
 
 add_executable(
+    full_substrate_camera_tests
+    full_substrate_camera_tests.cpp
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/full_substrate_camera.cpp"
+)
+target_include_directories(
+    full_substrate_camera_tests PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d"
+)
+target_compile_definitions(
+    full_substrate_camera_tests PRIVATE
+    UGLUT2_FIXTURE_PATH="${CMAKE_CURRENT_LIST_DIR}/fixtures/uglut2_native_fixture.bin"
+)
+set_property(TARGET full_substrate_camera_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET full_substrate_camera_tests PROPERTY CXX_STANDARD_REQUIRED ON)
+
+add_executable(
     yuv_seed_capture_tests
     yuv_seed_capture_tests.cpp
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/full_substrate_camera.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/yuv_seed_capture.cpp"
 )
 target_include_directories(
@@ -199,6 +217,7 @@ add_executable(
     yuv_seed_capture_720p_benchmark.cpp
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/full_substrate_camera.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/yuv_seed_capture.cpp"
 )
 target_include_directories(
@@ -257,10 +276,12 @@ if(MSVC)
     target_compile_options(ugtc4d_decoder_tests PRIVATE /W4 /permissive-)
     target_compile_options(yuv_seed_capture_tests PRIVATE /W4 /permissive-)
     target_compile_options(yuv_seed_capture_720p_benchmark PRIVATE /W4 /permissive-)
+    target_compile_options(full_substrate_camera_tests PRIVATE /W4 /permissive-)
 else()
     target_compile_options(ugtc4d_decoder_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(yuv_seed_capture_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(
         yuv_seed_capture_720p_benchmark PRIVATE -Wall -Wextra -Wpedantic
     )
+    target_compile_options(full_substrate_camera_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()

@@ -280,10 +280,14 @@ SeededUglut2Traversal regenerateSeededUglut2Traversal(
     result.recipeSeed = recipeSeed;
     result.uglut2Sha256 = sha256(uglut2.data(), uglut2.size());
     result.polarOrdinalToCartesian.resize(pixelCount);
+    result.rho20ByCartesian.resize(pixelCount);
+    result.theta18ByCartesian.resize(pixelCount);
     std::vector<std::uint8_t> traversalBytes;
     traversalBytes.reserve(pixelCount * 4u);
     for (std::size_t index = 0u; index < pixelCount; ++index) {
         result.polarOrdinalToCartesian[index] = keys[index].address;
+        result.rho20ByCartesian[keys[index].address] = keys[index].rho20;
+        result.theta18ByCartesian[keys[index].address] = keys[index].theta18;
         appendU32(traversalBytes, keys[index].address);
     }
     result.traversalSha256 = sha256(traversalBytes.data(), traversalBytes.size());

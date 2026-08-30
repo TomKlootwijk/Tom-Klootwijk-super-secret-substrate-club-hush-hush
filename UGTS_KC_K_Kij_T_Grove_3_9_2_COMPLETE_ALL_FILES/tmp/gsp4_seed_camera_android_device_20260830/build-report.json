@@ -2,7 +2,7 @@
   "agp": "8.13.2",
   "application_id": "org.ugts.games.my_mobile_3d_game",
   "authoring_assets_packaged": false,
-  "authoring_project_hash": "412d7023c5c1c7a3eef4dd4ad20ddc45372af676b2b3d1df008939e3622fe1bc",
+  "authoring_project_hash": "a7c7b3672965d3a19784b7aec00fabdd30c397e56dafac4fab1d2a181eb3ccc2",
   "chrono_runtime_binding": {
     "asset_bytes": 0,
     "asset_count": 0,
@@ -31,7 +31,7 @@
           "novelty_policy": "EXACT_RESIDUAL_REQUIRED",
           "output_name": null,
           "pixel_profile": "UGCODE24_420_CAMERA_EXACT",
-          "queue_slots": 8,
+          "queue_slots": 16,
           "recipe_seed_u64": 1,
           "root_seed_u64": 5786918054255874130,
           "source_asset_bytes": null,
@@ -56,7 +56,7 @@
           "novelty_policy": "EXACT_RESIDUAL_REQUIRED",
           "output_name": "poco_capture.ugsp4c",
           "pixel_profile": "UGCODE24_420_CAMERA_EXACT",
-          "queue_slots": 8,
+          "queue_slots": 16,
           "recipe_seed_u64": 1,
           "root_seed_u64": 5786918054255874130,
           "source_asset_bytes": null,
@@ -70,14 +70,14 @@
         }
       ],
       "byte_length": 436,
-      "content_sha256": "45a90d23c2ab3fbdbcf782f672c4ec64b35a244a6d2e0faef9b0c36a570545d2",
+      "content_sha256": "9b1c058a27ae92c799fab3c426671a06aa9668f1f581a0e2a7e43414ece12ed3",
       "format_version": 1,
       "player_count": 1,
       "record_bytes": 176,
       "recorder_count": 1,
       "schema": "ugts-kc-native-chrono-binding-inspection-3.9.2",
       "seed_boundary": "GSP4 root seed regenerates UGLUT2 traversal; arbitrary observed pixels remain exact novelty evidence",
-      "sha256": "9c5dcc6b94c80437f9691d9f45ecba3199b5fe34470545173a0a77213c9aec7f"
+      "sha256": "04f411f9d0019756a12e943807ed2a0f9d8b0b34144efb835ef83a289b0d0d8b"
     },
     "portable_native_sources": {
       "files": [
@@ -102,14 +102,14 @@
           "sha256": "8a591582975620de8aca8caabc97e240b8ddcbc0c64ba168d6eb835996a55c89"
         },
         {
-          "bytes": 5097,
+          "bytes": 5676,
           "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.hpp",
-          "sha256": "d943210ba7b24d4c24e3ee856a4d5756fe2d4a422187a272f22118bd925f1c37"
+          "sha256": "ba8b0959242cb5a1b4cd45e42b11f383b95608a8e98dbb7def5089fb59b23ca9"
         },
         {
-          "bytes": 72821,
+          "bytes": 76096,
           "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.cpp",
-          "sha256": "ad9972b6c6678323e2c13deeb4efc9297a5f71b0253e19d79c56387cf09efb5e"
+          "sha256": "ae82692883c870580b35dcf2814522d0f058263bd28f1b25b539cad100adbeca"
         }
       ],
       "present": true,
@@ -143,9 +143,9 @@
       "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
     },
     {
-      "bytes": 370,
+      "bytes": 462,
       "path": "app/src/gsp4SeedPocoX7Pro/AndroidManifest.xml",
-      "sha256": "b4545cd72da43aeba1a4ed2cadb6f07c09985f23379dae00be24edb7b0c95383"
+      "sha256": "cd4d6005ede8309560b90b2a1ed83368740ea3613f1b0cc6ac102051dcb94065"
     },
     {
       "bytes": 1519,
@@ -160,7 +160,7 @@
     {
       "bytes": 436,
       "path": "app/src/main/assets/chrono_bindings.kcch",
-      "sha256": "9c5dcc6b94c80437f9691d9f45ecba3199b5fe34470545173a0a77213c9aec7f"
+      "sha256": "04f411f9d0019756a12e943807ed2a0f9d8b0b34144efb835ef83a289b0d0d8b"
     },
     {
       "bytes": 283,
@@ -210,7 +210,7 @@
     {
       "bytes": 10116,
       "path": "app/src/main/assets/signature_scene.kc3d",
-      "sha256": "2e8031fe7890db2df4e490b84489bb9d6fa85665c5aba426d2e6c5d3b28c9174"
+      "sha256": "c66be9f67083fe24b301b5172418a0e40118fbe35d57d78ecee04b9e1840a154"
     },
     {
       "bytes": 860,
@@ -233,9 +233,9 @@
       "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
     },
     {
-      "bytes": 35888,
+      "bytes": 36030,
       "path": "app/src/main/cpp/chrono_camera_recorder.cpp",
-      "sha256": "bab718494d6231610ccd46ad874d862e81c875f9085b1890959f17687208f70b"
+      "sha256": "68bbe6c932f8fb0d8bad1f39beac1e8482e44e2671e62005d5bce7b48fbac941"
     },
     {
       "bytes": 5764,
@@ -243,9 +243,9 @@
       "sha256": "8cfdd2b26d5fa07b1662ea8b9cf330408f92df46653216a0c002ac0e92892f36"
     },
     {
-      "bytes": 13472,
+      "bytes": 12835,
       "path": "app/src/main/cpp/chrono_capture_queue.cpp",
-      "sha256": "a41b1e9592e999f2e8d2ed70566dd7082687371978ed92a8498cb2d8376198da"
+      "sha256": "d05b8c9ac067e0f4fe6de1c86d1feb04a3fa5df642dd6e364938ca88366a0108"
     },
     {
       "bytes": 5505,
@@ -261,6 +261,16 @@
       "bytes": 638,
       "path": "app/src/main/cpp/chrono_capture_sha256.hpp",
       "sha256": "eb2fc96a4fe8134ebd3dbfeaa42b8017338707faf8487ef07d61298372f176f8"
+    },
+    {
+      "bytes": 904,
+      "path": "app/src/main/cpp/chrono_gsp4_residual.comp",
+      "sha256": "cb076333ed90ec7d294d149e67963005853b154f88cada95d077e2e511ea24f3"
+    },
+    {
+      "bytes": 5610,
+      "path": "app/src/main/cpp/chrono_gsp4_residual_spv.hpp",
+      "sha256": "f3dae5dad3deb2eb63c715a4b6646ee075e2a74984bc3e4588419d14e7e5d26f"
     },
     {
       "bytes": 3066,
@@ -288,9 +298,9 @@
       "sha256": "0a7c40cfb2a888d79e154aa9e59fac7a79d131fdfb67767c0e4266d790bf11f1"
     },
     {
-      "bytes": 20452,
+      "bytes": 21854,
       "path": "app/src/main/cpp/chrono_seed_capture_session.cpp",
-      "sha256": "2280866dca48637e5ed5a7d00c7dcf5d1e4d0bfae293a9cb5d85721f2ffbdc69"
+      "sha256": "a9feedc2fa18e4ff062a141c293d013021a6805a8bdb2510bb1ae1af1b6920b1"
     },
     {
       "bytes": 2174,
@@ -328,9 +338,19 @@
       "sha256": "0dc8d5513e80e69af51e273c19366f3ae6ecfaf9e9eea80a412b8939dbf3168e"
     },
     {
-      "bytes": 4781,
+      "bytes": 23629,
+      "path": "app/src/main/cpp/chrono_vulkan_residual.cpp",
+      "sha256": "f21677f260ff33714be38b94d0bb20f88b2d0bdf219fe7a0ee18b7a18849deaf"
+    },
+    {
+      "bytes": 1561,
+      "path": "app/src/main/cpp/chrono_vulkan_residual.hpp",
+      "sha256": "a0960bfd4b7e51af3b39ebffef1d0dfd870bdd54d10f956f3c3ef772e39b5edd"
+    },
+    {
+      "bytes": 5377,
       "path": "app/src/main/cpp/CMakeLists.txt",
-      "sha256": "c33b3c672fcbab0544358a6e2639374047db6093068e1e583746fb5bf8bd4cf0"
+      "sha256": "367e236778f4d7be8cc14fc19277968e19f665fcbfcefc746a140fd6666b2560"
     },
     {
       "bytes": 3497,
@@ -533,14 +553,14 @@
       "sha256": "9ab0e161e3d24b640caa4b8368bc5c4d44ad0bbe528c700ff0224d6798494d38"
     },
     {
-      "bytes": 72821,
+      "bytes": 76096,
       "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.cpp",
-      "sha256": "ad9972b6c6678323e2c13deeb4efc9297a5f71b0253e19d79c56387cf09efb5e"
+      "sha256": "ae82692883c870580b35dcf2814522d0f058263bd28f1b25b539cad100adbeca"
     },
     {
-      "bytes": 5097,
+      "bytes": 5676,
       "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.hpp",
-      "sha256": "d943210ba7b24d4c24e3ee856a4d5756fe2d4a422187a272f22118bd925f1c37"
+      "sha256": "ba8b0959242cb5a1b4cd45e42b11f383b95608a8e98dbb7def5089fb59b23ca9"
     },
     {
       "bytes": 3442,
@@ -588,9 +608,9 @@
       "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
     },
     {
-      "bytes": 76892,
+      "bytes": 76894,
       "path": "project.json",
-      "sha256": "793d8cf6512630edd5e7cb9e600fb91d6a4e054478bba817458ec7369c556ea1"
+      "sha256": "4cf007be9c6df8079c374179112e1f7a1e6667dd4ab762d09c0744c045c1ae09"
     },
     {
       "bytes": 12086,
@@ -600,7 +620,7 @@
     {
       "bytes": 4090,
       "path": "scene-pack-inspection.json",
-      "sha256": "0c502013ee320747d05180e46640f1ca827a1f786ca77d0b25a5f5c2abd11ccb"
+      "sha256": "4edd5f9e432a94969c6d868c79315877e5eff3b0f50ffc8a028613f88595e6b4"
     },
     {
       "bytes": 333,
@@ -626,7 +646,7 @@
   "polar_population_recipe_asset": null,
   "population_runtime": null,
   "profile_hint": "poco_x7_pro_12gb",
-  "project_hash": "412d7023c5c1c7a3eef4dd4ad20ddc45372af676b2b3d1df008939e3622fe1bc",
+  "project_hash": "a7c7b3672965d3a19784b7aec00fabdd30c397e56dafac4fab1d2a181eb3ccc2",
   "project_id": "my_mobile_3d_game",
   "render_substrate_runtime": null,
   "schema": "ugts-kc-android-source-build-3.9.2",

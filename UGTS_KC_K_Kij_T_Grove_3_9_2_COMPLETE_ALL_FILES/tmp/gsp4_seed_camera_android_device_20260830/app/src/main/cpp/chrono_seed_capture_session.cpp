@@ -1,4 +1,5 @@
 #include "chrono_seed_capture_session.hpp"
+#include "chrono_vulkan_residual.hpp"
 
 #include <android/log.h>
 
@@ -184,11 +185,9 @@ void ChronoSeedCaptureSession::runSpoolWriter() {
                 putU64(header,8u,frame.ordinal);
                 putI64(header,16u,frame.sensorTimestampNs);
                 putI64(header,24u,frame.frameNumber);
-                std::copy(frame.ySha256.begin(),frame.ySha256.end(),header.begin()+32u);
-                std::copy(frame.uSha256.begin(),frame.uSha256.end(),header.begin()+64u);
-                std::copy(frame.vSha256.begin(),frame.vSha256.end(),header.begin()+96u);
-                std::copy(frame.preSubstrateSha256.begin(),frame.preSubstrateSha256.end(),
-                    header.begin()+128u);
+                // Bytes 32..159 are reserved zero: the time-critical spool
+                // performs no full-plane hashing. Exact hashes are computed
+                // during read-back and bound into UGYUVS1 before replay.
                 std::copy(frame.metadataSha256.begin(),frame.metadataSha256.end(),
                     header.begin()+160u);
                 putU32(header,192u,static_cast<std::uint32_t>(frame.canonicalMetadata.size()));
@@ -253,7 +252,19 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
         profile.rootSeed=binding_.rootSeed;
         profile.traversalRecipeSeed=binding_.recipeSeed;
         profile.literalUglut2=literalUglut2_;
+        profile.noveltyWorkerCount=std::clamp<std::uint32_t>(
+            std::thread::hardware_concurrency()>2u?
+                std::thread::hardware_concurrency()-2u:1u,1u,8u);
+        profile.noveltyMaxInFlightBlocks=std::min<std::uint32_t>(
+            16u,profile.noveltyWorkerCount*2u);
         writer_=ugts::chrono::YuvSeedCaptureWriter::createPartial(partialPath_,profile);
+        ChronoVulkanResidual vulkanResidual;
+        const auto vulkanActive=vulkanResidual.configure(
+            binding_.width,binding_.height,binding_.rootSeed,binding_.recipeSeed,
+            literalUglut2_);
+        if (!vulkanActive) throw std::runtime_error(
+            "dedicated POCO seed flavor requires Vulkan 1.2 8-bit residual compute");
+        std::vector<std::uint8_t> preparedResidual;
         std::vector<std::uint8_t> y(
             static_cast<std::size_t>(binding_.width)*binding_.height);
         std::vector<std::uint8_t> u(y.size()/4u),v(y.size()/4u);
@@ -269,12 +280,9 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
                 throw std::runtime_error("exact Camera2 raw spool frame is truncated/invalid");
             }
             const auto pts=getI64(header,16u);
-            if (chronoCaptureSha256(y)!=readDigest(header,32u) ||
-                chronoCaptureSha256(u)!=readDigest(header,64u) ||
-                chronoCaptureSha256(v)!=readDigest(header,96u) ||
-                chronoCaptureSha256(metadata)!=readDigest(header,160u)) {
+            if (chronoCaptureSha256(metadata)!=readDigest(header,160u)) {
                 closeSpool();
-                throw std::runtime_error("exact Camera2 raw spool plane/metadata SHA mismatch");
+                throw std::runtime_error("exact Camera2 raw spool metadata SHA mismatch");
             }
             std::array<std::uint8_t,16> prefix{};
             putI64(prefix,0u,pts);
@@ -282,11 +290,7 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
             putU32(prefix,12u,binding_.height);
             ChronoSha256 preHasher;
             preHasher.update(prefix); preHasher.update(y); preHasher.update(u); preHasher.update(v);
-            const auto expectedPre=readDigest(header,128u);
-            if (preHasher.finish()!=expectedPre) {
-                closeSpool();
-                throw std::runtime_error("exact Camera2 raw spool pre-substrate SHA mismatch");
-            }
+            const auto expectedPre=preHasher.finish();
             const ugts::chrono::Yuv420p8FrameView source{
                 pts,getI64(header,24u),
                 {y.data(),y.size(),binding_.width,1u},
@@ -294,7 +298,15 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
                 {v.data(),v.size(),binding_.width/2u,1u},
                 {metadata.data(),metadata.size()},
             };
-            const auto append=writer_->append(source);
+            ChronoVulkanResidualReceipt gpuReceipt;
+            ugts::chrono::YuvSeedCaptureAppendStats append;
+            if (!vulkanResidual.compute(
+                    y,u,v,(ordinal%profile.checkpointInterval)==0u,
+                    preparedResidual,gpuReceipt))
+                throw std::runtime_error(
+                    "mandatory POCO Vulkan residual dispatch/parity failed");
+            append=writer_->appendPreparedResidual(
+                source,{preparedResidual.data(),preparedResidual.size()});
             if (append.ordinal!=ordinal || append.preSubstrateSha256!=expectedPre) {
                 closeSpool();
                 throw std::runtime_error("UGYUVS1 transcode disagrees with raw spool digest");
@@ -311,6 +323,18 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
             throw std::runtime_error("exact Camera2 raw spool has trailing/read-error bytes");
         }
         closeSpool();
+        if (vulkanResidual.dispatchCount()!=spooledFrames_)
+            throw std::runtime_error(
+                "mandatory POCO Vulkan dispatch count does not equal captured frames");
+        KC_SEED_LOGI(
+            "UGYUVS1 residual authoring receipt vulkan_gpu=%s dispatches=%llu "
+            "frames=%llu cpu_fallback=%s prepared_bytes_consumed=%s workers=%u inflight=%u",
+            vulkanResidual.deviceName().empty()?"unavailable":vulkanResidual.deviceName().c_str(),
+            static_cast<unsigned long long>(vulkanResidual.dispatchCount()),
+            static_cast<unsigned long long>(spooledFrames_),
+            "false",
+            vulkanResidual.dispatchCount()>0u?"true":"false",
+            profile.noveltyWorkerCount,profile.noveltyMaxInFlightBlocks);
         const auto expectedFrames=writer_->frameCount();
         writer_->finalize(finalPath_);
         writer_.reset();

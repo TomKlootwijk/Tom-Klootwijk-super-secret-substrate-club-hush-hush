@@ -1,0 +1,448 @@
+#version 460
+#extension GL_EXT_shader_8bit_storage : require
+
+// UGCAMNODE-FX1 / profile 2. One invocation owns one luma address and
+// optionally its even/even U,V pair. All arithmetic is uint32/int32; the
+// shader does not require shaderInt64 or floating-point/transcendental math.
+layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+
+layout(set = 0, binding = 0, std430) readonly buffer CurrentDense {
+    uint8_t current_bytes[];
+};
+layout(set = 0, binding = 1, std430) readonly buffer PreviousDense {
+    uint8_t previous_bytes[];
+};
+
+// Per luma traversal owner: Cartesian address, UGLUT2 rho20, UGLUT2 theta18,
+// owner-byte offset in the canonical Y,[U,V] residual stream, and the low32
+// GSP4 lineage seed regenerated from root+recipe+address by the CPU. Carrying
+// this exact input avoids requiring shaderInt64 for the SplitMix64 lineage.
+struct LaneSeed {
+    uint cartesian_address;
+    uint source_rho20;
+    uint source_theta18;
+    uint owner_byte_offset;
+    uint lineage_seed;
+};
+layout(set = 0, binding = 2, std430) readonly buffer LaneSeedInput {
+    LaneSeed lane_seed[];
+};
+layout(set = 0, binding = 3, std430) writeonly buffer CanonicalResidual {
+    uint8_t residual_bytes[];
+};
+layout(set = 0, binding = 4, std430) writeonly buffer FullSubstrateReceipt {
+    uint receipt_words[];
+};
+
+layout(push_constant) uniform FullSubstrateParameters {
+    uint luma_count;
+    uint frame_ordinal;
+    uint width;
+    uint height;
+    uint root_seed_lo;
+    uint root_seed_hi;
+} parameters;
+
+const uint RHO20_MASK = 0x000fffffu;
+const uint THETA18_MASK = 0x0003ffffu;
+const uint FRAME14_MASK = 0x00003fffu;
+const uint PHI12_MASK = 0x00000fffu;
+const uint RECEIPT_WORDS = 20u;
+
+uint rotateLeft32(uint value, uint shift) {
+    shift &= 31u;
+    return shift == 0u ? value : ((value << shift) | (value >> (32u - shift)));
+}
+
+uint mix32(uint value) {
+    value ^= value >> 16u;
+    value *= 0x7feb352du;
+    value ^= value >> 15u;
+    value *= 0x846ca68bu;
+    value ^= value >> 16u;
+    return value;
+}
+
+uint generatedConstant(uint index) {
+    return mix32(
+        parameters.root_seed_lo ^
+        rotateLeft32(parameters.root_seed_hi, index & 31u) ^
+        ((index + 1u) * 0x9e3779b9u)
+    );
+}
+
+uint parity32(uint value) {
+    value ^= value >> 16u;
+    value ^= value >> 8u;
+    value ^= value >> 4u;
+    return (0x6996u >> (value & 15u)) & 1u;
+}
+
+uint triangular32(uint value) {
+    // Exact low 32 bits of value*(value-1)/2 without a 64-bit intermediate.
+    return (value & 1u) == 0u
+        ? (value >> 1u) * (value - 1u)
+        : value * ((value - 1u) >> 1u);
+}
+
+uint magnitudeInt(int value) {
+    return uint(value < 0 ? -value : value);
+}
+
+int floorDiv(int value, int divisor) {
+    int quotient = value / divisor;
+    const int remainder = value % divisor;
+    if (remainder < 0) quotient -= 1;
+    return quotient;
+}
+
+int floorMod(int value, int divisor) {
+    const int remainder = value % divisor;
+    return remainder < 0 ? remainder + divisor : remainder;
+}
+
+uint kleinAddress(
+    int x,
+    int y,
+    uint gridWidth,
+    uint gridHeight,
+    out uint reflected
+) {
+    const int w = int(gridWidth);
+    const int h = int(gridHeight);
+    const int yWrap = floorDiv(y, h);
+    const int yy = floorMod(y, h);
+    reflected = uint((yWrap & 1) != 0);
+    if (reflected != 0u) x = (w - 1) - x;
+    const int xx = floorMod(x, w);
+    return uint(yy) * gridWidth + uint(xx);
+}
+
+uint previousValue(uint base, uint address) {
+    return uint(previous_bytes[base + address]);
+}
+
+uint medianEdge(uint left, uint up, uint upLeft) {
+    const int gradient = clamp(int(left) + int(up) - int(upLeft), 0, 255);
+    const uint candidate = uint(gradient);
+    return max(min(left, up), min(max(left, up), candidate));
+}
+
+uint predictorForPlane(
+    uint selector,
+    uint base,
+    uint x,
+    uint y,
+    uint gridWidth,
+    uint gridHeight,
+    out uint leftAddress,
+    out uint upAddress,
+    out uint upLeftAddress,
+    out uint reflectionMask
+) {
+    const uint sameAddress = y * gridWidth + x;
+    uint leftReflected = 0u;
+    uint upReflected = 0u;
+    uint upLeftReflected = 0u;
+    leftAddress = kleinAddress(
+        int(x) - 1, int(y), gridWidth, gridHeight, leftReflected
+    );
+    upAddress = kleinAddress(
+        int(x), int(y) - 1, gridWidth, gridHeight, upReflected
+    );
+    upLeftAddress = kleinAddress(
+        int(x) - 1, int(y) - 1, gridWidth, gridHeight, upLeftReflected
+    );
+    reflectionMask = leftReflected | (upReflected << 1u) |
+                     (upLeftReflected << 2u);
+    const uint same = previousValue(base, sameAddress);
+    const uint left = previousValue(base, leftAddress);
+    const uint up = previousValue(base, upAddress);
+    const uint upLeft = previousValue(base, upLeftAddress);
+    if (selector == 0u) return same;
+    if (selector == 1u) return left;
+    if (selector == 2u) return up;
+    return medianEdge(left, up, upLeft);
+}
+
+void appendPairBit(inout uint low, inout uint high, uint bit) {
+    high = (high << 1u) | (low >> 31u);
+    low = (low << 1u) | (bit & 1u);
+}
+
+void morton64(
+    uint rho20,
+    uint theta18,
+    uint frame14,
+    uint phi12,
+    out uint low,
+    out uint high
+) {
+    low = 0u;
+    high = 0u;
+    // Correct MSB round-robin schedule. Exhausted fields are skipped, so all
+    // 20+18+14+12 bits are consumed exactly once.
+    for (uint round = 0u; round < 20u; ++round) {
+        appendPairBit(low, high, (rho20 >> (19u - round)) & 1u);
+        if (round < 18u)
+            appendPairBit(low, high, (theta18 >> (17u - round)) & 1u);
+        if (round < 14u)
+            appendPairBit(low, high, (frame14 >> (13u - round)) & 1u);
+        if (round < 12u)
+            appendPairBit(low, high, (phi12 >> (11u - round)) & 1u);
+    }
+}
+
+void packKlb37(
+    uint rho11,
+    uint theta12,
+    uint elevation10,
+    uint symbol3,
+    out uint low,
+    out uint high
+) {
+    low = (rho11 & 0x7ffu) |
+          ((theta12 & 0xfffu) << 11u) |
+          ((elevation10 & 0x1ffu) << 23u);
+    high = ((elevation10 >> 9u) & 1u) | ((symbol3 & 7u) << 1u);
+    const uint evenParityBit = parity32(low ^ high);
+    high |= evenParityBit << 4u;
+}
+
+uint squareSigned(int value) {
+    const uint magnitude = magnitudeInt(value);
+    return magnitude * magnitude;
+}
+
+void writeReceipt(uint lane, uint word, uint value) {
+    receipt_words[lane * RECEIPT_WORDS + word] = value;
+}
+
+void main() {
+    const uint lane = gl_GlobalInvocationID.x;
+    if (lane >= parameters.luma_count) return;
+
+    const LaneSeed seed = lane_seed[lane];
+    const uint address = seed.cartesian_address;
+    const uint sourceRho20 = seed.source_rho20 & RHO20_MASK;
+    const uint sourceTheta18 = seed.source_theta18 & THETA18_MASK;
+    const uint ownerByteOffset = seed.owner_byte_offset;
+    const uint x = address % parameters.width;
+    const uint y = address / parameters.width;
+
+    const uint radialSum = sourceRho20 + (generatedConstant(3u) & 0x001fffffu);
+    const uint wrappedRho20 = radialSum & RHO20_MASK;
+    const uint radialOdd = (radialSum >> 20u) & 1u;
+    const uint sourceTheta32 = sourceTheta18 << 14u;
+    const uint topologyTheta32 = radialOdd != 0u
+        ? (0x80000000u - sourceTheta32)
+        : sourceTheta32;
+    const uint topologyTheta18 = (topologyTheta32 >> 14u) & THETA18_MASK;
+    const uint orientation = radialOdd;
+
+    const uint frame = parameters.frame_ordinal;
+    uint phi = generatedConstant(20u) + frame * generatedConstant(21u) +
+               triangular32(frame) * generatedConstant(22u);
+    uint omega = generatedConstant(21u) + frame * generatedConstant(22u);
+    uint alpha = generatedConstant(22u);
+    if (radialOdd != 0u) {
+        phi = 0u - phi;
+        omega = 0u - omega;
+        alpha = 0u - alpha;
+    }
+    const uint phiForKey = phi;
+    const uint frame14 = frame & FRAME14_MASK;
+    const uint phi12 = (phiForKey >> 20u) & PHI12_MASK;
+
+    // Contiguous SCLP64 [rho20|theta18|ordinal14|phi12] as low/high uint32.
+    const uint keyHigh = (wrappedRho20 << 12u) | (topologyTheta18 >> 6u);
+    const uint keyLow = ((topologyTheta18 & 0x3fu) << 26u) |
+                        (frame14 << 12u) | phi12;
+    uint mortonLow = 0u;
+    uint mortonHigh = 0u;
+    morton64(wrappedRho20, topologyTheta18, frame14, phi12, mortonLow, mortonHigh);
+
+    const uint heightDenominator = max(parameters.height - 1u, 1u);
+    const uint elevation10 =
+        (((parameters.height - 1u - y) * 1023u) + heightDenominator / 2u) /
+        heightDenominator;
+    const uint rho11 = (wrappedRho20 * 2047u + (RHO20_MASK >> 1u)) / RHO20_MASK;
+    const uint theta12 = topologyTheta18 >> 6u;
+    const uint symbol3 = mix32(
+        generatedConstant(2u) ^ address ^ (frame * 0x85ebca6bu)
+    ) & 7u;
+    uint klbLow = 0u;
+    uint klbHigh = 0u;
+    packKlb37(rho11, theta12, elevation10, symbol3, klbLow, klbHigh);
+
+    const int qx = ((int(x * 2u + 1u) - int(parameters.width)) * 32767) /
+                   int(parameters.width);
+    const int qy = -(((int(y * 2u + 1u) - int(parameters.height)) * 32767) /
+                     int(parameters.height));
+    const int apexX = int(generatedConstant(8u) & 8191u) - 4096;
+    const int apexY = 16384 + int(generatedConstant(9u) & 4095u);
+    const uint tripleIndex = generatedConstant(16u) & 7u;
+    const uint tripleScale = 256u + (generatedConstant(17u) & 255u);
+    // Ordered primitive Pythagorean triples (R unit, h unit, T unit).
+    // The integer cone guard therefore carries the exact R^2+h^2=T^2
+    // relationship without float, sqrt, or a separately generated slant.
+    const uvec3 tripleUnits[8] = uvec3[8](
+        uvec3(3u, 4u, 5u),
+        uvec3(5u, 12u, 13u),
+        uvec3(8u, 15u, 17u),
+        uvec3(7u, 24u, 25u),
+        uvec3(20u, 21u, 29u),
+        uvec3(12u, 35u, 37u),
+        uvec3(9u, 40u, 41u),
+        uvec3(28u, 45u, 53u)
+    );
+    const int coneRadius = int(tripleUnits[tripleIndex].x * tripleScale);
+    const int coneHeight = int(tripleUnits[tripleIndex].y * tripleScale);
+    const int coneSlant = int(tripleUnits[tripleIndex].z * tripleScale);
+    const int guard = 32 + int(generatedConstant(12u) & 127u);
+    const int down = apexY - qy;
+    const int xFromApex = qx - apexX;
+    const int absX = int(magnitudeInt(xFromApex));
+    const bool insideCone = down >= 0 && down <= coneHeight &&
+        absX * coneHeight <= down * coneRadius;
+    const uint radial = uint(absX);
+    const uint absoluteDown = magnitudeInt(down);
+    const uint guardSquared = uint(guard * guard);
+    const bool apexGuard = radial <= uint(guard) && absoluteDown <= uint(guard) &&
+        radial * radial + absoluteDown * absoluteDown <= guardSquared;
+    const uint cornerDx = radial >= uint(coneRadius)
+        ? radial - uint(coneRadius) : uint(coneRadius) - radial;
+    const uint cornerDy = magnitudeInt(down - coneHeight);
+    const bool cornerNear = cornerDx <= uint(guard) && cornerDy <= uint(guard) &&
+        cornerDx * cornerDx + cornerDy * cornerDy <= guardSquared;
+    const int segmentDot = absX * coneRadius + down * coneHeight;
+    const int segmentCross = absX * coneHeight - down * coneRadius;
+    const uint slantSquared = uint(coneSlant * coneSlant);
+    bool coneSideNear = false;
+    if (segmentDot < 0) coneSideNear = apexGuard;
+    else if (uint(segmentDot) > slantSquared) coneSideNear = cornerNear;
+    else coneSideNear = magnitudeInt(segmentCross) <= uint(guard * coneSlant);
+    const bool coneBaseNear = radial <= uint(coneRadius)
+        ? magnitudeInt(down - coneHeight) <= uint(guard)
+        : cornerNear;
+    const bool nearCone = coneSideNear || coneBaseNear;
+
+    const int sphereRadius = 3072 + int(generatedConstant(13u) & 2047u);
+    const int sphereY = int(generatedConstant(14u) & 8191u) - 4096;
+    const int sphereOffset = sphereRadius + 2048 +
+                             int(generatedConstant(15u) & 2047u);
+    const int sphereX0 = apexX - sphereOffset;
+    const int sphereX1 = apexX + sphereOffset;
+    const uint distance0 = squareSigned(qx - sphereX0) + squareSigned(qy - sphereY);
+    const uint distance1 = squareSigned(qx - sphereX1) + squareSigned(qy - sphereY);
+    const uint radiusSquared = uint(sphereRadius * sphereRadius);
+    const int innerRadius = max(sphereRadius - guard, 0);
+    const int outerRadius = sphereRadius + guard;
+    const uint innerSquared = uint(innerRadius * innerRadius);
+    const uint outerSquared = uint(outerRadius * outerRadius);
+    const bool insideSphere = distance0 <= radiusSquared || distance1 <= radiusSquared;
+    const bool nearSphere =
+        (distance0 >= innerSquared && distance0 <= outerSquared) ||
+        (distance1 >= innerSquared && distance1 <= outerSquared);
+
+    const uint routedHash = mix32(seed.lineage_seed ^ frame);
+    const uint tag = mix32(
+        klbLow ^ rotateLeft32(klbHigh, 7u) ^ address ^ generatedConstant(4u) ^
+        seed.lineage_seed ^ rotateLeft32(routedHash, 11u)
+    );
+    uint prefix = 0u;
+    uint node = 0u;
+    const uint topologyBit = (
+        orientation ^ uint(insideCone) ^ uint(insideSphere) ^ uint(nearCone) ^
+        uint(nearSphere) ^ uint(apexGuard)
+    ) & 1u;
+    for (uint depth = 0u; depth < 16u; ++depth) {
+        const uint radix = (mortonHigh >> (31u - depth)) & 1u;
+        const uint grammarParity = parity32(
+            klbLow ^ klbHigh ^ tag ^ generatedConstant(32u + depth) ^ node
+        );
+        const uint branch = radix ^ grammarParity ^ topologyBit;
+        prefix = ((prefix << 1u) | branch) & 0xffffu;
+        node = node * 2u + 1u + branch;
+        phi += omega;
+        omega += alpha;
+    }
+    const uint selector = (
+        node ^ tag ^ (phi >> 24u) ^ (omega >> 16u) ^ (alpha >> 8u) ^
+        uint(insideCone) ^ uint(insideSphere) ^ uint(nearCone) ^
+        uint(nearSphere) ^ uint(apexGuard)
+    ) & 3u;
+
+    uint leftAddress = 0u;
+    uint upAddress = 0u;
+    uint upLeftAddress = 0u;
+    uint kleinReflectionMask = 0u;
+    const uint yPredictor = predictorForPlane(
+        selector, 0u, x, y, parameters.width, parameters.height,
+        leftAddress, upAddress, upLeftAddress, kleinReflectionMask
+    );
+    residual_bytes[ownerByteOffset] = uint8_t(
+        uint(current_bytes[address]) - yPredictor
+    );
+    if (((x | y) & 1u) == 0u) {
+        const uint yBytes = parameters.width * parameters.height;
+        const uint chromaWidth = parameters.width >> 1u;
+        const uint chromaHeight = parameters.height >> 1u;
+        const uint chromaBytes = yBytes >> 2u;
+        const uint chromaX = x >> 1u;
+        const uint chromaY = y >> 1u;
+        uint ignoredLeft = 0u;
+        uint ignoredUp = 0u;
+        uint ignoredUpLeft = 0u;
+        uint ignoredReflectionMask = 0u;
+        const uint uPredictor = predictorForPlane(
+            selector, yBytes, chromaX, chromaY, chromaWidth, chromaHeight,
+            ignoredLeft, ignoredUp, ignoredUpLeft, ignoredReflectionMask
+        );
+        const uint vPredictor = predictorForPlane(
+            selector, yBytes + chromaBytes, chromaX, chromaY,
+            chromaWidth, chromaHeight, ignoredLeft, ignoredUp, ignoredUpLeft,
+            ignoredReflectionMask
+        );
+        const uint chromaAddress = chromaY * chromaWidth + chromaX;
+        residual_bytes[ownerByteOffset + 1u] = uint8_t(
+            uint(current_bytes[yBytes + chromaAddress]) - uPredictor
+        );
+        residual_bytes[ownerByteOffset + 2u] = uint8_t(
+            uint(current_bytes[yBytes + chromaBytes + chromaAddress]) - vPredictor
+        );
+    }
+
+    uint packedState = (elevation10 & 0x3ffu) |
+        ((symbol3 & 7u) << 10u) | ((selector & 3u) << 13u) |
+        ((radialOdd & 1u) << 15u) | ((orientation & 1u) << 16u) |
+        ((kleinReflectionMask & 1u) << 17u) |
+        (((kleinReflectionMask >> 1u) & 1u) << 18u) |
+        (((kleinReflectionMask >> 2u) & 1u) << 19u) |
+        (uint(insideCone) << 20u) | (uint(nearCone) << 21u) |
+        (uint(insideSphere) << 22u) | (uint(nearSphere) << 23u) |
+        (uint(apexGuard) << 24u) | (((node >> 16u) & 1u) << 25u) |
+        ((tripleIndex & 7u) << 26u);
+    const uint branchWord = (prefix << 16u) | (node & 0xffffu);
+
+    writeReceipt(lane, 0u, address);
+    writeReceipt(lane, 1u, sourceRho20);
+    writeReceipt(lane, 2u, sourceTheta18);
+    writeReceipt(lane, 3u, wrappedRho20);
+    writeReceipt(lane, 4u, topologyTheta18);
+    writeReceipt(lane, 5u, keyLow);
+    writeReceipt(lane, 6u, keyHigh);
+    writeReceipt(lane, 7u, mortonLow);
+    writeReceipt(lane, 8u, mortonHigh);
+    writeReceipt(lane, 9u, klbLow);
+    writeReceipt(lane, 10u, klbHigh);
+    writeReceipt(lane, 11u, phi);
+    writeReceipt(lane, 12u, omega);
+    writeReceipt(lane, 13u, alpha);
+    writeReceipt(lane, 14u, branchWord);
+    writeReceipt(lane, 15u, packedState);
+    writeReceipt(lane, 16u, leftAddress);
+    writeReceipt(lane, 17u, upAddress);
+    writeReceipt(lane, 18u, upLeftAddress);
+    writeReceipt(lane, 19u, tag);
+}

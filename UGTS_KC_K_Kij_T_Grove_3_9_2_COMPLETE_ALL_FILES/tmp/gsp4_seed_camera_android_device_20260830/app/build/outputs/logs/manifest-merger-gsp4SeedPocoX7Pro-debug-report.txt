@@ -2,9 +2,9 @@
 manifest
 ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\main\AndroidManifest.xml:2:1-31:12
 MERGED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\main\AndroidManifest.xml:2:1-31:12
-INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:2:1-6:12
-INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:2:1-6:12
-INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:2:1-6:12
+INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:2:1-7:12
 	package
 		INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml
 	android:versionName
@@ -104,6 +104,12 @@ ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_
 		ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:5:69-93
 	android:name
 		ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:5:19-68
+uses-feature#android.hardware.vulkan.compute
+ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:6:5-92
+	android:required
+		ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:6:66-89
+	android:name
+		ADDED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml:6:19-65
 uses-sdk
 INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\gsp4_seed_camera_android_device_20260830\app\src\gsp4SeedPocoX7Pro\AndroidManifest.xml

@@ -50,23 +50,62 @@ used as the success criterion for the requested phone recorder/player.
 
 > "VULKAN COMPUTE BINGO, LITERALLY USE THAT AND UPDATE THE TODO AND LITERALLY DELIVER SOMETHING FOR ONCE"
 
+> "Right but are you utilizing the literal klein bottle log encoded POLAR LUT with the kinematic calculus BST birfurcation packed at the nodes of the BST with T being a side view of the pyramid the sphere the cone the apex lower case phi SDF packing with the geometrical elementary shapes? I do not believe you are"
+
+> "AND LOG IT IN THE GOD DAMN TODO"
+
 ### Literal acceptance translation
+
+- [x] Correction logged: the 2026-08-30 physical UGYUVS1/Vulkan artifact is a
+  **partial-substrate lossless camera baseline**, not a full-substrate encoding.
+  It executes seed-regenerated 2D log-polar traversal, GSP4-derived lineage,
+  modular novelty residuals and integer Vulkan dispatch, but it does **not** yet
+  execute or serialize/hash-bind the full discrete Klein quotient, packed
+  log-spherical node record, parity/radix-tree bifurcation, kinematic
+  phase/velocity/acceleration calculus, lower-case-phi cone field, or the
+  pyramid/triangle, sphere, cone and apex SDF elementary-shape operator family.
+- [ ] Define and implement one versioned full-substrate camera operator that makes
+  every required component operative and independently replayable: discrete
+  Klein seam/gluing; seed-regenerated log-polar/log-spherical node coordinates;
+  flat breadth-first radix/BST node records with parity-driven bifurcation;
+  bounded kinematic `phase += velocity; velocity += acceleration`; `T` as the
+  side-view pyramid/delta-triangle support; sphere/cone/apex elementary fields;
+  periodic lower-case `phi`; and signed-distance/guard packing. Hash-bind the
+  generated node program and every selected predictor/route to each frame/block.
+- [ ] Preserve exactness while adding those operators: geometry/field/tree output
+  may partition samples, select a predictor, or order evidence, but it may never
+  replace an observed Camera2 byte. Every prediction must retain an exact modular
+  residual, and independent replay must recover identical Y/U/V, metadata and PTS.
+- [ ] Port that same frozen integer/fixed-point operator to Mali Vulkan and the
+  independent CPU/Python oracle; require byte-identical generated nodes, branch
+  hashes, SDF/guard classifications, residual bytes and final replay. A decorative
+  receipt, unused LUT, or CPU-only side calculation does not satisfy this item.
+- [ ] Re-encode the physical 297-frame fixture with the full operator, then report
+  its exact total file size against the partial UGYUVS1 baseline (177,487,908 B),
+  FFV1, x264-lossless and the lossy proxy. Reject any claimed compression win if
+  tree/node/SDF/kinematic overhead is omitted from the stored-byte count.
 
 - [x] Preserve the user's literal wording above and freeze the implementable
   profile in `spec/UGTOMS_GSP4_SEED_CAMERA_0_1.md`; repository documents remain
   evidence/provenance and cannot override these user-authored requirements.
-- [~] Build the physical POCO X7 Pro path as
-  `Camera2 -> UGTS/UGTOMS GSP4 seed-executed storage -> native substrate replay`.
-- [ ] The packaged application and the recorded file must contain no MP4 payload
-  and the requested path must not use MediaCodec as capture or playback authority.
-- [~] Use a seed-regenerated, literal UGLUT2 log-polar address program. Do not
+- [x] Built and exercised the physical POCO X7 Pro path as
+  `Camera2 -> exact YUV/PTS spool -> Mali Vulkan residual -> UGYUVS1/GSP4
+  append -> native substrate replay`. The accepted run captured and replayed
+  297/297 1280x720 frames without queue loss or CPU fallback.
+- [x] The 1,582,206-byte packaged application and the 177,487,908-byte recorded
+  file contain no MP4 payload. The seed flavor imports no `AMediaCodec` or
+  `AMediaExtractor` symbol; `libmediandk` is used only for `AImageReader`.
+- [x] Use a seed-regenerated, literal UGLUT2 log-polar address program. Do not
   serialize a picture-sized address/LUT table and do not attach a decorative LUT
-  to otherwise conventional video frames.
-- [~] Use the exact logical camera codeword
+  to otherwise conventional video frames. The physical file carries one
+  144-byte literal UGLUT2 and the runtime regenerates the owner-lane map from
+  the bound seed; no frame-sized map is stored.
+- [x] Use the exact logical camera codeword
   `UGCODE24-420(x,y) = [Y(x,y), U(floor(x/2),floor(y/2)), V(floor(x/2),floor(y/2))]`.
   Store Y novelty at every generated address and U/V novelty only at the canonical
   2x2 chroma owner so the normalized Camera2 YUV420 planes are recovered bijectively
-  without duplicating chroma on disk.
+  without duplicating chroma on disk. Native and independent Python replay both
+  reconstructed all 410,572,800 accepted authoritative YUV bytes.
 - [x] Add the independent Python oracle
   `src/ugts_kc3/gsp4_camera_codeword.py` for exact strided Camera2 plane
   normalization, codeword owner packing/inverse, modular residual replay,
@@ -78,35 +117,97 @@ used as the success criterion for the requested phone recorder/player.
   chroma); UGLUT2 is 144 bytes, UGTRV1 is 128 bytes, the traversal digest is
   `a3be1412671a75f28e10a28a9698bdc80a3f06ddeff624fc97edc9589405fa22`,
   and the full pack/inverse reproduced every Y/U/V byte.
-- [ ] Make GSP4 state, support/compatibility/finite guards, route, lineage and
+- [x] Make GSP4 state, support/compatibility/finite guards, route, lineage and
   append-only novelty semantics operative. A zero exact residual is negative
   memory and emits no novelty; a nonzero camera observation remains exact evidence.
-- [ ] Support both bounded real-time emission and after-the-fact RTX 5070 Ti search
-  for a smaller exact seed/program. Never silently drop a captured frame. If the
-  phone cannot sustain the selected exact path, losslessly spool or stop with an
-  explicit failure receipt.
-- [~] Execute an integer Vulkan-compute substrate stage on the POCO X7 Pro Mali
+  UGYUVS1 implements checkpoint/DENSE/SPARSE_BITMASK/SPARSE_GAPS/ZERO records,
+  seeded traversal, lineage/state hashes, two commit slots, FINAL, and strict
+  crash-recovery validation.
+- [x] Implement the bounded after-capture phone path without silently dropping a
+  frame: Camera2 writes an exact 410,672,720-byte temporary spool, then six bounded
+  CPU writer workers and up to twelve in-flight blocks transcode it; the spool is
+  removed only after native replay passes. Real-time direct emission is not claimed.
+- [ ] Search seed/program/mode alternatives offline on the RTX 5070 Ti and retain
+  a candidate only when full exact replay proves a smaller file. The delivered
+  177,487,908-byte result is the smallest exact physical result tested for this
+  run/profile, not a global or information-theoretic minimum.
+- [x] Execute an integer Vulkan-compute substrate stage on the POCO X7 Pro Mali
   during post-capture transcode. Its runtime address program must be regenerated
   from the bound seed and literal UGLUT2, never serialized per frame; GPU output
   is accepted only after exact native replay and independent CPU verification.
-  The NPU is not camera-content authority.
+  The physical run dispatched 297/297 frames with `cpu_fallback=false`; the
+  Vulkan-produced prepared residual was the writer input, and a full CPU byte
+  parity check passed for every dispatch. The NPU is not camera-content authority.
 - [x] Live ADB capability evidence identifies `Mali-G720 MC7` and declares
   `android.hardware.vulkan.compute`, Vulkan feature version 1.3,
   `storageBuffer8BitAccess=1`, `shaderInt8=1`, 1,024 maximum compute workgroup
   invocations, 32,768 bytes compute shared memory and 64-byte noncoherent atoms.
   The selected compute shader uses a conservative 256-lane integer workgroup.
-- [ ] Playback must reproduce every authoritative dense Y, U and V byte, accepted
-  sensor timestamp and declared metadata byte-for-byte before any display-only
-  YUV-to-RGB conversion.
-- [ ] Keep all observed content in scope: people, other moving objects, and the
+- [x] Native playback/replay reproduces every authoritative dense Y, U and V byte,
+  accepted sensor timestamp and declared metadata byte-for-byte. Independent
+  Python replay also passes the pulled final file and all 297 per-frame hashes.
+- [ ] Add visible GLES presentation after native replay. Display-only YUV-to-RGB
+  must remain downstream and cannot change the lossless acceptance boundary.
+- [x] Keep all observed content in scope: people, other moving objects, and the
   non-moving image regions. Non-moving or mask-complement pixels are observations,
-  not automatically certified static geometry or empty space.
-- [ ] Use no generative reconstruction, amodal completion or invented hidden
-  geometry. Classical/OpenCV equations may propose and contract bounded 3D/4D
-  hypotheses; unsupported space remains `UNKNOWN`, and rasterization is downstream.
-- [ ] Own recorder/player behavior through an ordinary editable Grove scene node
+  not automatically certified static geometry or empty space. Every accepted
+  dense Camera2 YUV sample is represented; no person-only crop or semantic mask
+  controls storage authority.
+- [x] Use no generative reconstruction, amodal completion or invented hidden
+  geometry in the delivered capture/storage/replay path.
+- [ ] Implement the separate classical 3D/4D contractor. Classical/OpenCV
+  equations may propose and contract bounded joint hypotheses; unsupported space
+  remains `UNKNOWN`, and rasterization is downstream. The delivered APK does not
+  yet reconstruct, certify, mesh, voxelize or visibly render 3D geometry.
+- [x] Own recorder/player behavior through an ordinary editable Grove scene node
   and sidecar binding. No bootstrap, hidden global instance or fullscreen-only
-  special case.
+  special case. The generated 436-byte KCCH binding owns the recorder/player
+  nodes; the recorder is enabled and the player remains an explicit editable node.
+
+### Physical POCO fixture snapshot - 2026-08-30
+
+- [x] Device acceptance: POCO X7 Pro `2412DPC0AG` (`rodin`, API 36), Camera2 id 0,
+  hardware level 3, REALTIME sensor timestamps, fixed 1280x720 at 30 fps; 297
+  accepted images = 297 capture results = 297 spooled frames, clean sequence end.
+- [x] Mali proof: `Mali-G720 MC7`, Vulkan API 1.3.278, integer workgroup 256,
+  5,400 groups over 1,382,400 lanes, 64-bit timestamps, 297 dispatches, zero CPU
+  fallbacks, and full CPU parity for every dispatch. First-dispatch residual SHA-256
+  is `b690a0143df7870c4407c2e9fb33e91526fc4b3cc4978e0e88d17a38610475c6`;
+  GPU time was 2,446,846 ns and dispatch wall time was 4,227,000 ns.
+- [x] Final lossless observation artifact:
+  `UGTOMS_GSP4_POCO_X7_PRO_CAMERA_CAPTURE_0_1.ugsp4c`, exactly 177,487,908
+  bytes (169.266 MiB), SHA-256
+  `9df3c9c6bea207efb7ef470c3b5df28c84dc10fd32fea21458665f1bae514669`.
+  It is 43.2293% of the 410,572,800 accepted dense YUV bytes: a 56.7707%
+  reduction, or 2.31324:1, before comparing against conventional codecs.
+- [x] Same-frame codec comparison is recorded in
+  `UGTOMS_GSP4_POCO_X7_PRO_CAMERA_CAPTURE_0_1.codec-comparison.json`, SHA-256
+  `cfa594f35965cf8177f00fbf2e64c815d163464c4ea00f1b8ac60409bc4c5232`.
+  Independent replay materialized 297 frames as 410,572,800-byte YUV420P8,
+  SHA-256 `10ac4aaa25d68465921419a74dfc2f4f15c3269ed11fe26e04465cd93a36f84b`.
+  FFV1 level 3 used 103,882,280 bytes and x264 `-qp 0` used 65,039,720 bytes;
+  both decoded to that exact YUV SHA. The current partial UGYUVS1 file is
+  therefore 1.70855x FFV1 and 2.72892x x264-lossless. A phone-like H.264 High
+  ~8 Mbit/s proxy used 9,515,400 bytes but did not reproduce the YUV hash and is
+  explicitly lossy. The current substrate entropy layer is not codec-competitive.
+- [x] The independent Python verification receipt is
+  `UGTOMS_GSP4_POCO_X7_PRO_CAMERA_CAPTURE_0_1.verification.json`: PASS,
+  finalized, zero uncommitted tail, 297 frames, 126,884,266 novelty events,
+  150 DENSE + 4,305 SPARSE_BITMASK blocks, frame-ledger SHA-256
+  `d11cc8c107902ec3f68491c216cc2c6b938b29f79d960357ebfd7291072682ec`.
+- [x] The deployable seed-camera APK is
+  `UGTOMS_GSP4_POCO_X7_PRO_CAMERA_CAPTURE_0_1-debug.apk`, exactly 1,582,206
+  bytes (1.509 MiB), SHA-256
+  `d421bcd446bc1cfe59cd3c20443b6918ddcf928e2729b0b61cf4753342c4841c`.
+  APK + captured file is 179,070,114 bytes (170.775 MiB).
+- [x] Size truth: the fixed-profile root seed payload is exactly 8 bytes, but it
+  regenerates only the traversal/address program. It is not a standalone camera
+  recording. Exact arbitrary camera novelty remains in the 177,487,908-byte file;
+  calling only the 8-byte selector a lossless video would be false.
+- [x] Lossless scope is the accepted dense Camera2 YUV420 planes, declared metadata
+  and sensor PTS over a 9.857788-second span (mean interval rate 30.027 fps). It
+  does not claim photon/sensor-raw losslessness, a preserved MP4 bitstream, hidden
+  geometry, physical 3D, or a globally minimal encoding.
 
 ## Decision
 

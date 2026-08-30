@@ -154,9 +154,8 @@ bool ChronoCaptureFrameQueue::beginWrite(
             "AImage sensor timestamp is not strictly increasing");
         return false;
     }
-    const auto iterator=std::find_if(
-        slots_.begin(),slots_.end(),[](const Slot& slot){ return slot.state==SlotState::Empty; }
-    );
+    const auto iterator=std::find_if(slots_.begin(),slots_.end(),
+        [](const Slot& slot){ return slot.state==SlotState::Empty; });
     if (iterator==slots_.end()) {
         failLocked(ChronoCaptureError::QueuePressure,
             "all preallocated lossless capture slots are occupied");
@@ -247,35 +246,17 @@ bool ChronoCaptureFrameQueue::attachMetadata(const ChronoCameraMetadata& metadat
 }
 
 bool ChronoCaptureFrameQueue::prepareNextCaptured() {
-    std::size_t slotIndex=0;
-    {
-        std::scoped_lock lock(mutex_);
-        const auto iterator=std::find_if(slots_.begin(),slots_.end(),[this](const Slot& slot){
-            return slot.ordinal==nextPrepareOrdinal_ && slot.state==SlotState::Captured;
-        });
-        if (iterator==slots_.end()) return false;
-        iterator->state=SlotState::Hashing;
-        slotIndex=static_cast<std::size_t>(iterator-slots_.begin());
-    }
-    auto& slot=slots_[slotIndex];
-    slot.ySha256=chronoCaptureSha256(plane(slot,0u));
-    slot.uSha256=chronoCaptureSha256(plane(slot,1u));
-    slot.vSha256=chronoCaptureSha256(plane(slot,2u));
-    std::array<std::uint8_t,16> framePrefix{};
-    putU64(framePrefix,0u,static_cast<std::uint64_t>(slot.sensorTimestampNs));
-    putU32(framePrefix,8u,width_);
-    putU32(framePrefix,12u,height_);
-    ChronoSha256 preSubstrateHasher;
-    preSubstrateHasher.update(framePrefix);
-    preSubstrateHasher.update(slot.dense);
-    slot.preSubstrateSha256=preSubstrateHasher.finish();
-    {
-        std::scoped_lock lock(mutex_);
-        if (slot.state!=SlotState::Hashing) return false;
-        slot.state=SlotState::Ready;
-        ++nextPrepareOrdinal_;
-        ++stats_.readyFrames;
-    }
+    std::scoped_lock lock(mutex_);
+    const auto iterator=std::find_if(slots_.begin(),slots_.end(),[this](const Slot& slot){
+        return slot.ordinal==nextPrepareOrdinal_ && slot.state==SlotState::Captured;
+    });
+    if (iterator==slots_.end()) return false;
+    // Full-plane SHA is deliberately post-capture. In the live 30 fps path
+    // this transition only establishes canonical ordinal/metadata order; the
+    // sequential spool is reread and hash-verified before substrate encoding.
+    iterator->state=SlotState::Ready;
+    ++nextPrepareOrdinal_;
+    ++stats_.readyFrames;
     return true;
 }
 

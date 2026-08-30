@@ -1,0 +1,118 @@
+{
+  "actual_bytes": 125601,
+  "authoritative_bytes_per_frame": 86400,
+  "committed_bytes": 125601,
+  "committed_frames": 4,
+  "committed_prefix_sha256": "d373b547e24bd2f8548ec190b29fa16a64627ba2c00661d499158828812a0b20",
+  "file_sha256": "d373b547e24bd2f8548ec190b29fa16a64627ba2c00661d499158828812a0b20",
+  "finalized": true,
+  "frame_ledger_sha256": "e74c821fd8ac085cc85c748bec57727aa118a1a6eea4fd1a3f0b702b799d84f8",
+  "frames": [
+    {
+      "authoritative_bytes": 86400,
+      "checkpoint": true,
+      "frame_number": 700,
+      "frame_record_sha256": "ca00a46c4baba9cc0df41f3bc4651d880512d5d0e94eb81986dd7aa2657f3353",
+      "metadata_sha256": "aacc9dd397143afeca7f6135057275be416fe541dec41eaa54bc17249f79f46d",
+      "novelty_event_count": 86064,
+      "ordinal": 0,
+      "pre_substrate_sha256": "eccb2f605f75783d5d128b673796f87e58c185ad364f256c464c2c0f291633f0",
+      "representations": {
+        "DENSE": 15,
+        "SPARSE_BITMASK": 0,
+        "SPARSE_GAPS": 0,
+        "ZERO": 0
+      },
+      "sensor_timestamp_ns": 1000000000,
+      "u_sha256": "cfe076d19090e164c9d1c29bb21affb930370a29f82152245d98454d087d95a8",
+      "v_sha256": "ac14e5949628724238b7aa8de6d3a235222856ed6fd38be5b75e10100ff830d0",
+      "y_sha256": "2cdf01c403bd757ed9f21df592974b1943085a7c6b1c83cc9a693e9757438996"
+    },
+    {
+      "authoritative_bytes": 86400,
+      "checkpoint": false,
+      "frame_number": 701,
+      "frame_record_sha256": "e846563888ae8cc3ebe6674b03ff9e191295e388ac115d8dc26e947db2813fc5",
+      "metadata_sha256": "1db9ae8c775aa88d2434b2b728104f5106ff631384006ff59c42ebb6f4321285",
+      "novelty_event_count": 0,
+      "ordinal": 1,
+      "pre_substrate_sha256": "72e05ab219f6ecb961ab6776a485a734075dbe5e150e3803c830ea3294b381a1",
+      "representations": {
+        "DENSE": 0,
+        "SPARSE_BITMASK": 0,
+        "SPARSE_GAPS": 0,
+        "ZERO": 15
+      },
+      "sensor_timestamp_ns": 1033333333,
+      "u_sha256": "cfe076d19090e164c9d1c29bb21affb930370a29f82152245d98454d087d95a8",
+      "v_sha256": "ac14e5949628724238b7aa8de6d3a235222856ed6fd38be5b75e10100ff830d0",
+      "y_sha256": "2cdf01c403bd757ed9f21df592974b1943085a7c6b1c83cc9a693e9757438996"
+    },
+    {
+      "authoritative_bytes": 86400,
+      "checkpoint": false,
+      "frame_number": 702,
+      "frame_record_sha256": "00c9b1396b47f3c79cf71584866566833dca5b0d0f6a30ec79e4ee0749930fad",
+      "metadata_sha256": "e5204326b754e06455625729496cff2056a276d29a820f0be2ba91c5b71f2da1",
+      "novelty_event_count": 5,
+      "ordinal": 2,
+      "pre_substrate_sha256": "3360aa8681251b9b6330d271bb759e720cbbe7768fc9d5d02d7abb1048cfd51d",
+      "representations": {
+        "DENSE": 0,
+        "SPARSE_BITMASK": 0,
+        "SPARSE_GAPS": 2,
+        "ZERO": 13
+      },
+      "sensor_timestamp_ns": 1066666666,
+      "u_sha256": "74557cf14b5e2f0d7dd52bde92084792699f5748a98f50b87a1578626b91ed64",
+      "v_sha256": "f669b3443f5eac946db6ece542b6603b72edbd33a7a63c20358015deaacaacf3",
+      "y_sha256": "bc0e800063a70f0be49b3cb673a257b0a17c876564660a0cf5830bec287d83d5"
+    },
+    {
+      "authoritative_bytes": 86400,
+      "checkpoint": false,
+      "frame_number": 703,
+      "frame_record_sha256": "649bf93293c7617746bac37e1430679dada0bd1f84578317931c4e45c168febd",
+      "metadata_sha256": "2315f236d3c57eeb18b539a90bc1bc6094b32fa6448ffd59efa86af5686a04ae",
+      "novelty_event_count": 14400,
+      "ordinal": 3,
+      "pre_substrate_sha256": "f8928e67fdd76b8ca088b801f07282ef407dffc86a099b836425a0f4f26ef735",
+      "representations": {
+        "DENSE": 0,
+        "SPARSE_BITMASK": 15,
+        "SPARSE_GAPS": 0,
+        "ZERO": 0
+      },
+      "sensor_timestamp_ns": 1099999999,
+      "u_sha256": "74557cf14b5e2f0d7dd52bde92084792699f5748a98f50b87a1578626b91ed64",
+      "v_sha256": "f669b3443f5eac946db6ece542b6603b72edbd33a7a63c20358015deaacaacf3",
+      "y_sha256": "1f0b8d18bf8e9258e32e4d4cde43218c9cc2e45300385faef346ccd20a555695"
+    }
+  ],
+  "generation": 6,
+  "height": 180,
+  "literal_uglut2_bytes": 144,
+  "literal_uglut2_sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49",
+  "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\ugyuvs1_native_cross_fixture.ugsp4c",
+  "profile": "UGCODE24_420_CAMERA_EXACT",
+  "recipe_sha256": "bc7676566537026541dba90b5ca6d5471c443375a77223c72ab7fb5efca1d5c4",
+  "recovered_incomplete": false,
+  "representations": {
+    "DENSE": 15,
+    "SPARSE_BITMASK": 15,
+    "SPARSE_GAPS": 2,
+    "ZERO": 28
+  },
+  "root_seed": 14467624165791287770,
+  "schema": "ugyuvs1-python-verification-v1",
+  "selected_commit_slot": 1,
+  "static_header_sha256": "569426bf2b5fb2e7563557a23d5fa33c5123d4c2be114e09ad33a2b50b5c1dfc",
+  "status": "PASS",
+  "terminal_record_sha256": "d556a42162fb708f1f91f56199e1be33d7ade0a44570cf38f1d56375df5f9170",
+  "total_authoritative_bytes": 345600,
+  "total_novelty_events": 100469,
+  "traversal_recipe_seed": 1,
+  "traversal_sha256": "cc48829cf790054624d99ffdd6b7ce197582b2ea44756253c062ff4d1f99336a",
+  "uncommitted_tail_bytes": 0,
+  "width": 320
+}

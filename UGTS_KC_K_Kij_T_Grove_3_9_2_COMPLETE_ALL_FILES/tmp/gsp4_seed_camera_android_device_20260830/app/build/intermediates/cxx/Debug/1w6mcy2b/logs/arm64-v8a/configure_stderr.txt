@@ -1,7 +1,7 @@
 CMake Warning in C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/.cxx/Debug/1w6mcy2b/arm64-v8a/CMakeFiles/CMakeTmp/CMakeLists.txt:
   The object file directory
 
-    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/.cxx/Debug/1w6mcy2b/arm64-v8a/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_2839d.dir/./
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/gsp4_seed_camera_android_device_20260830/app/.cxx/Debug/1w6mcy2b/arm64-v8a/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_d306a.dir/./
 
   has 229 characters.  The maximum full path to an object file is 250
   characters (see CMAKE_OBJECT_PATH_MAX).  Object file
@@ -34,7 +34,7 @@ CMake Warning in CMakeLists.txt:
   has 213 characters.  The maximum full path to an object file is 160
   characters (see CMAKE_OBJECT_PATH_MAX).  Object file
 
-    body_physics.cpp.o
+    engine.cpp.o
 
   cannot be safely placed under this directory.  The build may not work
   correctly.

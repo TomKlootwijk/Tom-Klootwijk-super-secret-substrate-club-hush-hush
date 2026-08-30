@@ -1,0 +1,98 @@
+{
+  "actual_bytes": 1393123,
+  "authoritative_bytes_per_frame": 1382400,
+  "committed_bytes": 1393123,
+  "committed_frames": 3,
+  "committed_prefix_sha256": "63b51ae1228d6d36aeeb8ea8e76b3c8ba1793c8201e71f6484de61e9c7e7cdab",
+  "file_sha256": "63b51ae1228d6d36aeeb8ea8e76b3c8ba1793c8201e71f6484de61e9c7e7cdab",
+  "finalized": true,
+  "frame_ledger_sha256": "fc2c0028384f5dfb6134d78606e1ed8552a780bed5e7e81d41c6d6b0e9274e0b",
+  "frames": [
+    {
+      "authoritative_bytes": 1382400,
+      "checkpoint": true,
+      "frame_number": 1000,
+      "frame_record_sha256": "8ecd30b6bba0ee96a6841edc0f3883aad9d0131967210c02524066e5989b385f",
+      "metadata_sha256": "1723d8ee85a42f52c1023b1fbc7e18c8a1d1dc6e280c9a82b8e580429564f34a",
+      "novelty_event_count": 1380600,
+      "ordinal": 0,
+      "pre_substrate_sha256": "6233bcd91d77732693fcaaef6b590511af3a2a7a9c4d66a0c350ab46c1a61fd4",
+      "representations": {
+        "DENSE": 15,
+        "SPARSE_BITMASK": 0,
+        "SPARSE_GAPS": 0,
+        "ZERO": 0
+      },
+      "sensor_timestamp_ns": 5000000000,
+      "u_sha256": "ab2f9c56bb9f07f9d521483993f2b8c9618b43e6208ad35f6e0291c860ba0246",
+      "v_sha256": "82f7ee55521d90913be3199c941307b40869dc0789874e024ef48f9bee437544",
+      "y_sha256": "580ecc885db6f63e554568703acd907ef7ec7b78a280e4baa0e8cac29e7a2224"
+    },
+    {
+      "authoritative_bytes": 1382400,
+      "checkpoint": false,
+      "frame_number": 1001,
+      "frame_record_sha256": "ff401bc1c10a86629e54c48105650d34f1034f4cb2ae40d6ed41f444549bd8f8",
+      "metadata_sha256": "1723d8ee85a42f52c1023b1fbc7e18c8a1d1dc6e280c9a82b8e580429564f34a",
+      "novelty_event_count": 0,
+      "ordinal": 1,
+      "pre_substrate_sha256": "6645f237b1b15335bcb457bd2a56b017bea8d3d089a31d98bfb0db2d7cd73279",
+      "representations": {
+        "DENSE": 0,
+        "SPARSE_BITMASK": 0,
+        "SPARSE_GAPS": 0,
+        "ZERO": 15
+      },
+      "sensor_timestamp_ns": 5033333333,
+      "u_sha256": "ab2f9c56bb9f07f9d521483993f2b8c9618b43e6208ad35f6e0291c860ba0246",
+      "v_sha256": "82f7ee55521d90913be3199c941307b40869dc0789874e024ef48f9bee437544",
+      "y_sha256": "580ecc885db6f63e554568703acd907ef7ec7b78a280e4baa0e8cac29e7a2224"
+    },
+    {
+      "authoritative_bytes": 1382400,
+      "checkpoint": false,
+      "frame_number": 1002,
+      "frame_record_sha256": "7c9c87baa7cb71f779aa91a878d99a9eefa59e3d7b32589a9b36543069d3d966",
+      "metadata_sha256": "1723d8ee85a42f52c1023b1fbc7e18c8a1d1dc6e280c9a82b8e580429564f34a",
+      "novelty_event_count": 5,
+      "ordinal": 2,
+      "pre_substrate_sha256": "b808c90d24bbe86ad91ba6137a00c5fa3f1b4ffa2cb074744d692222ad256912",
+      "representations": {
+        "DENSE": 0,
+        "SPARSE_BITMASK": 0,
+        "SPARSE_GAPS": 3,
+        "ZERO": 12
+      },
+      "sensor_timestamp_ns": 5066666666,
+      "u_sha256": "08326c985e1f8deecae438f1db5a3c26c78b54fd3b510dad8d2ae7d9c76be705",
+      "v_sha256": "4a2e1b8e568c2566e7a9829214bb0f809bb2e56487ddcbd918f7dbebc6f6777f",
+      "y_sha256": "d5f0458ec4fe6ff93222c5bc2d5ae306afce1ce80861a92b6e6cced0d1176cdf"
+    }
+  ],
+  "generation": 5,
+  "height": 720,
+  "literal_uglut2_bytes": 144,
+  "literal_uglut2_sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49",
+  "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\ugyuvs1_native_720p_cross_fixture.ugsp4c",
+  "profile": "UGCODE24_420_CAMERA_EXACT",
+  "recipe_sha256": "8ec4318642e9415f2d4cb5f68fc0ee723ab43d5f0cccb19a7e37d8f1812f9db8",
+  "recovered_incomplete": false,
+  "representations": {
+    "DENSE": 15,
+    "SPARSE_BITMASK": 0,
+    "SPARSE_GAPS": 3,
+    "ZERO": 27
+  },
+  "root_seed": 81985529216486895,
+  "schema": "ugyuvs1-python-verification-v1",
+  "selected_commit_slot": 0,
+  "static_header_sha256": "152d4f659fcf7fd36fe7fb34eff5af62e392e0357210b1589842eb99748d75b4",
+  "status": "PASS",
+  "terminal_record_sha256": "3423352fc2de2a155fde0058aa1d92228b90ffc69945d51dbc56df30ddb60d37",
+  "total_authoritative_bytes": 4147200,
+  "total_novelty_events": 1380605,
+  "traversal_recipe_seed": 1,
+  "traversal_sha256": "3cdb16a324058fbf55b8291db75b24fb51a6989bab9b1f30c4b61c102d26f7a5",
+  "uncommitted_tail_bytes": 0,
+  "width": 1280
+}

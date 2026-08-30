@@ -1,12 +1,14 @@
 #include "ugtc4d_decoder.hpp"
 #include "yuv_seed_capture.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -83,12 +85,30 @@ double seconds(Clock::time_point first, Clock::time_point second) {
     return std::chrono::duration<double>(second - first).count();
 }
 
+std::uint32_t positiveU32(const char* text, const char* label) {
+    std::size_t consumed = 0u;
+    const auto parsed = std::stoull(text, &consumed, 10);
+    if (text[0] == '\0' || text[consumed] != '\0' || parsed == 0u ||
+        parsed > std::numeric_limits<std::uint32_t>::max()) {
+        throw std::runtime_error(std::string(label) + " must be a positive uint32");
+    }
+    return static_cast<std::uint32_t>(parsed);
+}
+
 } // namespace
 
-int main() {
+int main(int argc, char** argv) {
     std::filesystem::path partial;
     std::filesystem::path final;
     try {
+        check(argc <= 3,
+              "usage: yuv_seed_capture_720p_benchmark [workers] [max-in-flight]");
+        const auto workerCount = argc >= 2
+            ? positiveU32(argv[1], "workers")
+            : 4u;
+        const auto maxInFlightBlocks = argc >= 3
+            ? positiveU32(argv[2], "max-in-flight")
+            : std::max<std::uint32_t>(8u, workerCount);
         const auto lut = readFile(UGLUT2_FIXTURE_PATH);
         auto first = initialFrame();
         auto unchanged = first;
@@ -114,6 +134,8 @@ int main() {
         profile.width = first.width;
         profile.height = first.height;
         profile.checkpointInterval = 300u;
+        profile.noveltyWorkerCount = workerCount;
+        profile.noveltyMaxInFlightBlocks = maxInFlightBlocks;
         profile.rootSeed = 0x0123456789abcdefull;
         profile.traversalRecipeSeed = 1u;
         profile.literalUglut2 = lut;
@@ -145,6 +167,9 @@ int main() {
                   stats1.zeroBlockCount == 15u && stats1.noveltyEventCount == 0u &&
                   stats2.sparseGapBlockCount > 0u && stats2.noveltyEventCount == 5u,
               "720p novelty representation selection mismatch");
+        check(stats0.noveltyWorkerCount == workerCount &&
+                  stats0.noveltyMaxInFlightBlocks == maxInFlightBlocks,
+              "720p bounded worker configuration was not reported");
 
         const auto file = readFile(final);
         const auto fileSha = ugts::chrono::sha256Hex(
@@ -171,6 +196,8 @@ int main() {
                   << " sparse_record_bytes=" << stats2.frameRecordBytes
                   << " unchanged_novelty_bytes=" << stats1.noveltyPayloadBytes
                   << " sparse_events=" << stats2.noveltyEventCount
+                  << " workers=" << stats0.noveltyWorkerCount
+                  << " max_in_flight=" << stats0.noveltyMaxInFlightBlocks
                   << " create_seconds=" << seconds(createBegin, createEnd)
                   << " checkpoint_seconds=" << seconds(frame0Begin, frame0End)
                   << " unchanged_seconds=" << seconds(frame0End, frame1End)

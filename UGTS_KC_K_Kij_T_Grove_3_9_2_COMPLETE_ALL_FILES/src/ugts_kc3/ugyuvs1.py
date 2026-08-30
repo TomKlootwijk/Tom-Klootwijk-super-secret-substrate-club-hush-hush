@@ -464,10 +464,12 @@ class Ugyuvs1Capture:
         # The C++ ABI chooses slot 1 when equal generations are encountered.
         self.commit = max(valid, key=lambda item: (item.generation, item.slot_index))
         final_name = self.path.name.endswith(".ugsp4c")
-        _require(
-            self.commit.finalized or (not require_final and not final_name),
-            "completed .ugsp4c lacks a valid FINAL commit",
-        )
+        if final_name:
+            _require(self.commit.finalized,
+                     "completed .ugsp4c lacks a valid FINAL commit")
+        if require_final:
+            _require(self.commit.finalized,
+                     "verification requires a valid FINAL commit")
         _require(
             not self.commit.finalized or self.commit.committed_end == actual_bytes,
             "FINAL commit does not cover the complete file",

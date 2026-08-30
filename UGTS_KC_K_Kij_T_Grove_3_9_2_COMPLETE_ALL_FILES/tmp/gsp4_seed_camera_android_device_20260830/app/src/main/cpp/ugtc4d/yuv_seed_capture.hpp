@@ -118,6 +118,14 @@ public:
     YuvSeedCaptureWriter& operator=(const YuvSeedCaptureWriter&) = delete;
 
     YuvSeedCaptureAppendStats append(const Yuv420p8FrameView& frame);
+    // GPU/accelerator ingress for the same lossless writer. Residual bytes
+    // must follow seeded traversal order: Y for every luma address, then U,V
+    // immediately after each even-x/even-y chroma-owner address. Each lane is
+    // modular uint8(current - zero/previous), with no padding or headers.
+    YuvSeedCaptureAppendStats appendPreparedResidual(
+        const Yuv420p8FrameView& frame,
+        ByteView canonicalOwnerResidual
+    );
     std::uint64_t frameCount() const noexcept;
 
     // Durably commits FINAL before an atomic same-filesystem rename.
@@ -126,6 +134,10 @@ public:
 private:
     struct Impl;
     explicit YuvSeedCaptureWriter(std::unique_ptr<Impl> impl);
+    YuvSeedCaptureAppendStats appendImpl(
+        const Yuv420p8FrameView& frame,
+        const ByteView* preparedResidual
+    );
     std::unique_ptr<Impl> impl_;
 };
 

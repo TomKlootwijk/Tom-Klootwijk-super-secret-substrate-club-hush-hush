@@ -16,6 +16,10 @@ struct SeededUglut2Traversal {
     Sha256Digest uglut2Sha256{};
     Sha256Digest traversalSha256{};
     std::vector<std::uint32_t> polarOrdinalToCartesian;
+    // Profile-2 operator inputs. These are regenerated execution state keyed
+    // by Cartesian luma address and are never serialized as a permutation.
+    std::vector<std::uint32_t> rho20ByCartesian;
+    std::vector<std::uint32_t> theta18ByCartesian;
 };
 
 // Regenerate the exact UGTRV1 pixel order from literal UGLUT2 lanes and seed

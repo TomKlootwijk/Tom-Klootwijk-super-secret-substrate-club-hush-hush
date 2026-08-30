@@ -70,6 +70,10 @@ struct YuvSeedCaptureAppendStats {
     std::uint32_t denseBlockCount = 0;
     std::uint32_t sparseBitmaskBlockCount = 0;
     std::uint32_t sparseGapBlockCount = 0;
+    // Execution tuning is deliberately not serialized into UGYUVS1. These
+    // fields expose the bounded authoring configuration used for this append.
+    std::uint32_t noveltyWorkerCount = 1;
+    std::uint32_t noveltyMaxInFlightBlocks = 1;
     Sha256Digest preSubstrateSha256{};
 };
 
@@ -78,6 +82,10 @@ struct YuvSeedCaptureProfile {
     std::uint32_t height = 0;
     std::uint32_t checkpointInterval = 30;
     std::uint32_t noveltyBlockLumaAddresses = 65536;
+    // Fixed execution-only bounds. They never enter the seed recipe or file
+    // ABI, so every valid worker/window choice must emit identical bytes.
+    std::uint32_t noveltyWorkerCount = 1;
+    std::uint32_t noveltyMaxInFlightBlocks = 1;
     std::uint64_t rootSeed = 0;
     std::uint64_t traversalRecipeSeed = 1;
     std::vector<std::uint8_t> literalUglut2;
@@ -110,6 +118,14 @@ public:
     YuvSeedCaptureWriter& operator=(const YuvSeedCaptureWriter&) = delete;
 
     YuvSeedCaptureAppendStats append(const Yuv420p8FrameView& frame);
+    // GPU/accelerator ingress for the same lossless writer. Residual bytes
+    // must follow seeded traversal order: Y for every luma address, then U,V
+    // immediately after each even-x/even-y chroma-owner address. Each lane is
+    // modular uint8(current - zero/previous), with no padding or headers.
+    YuvSeedCaptureAppendStats appendPreparedResidual(
+        const Yuv420p8FrameView& frame,
+        ByteView canonicalOwnerResidual
+    );
     std::uint64_t frameCount() const noexcept;
 
     // Durably commits FINAL before an atomic same-filesystem rename.
@@ -118,6 +134,10 @@ public:
 private:
     struct Impl;
     explicit YuvSeedCaptureWriter(std::unique_ptr<Impl> impl);
+    YuvSeedCaptureAppendStats appendImpl(
+        const Yuv420p8FrameView& frame,
+        const ByteView* preparedResidual
+    );
     std::unique_ptr<Impl> impl_;
 };
 
