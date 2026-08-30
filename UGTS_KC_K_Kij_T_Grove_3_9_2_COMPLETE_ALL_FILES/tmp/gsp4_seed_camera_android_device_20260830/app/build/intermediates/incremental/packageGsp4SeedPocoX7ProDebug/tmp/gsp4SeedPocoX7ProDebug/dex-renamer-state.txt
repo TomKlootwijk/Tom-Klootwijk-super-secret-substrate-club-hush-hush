@@ -1,0 +1,7 @@
+#Sun Aug 30 16:13:41 CEST 2026
+base.0=C\:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\gsp4_seed_camera_android_device_20260830\\app\\build\\intermediates\\dex\\gsp4SeedPocoX7ProDebug\\mergeProjectDexGsp4SeedPocoX7ProDebug\\0\\classes.dex
+base.1=C\:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\gsp4_seed_camera_android_device_20260830\\app\\build\\intermediates\\dex\\gsp4SeedPocoX7ProDebug\\mergeProjectDexGsp4SeedPocoX7ProDebug\\5\\classes.dex
+path.0=0/classes.dex
+path.1=5/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

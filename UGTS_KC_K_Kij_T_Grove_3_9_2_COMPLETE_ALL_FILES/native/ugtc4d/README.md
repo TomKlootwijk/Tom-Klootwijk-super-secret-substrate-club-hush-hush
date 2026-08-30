@@ -21,10 +21,17 @@ also independently verified the authored full-raster artifacts; measured sizes,
 hashes, and timing belong in their external validation receipts rather than as
 hard-coded format claims here.
 
+The sibling `yuv_seed_capture.hpp/.cpp` is now the first incremental exact
+Camera2 dense-YUV seed-storage writer/reader. Its frozen magic, extensions,
+owner-packed codewords, novelty representations, durable recovery behavior,
+and honest optimization gaps are specified in
+[`YUV_SEED_CAPTURE_FORMAT.md`](YUV_SEED_CAPTURE_FORMAT.md).
+
 Current boundaries:
 
-- this is a decoder/oracle, not yet an Android camera encoder or Grove scene
-  player integration;
+- the UGTC4D reader remains a decoder/oracle; the separate UGYUVS1 core accepts
+  Camera2 planes but Android camera/session and Grove scene binding live in the
+  platform integration;
 - predictors 10 and 12 are not implemented because the verified authored files
   use 11, 13, and 14;
 - UGRICE structural/hash/table canonicality is checked, but the C++ reader does
@@ -38,9 +45,12 @@ Current boundaries:
 Regenerate and run the fixture from the repository root:
 
 ```powershell
-$env:PYTHONPATH='src'
-python native/host_tests/fixtures/generate_ugtc4d_native_fixture.py
+python -c "import runpy,sys; sys.path.insert(0,'src'); runpy.run_path('native/host_tests/fixtures/generate_ugtc4d_native_fixture.py',run_name='__main__')"
 cmake -S native/host_tests -B build/native-ugtc4d-decoder
 cmake --build build/native-ugtc4d-decoder --config Release --target ugtc4d_decoder_tests
 build/native-ugtc4d-decoder/Release/ugtc4d_decoder_tests.exe
+cmake --build build/native-ugtc4d-decoder --config Release --target yuv_seed_capture_tests
+build/native-ugtc4d-decoder/Release/yuv_seed_capture_tests.exe
+cmake --build build/native-ugtc4d-decoder --config Release --target yuv_seed_capture_720p_benchmark
+build/native-ugtc4d-decoder/Release/yuv_seed_capture_720p_benchmark.exe
 ```

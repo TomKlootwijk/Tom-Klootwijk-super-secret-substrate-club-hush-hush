@@ -289,6 +289,28 @@ def _parser() -> argparse.ArgumentParser:
         help="also independently decode and compare the authoritative source RGB24+PTS",
     )
 
+    verify_ugsp4c = sub.add_parser(
+        "verify-ugsp4c",
+        help=(
+            "independently replay and verify exact UGYUVS1 Camera2 YUV420 "
+            "seed-storage evidence"
+        ),
+    )
+    verify_ugsp4c.add_argument("file", type=Path)
+    verify_ugsp4c.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help=(
+            "admit a .partial capture and verify only its newest durable "
+            "commit prefix"
+        ),
+    )
+    verify_ugsp4c.add_argument(
+        "--output",
+        type=Path,
+        help="also write the canonical JSON verification receipt",
+    )
+
     return parser
 
 
@@ -528,6 +550,20 @@ def main(argv: list[str] | None = None) -> int:
                     args.source_video,
                 )
             print(json.dumps(report, indent=2, sort_keys=True))
+            return 0
+
+        if args.command == "verify-ugsp4c":
+            from .ugyuvs1 import verify_ugsp4c
+
+            report = verify_ugsp4c(
+                args.file,
+                allow_partial=args.allow_partial,
+            ).to_dict()
+            rendered = json.dumps(report, indent=2, sort_keys=True)
+            if args.output is not None:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(rendered + "\n", encoding="utf-8")
+            print(rendered)
             return 0
 
         if args.command == "new":

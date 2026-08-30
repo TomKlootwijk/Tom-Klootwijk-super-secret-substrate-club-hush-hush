@@ -3,15 +3,22 @@
 #include <algorithm>
 #include <array>
 #include <cerrno>
+#include <condition_variable>
 #include <cstdio>
 #include <cstring>
+#include <deque>
+#include <exception>
 #include <fstream>
+#include <functional>
 #include <limits>
+#include <mutex>
 #include <stdexcept>
+#include <thread>
 #include <utility>
 
 #ifdef _WIN32
 #include <io.h>
+#include <share.h>
 #else
 #include <unistd.h>
 #endif
@@ -41,8 +48,13 @@ constexpr std::size_t Alignment = 64u;
 constexpr std::uint32_t FileFlags = 1u; // zero novelty bytes are omitted
 constexpr std::uint32_t CommitFinal = 1u;
 constexpr std::uint32_t FrameCheckpoint = 1u;
-constexpr std::uint32_t NoveltyMaskNonzeroValues = 1u;
+constexpr std::uint32_t NoveltyZero = 0u;
+constexpr std::uint32_t NoveltyDense = 1u;
+constexpr std::uint32_t NoveltySparseBitmask = 2u;
+constexpr std::uint32_t NoveltySparseGaps = 3u;
 constexpr std::uint32_t NoPreviousOrdinal = 0xffffffffu;
+constexpr std::uint32_t MaxNoveltyWorkerCount = 64u;
+constexpr std::uint32_t MaxNoveltyInFlightBlocks = 256u;
 
 [[noreturn]] void fail(const std::string& message) {
     throw std::runtime_error("UGYUVS1 capture: " + message);
@@ -144,17 +156,6 @@ Sha256Digest hashWithZeroRange(
     return sha256(copy.data(), copy.size());
 }
 
-Sha256Digest hashConcat(
-    const std::vector<std::uint8_t>& first,
-    const std::vector<std::uint8_t>& second
-) {
-    std::vector<std::uint8_t> joined;
-    joined.reserve(first.size() + second.size());
-    joined.insert(joined.end(), first.begin(), first.end());
-    joined.insert(joined.end(), second.begin(), second.end());
-    return sha256(joined.data(), joined.size());
-}
-
 Sha256Digest hashHeaderPayloadWithZeroRange(
     const std::vector<std::uint8_t>& header,
     std::size_t offset,
@@ -215,10 +216,8 @@ std::uint64_t stableId(
 }
 
 Sha256Digest blockLineageDigest(
-    std::uint64_t rootSeed,
-    std::uint64_t recipeSeed,
     std::uint32_t frameOrdinal,
-    const std::vector<std::uint32_t>& traversal,
+    const std::vector<std::uint32_t>& lineageSeeds,
     std::size_t first,
     std::size_t count
 ) {
@@ -227,12 +226,25 @@ Sha256Digest blockLineageDigest(
     appendU32(preimage, static_cast<std::uint32_t>(first));
     appendU32(preimage, static_cast<std::uint32_t>(count));
     for (std::size_t local = 0u; local < count; ++local) {
-        const auto lineage = gsp4CodewordLineage(
-            rootSeed, recipeSeed, traversal[first + local], frameOrdinal);
-        appendU32(preimage, lineage.lineageSeed);
-        appendU32(preimage, lineage.routedHash);
+        const auto lineageSeed = lineageSeeds[first + local];
+        appendU32(preimage, lineageSeed);
+        appendU32(preimage, gsp4Mix32(lineageSeed ^ frameOrdinal));
     }
     return sha256(preimage.data(), preimage.size());
+}
+
+std::vector<std::uint32_t> cameraLineageSeeds(
+    std::uint64_t rootSeed,
+    std::uint64_t recipeSeed,
+    const std::vector<std::uint32_t>& traversal
+) {
+    std::vector<std::uint32_t> result;
+    result.reserve(traversal.size());
+    for (const auto address : traversal) {
+        result.push_back(gsp4CodewordLineage(
+            rootSeed, recipeSeed, address, 0u).lineageSeed);
+    }
+    return result;
 }
 
 Sha256Digest recipeDigest(
@@ -269,6 +281,16 @@ void durableFlush(std::FILE* file) {
 #endif
 }
 
+std::FILE* openFile(const std::string& path, const char* mode) {
+#ifdef _WIN32
+    // Capture and committed-prefix validation intentionally coexist. The
+    // default secure CRT sharing mode denies this reader on Windows.
+    return ::_fsopen(path.c_str(), mode, _SH_DENYNO);
+#else
+    return std::fopen(path.c_str(), mode);
+#endif
+}
+
 void writeExact(std::FILE* file, const std::uint8_t* data, std::size_t size) {
     if (size == 0u) return;
     require(std::fwrite(data, 1u, size, file) == size, "file write failed");
@@ -288,6 +310,12 @@ std::uint64_t fileSize(const std::string& path) {
     const auto end = stream.tellg();
     require(end >= 0, "cannot determine file length");
     return static_cast<std::uint64_t>(end);
+}
+
+bool hasSuffix(const std::string& value, const char* suffix) {
+    const auto length = std::strlen(suffix);
+    return value.size() >= length &&
+           value.compare(value.size() - length, length, suffix) == 0;
 }
 
 std::vector<std::uint8_t> readExact(
@@ -385,11 +413,16 @@ ParsedCommit parseCommit(
     result.committedEnd = getU64(slot, CommitSlotBytes, 32u);
     result.lastPts = getI64(slot, CommitSlotBytes, 40u);
     result.terminal = getDigest(slot, CommitSlotBytes, 48u);
+    const auto emptyEnd = result.finalized
+        ? recordOffset + TerminalHeaderBytes
+        : recordOffset;
     if (result.committedEnd < recordOffset || result.committedEnd > actualBytes ||
         (result.frameCount == 0u &&
-         (result.committedEnd != recordOffset ||
+         (result.committedEnd != emptyEnd ||
           result.lastPts != std::numeric_limits<std::int64_t>::min() ||
-          !allZero(result.terminal.data(), result.terminal.size())))) {
+          (result.finalized
+               ? allZero(result.terminal.data(), result.terminal.size())
+               : !allZero(result.terminal.data(), result.terminal.size()))))) {
         return ParsedCommit{};
     }
     result.valid = true;
@@ -420,24 +453,58 @@ std::vector<std::uint8_t> buildTerminalRecord(
     return record;
 }
 
+void appendUleb128(std::vector<std::uint8_t>& bytes, std::size_t value);
+
 std::vector<std::uint8_t> buildNoveltyBlock(
     std::uint32_t blockOrdinal,
     std::uint32_t firstLumaOrdinal,
     std::uint32_t lumaCount,
     YuvPredictorProgram predictor,
     const Sha256Digest& lineageDigest,
+    std::uint32_t& selectedRepresentation,
     const std::vector<std::uint8_t>& logical
 ) {
     const auto maskBytes = (logical.size() + 7u) / 8u;
     std::vector<std::uint8_t> mask(maskBytes, 0u);
     std::vector<std::uint8_t> values;
+    std::vector<std::uint8_t> gaps;
     values.reserve(logical.size());
+    auto nextOrdinal = std::size_t{0u};
     for (std::size_t index = 0u; index < logical.size(); ++index) {
         if (logical[index] != 0u) {
             mask[index >> 3u] |= static_cast<std::uint8_t>(1u << (index & 7u));
+            appendUleb128(gaps, index - nextOrdinal);
             values.push_back(logical[index]);
+            nextOrdinal = index + 1u;
         }
     }
+    std::uint32_t representation = NoveltyZero;
+    const std::vector<std::uint8_t>* auxiliary = nullptr;
+    const std::vector<std::uint8_t>* storedValues = nullptr;
+    const std::vector<std::uint8_t> empty;
+    if (!values.empty()) {
+        representation = NoveltyDense;
+        auxiliary = &empty;
+        storedValues = &logical;
+        auto bestBytes = logical.size();
+        const auto bitmaskBytes = mask.size() + values.size();
+        if (bitmaskBytes < bestBytes) {
+            representation = NoveltySparseBitmask;
+            auxiliary = &mask;
+            storedValues = &values;
+            bestBytes = bitmaskBytes;
+        }
+        const auto gapBytes = gaps.size() + values.size();
+        if (gapBytes < bestBytes) {
+            representation = NoveltySparseGaps;
+            auxiliary = &gaps;
+            storedValues = &values;
+        }
+    } else {
+        auxiliary = &empty;
+        storedValues = &empty;
+    }
+    selectedRepresentation = representation;
     std::vector<std::uint8_t> header(BlockHeaderBytes, 0u);
     std::memcpy(header.data(), "UGNBLK1\0", 8u);
     setU16(header, 8u, 1u);
@@ -447,17 +514,17 @@ std::vector<std::uint8_t> buildNoveltyBlock(
     setU32(header, 20u, firstLumaOrdinal);
     setU32(header, 24u, lumaCount);
     setU32(header, 28u, static_cast<std::uint32_t>(logical.size()));
-    setU32(header, 32u, static_cast<std::uint32_t>(mask.size()));
-    setU32(header, 36u, static_cast<std::uint32_t>(values.size()));
+    setU32(header, 32u, static_cast<std::uint32_t>(auxiliary->size()));
+    setU32(header, 36u, static_cast<std::uint32_t>(storedValues->size()));
     setDigest(header, 40u, sha256(logical.data(), logical.size()));
-    setDigest(header, 72u, sha256(values.data(), values.size()));
+    setDigest(header, 72u, sha256(storedValues->data(), storedValues->size()));
     setU32(header, BlockPredictorOffset, static_cast<std::uint32_t>(predictor));
-    setU32(header, BlockNoveltyMethodOffset, NoveltyMaskNonzeroValues);
+    setU32(header, BlockNoveltyMethodOffset, representation);
     setDigest(header, BlockLineageDigestOffset, lineageDigest);
     std::vector<std::uint8_t> payload;
-    payload.reserve(mask.size() + values.size());
-    payload.insert(payload.end(), mask.begin(), mask.end());
-    payload.insert(payload.end(), values.begin(), values.end());
+    payload.reserve(auxiliary->size() + storedValues->size());
+    payload.insert(payload.end(), auxiliary->begin(), auxiliary->end());
+    payload.insert(payload.end(), storedValues->begin(), storedValues->end());
     setDigest(header, BlockContentDigestOffset,
               hashHeaderPayloadWithZeroRange(
                   header, BlockContentDigestOffset, 32u, payload));
@@ -465,8 +532,194 @@ std::vector<std::uint8_t> buildNoveltyBlock(
     return header;
 }
 
+struct NoveltyBlockBuild {
+    std::vector<std::uint8_t> logicalResidual;
+    std::vector<std::uint8_t> serialized;
+    std::uint64_t noveltyEventCount = 0u;
+    std::uint32_t representation = NoveltyZero;
+};
+
+// Persistent fixed-size workers plus a fixed-size submission queue. Results
+// are retained for at most one bounded batch and consumed in block-ordinal
+// order, so scheduling can never affect the canonical file byte order.
+class BoundedNoveltyBlockPool final {
+public:
+    using Builder = std::function<NoveltyBlockBuild(std::size_t)>;
+    using Consumer = std::function<void(NoveltyBlockBuild&&)>;
+
+    BoundedNoveltyBlockPool(
+        std::uint32_t workerCount,
+        std::uint32_t maxInFlightBlocks
+    ) : maxInFlightBlocks_(maxInFlightBlocks) {
+        try {
+            workers_.reserve(workerCount);
+            for (std::uint32_t index = 0u; index < workerCount; ++index) {
+                workers_.emplace_back([this] { workerLoop(); });
+            }
+        } catch (...) {
+            {
+                std::lock_guard<std::mutex> lock(queueMutex_);
+                stopping_ = true;
+            }
+            queueReady_.notify_all();
+            for (auto& worker : workers_) {
+                if (worker.joinable()) worker.join();
+            }
+            throw;
+        }
+    }
+
+    ~BoundedNoveltyBlockPool() {
+        {
+            std::lock_guard<std::mutex> lock(queueMutex_);
+            stopping_ = true;
+        }
+        queueReady_.notify_all();
+        queueSpace_.notify_all();
+        for (auto& worker : workers_) {
+            if (worker.joinable()) worker.join();
+        }
+    }
+
+    BoundedNoveltyBlockPool(const BoundedNoveltyBlockPool&) = delete;
+    BoundedNoveltyBlockPool& operator=(const BoundedNoveltyBlockPool&) = delete;
+
+    void buildOrdered(
+        std::size_t blockCount,
+        const Builder& build,
+        const Consumer& consume
+    ) {
+        for (std::size_t batchFirst = 0u; batchFirst < blockCount;
+             batchFirst += maxInFlightBlocks_) {
+            const auto batchCount = std::min<std::size_t>(
+                maxInFlightBlocks_, blockCount - batchFirst);
+            struct BatchState {
+                explicit BatchState(std::size_t count)
+                    : results(count), remaining(count) {}
+                std::vector<NoveltyBlockBuild> results;
+                std::mutex mutex;
+                std::condition_variable finished;
+                std::size_t remaining;
+                std::exception_ptr failure;
+            };
+            auto state = std::make_shared<BatchState>(batchCount);
+            std::size_t submitted = 0u;
+            std::exception_ptr submissionFailure;
+            try {
+                for (; submitted < batchCount; ++submitted) {
+                    const auto local = submitted;
+                    const auto global = batchFirst + local;
+                    enqueue([state, &build, local, global] {
+                        std::exception_ptr failure;
+                        try {
+                            state->results[local] = build(global);
+                        } catch (...) {
+                            failure = std::current_exception();
+                        }
+                        std::lock_guard<std::mutex> lock(state->mutex);
+                        if (failure != nullptr && state->failure == nullptr) {
+                            state->failure = failure;
+                        }
+                        --state->remaining;
+                        if (state->remaining == 0u) state->finished.notify_one();
+                    });
+                }
+            } catch (...) {
+                submissionFailure = std::current_exception();
+                std::lock_guard<std::mutex> lock(state->mutex);
+                state->remaining -= batchCount - submitted;
+                if (state->remaining == 0u) state->finished.notify_one();
+            }
+            {
+                std::unique_lock<std::mutex> lock(state->mutex);
+                state->finished.wait(lock, [&state] {
+                    return state->remaining == 0u;
+                });
+            }
+            if (submissionFailure != nullptr) std::rethrow_exception(submissionFailure);
+            if (state->failure != nullptr) std::rethrow_exception(state->failure);
+            for (auto& result : state->results) consume(std::move(result));
+        }
+    }
+
+private:
+    using Task = std::function<void()>;
+
+    void enqueue(Task task) {
+        {
+            std::unique_lock<std::mutex> lock(queueMutex_);
+            queueSpace_.wait(lock, [this] {
+                return stopping_ || tasks_.size() < maxInFlightBlocks_;
+            });
+            require(!stopping_, "novelty worker pool is stopping");
+            tasks_.push_back(std::move(task));
+        }
+        queueReady_.notify_one();
+    }
+
+    void workerLoop() {
+        while (true) {
+            Task task;
+            {
+                std::unique_lock<std::mutex> lock(queueMutex_);
+                queueReady_.wait(lock, [this] {
+                    return stopping_ || !tasks_.empty();
+                });
+                if (stopping_ && tasks_.empty()) return;
+                task = std::move(tasks_.front());
+                tasks_.pop_front();
+            }
+            queueSpace_.notify_one();
+            task();
+        }
+    }
+
+    std::size_t maxInFlightBlocks_;
+    std::vector<std::thread> workers_;
+    std::deque<Task> tasks_;
+    std::mutex queueMutex_;
+    std::condition_variable queueReady_;
+    std::condition_variable queueSpace_;
+    bool stopping_ = false;
+};
+
 std::uint8_t residualByte(std::uint8_t current, std::uint8_t previous) {
     return static_cast<std::uint8_t>(static_cast<unsigned>(current) - previous);
+}
+
+void appendUleb128(std::vector<std::uint8_t>& bytes, std::size_t value) {
+    do {
+        auto lane = static_cast<std::uint8_t>(value & 0x7fu);
+        value >>= 7u;
+        if (value != 0u) lane |= 0x80u;
+        bytes.push_back(lane);
+    } while (value != 0u);
+}
+
+std::size_t readCanonicalUleb128(
+    const std::uint8_t* bytes,
+    std::size_t size,
+    std::size_t& position
+) {
+    const auto start = position;
+    std::size_t result = 0u;
+    unsigned shift = 0u;
+    while (true) {
+        require(position < size, "sparse-gap ULEB128 is truncated");
+        const auto lane = bytes[position++];
+        require(shift < std::numeric_limits<std::size_t>::digits,
+                "sparse-gap ULEB128 overflows size_t");
+        const auto payload = static_cast<std::size_t>(lane & 0x7fu);
+        require(payload <= (std::numeric_limits<std::size_t>::max() >> shift),
+                "sparse-gap ULEB128 payload overflows size_t");
+        result |= payload << shift;
+        if ((lane & 0x80u) == 0u) {
+            require(position == start + 1u || lane != 0u,
+                    "sparse-gap ULEB128 is not minimally encoded");
+            return result;
+        }
+        shift += 7u;
+    }
 }
 
 } // namespace
@@ -475,7 +728,9 @@ struct YuvSeedCaptureWriter::Impl {
     std::FILE* file = nullptr;
     std::string partialPath;
     YuvSeedCaptureProfile profile;
+    std::unique_ptr<BoundedNoveltyBlockPool> noveltyPool;
     SeededUglut2Traversal traversal;
+    std::vector<std::uint32_t> lineageSeeds;
     Sha256Digest recipeSha{};
     Sha256Digest staticSha{};
     std::uint64_t recordOffset = 0u;
@@ -524,20 +779,33 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
     require(profile.noveltyBlockLumaAddresses >= 1u &&
                 profile.noveltyBlockLumaAddresses <= 65536u,
             "novelty block luma-address count is invalid");
+    require(profile.noveltyWorkerCount >= 1u &&
+                profile.noveltyWorkerCount <= MaxNoveltyWorkerCount,
+            "novelty worker count is invalid");
+    require(profile.noveltyMaxInFlightBlocks >= profile.noveltyWorkerCount &&
+                profile.noveltyMaxInFlightBlocks <= MaxNoveltyInFlightBlocks,
+            "novelty in-flight block bound is invalid");
     require(!profile.literalUglut2.empty(), "literal UGLUT2 bytes are required");
-    if (auto* existing = std::fopen(partialPath.c_str(), "rb")) {
+    if (auto* existing = openFile(partialPath, "rb")) {
         std::fclose(existing);
         fail("partial path already exists; refusing to overwrite it");
     }
     auto impl = std::make_unique<Impl>();
     impl->partialPath = partialPath;
     impl->profile = profile;
+    impl->noveltyPool = std::make_unique<BoundedNoveltyBlockPool>(
+        profile.noveltyWorkerCount,
+        profile.noveltyMaxInFlightBlocks);
     impl->traversal = regenerateSeededUglut2Traversal(
         profile.width,
         profile.height,
         profile.rootSeed,
         profile.traversalRecipeSeed,
         profile.literalUglut2);
+    impl->lineageSeeds = cameraLineageSeeds(
+        profile.rootSeed,
+        profile.traversalRecipeSeed,
+        impl->traversal.polarOrdinalToCartesian);
     impl->recipeSha = recipeDigest(profile, impl->traversal);
     impl->recordOffset = alignUp(FileHeaderBytes + profile.literalUglut2.size());
     impl->committedEnd = impl->recordOffset;
@@ -579,7 +847,7 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
         impl->terminal);
     std::copy(initial.begin(), initial.end(),
               header.begin() + static_cast<std::ptrdiff_t>(CommitSlot0Offset));
-    impl->file = std::fopen(partialPath.c_str(), "w+b");
+    impl->file = openFile(partialPath, "w+b");
     require(impl->file != nullptr, "cannot create partial file");
     writeExact(impl->file, header.data(), header.size());
     writeExact(impl->file, profile.literalUglut2.data(), profile.literalUglut2.size());
@@ -593,6 +861,20 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
 
 YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
     const Yuv420p8FrameView& view
+) {
+    return appendImpl(view, nullptr);
+}
+
+YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendPreparedResidual(
+    const Yuv420p8FrameView& view,
+    ByteView canonicalOwnerResidual
+) {
+    return appendImpl(view, &canonicalOwnerResidual);
+}
+
+YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
+    const Yuv420p8FrameView& view,
+    const ByteView* preparedResidual
 ) {
     require(impl_ != nullptr && !impl_->closed, "writer is closed");
     require(view.sensorTimestampNs >= 0 && view.sensorTimestampNs > impl_->lastPts,
@@ -619,9 +901,14 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
             "frame ordinal exceeds uint32");
     const auto ordinal = static_cast<std::uint32_t>(impl_->frames);
     const auto previousOrdinal = checkpoint ? NoPreviousOrdinal : ordinal - 1u;
-    const auto zeroY = std::vector<std::uint8_t>(current.y.size(), 0u);
-    const auto zeroU = std::vector<std::uint8_t>(current.u.size(), 0u);
-    const auto zeroV = std::vector<std::uint8_t>(current.v.size(), 0u);
+    auto zeroY = std::vector<std::uint8_t>{};
+    auto zeroU = std::vector<std::uint8_t>{};
+    auto zeroV = std::vector<std::uint8_t>{};
+    if (checkpoint) {
+        zeroY.assign(current.y.size(), 0u);
+        zeroU.assign(current.u.size(), 0u);
+        zeroV.assign(current.v.size(), 0u);
+    }
     const auto& previousY = checkpoint ? zeroY : impl_->previous.y;
     const auto& previousU = checkpoint ? zeroU : impl_->previous.u;
     const auto& previousV = checkpoint ? zeroV : impl_->previous.v;
@@ -629,56 +916,111 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
                 previousV.size() == current.v.size(),
             "previous executable state has the wrong plane sizes");
 
+    const auto expectedLogicalLanes =
+        current.y.size() + current.u.size() + current.v.size();
+    if (preparedResidual != nullptr) {
+        require(preparedResidual->data != nullptr,
+                "prepared residual pointer is null");
+        require(preparedResidual->size == expectedLogicalLanes,
+                "prepared residual has the wrong canonical owner-only lane count");
+    }
     std::vector<std::uint8_t> fullResidual;
-    fullResidual.reserve(current.y.size() + current.u.size() + current.v.size());
-    std::vector<std::uint8_t> noveltyPayload;
-    std::uint64_t noveltyEventCount = 0u;
-    std::uint32_t blockOrdinal = 0u;
+    fullResidual.reserve(expectedLogicalLanes);
+    if (preparedResidual != nullptr) {
+        fullResidual.assign(
+            preparedResidual->data,
+            preparedResidual->data + preparedResidual->size);
+    }
+    std::vector<std::size_t> blockResidualOffsets;
+    const auto traversalAddresses = impl_->traversal.polarOrdinalToCartesian.size();
+    const auto blockCapacity = impl_->profile.noveltyBlockLumaAddresses;
+    blockResidualOffsets.reserve(
+        (traversalAddresses + blockCapacity - 1u) / blockCapacity + 1u);
+    std::size_t logicalLaneOffset = 0u;
     std::size_t ownerCount = 0u;
-    for (std::size_t first = 0u; first < impl_->traversal.polarOrdinalToCartesian.size();
-         first += impl_->profile.noveltyBlockLumaAddresses) {
+    for (std::size_t first = 0u; first < traversalAddresses; first += blockCapacity) {
+        blockResidualOffsets.push_back(logicalLaneOffset);
         const auto count = std::min<std::size_t>(
-            impl_->profile.noveltyBlockLumaAddresses,
-            impl_->traversal.polarOrdinalToCartesian.size() - first);
-        std::vector<std::uint8_t> blockResidual;
-        blockResidual.reserve(count * 2u);
+            blockCapacity, traversalAddresses - first);
         for (std::size_t local = 0u; local < count; ++local) {
             const auto address = impl_->traversal.polarOrdinalToCartesian[first + local];
             const auto x = address % width;
             const auto y = address / width;
-            blockResidual.push_back(residualByte(current.y[address], previousY[address]));
+            if (preparedResidual == nullptr) {
+                fullResidual.push_back(
+                    residualByte(current.y[address], previousY[address]));
+            }
+            ++logicalLaneOffset;
             if ((x & 1u) == 0u && (y & 1u) == 0u) {
-                const auto chroma = static_cast<std::size_t>(y / 2u) * chromaWidth + x / 2u;
-                blockResidual.push_back(residualByte(current.u[chroma], previousU[chroma]));
-                blockResidual.push_back(residualByte(current.v[chroma], previousV[chroma]));
+                const auto chroma =
+                    static_cast<std::size_t>(y / 2u) * chromaWidth + x / 2u;
+                if (preparedResidual == nullptr) {
+                    fullResidual.push_back(
+                        residualByte(current.u[chroma], previousU[chroma]));
+                    fullResidual.push_back(
+                        residualByte(current.v[chroma], previousV[chroma]));
+                }
+                logicalLaneOffset += 2u;
                 ++ownerCount;
             }
         }
-        noveltyEventCount += static_cast<std::uint64_t>(std::count_if(
-            blockResidual.begin(), blockResidual.end(),
-            [](std::uint8_t value) { return value != 0u; }));
-        fullResidual.insert(fullResidual.end(), blockResidual.begin(), blockResidual.end());
-        const auto predictor = checkpoint
-            ? YuvPredictorProgram::RawExactLane
-            : YuvPredictorProgram::PreviousSameAddress;
-        const auto block = buildNoveltyBlock(
-            blockOrdinal++,
-            static_cast<std::uint32_t>(first),
-            static_cast<std::uint32_t>(count),
-            predictor,
-            blockLineageDigest(
-                impl_->profile.rootSeed,
-                impl_->profile.traversalRecipeSeed,
-                ordinal,
-                impl_->traversal.polarOrdinalToCartesian,
-                first,
-                count),
-            blockResidual);
-        noveltyPayload.insert(noveltyPayload.end(), block.begin(), block.end());
     }
+    blockResidualOffsets.push_back(logicalLaneOffset);
     require(ownerCount == current.u.size(), "canonical 2x2 chroma owner count mismatch");
-    require(fullResidual.size() == current.y.size() + current.u.size() + current.v.size(),
+    require(logicalLaneOffset == expectedLogicalLanes &&
+                fullResidual.size() == expectedLogicalLanes,
             "UGCODE24-420 logical residual length mismatch");
+    require(blockResidualOffsets.size() - 1u <=
+                std::numeric_limits<std::uint32_t>::max(),
+            "novelty block count exceeds uint32");
+    const auto blockCount = static_cast<std::uint32_t>(
+        blockResidualOffsets.size() - 1u);
+
+    std::vector<std::uint8_t> noveltyPayload;
+    std::uint64_t noveltyEventCount = 0u;
+    std::array<std::uint32_t, 4u> representationCounts{};
+    const auto predictor = checkpoint
+        ? YuvPredictorProgram::RawExactLane
+        : YuvPredictorProgram::PreviousSameAddress;
+    impl_->noveltyPool->buildOrdered(
+        blockCount,
+        [&](std::size_t blockOrdinal) {
+            NoveltyBlockBuild result{};
+            const auto first = blockOrdinal * blockCapacity;
+            const auto count = std::min<std::size_t>(
+                blockCapacity, traversalAddresses - first);
+            const auto residualFirst = blockResidualOffsets[blockOrdinal];
+            const auto residualEnd = blockResidualOffsets[blockOrdinal + 1u];
+            result.logicalResidual.assign(
+                fullResidual.begin() + static_cast<std::ptrdiff_t>(residualFirst),
+                fullResidual.begin() + static_cast<std::ptrdiff_t>(residualEnd));
+            result.noveltyEventCount = static_cast<std::uint64_t>(std::count_if(
+                result.logicalResidual.begin(), result.logicalResidual.end(),
+                [](std::uint8_t value) { return value != 0u; }));
+            result.serialized = buildNoveltyBlock(
+                static_cast<std::uint32_t>(blockOrdinal),
+                static_cast<std::uint32_t>(first),
+                static_cast<std::uint32_t>(count),
+                predictor,
+                blockLineageDigest(
+                    ordinal,
+                    impl_->lineageSeeds,
+                    first,
+                    count),
+                result.representation,
+                result.logicalResidual);
+            return result;
+        },
+        [&](NoveltyBlockBuild&& result) {
+            require(result.representation < representationCounts.size(),
+                    "novelty representation dispatch escaped count table");
+            ++representationCounts[result.representation];
+            noveltyEventCount += result.noveltyEventCount;
+            noveltyPayload.insert(
+                noveltyPayload.end(),
+                result.serialized.begin(),
+                result.serialized.end());
+        });
 
     auto statePreimage = digestPreimage("UGYUVS1-executable-seed-state-v1");
     appendDigest(statePreimage, impl_->staticSha);
@@ -703,7 +1045,7 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
     setU32(header, 16u, checkpoint ? FrameCheckpoint : 0u);
     setU32(header, 20u, ordinal);
     setU32(header, 24u, previousOrdinal);
-    setU32(header, 28u, blockOrdinal);
+    setU32(header, 28u, blockCount);
     setI64(header, 32u, view.sensorTimestampNs);
     setI64(header, 40u, view.frameNumber);
     setU64(header, 48u, framePayload.size());
@@ -744,6 +1086,13 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::append(
     stats.noveltyEventCount = noveltyEventCount;
     stats.noveltyPayloadBytes = noveltyPayload.size();
     stats.frameRecordBytes = header.size() + framePayload.size();
+    stats.zeroBlockCount = representationCounts[NoveltyZero];
+    stats.denseBlockCount = representationCounts[NoveltyDense];
+    stats.sparseBitmaskBlockCount = representationCounts[NoveltySparseBitmask];
+    stats.sparseGapBlockCount = representationCounts[NoveltySparseGaps];
+    stats.noveltyWorkerCount = impl_->profile.noveltyWorkerCount;
+    stats.noveltyMaxInFlightBlocks =
+        impl_->profile.noveltyMaxInFlightBlocks;
     stats.preSubstrateSha256 = preSubstrateSha;
     return stats;
 }
@@ -756,7 +1105,7 @@ void YuvSeedCaptureWriter::finalize(const std::string& finalPath) {
     require(impl_ != nullptr && !impl_->closed, "writer is already closed");
     require(!finalPath.empty() && finalPath != impl_->partialPath,
             "final path must differ from the partial path");
-    if (auto* existing = std::fopen(finalPath.c_str(), "rb")) {
+    if (auto* existing = openFile(finalPath, "rb")) {
         std::fclose(existing);
         fail("final path already exists; refusing to overwrite it");
     }
@@ -785,6 +1134,7 @@ struct YuvSeedCaptureReader::Impl {
     std::string path;
     YuvSeedCaptureProfile profile;
     SeededUglut2Traversal traversal;
+    std::vector<std::uint32_t> lineageSeeds;
     Sha256Digest recipeSha{};
     Sha256Digest staticSha{};
     ParsedCommit commit;
@@ -851,6 +1201,10 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
         impl_->profile.rootSeed,
         impl_->profile.traversalRecipeSeed,
         impl_->profile.literalUglut2);
+    impl_->lineageSeeds = cameraLineageSeeds(
+        impl_->profile.rootSeed,
+        impl_->profile.traversalRecipeSeed,
+        impl_->traversal.polarOrdinalToCartesian);
     require(impl_->traversal.uglut2Sha256 == getDigest(header.data(), header.size(), 80u) &&
                 impl_->traversal.traversalSha256 == getDigest(header.data(), header.size(), 112u),
             "literal UGLUT2/traversal SHA-256 mismatch");
@@ -865,6 +1219,10 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
     require(first.valid || second.valid, "neither crash-safe commit slot is valid");
     impl_->commit = !second.valid || (first.valid && first.generation > second.generation)
         ? first : second;
+    require(!hasSuffix(path, ".ugsp4c") || impl_->commit.finalized,
+            "completed .ugsp4c lacks a valid FINAL commit");
+    require(!impl_->commit.finalized || impl_->commit.committedEnd == actualBytes,
+            "FINAL commit does not cover the complete file");
     inspection_.profile = Ugcode24_420Profile;
     inspection_.width = impl_->profile.width;
     inspection_.height = impl_->profile.height;
@@ -872,6 +1230,8 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
     inspection_.committedBytes = impl_->commit.committedEnd;
     inspection_.generation = impl_->commit.generation;
     inspection_.finalized = impl_->commit.finalized;
+    inspection_.recoveredIncomplete = !impl_->commit.finalized;
+    inspection_.uncommittedTailBytes = actualBytes - impl_->commit.committedEnd;
     inspection_.uglut2Sha256 = impl_->traversal.uglut2Sha256;
     inspection_.traversalSha256 = impl_->traversal.traversalSha256;
     inspection_.terminalRecordSha256 = impl_->commit.terminal;
@@ -896,9 +1256,15 @@ void YuvSeedCaptureReader::replay(
     previous.y.assign(yBytes, 0u);
     previous.u.assign(cBytes, 0u);
     previous.v.assign(cBytes, 0u);
-    auto previousYSha = sha256(previous.y.data(), previous.y.size());
-    auto previousUSha = sha256(previous.u.data(), previous.u.size());
-    auto previousVSha = sha256(previous.v.data(), previous.v.size());
+    const auto zeroY = previous.y;
+    const auto zeroU = previous.u;
+    const auto zeroV = previous.v;
+    const auto zeroYSha = sha256(zeroY.data(), zeroY.size());
+    const auto zeroUSha = sha256(zeroU.data(), zeroU.size());
+    const auto zeroVSha = sha256(zeroV.data(), zeroV.size());
+    auto previousYSha = zeroYSha;
+    auto previousUSha = zeroUSha;
+    auto previousVSha = zeroVSha;
     Sha256Digest terminal{};
     std::int64_t previousPts = std::numeric_limits<std::int64_t>::min();
     std::uint64_t consumedBytes = impl_->recordOffset;
@@ -945,9 +1311,6 @@ void YuvSeedCaptureReader::replay(
                         header, FrameContentDigestOffset, 32u, payload),
                 "frame content SHA-256 mismatch");
 
-        const auto zeroY = std::vector<std::uint8_t>(yBytes, 0u);
-        const auto zeroU = std::vector<std::uint8_t>(cBytes, 0u);
-        const auto zeroV = std::vector<std::uint8_t>(cBytes, 0u);
         const auto& baseY = checkpoint ? zeroY : previous.y;
         const auto& baseU = checkpoint ? zeroU : previous.u;
         const auto& baseV = checkpoint ? zeroV : previous.v;
@@ -958,9 +1321,9 @@ void YuvSeedCaptureReader::replay(
         appendU32(statePreimage, previousOrdinal);
         appendU64(statePreimage, static_cast<std::uint64_t>(sensorPts));
         appendU64(statePreimage, static_cast<std::uint64_t>(frameNumber));
-        appendDigest(statePreimage, checkpoint ? sha256(zeroY.data(), zeroY.size()) : previousYSha);
-        appendDigest(statePreimage, checkpoint ? sha256(zeroU.data(), zeroU.size()) : previousUSha);
-        appendDigest(statePreimage, checkpoint ? sha256(zeroV.data(), zeroV.size()) : previousVSha);
+        appendDigest(statePreimage, checkpoint ? zeroYSha : previousYSha);
+        appendDigest(statePreimage, checkpoint ? zeroUSha : previousUSha);
+        appendDigest(statePreimage, checkpoint ? zeroVSha : previousVSha);
         require(getDigest(header.data(), header.size(), 272u) ==
                     sha256(statePreimage.data(), statePreimage.size()),
                 "executable seed state SHA-256 mismatch");
@@ -987,10 +1350,12 @@ void YuvSeedCaptureReader::replay(
             const auto first = getU32(block, BlockHeaderBytes, 20u);
             const auto lumaCount = getU32(block, BlockHeaderBytes, 24u);
             const auto blockSymbols = getU32(block, BlockHeaderBytes, 28u);
-            const auto maskBytes = getU32(block, BlockHeaderBytes, 32u);
+            const auto auxiliaryBytes = getU32(block, BlockHeaderBytes, 32u);
             const auto valueBytes = getU32(block, BlockHeaderBytes, 36u);
             const auto predictor = static_cast<YuvPredictorProgram>(
                 getU32(block, BlockHeaderBytes, BlockPredictorOffset));
+            const auto representation = getU32(
+                block, BlockHeaderBytes, BlockNoveltyMethodOffset);
             require(first == static_cast<std::uint64_t>(blockOrdinal) *
                                 impl_->profile.noveltyBlockLumaAddresses &&
                         lumaCount == std::min<std::size_t>(
@@ -1010,52 +1375,118 @@ void YuvSeedCaptureReader::replay(
                 ? YuvPredictorProgram::RawExactLane
                 : YuvPredictorProgram::PreviousSameAddress;
             require(blockSymbols == expectedSymbols &&
-                        maskBytes == (expectedSymbols + 7u) / 8u &&
-                        noveltyPosition + BlockHeaderBytes + maskBytes + valueBytes <= noveltyBytes &&
+                        noveltyPosition + BlockHeaderBytes + auxiliaryBytes + valueBytes <=
+                            noveltyBytes &&
                         predictor == expectedPredictor &&
-                        getU32(block, BlockHeaderBytes, BlockNoveltyMethodOffset) ==
-                            NoveltyMaskNonzeroValues &&
+                        representation <= NoveltySparseGaps &&
                         getDigest(block, BlockHeaderBytes, BlockLineageDigestOffset) ==
                             blockLineageDigest(
-                                impl_->profile.rootSeed,
-                                impl_->profile.traversalRecipeSeed,
                                 ordinal,
-                                impl_->traversal.polarOrdinalToCartesian,
+                                impl_->lineageSeeds,
                                 first,
                                 lumaCount) &&
                         allZero(block + 176u, 16u),
                     "novelty block sizes/reserved bytes mismatch");
-            const auto* mask = block + BlockHeaderBytes;
-            const auto* values = mask + maskBytes;
-            if ((expectedSymbols & 7u) != 0u) {
-                const auto usedBits = expectedSymbols & 7u;
-                require((mask[maskBytes - 1u] & ~((1u << usedBits) - 1u)) == 0u,
-                        "novelty mask padding bits are nonzero");
-            }
+            const auto* auxiliary = block + BlockHeaderBytes;
+            const auto* values = auxiliary + auxiliaryBytes;
             std::vector<std::uint8_t> logical(expectedSymbols, 0u);
             std::size_t valuePosition = 0u;
-            for (std::size_t symbol = 0u; symbol < expectedSymbols; ++symbol) {
-                if ((mask[symbol >> 3u] & (1u << (symbol & 7u))) != 0u) {
-                    require(valuePosition < valueBytes && values[valuePosition] != 0u,
-                            "novelty nonzero-value stream is invalid");
+            if (representation == NoveltyZero) {
+                require(auxiliaryBytes == 0u && valueBytes == 0u,
+                        "ZERO novelty block carries a payload");
+            } else if (representation == NoveltyDense) {
+                require(auxiliaryBytes == 0u && valueBytes == expectedSymbols,
+                        "DENSE novelty block length mismatch");
+                std::copy_n(values, expectedSymbols, logical.begin());
+                valuePosition = static_cast<std::size_t>(std::count_if(
+                    logical.begin(), logical.end(),
+                    [](std::uint8_t value) { return value != 0u; }));
+            } else if (representation == NoveltySparseBitmask) {
+                require(auxiliaryBytes == (expectedSymbols + 7u) / 8u,
+                        "SPARSE_BITMASK occupancy length mismatch");
+                if ((expectedSymbols & 7u) != 0u) {
+                    const auto usedBits = expectedSymbols & 7u;
+                    require((auxiliary[auxiliaryBytes - 1u] &
+                             ~((1u << usedBits) - 1u)) == 0u,
+                            "SPARSE_BITMASK padding bits are nonzero");
+                }
+                for (std::size_t symbol = 0u; symbol < expectedSymbols; ++symbol) {
+                    if ((auxiliary[symbol >> 3u] & (1u << (symbol & 7u))) != 0u) {
+                        require(valuePosition < valueBytes && values[valuePosition] != 0u,
+                                "SPARSE_BITMASK nonzero stream is invalid");
+                        logical[symbol] = values[valuePosition++];
+                    }
+                }
+            } else {
+                require(valueBytes > 0u,
+                        "SPARSE_GAPS requires at least one novelty event");
+                std::size_t gapPosition = 0u;
+                std::size_t nextOrdinal = 0u;
+                while (gapPosition < auxiliaryBytes) {
+                    require(valuePosition < valueBytes,
+                            "SPARSE_GAPS has more indexes than values");
+                    const auto gap = readCanonicalUleb128(
+                        auxiliary, auxiliaryBytes, gapPosition);
+                    require(gap <= expectedSymbols - nextOrdinal,
+                            "SPARSE_GAPS address escapes the logical block");
+                    const auto symbol = nextOrdinal + gap;
+                    require(symbol < expectedSymbols && values[valuePosition] != 0u,
+                            "SPARSE_GAPS nonzero event is invalid");
                     logical[symbol] = values[valuePosition++];
+                    nextOrdinal = symbol + 1u;
                 }
             }
-            require(valuePosition == valueBytes,
-                    "novelty value count disagrees with mask popcount");
-            noveltyEventCount += valuePosition;
+            require((representation == NoveltyDense || valuePosition == valueBytes),
+                    "novelty value count disagrees with its representation");
+            const auto blockEventCount = static_cast<std::size_t>(std::count_if(
+                logical.begin(), logical.end(),
+                [](std::uint8_t value) { return value != 0u; }));
+            require(representation == NoveltyDense || blockEventCount == valueBytes,
+                    "sparse novelty event count mismatch");
+            auto canonicalRepresentation = NoveltyZero;
+            auto canonicalPayloadBytes = std::size_t{0u};
+            std::vector<std::uint8_t> canonicalGaps;
+            auto canonicalNext = std::size_t{0u};
+            for (std::size_t symbol = 0u; symbol < logical.size(); ++symbol) {
+                if (logical[symbol] != 0u) {
+                    appendUleb128(canonicalGaps, symbol - canonicalNext);
+                    canonicalNext = symbol + 1u;
+                }
+            }
+            if (blockEventCount != 0u) {
+                canonicalRepresentation = NoveltyDense;
+                canonicalPayloadBytes = expectedSymbols;
+                const auto bitmaskPayload =
+                    (expectedSymbols + 7u) / 8u + blockEventCount;
+                if (bitmaskPayload < canonicalPayloadBytes) {
+                    canonicalRepresentation = NoveltySparseBitmask;
+                    canonicalPayloadBytes = bitmaskPayload;
+                }
+                const auto gapPayload = canonicalGaps.size() + blockEventCount;
+                if (gapPayload < canonicalPayloadBytes) {
+                    canonicalRepresentation = NoveltySparseGaps;
+                    canonicalPayloadBytes = gapPayload;
+                }
+            }
+            require(representation == canonicalRepresentation &&
+                        auxiliaryBytes + valueBytes == canonicalPayloadBytes &&
+                        (representation != NoveltySparseGaps ||
+                         (canonicalGaps.size() == auxiliaryBytes &&
+                          std::equal(canonicalGaps.begin(), canonicalGaps.end(), auxiliary))),
+                    "novelty representation is not the canonical byte-smallest choice");
+            noveltyEventCount += blockEventCount;
             require(getDigest(block, BlockHeaderBytes, 40u) ==
                         sha256(logical.data(), logical.size()) &&
                         getDigest(block, BlockHeaderBytes, 72u) ==
                         sha256(values, valueBytes),
                     "novelty block logical/value SHA-256 mismatch");
             std::vector<std::uint8_t> blockBytes(
-                block, block + BlockHeaderBytes + maskBytes + valueBytes);
+                block, block + BlockHeaderBytes + auxiliaryBytes + valueBytes);
             require(getDigest(block, BlockHeaderBytes, BlockContentDigestOffset) ==
                         hashWithZeroRange(blockBytes, BlockContentDigestOffset, 32u),
                     "novelty block content SHA-256 mismatch");
             residual.insert(residual.end(), logical.begin(), logical.end());
-            noveltyPosition += BlockHeaderBytes + maskBytes + valueBytes;
+            noveltyPosition += BlockHeaderBytes + auxiliaryBytes + valueBytes;
         }
         require(noveltyPosition == noveltyBytes && ownerCount == cBytes &&
                     residual.size() == logicalSymbols &&
@@ -1157,6 +1588,52 @@ std::vector<DenseYuv420p8Frame> YuvSeedCaptureReader::decodeAll() const {
     frames.reserve(static_cast<std::size_t>(impl_->commit.frameCount));
     replay([&frames](const DenseYuv420p8Frame& frame) { frames.push_back(frame); });
     return frames;
+}
+
+std::uint32_t gsp4Mix32(std::uint32_t value) noexcept {
+    value ^= value >> 16u;
+    value *= 0x7feb352du;
+    value ^= value >> 15u;
+    value *= 0x846ca68bu;
+    value ^= value >> 16u;
+    return value;
+}
+
+Gsp4CodewordLineage gsp4CodewordLineage(
+    std::uint64_t rootSeed,
+    std::uint64_t recipeSeed,
+    std::uint64_t cartesianAddress,
+    std::uint32_t frameOrdinal
+) noexcept {
+    const auto session = combineSeed(rootSeed, recipeSeed);
+    const auto persistent = stableId(
+        session, Gsp4CameraLineageNamespace, cartesianAddress);
+    Gsp4CodewordLineage result{};
+    result.lineageSeed = static_cast<std::uint32_t>(persistent);
+    result.routedHash = gsp4Mix32(result.lineageSeed ^ frameOrdinal);
+    return result;
+}
+
+Sha256Digest preSubstrateFrameSha256(const DenseYuv420p8Frame& frame) {
+    require(frame.width >= 2u && frame.height >= 2u &&
+                frame.width <= 65534u && frame.height <= 65534u &&
+                (frame.width & 1u) == 0u && (frame.height & 1u) == 0u,
+            "pre-substrate digest requires valid even dimensions");
+    require(frame.sensorTimestampNs >= 0,
+            "pre-substrate digest requires a nonnegative sensor timestamp");
+    const auto yBytes = static_cast<std::size_t>(frame.width) * frame.height;
+    const auto cBytes = static_cast<std::size_t>(frame.width / 2u) * (frame.height / 2u);
+    require(frame.y.size() == yBytes && frame.u.size() == cBytes && frame.v.size() == cBytes,
+            "pre-substrate digest plane sizes are invalid");
+    std::vector<std::uint8_t> preimage;
+    preimage.reserve(16u + yBytes + cBytes * 2u);
+    appendU64(preimage, static_cast<std::uint64_t>(frame.sensorTimestampNs));
+    appendU32(preimage, frame.width);
+    appendU32(preimage, frame.height);
+    preimage.insert(preimage.end(), frame.y.begin(), frame.y.end());
+    preimage.insert(preimage.end(), frame.u.begin(), frame.u.end());
+    preimage.insert(preimage.end(), frame.v.begin(), frame.v.end());
+    return sha256(preimage.data(), preimage.size());
 }
 
 std::vector<std::uint8_t> expandUgcode24_420(const DenseYuv420p8Frame& frame) {

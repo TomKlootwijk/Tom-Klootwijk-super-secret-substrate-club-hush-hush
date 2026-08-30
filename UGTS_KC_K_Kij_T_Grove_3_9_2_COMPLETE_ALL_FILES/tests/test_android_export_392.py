@@ -54,7 +54,14 @@ class AndroidExport392Tests(unittest.TestCase):
     def test_owner_device_variants_are_explicit(self):
         self.assertEqual(
             supported_variants(),
-            ("poco-debug", "poco-release", "universal-debug", "universal-release"),
+            (
+                "poco-debug",
+                "poco-release",
+                "gsp4-seed-poco-debug",
+                "gsp4-seed-poco-release",
+                "universal-debug",
+                "universal-release",
+            ),
         )
 
 

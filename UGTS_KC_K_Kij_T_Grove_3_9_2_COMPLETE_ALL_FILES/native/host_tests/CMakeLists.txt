@@ -172,6 +172,45 @@ target_compile_definitions(
 )
 set_property(TARGET ugtc4d_decoder_tests PROPERTY CXX_STANDARD 17)
 set_property(TARGET ugtc4d_decoder_tests PROPERTY CXX_STANDARD_REQUIRED ON)
+
+find_package(Threads REQUIRED)
+
+add_executable(
+    yuv_seed_capture_tests
+    yuv_seed_capture_tests.cpp
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/yuv_seed_capture.cpp"
+)
+target_include_directories(
+    yuv_seed_capture_tests PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d"
+)
+target_compile_definitions(
+    yuv_seed_capture_tests PRIVATE
+    UGTC4D_FIXTURE_PATH="${CMAKE_CURRENT_LIST_DIR}/fixtures/ugtc4d_native_fixture.ugtc4d"
+    UGLUT2_FIXTURE_PATH="${CMAKE_CURRENT_LIST_DIR}/fixtures/uglut2_native_fixture.bin"
+)
+set_property(TARGET yuv_seed_capture_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET yuv_seed_capture_tests PROPERTY CXX_STANDARD_REQUIRED ON)
+target_link_libraries(yuv_seed_capture_tests PRIVATE Threads::Threads)
+
+add_executable(
+    yuv_seed_capture_720p_benchmark
+    yuv_seed_capture_720p_benchmark.cpp
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/yuv_seed_capture.cpp"
+)
+target_include_directories(
+    yuv_seed_capture_720p_benchmark PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d"
+)
+target_compile_definitions(
+    yuv_seed_capture_720p_benchmark PRIVATE
+    UGLUT2_FIXTURE_PATH="${CMAKE_CURRENT_LIST_DIR}/fixtures/uglut2_native_fixture.bin"
+)
+set_property(TARGET yuv_seed_capture_720p_benchmark PROPERTY CXX_STANDARD 17)
+set_property(TARGET yuv_seed_capture_720p_benchmark PROPERTY CXX_STANDARD_REQUIRED ON)
+target_link_libraries(yuv_seed_capture_720p_benchmark PRIVATE Threads::Threads)
 target_include_directories(
     polar_substrate_conformance_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}"
 )
@@ -216,6 +255,12 @@ endif()
 
 if(MSVC)
     target_compile_options(ugtc4d_decoder_tests PRIVATE /W4 /permissive-)
+    target_compile_options(yuv_seed_capture_tests PRIVATE /W4 /permissive-)
+    target_compile_options(yuv_seed_capture_720p_benchmark PRIVATE /W4 /permissive-)
 else()
     target_compile_options(ugtc4d_decoder_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(yuv_seed_capture_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(
+        yuv_seed_capture_720p_benchmark PRIVATE -Wall -Wextra -Wpedantic
+    )
 endif()

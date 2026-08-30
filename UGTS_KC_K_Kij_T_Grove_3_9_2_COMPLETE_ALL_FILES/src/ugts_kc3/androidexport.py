@@ -19,6 +19,7 @@ from .animationpack import (
 from .chrono_binding_pack import (
     CHRONO_BINDING_PACK_ASSET,
     collect_chrono_bindings,
+    collect_literal_uglut2_dependencies,
     compile_chrono_binding_pack_bytes,
     inspect_chrono_binding_pack,
     resolve_chrono_player_assets,
@@ -73,6 +74,14 @@ _ANDROID_TEMPLATE_VOLATILE_NAMES = (
     "local.properties",
 )
 _CHRONO_RUNTIME_BINDING_HEADER = "chrono_runtime_binding.hpp"
+_UGYUVS1_NATIVE_FILES = (
+    "ugtc4d_decoder.hpp",
+    "ugtc4d_decoder.cpp",
+    "seeded_uglut2_traversal.hpp",
+    "seeded_uglut2_traversal.cpp",
+    "yuv_seed_capture.hpp",
+    "yuv_seed_capture.cpp",
+)
 _CHRONO_SAFE_PATH = re.compile(r"[A-Za-z0-9._/-]+\Z")
 _SHA256_HEX = re.compile(r"[0-9a-fA-F]{64}\Z")
 _MAX_UINT64 = (1 << 64) - 1
@@ -808,6 +817,9 @@ def build_android_project(
         if render_substrate_pack_data else None
     )
     chrono_node_bindings = collect_chrono_bindings(project, materialize=False)
+    chrono_uglut2_dependencies = collect_literal_uglut2_dependencies(
+        chrono_node_bindings
+    )
     chrono_binding_pack_data = compile_chrono_binding_pack_bytes(project)
     chrono_binding_pack_inspection = (
         inspect_chrono_binding_pack(
@@ -833,6 +845,36 @@ def build_android_project(
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns(*_ANDROID_TEMPLATE_VOLATILE_NAMES),
     )
+    ugyuvs1_native_receipts: list[dict[str, object]] = []
+    if chrono_binding_pack_data:
+        # The Camera2 seed flavor consumes the same portable core exercised by
+        # the host verifier. Keep one source of truth in native/ugtc4d and copy
+        # the frozen six-file surface into each generated project. CMake then
+        # copies it once more into its short build path on Windows.
+        native_source = Path(__file__).resolve().parents[2] / "native" / "ugtc4d"
+        native_target = output_dir / "app/src/main/cpp/ugtc4d"
+        native_target.mkdir(parents=True, exist_ok=True)
+        for name in _UGYUVS1_NATIVE_FILES:
+            source = native_source / name
+            if not source.is_file():
+                raise FileNotFoundError(
+                    f"portable UGYUVS1 native source is absent: {source}"
+                )
+            target = native_target / name
+            shutil.copy2(source, target)
+            source_bytes = source.stat().st_size
+            source_hash = _file_digest(source)
+            if target.stat().st_size != source_bytes or _file_digest(target) != source_hash:
+                raise ValueError(
+                    f"copied portable UGYUVS1 source failed byte/SHA verification: {name}"
+                )
+            ugyuvs1_native_receipts.append(
+                {
+                    "path": target.relative_to(output_dir).as_posix(),
+                    "bytes": source_bytes,
+                    "sha256": source_hash,
+                }
+            )
 
     strings_path = output_dir / "app/src/main/res/values/strings.xml"
     strings_path.write_text(
@@ -852,6 +894,7 @@ def build_android_project(
     assets.mkdir(parents=True, exist_ok=True)
     chrono_asset_receipts: list[dict[str, object]] = []
     chrono_substrate_asset_receipts: list[dict[str, object]] = []
+    chrono_uglut2_receipts: list[dict[str, object]] = []
     chrono_assets = assets / "chrono"
     for asset in chrono_binding.assets:
         target_asset = chrono_assets.joinpath(*asset.relative_parts)
@@ -896,6 +939,32 @@ def build_android_project(
                 "path": asset.packaged_path,
                 "bytes": copied_bytes,
                 "sha256": copied_hash,
+            }
+        )
+    for dependency in chrono_uglut2_dependencies:
+        relative = PurePosixPath(dependency.asset_path)
+        target_asset = assets.joinpath(*relative.parts)
+        if target_asset.exists():
+            raise FileExistsError(
+                f"chrono UGLUT2 asset target already exists: {dependency.asset_path}"
+            )
+        target_asset.parent.mkdir(parents=True, exist_ok=True)
+        target_asset.write_bytes(dependency.data)
+        written_bytes = target_asset.stat().st_size
+        written_hash = _file_digest(target_asset)
+        if (
+            written_bytes != dependency.byte_count
+            or written_hash != dependency.sha256
+        ):
+            raise ValueError(
+                "written chrono UGLUT2 dependency failed byte/SHA verification: "
+                f"{dependency.asset_path}"
+            )
+        chrono_uglut2_receipts.append(
+            {
+                "path": dependency.asset_path,
+                "bytes": written_bytes,
+                "sha256": written_hash,
             }
         )
     binding_header = output_dir / "app/src/main/cpp" / _CHRONO_RUNTIME_BINDING_HEADER
@@ -985,14 +1054,23 @@ def build_android_project(
             ),
             "pack": chrono_binding_pack_inspection,
             "source_assets": chrono_substrate_asset_receipts,
+            "uglut2_dependencies": chrono_uglut2_receipts,
+            "uglut2_dependency_bytes": sum(
+                int(receipt["bytes"]) for receipt in chrono_uglut2_receipts
+            ),
             "source_asset_bytes": sum(
                 int(receipt["bytes"])
                 for receipt in chrono_substrate_asset_receipts
             ),
             "seed_boundary": (
-                "root seed regenerates traversal; arbitrary observed pixels remain "
-                "exact novelty evidence"
+                "GSP4 root seed regenerates UGLUT2 traversal; arbitrary observed "
+                "pixels remain exact novelty evidence"
             ),
+            "portable_native_sources": {
+                "present": bool(ugyuvs1_native_receipts),
+                "source_authority": "repository native/ugtc4d",
+                "files": ugyuvs1_native_receipts,
+            },
         },
         "transform_hierarchy_runtime": hierarchy_inspection,
         "visual_graph_runtime": graph_inspection,

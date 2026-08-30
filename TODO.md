@@ -10,6 +10,16 @@ direction supersedes the earlier use of the supplied MP4 as the implementation
 target or acceptance fixture; the MP4 may not be packaged into, decoded by, or
 used as the success criterion for the requested phone recorder/player.
 
+> "record my literal directions instead of just blindly working"
+
+> "Use the parent folder repo and all the documentation to strategize what file formats and applications yield the highest ROI that you can verify using the exact substrate as defined (or sub modules that are not completely there yet) and deliver me a .pdf and a TODO.md and place it in the parent directory (root repo)"
+
+> "formalize the approach of turning videos of people into 3D using anything of the substrate and the practical applications so far, but not in the generative AI approach, from monocular data like mp4, camera images, etc. chrono temporally spatially so negative memory as defined by the novelty only strictly was used to form the individual non static and thus has no connected sheet but exists as the literal obect as used in traditional mesh based or voxel based approaches, godspeed"
+
+> "TAKE INSPIRATION FROM ALL THE PREVIOUSLY MENTIONED STUFF LIKE MOGE2 DA3 VIT DINOV3 SAM3 SLAM SOLUTIONS ETC, but never hallucinate"
+
+> "and body4d (if the target is human as that requires a lot of human things if processed into a data structure for humans specifically)"
+
 > "realtime of after the fact encoding to seed to the absolute smallest file size"
 
 > "literally use the LOG ENCODED POLAR LUT NOT AS A LUT PACKED WITH THE VIDEO FRAME BUT AS IT IS BEING UTILIZED BY THE SUBSTRATE DEFINITION SEED BASED AND HAVE THE GOD DAMN SUBSTRATE DO THE GOD DAMN WORK"
@@ -27,6 +37,18 @@ used as the success criterion for the requested phone recorder/player.
 > "bounded joint hypotheses? Circular sounds exactly right according to UGTOMS it leaves room for rasterization, but as a downstream result"
 
 > "chrono spatial temporally for videos"
+
+> "because I specifically expected you to make UGTOMS a codec and use the literal substrate log encoded polar LUT with all features required of the full substrate to work on this"
+
+> "I did tell you to use the literal math from openCV and all the other reference sources (infact specifically told you so) as a launching pad to make 4D / 3D geometrically valid non hallucinated renditions and stored files out of the video"
+
+> "log my correction as todo and validate (also give a rough estimate if it would work what the total lossless bidirectional encoding file size would be)"
+
+> "Wait, this is literally about only packing the seed necessary to decode the entire video in memory, WHAT IS THE SMALLEST SIZE FOR THAT, not the decoded video itself"
+
+> "wait so if I have you make an apk camera recorder for my poco x7 pro that encodes to the seed file based on my phone specs it would be possible?"
+
+> "VULKAN COMPUTE BINGO, LITERALLY USE THAT AND UPDATE THE TODO AND LITERALLY DELIVER SOMETHING FOR ONCE"
 
 ### Literal acceptance translation
 
@@ -63,6 +85,16 @@ used as the success criterion for the requested phone recorder/player.
   for a smaller exact seed/program. Never silently drop a captured frame. If the
   phone cannot sustain the selected exact path, losslessly spool or stop with an
   explicit failure receipt.
+- [~] Execute an integer Vulkan-compute substrate stage on the POCO X7 Pro Mali
+  during post-capture transcode. Its runtime address program must be regenerated
+  from the bound seed and literal UGLUT2, never serialized per frame; GPU output
+  is accepted only after exact native replay and independent CPU verification.
+  The NPU is not camera-content authority.
+- [x] Live ADB capability evidence identifies `Mali-G720 MC7` and declares
+  `android.hardware.vulkan.compute`, Vulkan feature version 1.3,
+  `storageBuffer8BitAccess=1`, `shaderInt8=1`, 1,024 maximum compute workgroup
+  invocations, 32,768 bytes compute shared memory and 64-byte noncoherent atoms.
+  The selected compute shader uses a conservative 256-lane integer workgroup.
 - [ ] Playback must reproduce every authoritative dense Y, U and V byte, accepted
   sensor timestamp and declared metadata byte-for-byte before any display-only
   YUV-to-RGB conversion.

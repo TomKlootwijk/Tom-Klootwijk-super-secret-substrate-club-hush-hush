@@ -1,0 +1,27 @@
+# ninja log v5
+6	442	8098016391068464	CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o	47819dad87bd1a9d
+444	724	8098016393254219	libnative_app_glue.a	28c08eddaa145569
+137	1336	8098016400046788	CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o	1aa9286ef91fd17f
+62	1382	8098016400447631	CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o	e35f8332a8e324e5
+44	1459	8098016401207804	CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o	278b3dcacc489285
+0	1561	8098016401899244	CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o	79e7f452622bde2b
+27	1586	8098016402447987	CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o	96e29ef90824f5c6
+121	1639	8098016403041767	CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o	915b34549c2db907
+113	1654	8098016403208340	CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o	8ec3c30dadb883a1
+38	1702	8098016403607112	CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o	dcb49dc74bc45af6
+102	1747	8098016404102040	CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o	7bedaea7a04c17df
+32	1749	8098016404191388	CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o	39837e2e44c4edc3
+94	1790	8098016404616153	CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o	eb86616336543c9d
+129	1825	8098016404955305	CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o	20514710a7f14feb
+74	1890	8098016405425887	CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o	1d5c5910165d322
+55	1944	8098016406149392	CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o	337166b1f5557a30
+80	2000	8098016406697240	CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o	f7a73bc8433c79cf
+68	2095	8098016407558685	CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o	779a36a7a9ed1018
+145	2150	8098016408167946	CMakeFiles/ugts_kc_native.dir/chrono_video_player.cpp.o	f6489443ebed3ea3
+50	2209	8098016408773639	CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o	6f724ac9fc32b758
+724	2210	8098016408818796	CMakeFiles/ugts_kc_native.dir/chrono_mp4_transport.cpp.o	62cdadc556276e09
+17	2327	8098016409966553	CMakeFiles/ugts_kc_native.dir/main.cpp.o	2b083513a2ebca93
+87	2443	8098016411101652	CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o	d5e2dd40da7d4b3b
+1338	2615	8098016412886500	CMakeFiles/ugts_kc_native.dir/chrono_video_timeline.cpp.o	33d7dfec85ebed32
+22	2641	8098016413057985	CMakeFiles/ugts_kc_native.dir/engine.cpp.o	75e35b3bf9527a15
+2641	2798	8098016414488197	libugts_kc_native.so	5c2233405cf0f88a

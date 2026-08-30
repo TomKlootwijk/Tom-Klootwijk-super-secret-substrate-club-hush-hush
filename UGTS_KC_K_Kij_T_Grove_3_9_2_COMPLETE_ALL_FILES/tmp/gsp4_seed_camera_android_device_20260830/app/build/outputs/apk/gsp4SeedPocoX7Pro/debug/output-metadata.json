@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "org.ugts.games.my_mobile_3d_game.gsp4seed.pocox7pro",
+  "variantName": "gsp4SeedPocoX7ProDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 392,
+      "versionName": "3.9.2-gsp4-seed-poco-x7-pro",
+      "outputFile": "app-gsp4SeedPocoX7Pro-debug.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 26
+}

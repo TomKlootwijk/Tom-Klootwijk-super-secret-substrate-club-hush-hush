@@ -22,6 +22,16 @@ from typing import Mapping, Sequence
 _VARIANTS: dict[str, tuple[str, str, str]] = {
     "poco-debug": ("pocoX7Pro", "debug", "assemblePocoX7ProDebug"),
     "poco-release": ("pocoX7Pro", "release", "assemblePocoX7ProRelease"),
+    "gsp4-seed-poco-debug": (
+        "gsp4SeedPocoX7Pro",
+        "debug",
+        "assembleGsp4SeedPocoX7ProDebug",
+    ),
+    "gsp4-seed-poco-release": (
+        "gsp4SeedPocoX7Pro",
+        "release",
+        "assembleGsp4SeedPocoX7ProRelease",
+    ),
     "universal-debug": ("universal", "debug", "assembleUniversalDebug"),
     "universal-release": ("universal", "release", "assembleUniversalRelease"),
 }

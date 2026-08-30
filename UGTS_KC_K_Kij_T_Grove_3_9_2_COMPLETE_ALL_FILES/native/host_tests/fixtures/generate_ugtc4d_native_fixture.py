@@ -69,6 +69,7 @@ def main() -> None:
         core_radius=0.5,
     )
     lut_bytes = PolarLookupTable.generate(profile, 16).to_bytes()
+    output.with_name("uglut2_native_fixture.bin").write_bytes(lut_bytes)
     recipe = create_substrate_traversal_recipe(
         WIDTH,
         HEIGHT,

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\x64\Release\ZERO_CHECK</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\animation_graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\body_physics_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\message_graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\nearest_in_cone_graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\nearest_tag_graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\polar_graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\polar_population_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\polar_substrate_conformance_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\render_substrate_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\scatter_population_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\timer_graph_vm_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\touch_router_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\transform_animation_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\transform_hierarchy_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\trigger_area_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\ugtc4d_decoder_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\yuv_seed_capture_720p_benchmark.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\Release\yuv_seed_capture_tests.exe</FullPath>
+    </ProjectOutput>
+    <ProjectOutput>
+      <FullPath>C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\tmp\native_host_gsp4_audit\x64\Release\ALL_BUILD</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles />
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

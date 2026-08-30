@@ -15,6 +15,7 @@ from ugts_kc3.chrono_binding_pack import (
     CHRONO_BINDING_PACK_ASSET,
     CHRONO_BINDING_RECORD_BYTES,
     CHRONO_BINDING_SCHEMA,
+    CHRONO_UGLUT2_ASSET_DIRECTORY,
     GEOMETRY_STATUS,
     MODE_PLAYER,
     MODE_RECORDER,
@@ -83,6 +84,13 @@ def _player(path: Path) -> dict[str, object]:
     }
 
 
+def _app_private_player() -> dict[str, object]:
+    return {
+        **_common(MODE_PLAYER, STORAGE_APP_PRIVATE),
+        "input_name": "camera_capture.ugsp4c",
+    }
+
+
 def _bound_project(binding: dict[str, object]):
     project = blank_mobile3d_project("KCCH392 test")
     first = project.nodes[0]
@@ -92,6 +100,17 @@ def _bound_project(binding: dict[str, object]):
         project,
         nodes=(replace(first, metadata=metadata), *project.nodes[1:]),
     )
+
+
+def _recorder_player_project(*, autostart: bool = False):
+    project = _bound_project({**_recorder(), "autostart": autostart})
+    first = project.nodes[0]
+    playback = replace(
+        first,
+        id="chrono_seed_player",
+        metadata={CHRONO_BINDING_METADATA_KEY: _app_private_player()},
+    )
+    return replace(project, nodes=(*project.nodes, playback))
 
 
 def test_recorder_pack_is_sparse_canonical_and_json_round_trips() -> None:
@@ -155,8 +174,90 @@ def test_recorder_export_packages_binding_but_no_legacy_media() -> None:
         assert runtime["pack"]["recorder_count"] == 1
         assert runtime["source_assets"] == []
         assert runtime["source_asset_bytes"] == 0
+        dependencies = runtime["uglut2_dependencies"]
+        assert len(dependencies) == 1
+        assert runtime["uglut2_dependency_bytes"] == 144
+        dependency = dependencies[0]
+        assert dependency["bytes"] == 144
+        assert dependency["path"] == (
+            f"{CHRONO_UGLUT2_ASSET_DIRECTORY}/{_uglut2()['sha256']}.uglut2"
+        )
+        literal = output / "app/src/main/assets" / dependency["path"]
+        assert literal.read_bytes().startswith(b"UGLUT2")
+        assert hashlib.sha256(literal.read_bytes()).hexdigest() == dependency["sha256"]
+        native = runtime["portable_native_sources"]
+        assert native["present"] is True
+        assert native["source_authority"] == "repository native/ugtc4d"
+        assert [Path(receipt["path"]).name for receipt in native["files"]] == [
+            "ugtc4d_decoder.hpp",
+            "ugtc4d_decoder.cpp",
+            "seeded_uglut2_traversal.hpp",
+            "seeded_uglut2_traversal.cpp",
+            "yuv_seed_capture.hpp",
+            "yuv_seed_capture.cpp",
+        ]
+        for receipt in native["files"]:
+            copied = output / receipt["path"]
+            assert copied.stat().st_size == receipt["bytes"]
+            assert hashlib.sha256(copied.read_bytes()).hexdigest() == receipt["sha256"]
         assert not tuple(output.rglob("*.mp4"))
         assert not tuple(output.rglob("*.ugtc4d"))
+
+
+def test_app_private_player_consumes_the_recorder_stream_without_packaged_input() -> (
+    None
+):
+    with tempfile.TemporaryDirectory() as directory:
+        output = Path(directory) / "android"
+        project = _recorder_player_project(autostart=True)
+        built = build_android_project(project, output)
+        inspection = inspect_chrono_binding_pack(
+            built.chrono_binding_pack, node_count=len(project.nodes)
+        )
+
+        assert inspection["recorder_count"] == 1
+        assert inspection["player_count"] == 1
+        recorder, player = inspection["bindings"]
+        assert recorder["output_name"] == "camera_capture.ugsp4c"
+        assert recorder["autostart"] is True
+        assert player["input_name"] == recorder["output_name"]
+        assert player["source_asset_path"] is None
+
+        report = json.loads(built.build_report.read_text(encoding="utf-8"))
+        runtime = report["chrono_substrate_runtime"]
+        assert runtime["source_assets"] == []
+        assert runtime["pack"]["binding_count"] == 2
+        assert len(runtime["uglut2_dependencies"]) == 1
+
+
+def test_app_private_player_must_bind_the_unique_recorder_output() -> None:
+    project = _recorder_player_project()
+    playback = project.nodes[-1]
+    metadata = dict(playback.metadata)
+    binding = dict(metadata[CHRONO_BINDING_METADATA_KEY])
+    binding["input_name"] = "different.ugsp4c"
+    metadata[CHRONO_BINDING_METADATA_KEY] = binding
+    project = replace(
+        project,
+        nodes=(*project.nodes[:-1], replace(playback, metadata=metadata)),
+    )
+    with pytest.raises(ChronoBindingPackError, match="must match the RECORDER"):
+        compile_chrono_binding_pack_bytes(project)
+
+
+def test_app_private_player_profile_must_equal_the_recorder() -> None:
+    project = _recorder_player_project()
+    playback = project.nodes[-1]
+    metadata = dict(playback.metadata)
+    binding = dict(metadata[CHRONO_BINDING_METADATA_KEY])
+    binding["root_seed_u64"] = int(binding["root_seed_u64"]) + 1
+    metadata[CHRONO_BINDING_METADATA_KEY] = binding
+    project = replace(
+        project,
+        nodes=(*project.nodes[:-1], replace(playback, metadata=metadata)),
+    )
+    with pytest.raises(ChronoBindingPackError, match="profile disagrees"):
+        compile_chrono_binding_pack_bytes(project)
 
 
 @pytest.mark.parametrize(

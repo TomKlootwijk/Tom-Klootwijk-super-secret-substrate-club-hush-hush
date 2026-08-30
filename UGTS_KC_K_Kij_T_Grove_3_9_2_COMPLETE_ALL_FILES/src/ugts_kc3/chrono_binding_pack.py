@@ -36,6 +36,7 @@ CHRONO_BINDING_PACK_ENDIAN = 0x01020304
 CHRONO_BINDING_PACK_VERSION = 1
 CHRONO_BINDING_HEADER_BYTES = 64
 CHRONO_BINDING_RECORD_BYTES = 176
+CHRONO_UGLUT2_ASSET_DIRECTORY = "chrono/uglut2"
 MAX_CHRONO_BINDINGS = 64
 MAX_CHRONO_STRING_BYTES = 65_535
 
@@ -299,6 +300,19 @@ class ResolvedChronoAsset:
     sha256: str
 
 
+@dataclass(frozen=True)
+class LiteralUglut2Dependency:
+    """One canonical shared UGLUT2 byte preimage required by KCCH records."""
+
+    asset_path: str
+    data: bytes
+    sha256: str
+
+    @property
+    def byte_count(self) -> int:
+        return len(self.data)
+
+
 def _integer(value: object, label: str, minimum: int, maximum: int) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise ChronoBindingPackError(f"{label} must be an integer")
@@ -548,8 +562,7 @@ def collect_chrono_bindings(
     app_private_players = [
         binding
         for binding in bindings
-        if binding.mode == MODE_PLAYER
-        and binding.storage_policy == STORAGE_APP_PRIVATE
+        if binding.mode == MODE_PLAYER and binding.storage_policy == STORAGE_APP_PRIVATE
     ]
     if app_private_players:
         if len(recorders) != 1:
@@ -561,6 +574,35 @@ def collect_chrono_bindings(
             raise ChronoBindingPackError(
                 "app-private PLAYER input_name must match the RECORDER output_name"
             )
+        recorder = recorders[0]
+        profile_fields = (
+            "width",
+            "height",
+            "fps",
+            "root_seed_u64",
+            "recipe_seed_u64",
+            "uglut2_resolution",
+            "uglut2_r0",
+            "uglut2_rho_min",
+            "uglut2_rho_max",
+            "uglut2_core_radius",
+            "uglut2_sha256",
+            "pixel_profile",
+            "novelty_policy",
+            "authority",
+            "geometry_status",
+        )
+        for player in app_private_players:
+            drift = [
+                field
+                for field in profile_fields
+                if getattr(player, field) != getattr(recorder, field)
+            ]
+            if drift:
+                raise ChronoBindingPackError(
+                    "app-private PLAYER profile disagrees with the RECORDER: "
+                    + ", ".join(drift)
+                )
     folded_assets: set[str] = set()
     for binding in bindings:
         if not binding.source_asset_path:
@@ -572,6 +614,38 @@ def collect_chrono_bindings(
             )
         folded_assets.add(folded)
     return tuple(bindings)
+
+
+def collect_literal_uglut2_dependencies(
+    bindings: tuple[ChronoNodeBinding, ...],
+) -> tuple[LiteralUglut2Dependency, ...]:
+    """Generate one hash-addressed literal table per distinct KCCH profile."""
+
+    by_digest: dict[str, bytes] = {}
+    for binding in bindings:
+        binding.validate()
+        data = PolarLookupTable.generate(
+            binding.uglut2_profile, binding.uglut2_resolution
+        ).to_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != binding.uglut2_sha256:
+            raise ChronoBindingPackError(
+                "KCCH392 UGLUT2 dependency bytes disagree with their binding"
+            )
+        existing = by_digest.get(digest)
+        if (
+            existing is not None and existing != data
+        ):  # pragma: no cover - SHA-256 guard
+            raise ChronoBindingPackError("UGLUT2 dependency digest collision")
+        by_digest[digest] = data
+    return tuple(
+        LiteralUglut2Dependency(
+            asset_path=f"{CHRONO_UGLUT2_ASSET_DIRECTORY}/{digest}.uglut2",
+            data=by_digest[digest],
+            sha256=digest,
+        )
+        for digest in sorted(by_digest)
+    )
 
 
 def _string_ref(
@@ -879,7 +953,7 @@ def inspect_chrono_binding_pack(
         "recorder_count": sum(item.mode == MODE_RECORDER for item in parsed),
         "player_count": sum(item.mode == MODE_PLAYER for item in parsed),
         "seed_boundary": (
-            "root seed regenerates traversal; arbitrary observed pixels remain "
+            "GSP4 root seed regenerates UGLUT2 traversal; arbitrary observed pixels remain "
             "exact novelty evidence"
         ),
         "bindings": [
@@ -902,6 +976,9 @@ def inspect_chrono_binding_pack(
                 "recipe_seed_u64": item.recipe_seed_u64,
                 "uglut2_resolution": item.uglut2_resolution,
                 "uglut2_sha256": item.uglut2_sha256,
+                "uglut2_asset_path": (
+                    f"{CHRONO_UGLUT2_ASSET_DIRECTORY}/{item.uglut2_sha256}.uglut2"
+                ),
                 "pixel_profile": item.pixel_profile,
                 "storage_policy": item.storage_policy,
                 "authority": item.authority,
@@ -985,9 +1062,11 @@ __all__ = [
     "CHRONO_BINDING_PACK_VERSION",
     "CHRONO_BINDING_RECORD_BYTES",
     "CHRONO_BINDING_SCHEMA",
+    "CHRONO_UGLUT2_ASSET_DIRECTORY",
     "ChronoBindingPackError",
     "ChronoNodeBinding",
     "GEOMETRY_STATUS",
+    "LiteralUglut2Dependency",
     "MODE_PLAYER",
     "MODE_RECORDER",
     "NOVELTY_POLICY",
@@ -998,6 +1077,7 @@ __all__ = [
     "canonical_uglut2_descriptor",
     "chrono_binding_from_metadata",
     "collect_chrono_bindings",
+    "collect_literal_uglut2_dependencies",
     "compile_chrono_binding_pack_bytes",
     "inspect_chrono_binding_pack",
     "metadata_with_chrono_binding",

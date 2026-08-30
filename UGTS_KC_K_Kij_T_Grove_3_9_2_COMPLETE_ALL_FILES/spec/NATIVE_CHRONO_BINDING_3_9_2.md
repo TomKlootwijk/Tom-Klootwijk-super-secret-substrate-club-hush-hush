@@ -58,31 +58,46 @@ f64 uglut2_rho_min
 f64 uglut2_rho_max
 f64 uglut2_core_radius
 u8  uglut2_sha256[32]
-u64 source_asset_bytes    zero for RECORDER
-u8  source_asset_sha256[32]  zero for RECORDER
+u64 source_asset_bytes    zero unless PLAYER uses packaged storage
+u8  source_asset_sha256[32]  zero unless PLAYER uses packaged storage
 string_ref camera_id
-string_ref output_name
+string_ref stream_name    recorder output or app-private player input
 string_ref packaged_asset_path
 u32 reserved_tail         0
 ```
 
 Each `string_ref` is `(u32 offset, u16 byte_length, u16 reserved_zero)` into
-the trailing UTF-8 table. Empty strings use `(0,0,0)`. The table deduplicates
-equal strings in first-use order. Re-encoding the decoded records must
-reproduce the complete file byte for byte.
+the trailing UTF-8 table. Empty strings use `(0,0,0)`. The second reference is
+the recorder output basename or app-private player input basename, according
+to mode. The table deduplicates equal strings in first-use order. Re-encoding
+the decoded records must reproduce the complete file byte for byte.
 
 Records are strictly increasing by `node_index`. Format 1 permits at most one
 `RECORDER`, because Camera2 ownership is exclusive. A recorder requires a
 portable Camera2 ID and an app-private final `.ugsp4c` output basename (capture
-uses `.ugsp4c.partial`) and cannot name a packaged source. A player requires a hash- and size-bound
-packaged `UGYUVS1` GSP4 seed stream and cannot own Camera2 or an output name.
+uses `.ugsp4c.partial`) and cannot name a packaged source. A player requires a
+hash- and size-bound packaged `UGYUVS1` GSP4 seed stream and cannot own Camera2
+or an output name.
+An app-private player instead uses storage code 1 and must name the exact output
+of the pack's unique recorder. This permits two ordinary nodes—one writer and
+one player—to share the just-recorded `.ugsp4c` without a packaged fixture.
+
+## Literal UGLUT2 dependency
+
+For each distinct binding profile, Android export generates the canonical
+literal UGLUT2 byte preimage once at
+`chrono/uglut2/<lowercase-sha256>.uglut2`. The binding record carries the same
+digest and exact binary64 profile. The native writer derives this canonical
+path from the digest and verifies the bytes before use. The 16-sample phone
+profile is exactly 144 bytes. No picture-sized table and no per-frame UGLUT2 is
+permitted.
 
 ## Editable metadata
 
 The ordinary node metadata key is `chrono_substrate_binding` with schema
 `ugts-kc-chrono-substrate-binding-3.9.2`. The Python project validator rejects
 unknown/missing fields, dynamic or colliding owner nodes, nonzero velocities,
-autostart, recipe-seed drift, UGLUT2 preimage/hash disagreement, non-exact
+non-boolean autostart, recipe-seed drift, UGLUT2 preimage/hash disagreement, non-exact
 novelty policy, or premature geometry promotion.
 
 Android export validates all bindings before mutating an output directory,

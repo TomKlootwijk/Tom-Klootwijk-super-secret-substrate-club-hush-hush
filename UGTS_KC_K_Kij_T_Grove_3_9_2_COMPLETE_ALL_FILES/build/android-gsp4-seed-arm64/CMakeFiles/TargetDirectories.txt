@@ -1,0 +1,4 @@
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/android-gsp4-seed-arm64/CMakeFiles/native_app_glue.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/android-gsp4-seed-arm64/CMakeFiles/ugts_kc_native.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/android-gsp4-seed-arm64/CMakeFiles/edit_cache.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/android-gsp4-seed-arm64/CMakeFiles/rebuild_cache.dir
