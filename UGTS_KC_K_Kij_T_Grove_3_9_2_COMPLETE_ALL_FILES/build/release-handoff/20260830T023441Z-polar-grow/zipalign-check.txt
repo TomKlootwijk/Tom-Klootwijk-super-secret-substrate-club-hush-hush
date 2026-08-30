@@ -1,0 +1,17 @@
+Verifying alignment of C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\release-handoff\20260830T023441Z-polar-grow\packed-polar-grow-burst-128-lut-subtle-poco-debug.apk (4)...
+      87 META-INF/com/android/build/gradle/app-metadata.properties (OK - compressed)
+     181 classes.dex (OK - compressed)
+   16384 lib/arm64-v8a/libugts_kc_native.so (OK)
+ 1803379 assets/packed_kinematics.kcpk (OK - compressed)
+ 1804533 assets/polar_populations.kcpr (OK - compressed)
+ 1804879 assets/render_substrate.kcrp (OK - compressed)
+ 1804974 assets/shaders/grove_post.frag (OK - compressed)
+ 1806089 assets/shaders/grove_post.vert (OK - compressed)
+ 1806296 assets/shaders/polar_scene.vert (OK - compressed)
+ 1809216 assets/shaders/scene.frag (OK - compressed)
+ 1810010 assets/shaders/scene.vert (OK - compressed)
+ 1810431 assets/signature_scene.kc3d (OK - compressed)
+ 1811652 assets/visual_graphs.kcvg (OK - compressed)
+ 1811853 AndroidManifest.xml (OK - compressed)
+ 1813080 resources.arsc (OK)
+Verification successful

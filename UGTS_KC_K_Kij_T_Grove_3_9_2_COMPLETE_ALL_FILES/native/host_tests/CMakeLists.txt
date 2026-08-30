@@ -23,6 +23,7 @@ add_executable(
     graph_vm_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
     "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
 )
 target_include_directories(graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
@@ -31,6 +32,7 @@ add_executable(
     nearest_tag_graph_vm_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
     "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
 )
 target_include_directories(nearest_tag_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
@@ -39,6 +41,7 @@ add_executable(
     nearest_in_cone_graph_vm_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
     "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
 )
 target_include_directories(nearest_in_cone_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
@@ -47,6 +50,7 @@ add_executable(
     timer_graph_vm_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
     "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
 )
 target_include_directories(timer_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
@@ -55,6 +59,7 @@ add_executable(
     message_graph_vm_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
     "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
 )
 target_include_directories(message_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
@@ -72,6 +77,90 @@ add_executable(
 )
 target_include_directories(scatter_population_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
 
+add_executable(
+    transform_animation_tests
+    transform_animation_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
+)
+target_include_directories(transform_animation_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    animation_graph_vm_tests
+    animation_graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
+)
+target_include_directories(animation_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    body_physics_tests
+    body_physics_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/body_physics.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scene_pack.cpp"
+)
+target_include_directories(body_physics_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    transform_hierarchy_tests
+    transform_hierarchy_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/transform_hierarchy.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scene_pack.cpp"
+)
+target_include_directories(transform_hierarchy_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    polar_graph_vm_tests
+    polar_graph_vm_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/polar_kinematics.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_hierarchy.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
+)
+target_include_directories(polar_graph_vm_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    render_substrate_tests
+    render_substrate_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/render_substrate.cpp"
+)
+target_include_directories(render_substrate_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+
+add_executable(
+    polar_population_tests
+    polar_population_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/graph_vm.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/polar_populations.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/polar_kinematics.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/render_substrate.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scatter_population.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/scene_pack.cpp"
+    "${UGTS_ANDROID_CPP_DIR}/transform_animation.cpp"
+)
+target_include_directories(polar_population_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}")
+target_compile_definitions(
+    polar_population_tests PRIVATE
+    UGTS_ENGINE_SOURCE_PATH="${UGTS_ANDROID_CPP_DIR}/engine.cpp"
+    UGTS_RENDERER_SOURCE_PATH="${UGTS_ANDROID_CPP_DIR}/renderer_gles3.cpp"
+    UGTS_RENDERER_HEADER_SOURCE_PATH="${UGTS_ANDROID_CPP_DIR}/renderer_gles3.hpp"
+    UGTS_POLAR_SHADER_SOURCE_PATH="${UGTS_ANDROID_CPP_DIR}/../assets/shaders/polar_scene.vert"
+    UGTS_SCENE_VERTEX_SOURCE_PATH="${UGTS_ANDROID_CPP_DIR}/../assets/shaders/scene.vert"
+    UGTS_SCENE_FRAGMENT_SOURCE_PATH="${UGTS_ANDROID_CPP_DIR}/../assets/shaders/scene.frag"
+)
+
+add_executable(
+    polar_substrate_conformance_tests
+    polar_substrate_conformance_tests.cpp
+    "${UGTS_ANDROID_CPP_DIR}/polar_kinematics.cpp"
+)
+target_include_directories(
+    polar_substrate_conformance_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}"
+)
+
 if(MSVC)
     target_compile_options(touch_router_tests PRIVATE /W4 /permissive-)
     target_compile_options(graph_vm_tests PRIVATE /W4 /permissive-)
@@ -81,6 +170,14 @@ if(MSVC)
     target_compile_options(message_graph_vm_tests PRIVATE /W4 /permissive-)
     target_compile_options(trigger_area_tests PRIVATE /W4 /permissive-)
     target_compile_options(scatter_population_tests PRIVATE /W4 /permissive-)
+    target_compile_options(transform_animation_tests PRIVATE /W4 /permissive-)
+    target_compile_options(animation_graph_vm_tests PRIVATE /W4 /permissive-)
+    target_compile_options(body_physics_tests PRIVATE /W4 /permissive-)
+    target_compile_options(transform_hierarchy_tests PRIVATE /W4 /permissive-)
+    target_compile_options(polar_graph_vm_tests PRIVATE /W4 /permissive-)
+    target_compile_options(render_substrate_tests PRIVATE /W4 /permissive-)
+    target_compile_options(polar_population_tests PRIVATE /W4 /permissive-)
+    target_compile_options(polar_substrate_conformance_tests PRIVATE /W4 /permissive-)
 else()
     target_compile_options(touch_router_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
@@ -90,4 +187,14 @@ else()
     target_compile_options(message_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(trigger_area_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(scatter_population_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(transform_animation_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(animation_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(body_physics_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(transform_hierarchy_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(polar_graph_vm_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(render_substrate_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(polar_population_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(
+        polar_substrate_conformance_tests PRIVATE -Wall -Wextra -Wpedantic
+    )
 endif()

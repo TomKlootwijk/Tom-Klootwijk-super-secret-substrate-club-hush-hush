@@ -1,0 +1,47 @@
+{
+  "schema": "ugts-kc-polar-glow-vectors-3.9.2",
+  "format_version": 3,
+  "preset": "ring",
+  "kcpr_fixture": "polar_glow_ring_v3.kcpr.hex",
+  "kcpr_bytes": 288,
+  "kcpr_sha256": "41ee7092d634033d3d5f26a11bba1c2c1ceb2fabc92e97d4a7bd3f584501190f",
+  "kpgv_fixture": "polar_glow_ring_v3.kpgv.hex",
+  "kpgv_schema": {
+    "header": "<8sII16s16s3f",
+    "record": "<IIQII4f",
+    "fields": [
+      "instance_index",
+      "input_theta18_code",
+      "lineage_u64",
+      "phase12",
+      "shifted_theta18_code",
+      "input_rho",
+      "pulse",
+      "uglut2_direction",
+      "glow"
+    ]
+  },
+  "kpgv_bytes": 300,
+  "kpgv_sha256": "7bd2cb6abb4a9773978e46e75552f61dd4e8f5084c61c6003487b9507a62e08d",
+  "lineage_namespace_hex": "3fc9fbaefa749152412a5f52f4608c3f",
+  "content_address_hex": "4d707a39b79d1ed579278d37e28e743c",
+  "glow_parameters": {
+    "center_rho": -1.6534264087677002,
+    "inv_half_width": 0.4261532723903656,
+    "strength": 1.5
+  },
+  "operator_mask_hex": "0x0e3b",
+  "operator_records": [
+    ["0x0050", 9, 3, "564ed3e6ad87ef6a"],
+    ["0x0051", 10, 2, "1d7fceba2fb0deb3"],
+    ["0x0052", 11, 3, "f3fde5381d6703a6"]
+  ],
+  "vectors": [
+    [0, 260672, 16711216966315423791, 23, 0, -1.6534264087677002, 1.0, 1.0, 1.5],
+    [1, 0, 8140481141372498511, 3805, 243520, -1.6534264087677002, 1.0, 0.9510048627853394, 1.4265072345733643],
+    [1, 18623, 8140481141372498511, 3805, 262143, -4.0, 0.0, 1.0, 0.0],
+    [1, 18624, 8140481141372498511, 3805, 0, 0.6931471824645996, 0.0, 1.0, 0.0],
+    [1, 0, 8140481141372498511, 3805, 243520, -0.4801396131515503, 0.5, 0.9510048627853394, 0.7132536172866821],
+    [0, 260671, 16711216966315423791, 23, 262143, 4.0, 0.0, 1.0, 0.0]
+  ]
+}

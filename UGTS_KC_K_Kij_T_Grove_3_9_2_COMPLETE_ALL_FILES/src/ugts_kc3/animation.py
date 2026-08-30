@@ -1,7 +1,7 @@
 """Keyframe clips, easing, playback, crossfades and lightweight state machines."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import math
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -9,6 +9,8 @@ AnimValue = float | tuple[float, ...]
 
 
 def _finite_value(value: Any) -> AnimValue:
+    if isinstance(value, bool):
+        raise TypeError("animation values must be numbers, not booleans")
     if isinstance(value, (int, float)):
         value = float(value)
         if not math.isfinite(value):
@@ -113,12 +115,16 @@ class AnimationTrack:
 
     def sample(self, time: float) -> AnimValue:
         self.validate()
+        if not math.isfinite(float(time)):
+            raise ValueError("animation sample time must be finite")
         if time <= self.keyframes[0].time:
             return self.keyframes[0].value
         if time >= self.keyframes[-1].time:
             return self.keyframes[-1].value
         for left, right in zip(self.keyframes, self.keyframes[1:]):
-            if left.time <= time <= right.time:
+            if time == right.time:
+                return right.value
+            if left.time <= time < right.time:
                 span = right.time - left.time
                 local = 0.0 if span <= 0 else (time - left.time) / span
                 return interpolate(left.value, right.value, easing(right.easing, local))
@@ -158,8 +164,11 @@ class AnimationClip:
                 raise ValueError(f"duplicate animation target: {track.target}")
             targets.add(track.target)
         duration = self.resolved_duration
-        if duration <= 0:
-            raise ValueError("clip duration must be positive")
+        if not math.isfinite(duration) or duration <= 0:
+            raise ValueError("clip duration must be positive and finite")
+        inferred = max(track.duration for track in self.tracks)
+        if duration < inferred:
+            raise ValueError("clip duration cannot be shorter than its last keyframe")
 
     @property
     def resolved_duration(self) -> float:
@@ -167,6 +176,8 @@ class AnimationClip:
         return inferred if self.duration is None else float(self.duration)
 
     def local_time(self, time: float) -> tuple[float, bool]:
+        if not math.isfinite(float(time)):
+            raise ValueError("animation playback time must be finite")
         duration = self.resolved_duration
         scaled = max(0.0, time * self.speed)
         if self.loop_mode == "once":
@@ -300,13 +311,24 @@ class AnimationPlayer:
         current = state.get("current")
         if current is not None and current not in self.clips:
             raise KeyError(current)
+        fade_from = state.get("fade_from")
+        if fade_from is not None and fade_from not in self.clips:
+            raise KeyError(fade_from)
+        values = {
+            "time": float(state.get("time", 0.0)),
+            "fade_from_time": float(state.get("fade_from_time", 0.0)),
+            "fade_duration": float(state.get("fade_duration", 0.0)),
+            "fade_elapsed": float(state.get("fade_elapsed", 0.0)),
+        }
+        if any(not math.isfinite(value) or value < 0.0 for value in values.values()):
+            raise ValueError("animation player times must be finite and non-negative")
         self.current = current
-        self.time = float(state.get("time", 0.0))
+        self.time = values["time"]
         self.playing = bool(state.get("playing", False))
-        self._fade_from = state.get("fade_from")
-        self._fade_from_time = float(state.get("fade_from_time", 0.0))
-        self._fade_duration = float(state.get("fade_duration", 0.0))
-        self._fade_elapsed = float(state.get("fade_elapsed", 0.0))
+        self._fade_from = fade_from
+        self._fade_from_time = values["fade_from_time"]
+        self._fade_duration = values["fade_duration"]
+        self._fade_elapsed = values["fade_elapsed"]
 
 
 @dataclass(frozen=True)

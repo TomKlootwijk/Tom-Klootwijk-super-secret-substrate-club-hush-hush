@@ -1,0 +1,278 @@
+{
+  "apk": {
+    "asset_and_native_entries": {
+      "assets/packed_kinematics.kcpk": {
+        "bytes": 1690,
+        "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0",
+        "stored_uncompressed": false
+      },
+      "assets/polar_populations.kcpr": {
+        "bytes": 304,
+        "sha256": "2d04a3788d2a472f65ea0f53573325b6f680f6d73190a229573926748657addf",
+        "stored_uncompressed": false
+      },
+      "assets/render_substrate.kcrp": {
+        "bytes": 32,
+        "sha256": "e1b6504739e2fbe3c33fefb5bd78a1172a3f93640822dc05aea5c1b6cf38fcfe",
+        "stored_uncompressed": false
+      },
+      "assets/shaders/grove_post.frag": {
+        "bytes": 2265,
+        "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5",
+        "stored_uncompressed": false
+      },
+      "assets/shaders/grove_post.vert": {
+        "bytes": 190,
+        "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4",
+        "stored_uncompressed": false
+      },
+      "assets/shaders/polar_scene.vert": {
+        "bytes": 8961,
+        "sha256": "53ca7c1e40a1ef693e47c8469f756045c7a1092e1e04040140fa95a800701424",
+        "stored_uncompressed": false
+      },
+      "assets/shaders/scene.frag": {
+        "bytes": 1970,
+        "sha256": "dfd6615c877e8b061691acdc7abc3172dbaca58b727fc58f1a4749604befb6fd",
+        "stored_uncompressed": false
+      },
+      "assets/shaders/scene.vert": {
+        "bytes": 899,
+        "sha256": "bb8d0e0d715315269a532f6a1f903ef865ec967a07911677c1ff40d62b36ce8c",
+        "stored_uncompressed": false
+      },
+      "assets/signature_scene.kc3d": {
+        "bytes": 2771,
+        "sha256": "2ec24d5161da389a73e177ccfaf3f674de51c8bca4ddbd08016bd468464d97be",
+        "stored_uncompressed": false
+      },
+      "assets/visual_graphs.kcvg": {
+        "bytes": 248,
+        "sha256": "96c63bf26b04170ce0c587b247cef66cc22941252c492f502922a3506f6c0b1b",
+        "stored_uncompressed": false
+      },
+      "lib/arm64-v8a/libugts_kc_native.so": {
+        "bytes": 1786936,
+        "sha256": "f27e2243e9e0d01ec53ca6a04756e20f593e9f3b3c6effbfe5042729123f2567",
+        "stored_uncompressed": true
+      }
+    },
+    "authoring_json_entries": [],
+    "bytes": 1819202,
+    "sha256": "e5348442b3b9e313d10ead1afb636acfa9943cd11f415226f6ea5d255b50232c",
+    "zip_entry_count": 15
+  },
+  "kcpk": {
+    "byte_length": 1690,
+    "component_count": 1,
+    "components": [
+      {
+        "motion": "000025fd00000000",
+        "node_index": 5,
+        "pose": "1865edbd4cc5c1bd",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      }
+    ],
+    "format_version": 1,
+    "profile_count": 1,
+    "profiles": [
+      {
+        "id": "shared_orbit_profile",
+        "lut_bytes": 1584,
+        "lut_resolution": 256,
+        "motion_range": {
+          "rho_acceleration": 0.5,
+          "rho_velocity": 0.25,
+          "theta_acceleration": 4.39822971502571,
+          "theta_velocity": 2.199114857512855
+        },
+        "profile": {
+          "core_radius": 0.0001,
+          "r0": 6.0,
+          "rho_max": 0.7922380832041763,
+          "rho_min": -0.9373441410719874
+        }
+      }
+    ],
+    "schema": "ugts-kc-native-packed-kinematics-inspection-3.9.2",
+    "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0"
+  },
+  "kcpr": {
+    "burst_math_schedule": "v1: zero start maps to the profile-clamped explicit core without log(0); duration ticks=floor(add32(div32(duration-seconds,fixed-dt),0.5)); age=k/(duration-1), rho=lerp(serialized-log-start,serialized-log-end,age), and envelope=4*age*(1-age), with every arithmetic stage rounded to binary32; SplitMix lanes 0/2/3/4 select group phase, direction variation, height, and size; local theta18/heading12 are absolute codes and tick14 stores k",
+    "byte_length": 304,
+    "ecs_prototype_count": 1,
+    "format_version": 4,
+    "generated_copy_count": 127,
+    "generated_members_are_ecs_entities": false,
+    "glow_math_schedule": "v1: zero start maps to the profile-clamped explicit core without log(0); center-rho=start+(end-start)*0.5 and inv-half-width=2/(end-start); phase12=floor(SplitMix lane 5*4096), shifted theta18 adds phase12<<6; pulse=1-u*u*(3-2*u), direction=0.5+0.5*UGLUT2-cosine, and bounded glow=(strength*pulse)*direction, with each arithmetic stage rounded to binary32 before lighting and the final Bayer presentation",
+    "grow_copies_math_schedule": "v1: display-scale-multiplier=clamp(add32(1,glow),1,5); only generated display copies multiply their authored display scale; the prototype, ECS, collider, picking, and gameplay scale stay unchanged; final Bayer only",
+    "math_schedule": "v2: KCPR stores exact binary32 log-radius offsets; SplitMix lanes are exact 24-bit binary32; each add/subtract/multiply/divide is rounded to binary32; spiral saturation is x/(1+x); fractional turns are added directly to extracted theta18/heading12 integer codes; the shared profile clamps and packs rho20",
+    "native_consumer": "android-kcpr392-v4",
+    "native_consumer_wired": true,
+    "native_modes": [
+      "cpu",
+      "direct",
+      "lut"
+    ],
+    "operator_count": 9,
+    "operators": [
+      {
+        "arity": 3,
+        "code": 1,
+        "code_hex": "0x0001",
+        "meaning": "ugts.kc392.polar-population.splitmix64-lineage(seed,namespace,index).v1",
+        "meaning_hash": "8bf057fe8b6a4c18",
+        "name": "splitmix64_lineage",
+        "slot": 0
+      },
+      {
+        "arity": 4,
+        "code": 18,
+        "code_hex": "0x0012",
+        "meaning": "ugts.kc392.polar-population.binary32-age=(fixed-tick%duration)/(duration-1);local-rho=lerp(serialized-core-aware-log-start,serialized-log-end,age);profile-clamp+pack20;tick14=cycle-tick;wrap-snaps-previous.v1",
+        "meaning_hash": "8bfd166d5fdd0cbe",
+        "name": "local_log_radius_cycle",
+        "slot": 6
+      },
+      {
+        "arity": 3,
+        "code": 33,
+        "code_hex": "0x0021",
+        "meaning": "ugts.kc392.polar-population.binary32-turns=seeded-phase+index*step+centered-lane2*jitter;local-theta18+heading12=floor(frac(turns)*2^bits).v1",
+        "meaning_hash": "5cbb2ec2262e07e0",
+        "name": "seeded_local_direction",
+        "slot": 7
+      },
+      {
+        "arity": 4,
+        "code": 49,
+        "code_hex": "0x0031",
+        "meaning": "ugts.kc392.polar-population.binary32-envelope=4*age*(1-age);y+=height*(0.5+lane3)*envelope;scale*=envelope.v1",
+        "meaning_hash": "013b483f9ae2d7cc",
+        "name": "parabolic_life_envelope",
+        "slot": 8
+      },
+      {
+        "arity": 3,
+        "code": 64,
+        "code_hex": "0x0040",
+        "meaning": "ugts.kc392.polar-population.binary32-scale*=lerp(scale-min,scale-max,seeded-unit).v1",
+        "meaning_hash": "276bd26b782ef226",
+        "name": "uniform_scale",
+        "slot": 5
+      },
+      {
+        "arity": 3,
+        "code": 80,
+        "code_hex": "0x0050",
+        "meaning": "ugts.kc392.polar-population.binary32-d=rho-center_rho;u=clamp(abs(d)*inv_half_width,0,1);pulse=1-u*u*(3-2*u).v1",
+        "meaning_hash": "564ed3e6ad87ef6a",
+        "name": "log_radius_pulse",
+        "slot": 9
+      },
+      {
+        "arity": 2,
+        "code": 81,
+        "code_hex": "0x0051",
+        "meaning": "ugts.kc392.polar-population.phase12=floor(splitmix64-unit(combine-seed(lineage,5))*4096)&4095;shifted-theta18=(theta18+(phase12<<6))&262143.v1",
+        "meaning_hash": "1d7fceba2fb0deb3",
+        "name": "seeded_material_phase",
+        "slot": 10
+      },
+      {
+        "arity": 3,
+        "code": 82,
+        "code_hex": "0x0052",
+        "meaning": "ugts.kc392.polar-population.binary32-direction=0.5+0.5*cosine(shifted-theta18);glow=clamp((strength*pulse)*direction,0,4);uglut2-or-direct-before-lighting;final-bayer-only.v1",
+        "meaning_hash": "f3fde5381d6703a6",
+        "name": "polar_material_glow",
+        "slot": 11
+      },
+      {
+        "arity": 2,
+        "code": 83,
+        "code_hex": "0x0053",
+        "meaning": "generated-display-scale*=clamp(1+glow_field,1,5);prototype-gameplay-unchanged;final-bayer-only.v1",
+        "meaning_hash": "1d558c07b7a6796b",
+        "name": "polar_display_scale_from_glow",
+        "slot": 12
+      }
+    ],
+    "recipe_count": 1,
+    "recipes": [
+      {
+        "content_address": "59702c020cf220b5baab1cecd049956b",
+        "generated_copy_count": 127,
+        "glow_by_distance": {
+          "center_rho": -0.6714046001434326,
+          "grow_copies": true,
+          "inv_half_width": 3.7602531909942627,
+          "strength": 1.25
+        },
+        "instance_count": 128,
+        "lineage_namespace": "061ec97d18e0dab87abc56d5499f570e",
+        "operator_mask": 8161,
+        "operator_parameters": {
+          "angle_jitter_turns": 0.07999999821186066,
+          "angle_step_turns": 0.3819660246372223,
+          "core_aware_log_start_distance": -0.9373441338539124,
+          "duration_ticks": 96.0,
+          "height_arc": 1.0,
+          "log_end_distance": -0.40546509623527527,
+          "scale_max": 0.44999998807907104,
+          "scale_min": 0.20000000298023224
+        },
+        "preset": "burst",
+        "preset_label": "Radial Burst (loops)",
+        "profile_semantics_address": "549d193cc10172d00eff9353a66ee363",
+        "prototype_node_index": 5,
+        "prototype_semantics_address": "06f76fcb0df5827e9e1e89bfa4979760",
+        "recipe_seed": 5786927889630441985,
+        "root_seed": 6840186221883211998
+      }
+    ],
+    "root_seed": 6840186221883211998,
+    "schema": "ugts-kc-polar-population-inspection-3.9.2",
+    "sha256": "2d04a3788d2a472f65ea0f53573325b6f680f6d73190a229573926748657addf",
+    "total_instances": 128
+  },
+  "kcrp": {
+    "bayer_enabled": true,
+    "bayer_mode": "subtle",
+    "bayer_mode_code": 1,
+    "byte_length": 32,
+    "format_version": 1,
+    "levels": 64,
+    "polar_mode": "lut",
+    "polar_mode_code": 1,
+    "schema": "ugts-kc-render-substrate-inspection-3.9.2",
+    "seed": 6840186221883211998,
+    "sha256": "e1b6504739e2fbe3c33fefb5bd78a1172a3f93640822dc05aea5c1b6cf38fcfe",
+    "strength": 0.30000001192092896
+  },
+  "native_build_id": "66e67ac49eb16c5dd0bf06e048ae8dc8f1b6388c",
+  "preserved": {
+    "packed_kinematics.kcpk": {
+      "bytes": 1690,
+      "matches_apk": true,
+      "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0"
+    },
+    "polar_populations.kcpr": {
+      "bytes": 304,
+      "matches_apk": true,
+      "sha256": "2d04a3788d2a472f65ea0f53573325b6f680f6d73190a229573926748657addf"
+    },
+    "render_substrate.kcrp": {
+      "bytes": 32,
+      "matches_apk": true,
+      "sha256": "e1b6504739e2fbe3c33fefb5bd78a1172a3f93640822dc05aea5c1b6cf38fcfe"
+    }
+  },
+  "source": {
+    "bytes": 21694,
+    "project_hash": "06ddbe9d6b01d5651de99ef2e9a614a393d38f06fb8c24451da511d54e819c7b",
+    "project_id": "packed_polar_recipe_lab_3d",
+    "sha256": "ed7afdb2775e2c6c308ca03066b3480000f98d18ae4072275f50d0576b502719"
+  }
+}

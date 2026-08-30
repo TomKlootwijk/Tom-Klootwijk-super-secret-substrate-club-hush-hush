@@ -1,4 +1,6 @@
 #pragma once
+#include "graph_component_access.hpp"
+#include "graph_render_recipe_access.hpp"
 #include "scene_pack.hpp"
 #include <array>
 #include <cstddef>
@@ -9,6 +11,8 @@
 #include <vector>
 
 namespace kc {
+
+class TransformAnimations;
 
 struct GraphInputState {
     float moveX=0.0f, moveZ=0.0f, lookX=0.0f, lookY=0.0f;
@@ -49,6 +53,12 @@ enum class GraphVmError : std::uint8_t {
     InvalidTimerDuration,
     InvalidTimerStep,
     InvalidSearchCone,
+    InvalidAnimationClip,
+    MissingAnimationController,
+    MissingAnimationClip,
+    PackedTransformOwnership,
+    MissingRenderRecipeAccess,
+    InvalidRenderRecipeTarget,
 };
 
 struct GraphRuntimeIssue {
@@ -69,6 +79,17 @@ public:
     static constexpr std::size_t MaxTriggerEvents=256;
 
     void load(const std::vector<std::uint8_t>& bytes,std::size_t sceneNodeCount);
+    void setTransformAnimations(TransformAnimations* animations) {
+        transformAnimations_=animations;
+    }
+    void setNumberComponentAccess(GraphNumberComponentAccess* access) {
+        numberComponentAccess_=access;
+    }
+    bool hasNumberComponentAccess() const { return numberComponentAccess_!=nullptr; }
+    void setRenderRecipeAccess(GraphRenderRecipeAccess* access) {
+        renderRecipeAccess_=access;
+    }
+    bool hasRenderRecipeAccess() const { return renderRecipeAccess_!=nullptr; }
     bool empty() const { return graphs_.empty() || bindings_.empty(); }
     void ready(std::vector<NodeData>& nodes);
     void tick(float dt,std::uint64_t tick,const GraphInputFrame& input,std::vector<NodeData>& nodes);
@@ -146,6 +167,10 @@ private:
     std::vector<std::uint32_t> inputs_;
     std::vector<std::uint16_t> flows_;
     std::vector<StateSlot> state_;
+    TransformAnimations* transformAnimations_=nullptr;
+    GraphNumberComponentAccess* numberComponentAccess_=nullptr;
+    GraphRenderRecipeAccess* renderRecipeAccess_=nullptr;
+    bool componentWriteOwnershipConflict_=false;
 
     std::vector<std::array<Value,3>> outputs_;
     std::vector<std::uint32_t> executedStamp_;

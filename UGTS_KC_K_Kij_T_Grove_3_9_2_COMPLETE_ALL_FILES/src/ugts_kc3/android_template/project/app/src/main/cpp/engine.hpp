@@ -5,6 +5,10 @@
 #include "device_profile.hpp"
 #include "graph_vm.hpp"
 #include "polar_kinematics.hpp"
+#include "polar_populations.hpp"
+#include "render_substrate.hpp"
+#include "transform_animation.hpp"
+#include "transform_hierarchy.hpp"
 #include "renderer_gles3.hpp"
 #include "scatter_population.hpp"
 #include "touch_router.hpp"
@@ -39,6 +43,7 @@ private:
     int thermalStatus() const;
     void requestFrameRate(float fps);
     void fixedUpdate(float dt);
+    void composePackedOwnership();
     void triggerJuice(std::uint32_t kind, const Vec3& origin, float intensity=1.0f);
     void spawnBurst(const Vec3& origin, std::uint32_t kind, float intensity);
     void updateParticles(float dt);
@@ -59,6 +64,10 @@ private:
     GroveTuning tuning_;
     GraphVm graphVm_;
     PackedPolarKinematics polarKinematics_;
+    PolarPopulations polarPopulations_;
+    RenderSubstrateConfig renderSubstrate_{};
+    TransformAnimations transformAnimations_;
+    TransformHierarchy transformHierarchy_;
     ScatterPopulations scatterPopulations_;
     std::size_t qualityIndex_=0;
     bool focused_=false;

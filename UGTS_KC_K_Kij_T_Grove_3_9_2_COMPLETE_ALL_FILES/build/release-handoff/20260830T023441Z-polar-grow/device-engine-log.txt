@@ -1,0 +1,8 @@
+--------- beginning of main
+08-30 04:42:30.556  8323 12620 I UGTS-KC392: gpu timer supported=false bits=0 extension=GL_EXT_disjoint_timer_query nonblocking=true reason=extension_or_counter_bits_unavailable
+08-30 04:42:30.561  8323 12620 I UGTS-KC392: render shaders scene=linked polar_direct=linked polar_lut=linked post=linked
+08-30 04:42:30.561  8323 12620 I UGTS-KC392: render substrate polar_requested=lut polar_effective=lut gpu_instances=128 gpu_profiles=1 gpu_batches=2 cpu_fallbacks=0 animation_fallbacks=0 polar_recipes=1 generated=127 generated_gpu=127 generated_cpu=0 reason=none bayer=subtle levels=64 strength=0.300
+08-30 04:42:30.564  8323 12620 I UGTS-KC392: UGTS-KC 3.9.2 profile=poco_x7_pro_12gb grove=grove_g720_mc7_120 quality=lab_120 fps=120 scale=1.00 model=2412DPC0AG gpu=Mali-G720 MC7 ram=11312MB juice=1.00
+08-30 04:42:30.564  8323 12620 I UGTS-KC392: polar ECS profiles=1 components=1 graph_access=active
+08-30 04:42:30.564  8323 12620 I UGTS-KC392: polar population format_version=4 recipes=1 generated=127 glow_recipes=1 glow_instances=128 grow_recipes=1 grow_instances=127 gpu_instance_stride_bytes=36 ecs_generated=false
+08-30 04:42:30.569  8323 12620 I UGTS-KC392: polar population generated_total=127 generated_visible=127 visible_gpu=127 visible_cpu=0 materialized=127 cartesian_composed=0

@@ -1,0 +1,4902 @@
+{
+  "author": "UGTS-KC substrate lab",
+  "background": [
+    0.0025,
+    0.005,
+    0.014,
+    1.0
+  ],
+  "camera": {
+    "far": 90.0,
+    "near": 0.05,
+    "position": [
+      18.5,
+      12.5,
+      20.5
+    ],
+    "target": [
+      0.0,
+      2.7,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "vertical_fov_degrees": 52.0
+  },
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "id": "packed_polar_gpu_lab_3d",
+  "light": {
+    "ambient": 0.18,
+    "color": [
+      0.72,
+      0.86,
+      1.0
+    ],
+    "direction": [
+      -0.42,
+      -1.0,
+      -0.28
+    ],
+    "intensity": 1.25
+  },
+  "materials": [
+    {
+      "base_color": [
+        0.76,
+        0.055,
+        0.43,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.31,
+        0.012,
+        0.15
+      ],
+      "id": "core_neon",
+      "metallic": 0.26,
+      "roughness": 0.24
+    },
+    {
+      "base_color": [
+        0.2,
+        0.52,
+        1.0,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.035,
+        0.16,
+        0.4
+      ],
+      "id": "edge_neon",
+      "metallic": 0.4,
+      "roughness": 0.18
+    },
+    {
+      "base_color": [
+        0.009,
+        0.018,
+        0.043,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.0,
+        0.004,
+        0.012
+      ],
+      "id": "floor_ink",
+      "metallic": 0.12,
+      "roughness": 0.88
+    },
+    {
+      "base_color": [
+        0.075,
+        0.78,
+        0.96,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.018,
+        0.2,
+        0.32
+      ],
+      "id": "orbit_cyan",
+      "metallic": 0.34,
+      "roughness": 0.23
+    }
+  ],
+  "meshes": [
+    {
+      "id": "core_spire",
+      "metadata": {
+        "primitive": "pyramid"
+      },
+      "normals": [
+        [
+          0.6831525420528697,
+          0.25807984921997296,
+          0.6831525420528697
+        ],
+        [
+          -0.7071067811865475,
+          0.0,
+          0.7071067811865475
+        ],
+        [
+          -0.6831525420528697,
+          0.25807984921997296,
+          -0.6831525420528697
+        ],
+        [
+          0.7071067811865475,
+          0.0,
+          -0.7071067811865475
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          2
+        ],
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          1,
+          2,
+          4
+        ],
+        [
+          2,
+          3,
+          4
+        ],
+        [
+          3,
+          0,
+          4
+        ]
+      ],
+      "vertices": [
+        [
+          -0.85,
+          0,
+          -0.85
+        ],
+        [
+          0.85,
+          0,
+          -0.85
+        ],
+        [
+          0.85,
+          0,
+          0.85
+        ],
+        [
+          -0.85,
+          0,
+          0.85
+        ],
+        [
+          0,
+          4.5,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "lab_floor",
+      "metadata": {
+        "primitive": "plane"
+      },
+      "normals": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          3
+        ]
+      ],
+      "vertices": [
+        [
+          -15.5,
+          0,
+          -15.5
+        ],
+        [
+          15.5,
+          0,
+          -15.5
+        ],
+        [
+          15.5,
+          0,
+          15.5
+        ],
+        [
+          -15.5,
+          0,
+          15.5
+        ]
+      ]
+    },
+    {
+      "id": "neon_bar",
+      "metadata": {
+        "primitive": "cube",
+        "size": 1.0
+      },
+      "normals": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6
+        ],
+        [
+          4,
+          6,
+          7
+        ],
+        [
+          8,
+          9,
+          10
+        ],
+        [
+          8,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14
+        ],
+        [
+          12,
+          14,
+          15
+        ],
+        [
+          16,
+          17,
+          18
+        ],
+        [
+          16,
+          18,
+          19
+        ],
+        [
+          20,
+          21,
+          22
+        ],
+        [
+          20,
+          22,
+          23
+        ]
+      ],
+      "vertices": [
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "id": "orbit_shard",
+      "metadata": {
+        "primitive": "pyramid"
+      },
+      "normals": [
+        [
+          0.6570412498825454,
+          0.3695857030589318,
+          0.6570412498825454
+        ],
+        [
+          -0.7071067811865476,
+          0.0,
+          0.7071067811865476
+        ],
+        [
+          -0.6570412498825454,
+          0.3695857030589318,
+          -0.6570412498825454
+        ],
+        [
+          0.7071067811865476,
+          0.0,
+          -0.7071067811865476
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          2
+        ],
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          1,
+          2,
+          4
+        ],
+        [
+          2,
+          3,
+          4
+        ],
+        [
+          3,
+          0,
+          4
+        ]
+      ],
+      "vertices": [
+        [
+          -0.36,
+          0,
+          -0.36
+        ],
+        [
+          0.36,
+          0,
+          -0.36
+        ],
+        [
+          0.36,
+          0,
+          0.36
+        ],
+        [
+          -0.36,
+          0,
+          0.36
+        ],
+        [
+          0,
+          1.28,
+          0
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "packed_kinematic_profiles": {
+      "shared_orbit_profile": {
+        "lut_resolution": 256,
+        "motion_range": {
+          "rho_acceleration": 0.5,
+          "rho_velocity": 0.25,
+          "theta_acceleration": 4.39822971502571,
+          "theta_velocity": 2.199114857512855
+        },
+        "profile": {
+          "core_radius": 0.0001,
+          "r0": 6.0,
+          "rho_max": 0.7922380832041763,
+          "rho_min": -0.9373441410719874
+        }
+      }
+    },
+    "polar_lab": {
+      "environment_node_count": 5,
+      "generator": "generate_variants.py",
+      "generator_seed": 6840186221883211998,
+      "measurement_status": "authoring substrate; phone GPU proof still required",
+      "real_ecs_mover_count": 64,
+      "shared_mover_material": "orbit_cyan",
+      "shared_mover_mesh": "orbit_shard"
+    },
+    "substrate_render": {
+      "bayer_mode": "subtle",
+      "levels": 64,
+      "polar_mode": "auto",
+      "seed": 6840186221883211998,
+      "strength": 0.3
+    },
+    "visual_graphs": [
+      {
+        "id": "periodic_owner_relative_reverse",
+        "links": [
+          {
+            "source_node": "read_turn_speed",
+            "source_port": "value",
+            "target_node": "reverse_number",
+            "target_port": "a"
+          },
+          {
+            "source_node": "reverse_number",
+            "source_port": "result",
+            "target_node": "write_turn_speed",
+            "target_port": "value"
+          },
+          {
+            "source_node": "timer",
+            "source_port": "out",
+            "target_node": "write_turn_speed",
+            "target_port": "in"
+          }
+        ],
+        "metadata": {
+          "android_supported": true,
+          "beginner": true,
+          "owner_relative": true,
+          "proof": "Timer reads this object's friendly polar turn speed, multiplies it by -1, then writes it back through dedicated Movement blocks.",
+          "title": "Reverse this orbit every second"
+        },
+        "nodes": [
+          {
+            "id": "read_turn_speed",
+            "position": [
+              0.0,
+              245.0
+            ],
+            "properties": {
+              "default": 0.0,
+              "entity": null,
+              "field": "turns_per_second"
+            },
+            "type": "value.polar_movement"
+          },
+          {
+            "id": "reverse_number",
+            "position": [
+              330.0,
+              245.0
+            ],
+            "properties": {
+              "b": -1.0
+            },
+            "type": "math.multiply"
+          },
+          {
+            "id": "timer",
+            "position": [
+              0.0,
+              40.0
+            ],
+            "properties": {
+              "repeat": true,
+              "seconds": 1.0
+            },
+            "type": "event.timer"
+          },
+          {
+            "id": "write_turn_speed",
+            "position": [
+              650.0,
+              40.0
+            ],
+            "properties": {
+              "entity": null,
+              "field": "turns_per_second"
+            },
+            "type": "action.set_polar_movement"
+          }
+        ],
+        "schema": "ugts-visual-graph-1"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "environment_floor",
+      "mass": 1.0,
+      "material_id": "floor_ink",
+      "mesh_id": "lab_floor",
+      "metadata": {
+        "role": "nonpolar_environment"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "environment_core",
+      "mass": 1.0,
+      "material_id": "core_neon",
+      "mesh_id": "core_spire",
+      "metadata": {
+        "role": "nonpolar_environment"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.82,
+          1.0,
+          0.82
+        ],
+        "translation": [
+          0.0,
+          0.02,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "environment_core_cap",
+      "mass": 1.0,
+      "material_id": "edge_neon",
+      "mesh_id": "neon_bar",
+      "metadata": {
+        "role": "nonpolar_environment"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.42,
+          0.08,
+          0.42
+        ],
+        "translation": [
+          0.0,
+          4.55,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "environment_axis_x",
+      "mass": 1.0,
+      "material_id": "edge_neon",
+      "mesh_id": "neon_bar",
+      "metadata": {
+        "role": "nonpolar_environment"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          13.6,
+          0.025,
+          0.018
+        ],
+        "translation": [
+          0.0,
+          0.025,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "environment_axis_z",
+      "mass": 1.0,
+      "material_id": "edge_neon",
+      "mesh_id": "neon_bar",
+      "metadata": {
+        "role": "nonpolar_environment"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.018,
+          0.025,
+          13.6
+        ],
+        "translation": [
+          0.0,
+          0.026,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0000",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 0,
+        "packed_kinematic": {
+          "motion": "000025fd00000000",
+          "pose": "1865edbd4cc5c1bd",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9423167458565638,
+          0.0,
+          0.3347224977175812,
+          0.0
+        ],
+        "scale": [
+          0.41391023531267135,
+          0.41391023531267135,
+          0.41391023531267135
+        ],
+        "translation": [
+          1.7492028115383949,
+          0.78,
+          -2.149814875332128
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0001",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 1,
+        "packed_kinematic": {
+          "motion": "0000218900000000",
+          "pose": "54054dad164011ad",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9463533510844906,
+          0.0,
+          0.32313361770505233,
+          0.0
+        ],
+        "scale": [
+          0.29683409165746305,
+          0.29683409165746305,
+          0.29683409165746305
+        ],
+        "translation": [
+          2.536093900167738,
+          1.32,
+          -3.2806745884821313
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0002",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 2,
+        "packed_kinematic": {
+          "motion": "0000268200000000",
+          "pose": "795271b5f6bd85b5",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.43516664824461937,
+          0.0,
+          0.9003499254487356,
+          0.0
+        ],
+        "scale": [
+          0.41457919640880564,
+          0.41457919640880564,
+          0.41457919640880564
+        ],
+        "translation": [
+          4.175651014431472,
+          1.86,
+          3.319775947925093
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0003",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 3,
+        "packed_kinematic": {
+          "motion": "0000246b00000000",
+          "pose": "9daa9fa3bdeed3a3",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.755703911436036,
+          0.0,
+          0.6549134280500561,
+          0.0
+        ],
+        "scale": [
+          0.28032701537195803,
+          0.28032701537195803,
+          0.28032701537195803
+        ],
+        "translation": [
+          6.75060258283754,
+          2.4000000000000004,
+          -0.9617964431916634
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0004",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 4,
+        "packed_kinematic": {
+          "motion": "0000e20400000000",
+          "pose": "b5e9160a4e8e520a",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9209172415291895,
+          0.0,
+          0.38975817406985647,
+          0.0
+        ],
+        "scale": [
+          0.42962699905154833,
+          0.42962699905154833,
+          0.42962699905154833
+        ],
+        "translation": [
+          -5.770097910541476,
+          2.9400000000000004,
+          5.5908084542952485
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0005",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 5,
+        "packed_kinematic": {
+          "motion": "000023fa00000000",
+          "pose": "cc96333621e69736",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.15431297301302027,
+          0.0,
+          0.9880220171432836,
+          0.0
+        ],
+        "scale": [
+          0.3827308960394455,
+          0.3827308960394455,
+          0.3827308960394455
+        ],
+        "translation": [
+          2.852761946514758,
+          3.4800000000000004,
+          8.916488011153143
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0006",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 6,
+        "packed_kinematic": {
+          "motion": "0000137b00000000",
+          "pose": "e10d1ebb603f62bb",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.8596938572610727,
+          0.0,
+          0.5108096238204392,
+          0.0
+        ],
+        "scale": [
+          0.29763045576065783,
+          0.29763045576065783,
+          0.29763045576065783
+        ],
+        "translation": [
+          9.442271268522314,
+          4.0200000000000005,
+          -5.134122242809692
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0007",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 7,
+        "packed_kinematic": {
+          "motion": "0000de9300000000",
+          "pose": "f250233ceebdef3c",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9887216919603238,
+          0.0,
+          0.14976453467732145,
+          0.0
+        ],
+        "scale": [
+          0.3450066749420749,
+          0.3450066749420749,
+          0.3450066749420749
+        ],
+        "translation": [
+          3.560407065072635,
+          4.5600000000000005,
+          11.541703966533314
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0008",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 8,
+        "packed_kinematic": {
+          "motion": "0000ee4300000000",
+          "pose": "136f50b5b0fb6cb5",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.7981531525555438,
+          0.0,
+          0.6024546000037239,
+          0.0
+        ],
+        "scale": [
+          0.40805919386160083,
+          0.40805919386160083,
+          0.40805919386160083
+        ],
+        "translation": [
+          2.576787085288454,
+          0.78,
+          0.7370913592044745
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0009",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 9,
+        "packed_kinematic": {
+          "motion": "00000f2000000000",
+          "pose": "543650807b309480",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.6343932841636456,
+          0.0,
+          0.773010453362737,
+          0.0
+        ],
+        "scale": [
+          0.41486800688272407,
+          0.41486800688272407,
+          0.41486800688272407
+        ],
+        "translation": [
+          4.072270651519749,
+          1.32,
+          0.8128471078010797
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0010",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 10,
+        "packed_kinematic": {
+          "motion": "0000da0000000000",
+          "pose": "7c37964414d26244",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9026733182372588,
+          0.0,
+          0.4303264813400826,
+          0.0
+        ],
+        "scale": [
+          0.3518491448974231,
+          0.3518491448974231,
+          0.3518491448974231
+        ],
+        "translation": [
+          -4.226778155270388,
+          1.86,
+          3.4242827080238714
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0011",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 11,
+        "packed_kinematic": {
+          "motion": "00001d4f00000000",
+          "pose": "9bc05b5d598f5f5d",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9921952440866739,
+          0.0,
+          0.1246940159421676,
+          0.0
+        ],
+        "scale": [
+          0.4099989065614671,
+          0.4099989065614671,
+          0.4099989065614671
+        ],
+        "translation": [
+          -1.6609783297007576,
+          2.4000000000000004,
+          -6.521150726008183
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0012",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 12,
+        "packed_kinematic": {
+          "motion": "0000defd00000000",
+          "pose": "b62f95c669ddb1c6",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.939983753034014,
+          0.0,
+          0.34121920232028236,
+          0.0
+        ],
+        "scale": [
+          0.4046930847548192,
+          0.4046930847548192,
+          0.4046930847548192
+        ],
+        "translation": [
+          -5.1672810381699605,
+          2.9400000000000004,
+          6.171843960852087
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0013",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 13,
+        "packed_kinematic": {
+          "motion": "00002a0900000000",
+          "pose": "ce078e18bb058218",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9166790599210427,
+          0.0,
+          0.3996241998456468,
+          0.0
+        ],
+        "scale": [
+          0.4404885118242423,
+          0.4404885118242423,
+          0.4404885118242423
+        ],
+        "translation": [
+          6.9316374942599905,
+          3.4800000000000004,
+          -6.425268077032303
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0014",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 14,
+        "packed_kinematic": {
+          "motion": "0000e20800000000",
+          "pose": "e21bed581a039958",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.26079411791527546,
+          0.0,
+          0.9653944416976894,
+          0.0
+        ],
+        "scale": [
+          0.3649124942565072,
+          0.3649124942565072,
+          0.3649124942565072
+        ],
+        "translation": [
+          5.45366939508531,
+          4.0200000000000005,
+          -9.354748850960773
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0015",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 15,
+        "packed_kinematic": {
+          "motion": "0000ea0100000000",
+          "pose": "f1fabe49bff74a49",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.4337850173036786,
+          0.0,
+          0.9010164031597023,
+          0.0
+        ],
+        "scale": [
+          0.44063688038104276,
+          0.44063688038104276,
+          0.44063688038104276
+        ],
+        "translation": [
+          9.42853347420118,
+          4.5600000000000005,
+          -7.503390681831477
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0016",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 16,
+        "packed_kinematic": {
+          "motion": "00001e7700000000",
+          "pose": "13c4158d8a81d98d",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.2998116220483834,
+          0.0,
+          0.9539984231038946,
+          0.0
+        ],
+        "scale": [
+          0.38977322783943213,
+          0.38977322783943213,
+          0.38977322783943213
+        ],
+        "translation": [
+          -1.538292982288399,
+          0.78,
+          2.2017935854159782
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0017",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 17,
+        "packed_kinematic": {
+          "motion": "00002cd900000000",
+          "pose": "56179a7d30d39e7d",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.956269866400658,
+          0.0,
+          0.2924857989955541,
+          0.0
+        ],
+        "scale": [
+          0.45780535465109984,
+          0.45780535465109984,
+          0.45780535465109984
+        ],
+        "translation": [
+          -2.3509327877102897,
+          1.32,
+          -3.4855307218076614
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0018",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 18,
+        "packed_kinematic": {
+          "motion": "0000275800000000",
+          "pose": "7bf12413778c3813",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.014572301692778981,
+          0.0,
+          0.9998938183744185,
+          0.0
+        ],
+        "scale": [
+          0.4015636111523427,
+          0.4015636111523427,
+          0.4015636111523427
+        ],
+        "translation": [
+          -0.16201401758313133,
+          1.86,
+          5.427741829816508
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0019",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 19,
+        "packed_kinematic": {
+          "motion": "00001e6700000000",
+          "pose": "9db0dd2fd604212f",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9731168853599251,
+          0.0,
+          0.23031180479384544,
+          0.0
+        ],
+        "scale": [
+          0.4013378845388911,
+          0.4013378845388911,
+          0.4013378845388911
+        ],
+        "translation": [
+          3.065649323890276,
+          2.4000000000000004,
+          -6.09204638350397
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0020",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 20,
+        "packed_kinematic": {
+          "motion": "0000ea1200000000",
+          "pose": "b5ecf6e0b19e12e0",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.8448535652497071,
+          0.0,
+          0.5349976198870972,
+          0.0
+        ],
+        "scale": [
+          0.44680595757073116,
+          0.44680595757073116,
+          0.44680595757073116
+        ],
+        "translation": [
+          -7.267278416723899,
+          2.9400000000000004,
+          3.4279853784978758
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0021",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 21,
+        "packed_kinematic": {
+          "motion": "0000de4400000000",
+          "pose": "cc8892a4d2bcbea4",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9645897932898126,
+          0.0,
+          0.26375467897483157,
+          0.0
+        ],
+        "scale": [
+          0.4082780638425926,
+          0.4082780638425926,
+          0.4082780638425926
+        ],
+        "translation": [
+          4.751569258339144,
+          3.4800000000000004,
+          8.06241718989921
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0022",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 22,
+        "packed_kinematic": {
+          "motion": "0000f0c600000000",
+          "pose": "e18f0581236d5181",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9567174087234032,
+          0.0,
+          0.29101855584408515,
+          0.0
+        ],
+        "scale": [
+          0.3955080923333325,
+          0.3955080923333325,
+          0.3955080923333325
+        ],
+        "translation": [
+          -6.0088977680100735,
+          4.0200000000000005,
+          8.958764448751017
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0023",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 23,
+        "packed_kinematic": {
+          "motion": "0000e22800000000",
+          "pose": "f4602fd6edfb5bd6",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.6839654117973155,
+          0.0,
+          0.729514438146997,
+          0.0
+        ],
+        "scale": [
+          0.3150380501818979,
+          0.3150380501818979,
+          0.3150380501818979
+        ],
+        "translation": [
+          12.222826434157467,
+          4.5600000000000005,
+          -0.7711447475004867
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0024",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 24,
+        "packed_kinematic": {
+          "motion": "0000290700000000",
+          "pose": "184a0175d6999575",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.47882054788139405,
+          0.0,
+          0.8779127991586417,
+          0.0
+        ],
+        "scale": [
+          0.47499203181692506,
+          0.47499203181692506,
+          0.47499203181692506
+        ],
+        "translation": [
+          2.326199030791692,
+          0.78,
+          1.5028222282166683
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0025",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 25,
+        "packed_kinematic": {
+          "motion": "00001a3e00000000",
+          "pose": "4da65e5a39ceb25a",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.8952839210385576,
+          0.0,
+          0.44549601651398174,
+          0.0
+        ],
+        "scale": [
+          0.3796581656617454,
+          0.3796581656617454,
+          0.3796581656617454
+        ],
+        "translation": [
+          3.1680892398212874,
+          1.32,
+          -2.3931911737162466
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0026",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 26,
+        "packed_kinematic": {
+          "motion": "0000f04300000000",
+          "pose": "7a727eada37e5aad",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.5015490758526755,
+          0.0,
+          0.8651291952716237,
+          0.0
+        ],
+        "scale": [
+          0.41938501174508935,
+          0.41938501174508935,
+          0.41938501174508935
+        ],
+        "translation": [
+          4.666090675453808,
+          1.86,
+          -2.665791366625671
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0027",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 27,
+        "packed_kinematic": {
+          "motion": "00001fde00000000",
+          "pose": "9e7287902cc0fb90",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.6438315428897913,
+          0.0,
+          0.7651672656224591,
+          0.0
+        ],
+        "scale": [
+          0.2819285085901185,
+          0.2819285085901185,
+          0.2819285085901185
+        ],
+        "translation": [
+          -6.754572679310661,
+          2.4000000000000004,
+          1.170504799843259
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0028",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 28,
+        "packed_kinematic": {
+          "motion": "0000268700000000",
+          "pose": "b8c48cbefd4640be",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9894004277913804,
+          0.0,
+          0.14521292465284746,
+          0.0
+        ],
+        "scale": [
+          0.3170997862500186,
+          0.3170997862500186,
+          0.3170997862500186
+        ],
+        "translation": [
+          2.364954811648075,
+          2.9400000000000004,
+          -7.8411318964735095
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0029",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 29,
+        "packed_kinematic": {
+          "motion": "0000e43d00000000",
+          "pose": "cc2cbff19fc37bf1",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.6989250026044143,
+          0.0,
+          0.7151949669386801,
+          0.0
+        ],
+        "scale": [
+          0.35116167780694807,
+          0.35116167780694807,
+          0.35116167780694807
+        ],
+        "translation": [
+          9.333800337070363,
+          3.4800000000000004,
+          -0.20607013876319658
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0030",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 30,
+        "packed_kinematic": {
+          "motion": "00001a4800000000",
+          "pose": "e235e8c8523cacc8",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.8068475535437993,
+          0.0,
+          0.5907597018588742,
+          0.0
+        ],
+        "scale": [
+          0.3075114518471016,
+          0.3075114518471016,
+          0.3075114518471016
+        ],
+        "translation": [
+          -10.328046567243122,
+          4.0200000000000005,
+          -3.277100862299571
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0031",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 31,
+        "packed_kinematic": {
+          "motion": "00001a2c00000000",
+          "pose": "f2601a2924195e29",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9354548748620147,
+          0.0,
+          0.3534461445494807,
+          0.0
+        ],
+        "scale": [
+          0.4637145165976372,
+          0.4637145165976372,
+          0.4637145165976372
+        ],
+        "translation": [
+          -7.98885512215914,
+          4.5600000000000005,
+          -9.0661120607512
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0032",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 32,
+        "packed_kinematic": {
+          "motion": "0000e51300000000",
+          "pose": "144acfa5b8d7dba5",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.6560718923396178,
+          0.0,
+          0.7546983980915244,
+          0.0
+        ],
+        "scale": [
+          0.3859724586999179,
+          0.3859724586999179,
+          0.3859724586999179
+        ],
+        "translation": [
+          2.669344852807257,
+          0.78,
+          -0.37203441463339426
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0033",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 33,
+        "packed_kinematic": {
+          "motion": "0000d54100000000",
+          "pose": "5610f1ee0ab1bdee",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9185083943252121,
+          0.0,
+          0.3954014789478165,
+          0.0
+        ],
+        "scale": [
+          0.30211568368664876,
+          0.30211568368664876,
+          0.30211568368664876
+        ],
+        "translation": [
+          3.0530823931937285,
+          1.32,
+          2.889389369333435
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0034",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 34,
+        "packed_kinematic": {
+          "motion": "0000175600000000",
+          "pose": "7d8ad13ee1e5453e",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.5154178780194631,
+          0.0,
+          0.8569389774178287,
+          0.0
+        ],
+        "scale": [
+          0.31780837626092584,
+          0.31780837626092584,
+          0.31780837626092584
+        ],
+        "translation": [
+          4.842825481225106,
+          1.86,
+          2.578308774355453
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0035",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 35,
+        "packed_kinematic": {
+          "motion": "000023d300000000",
+          "pose": "9d4ce9ee5da72dee",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9185083943252121,
+          0.0,
+          0.3954014789478165,
+          0.0
+        ],
+        "scale": [
+          0.2957209110012934,
+          0.2957209110012934,
+          0.2957209110012934
+        ],
+        "translation": [
+          -4.937776113752656,
+          2.4000000000000004,
+          -4.677746500937267
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0036",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 36,
+        "packed_kinematic": {
+          "motion": "0000101800000000",
+          "pose": "b5ffee44c5a0f244",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9026733182372588,
+          0.0,
+          0.4303264813400826,
+          0.0
+        ],
+        "scale": [
+          0.2998880145719543,
+          0.2998880145719543,
+          0.2998880145719543
+        ],
+        "translation": [
+          6.251919067624322,
+          2.9400000000000004,
+          -5.053978851711885
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0037",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 37,
+        "packed_kinematic": {
+          "motion": "0000d64400000000",
+          "pose": "ccc0494992b2a549",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.5081697162696147,
+          0.0,
+          0.8612569532180622,
+          0.0
+        ],
+        "scale": [
+          0.41378442188883036,
+          0.41378442188883036,
+          0.41378442188883036
+        ],
+        "translation": [
+          -8.199489178881674,
+          3.4800000000000004,
+          -4.538944199932973
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0038",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 38,
+        "packed_kinematic": {
+          "motion": "0000d9b100000000",
+          "pose": "e0b647a69e1ad3a6",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.7541949753168893,
+          0.0,
+          0.656650545729429,
+          0.0
+        ],
+        "scale": [
+          0.33923998669130795,
+          0.33923998669130795,
+          0.33923998669130795
+        ],
+        "translation": [
+          -10.622088227530874,
+          4.0200000000000005,
+          1.4656488819893114
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0039",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 39,
+        "packed_kinematic": {
+          "motion": "00002bdc00000000",
+          "pose": "f1fe2dad64c6d1ad",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9463533510844906,
+          0.0,
+          0.32313361770505233,
+          0.0
+        ],
+        "scale": [
+          0.3477786599557962,
+          0.3477786599557962,
+          0.3477786599557962
+        ],
+        "translation": [
+          7.374947405648737,
+          4.5600000000000005,
+          -9.5307905419832
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0040",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 40,
+        "packed_kinematic": {
+          "motion": "0000154f00000000",
+          "pose": "1b76d907a68f7d07",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.8344404334861031,
+          0.0,
+          0.5510981427690756,
+          0.0
+        ],
+        "scale": [
+          0.4126052571669716,
+          0.4126052571669716,
+          0.4126052571669716
+        ],
+        "translation": [
+          -2.6010069057734095,
+          0.78,
+          -1.1132548604069654
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0041",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 41,
+        "packed_kinematic": {
+          "motion": "000018ca00000000",
+          "pose": "54328051058be451",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.6618410023870869,
+          0.0,
+          0.7496442406630335,
+          0.0
+        ],
+        "scale": [
+          0.46549883481368326,
+          0.46549883481368326,
+          0.46549883481368326
+        ],
+        "translation": [
+          4.120116012877005,
+          1.32,
+          0.5146871331029256
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0042",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 42,
+        "packed_kinematic": {
+          "motion": "0000d3bc00000000",
+          "pose": "7db040bf10306cbf",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.802750399628069,
+          0.0,
+          0.5963151816757439,
+          0.0
+        ],
+        "scale": [
+          0.40975492293837334,
+          0.40975492293837334,
+          0.40975492293837334
+        ],
+        "translation": [
+          5.257947771329192,
+          1.86,
+          1.5865339167888328
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0043",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 43,
+        "packed_kinematic": {
+          "motion": "00001aab00000000",
+          "pose": "9e0c7928f484bd28",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.8481203448032971,
+          0.0,
+          0.5298036246862948,
+          0.0
+        ],
+        "scale": [
+          0.46203246466036807,
+          0.46203246466036807,
+          0.46203246466036807
+        ],
+        "translation": [
+          -6.139220482190823,
+          2.4000000000000004,
+          -3.008226774829695
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0044",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 44,
+        "packed_kinematic": {
+          "motion": "0000ddb800000000",
+          "pose": "b53f3cf5a46c98f5",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.18680869507035924,
+          0.0,
+          0.9823963107860848,
+          0.0
+        ],
+        "scale": [
+          0.41752602470331307,
+          0.41752602470331307,
+          0.41752602470331307
+        ],
+        "translation": [
+          2.94240779002556,
+          2.9400000000000004,
+          -7.4373292993984785
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0045",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 45,
+        "packed_kinematic": {
+          "motion": "000015a200000000",
+          "pose": "cd1c12931bb6f693",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.27630903108127103,
+          0.0,
+          0.9610688421455194,
+          0.0
+        ],
+        "scale": [
+          0.4663471283055569,
+          0.4663471283055569,
+          0.4663471283055569
+        ],
+        "translation": [
+          4.989423610506474,
+          3.4800000000000004,
+          7.959792396328029
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0046",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 46,
+        "packed_kinematic": {
+          "motion": "0000d45d00000000",
+          "pose": "e08078b5976f44b5",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.6024546000037239,
+          0.0,
+          0.7981531525555438,
+          0.0
+        ],
+        "scale": [
+          0.4773417295696948,
+          0.4773417295696948,
+          0.4773417295696948
+        ],
+        "translation": [
+          -10.295584513547487,
+          4.0200000000000005,
+          -2.9431809819003543
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0047",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 47,
+        "packed_kinematic": {
+          "motion": "0000dec200000000",
+          "pose": "f3b178fc87f324fc",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.5581185312205561,
+          0.0,
+          0.829761233794523,
+          0.0
+        ],
+        "scale": [
+          0.3980265397891948,
+          0.3980265397891948,
+          0.3980265397891948
+        ],
+        "translation": [
+          -11.287930665318482,
+          4.5600000000000005,
+          -4.603983595082345
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0048",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 48,
+        "packed_kinematic": {
+          "motion": "0000e7fa00000000",
+          "pose": "16a2d53334737133",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9724057190274499,
+          0.0,
+          0.23329620143223162,
+          0.0
+        ],
+        "scale": [
+          0.3840493850416947,
+          0.3840493850416947,
+          0.3840493850416947
+        ],
+        "translation": [
+          -1.2434432974001106,
+          0.78,
+          2.439521629339486
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0049",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 49,
+        "packed_kinematic": {
+          "motion": "00002d9700000000",
+          "pose": "4e47103c9774343c",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.6738290003787561,
+          0.0,
+          0.7388873244606151,
+          0.0
+        ],
+        "scale": [
+          0.38681469742221886,
+          0.38681469742221886,
+          0.38681469742221886
+        ],
+        "translation": [
+          3.9703048518464117,
+          1.32,
+          0.37004911540890445
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0050",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 50,
+        "packed_kinematic": {
+          "motion": "000026f700000000",
+          "pose": "7db9433b4eb1f73b",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.1505228305916774,
+          0.0,
+          0.9886065331923866,
+          0.0
+        ],
+        "scale": [
+          0.30960288963946236,
+          0.30960288963946236,
+          0.30960288963946236
+        ],
+        "translation": [
+          1.6324212851684456,
+          1.86,
+          5.245315322587899
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0051",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 51,
+        "packed_kinematic": {
+          "motion": "00001db700000000",
+          "pose": "9ba06cddf6b1f0dd",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9856684121615376,
+          0.0,
+          0.16869434272361733,
+          0.0
+        ],
+        "scale": [
+          0.36390889641649327,
+          0.36390889641649327,
+          0.36390889641649327
+        ],
+        "translation": [
+          2.245565022706569,
+          2.4000000000000004,
+          -6.337454472757064
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0052",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 52,
+        "packed_kinematic": {
+          "motion": "0000280400000000",
+          "pose": "b74271454f0d3545",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.5108096238204392,
+          0.0,
+          0.8596938572610727,
+          0.0
+        ],
+        "scale": [
+          0.37788410110592574,
+          0.37788410110592574,
+          0.37788410110592574
+        ],
+        "translation": [
+          7.11900908477229,
+          2.9400000000000004,
+          3.8803612027367103
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0053",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 53,
+        "packed_kinematic": {
+          "motion": "0000d58b00000000",
+          "pose": "ccbd07ddb22f43dd",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.7258317772227704,
+          0.0,
+          0.6878722491666854,
+          0.0
+        ],
+        "scale": [
+          0.4383295209224287,
+          0.4383295209224287,
+          0.4383295209224287
+        ],
+        "translation": [
+          -9.358195421428844,
+          3.4800000000000004,
+          0.4929522389673338
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0054",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 54,
+        "packed_kinematic": {
+          "motion": "00001c7400000000",
+          "pose": "e017ddb5c85f71b5",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.9443528256455949,
+          0.0,
+          0.32893424980561226,
+          0.0
+        ],
+        "scale": [
+          0.3611917658781626,
+          0.3611917658781626,
+          0.3611917658781626
+        ],
+        "translation": [
+          6.6437906924662355,
+          4.0200000000000005,
+          -8.361173947261884
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0055",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 55,
+        "packed_kinematic": {
+          "motion": "00000d7800000000",
+          "pose": "f44997938bbd9b93",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.6455904647915488,
+          0.0,
+          0.763683803527502,
+          0.0
+        ],
+        "scale": [
+          0.34232673807429315,
+          0.34232673807429315,
+          0.34232673807429315
+        ],
+        "translation": [
+          -12.07048046613481,
+          4.5600000000000005,
+          2.0275382909822124
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0056",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 0,
+        "lab_seed_index": 56,
+        "packed_kinematic": {
+          "motion": "0000e47d00000000",
+          "pose": "1b38922fe0e4ee2f",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9370715024517591,
+          0.0,
+          0.34913750771408525,
+          0.0
+        ],
+        "scale": [
+          0.35248560935839696,
+          0.35248560935839696,
+          0.35248560935839696
+        ],
+        "translation": [
+          1.8453770552119135,
+          0.78,
+          2.1383195264314487
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0057",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 1,
+        "lab_seed_index": 57,
+        "packed_kinematic": {
+          "motion": "0000d9bb00000000",
+          "pose": "52b4828435115e84",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9578264130275329,
+          0.0,
+          0.2873474595447296,
+          0.0
+        ],
+        "scale": [
+          0.3556735979392517,
+          0.3556735979392517,
+          0.3556735979392517
+        ],
+        "translation": [
+          2.2605490311247647,
+          1.32,
+          3.4302240073505734
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0058",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 2,
+        "lab_seed_index": 58,
+        "packed_kinematic": {
+          "motion": "0000e06d00000000",
+          "pose": "7c1988f9bb1644f9",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.5600263087527604,
+          0.0,
+          0.8284748237000071,
+          0.0
+        ],
+        "scale": [
+          0.3548669105039145,
+          0.3548669105039145,
+          0.3548669105039145
+        ],
+        "translation": [
+          -5.041889884953483,
+          1.86,
+          -2.0312529239094004
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0059",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 3,
+        "lab_seed_index": 59,
+        "packed_kinematic": {
+          "motion": "00001cb900000000",
+          "pose": "9eda1b03fe8f8f03",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9812315808487496,
+          0.0,
+          0.19283304889220534,
+          0.0
+        ],
+        "scale": [
+          0.45294338857800653,
+          0.45294338857800653,
+          0.45294338857800653
+        ],
+        "translation": [
+          -2.5912211002192023,
+          2.4000000000000004,
+          -6.3670431276045205
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0060",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 4,
+        "lab_seed_index": 60,
+        "packed_kinematic": {
+          "motion": "0000156800000000",
+          "pose": "b5afb9bb11e67dbb",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9023429964824443,
+          0.0,
+          0.431018696461167,
+          0.0
+        ],
+        "scale": [
+          0.46196804730794794,
+          0.46196804730794794,
+          0.46196804730794794
+        ],
+        "translation": [
+          -6.239983938491139,
+          2.9400000000000004,
+          -5.041600850288163
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0061",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 5,
+        "lab_seed_index": 61,
+        "packed_kinematic": {
+          "motion": "0000e82200000000",
+          "pose": "ccee3c9e3c70789e",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.1208880872357771,
+          0.0,
+          0.992666142448948,
+          0.0
+        ],
+        "scale": [
+          0.42500707550128325,
+          0.42500707550128325,
+          0.42500707550128325
+        ],
+        "translation": [
+          2.254467632570239,
+          3.4800000000000004,
+          -9.108267331399588
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0062",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 6,
+        "lab_seed_index": 62,
+        "packed_kinematic": {
+          "motion": "0000e99b00000000",
+          "pose": "e1a627a2477363a2",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          0.7562060014143945,
+          0.0,
+          0.6543336178318004,
+          0.0
+        ],
+        "scale": [
+          0.3211213042880197,
+          0.3211213042880197,
+          0.3211213042880197
+        ],
+        "translation": [
+          -10.68297728669279,
+          4.0200000000000005,
+          1.5466157551678936
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_mover_0063",
+      "mass": 1.0,
+      "material_id": "orbit_cyan",
+      "mesh_id": "orbit_shard",
+      "metadata": {
+        "lab_ring": 7,
+        "lab_seed_index": 63,
+        "packed_kinematic": {
+          "motion": "0000d2e100000000",
+          "pose": "f1c153f7dfb2fff7",
+          "profile": "shared_orbit_profile"
+        },
+        "visual_graph": "periodic_owner_relative_reverse"
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          -0.9999761749868976,
+          0.0,
+          0.006902858724729716,
+          0.0
+        ],
+        "scale": [
+          0.3904448956212604,
+          0.3904448956212604,
+          0.3904448956212604
+        ],
+        "translation": [
+          0.1502310506097224,
+          4.5600000000000005,
+          12.031171507946366
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "quality_tiers": [
+    {
+      "id": "lab_120",
+      "max_visible_nodes": 2048,
+      "msaa_samples": 2,
+      "post_processing": true,
+      "render_scale": 1.0,
+      "shadow_quality": 0,
+      "target_fps": 120
+    },
+    {
+      "id": "lab_60",
+      "max_visible_nodes": 2048,
+      "msaa_samples": 0,
+      "post_processing": true,
+      "render_scale": 0.82,
+      "shadow_quality": 0,
+      "target_fps": 60
+    }
+  ],
+  "schema": "ugts-kc-mobile-3d-project-3.9.1",
+  "start_quality": "lab_120",
+  "target_profiles": [
+    {
+      "compile_sdk": 36,
+      "default_quality": "lab_120",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB / Mali-G720",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "preferred_abis": [
+        "arm64-v8a"
+      ],
+      "required_gles": [
+        3,
+        0
+      ],
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Packed Polar Substrate Lab \u2014 64 real ECS movers",
+  "world": {
+    "bounds_max": [
+      18.0,
+      10.0,
+      18.0
+    ],
+    "bounds_min": [
+      -18.0,
+      -3.0,
+      -18.0
+    ],
+    "fixed_dt": 0.008333333333333333,
+    "floor_y": -2.0,
+    "gravity": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "jump_speed": 0.0,
+    "player_speed": 0.0
+  }
+}

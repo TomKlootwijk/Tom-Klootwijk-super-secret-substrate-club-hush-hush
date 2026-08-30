@@ -1,0 +1,206 @@
+{
+  "schema": "ugts-kc-polar-grow-release-evidence-1",
+  "status": "installed_launched_profiled",
+  "source": {
+    "file": "packed-polar-grow-burst-128-lut-subtle.json",
+    "bytes": 21694,
+    "sha256": "ed7afdb2775e2c6c308ca03066b3480000f98d18ae4072275f50d0576b502719",
+    "project_id": "packed_polar_recipe_lab_3d",
+    "project_hash": "06ddbe9d6b01d5651de99ef2e9a614a393d38f06fb8c24451da511d54e819c7b",
+    "one_click_profile": "grow-burst-128-lut-subtle-glow-0-4-1.25-v1"
+  },
+  "build": {
+    "started_utc": "2026-08-30T02:34:41.350154+00:00",
+    "ended_utc": "2026-08-30T02:35:42.552589+00:00",
+    "total_seconds": 61.20398,
+    "source_export_seconds": 3.446871,
+    "gradle_seconds": 57.757114,
+    "gradle_result": "BUILD SUCCESSFUL in 55s",
+    "variant": "poco-debug",
+    "gradle_task": "assemblePocoX7ProDebug",
+    "profile_hint": "auto",
+    "include_authoring_assets": false,
+    "compile_sdk": 36,
+    "target_sdk": 36,
+    "min_sdk": 26,
+    "ndk": "r29 / 29.0.14206865"
+  },
+  "apk": {
+    "file": "packed-polar-grow-burst-128-lut-subtle-poco-debug.apk",
+    "bytes": 1819202,
+    "sha256": "e5348442b3b9e313d10ead1afb636acfa9943cd11f415226f6ea5d255b50232c",
+    "application_id": "org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro",
+    "version_code": 392,
+    "version_name": "3.9.2-poco-x7-pro",
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "zip_entry_count": 15,
+    "zipalign_verified": true,
+    "abis": [
+      "arm64-v8a"
+    ],
+    "arm64_v8a_only": true,
+    "authoring_json_packaged": false,
+    "signature": {
+      "debug_signed": true,
+      "v1": false,
+      "v2": true,
+      "v3": false,
+      "v3_1": false,
+      "v4": false,
+      "signer_count": 1,
+      "certificate_dn": "CN=Android Debug, O=Android, C=US",
+      "certificate_sha256": "e32bb1f2b68c55f4af54944c3ce5d0384716a01b77ac7fc66df9aa2132db45ba"
+    }
+  },
+  "workload": {
+    "kcpr_format_version": 4,
+    "operator_count": 9,
+    "recipe_count": 1,
+    "preset": "burst",
+    "instance_count": 128,
+    "ecs_prototype_count": 1,
+    "generated_copy_count": 127,
+    "generated_members_are_ecs_entities": false,
+    "visible_instance_stride_bytes": 36,
+    "visible_instance_payload_bytes": 4608,
+    "glow_by_distance": {
+      "center_rho": -0.6714046001434326,
+      "inv_half_width": 3.7602531909942627,
+      "strength": 1.25,
+      "grow_copies": true,
+      "display_scale_multiplier_min": 1.0,
+      "display_scale_multiplier_max": 5.0
+    },
+    "polar_mode": "lut",
+    "bayer_mode": "subtle",
+    "bayer_levels": 64,
+    "bayer_strength": 0.30000001192092896,
+    "lineage_namespace": "061ec97d18e0dab87abc56d5499f570e",
+    "recipe_content_address": "59702c020cf220b5baab1cecd049956b"
+  },
+  "embedded_packs": {
+    "packed_kinematics.kcpk": {
+      "bytes": 1690,
+      "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0",
+      "matches_apk": true
+    },
+    "polar_populations.kcpr": {
+      "bytes": 304,
+      "sha256": "2d04a3788d2a472f65ea0f53573325b6f680f6d73190a229573926748657addf",
+      "matches_apk": true
+    },
+    "render_substrate.kcrp": {
+      "bytes": 32,
+      "sha256": "e1b6504739e2fbe3c33fefb5bd78a1172a3f93640822dc05aea5c1b6cf38fcfe",
+      "matches_apk": true
+    }
+  },
+  "native_library": {
+    "apk_entry": "lib/arm64-v8a/libugts_kc_native.so",
+    "bytes": 1786936,
+    "sha256": "f27e2243e9e0d01ec53ca6a04756e20f593e9f3b3c6effbfe5042729123f2567",
+    "elf_build_id": "66e67ac49eb16c5dd0bf06e048ae8dc8f1b6388c",
+    "stored_uncompressed": true
+  },
+  "device_run": {
+    "serial": "XOVSTSHYNREMZ5D6",
+    "model": "2412DPC0AG",
+    "product": "rodin_eea",
+    "device": "rodin",
+    "installed": true,
+    "launched": true,
+    "profiled": true,
+    "final_adb_check": "disconnected_after_successful_final_reinstall_and_launch",
+    "profile_seconds": 30.0,
+    "profile_samples": 6,
+    "cold_launch_total_ms": 652,
+    "final_restored_launch_total_ms": 337,
+    "private_data_kib_after_install": 18,
+    "runtime_telemetry": {
+      "polar_requested": "lut",
+      "polar_effective": "lut",
+      "gpu_instances": 128,
+      "gpu_profiles": 1,
+      "gpu_batches": 2,
+      "cpu_fallbacks": 0,
+      "polar_recipes": 1,
+      "generated": 127,
+      "generated_gpu": 127,
+      "generated_cpu": 0,
+      "format_version": 4,
+      "glow_recipes": 1,
+      "glow_instances": 128,
+      "grow_recipes": 1,
+      "grow_instances": 127,
+      "gpu_instance_stride_bytes": 36,
+      "ecs_generated": false,
+      "bayer": "subtle"
+    },
+    "profile": {
+      "summary": "Smooth 120 Hz baseline",
+      "display_period_ms": 8.3333,
+      "effective_fps": 120.33,
+      "frame_intervals": 756,
+      "frame_ms_p50": 8.38,
+      "frame_ms_p95": 10.113,
+      "frame_ms_p99": 11.295,
+      "intervals_over_1_5_vsync": 1,
+      "pss_kib_min": 143165,
+      "pss_kib_max": 148551,
+      "rss_kib_min": 262770,
+      "rss_kib_max": 270174,
+      "cpu_total_capacity_pct_mean": 8.313,
+      "cpu_total_capacity_pct_max": 8.853,
+      "cpu_one_core_pct_mean": 66.508,
+      "cpu_one_core_pct_max": 70.822,
+      "cpu_logical_cores": 8,
+      "gpu_c_min": 41.897,
+      "gpu_c_max": 46.71,
+      "battery_c_min": 33.0,
+      "battery_c_max": 33.1,
+      "battery_level_start": 98,
+      "battery_level_end": 98,
+      "thermal_status_max": 0,
+      "crash_buffer_lines": 0,
+      "warnings": []
+    },
+    "gpu_timer": {
+      "supported": false,
+      "counter_bits": 0,
+      "reason": "GL_EXT_disjoint_timer_query extension or usable counter bits unavailable",
+      "surfaceflinger_frame_metrics_available": true
+    },
+    "screenshot": {
+      "file": "device-screenshot.png",
+      "bytes": 125741,
+      "sha256": "79d137a218924b3d46e53ea6d4f368c3659daab83fa5444fdacb1df848011e63"
+    }
+  },
+  "glow_v3_vs_grow_v4_ab": {
+    "run_seconds_each": 30.0,
+    "glow_v3_effective_fps": 120.33,
+    "grow_v4_effective_fps": 120.33,
+    "glow_v3_p95_ms": 10.041,
+    "grow_v4_p95_ms": 10.113,
+    "grow_minus_glow_p95_ms": 0.072,
+    "interpretation": "Both runs held 120 Hz. A single sequential pair cannot turn the small differences into a causal cost, power, or memory claim."
+  },
+  "verification": {
+    "full_suite_tests_passed": 763,
+    "full_suite_subtests_passed": 305,
+    "full_suite_seconds": 238.71,
+    "focused_integration_tests_passed": 48,
+    "focused_integration_subtests_passed": 62,
+    "targeted_ruff": "passed",
+    "independent_review": "passed after three findings were fixed and rechecked"
+  },
+  "warnings": [
+    "This is a debug-signed development APK, not a store/release-signed artifact.",
+    "The GPU timer-query extension was unavailable, so GPU-only render milliseconds are not claimed.",
+    "The A/B consists of one sequential 30-second run per build; it proves both held the display cadence, not a statistically isolated overhead.",
+    "No electrical power draw was measured. Battery percentage was unchanged during the sampled Grow run.",
+    "The screenshot proves this lab rendered on the target; it is not evidence of finished AAA art direction or a polished editor GUI.",
+    "The USB/ADB connection was absent at the final post-run check; all recorded install, launch and profile evidence completed before that disconnect."
+  ]
+}

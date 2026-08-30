@@ -11,9 +11,13 @@ layout(location = 5) in vec4 aInstanceModel3;
 uniform mat4 uViewProjection;
 uniform mat4 uModel;
 uniform bool uInstanced;
+uniform float uPolarGlowField;
+uniform vec4 uPolarMaterialCoord;
 
 out vec3 vWorldPosition;
 out vec3 vWorldNormal;
+flat out float vPolarGlow;
+flat out vec4 vPolarMaterial;
 
 void main() {
     mat4 model = uInstanced
@@ -21,6 +25,8 @@ void main() {
         : uModel;
     vec4 world = model * vec4(aPosition, 1.0);
     vWorldPosition = world.xyz;
+    vPolarGlow = uPolarGlowField;
+    vPolarMaterial = uPolarMaterialCoord;
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     vWorldNormal = normalize(normalMatrix * aNormal);
     gl_Position = uViewProjection * world;

@@ -392,6 +392,7 @@ def first_steps_mobile3d_project(
         if node.id == "player"
         else replace(
             node,
+            angular_velocity=(0.0, 0.0, 0.0),
             metadata={
                 **node.metadata,
                 "packed_kinematic": orbit_component.to_dict(),

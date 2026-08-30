@@ -34,12 +34,14 @@ from PySide6.QtWidgets import (
     QPushButton,
     QSplitter,
     QStyle,
+    QTabWidget,
     QTreeWidget,
     QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
 )
 
+from ..packed_kinematics import POLAR_MOVEMENT_FIELDS
 from ..visual_graph import BUILTIN_NODE_REGISTRY, PortDirection, PortKind, VisualGraph
 from .document import GraphAuthoringContext
 
@@ -70,13 +72,18 @@ _FRIENDLY_NODE_NAMES = {
     "value.seeded_number": ("Repeatable Random Number", "Values"),
     "value.state": ("Read Score or Game Value", "Values"),
     "value.component": ("Read Object Setting", "Values"),
+    "value.polar_movement": ("Read Movement", "Movement"),
     "query.nearest_tag": ("Find Nearby Object", "Sensing"),
     "query.nearest_in_cone": ("Find Object Ahead", "Sensing"),
     "compare": ("Compare Two Things", "Choices"),
     "action.set_state": ("Change Score or Game Value", "Game Actions"),
     "action.set_component": ("Change Object Setting", "Game Actions"),
+    "action.set_polar_movement": ("Change Movement", "Movement"),
+    "action.set_polar_population_visible": ("Show or Hide Extra Copies", "Looks"),
     "action.emit_event": ("Send a Game Message", "Game Actions"),
     "action.apply_force": ("Push an Object", "Movement"),
+    "action.play_animation": ("Play an Animation", "Animation"),
+    "action.stop_animation": ("Stop an Animation", "Animation"),
     "action.set_active": ("Show or Hide Object", "Game Actions"),
     "action.despawn": ("Remove Object", "Game Actions"),
 }
@@ -93,16 +100,50 @@ _FRIENDLY_NODE_DESCRIPTIONS = {
         "Finds the nearest chosen kind of object in a saved facing direction. "
         "Facing and View width use the same compact values on desktop, web, and phone."
     ),
+    "action.play_animation": (
+        "Starts one named animation clip on this object or another animated object. "
+        "Restart begins it again from the first frame."
+    ),
+    "action.stop_animation": (
+        "Stops the animation playing on this object or another animated object. "
+        "Reset returns it to its starting pose."
+    ),
+    "value.polar_movement": (
+        "Reads one named movement number without showing component names or packed words. "
+        "The same quantized value is used on desktop and phone."
+    ),
+    "action.set_polar_movement": (
+        "Changes one named movement number and immediately rebuilds the compact pose or motion. "
+        "Use it only on an object with a Movement Pattern."
+    ),
+    "action.set_polar_population_visible": (
+        "Shows or hides only the extra display copies made by Make Many. "
+        "The real object stays visible and keeps running its Logic Blocks."
+    ),
 }
 _LITERAL_ONLY_INPUTS = {
     "event.timer": frozenset({"seconds", "repeat"}),
     "event.message": frozenset({"message"}),
+    "value.polar_movement": frozenset({"field"}),
+    "action.set_polar_movement": frozenset({"field"}),
+    "action.set_polar_population_visible": frozenset({"entity"}),
 }
 _CATEGORY_COLORS = {
     "Events": "#5ac8fa", "Choices": "#c792ea", "Values": "#f6c85f",
     "Math": "#f0a45d", "Movement": "#78e6a3", "Game Actions": "#ff8fab",
-    "Sensing": "#64d8cb",
+    "Sensing": "#64d8cb", "Looks": "#a78bfa",
+    "Animation": "#ffb86c",
 }
+
+_THREE_D_ONLY_PALETTE_KEYS = frozenset(
+    {
+        "action.play_animation",
+        "action.stop_animation",
+        "value.polar_movement",
+        "action.set_polar_movement",
+        "action.set_polar_population_visible",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -207,9 +248,46 @@ _COMPONENT_FIELDS = {
         "render": ("mesh_id", "material_id"),
         "active": (),
         "alive": (),
-        "packed_kinematic": ("pose_word", "motion_word", "profile_id"),
+        "polar_movement": POLAR_MOVEMENT_FIELDS,
     },
 }
+_POLAR_MOVEMENT_FIELD_CHOICES = (
+    (
+        "radius",
+        "Distance from centre",
+        "World-space distance from the movement centre; must fit this object's saved profile",
+    ),
+    (
+        "angle_degrees",
+        "Angle around centre (degrees)",
+        "Where the object sits around the centre; values wrap around 360 degrees",
+    ),
+    (
+        "facing_degrees",
+        "Facing direction (degrees)",
+        "Where the object points; values wrap around 360 degrees",
+    ),
+    (
+        "turns_per_second",
+        "Turns per second",
+        "Positive circles one way and negative circles the other way",
+    ),
+    (
+        "growth_per_second",
+        "Grow / shrink speed",
+        "Positive spirals outward and negative spirals inward in compact log-radius units",
+    ),
+    (
+        "turn_acceleration",
+        "Turn acceleration",
+        "How much Turns per second changes each second",
+    ),
+    (
+        "growth_acceleration",
+        "Grow / shrink acceleration",
+        "How much Grow / shrink speed changes each second",
+    ),
+)
 _EVENT_CHOICES = {
     "2d": (
         "graph_event", "player.dashed", "dash", "collision_enter", "collision_stay", "collision_exit",
@@ -232,6 +310,7 @@ _PROPERTY_LABELS = {
     "action": "Button / action",
     "active": "Object is active",
     "component": "Object part",
+    "clip": "Animation clip",
     "cone": "Facing + view",
     "condition": "Condition",
     "default": "Fallback value",
@@ -252,8 +331,11 @@ _PROPERTY_LABELS = {
     "target": "Receiver object ID",
     "radius": "Search distance",
     "repeat": "Repeat",
+    "restart": "Restart from the beginning",
+    "reset": "Return to starting pose",
     "seconds": "Seconds",
     "value": "Value",
+    "visible": "Show extra copies",
     "world_number": "World number",
 }
 
@@ -1030,7 +1112,13 @@ class NodePalette(QWidget):
             for child_index in range(category.childCount()):
                 child = category.child(child_index)
                 template = TEMPLATE_BY_KEY[str(child.data(0, Qt.ItemDataRole.UserRole))]
-                matches = query in f"{template.title} {template.category} {template.description}".casefold()
+                allowed = (
+                    template.key not in _THREE_D_ONLY_PALETTE_KEYS
+                    or self._project_kind == "3d"
+                )
+                matches = allowed and query in (
+                    f"{template.title} {template.category} {template.description}".casefold()
+                )
                 child.setHidden(not matches)
                 visible = visible or matches
             category.setHidden(not visible)
@@ -1072,6 +1160,8 @@ class NodePropertiesPanel(QWidget):
         self._entity_context_known = False
         self._entity_owner_id: str | None = None
         self._entity_choices: tuple[tuple[str, str], ...] = ()
+        self._animation_choices: tuple[tuple[str, str], ...] = ()
+        self._polar_population_choices: tuple[tuple[str, str], ...] = ()
         self._updating = False
         self._read_only = False
         self._editors: dict[str, QWidget] = {}
@@ -1137,6 +1227,30 @@ class NodePropertiesPanel(QWidget):
         if changed and self.node is not None:
             self.set_node(self.node)
 
+    def set_animation_context(
+        self, choices: tuple[tuple[str, str], ...]
+    ) -> None:
+        """Provide stable clip IDs and child-facing names for animation blocks."""
+
+        normalized = tuple((str(value), str(label)) for value, label in choices)
+        if normalized == self._animation_choices:
+            return
+        self._animation_choices = normalized
+        if self.node is not None:
+            self.set_node(self.node)
+
+    def set_polar_population_context(
+        self, choices: tuple[tuple[str, str], ...]
+    ) -> None:
+        """Provide only prototypes that own a valid Make Many recipe."""
+
+        normalized = tuple((str(value), str(label)) for value, label in choices)
+        if normalized == self._polar_population_choices:
+            return
+        self._polar_population_choices = normalized
+        if self.node is not None:
+            self.set_node(self.node)
+
     def editor_for(self, key: str) -> QWidget | None:
         """Return the contextual editor for tests and accessibility helpers."""
 
@@ -1189,6 +1303,13 @@ class NodePropertiesPanel(QWidget):
             "angular_velocity": "Spin speed",
             "vector_renderer": "Picture",
             "packed_kinematic": "Packed polar movement",
+            "polar_movement": "Polar movement",
+            "angle_degrees": "Angle around centre (degrees)",
+            "facing_degrees": "Facing direction (degrees)",
+            "turns_per_second": "Turns per second",
+            "growth_per_second": "Grow / shrink speed",
+            "turn_acceleration": "Turn acceleration",
+            "growth_acceleration": "Grow / shrink acceleration",
             "bounds_constraint": "Scene bounds",
             "player_controller": "Player controls",
         }
@@ -1232,6 +1353,45 @@ class NodePropertiesPanel(QWidget):
                 "Choose how A and B are compared. The saved graph keeps the engine's exact operator name.",
             )
 
+        if (
+            node.template.key == "action.set_polar_population_visible"
+            and key == "entity"
+        ):
+            choices: tuple[tuple[Any, str, str], ...] = ()
+            if any(
+                entity_id == self._entity_owner_id
+                for entity_id, _label in self._polar_population_choices
+            ):
+                choices += ((
+                    None,
+                    "This object",
+                    "Use the Make Many recipe owned by this Logic Blocks object",
+                ),)
+            choices += tuple(
+                (
+                    entity_id,
+                    label,
+                    f"Use the Make Many recipe on project object: {entity_id}",
+                )
+                for entity_id, label in self._polar_population_choices
+            )
+            return PropertyChoiceSpec(
+                choices,
+                "Choose an object that has Make Many. Other objects cannot be targeted.",
+            )
+
+        if (
+            node.template.key == "action.set_polar_population_visible"
+            and key == "visible"
+        ):
+            return PropertyChoiceSpec(
+                (
+                    (True, "Show extra copies", "Draw the extra Make Many copies"),
+                    (False, "Hide extra copies", "Hide only the extra Make Many copies"),
+                ),
+                "The real object stays visible in both choices.",
+            )
+
         definition = BUILTIN_NODE_REGISTRY.get(node.template.key)
         port = None if definition is None else definition.port(PortDirection.INPUT, key)
         if isinstance(value, bool) or (port is not None and port.data_type == "boolean"):
@@ -1244,6 +1404,55 @@ class NodePropertiesPanel(QWidget):
             return PropertyChoiceSpec(
                 self._with_current_choice(self._actions(), value, "input action"),
                 "Choose a button action available to this kind of project.",
+            )
+
+        if (
+            node.template.key in {"action.play_animation", "action.stop_animation"}
+            and key == "entity"
+        ):
+            choices: tuple[tuple[Any, str, str], ...] = ((
+                None,
+                "This object",
+                "Animate the object that owns these Logic Blocks",
+            ),)
+            choices += tuple(
+                (
+                    entity_id,
+                    label,
+                    f"Animate project object: {entity_id}",
+                )
+                for entity_id, label in self._entity_choices
+            )
+            if (
+                isinstance(value, str)
+                and value
+                and not any(choice[0] == value for choice in choices)
+            ):
+                choices += ((
+                    value,
+                    f"{self._friendly_value(value)} (chosen object)",
+                    f"Animate project object: {value}",
+                ),)
+            return PropertyChoiceSpec(
+                choices,
+                "Choose This object, or type another project object ID.",
+                editable=True,
+            )
+
+        if node.template.key == "action.play_animation" and key == "clip":
+            choices = tuple(
+                (
+                    clip_id,
+                    label,
+                    f"Animation clip ID: {clip_id}",
+                )
+                for clip_id, label in self._animation_choices
+            )
+            choices = self._with_current_choice(choices, value, "animation clip")
+            return PropertyChoiceSpec(
+                choices,
+                "Choose one of this object's clips, or type a clip ID for another object.",
+                editable=True,
             )
 
         if node.template.key in {"query.nearest_tag", "query.nearest_in_cone"} and key == "origin":
@@ -1284,6 +1493,41 @@ class NodePropertiesPanel(QWidget):
                 "These five object kinds stay identical in desktop, web, and phone builds.",
             )
 
+        if (
+            node.template.key
+            in {"value.polar_movement", "action.set_polar_movement"}
+            and key == "entity"
+        ):
+            choices: tuple[tuple[Any, str, str], ...] = ((
+                None,
+                "This object",
+                "Use the object that owns these Logic Blocks",
+            ),)
+            choices += tuple(
+                (
+                    entity_id,
+                    label,
+                    f"Use project object: {entity_id}",
+                )
+                for entity_id, label in self._entity_choices
+            )
+            return PropertyChoiceSpec(
+                self._with_current_choice(choices, value, "movement object"),
+                "Choose This object or another object with a Movement Pattern.",
+                editable=True,
+            )
+
+        if (
+            node.template.key
+            in {"value.polar_movement", "action.set_polar_movement"}
+            and key == "field"
+        ):
+            return PropertyChoiceSpec(
+                _POLAR_MOVEMENT_FIELD_CHOICES,
+                "Choose one friendly number from this object's compact movement. "
+                "The engine quantizes each change identically on desktop and phone.",
+            )
+
         if node.template.key in {"value.component", "action.set_component"} and key == "component":
             choices = tuple(
                 (
@@ -1303,6 +1547,12 @@ class NodePropertiesPanel(QWidget):
             fields = self._component_fields().get(component)
             if fields is None:
                 return None
+            if component == "polar_movement":
+                return PropertyChoiceSpec(
+                    _POLAR_MOVEMENT_FIELD_CHOICES,
+                    "Choose one friendly number from this object's compact movement. "
+                    "The engine quantizes each change identically on desktop and phone.",
+                )
             choices = tuple(
                 (field, self._friendly_value(field), f"Canonical field: {field or '(whole component)'}")
                 for field in fields
@@ -1538,11 +1788,38 @@ class NodePropertiesPanel(QWidget):
                 hint = "Use the exact same name in Send a Game Message and this listening block."
             elif node.template.key == "query.nearest_in_cone":
                 hint = "Choose what to find, how far to look, and the saved Facing and View width."
+            elif node.template.key in {
+                "value.polar_movement",
+                "action.set_polar_movement",
+            }:
+                hint = (
+                    "Choose the object and a friendly movement number. Packed words "
+                    "and component names stay hidden."
+                )
+            elif node.template.key == "action.set_polar_population_visible":
+                hint = (
+                    "Choose an object with Make Many, then Show or Hide only its "
+                    "extra copies. The real object stays visible."
+                )
             else:
                 hint = "Choose friendly options or double-click an open value. Changes stay undoable."
             self.hint.setText(hint)
             for key, value in node.properties.items():
-                label = _PROPERTY_LABELS.get(key, key.replace("_", " ").title())
+                if (
+                    key == "field"
+                    and node.template.key
+                    in {"value.polar_movement", "action.set_polar_movement"}
+                ):
+                    label = "Movement number"
+                elif (
+                    node.template.key == "action.set_polar_population_visible"
+                    and key == "entity"
+                ):
+                    label = "Make Many object"
+                else:
+                    label = _PROPERTY_LABELS.get(
+                        key, key.replace("_", " ").title()
+                    )
                 item = QTreeWidgetItem([label, self._display(value)])
                 item.setData(0, Qt.ItemDataRole.UserRole, key)
                 item.setData(1, Qt.ItemDataRole.UserRole, value)
@@ -1603,8 +1880,18 @@ class NodePropertiesPanel(QWidget):
                 parsed = combo.currentText().strip()
             if (
                 not parsed
-                and self.node.template.key in {"query.nearest_tag", "query.nearest_in_cone"}
-                and key == "origin"
+                and (
+                    (
+                        self.node.template.key
+                        in {"query.nearest_tag", "query.nearest_in_cone"}
+                        and key == "origin"
+                    )
+                    or (
+                        self.node.template.key
+                        in {"action.play_animation", "action.stop_animation"}
+                        and key == "entity"
+                    )
+                )
             ):
                 parsed = None
             elif not parsed:
@@ -1697,8 +1984,7 @@ class LastRunPanel(QWidget):
         self.steps.setUniformRowHeights(True)
         self.steps.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.steps.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.steps.setMinimumHeight(96)
-        self.steps.setMaximumHeight(190)
+        self.steps.setMinimumHeight(160)
         self.steps.setColumnWidth(0, 34)
         self.steps.setColumnWidth(1, 104)
         layout.addWidget(title)
@@ -1750,22 +2036,43 @@ class GraphPage(QWidget):
         self.last_run_status = self.last_run.status
         self.trace_list = self.last_run.steps
         self.last_run_list = self.last_run.steps
+        self.sidebar_tabs = QTabWidget()
+        self.sidebar_tabs.setObjectName("LogicSidebarTabs")
+        self.sidebar_tabs.setAccessibleName("Logic tools")
+        self.sidebar_tabs.setDocumentMode(True)
+        self.sidebar_tabs.addTab(self.palette, "Blocks")
+        self.sidebar_tabs.addTab(self.properties, "Settings")
+        self.sidebar_tabs.addTab(self.last_run, "Trail")
+        self.sidebar_tabs.setTabToolTip(
+            self.sidebar_tabs.indexOf(self.palette),
+            "Block Picker — find and add a Logic Block",
+        )
+        self.sidebar_tabs.setTabToolTip(
+            self.sidebar_tabs.indexOf(self.properties),
+            "Settings — change the selected block",
+        )
+        self.sidebar_tabs.setTabToolTip(
+            self.sidebar_tabs.indexOf(self.last_run),
+            "Last Run — inspect the game's Logic Trail",
+        )
         self.graph_scene = VisualGraphScene(self)
         self.view = VisualGraphView(self.graph_scene)
         splitter = QSplitter()
+        splitter.setObjectName("LogicWorkspaceSplitter")
         splitter.setChildrenCollapsible(False)
         left = QWidget()
-        left.setMinimumWidth(225)
-        left.setMaximumWidth(310)
+        left.setObjectName("LogicSidebar")
+        left.setMinimumWidth(260)
+        left.setMaximumWidth(360)
         left_layout = QVBoxLayout(left)
         left_layout.setContentsMargins(0, 0, 0, 0)
         left_layout.setSpacing(0)
-        left_layout.addWidget(self.palette, 3)
-        left_layout.addWidget(self.properties, 2)
-        left_layout.addWidget(self.last_run, 2)
+        left_layout.addWidget(self.sidebar_tabs)
         splitter.addWidget(left)
         splitter.addWidget(self.view)
+        splitter.setStretchFactor(0, 0)
         splitter.setStretchFactor(1, 1)
+        splitter.setSizes([280, 700])
         layout.addWidget(bar)
         layout.addWidget(splitter, 1)
         self.palette.nodeRequested.connect(self.add_template)
@@ -1781,6 +2088,9 @@ class GraphPage(QWidget):
         self._context_problem: str | None = None
         self._context_persisted = True
         self._query_default_origin: str | None = None
+        self._animation_choices: tuple[tuple[str, str], ...] = ()
+        self._polar_population_choices: tuple[tuple[str, str], ...] = ()
+        self._owner_id: str | None = None
         self._updating_context = False
         self._trace_snapshot: object | None = None
         self.trace_step_count = 0
@@ -1828,6 +2138,13 @@ class GraphPage(QWidget):
         )
         self.properties.set_entity_context(
             context.owner_id, context.entity_choices
+        )
+        self._animation_choices = context.animation_choices
+        self.properties.set_animation_context(context.animation_choices)
+        self._owner_id = context.owner_id
+        self._polar_population_choices = context.polar_population_choices
+        self.properties.set_polar_population_context(
+            context.polar_population_choices
         )
         self._updating_context = True
         try:
@@ -2044,6 +2361,35 @@ class GraphPage(QWidget):
                     direction[2],
                     0.7071067690849304,
                 ]
+        elif key == "action.play_animation":
+            properties = {
+                "entity": None,
+                "clip": (
+                    self._animation_choices[0][0]
+                    if self._animation_choices
+                    else "main"
+                ),
+                "restart": True,
+            }
+        elif key == "action.stop_animation":
+            properties = {"entity": None, "reset": True}
+        elif key == "action.set_polar_population_visible":
+            owner_is_prototype = any(
+                entity_id == self._owner_id
+                for entity_id, _label in self._polar_population_choices
+            )
+            properties = {
+                "entity": (
+                    None
+                    if owner_is_prototype
+                    else (
+                        self._polar_population_choices[0][0]
+                        if self._polar_population_choices
+                        else None
+                    )
+                ),
+                "visible": True,
+            }
         node = self.graph_scene.add_node(
             template,
             center - QPointF(105, 50) + offset,
@@ -2069,6 +2415,8 @@ class GraphPage(QWidget):
             None,
         )
         self.properties.set_node(node)
+        if node is not None:
+            self.sidebar_tabs.setCurrentWidget(self.properties)
 
 
 __all__ = ["GraphPage", "NODE_TEMPLATES", "NodePalette", "VisualGraphScene"]

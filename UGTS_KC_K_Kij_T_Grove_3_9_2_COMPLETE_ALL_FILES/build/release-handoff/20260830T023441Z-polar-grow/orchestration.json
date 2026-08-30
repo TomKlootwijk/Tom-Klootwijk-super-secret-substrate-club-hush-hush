@@ -1,0 +1,14 @@
+{
+  "android_project": "C:\\Users\\Tom\\AppData\\Local\\Temp\\ugf326\\a",
+  "apk": "C:\\Users\\Tom\\AppData\\Local\\Temp\\ugf326\\a\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk",
+  "application_id": "org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro",
+  "ended_utc": "2026-08-30T02:35:42.552589+00:00",
+  "gradle_seconds": 57.75711369997589,
+  "project_hash": "06ddbe9d6b01d5651de99ef2e9a614a393d38f06fb8c24451da511d54e819c7b",
+  "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\polar-grow-lab\\packed-polar-grow-burst-128-lut-subtle.json",
+  "source_export_seconds": 3.4468706999905407,
+  "started_utc": "2026-08-30T02:34:41.350154+00:00",
+  "task": "assemblePocoX7ProDebug",
+  "temp_root": "C:\\Users\\Tom\\AppData\\Local\\Temp\\ugf326",
+  "total_seconds": 61.203979999991134
+}

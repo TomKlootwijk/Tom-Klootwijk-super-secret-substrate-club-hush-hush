@@ -1,4 +1,9 @@
 recursive-include src/ugts_kc3/android_template/project *
+prune src/ugts_kc3/android_template/project/.gradle
+prune src/ugts_kc3/android_template/project/app/.cxx
+prune src/ugts_kc3/android_template/project/app/build
+prune src/ugts_kc3/android_template/project/build
+recursive-include src/ugts_kc3/conformance *.tsv
 recursive-include docs *.md
 prune tests
 prune .pytest_cache

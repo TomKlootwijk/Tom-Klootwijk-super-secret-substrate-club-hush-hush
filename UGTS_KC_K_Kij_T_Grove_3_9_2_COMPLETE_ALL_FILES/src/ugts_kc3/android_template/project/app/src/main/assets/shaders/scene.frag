@@ -3,6 +3,8 @@ precision highp float;
 
 in vec3 vWorldPosition;
 in vec3 vWorldNormal;
+flat in float vPolarGlow;
+flat in vec4 vPolarMaterial;
 
 uniform vec4 uBaseColor;
 uniform float uMetallic;
@@ -14,6 +16,9 @@ uniform vec3 uLightColor;
 uniform float uLightIntensity;
 uniform float uAmbient;
 uniform float uPulse;
+uniform int uPolarMaterialMode;
+uniform int uPolarMaterialBands;
+uniform float uPolarMaterialStrength;
 
 out vec4 fragColor;
 
@@ -21,7 +26,11 @@ void main() {
     vec3 n = normalize(vWorldNormal);
     vec3 l = normalize(-uLightDirection);
     vec3 v = normalize(uCameraPosition - vWorldPosition);
-    vec3 h = normalize(l + v);
+    vec3 halfway = l + v;
+    float halfwayLength2 = dot(halfway, halfway);
+    vec3 h = halfwayLength2 <= 1.0e-12
+        ? vec3(0.0)
+        : halfway * inversesqrt(halfwayLength2);
     float ndotl = max(dot(n, l), 0.0);
     float ndotv = max(dot(n, v), 0.0);
     float ndoth = max(dot(n, h), 0.0);
@@ -30,7 +39,19 @@ void main() {
     float rough = clamp(uRoughness, 0.0, 1.0);
     float smoothness = 1.0 - rough;
     float smooth2 = smoothness * smoothness;
-    vec3 f0 = mix(vec3(0.04), uBaseColor.rgb, metallic);
+    vec3 materialBase = uBaseColor.rgb;
+    if (uPolarMaterialMode == 1 && vPolarMaterial.w >= 0.0) {
+        float coordinate = float(uPolarMaterialBands) *
+            clamp(vPolarMaterial.x, 0.0, 1.0) + vPolarMaterial.w +
+            0.25 * (1.0 + vPolarMaterial.y);
+        float wave = fract(coordinate);
+        float band = 1.0 - abs(2.0 * wave - 1.0);
+        float multiplier = mix(
+            1.0, 0.5 + band, clamp(uPolarMaterialStrength, 0.0, 1.0)
+        );
+        materialBase *= multiplier;
+    }
+    vec3 f0 = mix(vec3(0.04), materialBase, metallic);
 
     float oneMinusNdotV = 1.0 - ndotv;
     float fresnel2 = oneMinusNdotV * oneMinusNdotV;
@@ -48,7 +69,8 @@ void main() {
         (uAmbient + uLightIntensity * ndotl * (0.65 + 0.35 * rough));
     float spec = uLightIntensity * ndotl * lobe * (0.25 + 1.75 * smoothness);
     vec3 rim = fresnel4 * f0 * (0.03 + 0.07 * smoothness);
-    vec3 lit = uLightColor * (uBaseColor.rgb * diffuse + specColor * spec) + rim;
+    vec3 lit = uLightColor * (materialBase * diffuse + specColor * spec) + rim;
     lit += uEmissive * (1.0 + 0.25 * uPulse);
+    lit += materialBase * vPolarGlow;
     fragColor = vec4(lit, uBaseColor.a);
 }

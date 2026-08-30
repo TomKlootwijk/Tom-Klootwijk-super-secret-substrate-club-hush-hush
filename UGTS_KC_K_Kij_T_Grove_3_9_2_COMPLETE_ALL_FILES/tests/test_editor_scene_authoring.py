@@ -40,6 +40,11 @@ def _smooth_phone_result() -> AndroidProfileResult:
         pss_kib_max=134_000,
         rss_kib_min=250_000,
         rss_kib_max=252_000,
+        cpu_total_capacity_pct_mean=4.0,
+        cpu_total_capacity_pct_max=5.0,
+        cpu_one_core_pct_mean=32.0,
+        cpu_one_core_pct_max=40.0,
+        cpu_logical_cores=8,
         gpu_c_min=47.0,
         gpu_c_max=49.5,
         battery_c_min=35.0,
@@ -51,6 +56,15 @@ def _smooth_phone_result() -> AndroidProfileResult:
         crash_buffer_lines=0,
         summary="Smooth 120 Hz baseline",
         warnings=(),
+        gpu_timer_supported=True,
+        gpu_timer_counter_bits=64,
+        gpu_timer_samples_since_renderer_start=599,
+        gpu_render_ms_total_since_renderer_start=1272.875,
+        gpu_render_ms_mean_since_renderer_start=2.125,
+        gpu_render_ms_max_since_renderer_start=4.5,
+        gpu_render_ms_last=2.0,
+        gpu_timer_disjoint_intervals_since_renderer_start=1,
+        gpu_timer_pending_queries=2,
     )
 
 
@@ -395,6 +409,13 @@ class EditorSceneAuthoringTests(unittest.TestCase):
         self.assertIn("Smooth 120 Hz baseline on POCO X7 Pro", messages)
         self.assertIn("119.82 FPS", messages)
         self.assertIn("Game memory (PSS): 129.9–130.9 MiB", messages)
+        self.assertIn("CPU work: average 32.0% of one core; 4.0% of the whole phone", messages)
+        self.assertIn(
+            "GPU drawing since the renderer started: average 2.125 ms, "
+            "slowest measured 4.500 ms",
+            messages,
+        )
+        self.assertIn("599 non-blocking samples", messages)
         self.assertIn("GPU temperature: 47.0–49.5 °C", messages)
         self.assertEqual(self.window.status_message.text(), "Phone check passed.")
 

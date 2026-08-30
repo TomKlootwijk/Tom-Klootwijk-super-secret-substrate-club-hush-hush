@@ -5,6 +5,20 @@ out vec4 fragColor;
 uniform sampler2D uColor;
 uniform float uTime,uBloom,uFlash,uAberration,uVignette,uSaturation,uContrast,uShock,uJuicePulse;
 uniform vec2 uShockCenter;
+uniform int uBayerMode;
+uniform int uBayerLevels;
+uniform float uBayerStrength;
+uniform int uOutputHeight;
+const int Bayer8[64]=int[64](
+     0,48,12,60, 3,51,15,63,
+    32,16,44,28,35,19,47,31,
+     8,56, 4,52,11,59, 7,55,
+    40,24,36,20,43,27,39,23,
+     2,50,14,62, 1,49,13,61,
+    34,18,46,30,33,17,45,29,
+    10,58, 6,54, 9,57, 5,53,
+    42,26,38,22,41,25,37,21
+);
 vec3 sampleRGB(vec2 uv,float shift){
     float r=texture(uColor,uv+vec2(shift,0.0)).r;
     float g=texture(uColor,uv).g;
@@ -36,5 +50,17 @@ void main(){
     float vign=1.0-uVignette*smoothstep(0.25,0.78,length(uv-0.5)*1.1);
     c*=vign;
     c*=1.0+uJuicePulse*0.035;
-    fragColor=vec4(max(c,0.0),1.0);
+    if(uBayerMode==0){
+        fragColor=vec4(c,1.0);
+        return;
+    }
+    vec3 src=clamp(c,0.0,1.0);
+    int yTop=(uOutputHeight-1-int(gl_FragCoord.y))&7;
+    ivec2 physical=ivec2(int(gl_FragCoord.x)&7,yTop);
+    float bayer=float(Bayer8[physical.y*8+physical.x]);
+    float t=(bayer+0.5)/64.0-0.5;
+    float levelSpan=float(uBayerLevels-1);
+    vec3 q=floor(src*levelSpan+0.5+t)/levelSpan;
+    c=mix(src,q,uBayerStrength);
+    fragColor=vec4(c,1.0);
 }

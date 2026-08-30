@@ -1,0 +1,8 @@
+Stopping: org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro
+Starting: Intent { cmp=org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro/android.app.NativeActivity }
+Status: ok
+LaunchState: COLD
+Activity: org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro/android.app.NativeActivity
+TotalTime: 652
+WaitTime: 685
+Complete

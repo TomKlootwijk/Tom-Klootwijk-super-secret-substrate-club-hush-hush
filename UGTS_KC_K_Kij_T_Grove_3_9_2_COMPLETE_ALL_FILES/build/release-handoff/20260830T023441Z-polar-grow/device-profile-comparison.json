@@ -1,0 +1,62 @@
+{
+  "device": {
+    "display_period_ms": 8.3333,
+    "model": "2412DPC0AG",
+    "serial": "XOVSTSHYNREMZ5D6"
+  },
+  "grow_minus_glow": {
+    "battery_c_max": -0.2,
+    "battery_c_min": -0.3,
+    "cpu_one_core_pct_mean": -3.011,
+    "cpu_total_capacity_pct_mean": -0.377,
+    "effective_fps": 0.0,
+    "frame_ms_p50": 0.008,
+    "frame_ms_p95": 0.072,
+    "frame_ms_p99": 0.274,
+    "gpu_c_max": 0.48,
+    "gpu_c_min": 0.032,
+    "intervals_over_1_5_vsync": 1,
+    "pss_kib_max": -7792,
+    "pss_kib_min": -7146,
+    "rss_kib_max": -8120,
+    "rss_kib_min": -7628
+  },
+  "interpretation": "Both single 30-second runs held the 120 Hz baseline. Differences this small are run-to-run noise, not a causal performance or power claim.",
+  "runs": {
+    "glow_v3": {
+      "battery_c_max": 33.3,
+      "battery_c_min": 33.3,
+      "cpu_one_core_pct_mean": 69.519,
+      "cpu_total_capacity_pct_mean": 8.69,
+      "effective_fps": 120.33,
+      "frame_ms_p50": 8.372,
+      "frame_ms_p95": 10.041,
+      "frame_ms_p99": 11.021,
+      "gpu_c_max": 46.23,
+      "gpu_c_min": 41.865,
+      "intervals_over_1_5_vsync": 0,
+      "pss_kib_max": 156343,
+      "pss_kib_min": 150311,
+      "rss_kib_max": 278294,
+      "rss_kib_min": 270398
+    },
+    "grow_v4": {
+      "battery_c_max": 33.1,
+      "battery_c_min": 33.0,
+      "cpu_one_core_pct_mean": 66.508,
+      "cpu_total_capacity_pct_mean": 8.313,
+      "effective_fps": 120.33,
+      "frame_ms_p50": 8.38,
+      "frame_ms_p95": 10.113,
+      "frame_ms_p99": 11.295,
+      "gpu_c_max": 46.71,
+      "gpu_c_min": 41.897,
+      "intervals_over_1_5_vsync": 1,
+      "pss_kib_max": 148551,
+      "pss_kib_min": 143165,
+      "rss_kib_max": 270174,
+      "rss_kib_min": 262770
+    }
+  },
+  "schema": "ugts-grow-glow-device-ab-1"
+}

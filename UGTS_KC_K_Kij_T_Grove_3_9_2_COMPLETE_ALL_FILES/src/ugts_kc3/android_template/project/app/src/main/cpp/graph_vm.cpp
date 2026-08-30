@@ -1,5 +1,6 @@
 #include "graph_vm.hpp"
 #include "scatter_population.hpp"
+#include "transform_animation.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -55,14 +56,16 @@ std::uint16_t expectedInputs(std::uint8_t opcode) {
     switch (opcode) {
         case 1: case 2: case 19: case 20: return 0;
         case 3: case 4: case 5: case 17: case 25: return 1;
-        case 16: return 2;
+        case 16: case 27: case 30: return 2;
         case 6: case 8: case 9: case 10: case 11: case 13: case 18: return 2;
         case 7: case 14: case 15: return 4;
         case 21: return 4;
         case 22: return 3;
         case 23: return 2;
         case 24: return 4;
+        case 26: return 3;
         case 12: return 3;
+        case 28: case 29: return 3;
         default: throw std::runtime_error("KCVG opcode is unknown");
     }
 }
@@ -74,6 +77,7 @@ std::uint8_t dataOutputs(std::uint8_t opcode) {
         case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 15: return 1;
         case 21: return 1;
         case 22: case 24: return 3;
+        case 28: return 1;
         default: return 0;
     }
 }
@@ -81,8 +85,16 @@ std::uint8_t dataOutputs(std::uint8_t opcode) {
 std::uint8_t flowOutputs(std::uint8_t opcode) {
     if (opcode==4) return 2;
     if (opcode==1 || opcode==2 || opcode==3 || opcode==19 || opcode==20 || opcode==23 || opcode==25 ||
-        (opcode>=13 && opcode<=18)) return 1;
+        (opcode>=13 && opcode<=18) || opcode==26 || opcode==27 ||
+        opcode==29 || opcode==30) return 1;
     return 0;
+}
+
+bool polarMovementField(std::string_view field) {
+    return field=="radius" || field=="angle_degrees" ||
+        field=="facing_degrees" || field=="turns_per_second" ||
+        field=="growth_per_second" || field=="turn_acceleration" ||
+        field=="growth_acceleration";
 }
 
 bool fieldIndex3(std::string_view field,int& index) {
@@ -155,6 +167,14 @@ bool portableMessageId(std::string_view message) {
     });
 }
 
+bool portableAnimationClipId(std::string_view clip) {
+    if (clip.empty() || clip.size()>32 || clip.front()<'a' || clip.front()>'z') return false;
+    return std::all_of(clip.begin()+1,clip.end(),[](char value) {
+        return (value>='a' && value<='z') || (value>='0' && value<='9') ||
+               value=='_' || value=='.' || value=='-';
+    });
+}
+
 } // namespace
 
 const char* graphVmErrorName(GraphVmError error) {
@@ -181,6 +201,12 @@ const char* graphVmErrorName(GraphVmError error) {
         case GraphVmError::InvalidTimerDuration: return "When Timer Rings Seconds must be a finite positive number up to 86400";
         case GraphVmError::InvalidTimerStep: return "When Timer Rings needs a positive fixed-step duration";
         case GraphVmError::InvalidSearchCone: return "cone must have a finite non-zero axis and minimum cosine from -1 to 1";
+        case GraphVmError::InvalidAnimationClip: return "animation clip name is invalid";
+        case GraphVmError::MissingAnimationController: return "target has no transform animation controller";
+        case GraphVmError::MissingAnimationClip: return "target has no animation clip with that name";
+        case GraphVmError::PackedTransformOwnership: return "packed polar owns X/Z, facing rotation, and Cartesian X/Z velocity; use polar_movement fields";
+        case GraphVmError::MissingRenderRecipeAccess: return "Show or Hide Extra Copies needs the Make Many runtime";
+        case GraphVmError::InvalidRenderRecipeTarget: return "chosen object has no Make Many recipe";
     }
     return "unknown graph error";
 }
@@ -316,6 +342,57 @@ void GraphVm::load(const std::vector<std::uint8_t>& bytes,std::size_t sceneNodeC
                 require(message.tag==ValueTag::String &&
                         portableMessageId(strings_[message.index]),
                         "KCVG message ID is invalid");
+            }
+            if (node.opcode==26) {
+                const auto clipToken=inputs_[node.inputStart+1];
+                if ((clipToken>>30)==0) {
+                    const auto& clip=values_[clipToken&0xffffu];
+                    require(clip.tag==ValueTag::String &&
+                            portableAnimationClipId(strings_[clip.index]),
+                            "KCVG animation clip ID is invalid");
+                }
+                const auto restartToken=inputs_[node.inputStart+2];
+                if ((restartToken>>30)==0)
+                    require(values_[restartToken&0xffffu].tag==ValueTag::Boolean,
+                            "KCVG animation restart value is invalid");
+            }
+            if (node.opcode==27) {
+                const auto resetToken=inputs_[node.inputStart+1];
+                if ((resetToken>>30)==0)
+                    require(values_[resetToken&0xffffu].tag==ValueTag::Boolean,
+                            "KCVG animation reset value is invalid");
+            }
+            if (node.opcode==28 || node.opcode==29) {
+                const auto fieldToken=inputs_[node.inputStart+1];
+                require((fieldToken>>30)==0,
+                        "KCVG Movement number must be a literal");
+                const auto& field=values_[fieldToken&0xffffu];
+                require(field.tag==ValueTag::String &&
+                        polarMovementField(strings_[field.index]),
+                        "KCVG Movement number is invalid");
+                if (node.opcode==29) {
+                    const auto valueToken=inputs_[node.inputStart+2];
+                    if ((valueToken>>30)==0)
+                        require(values_[valueToken&0xffffu].tag==ValueTag::Number,
+                                "KCVG Change Movement value is invalid");
+                } else {
+                    const auto defaultToken=inputs_[node.inputStart+2];
+                    if ((defaultToken>>30)==0)
+                        require(values_[defaultToken&0xffffu].tag==ValueTag::Number,
+                                "KCVG Read Movement fallback is invalid");
+                }
+            }
+            if (node.opcode==30) {
+                const auto targetToken=inputs_[node.inputStart];
+                const auto visibleToken=inputs_[node.inputStart+1];
+                require((targetToken>>30)==0,
+                        "KCVG Show or Hide Extra Copies target must be a literal");
+                const auto& target=values_[targetToken&0xffffu];
+                require(target.tag==ValueTag::Null || target.tag==ValueTag::String,
+                        "KCVG Show or Hide Extra Copies target is invalid");
+                if ((visibleToken>>30)==0)
+                    require(values_[visibleToken&0xffffu].tag==ValueTag::Boolean,
+                            "KCVG Show or Hide Extra Copies value is invalid");
             }
             const auto count=static_cast<std::uint32_t>(node.flowZero)+node.flowOne;
             for (std::uint32_t j=0;j<count;++j) require(flows_[node.flowStart+j]<graph.nodeCount,"KCVG flow target invalid");
@@ -510,7 +587,8 @@ void GraphVm::resetOutput(std::uint16_t local) {
 }
 
 bool GraphVm::pureData(std::uint8_t opcode) const {
-    return (opcode>=5 && opcode<=12) || opcode==21 || opcode==22 || opcode==24;
+    return (opcode>=5 && opcode<=12) || opcode==21 || opcode==22 ||
+        opcode==24 || opcode==28;
 }
 
 bool GraphVm::resolveInput(std::uint32_t token,std::size_t depth,std::uint16_t owner,Value& result) {
@@ -573,6 +651,10 @@ bool GraphVm::readComponent(std::int32_t entity,std::string_view component,std::
     const auto& node=(*currentNodes_)[static_cast<std::size_t>(entity)];
     auto number=[&](float value) { result={}; result.tag=ValueTag::Number; result.number=value; return true; };
     auto vector3=[&](const Vec3& value) { result={}; result.tag=ValueTag::Vec3; result.vector={value.x,value.y,value.z,0}; return true; };
+    float virtualNumber=0.0f;
+    if (numberComponentAccess_ && numberComponentAccess_->readGraphNumber(
+            static_cast<std::uint32_t>(entity),component,field,virtualNumber))
+        return number(virtualNumber);
     if (component=="alive" && field.empty()) { result={}; result.tag=ValueTag::Boolean; result.index=node.alive?1u:0u; return true; }
     if (component=="active" && field.empty()) { result={}; result.tag=ValueTag::Boolean; result.index=node.active?1u:0u; return true; }
     if (component=="velocity" || component=="angular_velocity") {
@@ -597,7 +679,18 @@ bool GraphVm::readComponent(std::int32_t entity,std::string_view component,std::
 
 bool GraphVm::writeComponent(std::int32_t entity,std::string_view component,std::string_view field,const Value& value) {
     if (entity<0 || static_cast<std::size_t>(entity)>=currentNodes_->size()) return false;
+    componentWriteOwnershipConflict_=false;
+    if (numberComponentAccess_ && numberComponentAccess_->rejectsGraphWrite(
+            static_cast<std::uint32_t>(entity),component,field)) {
+        componentWriteOwnershipConflict_=true;
+        return false;
+    }
     auto& node=(*currentNodes_)[static_cast<std::size_t>(entity)];
+    float virtualNumber=0.0f;
+    if (numberComponentAccess_ && numberValue(value,virtualNumber) &&
+        numberComponentAccess_->writeGraphNumber(
+            static_cast<std::uint32_t>(entity),component,field,virtualNumber,*currentNodes_))
+        return true;
     if ((component=="alive" || component=="active") && field.empty()) {
         bool item=false; if (!boolValue(value,item)) return false;
         if (component=="alive") node.alive=item; else node.active=item; return true;
@@ -771,7 +864,9 @@ bool GraphVm::executeNode(std::uint16_t local,bool queued,std::size_t depth,std:
             const auto resolved=entityValue(input[0],true); std::string_view component,field;
             if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
             if (!stringValue(input[1],component) || !stringValue(input[2],field)) return fail(GraphVmError::TypeMismatch,local);
-            if (!writeComponent(resolved,component,field,input[3])) return fail(GraphVmError::InvalidComponent,local);
+            if (!writeComponent(resolved,component,field,input[3]))
+                return fail(componentWriteOwnershipConflict_
+                    ?GraphVmError::PackedTransformOwnership:GraphVmError::InvalidComponent,local);
             flowMask=1; return true;
         }
         case 15: {
@@ -1018,6 +1113,82 @@ bool GraphVm::executeNode(std::uint16_t local,bool queued,std::size_t depth,std:
             output[2]=entity();
             flowMask=1;
             return true;
+        case 26: {
+            const auto resolved=entityValue(input[0],true);
+            if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
+            std::string_view clip;
+            bool restart=false;
+            if (!stringValue(input[1],clip) || !boolValue(input[2],restart))
+                return fail(GraphVmError::TypeMismatch,local);
+            if (!portableAnimationClipId(clip))
+                return fail(GraphVmError::InvalidAnimationClip,local);
+            if (!transformAnimations_)
+                return fail(GraphVmError::MissingAnimationController,local);
+            const auto result=transformAnimations_->play(
+                static_cast<std::uint32_t>(resolved),animationClipHash(clip),restart,
+                *currentNodes_
+            );
+            if (result==AnimationControlResult::MissingController)
+                return fail(GraphVmError::MissingAnimationController,local);
+            if (result==AnimationControlResult::MissingClip)
+                return fail(GraphVmError::MissingAnimationClip,local);
+            flowMask=1;
+            return true;
+        }
+        case 27: {
+            const auto resolved=entityValue(input[0],true);
+            if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
+            bool reset=false;
+            if (!boolValue(input[1],reset)) return fail(GraphVmError::TypeMismatch,local);
+            if (!transformAnimations_)
+                return fail(GraphVmError::MissingAnimationController,local);
+            const auto result=transformAnimations_->stop(
+                static_cast<std::uint32_t>(resolved),reset,*currentNodes_
+            );
+            if (result==AnimationControlResult::MissingController)
+                return fail(GraphVmError::MissingAnimationController,local);
+            flowMask=1;
+            return true;
+        }
+        case 28: {
+            const auto resolved=entityValue(input[0],true);
+            std::string_view field;
+            if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
+            if (!stringValue(input[1],field) || !polarMovementField(field))
+                return fail(GraphVmError::TypeMismatch,local);
+            if (!readComponent(resolved,"polar_movement",field,output[0]))
+                output[0]=input[2];
+            return true;
+        }
+        case 29: {
+            const auto resolved=entityValue(input[0],true);
+            std::string_view field;
+            if (resolved<0) return fail(GraphVmError::InvalidEntity,local);
+            if (!stringValue(input[1],field) || !polarMovementField(field) ||
+                input[2].tag!=ValueTag::Number)
+                return fail(GraphVmError::TypeMismatch,local);
+            if (!writeComponent(resolved,"polar_movement",field,input[2]))
+                return fail(componentWriteOwnershipConflict_
+                    ?GraphVmError::PackedTransformOwnership:
+                    GraphVmError::InvalidComponent,local);
+            flowMask=1;
+            return true;
+        }
+        case 30: {
+            const auto resolved=entityValue(input[0],true);
+            bool visible=false;
+            if (resolved<0)
+                return fail(GraphVmError::InvalidRenderRecipeTarget,local);
+            if (!boolValue(input[1],visible))
+                return fail(GraphVmError::TypeMismatch,local);
+            if (!renderRecipeAccess_)
+                return fail(GraphVmError::MissingRenderRecipeAccess,local);
+            if (!renderRecipeAccess_->setCopiesVisible(
+                    static_cast<std::uint32_t>(resolved),visible))
+                return fail(GraphVmError::InvalidRenderRecipeTarget,local);
+            flowMask=1;
+            return true;
+        }
         default: return fail(GraphVmError::TypeMismatch,local);
     }
 }

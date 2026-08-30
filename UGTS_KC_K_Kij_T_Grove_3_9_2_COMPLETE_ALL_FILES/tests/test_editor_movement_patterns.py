@@ -114,6 +114,10 @@ class EditorMovementPatternTests(unittest.TestCase):
         self.assertLess(one_info["byte_length"], 1024)
 
         goal_selection = self._select("goal")
+        self.assertEqual(
+            self.window.document.entity(goal_selection).angular_velocity,
+            (0, 0.5, 0),
+        )
         self._choose("spiral_out", radius=6.0, speed=0.2, angle=180.0)
         goal = self.window.document.entity(goal_selection)
         self.assertIsInstance(goal, Node3DRecord)
@@ -127,6 +131,7 @@ class EditorMovementPatternTests(unittest.TestCase):
         goal_component = PackedKinematicComponent.from_dict(raw_goal)
         goal_motion = codec.unpack_motion(goal_component.motion_word)
         self.assertGreater(goal_motion.rho_velocity, 0.0)
+        self.assertEqual(goal.angular_velocity, (0.0, 0.0, 0.0))
 
         packed_two = compile_polar_pack_bytes(self.window.document.project)
         two_info = inspect_polar_pack(packed_two, node_count=3)
@@ -146,9 +151,14 @@ class EditorMovementPatternTests(unittest.TestCase):
         self.app.processEvents()
         undone_goal = self.window.document.entity(goal_selection)
         self.assertNotIn("packed_kinematic", undone_goal.metadata)
+        self.assertEqual(undone_goal.angular_velocity, (0, 0.5, 0))
         self.assertEqual(compile_polar_pack_bytes(self.window.document.project), packed_one)
         self.window.undo_stack.redo()
         self.app.processEvents()
+        self.assertEqual(
+            self.window.document.entity(goal_selection).angular_velocity,
+            (0.0, 0.0, 0.0),
+        )
         self.assertEqual(compile_polar_pack_bytes(self.window.document.project), packed_two)
 
         with tempfile.TemporaryDirectory() as temporary:

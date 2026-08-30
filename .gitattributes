@@ -1,0 +1,20 @@
+# Binary artifacts must not receive line-ending conversion or text diffs.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.apk binary
+*.whl binary
+*.gz binary
+*.zip binary
+*.jar binary
+*.bin binary
+*.so binary
+*.dll binary
+*.exe binary
+*.pdb binary
+*.kcpk binary
+*.kcpr binary
+*.kcrp binary
+*.kc3d binary
+*.kcvg binary

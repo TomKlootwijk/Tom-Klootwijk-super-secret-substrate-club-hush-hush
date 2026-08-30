@@ -20,6 +20,8 @@ from .vector2d import *
 from .collision2d import *
 from .game_input import *
 from .animation import *
+from .animation3d import *
+from .animationpack import *
 from .tilemap import *
 from .audio import *
 from .game import *
@@ -27,14 +29,21 @@ from .project import *
 from .webexport import *
 from .templates import *
 from .mobile3d import *
+from .hierarchy3d import *
+from .hierarchypack import *
 from .objimport import *
 from .templates3d import *
 from .androidexport import *
 from .androidbuild import *
 from .packed_kinematics import *
 from .polarpack import *
+from .polar_population import *
+from .polar_population_pack import *
+from .renderpack import *
 from .scatter import *
 from .scatterpack import *
+from .reusable import *
+from .saved_scene import *
 from .visual_graph import *
 from .version import (__version__, __codename__, __edition__, __game_project_schema__,
     __mobile3d_schema__, __native_scene_pack__)

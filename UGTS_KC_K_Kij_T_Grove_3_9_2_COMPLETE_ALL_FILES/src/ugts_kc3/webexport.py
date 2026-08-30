@@ -54,6 +54,7 @@ _WEB_VISUAL_GRAPH_NODE_TYPES = frozenset({
     "query.nearest_in_cone",
     "value.state",
     "value.component",
+    "value.polar_movement",
     "math.add",
     "math.subtract",
     "math.multiply",
@@ -61,10 +62,27 @@ _WEB_VISUAL_GRAPH_NODE_TYPES = frozenset({
     "compare",
     "action.set_state",
     "action.set_component",
+    "action.set_polar_movement",
+    "action.set_polar_population_visible",
+    "action.play_animation",
+    "action.stop_animation",
     "action.emit_event",
     "action.apply_force",
     "action.set_active",
     "action.despawn",
+})
+
+# The shared registry also contains Mobile 3D-only blocks.  Keep them in the
+# explicit browser classification above so adding a builtin can never bypass
+# the parity gate, then reject them during compilation with an honest message
+# instead of emitting JavaScript that cannot own the corresponding Mobile 3D
+# movement or animation component.
+_WEB_MOBILE3D_ONLY_NODE_TYPES = frozenset({
+    "action.play_animation",
+    "action.stop_animation",
+    "value.polar_movement",
+    "action.set_polar_movement",
+    "action.set_polar_population_visible",
 })
 
 
@@ -92,6 +110,16 @@ def _compile_web_visual_graphs(project: GameProject) -> dict[str, Any]:
         graphs = visual_graphs_from_rules(scene.rules)
         for graph in graphs:
             graph.validate(BUILTIN_NODE_REGISTRY)
+            mobile3d_only = sorted(
+                {node.type for node in graph.nodes}
+                & _WEB_MOBILE3D_ONLY_NODE_TYPES
+            )
+            if mobile3d_only:
+                names = ", ".join(mobile3d_only)
+                raise ValueError(
+                    f"HTML5 visual graph {graph.id!r} in scene {scene_id!r} uses "
+                    f"Mobile 3D-only node type(s): {names}"
+                )
             unsupported = sorted({node.type for node in graph.nodes} - _WEB_VISUAL_GRAPH_NODE_TYPES)
             if unsupported:
                 names = ", ".join(unsupported)

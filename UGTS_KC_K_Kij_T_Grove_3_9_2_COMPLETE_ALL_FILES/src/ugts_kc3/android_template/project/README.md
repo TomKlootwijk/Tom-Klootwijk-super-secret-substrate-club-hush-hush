@@ -34,13 +34,47 @@ device testing, then configure a private release key only when publishing.
 
 The runtime currently uses OpenGL ES 3.0. Vulkan is declared optional and reserved as a future backend.
 
+## Compact PBR-lite materials
+
+The scene shader consumes the existing KC3D392 base colour, metallic, roughness, emissive and
+double-sided fields. It uses a bounded multiply-heavy PBR-lite highlight/Fresnel/rim response and an
+explicit zero-half-vector fallback; it does not add textures, IBL, GGX tables or a larger material
+record. The renderer uploads the same fields for ordinary and instanced population draws. Emissive
+retains Grove's presentation-only pulse, while saved scene/ECS state stays unchanged.
+
+## Sparse transform-animation boundary
+
+An eligible static node may carry up to 16 named clips of whole relative transform poses, with zero
+or one clip chosen to autoplay. Export writes the optional `transform_animations.kcan` (`KCAN392`)
+asset only when at least one placed node has a clip. Duration is binary32; normalized time is unsigned
+16-bit; translation, relative quaternion and scale multiplier are binary16. Each whole-pose key is
+24 bytes, and the C++ loader validates the complete file before content starts.
+
+KCAN v1 remains the exact legacy ABI. A project using only the old single-clip
+`metadata.transform_animation` form emits the same 24-byte header, 16-byte node bindings and bytes as
+before; native code exposes each as an implicit `main` autoplay clip. A project containing any
+`metadata.transform_animation_library` uses KCAN v2 for the complete asset. Its header and keys are
+unchanged, while each 24-byte clip binding adds the portable unsigned-64 FNV-1a clip hash and an
+autoplay flag. Mixed legacy nodes become `main` autoplay bindings in that v2 asset. V2 bindings are
+canonical by scene-node index and clip hash; one controller per node tracks the active clip, elapsed
+time and playing state.
+
+At each fixed tick the runtime composes packed polar motion first, transform animation second and
+visual graphs afterwards. Animation uses the node's authored pose as its base, supports once, loop
+and ping-pong plus nine shared easing codes, and uses shortest-path normalized quaternion
+interpolation. Export rejects dynamic/Player/packed-motion/population/spinning owners so two systems
+cannot write one transform. The native runtime supports named rigid-transform clips and direct graph
+Play/Stop; it does not provide GLB animation import, skeletal animation/retargeting, crossfades,
+layered blending, animation-state-machine authoring or animated glTF export.
+
 ## Visual graph boundary
 
 When the source project contains bound visual graphs, export adds the compact `visual_graphs.kcvg`
-asset. The C++20 VM's append-only vocabulary currently contains 25 block types: Ready, Tick, When
+asset. The C++20 VM's append-only vocabulary currently contains 27 block types: Ready, Tick, When
 Timer Rings, Input Pressed, Trigger Enter/Exit, Branch, constants/state/NodeData component reads,
 Repeatable Random Number, Find Nearby Object, Find Object Ahead, scalar math/comparisons, Set State,
-Set Component, Send a Game Message, When Message Heard, Apply Force, Set Active and Despawn.
+Set Component, Send a Game Message, When Message Heard, Play Animation, Stop Animation, Apply Force,
+Set Active and Despawn.
 
 `KCVG001` opcode 22 is **Find Nearby Object**. It searches from an explicit object—or from the bound
 owner when available—for the nearest active, alive entity with one portable tag: `player`,
@@ -68,6 +102,14 @@ nested sends are breadth-first and non-reentrant. Recipients use scene insertion
 id, with World Logic last. A target reaches World Logic plus active bindings owned by that target.
 The queue is never serialized and is bounded to 64 sends and 16,384 total graph-node steps per
 outer batch.
+
+`KCVG001` opcodes 26 and 27 are **Play Animation** and **Stop Animation**. Play resolves the target
+scene node and portable clip hash. Restart true, or changing to another clip, starts at elapsed zero;
+Restart false resumes the same paused clip. Stop with Reset false holds its current pose and clock;
+Reset true clears the active clip and restores the node's authored base pose. A missing animation
+controller or clip reports a bounded graph issue instead of silently continuing. Graph execution
+still follows the animation tick, so control changes apply deterministically at the graph step and
+the next fixed tick advances the selected clip.
 
 NodeData paths are transform position/translation/scale/rotation (and numeric fields), velocity,
 angular velocity, alive and active. Event payloads must currently be empty; ordinary events are

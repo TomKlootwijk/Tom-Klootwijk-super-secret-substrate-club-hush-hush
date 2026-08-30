@@ -1,7 +1,8 @@
 """QGraphicsView scene authoring previews for UGTS 2D and mobile 3D."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+import copy
+from dataclasses import dataclass, replace
 import math
 import re
 from typing import Any, Callable, Mapping, Sequence
@@ -30,14 +31,38 @@ from PySide6.QtWidgets import (
     QGraphicsScene,
     QGraphicsSimpleTextItem,
     QGraphicsView,
+    QToolButton,
+    QWidget,
 )
 
+from ..hierarchy3d import Hierarchy3DError, world_trs_by_id
 from ..materials import shade_pbr_lite
 from ..math3d import compose_trs, transform_point
 from ..mobile3d import Mobile3DProject, Node3DRecord
+from ..packed_kinematics import PackedKinematicComponent, PolarLookupTable
+from ..polar_population import (
+    POLAR_POPULATION_PRESET_LABELS,
+    PolarPopulationError,
+    PolarPopulationGroup,
+    collect_polar_population_project_spec,
+    polar_population_glow_sample,
+    polar_population_instance,
+)
+from ..polarpack import quantized_profile_lut
 from ..project import EntitySpec, GameProject
+from ..renderpack import (
+    RenderPackError,
+    RenderSubstrateConfig,
+    render_substrate_config_from_project,
+)
 from ..scatter import ScatterError, collect_scatter_project_spec, scatter_instances
+from ..saved_scene import materialize_saved_scenes
 from ..vector2d import LinearGradient, RadialGradient, VectorAsset2D, VectorPath
+from .device_look import (
+    DeviceLookOpenGLViewport,
+    DeviceLookSupport,
+    probe_device_look_gl,
+)
 from .document import EditorDocument
 
 
@@ -407,6 +432,17 @@ class _TranslationDrag:
     current_translation: tuple[float, float, float]
 
 
+@dataclass(frozen=True)
+class _PolarPopulationPreview:
+    """One already-created display item and its authored random-access recipe."""
+
+    prototype: Node3DRecord
+    group: PolarPopulationGroup
+    lut: PolarLookupTable
+    index: int
+    item: ProjectedMeshItem
+
+
 class SceneViewport(QGraphicsView):
     """Editable 2D scene view and projected 3D mesh preview."""
 
@@ -442,8 +478,31 @@ class SceneViewport(QGraphicsView):
         self._pan_origin = QPointF()
         self._mesh_items: dict[str, ProjectedMeshItem] = {}
         self._mesh_runtime_transforms: dict[str, tuple[Any, ...]] = {}
+        self._polar_population_previews: list[_PolarPopulationPreview] = []
+        self._saved_scene_owner_by_node: dict[str, str] = {}
         self._gizmo_handles: dict[str, TranslationGizmoHandle] = {}
         self._translation_drag: _TranslationDrag | None = None
+        self._device_look_config: RenderSubstrateConfig | None = None
+        self._device_look_config_error = ""
+        self._device_look_support: DeviceLookSupport | None = None
+        self._device_look_failure_reason = ""
+        self._device_look_fallback_pending = False
+        self._device_look_toggle = QToolButton(self)
+        self._device_look_toggle.setObjectName("DeviceLookReferenceToggle")
+        self._device_look_toggle.setCheckable(True)
+        self._device_look_toggle.setAutoRaise(False)
+        self._device_look_toggle.setToolButtonStyle(
+            Qt.ToolButtonStyle.ToolButtonTextOnly
+        )
+        self._device_look_toggle.setToolTip(
+            "Desktop reference only: applies the project's native Bayer presentation "
+            "after the editor's exact binary16 polar-LUT composition. This does not "
+            "reproduce or measure Android GPU performance. The editor grid and gizmos "
+            "are included in this reference pass."
+        )
+        self._device_look_toggle.toggled.connect(self._device_look_toggled)
+        self._set_device_look_text()
+        self._device_look_toggle.hide()
         self.pressed_keys: set[str] = set()
         self.scene().selectionChanged.connect(self._scene_selection_changed)
 
@@ -457,7 +516,31 @@ class SceneViewport(QGraphicsView):
             if axis in self._gizmo_handles
         )
 
+    @property
+    def device_look_toggle(self) -> QToolButton:
+        """Expose the honest reference toggle for accessibility and focused tests."""
+
+        return self._device_look_toggle
+
+    @property
+    def device_look_status(self) -> str:
+        """Return the visible reference/fallback state."""
+
+        return self._device_look_toggle.text()
+
+    @property
+    def device_look_uses_opengl(self) -> bool:
+        """Whether the optional GL viewport is currently installed."""
+
+        return isinstance(self.viewport(), DeviceLookOpenGLViewport)
+
     def set_document(self, document: EditorDocument | None) -> None:
+        self._device_look_toggle.blockSignals(True)
+        self._device_look_toggle.setChecked(False)
+        self._device_look_toggle.blockSignals(False)
+        self._set_raster_viewport()
+        self._device_look_support = None
+        self._device_look_failure_reason = ""
         self._document = document
         self._runtime_state = None
         self._selected_id = None
@@ -483,9 +566,8 @@ class SceneViewport(QGraphicsView):
             state is not None
             and self._document is not None
             and isinstance(self._document.project, Mobile3DProject)
-            and self._mesh_items
         ):
-            self._update_3d_runtime(self._document.project, state)
+            self._update_3d_runtime(self._preview_3d_project(), state)
             self.viewport().update()
         else:
             self.refresh(keep_view=True)
@@ -529,6 +611,8 @@ class SceneViewport(QGraphicsView):
         self._rebuild_3d_gizmo_for_selection()
 
     def refresh(self, keep_view: bool = True) -> None:
+        self._resolve_device_look_config()
+        self._sync_device_look_backend()
         transform = QTransform(self.transform())
         center = self.mapToScene(self.viewport().rect().center())
         self._rendering = True
@@ -538,12 +622,20 @@ class SceneViewport(QGraphicsView):
             self.scene().clear()
             self._mesh_items.clear()
             self._mesh_runtime_transforms.clear()
+            self._polar_population_previews.clear()
+            self._saved_scene_owner_by_node.clear()
             if self._document is None or self._document.project is None:
                 self._render_empty()
             elif isinstance(self._document.project, GameProject):
                 self._render_2d(self._document.project)
             else:
-                self._render_3d(self._document.project)
+                try:
+                    self._saved_scene_owner_by_node = (
+                        self._document.saved_scene_materialized_owner_map()
+                    )
+                except (TypeError, ValueError):
+                    self._saved_scene_owner_by_node = {}
+                self._render_3d(self._preview_3d_project())
         finally:
             self._rendering = False
         if self._first_render or not keep_view:
@@ -552,6 +644,164 @@ class SceneViewport(QGraphicsView):
         elif not transform.isIdentity():
             self.setTransform(transform)
             self.centerOn(center)
+
+    def _preview_3d_project(self) -> Mobile3DProject:
+        """Return a detached flat view including every compact linked group."""
+
+        document = self._document
+        if document is None or not isinstance(document.project, Mobile3DProject):
+            raise RuntimeError("A mobile 3D project is not open.")
+        try:
+            preview = materialize_saved_scenes(document.project)
+        except (TypeError, ValueError):
+            # Project Check explains malformed Saved Scene metadata. Keeping the
+            # authored nodes visible lets a child still open and repair a file.
+            preview = copy.deepcopy(document.project)
+        try:
+            worlds = world_trs_by_id(preview.nodes)
+        except (Hierarchy3DError, TypeError, ValueError):
+            # Project Check owns malformed hierarchy diagnostics too. Roots and
+            # local child poses remain visible enough to select and repair.
+            return preview
+        preview = copy.deepcopy(preview)
+        preview.nodes = tuple(
+            replace(
+                node,
+                transform=replace(
+                    node.transform,
+                    translation=worlds[node.id].translation,
+                    rotation=worlds[node.id].rotation,
+                    scale=worlds[node.id].scale,
+                ),
+                parent_id=None,
+            )
+            for node in preview.nodes
+        )
+        return preview
+
+    def _set_device_look_text(self, suffix: str = "") -> None:
+        text = "Device Look (reference)"
+        if suffix:
+            text += f" · {suffix}"
+        self._device_look_toggle.setText(text)
+        self._device_look_toggle.adjustSize()
+        self._position_device_look_toggle()
+
+    def _position_device_look_toggle(self) -> None:
+        if not hasattr(self, "_device_look_toggle"):
+            return
+        margin = self.frameWidth() + 10
+        viewport_geometry = self.viewport().geometry()
+        x = max(
+            margin,
+            viewport_geometry.right() - self._device_look_toggle.width() - 10,
+        )
+        self._device_look_toggle.move(x, viewport_geometry.top() + 10)
+        self._device_look_toggle.raise_()
+
+    def _resolve_device_look_config(self) -> None:
+        document = self._document
+        project = None if document is None else document.project
+        is_mobile = isinstance(project, Mobile3DProject)
+        self._device_look_toggle.setVisible(is_mobile)
+        self._device_look_config = None
+        self._device_look_config_error = ""
+        if not is_mobile:
+            return
+        try:
+            self._device_look_config = render_substrate_config_from_project(project)
+        except RenderPackError as exc:
+            # Project Check owns the detailed repair guidance. The viewport
+            # stays selectable and explicitly reports its raster fallback.
+            self._device_look_config_error = str(exc)
+
+    def _device_look_toggled(self, enabled: bool) -> None:
+        if not enabled:
+            self._device_look_failure_reason = ""
+            self._device_look_support = None
+        self._sync_device_look_backend()
+        self.viewport().update()
+
+    def _sync_device_look_backend(self) -> None:
+        project = None if self._document is None else self._document.project
+        if not isinstance(project, Mobile3DProject):
+            self._set_raster_viewport()
+            self._set_device_look_text()
+            return
+        if not self._device_look_toggle.isChecked():
+            self._set_raster_viewport()
+            self._set_device_look_text()
+            return
+        if self._device_look_config_error:
+            self._set_raster_viewport()
+            self._set_device_look_text("Invalid settings · raster fallback")
+            return
+        config = self._device_look_config
+        if config is None or not config.bayer_enabled:
+            # Do not introduce a GL copy/sample roundtrip when the native
+            # recipe does not enable Bayer. Raster pixels remain untouched.
+            self._set_raster_viewport()
+            disabled_reason = (
+                "Bayer Off"
+                if config is None or config.bayer_mode == "off"
+                else "Bayer strength 0"
+            )
+            self._set_device_look_text(f"{disabled_reason} · unchanged")
+            return
+        if self._device_look_failure_reason:
+            self._set_raster_viewport()
+            self._set_device_look_text("Raster fallback · GL pass unavailable")
+            return
+        if isinstance(self.viewport(), DeviceLookOpenGLViewport):
+            self._set_device_look_text(
+                f"CPU LUT + {_friendly_name(config.bayer_mode)} Bayer"
+            )
+            return
+        if self._device_look_support is None:
+            self._device_look_support = probe_device_look_gl()
+        if not self._device_look_support.available:
+            self._set_raster_viewport()
+            self._set_device_look_text("Raster fallback · OpenGL unavailable")
+            return
+
+        viewport = DeviceLookOpenGLViewport()
+        viewport.setMouseTracking(True)
+        viewport.postFailed.connect(self._device_look_post_failed)
+        self.setViewport(viewport)
+        self.setViewportUpdateMode(
+            QGraphicsView.ViewportUpdateMode.FullViewportUpdate
+        )
+        self._set_device_look_text(
+            f"CPU LUT + {_friendly_name(config.bayer_mode)} Bayer"
+        )
+
+    def _set_raster_viewport(self) -> None:
+        current = self.viewport()
+        if isinstance(current, DeviceLookOpenGLViewport):
+            current.shutdown()
+            raster = QWidget()
+            raster.setObjectName("SceneViewportRaster")
+            raster.setMouseTracking(True)
+            self.setViewport(raster)
+        self.setViewportUpdateMode(
+            QGraphicsView.ViewportUpdateMode.SmartViewportUpdate
+        )
+        self._position_device_look_toggle()
+
+    def _device_look_post_failed(self, reason: str) -> None:
+        if self._device_look_fallback_pending:
+            return
+        self._device_look_failure_reason = reason or "unknown OpenGL failure"
+        self._device_look_fallback_pending = True
+        # Replacing a viewport while QGraphicsView is drawing would invalidate
+        # the active painter. Defer the safe fallback until the event returns.
+        QTimer.singleShot(0, self._finish_device_look_fallback)
+
+    def _finish_device_look_fallback(self) -> None:
+        self._device_look_fallback_pending = False
+        self._set_raster_viewport()
+        self._sync_device_look_backend()
+        self.viewport().update()
 
     def fit_scene(self) -> None:
         rect = self.scene().sceneRect()
@@ -799,12 +1049,33 @@ class SceneViewport(QGraphicsView):
 
         projector = _PerspectiveProjector(project, width, height)
         self._add_3d_grid(projector, project)
+        prototype_glow = self._polar_prototype_glow(project, self._runtime_state)
         for node in project.nodes:
             runtime = self._runtime_state.get(node.id) if self._runtime_state else None
-            faces = self._project_node_faces(project, node, projector, runtime)
+            node_glow = prototype_glow.get(node.id, 0.0)
+            faces = self._project_node_faces(
+                project,
+                node,
+                projector,
+                runtime,
+                polar_glow=node_glow,
+            )
             if not faces:
                 continue
-            item = ProjectedMeshItem(node.id, faces, node.id == self._selected_id)
+            selection_id = self._saved_scene_owner_by_node.get(node.id, node.id)
+            item = ProjectedMeshItem(
+                selection_id, faces, selection_id == self._selected_id
+            )
+            item.setData(4, node.id)
+            item.setData(6, node_glow)
+            # Grow is display-copy-only. The real prototype receives Glow
+            # lighting, while its authored/gameplay scale remains exactly 1x.
+            item.setData(7, 1.0)
+            if selection_id != node.id:
+                item.setToolTip(
+                    f"{_friendly_name(node.id)} inside linked {_friendly_name(selection_id)}\n"
+                    "Click to select and move the whole Saved Scene group"
+                )
             average_depth = sum(face[0] for face in faces) / len(faces)
             item.setZValue(-average_depth)
             self.scene().addItem(item)
@@ -841,7 +1112,14 @@ class SceneViewport(QGraphicsView):
                     if not faces:
                         continue
                     item = ProjectedMeshItem(
-                        prototype.id, faces, prototype.id == self._selected_id
+                        self._saved_scene_owner_by_node.get(
+                            prototype.id, prototype.id
+                        ),
+                        faces,
+                        self._saved_scene_owner_by_node.get(
+                            prototype.id, prototype.id
+                        )
+                        == self._selected_id,
                     )
                     item.setData(3, "population_copy")
                     item.setToolTip(
@@ -860,7 +1138,104 @@ class SceneViewport(QGraphicsView):
             # message; the viewport stays usable while the recipe is repaired.
             generated_total = 0
             generated_shown = 0
-        if self._selected_id and not self._playing:
+        try:
+            polar_population_spec = collect_polar_population_project_spec(project)
+            generated_total += polar_population_spec.generated_copies
+            # Unlike the older scatter preview budget, KCPR copies require
+            # random-access recipe derivation. Keep one global 64-copy polar
+            # budget across every recipe, not 64 copies per recipe.
+            polar_preview_remaining = min(64, preview_remaining)
+            for group in polar_population_spec.groups:
+                if polar_preview_remaining <= 0:
+                    break
+                prototype = project.nodes[group.prototype_node_index]
+                group_limit = min(
+                    polar_preview_remaining, group.recipe.instance_count - 1
+                )
+                lut = quantized_profile_lut(group.profile)
+                for index in range(1, group_limit + 1):
+                    instance = polar_population_instance(
+                        prototype, group, index, lut=lut
+                    )
+                    glow_sample = instance.glow_sample
+                    if glow_sample is None:
+                        glow_sample = polar_population_glow_sample(
+                            group,
+                            index=instance.index,
+                            pose_word=instance.pose_word,
+                            lut=lut,
+                        )
+                    runtime = {
+                        "translation": instance.translation,
+                        "rotation": instance.rotation,
+                        "scale": instance.scale,
+                    }
+                    faces = self._project_node_faces(
+                        project,
+                        prototype,
+                        projector,
+                        runtime,
+                        polar_glow=(
+                            0.0 if glow_sample is None else glow_sample.glow
+                        ),
+                    )
+                    if not faces:
+                        continue
+                    selection_id = self._saved_scene_owner_by_node.get(
+                        prototype.id, prototype.id
+                    )
+                    item = ProjectedMeshItem(
+                        selection_id,
+                        faces,
+                        selection_id == self._selected_id,
+                    )
+                    item.setData(3, "polar_population_copy")
+                    item.setData(5, instance.display_id)
+                    item.setData(
+                        6, 0.0 if glow_sample is None else glow_sample.glow
+                    )
+                    item.setData(
+                        7,
+                        1.0
+                        if glow_sample is None
+                        else glow_sample.display_scale_multiplier,
+                    )
+                    item.setToolTip(
+                        f"{_friendly_name(prototype.id)} · polar display copy "
+                        f"{instance.index + 1} of {group.recipe.instance_count}\n"
+                        f"{POLAR_POPULATION_PRESET_LABELS[group.recipe.preset]} preset · "
+                        "one real ECS prototype"
+                        + (
+                            "\nGlow by distance · exact compact preview"
+                            if glow_sample is not None
+                            else ""
+                        )
+                        + (
+                            "\nGrow glowing copies · display only; real object unchanged"
+                            if glow_sample is not None
+                            and glow_sample.display_scale_multiplier != 1.0
+                            else ""
+                        )
+                    )
+                    item.setZValue(-sum(face[0] for face in faces) / len(faces))
+                    self.scene().addItem(item)
+                    item.setSelected(selection_id == self._selected_id)
+                    self._polar_population_previews.append(
+                        _PolarPopulationPreview(prototype, group, lut, index, item)
+                    )
+                    generated_shown += 1
+                polar_preview_remaining -= group_limit
+                preview_remaining -= group_limit
+        except PolarPopulationError:
+            # Project Check owns the learner-facing error while the rest of
+            # the scene stays editable.
+            pass
+        if (
+            self._selected_id
+            and not self._playing
+            and self._selected_id
+            not in set(self._saved_scene_owner_by_node.values())
+        ):
             self._add_3d_gizmo(projector, project, self._selected_id)
 
         if generated_total:
@@ -869,9 +1244,12 @@ class SceneViewport(QGraphicsView):
                 if generated_shown == generated_total
                 else f"{generated_total} generated · {generated_shown} shown"
             )
-            object_text = f"{len(project.nodes)} authored · {population_text}"
+            object_text = f"{len(project.nodes)} visible · {population_text}"
         else:
+            linked_count = len(set(self._saved_scene_owner_by_node.values()))
             object_text = f"{len(project.nodes)} objects"
+            if linked_count:
+                object_text += f" · {linked_count} linked group(s)"
         title = QGraphicsSimpleTextItem(
             f"3D Scene  •  {project.title}  •  {object_text}"
         )
@@ -891,6 +1269,8 @@ class SceneViewport(QGraphicsView):
         node: Node3DRecord,
         projector: _PerspectiveProjector,
         runtime: Mapping[str, Any] | None,
+        *,
+        polar_glow: float = 0.0,
     ) -> list[tuple[float, QPolygonF, QColor]]:
         translation = node.transform.translation if runtime is None else runtime.get("translation", node.transform.translation)
         rotation = node.transform.rotation if runtime is None else runtime.get("rotation", node.transform.rotation)
@@ -923,44 +1303,250 @@ class SceneViewport(QGraphicsView):
                 project.light.intensity,
                 project.light.ambient,
             )
+            # Match the native material boundary exactly: the deterministic
+            # scalar adds base colour after ordinary light + authored emissive;
+            # final post/Bayer remains downstream and alpha stays untouched.
+            displayed = tuple(
+                value + material.base_color[index] * polar_glow
+                for index, value in enumerate(shaded)
+            )
             color = QColor.fromRgbF(
-                *(min(1.0, max(0.0, value)) for value in shaded),
+                *(min(1.0, max(0.0, value)) for value in displayed),
                 min(1.0, max(0.0, material.base_color[3])),
             )
             faces.append((depth, QPolygonF(screen_points), color))
         return faces
 
+    def _polar_prototype_glow(
+        self,
+        project: Mobile3DProject,
+        state: Mapping[str, Mapping[str, Any]] | None = None,
+    ) -> dict[str, float]:
+        """Evaluate index zero for lighting only; never grow the real object."""
+
+        result: dict[str, float] = {}
+        try:
+            specification = collect_polar_population_project_spec(project)
+        except (PolarPopulationError, TypeError, ValueError):
+            return result
+        for group in specification.groups:
+            if group.glow_parameters is None:
+                continue
+            component = group.component
+            if state is not None:
+                runtime = state.get(group.prototype_id)
+                packed_state = (
+                    None if runtime is None else runtime.get("packed_kinematic")
+                )
+                if not isinstance(packed_state, Mapping):
+                    continue
+                try:
+                    component = PackedKinematicComponent(
+                        packed_state.get("pose_word"),  # type: ignore[arg-type]
+                        packed_state.get("motion_word"),  # type: ignore[arg-type]
+                        str(packed_state.get("profile_id", "")),
+                    )
+                    component.validate()
+                except (TypeError, ValueError):
+                    continue
+            try:
+                lut = quantized_profile_lut(group.profile)
+                sample = polar_population_glow_sample(
+                    group,
+                    index=0,
+                    pose_word=component.pose_word,
+                    lut=lut,
+                )
+            except (
+                IndexError,
+                OverflowError,
+                PolarPopulationError,
+                TypeError,
+                ValueError,
+            ):
+                continue
+            if sample is not None:
+                result[group.prototype_id] = sample.glow
+        return result
+
     def _update_3d_runtime(
         self, project: Mobile3DProject, state: Mapping[str, Mapping[str, Any]]
     ) -> None:
         projector = _PerspectiveProjector(project, 1280.0, 720.0)
+        prototype_glow = self._polar_prototype_glow(project, state)
         for node in project.nodes:
             runtime = state.get(node.id)
-            if runtime is None:
+            if (
+                runtime is None
+                or not bool(runtime.get("active", True))
+            ):
                 previous = self._mesh_items.pop(node.id, None)
                 self._mesh_runtime_transforms.pop(node.id, None)
                 if previous is not None and previous.scene() is self.scene():
                     self.scene().removeItem(previous)
                 continue
-            signature = (
-                tuple(runtime.get("translation", node.transform.translation)),
-                tuple(runtime.get("rotation", node.transform.rotation)),
-                tuple(runtime.get("scale", node.transform.scale)),
-            )
+            try:
+                signature = (
+                    tuple(runtime.get("translation", node.transform.translation)),
+                    tuple(runtime.get("rotation", node.transform.rotation)),
+                    tuple(runtime.get("scale", node.transform.scale)),
+                )
+            except TypeError:
+                previous = self._mesh_items.pop(node.id, None)
+                self._mesh_runtime_transforms.pop(node.id, None)
+                if previous is not None and previous.scene() is self.scene():
+                    self.scene().removeItem(previous)
+                continue
             if self._mesh_runtime_transforms.get(node.id) == signature:
                 continue
             previous = self._mesh_items.pop(node.id, None)
             if previous is not None and previous.scene() is self.scene():
                 self.scene().removeItem(previous)
-            faces = self._project_node_faces(project, node, projector, runtime)
+            try:
+                node_glow = prototype_glow.get(node.id, 0.0)
+                faces = self._project_node_faces(
+                    project,
+                    node,
+                    projector,
+                    runtime,
+                    polar_glow=node_glow,
+                )
+            except (IndexError, OverflowError, TypeError, ValueError):
+                self._mesh_runtime_transforms.pop(node.id, None)
+                continue
             if not faces:
                 self._mesh_runtime_transforms[node.id] = signature
                 continue
-            item = ProjectedMeshItem(node.id, faces, node.id == self._selected_id)
+            selection_id = self._saved_scene_owner_by_node.get(node.id, node.id)
+            item = ProjectedMeshItem(
+                selection_id, faces, selection_id == self._selected_id
+            )
+            item.setData(4, node.id)
+            item.setData(6, node_glow)
+            item.setData(7, 1.0)
+            if selection_id != node.id:
+                item.setToolTip(
+                    f"{_friendly_name(node.id)} inside linked {_friendly_name(selection_id)}\n"
+                    "Click to select the whole Saved Scene group"
+                )
             item.setZValue(-sum(face[0] for face in faces) / len(faces))
             self.scene().addItem(item)
+            item.setSelected(selection_id == self._selected_id)
             self._mesh_items[node.id] = item
             self._mesh_runtime_transforms[node.id] = signature
+        self._update_polar_population_runtime(project, state, projector)
+
+    def _update_polar_population_runtime(
+        self,
+        project: Mobile3DProject,
+        state: Mapping[str, Mapping[str, Any]],
+        projector: _PerspectiveProjector,
+    ) -> None:
+        """Move only retained display copies from their real runtime prototype."""
+
+        for preview in self._polar_population_previews:
+            item = preview.item
+            runtime = state.get(preview.prototype.id)
+            if (
+                runtime is None
+                or not bool(runtime.get("active", True))
+                or not bool(runtime.get("make_many_copies_visible", True))
+            ):
+                item.setVisible(False)
+                continue
+            packed_state = runtime.get("packed_kinematic")
+            if not isinstance(packed_state, Mapping):
+                item.setVisible(False)
+                continue
+            try:
+                component = PackedKinematicComponent(
+                    packed_state.get("pose_word"),  # type: ignore[arg-type]
+                    packed_state.get("motion_word"),  # type: ignore[arg-type]
+                    str(packed_state.get("profile_id", "")),
+                )
+                component.validate()
+                runtime_prototype = replace(
+                    preview.prototype,
+                    transform=replace(
+                        preview.prototype.transform,
+                        translation=tuple(
+                            runtime.get(
+                                "translation", preview.prototype.transform.translation
+                            )
+                        ),
+                        rotation=tuple(
+                            runtime.get("rotation", preview.prototype.transform.rotation)
+                        ),
+                        scale=tuple(
+                            runtime.get("scale", preview.prototype.transform.scale)
+                        ),
+                    ),
+                    velocity=tuple(
+                        runtime.get("velocity", preview.prototype.velocity)
+                    ),
+                )
+                burst_kwargs: dict[str, Any] = {}
+                if preview.group.recipe.preset == "burst":
+                    fixed_tick = runtime.get("make_many_fixed_tick")
+                    if type(fixed_tick) is not int or fixed_tick < 0:
+                        raise ValueError(
+                            "Radial Burst runtime state needs a nonnegative fixed tick"
+                        )
+                    burst_kwargs["fixed_tick"] = fixed_tick
+                instance = polar_population_instance(
+                    runtime_prototype,
+                    preview.group,
+                    preview.index,
+                    component=component,
+                    lut=preview.lut,
+                    **burst_kwargs,
+                )
+                glow_sample = instance.glow_sample
+                if glow_sample is None:
+                    glow_sample = polar_population_glow_sample(
+                        preview.group,
+                        index=instance.index,
+                        pose_word=instance.pose_word,
+                        lut=preview.lut,
+                    )
+                faces = self._project_node_faces(
+                    project,
+                    runtime_prototype,
+                    projector,
+                    {
+                        "translation": instance.translation,
+                        "rotation": instance.rotation,
+                        "scale": instance.scale,
+                    },
+                    polar_glow=(
+                        0.0 if glow_sample is None else glow_sample.glow
+                    ),
+                )
+            except (
+                IndexError,
+                OverflowError,
+                PolarPopulationError,
+                TypeError,
+                ValueError,
+            ):
+                item.setVisible(False)
+                continue
+            if not faces:
+                item.setVisible(False)
+                continue
+            item.set_faces(faces)
+            item.setData(6, 0.0 if glow_sample is None else glow_sample.glow)
+            item.setData(
+                7,
+                1.0
+                if glow_sample is None
+                else glow_sample.display_scale_multiplier,
+            )
+            item.setZValue(-sum(face[0] for face in faces) / len(faces))
+            item.setVisible(True)
+            selected = item.object_id == self._selected_id
+            item.selected = selected
+            item.setSelected(selected)
 
     def _add_3d_grid(self, projector: _PerspectiveProjector, project: Mobile3DProject) -> None:
         floor = project.world.floor_y
@@ -1033,8 +1619,9 @@ class SceneViewport(QGraphicsView):
             or not isinstance(document.project, Mobile3DProject)
         ):
             return
-        projector = _PerspectiveProjector(document.project, 1280.0, 720.0)
-        self._add_3d_gizmo(projector, document.project, self._selected_id)
+        preview = self._preview_3d_project()
+        projector = _PerspectiveProjector(preview, 1280.0, 720.0)
+        self._add_3d_gizmo(projector, preview, self._selected_id)
 
     @staticmethod
     def _axis_vector(axis: str, length: float = 1.0) -> tuple[float, float, float]:
@@ -1105,7 +1692,11 @@ class SceneViewport(QGraphicsView):
         if node is None:
             return False
         projector = _PerspectiveProjector(document.project, 1280.0, 720.0)
-        base = tuple(float(value) for value in node.transform.translation)
+        try:
+            world = document.node_world_trs(node.id)
+        except ValueError:
+            return False
+        base = tuple(float(value) for value in world.translation)
         origin = projector.project(base)
         unit_delta = self._axis_vector(handle.axis)
         unit_endpoint = projector.project(
@@ -1164,28 +1755,44 @@ class SceneViewport(QGraphicsView):
         if document is None or not isinstance(document.project, Mobile3DProject):
             return
         project = document.project
-        node = next((item for item in project.nodes if item.id == object_id), None)
-        mesh_item = self._mesh_items.get(object_id)
+        nodes_by_id = {node.id: node for node in project.nodes}
+        node = nodes_by_id.get(object_id)
         if node is None:
             return
+        try:
+            preview_worlds = document.preview_world_trs_after_translation(
+                node.id, translation
+            )
+        except ValueError:
+            return
         projector = _PerspectiveProjector(project, 1280.0, 720.0)
-        runtime = {
-            "translation": translation,
-            "rotation": node.transform.rotation,
-            "scale": node.transform.scale,
-        }
-        faces = self._project_node_faces(project, node, projector, runtime)
-        if mesh_item is not None:
-            mesh_item.set_faces(faces)
-            if faces:
-                mesh_item.setZValue(-sum(face[0] for face in faces) / len(faces))
-        self._mesh_runtime_transforms[object_id] = (
-            translation,
-            tuple(node.transform.rotation),
-            tuple(node.transform.scale),
+        for affected_id, world in preview_worlds.items():
+            affected_node = nodes_by_id[affected_id]
+            runtime = {
+                "translation": world.translation,
+                "rotation": world.rotation,
+                "scale": world.scale,
+            }
+            faces = self._project_node_faces(
+                project, affected_node, projector, runtime
+            )
+            mesh_item = self._mesh_items.get(affected_id)
+            if mesh_item is not None:
+                mesh_item.set_faces(faces)
+                if faces:
+                    mesh_item.setZValue(
+                        -sum(face[0] for face in faces) / len(faces)
+                    )
+            self._mesh_runtime_transforms[affected_id] = (
+                tuple(world.translation),
+                tuple(world.rotation),
+                tuple(world.scale),
+            )
+        selected_world = preview_worlds[object_id]
+        self._update_gizmo_geometry(
+            projector, node, selected_world.translation
         )
-        self._update_gizmo_geometry(projector, node, translation)
-        self.translationPreviewed.emit(object_id, translation)
+        self.translationPreviewed.emit(object_id, selected_world.translation)
 
     def _finish_translation_drag(
         self, handle: TranslationGizmoHandle, position: QPointF
@@ -1223,6 +1830,23 @@ class SceneViewport(QGraphicsView):
         object_id = selected[0].data(0)
         if object_id:
             self.selectionRequested.emit(str(object_id))
+
+    def drawForeground(
+        self, painter: QPainter, rect: QRectF
+    ) -> None:  # noqa: N802 - Qt virtual name
+        super().drawForeground(painter, rect)
+        viewport = self.viewport()
+        config = self._device_look_config
+        if (
+            isinstance(viewport, DeviceLookOpenGLViewport)
+            and config is not None
+            and config.bayer_enabled
+        ):
+            viewport.apply_bayer_reference(painter, config)
+
+    def resizeEvent(self, event) -> None:  # type: ignore[override]
+        super().resizeEvent(event)
+        self._position_device_look_toggle()
 
     def wheelEvent(self, event) -> None:  # type: ignore[override]
         factor = 1.16 if event.angleDelta().y() > 0 else 1 / 1.16

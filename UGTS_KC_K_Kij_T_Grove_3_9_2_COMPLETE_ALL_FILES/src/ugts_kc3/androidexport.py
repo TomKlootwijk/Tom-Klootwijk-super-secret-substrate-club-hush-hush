@@ -8,20 +8,40 @@ from pathlib import Path
 import shutil
 import struct
 import re
-from typing import Any
+from typing import Any, Mapping
 from xml.sax.saxutils import escape as xml_escape
 
+from .animationpack import (
+    ANIMATION_PACK_ASSET,
+    compile_animation_pack_bytes,
+    inspect_animation_pack,
+)
 from .export import write_gltf
 from .graphpack import (
     GRAPH_PACK_ASSET,
     compile_graph_pack_bytes,
     inspect_graph_pack,
 )
+from .hierarchypack import (
+    HIERARCHY_PACK_ASSET,
+    compile_hierarchy_pack_bytes,
+    inspect_hierarchy_pack,
+)
 from .mobile3d import Mobile3DProject, tag_mask
 from .polarpack import (
     POLAR_PACK_ASSET,
     compile_polar_pack_bytes,
     inspect_polar_pack,
+)
+from .polar_population_pack import (
+    POLAR_POPULATION_PACK_ASSET,
+    compile_polar_population_pack_bytes,
+    inspect_polar_population_pack,
+)
+from .renderpack import (
+    RENDER_SUBSTRATE_PACK_ASSET,
+    compile_render_substrate_pack_bytes,
+    inspect_render_substrate_pack,
 )
 from .scatterpack import (
     SCATTER_PACK_ASSET,
@@ -35,6 +55,19 @@ PACK_MAGIC = b"KC3D392\0"
 SUPPORTED_PACK_MAGICS = (b"KC3D391\0", PACK_MAGIC)
 PACK_ENDIAN = 0x01020304
 PACK_VERSION = 1
+
+_SAVED_SCENE_METADATA_KEYS = frozenset({"saved_scenes", "saved_scene_instances"})
+
+
+def _materialized_project(project: Mobile3DProject) -> Mobile3DProject:
+    metadata = getattr(project, "metadata", {})
+    if not isinstance(metadata, Mapping) or not any(
+        key in metadata for key in _SAVED_SCENE_METADATA_KEYS
+    ):
+        return project
+    from .saved_scene import materialize_saved_scenes
+
+    return materialize_saved_scenes(project)
 
 
 class _Writer:
@@ -70,6 +103,7 @@ class _Writer:
 
 def compile_scene_pack_bytes(project: Mobile3DProject) -> bytes:
     """Compile a validated project into the dependency-free native binary format."""
+    project = _materialized_project(project)
     project.validate()
     writer = _Writer()
     writer.raw(PACK_MAGIC)
@@ -361,7 +395,17 @@ class AndroidProjectBuild:
     profile_hint: str
     graph_pack: Path | None = None
     polar_pack: Path | None = None
+    polar_population_pack: Path | None = None
     scatter_pack: Path | None = None
+    animation_pack: Path | None = None
+    hierarchy_pack: Path | None = None
+    render_substrate_pack: Path | None = None
+
+    @property
+    def render_pack(self) -> Path | None:
+        """Short alias retained for callers that use the module name."""
+
+        return self.render_substrate_pack
 
 
 def _file_digest(path: Path) -> str:
@@ -395,9 +439,16 @@ def build_android_project(
     include_authoring_assets: bool = False,
 ) -> AndroidProjectBuild:
     """Materialize a self-contained Android Studio/Gradle native source project."""
+    authored_project = project
+    project = _materialized_project(project)
     project.validate()
     # Compile metadata before touching an existing output directory.  A graph
     # outside the native subset must fail export clearly and non-destructively.
+    hierarchy_pack_data = compile_hierarchy_pack_bytes(project)
+    hierarchy_inspection = (
+        inspect_hierarchy_pack(hierarchy_pack_data, node_count=len(project.nodes))
+        if hierarchy_pack_data else None
+    )
     graph_pack_data = compile_graph_pack_bytes(project)
     graph_inspection = (
         inspect_graph_pack(graph_pack_data) if graph_pack_data else None
@@ -407,10 +458,28 @@ def build_android_project(
         inspect_polar_pack(polar_pack_data, node_count=len(project.nodes))
         if polar_pack_data else None
     )
+    polar_population_pack_data = compile_polar_population_pack_bytes(project)
+    polar_population_inspection = (
+        inspect_polar_population_pack(
+            polar_population_pack_data, node_count=len(project.nodes)
+        )
+        if polar_population_pack_data
+        else None
+    )
     scatter_pack_data = compile_scatter_pack_bytes(project)
     scatter_inspection = (
         inspect_scatter_pack(scatter_pack_data, node_count=len(project.nodes))
         if scatter_pack_data else None
+    )
+    animation_pack_data = compile_animation_pack_bytes(project)
+    animation_inspection = (
+        inspect_animation_pack(animation_pack_data, node_count=len(project.nodes))
+        if animation_pack_data else None
+    )
+    render_substrate_pack_data = compile_render_substrate_pack_bytes(project)
+    render_substrate_inspection = (
+        inspect_render_substrate_pack(render_substrate_pack_data)
+        if render_substrate_pack_data else None
     )
     output_dir = Path(output_dir)
     template = Path(__file__).with_name("android_template") / "project"
@@ -442,8 +511,16 @@ def build_android_project(
     # them outside app/src/main/assets avoids silently packaging duplicate data
     # into every APK.  A diagnostic export can opt back into the old layout.
     evidence_dir = assets if include_authoring_assets else output_dir
-    project_file = project.write(evidence_dir / "project.json")
+    project_file = evidence_dir / "project.json"
+    project_file.write_text(
+        json.dumps(authored_project.to_dict(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     scene_pack = write_scene_pack(project, assets / "signature_scene.kc3d")
+    hierarchy_pack = None
+    if hierarchy_pack_data:
+        hierarchy_pack = assets / HIERARCHY_PACK_ASSET
+        hierarchy_pack.write_bytes(hierarchy_pack_data)
     graph_pack = None
     if graph_pack_data:
         graph_pack = assets / GRAPH_PACK_ASSET
@@ -452,10 +529,22 @@ def build_android_project(
     if polar_pack_data:
         polar_pack = assets / POLAR_PACK_ASSET
         polar_pack.write_bytes(polar_pack_data)
+    polar_population_pack = None
+    if polar_population_pack_data:
+        polar_population_pack = assets / POLAR_POPULATION_PACK_ASSET
+        polar_population_pack.write_bytes(polar_population_pack_data)
     scatter_pack = None
     if scatter_pack_data:
         scatter_pack = assets / SCATTER_PACK_ASSET
         scatter_pack.write_bytes(scatter_pack_data)
+    animation_pack = None
+    if animation_pack_data:
+        animation_pack = assets / ANIMATION_PACK_ASSET
+        animation_pack.write_bytes(animation_pack_data)
+    render_substrate_pack = None
+    if render_substrate_pack_data:
+        render_substrate_pack = assets / RENDER_SUBSTRATE_PACK_ASSET
+        render_substrate_pack.write_bytes(render_substrate_pack_data)
     inspection = inspect_scene_pack(scene_pack)
     (evidence_dir / "scene-pack-inspection.json").write_text(
         json.dumps(inspection, indent=2, sort_keys=True) + "\n",
@@ -467,14 +556,19 @@ def build_android_project(
         "edition": project.edition,
         "project_id": project.id,
         "project_hash": project.content_hash(),
+        "authoring_project_hash": authored_project.content_hash(),
         "profile_hint": profile_hint,
         "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
         "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed",
         "application_id": android_application_id(project.id),
         "authoring_assets_packaged": include_authoring_assets,
+        "transform_hierarchy_runtime": hierarchy_inspection,
         "visual_graph_runtime": graph_inspection,
         "packed_kinematic_runtime": polar_inspection,
+        "polar_population_recipe_asset": polar_population_inspection,
         "population_runtime": scatter_inspection,
+        "transform_animation_runtime": animation_inspection,
+        "render_substrate_runtime": render_substrate_inspection,
         "compile_sdk": 36,
         "target_sdk": 36,
         "min_sdk": 26,
@@ -497,13 +591,26 @@ def build_android_project(
     )
     files = sorted(path for path in output_dir.rglob("*") if path.is_file())
     return AndroidProjectBuild(
-        output_dir, project_file, scene_pack, report_path, len(files),
-        sum(path.stat().st_size for path in files), project.content_hash(),
-        profile_hint, graph_pack, polar_pack, scatter_pack,
+        output_dir=output_dir,
+        project_file=project_file,
+        scene_pack=scene_pack,
+        build_report=report_path,
+        file_count=len(files),
+        total_bytes=sum(path.stat().st_size for path in files),
+        project_hash=project.content_hash(),
+        profile_hint=profile_hint,
+        graph_pack=graph_pack,
+        polar_pack=polar_pack,
+        polar_population_pack=polar_population_pack,
+        scatter_pack=scatter_pack,
+        animation_pack=animation_pack,
+        hierarchy_pack=hierarchy_pack,
+        render_substrate_pack=render_substrate_pack,
     )
 
 
 def write_mobile3d_gltf(project: Mobile3DProject, path: str | Path) -> dict:
     """Export the same project through the retained glTF interchange path."""
+    project = _materialized_project(project)
     project.validate()
     return write_gltf(project.to_scene(), path, project.material_map())

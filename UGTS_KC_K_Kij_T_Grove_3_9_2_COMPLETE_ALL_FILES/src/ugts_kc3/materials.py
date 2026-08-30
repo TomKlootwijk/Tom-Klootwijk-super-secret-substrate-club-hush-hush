@@ -142,7 +142,13 @@ def shade_pbr_lite(
     n = normalize(normal)
     light = normalize(scale(light_direction, -1.0))
     view = normalize(view_direction)
-    halfway = normalize(add(light, view))
+    halfway_sum = add(light, view)
+    halfway_length2 = dot(halfway_sum, halfway_sum)
+    halfway = (
+        (0.0, 0.0, 0.0)
+        if halfway_length2 <= 1.0e-12
+        else scale(halfway_sum, 1.0 / math.sqrt(halfway_length2))
+    )
 
     ndotl = clamp(dot(n, light), 0.0, 1.0)
     ndotv = clamp(dot(n, view), 0.0, 1.0)

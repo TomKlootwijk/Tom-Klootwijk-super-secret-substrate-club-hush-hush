@@ -1,0 +1,188 @@
+{
+  "schema": "ugts-kc-polar-glow-release-evidence-1",
+  "status": "built_only",
+  "source": {
+    "file": "packed-polar-glow-burst-128-lut-subtle.json",
+    "bytes": 21556,
+    "sha256": "b866d0db56728317b2da66705a1f5401286907140fa9237d660687e30bc2e233",
+    "project_id": "packed_polar_recipe_lab_3d",
+    "project_hash": "ddef49d8c5bccada7d94973940eeb18f635d9e0e3674b712dc917da5b1a1aeb5"
+  },
+  "build": {
+    "started_utc": "2026-08-30T01:20:54.916185+00:00",
+    "ended_utc": "2026-08-30T01:21:22.930533+00:00",
+    "total_seconds": 28.014880499977153,
+    "source_export_seconds": 2.094415100000333,
+    "gradle_seconds": 25.89639619999798,
+    "variant": "poco-debug",
+    "gradle_task": "assemblePocoX7ProDebug",
+    "profile_hint": "auto",
+    "include_authoring_assets": false,
+    "fresh_system_temp_workspace": true,
+    "temp_workspace_removed_after_copy": true,
+    "gradle_result": "BUILD SUCCESSFUL in 24s",
+    "compile_sdk": 36,
+    "target_sdk": 36,
+    "min_sdk": 26,
+    "ndk": "r29 / 29.0.14206865"
+  },
+  "scope_boundary": {
+    "installed": false,
+    "adb_commands": [],
+    "adb_serials": [],
+    "device_execution": false,
+    "mali_runtime_claim": false,
+    "performance_claim": false
+  },
+  "apk": {
+    "file": "packed-polar-glow-burst-128-lut-subtle-poco-debug.apk",
+    "bytes": 1817430,
+    "sha256": "17b3dae3c4479b1bd09d335ace551a9414bfd3bacb97bc1c976fa6e5e9c801f4",
+    "application_id": "org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro",
+    "base_application_id": "org.ugts.games.packed_polar_recipe_lab_3d",
+    "version_code": 392,
+    "version_name": "3.9.2-poco-x7-pro",
+    "min_sdk": 26,
+    "target_sdk": 36,
+    "zip_entry_count": 15,
+    "zipalign_verified": true,
+    "abis": [
+      "arm64-v8a"
+    ],
+    "arm64_v8a_only": true,
+    "authoring_asset_entries": [],
+    "authoring_json_packaged": false,
+    "signature": {
+      "v1": false,
+      "v2": true,
+      "v3": false,
+      "v3_1": false,
+      "v4": false,
+      "signer_count": 1,
+      "certificate_dn": "CN=Android Debug, O=Android, C=US",
+      "certificate_sha256": "e32bb1f2b68c55f4af54944c3ce5d0384716a01b77ac7fc66df9aa2132db45ba"
+    }
+  },
+  "workload": {
+    "kcpr_format_version": 3,
+    "recipe_count": 1,
+    "preset": "burst",
+    "instance_count": 128,
+    "ecs_prototype_count": 1,
+    "generated_copy_count": 127,
+    "generated_members_are_ecs_entities": false,
+    "glow_by_distance": {
+      "center_rho": -0.6714046001434326,
+      "inv_half_width": 3.7602531909942627,
+      "strength": 1.25
+    },
+    "polar_mode": "lut",
+    "bayer_mode": "subtle",
+    "bayer_levels": 64,
+    "bayer_strength": 0.30000001192092896,
+    "lineage_namespace": "061ec97d18e0dab87abc56d5499f570e",
+    "recipe_content_address": "c37b60dec922dc0993664feabd176169"
+  },
+  "embedded_packs": {
+    "packed_kinematics.kcpk": {
+      "apk_entry": "assets/packed_kinematics.kcpk",
+      "bytes": 1690,
+      "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0",
+      "matches_preserved_file": true
+    },
+    "polar_populations.kcpr": {
+      "apk_entry": "assets/polar_populations.kcpr",
+      "bytes": 288,
+      "sha256": "4d7f69c230d247188274f963f1896ac1292a54ac216c5e35c34a4668400151a5",
+      "matches_preserved_file": true
+    },
+    "render_substrate.kcrp": {
+      "apk_entry": "assets/render_substrate.kcrp",
+      "bytes": 32,
+      "sha256": "e1b6504739e2fbe3c33fefb5bd78a1172a3f93640822dc05aea5c1b6cf38fcfe",
+      "matches_preserved_file": true
+    }
+  },
+  "native_libraries": {
+    "lib/arm64-v8a/libugts_kc_native.so": {
+      "bytes": 1785400,
+      "sha256": "894f3342ff2ad6b9b6eeffe8751998e88a0aa8d22451929874ae919772e22f70",
+      "elf_build_id": "fb508e289a93df3f968481ac36b44053e6c82cd8",
+      "stored_uncompressed": true
+    }
+  },
+  "embedded_shaders": {
+    "assets/shaders/grove_post.frag": {
+      "bytes": 2265,
+      "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+    },
+    "assets/shaders/grove_post.vert": {
+      "bytes": 190,
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    "assets/shaders/polar_scene.vert": {
+      "bytes": 8484,
+      "sha256": "691dfaf755f86fe2e8ea35947a2ca7f30ec996f94d24cddb71d8424122300d71"
+    },
+    "assets/shaders/scene.frag": {
+      "bytes": 1970,
+      "sha256": "dfd6615c877e8b061691acdc7abc3172dbaca58b727fc58f1a4749604befb6fd"
+    },
+    "assets/shaders/scene.vert": {
+      "bytes": 899,
+      "sha256": "bb8d0e0d715315269a532f6a1f903ef865ec967a07911677c1ff40d62b36ce8c"
+    }
+  },
+  "runtime_entries_verified": [
+    "assets/signature_scene.kc3d",
+    "assets/visual_graphs.kcvg",
+    "assets/packed_kinematics.kcpk",
+    "assets/polar_populations.kcpr",
+    "assets/render_substrate.kcrp",
+    "assets/shaders/grove_post.frag",
+    "assets/shaders/grove_post.vert",
+    "assets/shaders/polar_scene.vert",
+    "assets/shaders/scene.frag",
+    "assets/shaders/scene.vert",
+    "lib/arm64-v8a/libugts_kc_native.so"
+  ],
+  "evidence_files": {
+    "aapt-badging.txt": {
+      "bytes": 1177,
+      "sha256": "b943d418a13d76db65fbcca6837899baf303e4c8a778f8de06174522c812e1b9"
+    },
+    "apkanalyzer-summary.txt": {
+      "bytes": 182,
+      "sha256": "73b23ec80004f67ecbcc9e55d7bc54843609b93f8db1c3a011e857f4e30173d1"
+    },
+    "apksigner-verify.txt": {
+      "bytes": 955,
+      "sha256": "19bf99292f4afdc51155d75b2ba2d856b1ae045a29324bb4e9dc57fefb73ad24"
+    },
+    "build-report.json": {
+      "bytes": 64786,
+      "sha256": "219c028a94720d50aea1658ecd9be1830093b28602c08a67c84eb4367c145a1e"
+    },
+    "gradle-output.txt": {
+      "bytes": 3329,
+      "sha256": "16a823fe83da0b9727fbd30009faa03045174d254d00bbcc89d2995242db2ff2"
+    },
+    "native-readelf-notes.txt": {
+      "bytes": 792,
+      "sha256": "3f187d4ba74b0fe1e247e46bad59c4c2f8c33c6f6fa1f0def9508bb64698df36"
+    },
+    "output-metadata.json": {
+      "bytes": 468,
+      "sha256": "ea0af2a3d24f20610474a457bbf9f2dc13ed188d18ef81b2a3711407c27d02ac"
+    },
+    "zipalign-check.txt": {
+      "bytes": 1068,
+      "sha256": "936682c005e7af8c06e430df049c43d14a1ffd4a2514b581aef6520e7dff9e5c"
+    }
+  },
+  "warnings": [
+    "This is a debug-signed build artifact, not a store/release signing result.",
+    "Gradle reported one deprecated app_dummy compiler warning and deprecated Gradle features; neither failed the build.",
+    "No APK install, launch, ADB sampling, Mali execution, frame timing, thermal sampling, or performance profiling was performed."
+  ]
+}

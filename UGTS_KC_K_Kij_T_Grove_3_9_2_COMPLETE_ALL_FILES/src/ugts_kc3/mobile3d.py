@@ -5,6 +5,8 @@ separate downstream adapter implemented by :mod:`ugts_kc3.androidexport`.
 """
 from __future__ import annotations
 
+from bisect import bisect_left
+from collections.abc import MutableMapping
 from dataclasses import dataclass, field
 import copy
 import hashlib
@@ -13,11 +15,32 @@ import math
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
+from .animation3d import (
+    ANIMATION_LIBRARY_METADATA_KEY,
+    ANIMATION_METADATA_KEY,
+    TransformAnimationError,
+    attach_transform_animations_3d,
+    collect_transform_animation_spec,
+    transform_animation_from_metadata,
+    transform_animation_library_from_metadata,
+)
 from .geometry import Mesh
+from .hierarchy3d import (
+    TransformHierarchySystem3D,
+    attach_transform_hierarchy_3d,
+    build_hierarchy3d,
+    hierarchy_issues3d,
+    is_uniform_positive_scale_3d,
+)
 from .materials import PBRMaterial
 from .packed_kinematics import (
     PackedKinematicComponent,
+    PackedKinematicCodec,
+    PolarLookupTable,
+    PolarMovementComponent3D,
     pack_ecs_document,
+    polar_movement_from_component,
+    replace_polar_movement,
     unpack_ecs_document,
 )
 from .polarpack import (
@@ -25,6 +48,10 @@ from .polarpack import (
     PolarProjectSpec,
     collect_polar_project_spec,
     quantized_profile_lut,
+)
+from .polar_population import (
+    PolarPopulationError,
+    collect_polar_population_project_spec,
 )
 from .math3d import (
     EPS, add, compose_trs, cross, dot, norm, normalize, quat_from_axis_angle,
@@ -34,6 +61,7 @@ from .scene import Asset, Scene, SceneMetadata, SceneNode
 from .scatter import (
     ScatterError,
     collect_scatter_project_spec,
+    f32,
     scatter_instance_id,
     scatter_instances,
 )
@@ -58,6 +86,23 @@ TAG_MAP = {
     "decorative": TAG_DECORATIVE,
     "hazard": TAG_HAZARD,
 }
+
+_SAVED_SCENE_METADATA_KEYS = frozenset({"saved_scenes", "saved_scene_instances"})
+
+
+def _materialize_runtime_project(project: Any) -> Any:
+    """Return the flat runtime view when linked Saved Scenes are authored."""
+
+    metadata = getattr(project, "metadata", {})
+    if not isinstance(metadata, Mapping) or not any(
+        key in metadata for key in _SAVED_SCENE_METADATA_KEYS
+    ):
+        return project
+    # Local by design: saved_scene builds Mobile3DProject records and therefore
+    # must not become an import-time dependency of the core project model.
+    from .saved_scene import materialize_saved_scenes
+
+    return materialize_saved_scenes(project)
 
 
 def visual_graphs_from_metadata(metadata: Mapping[str, Any]) -> tuple[VisualGraph, ...]:
@@ -203,6 +248,330 @@ def _scatter_graph_mutation_messages(
                         f"Logic Blocks graph {graph.id!r} uses {friendly_action} on Populate "
                         f"Area {object_word} {names}. {copy_owner} phone-rendered copies are frozen, so "
                         "choose a normal object or remove Populate Area first.",
+                    )
+                )
+    return tuple(messages)
+
+
+def _graph_known_input(
+    graph: VisualGraph,
+    action_node: Any,
+    port_name: str,
+    default: Any,
+) -> tuple[bool, Any]:
+    """Resolve one saved/constant graph input without pretending runtime data is fixed."""
+
+    incoming = next(
+        (
+            link
+            for link in graph.links
+            if link.target_node == action_node.id and link.target_port == port_name
+        ),
+        None,
+    )
+    if incoming is None:
+        return True, action_node.properties.get(port_name, default)
+    source = next(
+        (node for node in graph.nodes if node.id == incoming.source_node),
+        None,
+    )
+    if (
+        source is not None
+        and source.type == "value.constant"
+        and incoming.source_port == "value"
+    ):
+        return True, source.properties.get("value", 0)
+    return False, None
+
+
+def _packed_polar_write_is_safe(component: str, field: str) -> bool:
+    """Whether one generic write leaves packed-polar-owned axes untouched."""
+
+    component = str(component)
+    field = str(field)
+    if component == "transform":
+        return field in {
+            "position.y",
+            "position.1",
+            "translation.y",
+            "translation.1",
+            "scale",
+            "scale.x",
+            "scale.y",
+            "scale.z",
+            "scale.0",
+            "scale.1",
+            "scale.2",
+        }
+    if component == "velocity":
+        return field in {"y", "1"}
+    if component in {"angular_velocity", "body"}:
+        return False
+    return True
+
+
+def _packed_polar_graph_write_messages(
+    graphs: Sequence[VisualGraph],
+    graph_owners: Mapping[str, set[str | None]],
+    prototype_ids: set[str],
+) -> tuple[tuple[str, str], ...]:
+    """Reject generic graph writes that compete with packed polar authority."""
+
+    messages: list[tuple[str, str]] = []
+    controlled_components = {"transform", "velocity", "angular_velocity", "body"}
+    for graph in graphs:
+        owners = graph_owners.get(graph.id, set())
+        if not owners:
+            continue
+        for graph_node in graph.nodes:
+            if graph_node.type != "action.set_component":
+                continue
+            targets = _graph_mutation_targets(graph, graph_node, owners)
+            affected = prototype_ids if targets is None else prototype_ids & targets
+            if not affected:
+                continue
+            component_known, component = _graph_known_input(
+                graph, graph_node, "component", "transform"
+            )
+            field_known, field = _graph_known_input(
+                graph, graph_node, "field", "position"
+            )
+            if component_known:
+                component_name = str(component)
+                if component_name not in controlled_components:
+                    continue
+                if field_known and _packed_polar_write_is_safe(
+                    component_name, str(field)
+                ):
+                    continue
+            path = f"metadata.visual_graphs.{graph.id}.nodes.{graph_node.id}"
+            names = ", ".join(repr(value) for value in sorted(affected))
+            target_text = (
+                f"Movement Pattern object {names}"
+                if len(affected) == 1
+                else f"Movement Pattern objects {names}"
+            )
+            field_text = (
+                "a setting chosen while the game runs"
+                if not component_known or not field_known
+                else f"{component}.{field or '<whole>'}"
+            )
+            messages.append(
+                (
+                    path,
+                    f"Logic Blocks graph {graph.id!r} tries to change {field_text} on "
+                    f"{target_text}. Movement Pattern owns X/Z position, facing rotation, "
+                    "X/Z velocity, and spin. Change Polar Movement fields instead; only "
+                    "Y position, Y velocity, and Scale remain ordinary settings.",
+                )
+            )
+    return tuple(messages)
+
+
+def _hierarchy_graph_scale_messages(
+    graphs: Sequence[VisualGraph],
+    graph_owners: Mapping[str, set[str | None]],
+    parent_ids: set[str],
+) -> tuple[tuple[str, str], ...]:
+    """Reject graph scale writes that can make a retained parent uncomposable."""
+
+    messages: list[tuple[str, str]] = []
+    for graph in graphs:
+        owners = graph_owners.get(graph.id, set())
+        if not owners:
+            continue
+        for graph_node in graph.nodes:
+            if graph_node.type != "action.set_component":
+                continue
+            targets = _graph_mutation_targets(graph, graph_node, owners)
+            affected = parent_ids if targets is None else parent_ids & targets
+            if not affected:
+                continue
+
+            component_known, component = _graph_known_input(
+                graph, graph_node, "component", "transform"
+            )
+            field_known, field = _graph_known_input(
+                graph, graph_node, "field", "position"
+            )
+            could_be_transform = not component_known or str(component) == "transform"
+            field_name = "" if not field_known else str(field)
+            could_write_scale = (
+                not field_known
+                or field_name in {"", "scale"}
+                or field_name.startswith("scale.")
+            )
+            if not could_be_transform or not could_write_scale:
+                continue
+
+            # A complete, saved uniform-positive vector is the one scale write
+            # whose result is safe regardless of when the graph runs. A
+            # single-axis or runtime-selected write cannot prove that all
+            # three parent axes remain equal.
+            if component_known and field_known and field_name in {"", "scale"}:
+                value_known, value = _graph_known_input(
+                    graph, graph_node, "value", None
+                )
+                if value_known:
+                    if field_name == "scale" and is_uniform_positive_scale_3d(value):
+                        continue
+                    if (
+                        field_name == ""
+                        and isinstance(value, Mapping)
+                        and (
+                            "scale" not in value
+                            or is_uniform_positive_scale_3d(value["scale"])
+                        )
+                    ):
+                        continue
+
+            path = f"metadata.visual_graphs.{graph.id}.nodes.{graph_node.id}"
+            if targets is None:
+                target_text = "a parent chosen while the game runs"
+            else:
+                names = ", ".join(repr(value) for value in sorted(affected))
+                target_text = (
+                    f"hierarchy parent {names}"
+                    if len(affected) == 1
+                    else f"hierarchy parents {names}"
+                )
+            messages.append(
+                (
+                    path,
+                    f"Logic Blocks graph {graph.id!r} can change the Scale of {target_text} "
+                    "without proving equal positive X, Y, and Z values. Retained children "
+                    "need a uniform positive parent scale; save one complete uniform Scale "
+                    "vector or move this block to an object without children.",
+                )
+            )
+    return tuple(messages)
+
+
+def _animation_graph_messages(
+    graphs: Sequence[VisualGraph],
+    graph_owners: Mapping[str, set[str | None]],
+    scene_ids: set[str],
+    clip_ids_by_node: Mapping[str, set[str]],
+) -> tuple[tuple[str, str], ...]:
+    """Prove fixed Play/Stop targets while leaving dynamic choices runtime-checked."""
+
+    messages: list[tuple[str, str]] = []
+    for graph in graphs:
+        owners = graph_owners.get(graph.id, set())
+        if not owners:
+            continue
+        for graph_node in graph.nodes:
+            if graph_node.type not in {
+                "action.play_animation",
+                "action.stop_animation",
+            }:
+                continue
+            path = f"metadata.visual_graphs.{graph.id}.nodes.{graph_node.id}"
+            targets = _graph_mutation_targets(graph, graph_node, owners)
+            if targets is None:
+                # Sensing/state can deliberately choose an object while the game runs.
+                # The bounded runtime reports a precise issue if that object has no clip.
+                continue
+            if not targets:
+                messages.append(
+                    (
+                        path,
+                        f"Logic Blocks graph {graph.id!r} uses This object for Animation, "
+                        "but this is World Logic. Choose a specific animated object.",
+                    )
+                )
+                continue
+            missing_scene = sorted(target for target in targets if target not in scene_ids)
+            if missing_scene:
+                messages.append(
+                    (
+                        path,
+                        "Animation Logic Blocks name missing scene "
+                        + ("object " if len(missing_scene) == 1 else "objects ")
+                        + ", ".join(repr(value) for value in missing_scene)
+                        + ". Choose an object from this project.",
+                    )
+                )
+                continue
+            missing_animation = sorted(
+                target for target in targets if target not in clip_ids_by_node
+            )
+            if missing_animation:
+                messages.append(
+                    (
+                        path,
+                        "Animation Logic Blocks target "
+                        + ("object " if len(missing_animation) == 1 else "objects ")
+                        + ", ".join(repr(value) for value in missing_animation)
+                        + " without an Animation. Create a clip on each target first.",
+                    )
+                )
+                continue
+            if graph_node.type != "action.play_animation":
+                continue
+            clip_known, clip_value = _graph_known_input(
+                graph, graph_node, "clip", "main"
+            )
+            if not clip_known or not isinstance(clip_value, str):
+                continue
+            missing_clip = sorted(
+                target
+                for target in targets
+                if clip_value not in clip_ids_by_node[target]
+            )
+            if missing_clip:
+                messages.append(
+                    (
+                        path,
+                        f"Play Animation asks for clip {clip_value!r}, but "
+                        + ("object " if len(missing_clip) == 1 else "objects ")
+                        + ", ".join(repr(value) for value in missing_clip)
+                        + " do not have it. Choose one of their saved clips.",
+                    )
+                )
+    return tuple(messages)
+
+
+def _polar_population_graph_messages(
+    graphs: Sequence[VisualGraph],
+    graph_owners: Mapping[str, set[str | None]],
+    prototype_ids: set[str],
+) -> tuple[tuple[str, str], ...]:
+    """Validate fixed Make Many targets without inventing a runtime entity query."""
+
+    messages: list[tuple[str, str]] = []
+    for graph in graphs:
+        owners = graph_owners.get(graph.id, set())
+        if not owners:
+            continue
+        for graph_node in graph.nodes:
+            if graph_node.type != "action.set_polar_population_visible":
+                continue
+            path = f"metadata.visual_graphs.{graph.id}.nodes.{graph_node.id}"
+            literal = graph_node.properties.get("entity")
+            if literal in (None, ""):
+                invalid = sorted(
+                    "World Logic" if owner is None else repr(owner)
+                    for owner in owners
+                    if owner is None or owner not in prototype_ids
+                )
+                if invalid:
+                    messages.append(
+                        (
+                            path,
+                            "Show or Hide Extra Copies uses This object, but "
+                            + ", ".join(invalid)
+                            + " does not own a Make Many recipe. Choose an object listed by Make Many.",
+                        )
+                    )
+                continue
+            target = str(literal)
+            if target not in prototype_ids:
+                messages.append(
+                    (
+                        path,
+                        f"Show or Hide Extra Copies target {target!r} does not own a Make Many recipe. "
+                        "Choose an object listed by Make Many.",
                     )
                 )
     return tuple(messages)
@@ -475,10 +844,15 @@ class Node3DRecord:
     restitution: float = 0.35
     tags: tuple[str, ...] = ()
     metadata: dict[str, Any] = field(default_factory=dict, compare=False)
+    parent_id: str | None = None
 
     def validate(self) -> None:
         if not self.id or not self.mesh_id or not self.material_id:
             raise ValueError("node id, mesh_id and material_id required")
+        if self.parent_id is not None and not isinstance(self.parent_id, str):
+            raise ValueError("parent_id must be nonempty text or null")
+        if self.parent_id == "":
+            raise ValueError("parent_id must be nonempty text or null")
         self.transform.validate()
         _values(self.velocity, 3, "velocity")
         _values(self.angular_velocity, 3, "angular_velocity")
@@ -488,7 +862,7 @@ class Node3DRecord:
             raise ValueError("restitution must be in [0,1]")
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "id": self.id,
             "mesh_id": self.mesh_id,
             "material_id": self.material_id,
@@ -502,6 +876,9 @@ class Node3DRecord:
             "tags": list(self.tags),
             "metadata": self.metadata,
         }
+        if self.parent_id is not None:
+            result["parent_id"] = self.parent_id
+        return result
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "Node3DRecord":
@@ -515,6 +892,7 @@ class Node3DRecord:
             float(data.get("restitution", 0.35)),
             tuple(str(tag) for tag in data.get("tags", [])),
             dict(data.get("metadata", {})),
+            None if data.get("parent_id") is None else str(data["parent_id"]),
         )
 
 
@@ -968,12 +1346,45 @@ class Mobile3DProject:
                 error("material.unknown", f"{path}.material_id", node.material_id)
             if node.collider.sensor and node.collider.shape != "none":
                 sensor_count += 1
+        node_index_by_id = {
+            node.id: index for index, node in enumerate(self.nodes)
+        }
+        hierarchy_issue_paths = {
+            "parent_missing": "parent_id",
+            "cycle": "parent_id",
+            "depth": "parent_id",
+            "parent_scale": "transform.scale",
+            "child_dynamic": "dynamic",
+            "child_collider": "collider",
+            "child_tags": "tags",
+            "child_angular_velocity": "angular_velocity",
+            "child_visual_graph": "metadata.visual_graph",
+            "child_packed_movement": "metadata.packed_kinematic",
+            "child_population": "metadata.scatter_population",
+            "child_transform_animation": "metadata.transform_animation",
+        }
+        for hierarchy_issue in hierarchy_issues3d(self.nodes):
+            # The ordinary node pass already reports duplicate ids with its
+            # established public code.  Avoid changing that flat error shape.
+            if hierarchy_issue.code == "duplicate":
+                continue
+            index = node_index_by_id.get(hierarchy_issue.node_id)
+            suffix = hierarchy_issue_paths.get(hierarchy_issue.code, "parent_id")
+            path = "nodes" if index is None else f"nodes[{index}].{suffix}"
+            error(
+                f"hierarchy.{hierarchy_issue.code}",
+                path,
+                hierarchy_issue.message,
+            )
         if sensor_count > MAX_TRIGGER_SENSORS:
             error(
                 "trigger.sensor_limit",
                 "nodes",
                 f"projects support at most {MAX_TRIGGER_SENSORS} active trigger areas",
             )
+        hierarchy_parent_ids = {
+            str(node.parent_id) for node in self.nodes if node.parent_id is not None
+        }
         graphs: tuple[VisualGraph, ...] = ()
         graphs_valid = True
         try:
@@ -1029,6 +1440,11 @@ class Mobile3DProject:
                 error("graph.binding_unknown", "metadata.world_graphs", graph_id)
             else:
                 graph_owners.setdefault(graph_id, set()).add(None)
+        if graphs_valid and hierarchy_parent_ids:
+            for path, message in _hierarchy_graph_scale_messages(
+                graphs, graph_owners, hierarchy_parent_ids
+            ):
+                error("hierarchy.parent_graph_scale", path, message)
         polar_profile_count = 0
         polar_component_count = 0
         try:
@@ -1043,12 +1459,37 @@ class Mobile3DProject:
             error("packed_kinematic.invalid", "metadata.packed_kinematic_profiles", str(exc))
         else:
             for item in polar_spec.components:
-                if self.nodes[item.node_index].dynamic:
+                polar_node = self.nodes[item.node_index]
+                if polar_node.dynamic:
                     error(
                         "packed_kinematic.dynamic_conflict",
                         f"nodes[{item.node_index}].dynamic",
                         "packed kinematics are transform-authoritative; use a static node so physics does not overwrite them",
                     )
+                if "player" in polar_node.tags:
+                    error(
+                        "packed_kinematic.player_conflict",
+                        f"nodes[{item.node_index}].tags",
+                        "Movement Pattern owns horizontal position and velocity, while the Player controller also writes them; remove the Player tag or the Movement Pattern",
+                    )
+                try:
+                    has_packed_spin = any(
+                        f32(value) != 0.0 for value in polar_node.angular_velocity
+                    )
+                except ScatterError:
+                    has_packed_spin = True
+                if has_packed_spin:
+                    error(
+                        "packed_kinematic.angular_velocity_conflict",
+                        f"nodes[{item.node_index}].angular_velocity",
+                        "Movement Pattern owns facing rotation; set Spin velocity to zero and change Facing in Polar Movement instead",
+                    )
+            if graphs_valid and polar_spec.components:
+                polar_ids = {item.node_id for item in polar_spec.components}
+                for path, message in _packed_polar_graph_write_messages(
+                    graphs, graph_owners, polar_ids
+                ):
+                    error("packed_kinematic.graph_write_conflict", path, message)
         scatter_group_count = 0
         scatter_total_instances = 0
         scatter_generated_copies = 0
@@ -1066,6 +1507,207 @@ class Mobile3DProject:
                     graphs, graph_owners, prototype_ids
                 ):
                     error("scatter.graph_mutation", path, message)
+        polar_population_count = 0
+        polar_population_total_instances = 0
+        polar_population_generated_copies = 0
+        try:
+            polar_population_spec = collect_polar_population_project_spec(self)
+            polar_population_count = len(polar_population_spec.groups)
+            polar_population_total_instances = polar_population_spec.total_instances
+            polar_population_generated_copies = polar_population_spec.generated_copies
+        except PolarPopulationError as exc:
+            error(
+                "polar_population.invalid",
+                "nodes[].metadata.polar_population",
+                str(exc),
+            )
+        else:
+            if graphs_valid:
+                prototype_ids = {
+                    group.prototype_id for group in polar_population_spec.groups
+                }
+                for path, message in _polar_population_graph_messages(
+                    graphs, graph_owners, prototype_ids
+                ):
+                    error("polar_population.graph_target", path, message)
+        animation_binding_count = 0
+        animation_clip_count = 0
+        animation_key_count = 0
+        animation_spec_valid = True
+        clip_ids_by_node: dict[str, set[str]] = {}
+        try:
+            animation_spec = collect_transform_animation_spec(self)
+            animation_binding_count = animation_spec.animated_node_count
+            animation_clip_count = animation_spec.clip_count
+            animation_key_count = animation_spec.key_count
+            for binding in animation_spec.bindings:
+                clip_ids_by_node.setdefault(binding.node_id, set()).add(
+                    binding.clip_id
+                )
+                if binding.node_id in hierarchy_parent_ids and any(
+                    not is_uniform_positive_scale_3d(key.scale)
+                    for key in binding.animation.keys
+                ):
+                    binding_index = node_index_by_id[binding.node_id]
+                    animation_key = (
+                        ANIMATION_LIBRARY_METADATA_KEY
+                        if ANIMATION_LIBRARY_METADATA_KEY
+                        in self.nodes[binding_index].metadata
+                        else ANIMATION_METADATA_KEY
+                    )
+                    error(
+                        "hierarchy.parent_animation_scale",
+                        f"nodes[{binding_index}].metadata.{animation_key}",
+                        f"hierarchy parent {binding.node_id!r} animation clip "
+                        f"{binding.clip_id!r} must keep scale uniform and positive",
+                    )
+        except TransformAnimationError as exc:
+            animation_spec_valid = False
+            error(
+                "transform_animation.invalid",
+                (
+                    f"nodes[].metadata.{ANIMATION_METADATA_KEY}/"
+                    f"{ANIMATION_LIBRARY_METADATA_KEY}"
+                ),
+                str(exc),
+            )
+        if graphs_valid and animation_spec_valid:
+            for path, message in _animation_graph_messages(
+                graphs,
+                graph_owners,
+                node_ids,
+                clip_ids_by_node,
+            ):
+                error("transform_animation.graph_control", path, message)
+        reusable_object_count = 0
+        try:
+            # Kept local to avoid coupling the flat runtime model to the
+            # authoring-only reusable-object helper during module import.
+            from .reusable import reusable_objects_from_metadata, reusable_source_id
+
+            reusable_objects = reusable_objects_from_metadata(self.metadata)
+            reusable_object_count = len(reusable_objects)
+            reusable_ids = {reusable.id for reusable in reusable_objects}
+            for node in self.nodes:
+                reusable_id = reusable_source_id(node)
+                if reusable_id is not None and reusable_id not in reusable_ids:
+                    raise ValueError(
+                        f"node {node.id!r} came from missing saved object "
+                        f"{reusable_id!r}"
+                    )
+            for reusable in reusable_objects:
+                reusable.validate(self.meshes, self.materials)
+                reusable_library = transform_animation_library_from_metadata(
+                    reusable.node.metadata
+                )
+                reusable_animation = transform_animation_from_metadata(
+                    reusable.node.metadata
+                )
+                if "player" in reusable.node.tags:
+                    raise ValueError(
+                        f"saved object {reusable.id!r} cannot contain the unique Player"
+                    )
+                if reusable.node.metadata.get("packed_kinematic") is not None:
+                    raise ValueError(
+                        f"saved object {reusable.id!r} cannot contain a world-centred "
+                        "Movement Pattern"
+                    )
+                if reusable.node.metadata.get("scatter_population") is not None:
+                    raise ValueError(
+                        f"saved object {reusable.id!r} cannot contain Populate Area"
+                    )
+                if reusable.node.metadata.get("polar_population") is not None:
+                    raise ValueError(
+                        f"saved object {reusable.id!r} cannot contain a world-centred "
+                        "polar display population"
+                    )
+                if reusable_animation is not None:
+                    if reusable.node.dynamic:
+                        raise ValueError(
+                            f"saved object {reusable.id!r} cannot combine Animation "
+                            "with dynamic physics"
+                        )
+                    if any(
+                        abs(float(value)) > 1.0e-12
+                        for value in reusable.node.angular_velocity
+                    ):
+                        raise ValueError(
+                            f"saved object {reusable.id!r} cannot combine Animation "
+                            "with spin velocity"
+                        )
+                raw_binding = reusable.node.metadata.get("visual_graph")
+                if raw_binding is None:
+                    continue
+                bindings = visual_graph_binding_ids(
+                    raw_binding,
+                    f"reusable object {reusable.id} visual_graph binding",
+                )
+                if graphs_valid:
+                    unknown = sorted(set(bindings) - graph_ids)
+                    if unknown:
+                        raise ValueError(
+                            f"reusable object {reusable.id!r} uses unknown Logic Blocks: "
+                            + ", ".join(unknown)
+                        )
+                    graph_map = {graph.id: graph for graph in graphs}
+                    owner_ids = {reusable.node.id} | {
+                        node.id
+                        for node in self.nodes
+                        if reusable_source_id(node) == reusable.id
+                    }
+                    reference_fields = {"entity", "origin", "source", "target"}
+                    for graph_id in bindings:
+                        graph = graph_map[graph_id]
+                        reusable_clips = (
+                            {}
+                            if reusable_library is None
+                            else {
+                                reusable.node.id: {
+                                    clip.id for clip in reusable_library.clips
+                                }
+                            }
+                        )
+                        animation_messages = _animation_graph_messages(
+                            (graph,),
+                            {graph_id: {reusable.node.id}},
+                            {reusable.node.id},
+                            reusable_clips,
+                        )
+                        if animation_messages:
+                            raise ValueError(animation_messages[0][1])
+                        graph_nodes = {node.id: node for node in graph.nodes}
+                        for graph_node in graph.nodes:
+                            for key, value in graph_node.properties.items():
+                                if (
+                                    key in reference_fields
+                                    and isinstance(value, str)
+                                    and value in owner_ids
+                                ):
+                                    raise ValueError(
+                                        f"saved object {reusable.id!r} Logic Blocks name "
+                                        f"placed owner {value!r}; use owner-relative This object"
+                                    )
+                        for link in graph.links:
+                            if link.target_port not in reference_fields:
+                                continue
+                            value_node = graph_nodes.get(link.source_node)
+                            if (
+                                value_node is not None
+                                and value_node.type == "value.constant"
+                                and isinstance(value_node.properties.get("value"), str)
+                                and value_node.properties.get("value") in owner_ids
+                            ):
+                                raise ValueError(
+                                    f"saved object {reusable.id!r} Logic Blocks feed a "
+                                    "placed owner id into an object input; use owner-relative "
+                                    "This object"
+                                )
+        except (TypeError, ValueError) as exc:
+            error(
+                "reusable.invalid",
+                "metadata.reusable_objects",
+                str(exc),
+            )
         quality_ids: set[str] = set()
         for index, tier in enumerate(self.quality_tiers):
             try:
@@ -1094,6 +1736,20 @@ class Mobile3DProject:
                 )
         if not self.target_profiles:
             error("target.missing", "target_profiles", "at least one target required")
+        raw_saved_scenes = self.metadata.get("saved_scenes", ())
+        raw_saved_scene_instances = self.metadata.get("saved_scene_instances", ())
+        saved_scene_definition_count = (
+            len(raw_saved_scenes)
+            if isinstance(raw_saved_scenes, Sequence)
+            and not isinstance(raw_saved_scenes, (str, bytes, bytearray))
+            else 0
+        )
+        saved_scene_instance_count = (
+            len(raw_saved_scene_instances)
+            if isinstance(raw_saved_scene_instances, Sequence)
+            and not isinstance(raw_saved_scene_instances, (str, bytes, bytearray))
+            else 0
+        )
         metrics = {
             "mesh_count": len(self.meshes),
             "material_count": len(self.materials),
@@ -1111,8 +1767,47 @@ class Mobile3DProject:
             "scatter_population_count": scatter_group_count,
             "scatter_total_instance_count": scatter_total_instances,
             "scatter_generated_copy_count": scatter_generated_copies,
+            "polar_population_count": polar_population_count,
+            "polar_population_total_instance_count": polar_population_total_instances,
+            "polar_population_generated_copy_count": polar_population_generated_copies,
+            "reusable_object_count": reusable_object_count,
+            "transform_animation_binding_count": animation_binding_count,
+            "transform_animation_clip_count": animation_clip_count,
+            "transform_animation_key_count": animation_key_count,
             "initial_state_key_count": initial_state_count,
+            "saved_scene_definition_count": saved_scene_definition_count,
+            "saved_scene_instance_count": saved_scene_instance_count,
         }
+        if any(key in self.metadata for key in _SAVED_SCENE_METADATA_KEYS):
+            try:
+                materialized = _materialize_runtime_project(self)
+                materialized_report = materialized.validate(raise_on_error=False)
+            except (KeyError, TypeError, ValueError) as exc:
+                error("saved_scene.invalid", "metadata.saved_scenes", str(exc))
+            else:
+                existing_issues = {
+                    (issue.severity, issue.code, issue.path, issue.message)
+                    for issue in issues
+                }
+                for issue in materialized_report.issues:
+                    identity = (
+                        issue.severity,
+                        issue.code,
+                        issue.path,
+                        issue.message,
+                    )
+                    if identity not in existing_issues:
+                        issues.append(issue)
+                        existing_issues.add(identity)
+                metrics = dict(materialized_report.metrics)
+                metrics["authored_node_count"] = len(self.nodes)
+                metrics["materialized_node_count"] = len(materialized.nodes)
+                metrics["saved_scene_definition_count"] = len(
+                    self.metadata.get("saved_scenes", ())
+                )
+                metrics["saved_scene_instance_count"] = len(
+                    self.metadata.get("saved_scene_instances", ())
+                )
         report = ProjectValidation3D(not issues, tuple(issues), metrics)
         if raise_on_error and not report.passed:
             raise ValueError(
@@ -1199,10 +1894,11 @@ class Mobile3DProject:
 
     def write_packed(self, path: str | Path) -> Path:
         """Write compact runtime data while keeping JSON as the authoring format."""
-        self.validate()
+        project = _materialize_runtime_project(self)
+        project.validate()
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(pack_ecs_document(self.to_dict()))
+        path.write_bytes(pack_ecs_document(project.to_dict()))
         return path
 
     def content_hash(self) -> str:
@@ -1213,7 +1909,8 @@ class Mobile3DProject:
 
     def to_scene(self) -> Scene:
         """Convert to the retained scene model without losing per-node materials."""
-        self.validate()
+        project = _materialize_runtime_project(self)
+        project.validate()
         scene = Scene(
             SceneMetadata(
                 schema_version="3.9.1",
@@ -1221,11 +1918,11 @@ class Mobile3DProject:
             )
         )
         asset_ids: dict[tuple[str, str], str] = {}
-        for node in self.nodes:
+        for node in project.nodes:
             key = (node.mesh_id, node.material_id)
             if key in asset_ids:
                 continue
-            record = self.meshes[node.mesh_id]
+            record = project.meshes[node.mesh_id]
             asset_id = f"{node.mesh_id}__{node.material_id}"
             asset_ids[key] = asset_id
             scene.add_asset(
@@ -1238,11 +1935,19 @@ class Mobile3DProject:
                     metadata={"source_mesh_id": node.mesh_id},
                 )
             )
-        for node in self.nodes:
+        hierarchy = build_hierarchy3d(project.nodes)
+        node_by_id = {node.id: node for node in project.nodes}
+        ordered_nodes = (
+            project.nodes
+            if not any(node.parent_id is not None for node in project.nodes)
+            else tuple(node_by_id[node_id] for node_id in hierarchy.topological_order)
+        )
+        for node in ordered_nodes:
             scene.add_node(
                 SceneNode(
                     node.id,
                     asset_ids[(node.mesh_id, node.material_id)],
+                    parent_id=node.parent_id,
                     local_transform=node.transform.matrix(),
                     tags=frozenset(node.tags),
                     metadata={
@@ -1255,9 +1960,9 @@ class Mobile3DProject:
                     },
                 )
             )
-        scatter_spec = collect_scatter_project_spec(self)
+        scatter_spec = collect_scatter_project_spec(project)
         for group in scatter_spec.groups:
-            prototype = self.nodes[group.prototype_node_index]
+            prototype = project.nodes[group.prototype_node_index]
             asset_id = asset_ids[(prototype.mesh_id, prototype.material_id)]
             for instance in scatter_instances(prototype, group):
                 scene.add_node(
@@ -1285,8 +1990,8 @@ class Mobile3DProject:
         return scene
 
     def instantiate_world(self) -> "GameWorld3D":
-        self.validate()
-        return GameWorld3D.from_project(self)
+        project = _materialize_runtime_project(self)
+        return GameWorld3D.from_project(project)
 
 
 @dataclass(frozen=True)
@@ -1465,26 +2170,218 @@ class RenderComponent3D:
             raise ValueError("render mesh and material ids are required")
 
 
+_BUILTIN_POOL_FIELD_NAMES_3D = (
+    "mesh_id",
+    "material_id",
+    "position",
+    "rotation",
+    "scale",
+    "velocity",
+    "angular_velocity",
+    "collider",
+    "dynamic",
+    "mass",
+    "restitution",
+)
+
+
+class _BuiltinComponentField3D:
+    """Dataclass descriptor backed by detached values or one world pool."""
+
+    __slots__ = ("_component_attribute", "_field_name", "_pool_name")
+
+    def __init__(self, pool_name: str, component_attribute: str | None):
+        self._pool_name = pool_name
+        self._component_attribute = component_attribute
+        self._field_name = ""
+
+    def __set_name__(self, owner: type[Any], name: str) -> None:
+        self._field_name = name
+
+    def _component(self, instance: Any) -> Any:
+        owner = instance.__dict__.get("_component_owner")
+        if owner is None:
+            return None
+        pool_id = instance.__dict__.get("_component_pool_id")
+        if pool_id is None:
+            raise RuntimeError("attached entity has no component-pool id")
+        return owner._component_pool(self._pool_name)[pool_id]
+
+    def __get__(self, instance: Any, owner: type[Any] | None = None) -> Any:
+        if instance is None:
+            # Raising here tells dataclasses that this descriptor field has no
+            # default, preserving the historical required constructor slots.
+            raise AttributeError(self._field_name)
+        component = self._component(instance)
+        if component is None:
+            return instance.__dict__[self._field_name]
+        if self._component_attribute is None:
+            return component
+        return getattr(component, self._component_attribute)
+
+    def __set__(self, instance: Any, value: Any) -> None:
+        component = self._component(instance)
+        if component is None:
+            instance.__dict__[self._field_name] = value
+        elif self._component_attribute is None:
+            owner = instance.__dict__["_component_owner"]
+            pool_id = instance.__dict__["_component_pool_id"]
+            owner._component_pool(self._pool_name)[pool_id] = value
+        else:
+            setattr(component, self._component_attribute, value)
+
+
 @dataclass
 class EntityState3D:
+    """Compatibility record whose spawned built-ins live in world-owned pools."""
+
     id: str
-    mesh_id: str
-    material_id: str
-    position: Vec3
-    rotation: Quat
-    scale: Vec3
-    velocity: Vec3
-    angular_velocity: Vec3
-    collider: Collider3DRecord
-    dynamic: bool
-    mass: float
-    restitution: float
+    mesh_id: str = _BuiltinComponentField3D("render", "mesh_id")
+    material_id: str = _BuiltinComponentField3D("render", "material_id")
+    position: Vec3 = _BuiltinComponentField3D("transform", "position")
+    rotation: Quat = _BuiltinComponentField3D("transform", "rotation")
+    scale: Vec3 = _BuiltinComponentField3D("transform", "scale")
+    velocity: Vec3 = _BuiltinComponentField3D("body", "velocity")
+    angular_velocity: Vec3 = _BuiltinComponentField3D("body", "angular_velocity")
+    collider: Collider3DRecord = _BuiltinComponentField3D("collider", None)
+    dynamic: bool = _BuiltinComponentField3D("body", "dynamic")
+    mass: float = _BuiltinComponentField3D("body", "mass")
+    restitution: float = _BuiltinComponentField3D("body", "restitution")
     tags: tuple[str, ...]
     grounded: bool = False
     alive: bool = True
     active: bool = True
     metadata: dict[str, Any] = field(default_factory=dict)
-    extra_components: dict[str, Any] = field(default_factory=dict)
+    extra_components: MutableMapping[str, Any] = field(default_factory=dict)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name == "extra_components":
+            current = self.__dict__.get(name)
+            if (
+                isinstance(current, _SparseComponentsView3D)
+                and self.__dict__.get("_component_owner") is not None
+            ):
+                current.replace_all(value)
+                return
+        object.__setattr__(self, name, value)
+
+    def _detached_builtin_components(
+        self,
+    ) -> tuple[
+        TransformComponent3D,
+        BodyComponent3D,
+        Collider3DRecord,
+        RenderComponent3D,
+    ]:
+        if self.__dict__.get("_component_owner") is not None:
+            raise ValueError(
+                f"entity {self.id!r} already belongs to a GameWorld3D"
+            )
+        return (
+            TransformComponent3D(self.position, self.rotation, self.scale),
+            BodyComponent3D(
+                self.velocity,
+                self.angular_velocity,
+                self.dynamic,
+                self.mass,
+                self.restitution,
+            ),
+            self.collider,
+            RenderComponent3D(self.mesh_id, self.material_id),
+        )
+
+    def _attach_builtin_components(self, world: GameWorld3D, pool_id: str) -> None:
+        if self.__dict__.get("_component_owner") is not None:
+            raise ValueError(
+                f"entity {self.id!r} already belongs to a GameWorld3D"
+            )
+        self.__dict__["_component_owner"] = world
+        self.__dict__["_component_pool_id"] = pool_id
+        for name in _BUILTIN_POOL_FIELD_NAMES_3D:
+            self.__dict__.pop(name, None)
+
+    def _detach_builtin_components(
+        self,
+        world: GameWorld3D,
+        transform: TransformComponent3D,
+        body: BodyComponent3D,
+        collider: Collider3DRecord,
+        render: RenderComponent3D,
+    ) -> None:
+        if self.__dict__.get("_component_owner") is not world:
+            raise RuntimeError("entity is not attached to this GameWorld3D")
+        del self.__dict__["_component_owner"]
+        del self.__dict__["_component_pool_id"]
+        self.__dict__.update(
+            {
+                "mesh_id": render.mesh_id,
+                "material_id": render.material_id,
+                "position": transform.position,
+                "rotation": transform.rotation,
+                "scale": transform.scale,
+                "velocity": body.velocity,
+                "angular_velocity": body.angular_velocity,
+                "collider": collider,
+                "dynamic": body.dynamic,
+                "mass": body.mass,
+                "restitution": body.restitution,
+            }
+        )
+
+    def __copy__(self) -> EntityState3D:
+        result = type(self).__new__(type(self))
+        state = {
+            name: value
+            for name, value in self.__dict__.items()
+            if name not in {"_component_owner", "_component_pool_id"}
+        }
+        if self.__dict__.get("_component_owner") is not None:
+            state.update(
+                {
+                    name: getattr(self, name)
+                    for name in _BUILTIN_POOL_FIELD_NAMES_3D
+                }
+            )
+        result.__dict__.update(state)
+        return result
+
+    def __getstate__(self) -> dict[str, Any]:
+        state = {
+            name: value
+            for name, value in self.__dict__.items()
+            if name not in {"_component_owner", "_component_pool_id"}
+        }
+        if self.__dict__.get("_component_owner") is not None:
+            state.update(
+                {
+                    name: getattr(self, name)
+                    for name in _BUILTIN_POOL_FIELD_NAMES_3D
+                }
+            )
+        if isinstance(state.get("extra_components"), _SparseComponentsView3D):
+            state["extra_components"] = dict(self.extra_components)
+        return state
+
+    def __setstate__(self, state: Mapping[str, Any]) -> None:
+        self.__dict__.update(state)
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> EntityState3D:
+        result = type(self).__new__(type(self))
+        memo[id(self)] = result
+        state = {
+            name: copy.deepcopy(value, memo)
+            for name, value in self.__dict__.items()
+            if name not in {"_component_owner", "_component_pool_id"}
+        }
+        if self.__dict__.get("_component_owner") is not None:
+            state.update(
+                {
+                    name: copy.deepcopy(getattr(self, name), memo)
+                    for name in _BUILTIN_POOL_FIELD_NAMES_3D
+                }
+            )
+        result.__dict__.update(state)
+        return result
 
     @classmethod
     def from_node(cls, node: Node3DRecord) -> "EntityState3D":
@@ -1565,7 +2462,12 @@ def _compose_packed_kinematic_3d(
 ) -> None:
     state = codec.cartesian_state(component, lut)
     x, z = state["position"]
+    velocity_x, velocity_z = state["velocity"]
     entity.position = (x, entity.position[1], z)
+    # Packed polar motion owns horizontal position and therefore also owns the
+    # matching horizontal velocity used by collision response.  Y remains an
+    # ordinary authored/gameplay axis.
+    entity.velocity = (velocity_x, entity.velocity[1], velocity_z)
     entity.rotation = quat_from_axis_angle((0.0, 1.0, 0.0), state["pose"].heading)
 
 
@@ -1578,10 +2480,12 @@ def attach_packed_kinematics_3d(
     priority -100 in pre-physics, matching Android's polar -> graph -> gameplay
     ordering while leaving authored Y, scale and all non-transform components.
     """
-    if not spec.components:
-        return False
     profiles = {profile.id: profile.codec for profile in spec.profiles}
     luts = {profile.id: quantized_profile_lut(profile) for profile in spec.profiles}
+    world._polar_codecs = profiles
+    world._polar_luts = luts
+    if not spec.components:
+        return False
     for item in spec.components:
         entity = world.require(item.node_id)
         packed = PackedKinematicComponent(
@@ -1639,6 +2543,238 @@ class _SystemEntry3D:
     callback: Callable[["GameWorld3D", float, InputFrame3D], None] = field(compare=False)
 
 
+_BUILTIN_COMPONENT_NAMES_3D = frozenset(
+    {
+        "transform",
+        "body",
+        "velocity",
+        "angular_velocity",
+        "alive",
+        "active",
+        "collider",
+        "render",
+        "entity",
+    }
+)
+
+_BUILTIN_QUERY_POOL_NAMES_3D = {
+    "transform": "transform",
+    "body": "body",
+    "velocity": "body",
+    "angular_velocity": "body",
+    "collider": "collider",
+    "render": "render",
+}
+
+
+def _component_pool_name_3d(component_name: str) -> str | None:
+    """Return the owning pool name for one query-visible component."""
+
+    builtin_pool = _BUILTIN_QUERY_POOL_NAMES_3D.get(component_name)
+    if builtin_pool is not None:
+        return builtin_pool
+    if component_name in _BUILTIN_COMPONENT_NAMES_3D:
+        return None
+    if component_name == "polar_movement":
+        return "packed_kinematic"
+    return component_name
+
+
+@dataclass(frozen=True, slots=True)
+class QueryPlanDiagnostics3D:
+    """Read-only structural evidence for one live component-query plan."""
+
+    candidate_component: str | None
+    candidate_count: int
+    total_entity_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class QueryPlan3D:
+    """Reusable normalized query shape backed by live component pools."""
+
+    _world: "GameWorld3D" = field(repr=False)
+    components: tuple[str, ...]
+    tags: frozenset[str]
+    active_only: bool
+    _pool_components: tuple[str, ...] = field(repr=False)
+
+    def execute(self) -> tuple[EntityState3D, ...]:
+        return self._world._execute_query_plan(self)
+
+    @property
+    def diagnostics(self) -> QueryPlanDiagnostics3D:
+        return self._world._query_plan_diagnostics(self)
+
+
+class _SparseComponentsView3D(dict[str, Any]):
+    """Real dict storage synchronized with world sparse query indexes.
+
+    ``dataclasses.asdict`` reconstructs dict subclasses from an iterable of
+    converted pairs.  The one-argument construction path deliberately returns
+    a plain dict, preserving the historical ``EntityState3D`` output exactly.
+    Live two-argument construction fills the dict base so C-level dict APIs,
+    JSON encoding, reverse iteration, and held views retain normal semantics.
+    """
+
+    def __new__(
+        cls, world_or_items: Any, entity_id: str | None = None
+    ) -> _SparseComponentsView3D | dict[str, Any]:
+        if entity_id is None:
+            return dict(world_or_items)
+        return super().__new__(cls)
+
+    def __init__(self, world_or_items: Any, entity_id: str | None = None):
+        if entity_id is None:
+            return
+        self._world = world_or_items
+        self._entity_id = entity_id
+        dict.__init__(
+            self,
+            (
+                (
+                    key,
+                    self._world._get_sparse_component(self._entity_id, key),
+                )
+                for key in self._world._sparse_component_keys(self._entity_id)
+            ),
+        )
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self._world._set_sparse_component(self._entity_id, key, value)
+
+    def __delitem__(self, key: str) -> None:
+        self._world._remove_sparse_component(self._entity_id, key)
+
+    def copy(self) -> dict[str, Any]:
+        return dict.copy(self)
+
+    def clear(self) -> None:
+        for key in tuple(self):
+            del self[key]
+
+    def pop(self, key: str, *default: Any) -> Any:
+        if len(default) > 1:
+            raise TypeError(f"pop expected at most 2 arguments, got {len(default) + 1}")
+        try:
+            return self._world._remove_sparse_component(self._entity_id, key)
+        except KeyError:
+            if default:
+                return default[0]
+            raise
+
+    def popitem(self) -> tuple[str, Any]:
+        keys = self._world._sparse_component_keys(self._entity_id)
+        if not keys:
+            raise KeyError("popitem(): mapping is empty")
+        key = keys[-1]
+        return key, self._world._remove_sparse_component(self._entity_id, key)
+
+    def setdefault(self, key: str, default: Any = None) -> Any:
+        try:
+            return self[key]
+        except KeyError:
+            self[key] = default
+            return default
+
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        values = dict(*args, **kwargs)
+        for key, value in values.items():
+            self[key] = value
+
+    def replace_all(self, values: Any) -> None:
+        replacement = dict(values)
+        next_pools = {
+            name: dict(pool) for name, pool in self._world._sparse_components.items()
+        }
+        for name in self._world._sparse_component_order[self._entity_id]:
+            pool = next_pools[name]
+            del pool[self._entity_id]
+            if not pool:
+                del next_pools[name]
+        for name, component in replacement.items():
+            next_pools.setdefault(name, {})[self._entity_id] = component
+        next_order = dict(self._world._sparse_component_order)
+        next_order[self._entity_id] = list(replacement)
+
+        previous = dict.copy(self)
+        try:
+            dict.clear(self)
+            dict.update(self, replacement)
+        except Exception:
+            dict.clear(self)
+            dict.update(self, previous)
+            raise
+        self._world._sparse_components = next_pools
+        self._world._sparse_component_order = next_order
+
+    def __ior__(self, other: Mapping[str, Any]):
+        self.update(other)
+        return self
+
+    def __or__(self, other: Mapping[str, Any]) -> dict[str, Any]:
+        result = self.copy()
+        result.update(other)
+        return result
+
+    def __ror__(self, other: Mapping[str, Any]) -> dict[str, Any]:
+        result = dict(other)
+        result.update(self)
+        return result
+
+    def __copy__(self) -> dict[str, Any]:
+        return self.copy()
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> dict[str, Any]:
+        return copy.deepcopy(self.copy(), memo)
+
+    def __reduce_ex__(self, protocol: int):
+        del protocol
+        return dict, (self.copy(),)
+
+
+@dataclass(slots=True)
+class PolarPopulationRuntimeState:
+    """Ephemeral visibility for render-only Make Many copies.
+
+    Prototype entities remain ordinary ECS entities.  This sidecar deliberately
+    never enters ``GameWorld3D.state``, component pools, snapshots, or hashes.
+    """
+
+    _copies_visible: dict[str, bool] = field(default_factory=dict)
+
+    @property
+    def prototype_ids(self) -> tuple[str, ...]:
+        return tuple(self._copies_visible)
+
+    def configure(self, prototype_ids: Sequence[str]) -> None:
+        normalized = tuple(sorted(str(value) for value in prototype_ids))
+        if any(not value for value in normalized):
+            raise ValueError("Make Many prototype ids must not be empty")
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("Make Many prototype ids must be unique")
+        self._copies_visible = {value: True for value in normalized}
+
+    def has_prototype(self, entity_id: str) -> bool:
+        return str(entity_id) in self._copies_visible
+
+    def copies_visible(self, entity_id: str) -> bool:
+        target = str(entity_id)
+        if target not in self._copies_visible:
+            raise KeyError(f"object {target!r} has no Make Many recipe")
+        return self._copies_visible[target]
+
+    def set_copies_visible(self, entity_id: str, visible: bool) -> None:
+        if not isinstance(visible, bool):
+            raise TypeError("Make Many copy visibility must be true or false")
+        target = str(entity_id)
+        if target not in self._copies_visible:
+            raise ValueError(
+                f"Show or Hide Extra Copies target {target!r} has no Make Many recipe."
+            )
+        self._copies_visible[target] = visible
+
+
 class GameWorld3D:
     """Deterministic 3D ECS facade with bounded arcade physics and graph systems.
 
@@ -1653,6 +2789,16 @@ class GameWorld3D:
         settings.validate()
         self.settings = settings
         self.entities: dict[str, EntityState3D] = {}
+        self._ordered_entity_ids: list[str] = []
+        self._transform_components: dict[str, TransformComponent3D] = {}
+        self._body_components: dict[str, BodyComponent3D] = {}
+        self._collider_components: dict[str, Collider3DRecord] = {}
+        self._render_components: dict[str, RenderComponent3D] = {}
+        self._sparse_components: dict[str, dict[str, Any]] = {}
+        self._sparse_component_order: dict[str, list[str]] = {}
+        self._query_plans: dict[
+            tuple[tuple[str, ...], frozenset[str], bool], QueryPlan3D
+        ] = {}
         self.tick = 0
         self.time = 0.0
         self.events: list[WorldEvent3D] = []
@@ -1664,16 +2810,55 @@ class GameWorld3D:
         }
         self._listeners: dict[str, list[Callable[[WorldEvent3D], None]]] = {}
         self.visual_graph_bindings: list[Any] = []
+        self.polar_population_runtime = PolarPopulationRuntimeState()
+        self.transform_hierarchy_system: TransformHierarchySystem3D | None = None
+        self._polar_codecs: dict[str, PackedKinematicCodec] = {}
+        self._polar_luts: dict[str, PolarLookupTable] = {}
         self._previous_input_frame = InputFrame3D()
         self._trigger_contacts: tuple[tuple[str, str], ...] = ()
 
+    def __deepcopy__(self, memo: dict[int, Any]) -> GameWorld3D:
+        result = type(self).__new__(type(self))
+        memo[id(self)] = result
+        result.__dict__.update(copy.deepcopy(self.__dict__, memo))
+        result._relink_entity_component_views()
+        return result
+
+    def __setstate__(self, state: Mapping[str, Any]) -> None:
+        self.__dict__.update(state)
+        self._relink_entity_component_views()
+
+    def _relink_entity_component_views(self) -> None:
+        for entity_id, entity in self.entities.items():
+            entity._attach_builtin_components(self, entity_id)
+            object.__setattr__(
+                entity,
+                "extra_components",
+                _SparseComponentsView3D(self, entity_id),
+            )
+
     @classmethod
     def from_project(cls, project: Mobile3DProject) -> "GameWorld3D":
+        project = _materialize_runtime_project(project)
+        project.validate()
         world = cls(project.world)
         world.state.update(initial_state_from_metadata(project.metadata))
+        polar_population_spec = collect_polar_population_project_spec(project)
+        world.polar_population_runtime.configure(
+            tuple(group.prototype_id for group in polar_population_spec.groups)
+        )
         for node in project.nodes:
             world.spawn(EntityState3D.from_node(node))
         attach_packed_kinematics_3d(world, collect_polar_project_spec(project))
+        attach_transform_animations_3d(
+            world, collect_transform_animation_spec(project)
+        )
+        # Capture authored child-local TRS only after root-authoritative startup
+        # adapters have composed, then produce the initial world hierarchy
+        # before Ready graphs observe it.
+        world.transform_hierarchy_system = attach_transform_hierarchy_3d(
+            world, project.nodes
+        )
         graphs = {graph.id: graph for graph in visual_graphs_from_metadata(project.metadata)}
 
         for node in project.nodes:
@@ -1701,12 +2886,126 @@ class GameWorld3D:
                 )
             )
         run_ready_batch(world.visual_graph_bindings)
+        # Ready may move an ancestor.  Return a settled world without allowing
+        # those writes to leak authored-local children for one frame.
+        if world.transform_hierarchy_system is not None:
+            world.transform_hierarchy_system.recompose(world)
         return world
 
     def spawn(self, entity: EntityState3D) -> None:
         if entity.id in self.entities:
             raise ValueError(f"duplicate entity {entity.id}")
+        transform, body, collider, render = entity._detached_builtin_components()
+        initial_components = tuple(entity.extra_components.items())
+        original_components = entity.extra_components
         self.entities[entity.id] = entity
+        self._transform_components[entity.id] = transform
+        self._body_components[entity.id] = body
+        self._collider_components[entity.id] = collider
+        self._render_components[entity.id] = render
+        entity._attach_builtin_components(self, entity.id)
+        self._sparse_component_order[entity.id] = []
+        insert_at = bisect_left(self._ordered_entity_ids, entity.id)
+        self._ordered_entity_ids.insert(insert_at, entity.id)
+        try:
+            for name, component in initial_components:
+                self._set_sparse_component(entity.id, name, component)
+            object.__setattr__(
+                entity,
+                "extra_components",
+                _SparseComponentsView3D(self, entity.id),
+            )
+        except Exception:
+            for name in tuple(self._sparse_component_order[entity.id]):
+                self._remove_sparse_component(entity.id, name)
+            del self._sparse_component_order[entity.id]
+            self._ordered_entity_ids.pop(insert_at)
+            del self.entities[entity.id]
+            transform = self._transform_components.pop(entity.id)
+            body = self._body_components.pop(entity.id)
+            collider = self._collider_components.pop(entity.id)
+            render = self._render_components.pop(entity.id)
+            entity._detach_builtin_components(
+                self, transform, body, collider, render
+            )
+            entity.extra_components = original_components
+            raise
+
+    def set_polar_population_copies_visible(
+        self, entity_id: str, visible: bool
+    ) -> None:
+        """Set one Make Many sidecar flag without changing its real ECS prototype."""
+
+        self.require(entity_id)
+        self.polar_population_runtime.set_copies_visible(entity_id, visible)
+
+    def _sparse_component_keys(self, entity_id: str) -> tuple[str, ...]:
+        return tuple(self._sparse_component_order[entity_id])
+
+    def _has_sparse_component(self, entity_id: str, name: object) -> bool:
+        pool = self._sparse_components.get(name)  # type: ignore[arg-type]
+        return pool is not None and entity_id in pool
+
+    def _component_pool(self, name: str) -> Mapping[str, Any]:
+        if name == "transform":
+            return self._transform_components
+        if name == "body":
+            return self._body_components
+        if name == "collider":
+            return self._collider_components
+        if name == "render":
+            return self._render_components
+        return self._sparse_components.get(name, {})
+
+    def _get_sparse_component(self, entity_id: str, name: str) -> Any:
+        pool = self._sparse_components.get(name)
+        if pool is None or entity_id not in pool:
+            raise KeyError(name)
+        return pool[entity_id]
+
+    def _set_sparse_component(
+        self, entity_id: str, name: str, component: Any
+    ) -> None:
+        order = self._sparse_component_order[entity_id]
+        pool = self._sparse_components.setdefault(name, {})
+        entity = self.entities.get(entity_id)
+        view = None if entity is None else entity.extra_components
+        if entity_id in pool:
+            previous = pool[entity_id]
+            pool[entity_id] = component
+            try:
+                if isinstance(view, _SparseComponentsView3D):
+                    dict.__setitem__(view, name, component)
+            except Exception:
+                pool[entity_id] = previous
+                raise
+            return
+        order.append(name)
+        try:
+            pool[entity_id] = component
+            if isinstance(view, _SparseComponentsView3D):
+                dict.__setitem__(view, name, component)
+        except Exception:
+            pool.pop(entity_id, None)
+            order.pop()
+            if not pool:
+                self._sparse_components.pop(name, None)
+            raise
+
+    def _remove_sparse_component(self, entity_id: str, name: str) -> Any:
+        pool = self._sparse_components.get(name)
+        if pool is None or entity_id not in pool:
+            raise KeyError(name)
+        order = self._sparse_component_order[entity_id]
+        order_index = order.index(name)
+        view = self.entities[entity_id].extra_components
+        if isinstance(view, _SparseComponentsView3D):
+            dict.__delitem__(view, name)
+        component = pool.pop(entity_id)
+        del order[order_index]
+        if not pool:
+            del self._sparse_components[name]
+        return component
 
     def require(
         self, entity_id: str, component_or_name: type | str | None = None
@@ -1727,6 +3026,7 @@ class GameWorld3D:
             ColliderComponent3D: "collider",
             RenderComponent3D: "render",
             PackedKinematicComponent: "packed_kinematic",
+            PolarMovementComponent3D: "polar_movement",
         }
         return names.get(component_or_name, component_or_name.__name__.lower())
 
@@ -1767,6 +3067,18 @@ class GameWorld3D:
             )
         if name == "render":
             return RenderComponent3D(entity.mesh_id, entity.material_id)
+        if name == "polar_movement":
+            packed = entity.extra_components.get("packed_kinematic")
+            if packed is None:
+                return default
+            codec = self._polar_codecs.get(packed.profile_id)
+            lut = self._polar_luts.get(packed.profile_id)
+            if codec is None or lut is None:
+                raise ValueError(
+                    f"entity {entity_id} uses unknown polar movement profile "
+                    f"{packed.profile_id!r}"
+                )
+            return polar_movement_from_component(packed, codec, lut)
         if name == "entity":
             return entity
         return entity.extra_components.get(name, default)
@@ -1781,15 +3093,42 @@ class GameWorld3D:
             )
         return component
 
+    def validate_component_write(
+        self, entity_id: str, component_name: str, field_path: str = ""
+    ) -> None:
+        """Guard generic writes against the packed polar authority boundary."""
+
+        entity = self.require(entity_id)
+        if "packed_kinematic" not in entity.extra_components:
+            return
+        component_name = str(component_name)
+        field_path = str(field_path)
+        if _packed_polar_write_is_safe(component_name, field_path):
+            return
+        target = f"{component_name}.{field_path}" if field_path else component_name
+        raise ValueError(
+            f"Cannot change {target} on {entity_id!r}: Movement Pattern owns X/Z "
+            "position, facing rotation, X/Z velocity, and spin. Change Polar "
+            "Movement fields instead; only Y position, Y velocity, and Scale "
+            "remain ordinary settings."
+        )
+
     def add_component(
         self,
         entity_id: str,
         component: Any,
         name: str | None = None,
         replace_existing: bool = False,
+        *,
+        _ownership_field_path: str | None = None,
     ) -> None:
         entity = self.require(entity_id)
         component_name = name or self._component_key(type(component))
+        self.validate_component_write(
+            entity_id,
+            component_name,
+            "" if _ownership_field_path is None else _ownership_field_path,
+        )
         if component_name == "transform":
             value = component if isinstance(component, TransformComponent3D) else TransformComponent3D(
                 tuple(component.get("position", component.get("translation", entity.position))),
@@ -1797,7 +3136,7 @@ class GameWorld3D:
                 tuple(component.get("scale", entity.scale)),
             )
             value.validate()
-            entity.position, entity.rotation, entity.scale = value.position, value.rotation, value.scale
+            self._transform_components[entity_id] = value
             return
         if component_name == "body":
             value = component if isinstance(component, BodyComponent3D) else BodyComponent3D(
@@ -1808,11 +3147,7 @@ class GameWorld3D:
                 float(component.get("restitution", entity.restitution)),
             )
             value.validate()
-            entity.velocity = value.velocity
-            entity.angular_velocity = value.angular_velocity
-            entity.dynamic = bool(value.dynamic)
-            entity.mass = value.mass
-            entity.restitution = value.restitution
+            self._body_components[entity_id] = value
             return
         if component_name in {"velocity", "angular_velocity"}:
             value = tuple(Vector3Value3D(component))
@@ -1833,7 +3168,7 @@ class GameWorld3D:
                 tuple(component.get("half_extents", entity.collider.half_extents)),
                 bool(component.get("sensor", entity.collider.sensor)),
             )
-            entity.collider = value.to_record()
+            self._collider_components[entity_id] = value.to_record()
             return
         if component_name == "render":
             value = component if isinstance(component, RenderComponent3D) else RenderComponent3D(
@@ -1841,7 +3176,25 @@ class GameWorld3D:
                 str(component.get("material_id", entity.material_id)),
             )
             value.validate()
-            entity.mesh_id, entity.material_id = value.mesh_id, value.material_id
+            self._render_components[entity_id] = value
+            return
+        if component_name == "polar_movement":
+            packed = entity.extra_components.get("packed_kinematic")
+            if packed is None:
+                raise ValueError(
+                    f"entity {entity_id} has no packed movement to edit; choose a "
+                    "Movement Pattern in the Inspector first"
+                )
+            codec = self._polar_codecs.get(packed.profile_id)
+            lut = self._polar_luts.get(packed.profile_id)
+            if codec is None or lut is None:
+                raise ValueError(
+                    f"entity {entity_id} uses unknown polar movement profile "
+                    f"{packed.profile_id!r}"
+                )
+            updated = replace_polar_movement(packed, codec, component, lut)
+            entity.extra_components["packed_kinematic"] = updated
+            _compose_packed_kinematic_3d(entity, updated, codec, lut)
             return
         if component_name in entity.extra_components and not replace_existing:
             raise ValueError(f"entity {entity_id} already has component {component_name}")
@@ -1852,12 +3205,78 @@ class GameWorld3D:
 
     def remove_component(self, entity_id: str, component_or_name: type | str) -> Any:
         name = self._component_key(component_or_name)
-        if name in {
-            "transform", "body", "velocity", "angular_velocity", "alive", "active",
-            "collider", "render", "entity",
-        }:
+        if name in _BUILTIN_COMPONENT_NAMES_3D:
             raise ValueError(f"built-in 3D component {name} cannot be removed from the compatibility record")
         return self.require(entity_id).extra_components.pop(name)
+
+    def compile_query(
+        self,
+        *component_types: type | str,
+        tags: Sequence[str] = (),
+        active_only: bool = True,
+    ) -> QueryPlan3D:
+        """Return a reusable plan whose membership and filters remain live."""
+
+        # Component order has no query meaning.  Canonicalize it so callers
+        # asking for the same set in a different order share one compact plan.
+        names = tuple(
+            sorted({self._component_key(item) for item in component_types})
+        )
+        required_tags = frozenset(tags)
+        active = bool(active_only)
+        cache_key = (names, required_tags, active)
+        cached = self._query_plans.get(cache_key)
+        if cached is not None:
+            return cached
+        pool_names = tuple(
+            dict.fromkeys(
+                pool_name
+                for name in names
+                if (pool_name := _component_pool_name_3d(name)) is not None
+            )
+        )
+        plan = QueryPlan3D(self, names, required_tags, active, pool_names)
+        self._query_plans[cache_key] = plan
+        return plan
+
+    def _query_plan_candidate(
+        self, plan: QueryPlan3D
+    ) -> tuple[str | None, tuple[str, ...]]:
+        if not plan._pool_components:
+            return None, tuple(self._ordered_entity_ids)
+        candidate_name = min(
+            plan._pool_components,
+            key=lambda name: (len(self._component_pool(name)), name),
+        )
+        return candidate_name, tuple(
+            sorted(self._component_pool(candidate_name))
+        )
+
+    def _query_plan_diagnostics(
+        self, plan: QueryPlan3D
+    ) -> QueryPlanDiagnostics3D:
+        candidate_name, candidate_ids = self._query_plan_candidate(plan)
+        return QueryPlanDiagnostics3D(
+            candidate_name,
+            len(candidate_ids),
+            len(self._ordered_entity_ids),
+        )
+
+    def _execute_query_plan(
+        self, plan: QueryPlan3D
+    ) -> tuple[EntityState3D, ...]:
+        _, candidate_ids = self._query_plan_candidate(plan)
+        return tuple(
+            entity
+            for entity_id in candidate_ids
+            if (entity := self.entities[entity_id]).alive
+            and (entity.active or not plan.active_only)
+            and plan.tags.issubset(entity.tags)
+            and all(
+                entity_id in self._component_pool(name)
+                for name in plan._pool_components
+            )
+        )
 
     def query(
         self,
@@ -1865,20 +3284,9 @@ class GameWorld3D:
         tags: Sequence[str] = (),
         active_only: bool = True,
     ) -> tuple[EntityState3D, ...]:
-        names = tuple(self._component_key(item) for item in component_types)
-        required_tags = set(tags)
-        builtins = {
-            "transform", "body", "velocity", "angular_velocity", "alive", "active",
-            "collider", "render", "entity",
-        }
-        return tuple(
-            entity
-            for entity_id in sorted(self.entities)
-            if (entity := self.entities[entity_id]).alive
-            and (entity.active or not active_only)
-            and required_tags.issubset(entity.tags)
-            and all(name in builtins or name in entity.extra_components for name in names)
-        )
+        return self.compile_query(
+            *component_types, tags=tags, active_only=active_only
+        ).execute()
 
     def add_system(
         self,
@@ -2167,6 +3575,10 @@ class GameWorld3D:
             self._gameplay()
             self._run_systems("update", frame)
             self._run_systems("late", frame)
+            # This endpoint is intentionally after every graph, physics,
+            # gameplay and user-system transform writer in the fixed step.
+            if self.transform_hierarchy_system is not None:
+                self.transform_hierarchy_system.recompose(self)
             self.tick += 1
             self.time = self.tick * self.settings.fixed_dt
             self._previous_input_frame = current_frame

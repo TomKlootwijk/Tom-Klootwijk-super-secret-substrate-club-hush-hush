@@ -27,7 +27,7 @@ ugts-studio
 Choose **Start a Simple 2D Game** on the welcome screen. The starter has a player, one crystal and a tiny
 logic graph. It is deliberately small enough to understand in one sitting.
 
-## 2. Learn the five places
+## 2. Learn the six places
 
 - **Scene Tree** lists the things in the current scene.
 - **Scene** is where you select them, drag 2D objects, or use the red X, green Y and blue Z handles
@@ -35,9 +35,13 @@ logic graph. It is deliberately small enough to understand in one sitting.
 - **Inspector** changes position, rotation and size, plus existing pictures, shapes, materials,
   simple Mobile 3D movement patterns and bounded decorative Populate Areas.
 - **Logic Blocks** connects readable blocks instead of asking you to type code.
-- **Output & Builds** explains validation and builds in ordinary language.
+- **Animation** gives one eligible static Mobile 3D object a small library of named whole-pose clips.
+  It opens when an animated object needs it and shares the bottom tray with Output.
+- **Output & Builds** explains validation and builds in ordinary language. It stays closed until a
+  check, build, deploy or error has useful detail.
 
-If a panel feels distracting, close it. The **View** menu can reopen each panel.
+The dark workspace starts viewport-first: Scene Tree and Resources share the left tabs, and Logic
+Blocks hides the Inspector to give the graph room. The **View** menu can reopen every dock.
 
 ## 3. Press Play first
 
@@ -120,14 +124,69 @@ Click **+ Trigger Area** above the Scene Tree to add a ready-made one. You can a
 open **Trigger Area** in the Inspector and turn on **Use as Trigger**. Choose Sphere and a Radius, or
 Box and Size X/Y/Z. All of those edits support Undo/Redo and save with the project.
 
+To reuse one safe 3D object, select it and click **Save Object** above the Scene Tree. Give it a short
+name, then click **+ Saved Object…** whenever you want an independent ordinary copy. Its resources
+and Logic Block bytecode stay shared, but its placement, look and physics can differ.
+
+To reuse a group, hold Ctrl and select at least two ordinary 3D objects. Click the object that should
+anchor the group last, then choose **Save Together** and give the Saved Scene a clear name. Choose
+**+ Saved Scene…** to place a linked copy. It appears as one group row with read-only children; select
+the group and use the Inspector to move, turn or scale everything together. Choose **Unlink** only
+when those children should become ordinary independent objects. Save, place and Unlink are each one
+Undo step.
+
+The definition is a snapshot: changing the original objects later does not rewrite it, and the
+current editor does not yet edit a definition in place. Linked placements share the saved definition
+and compact graph/resources. Animate leaf objects, not a group parent: parents with dynamic physics,
+spin, Animation or transform-writing Logic Blocks are refused because the current phone runtime is
+deliberately flat. Player, nested Saved Scenes and world-centred Movement Patterns are also stopped
+with an explanation.
+
+The new copy is selected in the first collider-safe free spot. For a very large object that spot can
+sit beyond the playable bounds, so drag the selected copy to the final place you want.
+
+To make a safe static 3D object move without code, select it and open **Animation**. Click **Create
+Animation**. This makes a **Main** clip; the protected key at 0 seconds keeps the object's starting
+pose. Move **Time** later, change **Position offset**, **Turn (degrees)** or **Size multiplier**, then
+click **Add whole-pose key**. Each key deliberately keeps position, turn and size together, which
+makes the path easier to understand and Undo. Choose **Once**, **Repeat** or **Back and forth**, and
+choose how the selected key arrives: **Straight**, **Start gently**, **Stop gently**, **Gently at both
+ends**, **Smooth**, **Extra smooth**, **Slight overshoot**, **Springy** or **Jump**. Press **Play
+Animation** to preview the selected clip; **Stop** returns the view to the starting pose.
+
+Use **New** for another motion, **Duplicate** when it should begin as a copy, and **Rename** to give
+it a clear child-readable name. The stable clip ID shown to Logic Blocks does not change when its
+display name changes. **Delete Clip** removes only the selected motion. Check **Play this clip when
+the game starts** for at most one clip, or leave every clip unchecked so the object waits for logic.
+An eligible object can keep up to 16 clips.
+
+To control them during the game, open the object's **Logic Blocks** and add **Play an Animation**.
+Choose the animated object and clip. **Restart: Yes** begins at the first pose; **No** resumes that
+same clip after a hold. Add **Stop an Animation** with **Reset: No** to pause and hold the current
+pose, or **Reset: Yes** to return to the object's authored pose. A World Logic graph must choose an
+explicit animated object because it has no **This object** owner.
+
+Dragging Time or the playhead is only a preview: it does not alter the saved object, dirty the
+project or add an Undo step. Creating/deleting an animation or clip and changing its name, autoplay,
+length, repeat mode, keys or arrival style each use normal Undo/Redo. Project Play runs autoplay and
+the two animation Logic Blocks in the real desktop ECS. An Android build carries the same quantized
+clips and control IDs in optional KCAN/KCVG data. Old one-clip projects remain compatible as an
+implicit **Main** clip. Animation is deliberately disabled for dynamic objects, Player, Movement
+Pattern, Populate Area and objects with spin velocity, because each already has—or implies—another
+transform owner.
+
+This is a compact rigid-transform clip library, not a character animator. GLB animation import,
+skeletal rigs, retargeting, crossfades and animation-state-machine authoring are still absent; the
+current glTF preview export is static.
+
 ## 5. Save, then make an Android build
 
 Save the project. The simple starter above builds for 2D/HTML5. For Android, choose **Start a Mobile
 3D Game**. Its first lesson uses the same event/value/action idea: Space increments Score and makes
 the player grow. The Goal is also a Trigger Area with a second lesson that sets `Inside Goal` true on
-entry and false on exit. Its orbit is driven by a compact two-word log-polar ECS component and a
-shared sub-kilobyte lookup asset. These behaviors preview in the editor and run in the native phone
-player. Its supported Logic Blocks compile into bounded native graph bytecode.
+entry and false on exit. Its orbit is driven by a compact two-word packed polar ECS component and a
+shared sub-kilobyte log-encoded polar LUT asset. These behaviors preview in the editor and run in the
+native phone player. Its supported Logic Blocks compile into bounded native graph bytecode.
 
 Expand **World Logic** in the Scene Tree and select **Find the Goal**. Its Sensing block explicitly
 starts from **Player**, looks for **Goal** within **9 m**, and feeds `Found` into **Set World State**
@@ -153,7 +212,7 @@ bindings.
 Select a non-dynamic Mobile 3D object and find **Movement Pattern** in the Inspector. Choose **Off**,
 **Orbit**, **Spiral Out** or **Spiral In**, then set a radius, turn speed and start angle. The editor
 keeps the packed words hidden, shows the approximate storage cost, and makes the change undoable. All
-movers using the Studio profile share one lookup table; Android adds exactly 24 sparse bytes per
+movers using the Studio profile share one binary16 log-encoded polar LUT; Android adds exactly 24 sparse bytes per
 moving node. Movement Pattern stays disabled on a dynamic object because physics already controls
 that object's position.
 
@@ -185,12 +244,71 @@ current tool can place overlapping copies and does not provide per-copy frustum 
 is no Mobile 3D browser player yet, so this lesson previews on desktop and deploys through the native
 Android path; HTML5 remains the 2D workflow.
 
+The fastest compact-rendering lesson is one click: double-click `RUN_POLAR_GLOW_LAB.cmd` in the
+repository root. It generates the project if absent, then opens
+`build/polar-glow-lab/packed-polar-glow-burst-128-lut-subtle.json` with 128 Radial Burst displays
+(one prototype plus 127 generated copies),
+Shared LUT, subtle Bayer and Glow distance 0–4 at strength 1.25. You can also open
+`examples/packed_polar_gpu_lab_3d/project.json` and build the same idea yourself.
+
+For the next compounded use, double-click `RUN_POLAR_GROW_LAB.cmd`. It creates a separate
+`build/polar-grow-lab/packed-polar-grow-burst-128-lut-subtle.json` project with the same 128-display
+Burst, Shared LUT, subtle Bayer and Glow settings, plus **Grow glowing copies**. The two launchers
+stay separate so the v3 Glow-only project remains an exact comparison instead of being silently
+upgraded.
+
+To author the effect in child-sized steps:
+
+1. Select an orbit mover and find **Make Many** in the Inspector.
+2. Choose **Ring**, **Spiral**, **Polar Field** or **Radial Burst (loops)**, then set **Objects in
+   group** and **World number**.
+3. Open **Glow by distance** and tick **Enable distance glow**.
+4. Set **Start distance** to 0 to begin at the safe centre core, set a larger **End distance** inside
+   the Movement profile, and try **Glow strength** 1.25.
+5. Change **World number** to see a different repeatable bright/dim phase, or untick the checkbox to
+   return to the exact old no-Glow recipe path.
+6. Optionally tick **Grow glowing copies**. Only generated display copies reuse that same Glow value
+   for visible size: zero Glow is 1x and maximum Glow strength 4 is at most 5x. The real object,
+   collider, picking and Logic Blocks remain at their authored scale.
+
+One real ECS object keeps the Movement Pattern; the other members are repeatable display copies
+reconstructed from a tiny content-addressed recipe. The Inspector shows the exact KCPR file size and
+full address, while the Scene view draws at most 64 generated previews across the whole project.
+Generated members deliberately select their real prototype and never pretend to own separate physics,
+collision, tags, or Logic Blocks. Glow changes their material presentation, not those boundaries.
+Grow is presentation-only too: it multiplies the copies' already-authored or Burst-envelope size and
+never creates or resizes a gameplay object. The Scene preview and Play preview use the same quantized
+field evaluation.
+For Radial Burst, the bright band follows each copy's own local Burst distance before the whole effect
+is placed around its prototype; the prototype uses its own Movement radius. It is not a hidden
+world-space distance check.
+
+To control the decoration without hiding its real object, add **Show or Hide Extra Copies** in Logic
+Blocks → Looks. Choose a Make Many object and Show or Hide. The object itself remains visible and
+keeps running; only its derived display copies change. Starting Play again restores them, because
+this tiny control is runtime state rather than an edit to the saved recipe.
+
+In the Project dock's **Render** tab, **Shared LUT** asks Android to reconstruct packed movement through
+the shared binary16 log-encoded polar LUT; **Direct math** is the matching comparison path; **CPU** is
+the correctness fallback. For Glow by distance, Shared LUT reuses the same UGLUT2 direction, Direct
+uses cosine and CPU uses the quantized LUT reference—the effect is not silently removed. The glow is
+added to scene lighting, then **Gentle gradient smoothing** applies the canonical Bayer matrix only to
+the final picture. Bayer does not smooth motion or change the ECS. Build and measure the same project
+in Direct and Shared LUT modes before deciding which is faster on a phone. The one-click lab is a
+manual authoring/desktop check only until its exact APK is viewed and profiled on POCO/Mali.
+
 Use **+ Add**, **Copy** and **Delete** above the Scene Tree to construct the scene. Every structural
 change supports Undo; essential referenced objects are guarded with an explanation instead of being
 silently broken. Select an object and use **Appearance** in the Inspector to choose one of the
 project's vector pictures, 3D shapes or materials; those choices also support Undo and Redo. Use
 **File → Import 3D Shape…** to bring a Wavefront OBJ into a Mobile 3D project. Imported shapes are
 checked, appear in Resources and the Shape chooser, survive Android packing, and support Undo.
+
+For a quick polished surface, choose **Material Look** under Mobile 3D Appearance: Matte, Toy
+Plastic, Metal or Crystal Glow. The object's colour stays yours. If its material is shared, Studio
+safely makes a private copy for this authored object and its Populate Area copies; one Undo restores
+everything. **Custom** only describes values and never rewrites them. Preset names are not saved, so
+this friendly control costs no extra Android material bytes.
 
 On a phone, hold or drag the left side to move and tap it to jump. Drag the right side to look and
 tap it to dash—even while the left thumb stays down. Pinch changes camera distance. Touch roles follow
@@ -216,12 +334,26 @@ project. It clears only SurfaceFlinger's diagnostic latency history between samp
 disconnected phone, a game that is not running, or a screen with no active game surface produces a
 plain-language stop message rather than a partial success.
 
-The post-audit canonical opcode-25 APK is locally built and inspected at
-`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk`: 1,451,149 bytes with SHA-256
-`1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`. The `message-op25-debug`
-and `message-op25-audit-fixed-debug` copies are byte-identical and contain the same current compact
-assets. The Poco disconnected before final installation, so this post-audit build has not been
-installed, opened or profiled on the phone yet.
+The current PBR-lite/opcode-25 APK is locally built and inspected at
+`build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-debug.apk`: 1,484,357 bytes with SHA-256
+`B9B1A9A1E722C5B0D0DAA6DE3634E605E16D7903BA14626B4F99B58154918497`. The explicit
+`pbr-lite-op25-debug` copy is byte-identical and contains the unchanged compact sidecars plus the
+linked KCAN runtime; this unanimated starter emits no KCAN asset. The Poco is
+absent from ADB, so this current build has not been installed, opened or profiled on the phone yet.
+The preceding local `message-op25-debug` / `message-op25-audit-fixed-debug` snapshot remains
+1,451,149 bytes / `1003F061…`.
+
+For the named-clip workflow, open `examples/multiclip_animation_3d/project.json`. Press **Play** to
+watch Gentle Sway switch to Timer Hop after half a second, then inspect its three connected Logic
+Blocks. The matching locally built Poco APK is
+`build/UGTS-Multi-Clip-3.9.2-Poco-X7-Pro-debug.apk`: 1,504,091 bytes with SHA-256 `94FD4CB4…`.
+It is ready to install, but this build has no device claim because ADB reported no attached phone.
+
+For the linked-group workflow, open `examples/linked_saved_scenes_3d/project.json`. Expand the three
+Glow Gate Trio rows, move one whole group, then Undo or Unlink it. Its verifier proves that seven
+stored object records become 13 uniquely named ECS nodes plus nine render-only sparkles. The matching
+local Poco APK is `build/UGTS-Saved-Scenes-3.9.2-Poco-X7-Pro-debug.apk`: 1,505,487 bytes with
+SHA-256 `70FD18B2…`. It is build-tools inspected but has no phone claim while ADB has no device.
 
 The last physically verified pre-audit opcode-25 APK is preserved as
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with SHA-256
@@ -230,7 +362,7 @@ The last physically verified pre-audit opcode-25 APK is preserved as
 Its bounded 30-second read-only profile measured 120.12 effective FPS, 8.372/10.183/12.641 ms
 p50/p95/p99, thermal status 0 and no crashes or warnings; the capture is
 `validation/device/opcode25-message-poco-profile.json`. That evidence belongs only to FBCB, not the
-newer `1003…` APK.
+newer `1003…`, `B9B1…` or animation-bearing `43D1…` APKs.
 
 The preceding opcode-24 build remains preserved as
 `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-cone-op24-debug.apk`, 1,460,361 bytes with SHA-256

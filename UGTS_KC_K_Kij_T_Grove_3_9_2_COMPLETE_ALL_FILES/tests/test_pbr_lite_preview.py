@@ -103,6 +103,28 @@ class PBRLiteTests(unittest.TestCase):
             )
         )
 
+    def test_antiparallel_light_and_view_use_a_zero_half_vector(self) -> None:
+        material = PBRMaterial(
+            "backlit",
+            (0.8, 0.4, 0.2, 1.0),
+            metallic=0.25,
+            roughness=0.5,
+            emissive=(0.01, 0.02, 0.03),
+        )
+
+        shaded = shade_pbr_lite(
+            material,
+            (0.0, 0.0, 1.0),
+            (0.0, 0.0, 1.0),
+            (0.0, 0.0, 1.0),
+            ambient=0.2,
+        )
+
+        expected = (0.13, 0.08, 0.06)
+        for actual, wanted in zip(shaded, expected):
+            self.assertAlmostEqual(actual, wanted, places=12)
+            self.assertTrue(math.isfinite(actual))
+
 
 class DesktopPBRLitePreviewTests(unittest.TestCase):
     @classmethod

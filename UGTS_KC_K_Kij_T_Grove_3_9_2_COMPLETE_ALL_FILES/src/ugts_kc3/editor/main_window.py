@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 from typing import Any, Mapping
 
-from PySide6.QtCore import QObject, QThread, QTimer, Qt, Signal, Slot
+from PySide6.QtCore import QObject, QStandardPaths, QThread, QTimer, Qt, Signal, Slot
 from PySide6.QtGui import (
     QAction, QCloseEvent, QDragEnterEvent, QDropEvent, QKeySequence,
     QUndoCommand, QUndoStack,
@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QDockWidget,
     QFileDialog,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QMainWindow,
     QMessageBox,
@@ -40,6 +41,14 @@ from ..androidexport import (
     build_android_project,
     write_mobile3d_gltf,
 )
+from ..animation3d import (
+    ANIMATION_LIBRARY_METADATA_KEY,
+    ANIMATION_METADATA_KEY,
+    DEFAULT_ANIMATION_CLIP_ID,
+    TransformAnimationLibrary3D,
+    TransformClip3D,
+    default_transform_animation,
+)
 from ..graphpack import GraphPackError, compile_graph_pack_bytes
 from ..mobile3d import Material3DRecord, Mesh3DRecord, Mobile3DProject
 from ..project import GameProject
@@ -49,6 +58,7 @@ from ..webexport import build_html5
 from .document import EditorDocument, LogicTraceSnapshot, SelectionRef
 from .graph import GraphPage
 from .scene_view import SceneViewport
+from .timeline import AnimationTimelinePanel
 from .widgets import (
     AssetsProjectPanel,
     BuildOutputPanel,
@@ -102,6 +112,36 @@ def _phone_profile_lines(result: AndroidProfileResult) -> tuple[str, ...]:
         details.append(
             "Game memory (PSS): "
             f"{result.pss_kib_min / 1024:.1f}–{result.pss_kib_max / 1024:.1f} MiB."
+        )
+    if result.cpu_one_core_pct_mean is not None:
+        phone_share = (
+            f"; {result.cpu_total_capacity_pct_mean:.1f}% of the whole phone"
+            if result.cpu_total_capacity_pct_mean is not None
+            else ""
+        )
+        details.append(
+            "CPU work: average "
+            f"{result.cpu_one_core_pct_mean:.1f}% of one core{phone_share}."
+        )
+    if result.gpu_render_ms_mean_since_renderer_start is not None:
+        maximum = (
+            f", slowest measured {result.gpu_render_ms_max_since_renderer_start:.3f} ms"
+            if result.gpu_render_ms_max_since_renderer_start is not None
+            else ""
+        )
+        samples = (
+            f" across {result.gpu_timer_samples_since_renderer_start} non-blocking samples"
+            if result.gpu_timer_samples_since_renderer_start is not None
+            else ""
+        )
+        details.append(
+            "GPU drawing since the renderer started: average "
+            f"{result.gpu_render_ms_mean_since_renderer_start:.3f} ms{maximum}{samples}."
+        )
+    elif result.gpu_timer_supported is False:
+        details.append(
+            "GPU drawing time: this phone driver does not expose the safe timer; "
+            "no GPU-time estimate was invented."
         )
     if result.gpu_c_min is not None and result.gpu_c_max is not None:
         details.append(
@@ -177,6 +217,30 @@ class GraphCommand(QUndoCommand):
         )
 
 
+class ProjectMetadataCommand(QUndoCommand):
+    """One atomic, validated edit of mobile-3D project-level settings."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before: Mapping[str, Any],
+        after: Mapping[str, Any],
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before = copy.deepcopy(dict(before))
+        self.after = copy.deepcopy(dict(after))
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_project_metadata(self.before)
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_project_metadata(self.after)
+
+
 class SceneObjectsCommand(QUndoCommand):
     """Undoable replacement of only one scene's entity/node records."""
 
@@ -208,6 +272,86 @@ class SceneObjectsCommand(QUndoCommand):
     def redo(self) -> None:
         self.document.replace_scene_objects(
             self.after, self.after_selection, self.scene_id
+        )
+
+
+class ReusableObjectsCommand(QUndoCommand):
+    """One atomic reusable-library edit, optionally placing a flat ECS node."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before_nodes: tuple[Any, ...],
+        after_nodes: tuple[Any, ...],
+        before_metadata: Mapping[str, Any],
+        after_metadata: Mapping[str, Any],
+        before_selection: SelectionRef | None,
+        after_selection: SelectionRef | None,
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before_nodes = copy.deepcopy(before_nodes)
+        self.after_nodes = copy.deepcopy(after_nodes)
+        self.before_metadata = copy.deepcopy(dict(before_metadata))
+        self.after_metadata = copy.deepcopy(dict(after_metadata))
+        self.before_selection = before_selection
+        self.after_selection = after_selection
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_reusable_objects(
+            self.before_nodes,
+            self.before_metadata,
+            self.before_selection,
+        )
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_reusable_objects(
+            self.after_nodes,
+            self.after_metadata,
+            self.after_selection,
+        )
+
+
+class SavedScenesCommand(QUndoCommand):
+    """One atomic Saved Scene definition, placement, or unlink operation."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        before_nodes: tuple[Any, ...],
+        after_nodes: tuple[Any, ...],
+        before_metadata: Mapping[str, Any],
+        after_metadata: Mapping[str, Any],
+        before_selection: SelectionRef | None,
+        after_selection: SelectionRef | None,
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.before_nodes = copy.deepcopy(before_nodes)
+        self.after_nodes = copy.deepcopy(after_nodes)
+        self.before_metadata = copy.deepcopy(dict(before_metadata))
+        self.after_metadata = copy.deepcopy(dict(after_metadata))
+        self.before_selection = before_selection
+        self.after_selection = after_selection
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.replace_saved_scenes(
+            self.before_nodes,
+            self.before_metadata,
+            self.before_selection,
+        )
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.replace_saved_scenes(
+            self.after_nodes,
+            self.after_metadata,
+            self.after_selection,
         )
 
 
@@ -303,6 +447,32 @@ class MovementPatternCommand(QUndoCommand):
         )
 
 
+class AnimationCommand(QUndoCommand):
+    """One atomic transform-animation metadata edit for a selected 3D node."""
+
+    def __init__(
+        self,
+        document: EditorDocument,
+        text: str,
+        selection: SelectionRef,
+        before: Mapping[str, Any] | None,
+        after: Mapping[str, Any] | None,
+    ) -> None:
+        super().__init__(text)
+        self.document = document
+        self.selection = selection
+        self.before = copy.deepcopy(None if before is None else dict(before))
+        self.after = copy.deepcopy(None if after is None else dict(after))
+        self.before_dirty = document.is_dirty
+
+    def undo(self) -> None:
+        self.document.set_transform_animation_library(self.selection, self.before)
+        self.document.set_dirty(self.before_dirty)
+
+    def redo(self) -> None:
+        self.document.set_transform_animation_library(self.selection, self.after)
+
+
 class BuildWorker(QObject):
     finished = Signal(object)
     partial = Signal(object)
@@ -353,6 +523,14 @@ class BuildWorker(QObject):
             elif self.target == "gltf" and isinstance(self.project, Mobile3DProject):
                 write_mobile3d_gltf(self.project, self.destination)
                 summary = f"3D preview exported: {self.destination.name}"
+                if any(
+                    node.metadata.get(ANIMATION_METADATA_KEY) is not None
+                    or node.metadata.get(ANIMATION_LIBRARY_METADATA_KEY) is not None
+                    for node in self.project.nodes
+                ):
+                    summary += (
+                        " (static glTF only; Animation stays in UGTS Preview and Android)"
+                    )
                 folder = self.destination.parent
             else:
                 raise ValueError("That build target does not match this project.")
@@ -406,6 +584,10 @@ class EditorMainWindow(QMainWindow):
         self.document = EditorDocument(self)
         self.undo_stack = QUndoStack(self)
         self._playing = False
+        self._animation_previewing = False
+        self._animation_pose_active = False
+        self._animation_preview_started = 0.0
+        self._animation_clip_selection: dict[str, str] = {}
         self._active_graph_id: str | None = None
         self._logic_trace_snapshot: LogicTraceSnapshot | None = None
         self._preserve_logic_trace_on_stop = False
@@ -425,6 +607,10 @@ class EditorMainWindow(QMainWindow):
         self.play_timer.setTimerType(Qt.TimerType.PreciseTimer)
         self.play_timer.setInterval(16)
         self.play_timer.timeout.connect(self._play_frame)
+        self.animation_timer = QTimer(self)
+        self.animation_timer.setTimerType(Qt.TimerType.PreciseTimer)
+        self.animation_timer.setInterval(16)
+        self.animation_timer.timeout.connect(self._animation_preview_frame)
         self._show_welcome_state()
         if project_path is not None:
             QTimer.singleShot(0, lambda: self.open_project(project_path))
@@ -479,19 +665,38 @@ class EditorMainWindow(QMainWindow):
         self.inspector = InspectorPanel()
         self.assets_project = AssetsProjectPanel()
         self.build_output = BuildOutputPanel()
+        self.animation_timeline = AnimationTimelinePanel()
         self.hierarchy_dock = self._dock("Scene Tree", self.hierarchy, Qt.DockWidgetArea.LeftDockWidgetArea)
-        self.assets_dock = self._dock("Resources & Project", self.assets_project, Qt.DockWidgetArea.LeftDockWidgetArea)
+        self.assets_dock = self._dock("Resources / Project", self.assets_project, Qt.DockWidgetArea.LeftDockWidgetArea)
         self.inspector_dock = self._dock("Inspector", self.inspector, Qt.DockWidgetArea.RightDockWidgetArea)
         self.output_dock = self._dock("Output & Builds", self.build_output, Qt.DockWidgetArea.BottomDockWidgetArea)
+        self.animation_dock = self._dock(
+            "Animation", self.animation_timeline, Qt.DockWidgetArea.BottomDockWidgetArea
+        )
         for dock in (self.hierarchy_dock, self.assets_dock):
             dock.setMinimumWidth(230)
             dock.setMaximumWidth(350)
         self.inspector_dock.setMinimumWidth(275)
         self.inspector_dock.setMaximumWidth(390)
-        self.splitDockWidget(self.hierarchy_dock, self.assets_dock, Qt.Orientation.Vertical)
-        self.resizeDocks([self.hierarchy_dock, self.assets_dock], [510, 290], Qt.Orientation.Vertical)
+        self.tabifyDockWidget(self.hierarchy_dock, self.assets_dock)
+        self.hierarchy_dock.raise_()
         self.resizeDocks([self.hierarchy_dock, self.inspector_dock], [270, 320], Qt.Orientation.Horizontal)
         self.resizeDocks([self.output_dock], [180], Qt.Orientation.Vertical)
+        self.tabifyDockWidget(self.output_dock, self.animation_dock)
+        self.output_dock.hide()
+        self.animation_dock.hide()
+
+    def _show_output_dock(self) -> None:
+        """Reveal the quiet-by-default log when a workflow has useful detail."""
+
+        self.output_dock.show()
+        self.output_dock.raise_()
+
+    def _show_animation_dock(self) -> None:
+        """Reveal Animation only when the user enters an animation workflow."""
+
+        self.animation_dock.show()
+        self.animation_dock.raise_()
 
     def _action(
         self,
@@ -608,38 +813,39 @@ class EditorMainWindow(QMainWindow):
         view_menu = self.menuBar().addMenu("View")
         view_menu.addAction(self.fit_action)
         view_menu.addSeparator()
-        for dock in (self.hierarchy_dock, self.assets_dock, self.inspector_dock, self.output_dock):
+        for dock in (
+            self.hierarchy_dock,
+            self.assets_dock,
+            self.inspector_dock,
+            self.output_dock,
+            self.animation_dock,
+        ):
             view_menu.addAction(dock.toggleViewAction())
 
-        toolbar = QToolBar("Main Tools")
-        toolbar.setObjectName("MainToolbar")
-        toolbar.setMovable(False)
-        toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.addToolBar(toolbar)
-        toolbar.addActions([self.open_action, self.save_action])
-        toolbar.addSeparator()
-        toolbar.addAction(self.undo_action)
-        toolbar.addAction(self.redo_action)
-        toolbar.addSeparator()
-        toolbar.addAction(self.play_action)
-        play_widget = toolbar.widgetForAction(self.play_action)
+        self.main_toolbar = QToolBar("Main Tools")
+        self.main_toolbar.setObjectName("MainToolbar")
+        self.main_toolbar.setMovable(False)
+        self.main_toolbar.setToolButtonStyle(
+            Qt.ToolButtonStyle.ToolButtonTextBesideIcon
+        )
+        self.addToolBar(self.main_toolbar)
+        self.main_toolbar.addAction(self.save_action)
+        self.main_toolbar.addSeparator()
+        self.main_toolbar.addActions([self.undo_action, self.redo_action])
+        self.main_toolbar.addSeparator()
+        self.main_toolbar.addAction(self.play_action)
+        play_widget = self.main_toolbar.widgetForAction(self.play_action)
         if play_widget is not None:
             play_widget.setObjectName("PlayButton")
-        toolbar.addAction(self.stop_action)
-        stop_widget = toolbar.widgetForAction(self.stop_action)
+        self.main_toolbar.addAction(self.stop_action)
+        stop_widget = self.main_toolbar.widgetForAction(self.stop_action)
         if stop_widget is not None:
             stop_widget.setObjectName("StopButton")
-        toolbar.addSeparator()
-        toolbar.addAction(self.validate_action)
-        toolbar.addAction(self.build_action)
-        toolbar.addAction(self.deploy_action)
-        deploy_widget = toolbar.widgetForAction(self.deploy_action)
+        self.main_toolbar.addSeparator()
+        self.main_toolbar.addActions([self.build_action, self.deploy_action])
+        deploy_widget = self.main_toolbar.widgetForAction(self.deploy_action)
         if deploy_widget is not None:
             deploy_widget.setObjectName("DeployButton")
-        toolbar.addAction(self.profile_phone_action)
-        profile_widget = toolbar.widgetForAction(self.profile_phone_action)
-        if profile_widget is not None:
-            profile_widget.setObjectName("ProfileButton")
 
     def _create_status_bar(self) -> None:
         self.status_message = QLabel("Ready — open a project or start with a template")
@@ -661,6 +867,13 @@ class EditorMainWindow(QMainWindow):
         self.hierarchy.addTriggerRequested.connect(self._add_trigger_area)
         self.hierarchy.duplicateRequested.connect(self._duplicate_scene_object)
         self.hierarchy.deleteRequested.connect(self._delete_scene_object)
+        self.hierarchy.saveReusableRequested.connect(self._save_reusable_object)
+        self.hierarchy.addReusableRequested.connect(self._add_reusable_object)
+        self.hierarchy.removeReusableRequested.connect(self._remove_reusable_object)
+        self.hierarchy.saveSceneRequested.connect(self._save_saved_scene)
+        self.hierarchy.addSavedSceneRequested.connect(self._add_saved_scene)
+        self.hierarchy.unlinkSavedSceneRequested.connect(self._unlink_saved_scene)
+        self.hierarchy.parentRequested.connect(self._parent_scene_object)
         self.viewport.selectionRequested.connect(self._viewport_selected)
         self.viewport.entityMoved.connect(self._viewport_moved)
         self.viewport.translationPreviewed.connect(self._viewport_translation_previewed)
@@ -673,7 +886,36 @@ class EditorMainWindow(QMainWindow):
         self.inspector.materialLookEdited.connect(self._inspector_material_look_edited)
         self.inspector.triggerAreaEdited.connect(self._inspector_trigger_area_edited)
         self.inspector.populationEdited.connect(self._inspector_population_edited)
+        self.inspector.polarPopulationEdited.connect(
+            self._inspector_polar_population_edited
+        )
         self.inspector.movementPatternEdited.connect(self._inspector_movement_pattern_edited)
+        self.inspector.messageRequested.connect(self._gentle_message)
+        self.assets_project.renderSettingsChanged.connect(
+            self._project_render_settings_edited
+        )
+        self.animation_timeline.createRequested.connect(self._animation_create)
+        self.animation_timeline.deleteRequested.connect(self._animation_delete)
+        self.animation_timeline.clipSelected.connect(self._animation_clip_selected)
+        self.animation_timeline.newClipRequested.connect(self._animation_new_clip)
+        self.animation_timeline.duplicateClipRequested.connect(
+            self._animation_duplicate_clip
+        )
+        self.animation_timeline.renameClipRequested.connect(
+            self._animation_rename_clip
+        )
+        self.animation_timeline.deleteClipRequested.connect(
+            self._animation_delete_clip
+        )
+        self.animation_timeline.autoplayEdited.connect(self._animation_autoplay_edited)
+        self.animation_timeline.durationEdited.connect(self._animation_duration_edited)
+        self.animation_timeline.loopModeEdited.connect(self._animation_loop_edited)
+        self.animation_timeline.playRequested.connect(self._animation_preview_play)
+        self.animation_timeline.stopRequested.connect(self._animation_preview_stop)
+        self.animation_timeline.posePreviewed.connect(self._animation_pose_previewed)
+        self.animation_timeline.poseKeyRequested.connect(self._animation_pose_key_requested)
+        self.animation_timeline.keyEasingEdited.connect(self._animation_easing_edited)
+        self.animation_timeline.removeKeyRequested.connect(self._animation_remove_key)
         self.graph_page.graphEdited.connect(self._graph_edited)
         self.graph_page.graphRequested.connect(self._graph_requested)
         self.graph_page.helpRequested.connect(self._gentle_message)
@@ -681,10 +923,12 @@ class EditorMainWindow(QMainWindow):
         self.editor_tabs.currentChanged.connect(self._tab_changed)
         self.document.projectLoaded.connect(self._document_loaded)
         self.document.documentChanged.connect(self._document_dirty_changed)
+        self.undo_stack.indexChanged.connect(self._undo_index_changed)
         self.document.sceneChanged.connect(self._scene_changed)
         self.document.selectionChanged.connect(self._selection_changed)
         self.document.transformChanged.connect(self._transform_changed)
         self.document.graphChanged.connect(self._graph_changed)
+        self.document.animationChanged.connect(self._animation_changed)
         self.document.structureChanged.connect(self._structure_changed)
         self.document.logicTraceChanged.connect(self._logic_trace_changed)
 
@@ -694,12 +938,28 @@ class EditorMainWindow(QMainWindow):
         self.assets_project.set_document(None)
         self.inspector.clear()
         self.build_output.set_kind(None)
+        self.animation_timeline.clear()
         self._set_logic_read_only(False)
         self._clear_logic_trace()
 
     @staticmethod
     def _repository_root() -> Path:
-        return Path(__file__).resolve().parents[3]
+        source_root = Path(__file__).resolve().parents[3]
+        if (
+            (source_root / "pyproject.toml").is_file()
+            and (source_root / "src" / "ugts_kc3").is_dir()
+        ):
+            return source_root
+        documents = QStandardPaths.writableLocation(
+            QStandardPaths.StandardLocation.DocumentsLocation
+        )
+        if not documents:
+            documents = QStandardPaths.writableLocation(
+                QStandardPaths.StandardLocation.AppLocalDataLocation
+            )
+        if not documents:
+            documents = str(Path.home() / "Documents")
+        return Path(documents) / "UGTS Studio"
 
     def _maybe_save(self) -> bool:
         if not self.document.is_dirty:
@@ -740,6 +1000,8 @@ class EditorMainWindow(QMainWindow):
             return True
         except Exception as exc:
             QMessageBox.critical(self, "Could not open that project", str(exc))
+            self.build_output.append(f"Open project paused: {exc}", "error")
+            self._show_output_dock()
             self._gentle_message("The project stayed unchanged. Choose another project file when ready.")
             return False
 
@@ -786,6 +1048,7 @@ class EditorMainWindow(QMainWindow):
             return True
         except Exception as exc:
             self.build_output.append(f"3D shape import paused: {exc}", "warning")
+            self._show_output_dock()
             QMessageBox.warning(self, "Could not import that 3D shape", str(exc))
             self._gentle_message("The project stayed unchanged. Choose another OBJ when ready.")
             return False
@@ -836,6 +1099,7 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             QMessageBox.warning(self, "This project was not saved", str(exc))
             self.build_output.append(f"Save paused: {exc}", "warning")
+            self._show_output_dock()
             return False
 
     def save_project_as(self) -> bool:
@@ -857,6 +1121,8 @@ class EditorMainWindow(QMainWindow):
             return True
         except Exception as exc:
             QMessageBox.warning(self, "This project was not saved", str(exc))
+            self.build_output.append(f"Save copy paused: {exc}", "warning")
+            self._show_output_dock()
             return False
 
     def _document_loaded(self) -> None:
@@ -871,6 +1137,7 @@ class EditorMainWindow(QMainWindow):
         self._set_logic_read_only(False)
         self._clear_logic_trace()
         self.build_output.set_kind(self.document.kind)
+        self._refresh_animation_timeline()
         self.build_output.append(
             f"Opened {self.document.display_name} as a {'2D' if self.document.kind == '2d' else 'mobile 3D'} project.",
             "good",
@@ -890,6 +1157,19 @@ class EditorMainWindow(QMainWindow):
     def _document_dirty_changed(self, dirty: bool) -> None:
         self._update_title()
 
+    def _undo_index_changed(self, _index: int) -> None:
+        """Keep the save marker aligned with QUndoStack's current clean index.
+
+        Commands remember whether a brand-new, unsaved document was already
+        dirty so undoing its first edit does not pretend that it is saved.  A
+        later save can move the clean index, though, so the stack becomes the
+        authority once the document has a file on disk.
+        """
+
+        if not self.document.is_loaded or self.document.path is None:
+            return
+        self.document.set_dirty(not self.undo_stack.isClean())
+
     def _update_title(self) -> None:
         if not self.document.is_loaded:
             self.setWindowTitle("UGTS Studio")
@@ -898,6 +1178,7 @@ class EditorMainWindow(QMainWindow):
         self.setWindowTitle(f"{marker}{self.document.display_name} — UGTS Studio")
 
     def _scene_changed(self, scene_id: str) -> None:
+        self._animation_preview_stop()
         self._active_graph_id = None
         self.hierarchy.set_document(self.document)
         self.assets_project.refresh_lesson(self.document)
@@ -906,8 +1187,10 @@ class EditorMainWindow(QMainWindow):
         self._refresh_logic_trace()
         self.scene_label.setText(f"Scene: {friendly(scene_id)}")
         self._gentle_message(f"Showing {friendly(scene_id)}.")
+        self._refresh_animation_timeline()
 
     def _selection_changed(self, selection: SelectionRef | None) -> None:
+        self._animation_preview_stop()
         self._active_graph_id = None
         self.hierarchy.set_selection(selection)
         self.inspector.set_selection(self.document, selection)
@@ -926,6 +1209,416 @@ class EditorMainWindow(QMainWindow):
             self.status_message.setText(f"Selected {friendly(selection.object_id)}")
         self._load_graph_context()
         self._refresh_logic_trace()
+        self._refresh_animation_timeline()
+
+    def _refresh_animation_timeline(self) -> None:
+        selection = self.document.selection
+        if not isinstance(self.document.project, Mobile3DProject):
+            self.animation_timeline.set_guidance(
+                "Animation is available for Mobile 3D objects in this first version."
+            )
+            return
+        if selection is None or selection.kind != "node":
+            self.animation_timeline.set_guidance(
+                "Choose a static 3D object in the Scene Tree to animate."
+            )
+            return
+        label = friendly(selection.object_id)
+        problem = self.document.animation_authoring_problem(selection)
+        if problem is not None:
+            self.animation_timeline.set_disabled_reason(problem, object_name=label)
+            return
+        try:
+            library = self.document.animation_timeline_library(selection)
+        except Exception as exc:
+            self.animation_timeline.set_disabled_reason(
+                f"This object's saved Animation needs attention: {exc}",
+                object_name=label,
+            )
+            self._show_animation_dock()
+            return
+        if library is None:
+            self.animation_timeline.set_guidance(
+                "Create an Animation, then move the time and save whole-pose keys.",
+                can_create=True,
+                object_name=label,
+            )
+            return
+        self._show_animation_dock()
+        clips = library["clips"]
+        clip_ids = {str(item["id"]) for item in clips}
+        selected_clip_id = self._animation_clip_selection.get(selection.object_id)
+        if selected_clip_id not in clip_ids:
+            selected_clip_id = str(library.get("autoplay") or clips[0]["id"])
+            self._animation_clip_selection[selection.object_id] = selected_clip_id
+        self.animation_timeline.set_library(
+            clips,
+            selected_clip_id=selected_clip_id,
+            autoplay_clip_id=library.get("autoplay"),
+            object_name=label,
+            owner_key=selection.object_id,
+        )
+
+    def _push_animation(
+        self,
+        text: str,
+        after: Mapping[str, Any] | None,
+    ) -> None:
+        selection = self.document.selection
+        if selection is None or selection.kind != "node" or self._playing:
+            return
+        before = self.document.transform_animation_library_data(selection)
+        normalized_after = None if after is None else copy.deepcopy(dict(after))
+        if before == normalized_after:
+            return
+        self._show_animation_dock()
+        self.undo_stack.push(
+            AnimationCommand(self.document, text, selection, before, normalized_after)
+        )
+
+    def _commit_timeline_clip(self, text: str, clip: Mapping[str, Any]) -> None:
+        try:
+            animation = self.document.animation_from_timeline_clip(clip)
+            library = self.document.transform_animation_library()
+            clip_id = self.animation_timeline.selected_clip_id()
+            if library is None or clip_id is None:
+                raise ValueError("Choose an animation clip before changing its keys.")
+            replacement = TransformAnimationLibrary3D(
+                tuple(
+                    TransformClip3D(item.id, item.label, animation)
+                    if item.id == clip_id
+                    else item
+                    for item in library.clips
+                ),
+                library.autoplay,
+            )
+            self._push_animation(text, replacement.to_dict())
+        except Exception as exc:
+            self._refresh_animation_timeline()
+            self.build_output.append(f"Animation change paused: {exc}", "warning")
+            self._show_animation_dock()
+            self._show_output_dock()
+            self._gentle_message(str(exc))
+
+    def _animation_create(self) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        problem = self.document.animation_authoring_problem(selection)
+        if problem is not None:
+            self._gentle_message(problem)
+            return
+        self._push_animation(
+            f"Create {friendly(selection.object_id)} Animation",
+            self.document.default_transform_animation_library_data(),
+        )
+        self._animation_clip_selection[selection.object_id] = DEFAULT_ANIMATION_CLIP_ID
+        self._gentle_message(
+            "Animation created. Move the Time, change the relative pose, then add a key."
+        )
+
+    def _animation_delete(self) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        self._push_animation(
+            f"Delete {friendly(selection.object_id)} Animation", None
+        )
+        self._gentle_message("Animation removed. Undo brings it back.")
+
+    def _animation_clip_selected(self, clip_id: str) -> None:
+        """Remember a presentation-only chooser change without creating Undo."""
+
+        selection = self.document.selection
+        if selection is None or selection.kind != "node":
+            return
+        self._animation_clip_selection[selection.object_id] = str(clip_id)
+
+    def _animation_clip_name(
+        self, title: str, question: str, suggested: str
+    ) -> str | None:
+        label, accepted = QInputDialog.getText(
+            self,
+            title,
+            question,
+            text=suggested,
+        )
+        if not accepted:
+            return None
+        label = str(label).strip()
+        if not label:
+            self._scene_edit_error("Give the animation clip a short name first.")
+            return None
+        return label
+
+    def _animation_new_clip(self) -> None:
+        selection = self.document.selection
+        library = self.document.transform_animation_library(selection)
+        if selection is None or library is None or self._playing:
+            return
+        if len(library.clips) >= 16:
+            self._scene_edit_error(
+                "This object already has 16 animation clips. Delete one before adding another."
+            )
+            return
+        label = self._animation_clip_name(
+            "New Animation Clip",
+            "What should this animation clip be called?",
+            "New Clip",
+        )
+        if label is None:
+            return
+        clip_id = self.document.collision_free_animation_clip_id(label, selection)
+        replacement = TransformAnimationLibrary3D(
+            library.clips
+            + (TransformClip3D(clip_id, label, default_transform_animation()),),
+            library.autoplay,
+        )
+        self._animation_clip_selection[selection.object_id] = clip_id
+        self._push_animation(f"Create {label} Animation clip", replacement.to_dict())
+
+    def _animation_duplicate_clip(self) -> None:
+        selection = self.document.selection
+        library = self.document.transform_animation_library(selection)
+        clip_id = self.animation_timeline.selected_clip_id()
+        if selection is None or library is None or clip_id is None or self._playing:
+            return
+        if len(library.clips) >= 16:
+            self._scene_edit_error(
+                "This object already has 16 animation clips. Delete one before copying another."
+            )
+            return
+        source = library.clip(clip_id)
+        label = self._animation_clip_name(
+            "Duplicate Animation Clip",
+            "What should the copied clip be called?",
+            f"{source.label} Copy",
+        )
+        if label is None:
+            return
+        new_id = self.document.collision_free_animation_clip_id(label, selection)
+        replacement = TransformAnimationLibrary3D(
+            library.clips + (TransformClip3D(new_id, label, source.animation),),
+            library.autoplay,
+        )
+        self._animation_clip_selection[selection.object_id] = new_id
+        self._push_animation(f"Duplicate {source.label} Animation clip", replacement.to_dict())
+
+    def _animation_rename_clip(self) -> None:
+        selection = self.document.selection
+        library = self.document.transform_animation_library(selection)
+        clip_id = self.animation_timeline.selected_clip_id()
+        if selection is None or library is None or clip_id is None or self._playing:
+            return
+        source = library.clip(clip_id)
+        label = self._animation_clip_name(
+            "Rename Animation Clip",
+            "What should children see as this clip's name?",
+            source.label,
+        )
+        if label is None or label == source.label:
+            return
+        replacement = TransformAnimationLibrary3D(
+            tuple(
+                TransformClip3D(item.id, label, item.animation)
+                if item.id == clip_id
+                else item
+                for item in library.clips
+            ),
+            library.autoplay,
+        )
+        self._push_animation(f"Rename {source.label} Animation clip", replacement.to_dict())
+
+    def _animation_delete_clip(self) -> None:
+        selection = self.document.selection
+        library = self.document.transform_animation_library(selection)
+        clip_id = self.animation_timeline.selected_clip_id()
+        if selection is None or library is None or clip_id is None or self._playing:
+            return
+        if len(library.clips) <= 1:
+            self._scene_edit_error(
+                "Keep at least one clip. Use Delete Animation to remove the whole animation."
+            )
+            return
+        source = library.clip(clip_id)
+        remaining = tuple(item for item in library.clips if item.id != clip_id)
+        replacement = TransformAnimationLibrary3D(
+            remaining,
+            None if library.autoplay == clip_id else library.autoplay,
+        )
+        self._animation_clip_selection[selection.object_id] = remaining[0].id
+        self._push_animation(f"Delete {source.label} Animation clip", replacement.to_dict())
+        self._gentle_message("Animation clip removed. Undo brings it back.")
+
+    def _animation_autoplay_edited(self, clip_id: object) -> None:
+        selection = self.document.selection
+        library = self.document.transform_animation_library(selection)
+        if selection is None or library is None or self._playing:
+            return
+        autoplay = None if clip_id is None else str(clip_id)
+        if autoplay == library.autoplay:
+            return
+        replacement = TransformAnimationLibrary3D(library.clips, autoplay)
+        self._push_animation(
+            "Change which Animation starts with the game", replacement.to_dict()
+        )
+
+    def _animation_duration_edited(self, _duration: float) -> None:
+        clip = self.animation_timeline.clip_dict()
+        if clip is not None:
+            self._commit_timeline_clip("Change Animation length", clip)
+
+    def _animation_loop_edited(self, _loop_mode: str) -> None:
+        clip = self.animation_timeline.clip_dict()
+        if clip is not None:
+            self._commit_timeline_clip("Change Animation repeat", clip)
+
+    def _animation_pose_key_requested(self, payload: Mapping[str, Any]) -> None:
+        clip = self.animation_timeline.clip_dict()
+        if clip is None:
+            return
+        key = copy.deepcopy(dict(payload))
+        time_value = float(key.get("time", 0.0))
+        if abs(time_value) <= 1.0e-6:
+            identity = (
+                all(abs(float(value)) <= 1.0e-6 for value in key.get("translation", ()))
+                and all(abs(float(value)) <= 1.0e-6 for value in key.get("rotation", ()))
+                and all(abs(float(value) - 1.0) <= 1.0e-6 for value in key.get("scale", ()))
+            )
+            if not identity:
+                self._refresh_animation_timeline()
+                self._gentle_message(
+                    "The starting key keeps the object's starting pose. Use a later Time for movement."
+                )
+                return
+        keys = [copy.deepcopy(item) for item in clip.get("keys", ())]
+        replaced = False
+        for index, existing in enumerate(keys):
+            if abs(float(existing["time"]) - time_value) <= 1.0e-6:
+                keys[index] = key
+                replaced = True
+                break
+        if not replaced:
+            keys.append(key)
+        keys.sort(key=lambda item: float(item["time"]))
+        clip["keys"] = keys
+        self._commit_timeline_clip(
+            "Update Animation key" if replaced else "Add Animation key", clip
+        )
+
+    def _animation_easing_edited(self, payload: Mapping[str, Any]) -> None:
+        clip = self.animation_timeline.clip_dict()
+        if clip is None:
+            return
+        time_value = float(payload.get("time", -1.0))
+        changed = False
+        keys = [copy.deepcopy(item) for item in clip.get("keys", ())]
+        for key in keys:
+            if abs(float(key["time"]) - time_value) <= 1.0e-6:
+                key["easing"] = str(payload.get("easing", "smoothstep"))
+                changed = True
+                break
+        if changed:
+            clip["keys"] = keys
+            self._commit_timeline_clip("Change Animation arrival", clip)
+
+    def _animation_remove_key(self, time_value: float) -> None:
+        clip = self.animation_timeline.clip_dict()
+        if clip is None or abs(float(time_value)) <= 1.0e-6:
+            return
+        keys = [
+            copy.deepcopy(item)
+            for item in clip.get("keys", ())
+            if abs(float(item["time"]) - float(time_value)) > 1.0e-6
+        ]
+        if len(keys) == len(clip.get("keys", ())):
+            return
+        clip["keys"] = keys
+        self._commit_timeline_clip("Remove Animation key", clip)
+
+    def _animation_pose_previewed(self, pose: Mapping[str, Any]) -> None:
+        if self._playing:
+            return
+        selection = self.document.selection
+        if selection is None or selection.kind != "node":
+            return
+        try:
+            self.viewport.set_runtime_state(
+                self.document.animation_preview_state(selection, pose)
+            )
+            self._animation_pose_active = True
+        except Exception as exc:
+            self.build_output.append(f"Animation preview paused: {exc}", "warning")
+            self._show_animation_dock()
+            self._show_output_dock()
+
+    def _animation_preview_play(self) -> None:
+        if self._playing or self.animation_timeline.clip_dict() is None:
+            return
+        self._show_animation_dock()
+        current = float(self.animation_timeline.time.value())
+        self._animation_preview_started = time.perf_counter() - current
+        self._animation_previewing = True
+        self.animation_timeline.set_playing(True)
+        self.animation_timer.start()
+        self._animation_preview_frame()
+        self._gentle_message("Previewing this Animation. Stop returns to the starting pose.")
+
+    def _animation_preview_frame(self) -> None:
+        if not self._animation_previewing or self._playing:
+            self._animation_preview_stop()
+            return
+        clip = self.animation_timeline.clip_dict()
+        if clip is None:
+            self._animation_preview_stop()
+            return
+        duration = float(clip["duration"])
+        elapsed = max(0.0, time.perf_counter() - self._animation_preview_started)
+        mode = str(clip.get("loop_mode", "once"))
+        finished = mode == "once" and elapsed >= duration
+        if mode == "loop":
+            local = elapsed % duration
+        elif mode == "pingpong":
+            phase = elapsed % (duration * 2.0)
+            local = phase if phase <= duration else duration * 2.0 - phase
+        else:
+            local = min(duration, elapsed)
+        pose = self.animation_timeline.pose_at(local)
+        self.animation_timeline.set_playhead(local, pose)
+        self._animation_pose_previewed(pose)
+        if finished:
+            self.animation_timer.stop()
+            self._animation_previewing = False
+            self.animation_timeline.set_playing(False)
+            self._gentle_message("Animation preview reached the end.")
+
+    def _animation_preview_stop(self) -> None:
+        had_animation_overlay = self._animation_previewing or self._animation_pose_active
+        self.animation_timer.stop()
+        self._animation_previewing = False
+        self._animation_pose_active = False
+        self.animation_timeline.set_playing(False)
+        if self.animation_timeline.clip_dict() is not None:
+            self.animation_timeline.set_playhead(0.0)
+        if not self._playing and had_animation_overlay:
+            self.viewport.set_runtime_state(None)
+
+    def _animation_changed(self, _selection: SelectionRef) -> None:
+        had_clip = self.animation_timeline.clip_dict() is not None
+        previous_clip_id = self.animation_timeline.selected_clip_id()
+        playhead = float(self.animation_timeline.time.value()) if had_clip else 0.0
+        self._animation_preview_stop()
+        self._refresh_animation_timeline()
+        clip = self.animation_timeline.clip_dict()
+        if had_clip and clip is not None:
+            if previous_clip_id != self.animation_timeline.selected_clip_id():
+                playhead = float(self.animation_timeline.time.value())
+            playhead = min(playhead, float(clip["duration"]))
+            pose = self.animation_timeline.pose_at(playhead)
+            self.animation_timeline.set_playhead(playhead, pose)
+            self._animation_pose_previewed(pose)
+        self.assets_project.set_document(self.document)
+        self._load_graph_context()
 
     def _selection_for_record(self, object_id: str) -> SelectionRef:
         kind = "entity" if self.document.kind == "2d" else "node"
@@ -934,6 +1627,7 @@ class EditorMainWindow(QMainWindow):
 
     def _scene_edit_error(self, message: str) -> None:
         self.build_output.append(f"Scene edit paused: {message}", "warning")
+        self._show_output_dock()
         self._gentle_message(message)
         QMessageBox.information(self, "That object needs to stay for now", message)
 
@@ -985,6 +1679,351 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self._scene_edit_error(str(exc))
 
+    def _save_reusable_object(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        try:
+            source = self.document.entity()
+            if source is None:
+                raise ValueError("Choose a 3D object before saving it for reuse.")
+            default_name = friendly(source.id)
+            label, accepted = QInputDialog.getText(
+                self,
+                "Save Object for Later",
+                "What should this saved object be called?",
+                text=default_name,
+            )
+            if not accepted:
+                return
+            project = self.document.project
+            before_nodes = tuple(project.nodes)
+            before_metadata = copy.deepcopy(project.metadata)
+            after_metadata, reusable = self.document.reusable_object_metadata_snapshot(
+                label,
+                self.document.selection,
+            )
+            self.undo_stack.push(
+                ReusableObjectsCommand(
+                    self.document,
+                    f"Save {reusable.label} for Later",
+                    before_nodes,
+                    before_nodes,
+                    before_metadata,
+                    after_metadata,
+                    self.document.selection,
+                    self.document.selection,
+                )
+            )
+            self._gentle_message(
+                f"Saved a snapshot named {reusable.label}. Later object edits do not update it; "
+                "changing its Logic Blocks changes every object using those same blocks."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _add_reusable_object(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        try:
+            reusable_objects = self.document.reusable_objects()
+            if not reusable_objects:
+                raise ValueError(
+                    "Use Save Object on one selected object before placing a saved copy."
+                )
+            label_totals = {
+                label: sum(definition.label == label for definition in reusable_objects)
+                for label in {definition.label for definition in reusable_objects}
+            }
+            label_seen: dict[str, int] = {}
+            choices: list[str] = []
+            for definition in reusable_objects:
+                label_seen[definition.label] = label_seen.get(definition.label, 0) + 1
+                choices.append(
+                    definition.label
+                    if label_totals[definition.label] == 1
+                    else f"{definition.label} ({label_seen[definition.label]})"
+                )
+            choice, accepted = QInputDialog.getItem(
+                self,
+                "Add Saved Object",
+                "Which saved object would you like to place?",
+                choices,
+                0,
+                False,
+            )
+            if not accepted:
+                return
+            reusable_id = reusable_objects[choices.index(choice)].id
+            project = self.document.project
+            before_nodes = tuple(project.nodes)
+            before_metadata = copy.deepcopy(project.metadata)
+            record = self.document.instantiate_reusable_object_record(reusable_id)
+            selection = SelectionRef("node", record.id)
+            self.undo_stack.push(
+                ReusableObjectsCommand(
+                    self.document,
+                    f"Add Saved {friendly(record.id)}",
+                    before_nodes,
+                    (*before_nodes, record),
+                    before_metadata,
+                    before_metadata,
+                    self.document.selection,
+                    selection,
+                )
+            )
+            self._gentle_message(
+                f"Added and selected {friendly(record.id)} in the first free spot. Drag it where "
+                "you want. Its position, look, and physics can differ; "
+                "changing its Logic Blocks changes every object using those same blocks."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _remove_reusable_object(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        try:
+            reusable_objects = self.document.reusable_objects()
+            if not reusable_objects:
+                raise ValueError("There are no Saved Objects to remove yet.")
+            label_totals = {
+                label: sum(definition.label == label for definition in reusable_objects)
+                for label in {definition.label for definition in reusable_objects}
+            }
+            label_seen: dict[str, int] = {}
+            choices: list[str] = []
+            for definition in reusable_objects:
+                label_seen[definition.label] = label_seen.get(definition.label, 0) + 1
+                choices.append(
+                    definition.label
+                    if label_totals[definition.label] == 1
+                    else f"{definition.label} ({label_seen[definition.label]})"
+                )
+            choice, accepted = QInputDialog.getItem(
+                self,
+                "Remove Saved Object",
+                "Which saved object should leave the library? Placed objects stay.",
+                choices,
+                0,
+                False,
+            )
+            if not accepted:
+                return
+            reusable_id = reusable_objects[choices.index(choice)].id
+            project = self.document.project
+            before_nodes = tuple(project.nodes)
+            before_metadata = copy.deepcopy(project.metadata)
+            after_nodes, after_metadata, removed = (
+                self.document.remove_reusable_object_snapshot(reusable_id)
+            )
+            self.undo_stack.push(
+                ReusableObjectsCommand(
+                    self.document,
+                    f"Remove Saved {removed.label}",
+                    before_nodes,
+                    after_nodes,
+                    before_metadata,
+                    after_metadata,
+                    self.document.selection,
+                    self.document.selection,
+                )
+            )
+            self._gentle_message(
+                f"Removed {removed.label} from Saved Objects. Placed objects stayed in the scene."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _save_saved_scene(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        try:
+            node_ids = self.hierarchy.selected_node_ids()
+            if len(node_ids) < 2:
+                raise ValueError(
+                    "Hold Ctrl and select at least two ordinary 3D objects in the Scene Tree."
+                )
+            primary = self.document.selection
+            root_id = (
+                primary.object_id
+                if primary is not None
+                and primary.kind == "node"
+                and primary.object_id in node_ids
+                else node_ids[0]
+            )
+            label, accepted = QInputDialog.getText(
+                self,
+                "Save Scene",
+                "What should this group be called?",
+                text=friendly(root_id) + " Group",
+            )
+            if not accepted:
+                return
+            project = self.document.project
+            before_nodes = tuple(project.nodes)
+            before_metadata = copy.deepcopy(project.metadata)
+            after_metadata, definition = (
+                self.document.saved_scene_metadata_snapshot(
+                    label,
+                    node_ids,
+                    root_id=root_id,
+                )
+            )
+            self.undo_stack.push(
+                SavedScenesCommand(
+                    self.document,
+                    f"Save {definition.label} Scene",
+                    before_nodes,
+                    before_nodes,
+                    before_metadata,
+                    after_metadata,
+                    primary,
+                    primary,
+                )
+            )
+            self._gentle_message(
+                f"Saved {definition.label} with {len(definition.nodes)} objects. "
+                "Place it as a linked group with + Saved Scene."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _add_saved_scene(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        try:
+            definitions = self.document.saved_scenes()
+            if not definitions:
+                raise ValueError(
+                    "Select two or more objects and choose Save Together before placing a Saved Scene."
+                )
+            label_totals = {
+                label: sum(definition.label == label for definition in definitions)
+                for label in {definition.label for definition in definitions}
+            }
+            label_seen: dict[str, int] = {}
+            choices: list[str] = []
+            for definition in definitions:
+                label_seen[definition.label] = label_seen.get(definition.label, 0) + 1
+                choices.append(
+                    definition.label
+                    if label_totals[definition.label] == 1
+                    else f"{definition.label} ({label_seen[definition.label]})"
+                )
+            choice, accepted = QInputDialog.getItem(
+                self,
+                "Place Linked Saved Scene",
+                "Which Saved Scene would you like to place?",
+                choices,
+                0,
+                False,
+            )
+            if not accepted:
+                return
+            definition = definitions[choices.index(choice)]
+            project = self.document.project
+            before_nodes = tuple(project.nodes)
+            before_metadata = copy.deepcopy(project.metadata)
+            after_metadata, instance = (
+                self.document.instantiate_saved_scene_snapshot(definition.id)
+            )
+            selection = SelectionRef("saved_scene_instance", instance.id)
+            self.undo_stack.push(
+                SavedScenesCommand(
+                    self.document,
+                    f"Place Linked {definition.label}",
+                    before_nodes,
+                    before_nodes,
+                    before_metadata,
+                    after_metadata,
+                    self.document.selection,
+                    selection,
+                )
+            )
+            self._gentle_message(
+                f"Placed {definition.label} as one linked group. Move the group, "
+                "or choose Unlink to edit its children separately."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _unlink_saved_scene(self) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        selection = self.document.selection
+        if selection is None or selection.kind != "saved_scene_instance":
+            self._scene_edit_error("Choose a linked Saved Scene before unlinking it.")
+            return
+        try:
+            project = self.document.project
+            before_nodes = tuple(project.nodes)
+            before_metadata = copy.deepcopy(project.metadata)
+            after_nodes, after_metadata, instance = (
+                self.document.bake_saved_scene_instance_snapshot(selection.object_id)
+            )
+            after_selection = SelectionRef("node", instance.id)
+            self.undo_stack.push(
+                SavedScenesCommand(
+                    self.document,
+                    f"Unlink {friendly(instance.id)}",
+                    before_nodes,
+                    after_nodes,
+                    before_metadata,
+                    after_metadata,
+                    selection,
+                    after_selection,
+                )
+            )
+            self._gentle_message(
+                f"Unlinked {friendly(instance.id)} into ordinary editable objects. "
+                "Undo restores the link."
+            )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
+    def _parent_scene_object(self, child_id: str, parent_id: object) -> None:
+        """Attach or detach one ordinary node as a single atomic scene edit."""
+
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            return
+        wanted_parent = None if parent_id is None else str(parent_id)
+        selection = SelectionRef("node", str(child_id))
+        try:
+            before = tuple(self.document.project.nodes)
+            after = self.document.reparent_node_snapshot(
+                selection.object_id, wanted_parent
+            )
+            if before == after:
+                return
+            command_text = (
+                f"Detach {friendly(selection.object_id)}"
+                if wanted_parent is None
+                else f"Attach {friendly(selection.object_id)} to {friendly(wanted_parent)}"
+            )
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    command_text,
+                    before,
+                    after,
+                    self.document.selection,
+                    selection,
+                    None,
+                )
+            )
+            if wanted_parent is None:
+                self._gentle_message(
+                    f"Detached {friendly(selection.object_id)}. It stayed in the same place, "
+                    "and Undo attaches it again."
+                )
+            else:
+                self._gentle_message(
+                    f"Attached {friendly(selection.object_id)} to {friendly(wanted_parent)}. "
+                    "It stayed in the same place; moving its parent now carries it along."
+                )
+        except Exception as exc:
+            self._scene_edit_error(str(exc))
+
     def _duplicate_scene_object(self) -> None:
         if not self.document.is_loaded or self._playing:
             return
@@ -1012,7 +2051,26 @@ class EditorMainWindow(QMainWindow):
                     scene_id,
                 )
             )
-            self._gentle_message(f"Made {friendly(record.id)} and selected the copy.")
+            if isinstance(self.document.project, Mobile3DProject):
+                children = self.document.node_child_ids(source_selection.object_id)
+                parent_id = getattr(record, "parent_id", None)
+                if children:
+                    self._gentle_message(
+                        f"Made one copy named {friendly(record.id)}. The "
+                        f"{len(children)} attached object(s) stayed with "
+                        f"{friendly(source_selection.object_id)}."
+                    )
+                elif parent_id is not None:
+                    self._gentle_message(
+                        f"Made {friendly(record.id)} beside the original; the copy stays "
+                        f"attached to {friendly(parent_id)}."
+                    )
+                else:
+                    self._gentle_message(
+                        f"Made {friendly(record.id)} and selected the copy."
+                    )
+            else:
+                self._gentle_message(f"Made {friendly(record.id)} and selected the copy.")
         except Exception as exc:
             self._scene_edit_error(str(exc) or "That object is no longer in the scene.")
 
@@ -1031,7 +2089,12 @@ class EditorMainWindow(QMainWindow):
                 index for index, record in enumerate(before)
                 if record.id == selection.object_id
             )
-            after = before[:source_index] + before[source_index + 1 :]
+            promoted_children: tuple[str, ...] = ()
+            if isinstance(self.document.project, Mobile3DProject):
+                promoted_children = self.document.node_child_ids(selection.object_id)
+                after = self.document.delete_node_snapshot(selection.object_id)
+            else:
+                after = before[:source_index] + before[source_index + 1 :]
             neighbor = after[min(source_index, len(after) - 1)]
             after_selection = self._selection_for_record(neighbor.id)
             self.undo_stack.push(
@@ -1045,18 +2108,52 @@ class EditorMainWindow(QMainWindow):
                     scene_id,
                 )
             )
-            self._gentle_message(
-                f"Deleted {friendly(selection.object_id)}. Undo brings it straight back."
-            )
+            if promoted_children:
+                self._gentle_message(
+                    f"Deleted {friendly(selection.object_id)}. Its "
+                    f"{len(promoted_children)} attached object(s) stayed in place and moved "
+                    "up one level. Undo restores the whole attachment."
+                )
+            else:
+                self._gentle_message(
+                    f"Deleted {friendly(selection.object_id)}. Undo brings it straight back."
+                )
         except Exception as exc:
             self._scene_edit_error(str(exc) or "That object is no longer in the scene.")
 
     def _structure_changed(self) -> None:
+        self._animation_preview_stop()
         self.hierarchy.set_document(self.document)
         self.hierarchy.set_selection(self.document.selection)
         self.viewport.refresh(keep_view=True)
         self.assets_project.set_document(self.document)
         self.inspector.set_selection(self.document, self.document.selection)
+        self._refresh_animation_timeline()
+
+    def _project_render_settings_edited(self, settings: Mapping[str, Any]) -> None:
+        if self._playing or not isinstance(self.document.project, Mobile3DProject):
+            self.assets_project.set_document(self.document)
+            return
+        before = copy.deepcopy(self.document.project.metadata)
+        after = copy.deepcopy(before)
+        after["substrate_render"] = copy.deepcopy(dict(settings))
+        if before == after:
+            return
+        try:
+            self.undo_stack.push(
+                ProjectMetadataCommand(
+                    self.document,
+                    "Change compact render settings",
+                    before,
+                    after,
+                )
+            )
+            self._gentle_message(
+                "Saved a 32-byte phone render recipe. Build or deploy to try it."
+            )
+        except Exception as exc:
+            self.assets_project.set_document(self.document)
+            self._scene_edit_error(str(exc) or "Those render settings are not valid.")
 
     def _graph_edited(self, graph: Mapping[str, Any]) -> None:
         if self._playing:
@@ -1140,13 +2237,23 @@ class EditorMainWindow(QMainWindow):
             self._refresh_logic_trace()
 
     def _viewport_selected(self, object_id: str) -> None:
-        kind = "entity" if self.document.kind == "2d" else "node"
+        if self.document.kind == "2d":
+            kind = "entity"
+        elif self.document.is_saved_scene_instance_id(object_id):
+            kind = "saved_scene_instance"
+        else:
+            kind = "node"
         self.document.set_selection(SelectionRef(kind, object_id, self.document.current_scene_id))
 
     def _viewport_moved(self, object_id: str, old_position, new_position) -> None:
         if self._playing:
             return
-        kind = "entity" if self.document.kind == "2d" else "node"
+        if self.document.kind == "2d":
+            kind = "entity"
+        elif self.document.is_saved_scene_instance_id(object_id):
+            kind = "saved_scene_instance"
+        else:
+            kind = "node"
         selection = SelectionRef(kind, object_id, self.document.current_scene_id)
         before = self.document.transform(selection)
         if before is None:
@@ -1161,7 +2268,18 @@ class EditorMainWindow(QMainWindow):
                 return
             if len(translation) != 3:
                 return
-            after["translation"] = translation
+            if kind == "node":
+                try:
+                    after.update(
+                        self.document.local_transform_for_world_translation(
+                            object_id, translation
+                        )
+                    )
+                except ValueError as exc:
+                    self._scene_edit_error(str(exc))
+                    return
+            else:
+                after["translation"] = translation
         else:
             return
         if _same_transform(before, after):
@@ -1186,6 +2304,15 @@ class EditorMainWindow(QMainWindow):
             values = tuple(float(value) for value in translation)  # type: ignore[arg-type]
         except (TypeError, ValueError):
             return
+        if selection.kind == "node":
+            try:
+                values = tuple(
+                    self.document.local_transform_for_world_translation(
+                        object_id, values
+                    )["translation"]
+                )
+            except ValueError:
+                return
         if self.inspector.preview_3d_translation(object_id, values):
             self.status_message.setText(
                 f"Placing {friendly(object_id)} — release to keep one undoable move"
@@ -1239,6 +2366,7 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self.inspector.set_selection(self.document, selection)
             self.build_output.append(f"Appearance change paused: {exc}", "warning")
+            self._show_output_dock()
             self._gentle_message(str(exc))
 
     def _inspector_material_look_edited(self, look: str) -> None:
@@ -1289,6 +2417,7 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self.inspector.set_selection(self.document, selection)
             self.build_output.append(f"Material Look change paused: {exc}", "warning")
+            self._show_output_dock()
             self._gentle_message(str(exc))
 
     def _inspector_trigger_area_edited(self, values: Mapping[str, Any]) -> None:
@@ -1328,6 +2457,7 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self.inspector.set_selection(self.document, selection)
             self.build_output.append(f"Trigger Area change paused: {exc}", "warning")
+            self._show_output_dock()
             self._gentle_message(str(exc))
 
     def _inspector_population_edited(self, values: Mapping[str, Any]) -> None:
@@ -1378,6 +2508,70 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self.inspector.set_selection(self.document, selection)
             self.build_output.append(f"Populate Area change paused: {exc}", "warning")
+            self._show_output_dock()
+            self._gentle_message(str(exc))
+
+    def _inspector_polar_population_edited(
+        self, values: Mapping[str, Any]
+    ) -> None:
+        selection = self.document.selection
+        if selection is None or self._playing:
+            return
+        try:
+            before = tuple(self.document.scene_objects())
+            index = next(
+                item_index
+                for item_index, record in enumerate(before)
+                if record.id == selection.object_id
+            )
+            updated = self.document.record_with_polar_population(selection, values)
+            if updated.to_dict() == before[index].to_dict():
+                return
+            after = before[:index] + (updated,) + before[index + 1 :]
+            preset = str(values.get("preset", "off"))
+            labels = {
+                "ring": "Ring",
+                "spiral": "Spiral",
+                "polar_field": "Polar Field",
+                "burst": "Radial Burst (loops)",
+            }
+            enabled = preset in labels
+            count = (
+                int(
+                    values.get(
+                        "instance_count", 32 if preset == "burst" else 64
+                    )
+                )
+                if enabled
+                else 0
+            )
+            command_text = (
+                f"Make {count} {labels[preset]} displays from "
+                f"{friendly(selection.object_id)}"
+                if enabled
+                else f"Turn off Make Many for {friendly(selection.object_id)}"
+            )
+            self.undo_stack.push(
+                SceneObjectsCommand(
+                    self.document,
+                    command_text,
+                    before,
+                    after,
+                    selection,
+                    selection,
+                    None,
+                )
+            )
+            self._gentle_message(
+                f"1 real game object now shows {count - 1} display-only copies. "
+                "Undo restores the previous recipe."
+                if enabled
+                else f"Make Many is off for {friendly(selection.object_id)}."
+            )
+        except Exception as exc:
+            self.inspector.set_selection(self.document, selection)
+            self.build_output.append(f"Make Many change paused: {exc}", "warning")
+            self._show_output_dock()
             self._gentle_message(str(exc))
 
     def _inspector_movement_pattern_edited(self, values: Mapping[str, Any]) -> None:
@@ -1418,6 +2612,7 @@ class EditorMainWindow(QMainWindow):
         except Exception as exc:
             self.inspector.set_selection(self.document, selection)
             self.build_output.append(f"Movement pattern paused: {exc}", "warning")
+            self._show_output_dock()
             self._gentle_message(str(exc))
 
     def _transform_changed(self, selection: SelectionRef) -> None:
@@ -1426,6 +2621,11 @@ class EditorMainWindow(QMainWindow):
             self.inspector.set_selection(self.document, selection)
 
     def _tab_changed(self, index: int) -> None:
+        if index == self._logic_tab_index:
+            self.inspector_dock.hide()
+        elif index == self._scene_tab_index:
+            self.inspector_dock.show()
+
         if index == self._logic_tab_index and self.document.is_loaded:
             self._load_graph_context()
             self._refresh_logic_trace()
@@ -1440,6 +2640,7 @@ class EditorMainWindow(QMainWindow):
     def play(self) -> None:
         if not self.document.is_loaded or self._playing:
             return
+        self._animation_preview_stop()
         self._clear_logic_trace()
         try:
             self.document.begin_play()
@@ -1448,6 +2649,8 @@ class EditorMainWindow(QMainWindow):
             # cannot return a runtime world. Keep that new run visible.
             snapshot = self._logic_trace_for_current_context()
             self._show_logic_trace(snapshot)
+            self.build_output.append(f"Preview could not start: {exc}", "error")
+            self._show_output_dock()
             QMessageBox.warning(self, "Preview could not start", str(exc))
             return
         self._playing = True
@@ -1456,6 +2659,7 @@ class EditorMainWindow(QMainWindow):
         self._refresh_logic_trace()
         self.inspector.setEnabled(False)
         self.hierarchy.set_authoring_enabled(False)
+        self.animation_timeline.setEnabled(False)
         self.viewport.set_playing(True)
         # set_playing() cancels any transient gizmo preview. The preview signal
         # is ignored once Preview owns the UI, so restore the Inspector from
@@ -1490,6 +2694,7 @@ class EditorMainWindow(QMainWindow):
                     self.build_output.append(f"Game event: {friendly(kind)}", "play")
         except Exception as exc:
             self.build_output.append(f"Preview stopped safely: {exc}", "warning")
+            self._show_output_dock()
             self.stop()
             return
         self._frame_count += 1
@@ -1516,6 +2721,7 @@ class EditorMainWindow(QMainWindow):
         self._show_logic_trace(retained_trace)
         self.inspector.setEnabled(True)
         self.hierarchy.set_authoring_enabled(True)
+        self.animation_timeline.setEnabled(True)
         self.play_action.setEnabled(True)
         self.stop_action.setEnabled(False)
         self.save_action.setEnabled(True)
@@ -1525,6 +2731,7 @@ class EditorMainWindow(QMainWindow):
             self.document.kind == "3d" and self._profile_thread is None
             and self._build_thread is None
         )
+        self._refresh_animation_timeline()
         self.status_fps.setText("Preview idle")
         self.build_output.append("Preview stopped; project edits were kept separate.", "good")
         self._gentle_message("Back in edit mode.")
@@ -1532,6 +2739,7 @@ class EditorMainWindow(QMainWindow):
     def validate_project(self) -> None:
         if not self.document.is_loaded:
             return
+        self._show_output_dock()
         try:
             report = self.document.validate()
             issues = tuple(getattr(report, "issues", ()))
@@ -1560,7 +2768,6 @@ class EditorMainWindow(QMainWindow):
                         f"{android_graph_error}",
                         "error",
                     )
-                self.output_dock.raise_()
                 self._gentle_message(
                     "Review the messages below before building for Android."
                     if android_graph_error is not None
@@ -1573,6 +2780,7 @@ class EditorMainWindow(QMainWindow):
                 )
         except Exception as exc:
             self.build_output.append(f"Project check paused: {exc}", "error")
+            self._show_output_dock()
 
     def deploy_to_phone(self) -> None:
         """Build into UGTS-owned cache and install on the sole authorized phone."""
@@ -1580,6 +2788,7 @@ class EditorMainWindow(QMainWindow):
         project = self.document.project
         if not isinstance(project, Mobile3DProject) or self._playing:
             self.build_output.append("Open a Mobile 3D project before deploying to a phone.", "warning")
+            self._show_output_dock()
             return
         index = self.build_output.target.findData("android-install")
         if index >= 0:
@@ -1601,6 +2810,7 @@ class EditorMainWindow(QMainWindow):
             self.build_output.append(
                 "Open a Mobile 3D project before checking a running phone.", "warning"
             )
+            self._show_output_dock()
             return
         if self._build_thread is not None or self._profile_thread is not None:
             return
@@ -1617,7 +2827,7 @@ class EditorMainWindow(QMainWindow):
         self.build_output.append(
             "Checking the running phone for 30 seconds. Keep the game visible and the screen on."
         )
-        self.output_dock.raise_()
+        self._show_output_dock()
         self._gentle_message("Checking phone smoothness, memory, and heat…")
         thread = QThread(self)
         worker = PhoneProfileWorker(application_id)
@@ -1674,6 +2884,7 @@ class EditorMainWindow(QMainWindow):
                 )
                 if answer != QMessageBox.StandardButton.Yes:
                     return
+        self._show_output_dock()
         try:
             if isinstance(project, GameProject):
                 snapshot: GameProject | Mobile3DProject = GameProject.from_dict(project.to_dict())
@@ -1681,6 +2892,7 @@ class EditorMainWindow(QMainWindow):
                 snapshot = Mobile3DProject.from_dict(project.to_dict())
         except Exception as exc:
             self.build_output.append(f"Build paused: {exc}", "error")
+            self._show_output_dock()
             return
         self.build_output.set_busy(True)
         self.build_action.setEnabled(False)
@@ -1710,7 +2922,7 @@ class EditorMainWindow(QMainWindow):
         self.build_output.set_busy(False)
         self.build_output.set_build_path(folder)
         self.build_output.append(str(summary), "good")
-        self.output_dock.raise_()
+        self._show_output_dock()
         if " and opened" in str(summary):
             self._gentle_message("The game is running on the connected phone.")
         else:
@@ -1720,7 +2932,7 @@ class EditorMainWindow(QMainWindow):
     def _build_failed(self, message: str) -> None:
         self.build_output.set_busy(False)
         self.build_output.append(f"Build stopped: {message}", "error")
-        self.output_dock.raise_()
+        self._show_output_dock()
         self._gentle_message("Nothing in your source project was changed.")
 
     @Slot(object)
@@ -1739,7 +2951,7 @@ class EditorMainWindow(QMainWindow):
                 f"APK install did not finish: {detail}", "warning"
             )
             gentle = "The APK is ready. Check the phone message, then try Deploy again."
-        self.output_dock.raise_()
+        self._show_output_dock()
         self._gentle_message(gentle)
 
     @Slot()
@@ -1764,7 +2976,7 @@ class EditorMainWindow(QMainWindow):
         tone = "good" if not result.warnings else "warning"
         for index, line in enumerate(lines):
             self.build_output.append(line, tone if index == 0 else "info")
-        self.output_dock.raise_()
+        self._show_output_dock()
         self._gentle_message(
             "Phone check passed."
             if not result.warnings
@@ -1775,7 +2987,7 @@ class EditorMainWindow(QMainWindow):
     def _profile_failed(self, message: str) -> None:
         self.build_output.set_busy(False)
         self.build_output.append(f"Phone check stopped: {message}", "warning")
-        self.output_dock.raise_()
+        self._show_output_dock()
         self._gentle_message(
             "Connect the phone, open the deployed game, and try Check Phone again."
         )
@@ -1827,6 +3039,7 @@ class EditorMainWindow(QMainWindow):
             event.ignore()
             return
         if self._maybe_save():
+            self._animation_preview_stop()
             self.stop()
             event.accept()
         else:
@@ -1834,10 +3047,12 @@ class EditorMainWindow(QMainWindow):
 
 
 __all__ = [
+    "AnimationCommand",
     "EditorMainWindow",
     "GraphCommand",
     "MaterialLookCommand",
     "PhoneProfileWorker",
     "SceneObjectsCommand",
+    "ReusableObjectsCommand",
     "TransformCommand",
 ]

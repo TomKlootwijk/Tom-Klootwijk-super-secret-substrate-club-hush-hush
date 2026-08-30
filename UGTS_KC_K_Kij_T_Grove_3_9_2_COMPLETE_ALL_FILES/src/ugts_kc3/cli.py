@@ -191,7 +191,8 @@ def _parser() -> argparse.ArgumentParser:
     unpack_ecs.add_argument("output", type=Path)
 
     polar_lut = sub.add_parser(
-        "make-polar-lut", help="build a compact shared log-polar binary16 lookup table"
+        "make-polar-lut",
+        help="build a compact shared binary16 log-encoded polar LUT",
     )
     polar_lut.add_argument("output", type=Path)
     polar_lut.add_argument("--resolution", type=int, default=256)
@@ -286,6 +287,29 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 if result.pss_kib_max is not None:
                     print(f"  peak process memory {result.pss_kib_max / 1024:.1f} MiB PSS")
+                if result.cpu_one_core_pct_mean is not None:
+                    phone_share = (
+                        f" · {result.cpu_total_capacity_pct_mean:.1f}% of the whole phone"
+                        if result.cpu_total_capacity_pct_mean is not None
+                        else ""
+                    )
+                    print(
+                        "  average CPU "
+                        f"{result.cpu_one_core_pct_mean:.1f}% of one core{phone_share}"
+                    )
+                if result.gpu_render_ms_mean_since_renderer_start is not None:
+                    maximum = (
+                        f" · max {result.gpu_render_ms_max_since_renderer_start:.3f} ms"
+                        if result.gpu_render_ms_max_since_renderer_start is not None
+                        else ""
+                    )
+                    print(
+                        "  GPU drawing since renderer start: average "
+                        f"{result.gpu_render_ms_mean_since_renderer_start:.3f} ms{maximum} "
+                        "(non-blocking timer)"
+                    )
+                elif result.gpu_timer_supported is False:
+                    print("  GPU drawing timer unsupported; no estimate reported")
                 if result.gpu_c_max is not None:
                     print(f"  peak reported GPU temperature {result.gpu_c_max:.1f} °C")
                 for warning in result.warnings:

@@ -192,6 +192,42 @@ class EditorMaterialLookTests(unittest.TestCase):
             "accent_crystal_glow_3",
         )
 
+    def test_dirty_marker_tracks_clean_index_before_and_after_save(self) -> None:
+        self._select("player")
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "material_look.json"
+            self.window.document.save(path)
+            self.window.undo_stack.setClean()
+            base = self._bytes()
+            self.assertFalse(self.window.document.is_dirty)
+
+            self._apply("metal")
+            metal = self._bytes()
+            self.assertNotEqual(metal, base)
+            self.assertTrue(self.window.document.is_dirty)
+
+            self.window.undo_stack.undo()
+            self.assertEqual(self._bytes(), base)
+            self.assertFalse(self.window.document.is_dirty)
+            self.window.undo_stack.redo()
+            self.assertEqual(self._bytes(), metal)
+            self.assertTrue(self.window.document.is_dirty)
+
+            self.window.document.save()
+            self.window.undo_stack.setClean()
+            self.assertFalse(self.window.document.is_dirty)
+            self.assertEqual(
+                json.loads(path.read_text(encoding="utf-8")),
+                self.window.document.serialize(),
+            )
+
+            self.window.undo_stack.undo()
+            self.assertEqual(self._bytes(), base)
+            self.assertTrue(self.window.document.is_dirty)
+            self.window.undo_stack.redo()
+            self.assertEqual(self._bytes(), metal)
+            self.assertFalse(self.window.document.is_dirty)
+
 
 if __name__ == "__main__":
     unittest.main()

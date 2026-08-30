@@ -4,6 +4,48 @@
 
 - Adds a dockable PySide6 desktop editor with editable 2D/3D scenes, inspectors, real runtime preview,
   friendly project checks and direct web, glTF, Android source, Poco APK and ADB-install-and-open builds.
+- Adds Mobile 3D **Saved Objects** as bounded authoring-time single-node snapshots. Definitions stay
+  out of native packs until placed; placed copies are ordinary flat ECS nodes with shared resources
+  and graph bytecode, and save/place/remove each use one atomic Undo command.
+- Adds linked multi-object **Saved Scenes**. One parent-local definition is reused by compact
+  ID-plus-transform placements; Save Together/place/Unlink are atomic, while one deterministic
+  materializer feeds desktop ECS, KC3D, KCVG, KCPK, KCSP, KCAN, packed ECS, glTF and Android without
+  adding a native prefab type. Static-parent and no-nesting limits are validated explicitly.
+- Adds retained parent-local transforms for ordinary Mobile 3D display objects. The dark Scene Tree
+  nests children and offers contextual **Attach to…** / **Detach** actions; reparenting preserves the
+  world pose and is atomic under Undo/Redo. The child Inspector labels its saved values **Transform
+  inside …**, while the viewport and X/Y/Z translation gizmo remain world-space.
+- Bounds that first hierarchy slice to eight parent edges. Children must be static, tagless,
+  non-colliding/non-sensor display objects with zero spin and no Logic Blocks, Movement Pattern,
+  Populate Area or Transform Animation. Ancestors may move through otherwise-valid transform systems,
+  and any ancestor that owns children must keep positive uniform scale. Validation rejects
+  `hierarchy.parent_graph_scale` when a graph uses a per-axis, dynamic or otherwise unprovable parent
+  scale write instead of one complete saved uniform-positive vector.
+- Adds optional sparse `hierarchies.kchi` (`KCHI392`) Android data: a 24-byte header and one 8-byte
+  child/parent index record per attached node, omitted for flat projects. Desktop late-phase
+  composition, native C++ composition after Ready/fixed-step writers, static glTF children and the
+  `parent_child_hierarchy_3d` source/native-pack acceptance share the bounded contract. Its exact
+  ARM64/GLES 3 Poco APK installs/cold-launches and has a five-node 15-second 120.15-FPS/9.959-ms-p95
+  baseline with thermal status 0 and no crashes/warnings; this is not an AAA or sustained benchmark.
+- Adds native generic dynamic-body execution after Logic Blocks. Ordinary untagged bodies receive
+  gravity/integration, floor/XZ-bounds response and stable-ID solid-pair impulses; the authored
+  crate KC3D/KCVG host acceptance reaches its exact 600-step endpoint. Player-controller unification
+  and native contact events remain outside this slice.
+- Reworks UGTS Studio into a dark viewport-first layout with compact Play/Build/Deploy controls,
+  tabbed Scene Tree/Resources and contextual Output/Animation/Inspector presentation.
+- Adds the bottom Mobile 3D **Animation** dock with up to 16 named relative transform clips per
+  eligible static node. New/Duplicate/Rename/Delete, one optional autoplay choice, whole-pose keys,
+  nondestructive scrub/preview, Once/Repeat/Back and forth and atomic Undo/Redo make the bounded path
+  editable without source code. The child chooser and runtimes expose the same nine easing modes.
+- Adds **Play an Animation** and **Stop an Animation** Mobile 3D Logic Blocks. Append-only KCVG
+  opcodes 26/27 select a named clip, restart or resume it, and pause with either pose hold or authored-
+  pose reset semantics in desktop Preview and native Android.
+- Extends optional sparse `KCAN392` without breaking legacy bytes. Projects using only the old
+  `transform_animation` form still emit exact v1 (24-byte header, 16-byte node binding, 24-byte key)
+  with an implicit `main` autoplay clip. Libraries emit v2, whose 24-byte clip binding adds a stable
+  FNV-1a clip hash and autoplay flag; key encoding and quantization are unchanged. No clip means no
+  asset. GLB/skeletal animation, retargeting, crossfades and state-machine authoring remain future
+  work, and current glTF animation export remains static.
 - Adds typed, serializable Logic Blocks with deterministic ordering and bounded desktop execution.
 - Makes Logic Blocks selection-owned: an unbound selected 2D/3D object shows a transient blank graph;
   the first edit creates and binds it, exact Undo removes both, multiple bindings expose a chooser,
@@ -67,8 +109,9 @@
 - Fixes synchronous Add Block reloading so a new logic block stays selected and Undo remains reliable.
 - Adds composable desktop 3D ECS access plus compact log-polar pose/motion components, shared binary16
   LUTs and checksummed `UGECS1` deployment files.
-- Focused opcode-25 desktop, browser, compact-pack, editor and native-host checks pass, along with
-  targeted Ruff; the full suite is green: 510 passed, 100 subtests passed in 66.69s. First Steps emits a
+- Focused opcode-25/PBR-lite desktop, browser, compact-pack, editor, shader and native-host checks pass,
+  along with targeted Ruff; the full suite is green: 596 passed, 135 subtests passed in 127.49s.
+  First Steps emits a
   1,265-byte KCVG with SHA-256
   `363EED6B1054CE0809F57FDF934755670F40D1273EEC92BA3720CC7B9E80BB3B`, a 914-byte KCPK with
   SHA-256 `8A45DDBF874D918CEDAEB0161E80FEF3314C2C2B0B21A45DA90E22A18C4DD313`, and a 60-byte KCSP with
@@ -76,12 +119,17 @@
   sidecar bytes. Fresh idle execution has state SHA-256
   `a1256e5e78e621f8a4ca75b896797ec4d96fbfce06d67b0e912359b3dc273b24`; dash/message execution sets
   `heard_message=true` and `score=1`.
-- Adds a native Poco ARM64 Gradle/NDK build path. The post-audit canonical opcode-25 APK is locally
-  built and inspected at 1,451,149 bytes with SHA-256
-  `1003F0617F247C9F0C1E7269F8F15F462AAD7F4E81E2409CF4B091622F3CA922`; the canonical,
-  `message-op25` and `message-op25-audit-fixed` paths are byte-identical and contain the unchanged
-  current sidecars. The Poco disconnected before final installation, so this `1003…` build has no
-  install, launch or profile claim. The last physically verified pre-audit APK is preserved as
+- Adds child-facing Material Looks and compact desktop/GLES PBR-lite shading without growing the
+  fixed KC3D392 material payload.
+- Adds a native Poco ARM64 Gradle/NDK build path. The current PBR-lite/opcode-25/animation-runtime APK
+  is locally built and inspected at 1,484,357 bytes with SHA-256
+  `B9B1A9A1E722C5B0D0DAA6DE3634E605E16D7903BA14626B4F99B58154918497`; the canonical and explicit
+  `pbr-lite-op25` paths are byte-identical and contain unchanged compact sidecars plus the linked KCAN
+  runtime. The Poco is absent from ADB, so this `B9B1…` build has no install, launch or profile claim.
+  The animation-bearing `43D197EC…` demo contains one 88-byte two-key KCAN and is also local-only.
+  The preceding local
+  `message-op25` / `message-op25-audit-fixed` snapshot remains 1,451,149 bytes / `1003F061…`.
+  The last physically verified pre-audit APK is preserved as
   `build/UGTS-First-Steps-3.9.2-Poco-X7-Pro-message-op25-pre-audit-debug.apk`: 1,449,653 bytes with
   SHA-256 `FBCBF8710E8B7D850BEAA10E87DA53DD9373EB8AC35B836F4E62A01BEC743B7E`.
   Xiaomi `2412DPC0AG` / `rodin` installed and cold-launched it; the pulled base APK hash-matches it,
@@ -92,6 +140,10 @@
   `917028CB74AE8DE31E0DDAAD02F6D589012F17754DFD213D8D2B4330DBDEE1A1`; the opcode-23 and opcode-22
   artifacts retain their historical evidence. Interaction-heavy/touch, unplugged, long-duration,
   explicit fallback-rate, representative lower-tier and first post-audit device runs remain open.
+- Builds and inspects the linked Saved Scene acceptance APK at 1,505,487 bytes / SHA-256
+  `70FD18B26DB7D41167E32EBD27088DC02474479F240B6A5DBF2654A6B36ED291`. Its ARM64/GLES 3/v2-signed
+  package contains byte-matched KC3D/KCVG/KCAN/KCSP/KCPK materialization assets and no authoring JSON;
+  ADB had no device, so install/launch/profile evidence remains open.
 - Keeps Populate Area honest and decorative: unsafe transform/collider/gameplay/graph/movement
   ownership is rejected; copies have no such semantics. Desktop presentation is capped at 64
   generated copies per group and 256 globally, while browser Mobile 3D, overlap avoidance, per-copy

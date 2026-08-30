@@ -1,0 +1,4 @@
+application_id: org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro
+min_sdk: 26
+target_sdk: 36
+apk_summary: org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro	392	3.9.2-poco-x7-pro

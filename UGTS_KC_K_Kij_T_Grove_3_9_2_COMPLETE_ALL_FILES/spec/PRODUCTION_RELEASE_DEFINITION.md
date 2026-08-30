@@ -48,6 +48,10 @@ project schema
 - 2D shape collision, filters, sensors, swept AABB and spatial hashing.
 - Multi-device input actions, edge states and input recording.
 - Keyframe animation, loops, crossfades and state-machine selection.
+- A bounded Mobile 3D visual timeline with up to 16 named relative transform clips per eligible
+  static node: one optional autoplay choice, whole-pose keys, scrub/playback/Undo,
+  once/loop/ping-pong, nine easing modes, direct Logic Blocks Play/Stop/restart/resume/hold/reset,
+  shared compact quantization, exact KCAN v1 compatibility and KCAN v2 native-Android execution.
 - Layered tilemaps, ASCII maps, pathfinding and collision-box merging.
 - Procedural sound/music data and browser Web Audio realization.
 - Entity/component game world, fixed-step physics, gameplay interactions, cameras, snapshots, hashes and saves.
@@ -58,7 +62,9 @@ project schema
 
 - Native GPU render graph or certified physical-GPU implementation.
 - General rigid-body/joint/deformable solver.
-- Skeletal animation and visual animation editor.
+- GLB animation import, skeletal animation/retargeting, crossfades/layered blending, production
+  animation-state-machine authoring and animated glTF export. The shipped Mobile 3D named rigid-
+  transform clips and direct Play/Stop blocks are deliberately narrower.
 - Production multiplayer transport or server infrastructure.
 - OpenXR and console platform integration.
 - Full OpenUSD/MaterialX/OCIO runtime integration.

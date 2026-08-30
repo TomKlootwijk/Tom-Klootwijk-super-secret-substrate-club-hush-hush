@@ -33,6 +33,21 @@ POLAR_PACK_ASSET = "packed_kinematics.kcpk"
 POLAR_PACK_MAGIC = b"KCPK392\0"
 POLAR_PACK_ENDIAN = 0x01020304
 POLAR_PACK_VERSION = 1
+
+_SAVED_SCENE_METADATA_KEYS = frozenset({"saved_scenes", "saved_scene_instances"})
+
+
+def _materialized_project(project: Any) -> Any:
+    metadata = getattr(project, "metadata", {})
+    if not isinstance(metadata, Mapping) or not any(
+        key in metadata for key in _SAVED_SCENE_METADATA_KEYS
+    ):
+        return project
+    from .saved_scene import materialize_saved_scenes
+
+    return materialize_saved_scenes(project)
+
+
 MAX_POLAR_PROFILES = 64
 MAX_POLAR_COMPONENTS = 65535
 MAX_LUT_RESOLUTION = 4096
@@ -234,6 +249,7 @@ class _Writer:
 def compile_polar_pack_bytes(project: Any) -> bytes:
     """Compile one optional sparse KCPK asset, or ``b''`` when unused."""
 
+    project = _materialized_project(project)
     project.validate()
     spec = collect_polar_project_spec(project)
     if not spec.components:

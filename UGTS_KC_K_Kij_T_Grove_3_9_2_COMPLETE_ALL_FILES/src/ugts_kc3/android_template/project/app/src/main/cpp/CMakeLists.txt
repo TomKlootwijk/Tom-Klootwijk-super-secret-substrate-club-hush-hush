@@ -37,13 +37,30 @@ target_include_directories(native_app_glue PUBLIC
     "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
+# The SHA-1 build ID is calculated before Android strips packaged libraries.
+# Normalize only DWARF paths so independent short workspaces produce the same
+# ID while keeping full debug information for crash symbolization.
+set(UGTS_KC_DEBUG_PATH_OPTIONS
+    "-fdebug-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=/ugts-kc/source"
+    "-fdebug-prefix-map=${CMAKE_CURRENT_BINARY_DIR}=/ugts-kc/build"
+)
+target_compile_options(native_app_glue PRIVATE
+    ${UGTS_KC_DEBUG_PATH_OPTIONS}
+)
+
 add_library(ugts_kc_native SHARED
     main.cpp
     engine.cpp
+    body_physics.cpp
     touch_router.cpp
     trigger_area.cpp
     graph_vm.cpp
     polar_kinematics.cpp
+    polar_populations.cpp
+    gpu_timer_query.cpp
+    render_substrate.cpp
+    transform_animation.cpp
+    transform_hierarchy.cpp
     renderer_gles3.cpp
     scene_pack.cpp
     device_profile.cpp
@@ -63,6 +80,11 @@ target_compile_definitions(ugts_kc_native PRIVATE
 
 target_compile_options(ugts_kc_native PRIVATE
     -Wall -Wextra -Wpedantic
+    ${UGTS_KC_DEBUG_PATH_OPTIONS}
+)
+
+target_link_options(ugts_kc_native PRIVATE
+    "-Wl,--build-id=sha1"
 )
 
 target_link_libraries(ugts_kc_native

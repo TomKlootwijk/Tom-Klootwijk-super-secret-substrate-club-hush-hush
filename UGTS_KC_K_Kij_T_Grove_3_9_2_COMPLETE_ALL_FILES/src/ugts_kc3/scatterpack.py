@@ -5,7 +5,7 @@ import hashlib
 import math
 from pathlib import Path
 import struct
-from typing import Any
+from typing import Any, Mapping
 
 from .scatter import (
     MAX_SCATTER_GROUPS,
@@ -24,6 +24,19 @@ SCATTER_GROUP_BYTES = 36
 MAX_SCATTER_PACK_BYTES = 64 * 1024
 SCATTER_FLAG_RANDOM_YAW = 1 << 0
 
+_SAVED_SCENE_METADATA_KEYS = frozenset({"saved_scenes", "saved_scene_instances"})
+
+
+def _materialized_project(project: Any) -> Any:
+    metadata = getattr(project, "metadata", {})
+    if not isinstance(metadata, Mapping) or not any(
+        key in metadata for key in _SAVED_SCENE_METADATA_KEYS
+    ):
+        return project
+    from .saved_scene import materialize_saved_scenes
+
+    return materialize_saved_scenes(project)
+
 
 class ScatterPackError(ScatterError):
     """Invalid authoring data or a malformed KCSP sidecar."""
@@ -32,6 +45,7 @@ class ScatterPackError(ScatterError):
 def compile_scatter_pack_bytes(project: Any) -> bytes:
     """Compile an optional constant-size-per-group KCSP asset."""
 
+    project = _materialized_project(project)
     project.validate()
     spec = collect_scatter_project_spec(project)
     if not spec.groups:

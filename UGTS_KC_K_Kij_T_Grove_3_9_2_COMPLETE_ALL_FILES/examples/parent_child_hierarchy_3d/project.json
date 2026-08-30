@@ -1,0 +1,272 @@
+{
+  "schema": "ugts-kc-mobile-3d-project-3.9.1",
+  "id": "parent_child_hierarchy_3d",
+  "title": "The Moving Carrier Family",
+  "author": "UGTS-KC example",
+  "edition": "3.9.2 - K-Kij-T / Grove — retained hierarchy",
+  "background": [0.012, 0.024, 0.046, 1.0],
+  "camera": {
+    "position": [3.5, 3.6, 7.0],
+    "target": [-2.5, 1.5, 0.0],
+    "up": [0.0, 1.0, 0.0],
+    "vertical_fov_degrees": 52.0,
+    "near": 0.05,
+    "far": 80.0
+  },
+  "light": {
+    "direction": [-0.45, -1.0, -0.3],
+    "color": [1.0, 0.96, 0.9],
+    "intensity": 1.35,
+    "ambient": 0.24
+  },
+  "world": {
+    "fixed_dt": 0.015625,
+    "gravity": [0.0, 0.0, 0.0],
+    "floor_y": 0.0,
+    "bounds_min": [-10.0, -4.0, -8.0],
+    "bounds_max": [10.0, 8.0, 8.0],
+    "player_speed": 4.0,
+    "jump_speed": 0.0
+  },
+  "start_quality": "balanced",
+  "quality_tiers": [
+    {
+      "id": "balanced",
+      "target_fps": 60,
+      "render_scale": 1.0,
+      "max_visible_nodes": 64,
+      "msaa_samples": 2,
+      "post_processing": true,
+      "shadow_quality": 1
+    }
+  ],
+  "target_profiles": [
+    {
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB / Mali-G720",
+      "min_sdk": 26,
+      "target_sdk": 36,
+      "compile_sdk": 36,
+      "preferred_abis": ["arm64-v8a"],
+      "required_gles": [3, 0],
+      "vulkan_optional": true,
+      "target_refresh_hz": 120,
+      "memory_floor_mb": 10240,
+      "device_hints": ["POCO X7 Pro"],
+      "gpu_hints": ["Mali-G720"],
+      "default_quality": "balanced"
+    }
+  ],
+  "materials": [
+    {
+      "id": "arm_amber",
+      "base_color": [1.0, 0.53, 0.12, 1.0],
+      "metallic": 0.12,
+      "roughness": 0.42,
+      "emissive": [0.08, 0.025, 0.0],
+      "double_sided": false
+    },
+    {
+      "id": "beacon_lime",
+      "base_color": [0.55, 1.0, 0.28, 1.0],
+      "metallic": 0.04,
+      "roughness": 0.3,
+      "emissive": [0.12, 0.28, 0.025],
+      "double_sided": false
+    },
+    {
+      "id": "carrier_cyan",
+      "base_color": [0.08, 0.72, 0.92, 1.0],
+      "metallic": 0.28,
+      "roughness": 0.34,
+      "emissive": [0.01, 0.1, 0.16],
+      "double_sided": false
+    },
+    {
+      "id": "floor_navy",
+      "base_color": [0.045, 0.09, 0.16, 1.0],
+      "metallic": 0.12,
+      "roughness": 0.84,
+      "emissive": [0.0, 0.008, 0.018],
+      "double_sided": false
+    },
+    {
+      "id": "mast_violet",
+      "base_color": [0.49, 0.3, 0.86, 1.0],
+      "metallic": 0.18,
+      "roughness": 0.48,
+      "emissive": [0.025, 0.008, 0.075],
+      "double_sided": false
+    }
+  ],
+  "meshes": [
+    {
+      "id": "cube",
+      "vertices": [
+        [-0.5, -0.5, -0.5],
+        [0.5, -0.5, -0.5],
+        [0.5, 0.5, -0.5],
+        [-0.5, 0.5, -0.5],
+        [-0.5, -0.5, 0.5],
+        [0.5, -0.5, 0.5],
+        [0.5, 0.5, 0.5],
+        [-0.5, 0.5, 0.5]
+      ],
+      "triangles": [
+        [0, 2, 1],
+        [0, 3, 2],
+        [4, 5, 6],
+        [4, 6, 7],
+        [0, 4, 7],
+        [0, 7, 3],
+        [1, 2, 6],
+        [1, 6, 5],
+        [0, 1, 5],
+        [0, 5, 4],
+        [3, 7, 6],
+        [3, 6, 2]
+      ],
+      "normals": [],
+      "metadata": {
+        "primitive": "compact-indexed-cube",
+        "size": 1.0
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "floor",
+      "mesh_id": "cube",
+      "material_id": "floor_navy",
+      "transform": {
+        "translation": [0.0, -0.1, 0.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
+        "scale": [12.0, 0.2, 8.0]
+      },
+      "velocity": [0.0, 0.0, 0.0],
+      "angular_velocity": [0.0, 0.0, 0.0],
+      "collider": {
+        "shape": "none",
+        "radius": 0.5,
+        "half_extents": [0.5, 0.5, 0.5],
+        "sensor": false
+      },
+      "dynamic": false,
+      "mass": 1.0,
+      "restitution": 0.0,
+      "tags": [],
+      "metadata": {
+        "description": "A static visual floor below the moving family."
+      }
+    },
+    {
+      "id": "carrier",
+      "mesh_id": "cube",
+      "material_id": "carrier_cyan",
+      "transform": {
+        "translation": [-4.0, 1.0, 0.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
+        "scale": [1.5, 1.5, 1.5]
+      },
+      "velocity": [0.5, 0.0, 0.0],
+      "angular_velocity": [0.0, 1.5707963267948966, 0.0],
+      "collider": {
+        "shape": "none",
+        "radius": 0.5,
+        "half_extents": [0.5, 0.5, 0.5],
+        "sensor": false
+      },
+      "dynamic": true,
+      "mass": 1.0,
+      "restitution": 0.0,
+      "tags": [],
+      "metadata": {
+        "description": "The cyan root moves and turns; every attached display object follows it."
+      }
+    },
+    {
+      "id": "arm",
+      "mesh_id": "cube",
+      "material_id": "arm_amber",
+      "transform": {
+        "translation": [2.0, 0.5, 0.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
+        "scale": [2.4, 0.22, 0.22]
+      },
+      "velocity": [0.0, 0.0, 0.0],
+      "angular_velocity": [0.0, 0.0, 0.0],
+      "collider": {
+        "shape": "none",
+        "radius": 0.5,
+        "half_extents": [0.5, 0.5, 0.5],
+        "sensor": false
+      },
+      "dynamic": false,
+      "mass": 1.0,
+      "restitution": 0.0,
+      "tags": [],
+      "metadata": {
+        "description": "A display-only child two local units right and half a unit up inside the carrier."
+      },
+      "parent_id": "carrier"
+    },
+    {
+      "id": "mast",
+      "mesh_id": "cube",
+      "material_id": "mast_violet",
+      "transform": {
+        "translation": [0.0, 1.25, 0.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
+        "scale": [0.5, 0.5, 0.5]
+      },
+      "velocity": [0.0, 0.0, 0.0],
+      "angular_velocity": [0.0, 0.0, 0.0],
+      "collider": {
+        "shape": "none",
+        "radius": 0.5,
+        "half_extents": [0.5, 0.5, 0.5],
+        "sensor": false
+      },
+      "dynamic": false,
+      "mass": 1.0,
+      "restitution": 0.0,
+      "tags": [],
+      "metadata": {
+        "description": "A uniformly scaled child that can safely own another child."
+      },
+      "parent_id": "carrier"
+    },
+    {
+      "id": "beacon",
+      "mesh_id": "cube",
+      "material_id": "beacon_lime",
+      "transform": {
+        "translation": [1.0, 1.0, 0.0],
+        "rotation": [1.0, 0.0, 0.0, 0.0],
+        "scale": [0.65, 0.65, 0.65]
+      },
+      "velocity": [0.0, 0.0, 0.0],
+      "angular_velocity": [0.0, 0.0, 0.0],
+      "collider": {
+        "shape": "none",
+        "radius": 0.5,
+        "half_extents": [0.5, 0.5, 0.5],
+        "sensor": false
+      },
+      "dynamic": false,
+      "mass": 1.0,
+      "restitution": 0.0,
+      "tags": [],
+      "metadata": {
+        "description": "A grandchild: Carrier moves Mast, and Mast moves Beacon."
+      },
+      "parent_id": "mast"
+    }
+  ],
+  "metadata": {
+    "template": "parent-child-hierarchy-3d",
+    "signature_edition": true,
+    "lesson": "Right-click a display object in the Scene Tree to Attach or Detach it without making it jump.",
+    "runtime_scope": "visual children only; roots remain ordinary ECS entities"
+  }
+}

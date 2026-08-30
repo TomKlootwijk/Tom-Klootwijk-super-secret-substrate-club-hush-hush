@@ -81,7 +81,11 @@ class TriggerArea3DTests(unittest.TestCase):
             }
         }
         project.nodes = tuple(
-            replace(node, metadata={**node.metadata, "packed_kinematic": component.to_dict()})
+            replace(
+                node,
+                angular_velocity=(0.0, 0.0, 0.0),
+                metadata={**node.metadata, "packed_kinematic": component.to_dict()},
+            )
             if node.id == "goal" else node
             for node in project.nodes
         )

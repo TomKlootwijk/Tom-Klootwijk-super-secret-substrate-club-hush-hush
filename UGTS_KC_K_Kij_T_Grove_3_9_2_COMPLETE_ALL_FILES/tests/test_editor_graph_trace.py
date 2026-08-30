@@ -6,7 +6,7 @@ import unittest
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtCore import QPointF
-from PySide6.QtWidgets import QApplication, QGraphicsItem
+from PySide6.QtWidgets import QApplication, QGraphicsItem, QTabWidget
 
 from ugts_kc3.editor.document import LogicTraceSnapshot
 from ugts_kc3.editor.graph import GraphPage, TEMPLATE_BY_KEY
@@ -159,6 +159,49 @@ class GraphTracePresentationTests(unittest.TestCase):
         self.assertTrue(constant.isSelected())
         self.assertIs(self.page.properties.node, constant)
         self.assertTrue(self.page.view.isEnabled())
+
+    def test_sidebar_uses_focused_tabs_at_compact_editor_size(self) -> None:
+        self.page.resize(980, 640)
+        self.page.show()
+        self.app.processEvents()
+
+        tabs = self.page.sidebar_tabs
+        self.assertIsInstance(tabs, QTabWidget)
+        self.assertEqual(
+            [tabs.tabText(index) for index in range(tabs.count())],
+            ["Blocks", "Settings", "Trail"],
+        )
+        self.assertIs(tabs.widget(0), self.page.palette)
+        self.assertIs(tabs.widget(1), self.page.properties)
+        self.assertIs(tabs.widget(2), self.page.last_run)
+        self.assertGreaterEqual(tabs.width(), 260)
+        self.assertGreater(self.page.view.width(), tabs.width())
+
+        for panel in (self.page.palette, self.page.properties, self.page.last_run):
+            tabs.setCurrentWidget(panel)
+            self.app.processEvents()
+            self.assertTrue(panel.isVisibleTo(self.page))
+            self.assertTrue(
+                all(
+                    other is panel or not other.isVisibleTo(self.page)
+                    for other in (
+                        self.page.palette,
+                        self.page.properties,
+                        self.page.last_run,
+                    )
+                )
+            )
+        self.assertGreater(self.page.last_run.steps.height(), 190)
+
+    def test_selecting_a_graph_block_opens_its_settings_tab(self) -> None:
+        self.page.show()
+        self.page.sidebar_tabs.setCurrentWidget(self.page.last_run)
+        self.page.graph_scene.clearSelection()
+        self.page.graph_scene.nodes["constant"].setSelected(True)
+        self.app.processEvents()
+
+        self.assertIs(self.page.sidebar_tabs.currentWidget(), self.page.properties)
+        self.assertIs(self.page.properties.node, self.page.graph_scene.nodes["constant"])
 
     def test_read_only_blocks_scene_palette_and_property_mutations(self) -> None:
         scene = self.page.graph_scene

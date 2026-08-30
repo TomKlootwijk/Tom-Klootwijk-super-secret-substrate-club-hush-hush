@@ -302,6 +302,70 @@ class ContextualGraphPropertyTests(unittest.TestCase):
             window.close()
             self.app.processEvents()
 
+    def test_animation_blocks_use_contextual_editable_object_and_clip_choices(self) -> None:
+        panel = NodePropertiesPanel()
+        panel.set_project_kind("3d")
+        panel.set_entity_context("floor", (("floor", "Floor"), ("cone", "Cone")))
+        panel.set_animation_context((("main", "Main"), ("wave", "Wave")))
+        play = GraphNode(
+            "play",
+            TEMPLATE_BY_KEY["action.play_animation"],
+            {"entity": None, "clip": "wave", "restart": True},
+        )
+        panel.set_node(play)
+
+        entity = panel.editor_for("entity")
+        clip = panel.editor_for("clip")
+        restart = panel.editor_for("restart")
+        self.assertIsInstance(entity, QComboBox)
+        self.assertIsInstance(clip, QComboBox)
+        self.assertIsInstance(restart, QComboBox)
+        self.assertTrue(entity.isEditable())
+        self.assertTrue(clip.isEditable())
+        self.assertEqual(entity.itemData(0), None)
+        self.assertGreaterEqual(entity.findData("cone"), 0)
+        self.assertEqual(
+            [clip.itemData(index) for index in range(clip.count())],
+            ["main", "wave"],
+        )
+        clip.setEditText("other_object_clip")
+        clip.lineEdit().editingFinished.emit()
+        self.assertEqual(play.properties["clip"], "other_object_clip")
+
+        stop = GraphNode(
+            "stop",
+            TEMPLATE_BY_KEY["action.stop_animation"],
+            {"entity": None, "reset": True},
+        )
+        panel.set_node(stop)
+        self.assertIsInstance(panel.editor_for("entity"), QComboBox)
+        self.assertIsInstance(panel.editor_for("reset"), QComboBox)
+
+    def test_animation_blocks_are_visible_only_in_the_3d_palette(self) -> None:
+        def hidden(window: EditorMainWindow, key: str) -> bool:
+            tree = window.graph_page.palette.tree
+            for category_index in range(tree.topLevelItemCount()):
+                category = tree.topLevelItem(category_index)
+                for child_index in range(category.childCount()):
+                    child = category.child(child_index)
+                    if child.data(0, Qt.ItemDataRole.UserRole) == key:
+                        return child.isHidden()
+            self.fail(f"missing palette block {key}")
+
+        window = EditorMainWindow()
+        try:
+            window.new_2d_project()
+            self.assertTrue(hidden(window, "action.play_animation"))
+            self.assertTrue(hidden(window, "action.stop_animation"))
+            window.document.set_dirty(False)
+            window.new_3d_project()
+            self.assertFalse(hidden(window, "action.play_animation"))
+            self.assertFalse(hidden(window, "action.stop_animation"))
+        finally:
+            window.document.set_dirty(False)
+            window.close()
+            self.app.processEvents()
+
     def test_world_sensing_uses_explicit_scene_object_picker_and_safe_default(self) -> None:
         window = EditorMainWindow()
         try:

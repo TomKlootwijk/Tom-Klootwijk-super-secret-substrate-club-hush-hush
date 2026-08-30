@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "body_physics.hpp"
 #include <android/api-level.h>
 #include <android/log.h>
 #include <dlfcn.h>
@@ -111,15 +112,41 @@ bool Engine::loadContent() {
             throw std::runtime_error("scene fixedDt must be finite and in (0, 0.25]");
         if (scene_.qualities.empty()) throw std::runtime_error("scene needs at least one quality tier");
         nodes_=scene_.nodes;
+        // Capture parent-local child TRS before any component or world
+        // composition mutates the flat NodeData consumed by gameplay/rendering.
+        transformHierarchy_.load(readAsset("hierarchies.kchi"),nodes_);
         particles_.clear();
         renderNodes_.clear();
         const auto polarBytes=readAsset("packed_kinematics.kcpk");
         polarKinematics_.load(polarBytes,nodes_);
         polarKinematics_.compose(nodes_);
+        for (const auto& component:polarKinematics_.components())
+            if (transformHierarchy_.isChild(component.sceneNode))
+                throw std::runtime_error(
+                    "packed polar component cannot bind a transform hierarchy child"
+                );
+        renderSubstrate_=parseRenderSubstrate(readAsset("render_substrate.kcrp"));
+        polarPopulations_.load(
+            readAsset("polar_populations.kcpr"),renderSubstrate_.seed,
+            scene_,polarKinematics_
+        );
+        const auto animationBytes=readAsset("transform_animations.kcan");
+        transformAnimations_.load(animationBytes,nodes_);
+        for (const auto& component:polarKinematics_.components())
+            if (transformAnimations_.owns(component.sceneNode))
+                throw std::runtime_error(
+                    "packed polar component cannot also own a transform animation controller"
+                );
+        transformAnimations_.compose(nodes_);
         const auto scatterBytes=readAsset("scatter_populations.kcsp");
         scatterPopulations_.load(scatterBytes,nodes_);
         const auto graphBytes=readAsset("visual_graphs.kcvg");
         if (!graphBytes.empty()) graphVm_.load(graphBytes,nodes_.size());
+        graphVm_.setTransformAnimations(&transformAnimations_);
+        graphVm_.setNumberComponentAccess(&polarKinematics_);
+        graphVm_.setRenderRecipeAccess(&polarPopulations_);
+        composePackedOwnership();
+        transformHierarchy_.compose(nodes_);
     } catch (const std::exception& error) {
         KC_LOGE("failed to load game content: %s",error.what());
         return false;
@@ -134,7 +161,12 @@ bool Engine::initializeWindow() {
             app_->window,
             app_->activity->assetManager,
             scene_,
-            scatterPopulations_
+            scatterPopulations_,
+            polarKinematics_,
+            polarPopulations_,
+            transformHierarchy_,
+            transformAnimations_,
+            renderSubstrate_
         )) {
         KC_LOGE("GLES3 renderer initialization failed");
         return false;
@@ -149,12 +181,52 @@ bool Engine::initializeWindow() {
     requestFrameRate(static_cast<float>(profile_.targetFps));
     if (!graphReady_) {
         graphVm_.ready(nodes_);
+        // Ready may move an ancestor, so descendants need a fresh world pose
+        // before the first rendered frame.
+        composePackedOwnership();
+        transformHierarchy_.compose(nodes_);
+        // Ready graph writes are initial state, not a simulated interval.
+        polarKinematics_.snapPreviousToCurrent();
         reportGraphResults();
         graphReady_=true;
     }
     KC_LOGI("UGTS-KC 3.9.2 profile=%s grove=%s quality=%s fps=%u scale=%.2f model=%s gpu=%s ram=%uMB juice=%.2f",
         profile_.profileId.c_str(),tuning_.profileId.c_str(),profile_.qualityId.c_str(),profile_.targetFps,profile_.renderScale,
         info.model.c_str(),info.gpu.c_str(),info.ramMb,tuning_.juiceIntensity);
+    KC_LOGI("polar ECS profiles=%u components=%u graph_access=%s",
+        static_cast<unsigned>(polarKinematics_.profileCount()),
+        static_cast<unsigned>(polarKinematics_.componentCount()),
+        graphVm_.hasNumberComponentAccess()?"active":"off");
+    std::uint32_t glowRecipes=0u,glowInstances=0u;
+    std::uint32_t growRecipes=0u,growInstances=0u;
+    for (const auto& recipe:polarPopulations_.recipes()) {
+        if (!recipe.glow) continue;
+        ++glowRecipes;
+        glowInstances+=recipe.instanceCount;
+        if (!recipe.growCopies) continue;
+        ++growRecipes;
+        // Grow is display-copy-only, so this count deliberately excludes the
+        // one authoritative prototype in each recipe.
+        growInstances+=recipe.generatedCount;
+    }
+    if (polarPopulations_.formatVersion()==4u) {
+        KC_LOGI("polar population format_version=%u recipes=%u generated=%u glow_recipes=%u glow_instances=%u grow_recipes=%u grow_instances=%u gpu_instance_stride_bytes=%u ecs_generated=false",
+            static_cast<unsigned>(polarPopulations_.formatVersion()),
+            static_cast<unsigned>(polarPopulations_.recipeCount()),
+            static_cast<unsigned>(polarPopulations_.generatedCount()),
+            static_cast<unsigned>(glowRecipes),static_cast<unsigned>(glowInstances),
+            static_cast<unsigned>(growRecipes),
+            static_cast<unsigned>(growInstances),
+            static_cast<unsigned>(RendererGles3::PolarInstanceStrideBytes));
+    } else {
+        // Keep existing v1-v3 device evidence byte-for-byte parseable.
+        KC_LOGI("polar population format_version=%u recipes=%u generated=%u glow_recipes=%u glow_instances=%u gpu_instance_stride_bytes=%u ecs_generated=false",
+            static_cast<unsigned>(polarPopulations_.formatVersion()),
+            static_cast<unsigned>(polarPopulations_.recipeCount()),
+            static_cast<unsigned>(polarPopulations_.generatedCount()),
+            static_cast<unsigned>(glowRecipes),static_cast<unsigned>(glowInstances),
+            static_cast<unsigned>(RendererGles3::PolarInstanceStrideBytes));
+    }
     return true;
 }
 
@@ -203,10 +275,7 @@ NodeData* Engine::player() {
 }
 
 float Engine::colliderRadius(const NodeData& node) const {
-    const float scale=std::max({std::abs(node.scale.x),std::abs(node.scale.y),std::abs(node.scale.z)});
-    if (node.collider.type==1) return node.collider.radius*scale;
-    if (node.collider.type==2) return length({node.collider.halfExtents.x*node.scale.x,node.collider.halfExtents.y*node.scale.y,node.collider.halfExtents.z*node.scale.z});
-    return 0;
+    return bodyBoundingRadius(node);
 }
 
 void Engine::triggerJuice(std::uint32_t kind, const Vec3& origin, float intensity) {
@@ -260,11 +329,20 @@ void Engine::updateParticles(float dt) {
     particles_.erase(std::remove_if(particles_.begin(),particles_.end(),[](const EffectParticle& particle){ return particle.age>=particle.lifetime; }),particles_.end());
 }
 
+void Engine::composePackedOwnership() {
+    for (const auto& component:polarKinematics_.components())
+        if (!transformAnimations_.owns(component.sceneNode))
+            static_cast<void>(polarKinematics_.composeSceneNode(component.sceneNode,nodes_));
+}
+
 void Engine::fixedUpdate(float dt) {
     const auto currentInput=graphInputState();
     // Packed transform components are authoritative at the beginning of the
     // fixed step, so learner graphs see their freshly composed NodeData.
     polarKinematics_.tick(dt,nodes_);
+    transformAnimations_.tick(dt,nodes_);
+    // Animation graph actions run after this tick. Play composes time zero
+    // immediately, then the selected clip advances on the next fixed update.
     graphVm_.tick(dt,fixedTick_,GraphInputFrame{currentInput,previousGraphInput_},nodes_);
     updateParticles(dt);
     hazardCooldown_=std::max(0.0f,hazardCooldown_-dt);
@@ -275,9 +353,22 @@ void Engine::fixedUpdate(float dt) {
         if (angular>1.0e-5f) node.rotation=normalize(multiply(axisAngle(node.angularVelocity/angular,angular*dt),node.rotation));
     }
     NodeData* p=player();
+    const std::size_t playerIndex=p
+        ?static_cast<std::size_t>(p-nodes_.data())
+        :NoBodyExclusion;
+    // Tick graphs (including Apply Force) before every generic dynamic body,
+    // while the existing Player controller remains the single owner of Player
+    // translation, grounding, and bounds behavior.
+    integrateDynamicBodies(nodes_,scene_.gravity,dt,playerIndex);
+    constrainDynamicBodies(
+        nodes_,scene_.floorY,scene_.boundsMin,scene_.boundsMax,playerIndex
+    );
     if (!p) {
+        static_cast<void>(resolveDynamicBodyPairs(nodes_));
         dispatchTriggerAreas(dt,currentInput);
         graphVm_.finishStep(dt,fixedTick_,GraphInputFrame{currentInput,previousGraphInput_},nodes_);
+        composePackedOwnership();
+        transformHierarchy_.compose(nodes_);
         ++fixedTick_;
         reportGraphResults();
         previousGraphInput_=currentInput;
@@ -310,6 +401,7 @@ void Engine::fixedUpdate(float dt) {
     const float radius=colliderRadius(*p);
     p->translation.x=clamp(p->translation.x,scene_.boundsMin.x+radius,scene_.boundsMax.x-radius);
     p->translation.z=clamp(p->translation.z,scene_.boundsMin.z+radius,scene_.boundsMax.z-radius);
+    static_cast<void>(resolveDynamicBodyPairs(nodes_));
     dispatchTriggerAreas(dt,currentInput);
     for (auto& node:nodes_) {
         if (!node.alive || !node.active || &node==p) continue;
@@ -335,6 +427,11 @@ void Engine::fixedUpdate(float dt) {
         }
     }
     graphVm_.finishStep(dt,fixedTick_,GraphInputFrame{currentInput,previousGraphInput_},nodes_);
+    // Restore packed X/Z/facing authority after generic gameplay/graphs, then
+    // publish deterministic child world TRS. KCAN-owned polar nodes stay on
+    // the legacy CPU animation path and never enter GPU polar batching.
+    composePackedOwnership();
+    transformHierarchy_.compose(nodes_);
     dashTimer_=std::max(0.0f,dashTimer_-dt);
     cameraTarget_=p->translation+Vec3{0,1,0};
     ++fixedTick_;
@@ -371,7 +468,16 @@ void Engine::frame(float dt) {
     renderNodes_=nodes_;
     renderNodes_.reserve(nodes_.size()+particles_.size());
     for (const auto& particle:particles_) renderNodes_.push_back(particle.node);
-    renderer_.render(scene_,renderNodes_,cameraTarget_,yaw_,pitch_,distance_,quality.renderScale,quality.maxVisibleNodes,time_,juice,usePost);
+    const float polarAlpha=clamp(accumulator_/scene_.fixedDt,0.0f,1.0f);
+    const auto remainingParticleBudget=particles_.size()>=tuning_.particleBudget
+        ?0u:static_cast<std::uint32_t>(
+            tuning_.particleBudget-static_cast<std::uint32_t>(particles_.size())
+        );
+    renderer_.render(
+        scene_,renderNodes_,polarKinematics_,polarPopulations_,polarAlpha,
+        cameraTarget_,yaw_,pitch_,distance_,quality.renderScale,
+        quality.maxVisibleNodes,remainingParticleBudget,fixedTick_,time_,juice,usePost
+    );
 }
 
 int Engine::handleInput(AInputEvent* event) {

@@ -214,6 +214,79 @@ class PackedKinematicComponent:
         return component
 
 
+POLAR_MOVEMENT_FIELDS = (
+    "radius",
+    "angle_degrees",
+    "facing_degrees",
+    "turns_per_second",
+    "growth_per_second",
+    "turn_acceleration",
+    "growth_acceleration",
+)
+
+
+def _binary32(value: float, label: str) -> float:
+    """Enter the same finite scalar domain used by the Android graph VM."""
+
+    try:
+        result = struct.unpack("<f", struct.pack("<f", float(value)))[0]
+    except (OverflowError, struct.error, TypeError, ValueError) as error:
+        raise ValueError(f"{label} must fit a finite 32-bit number") from error
+    if not math.isfinite(result):
+        raise ValueError(f"{label} must fit a finite 32-bit number")
+    return result
+
+
+@dataclass
+class PolarMovementComponent3D:
+    """Friendly decoded view of one compact log-polar movement component.
+
+    This view is deliberately virtual: snapshots and Android packs keep the
+    existing two unsigned 64-bit words.  ``GameWorld3D.add_component`` commits
+    an edited view back through the owning profile's quantizer.
+    """
+
+    radius: float
+    angle_degrees: float
+    facing_degrees: float
+    turns_per_second: float
+    growth_per_second: float
+    turn_acceleration: float
+    growth_acceleration: float
+
+    def validate(self) -> None:
+        for name in POLAR_MOVEMENT_FIELDS:
+            setattr(self, name, _binary32(getattr(self, name), name.replace("_", " ")))
+
+    def to_dict(self) -> dict[str, float]:
+        self.validate()
+        return {name: getattr(self, name) for name in POLAR_MOVEMENT_FIELDS}
+
+    @classmethod
+    def from_value(
+        cls, value: "PolarMovementComponent3D | Mapping[str, Any]"
+    ) -> "PolarMovementComponent3D":
+        if isinstance(value, cls):
+            result = cls(*(getattr(value, name) for name in POLAR_MOVEMENT_FIELDS))
+        elif isinstance(value, Mapping):
+            missing = [name for name in POLAR_MOVEMENT_FIELDS if name not in value]
+            if missing:
+                raise ValueError(
+                    "polar movement needs every friendly field; missing "
+                    + ", ".join(missing)
+                )
+            unknown = [name for name in value if name not in POLAR_MOVEMENT_FIELDS]
+            if unknown:
+                raise ValueError(
+                    "polar movement has unknown fields: " + ", ".join(map(str, unknown))
+                )
+            result = cls(*(value[name] for name in POLAR_MOVEMENT_FIELDS))
+        else:
+            raise TypeError("polar movement must be a friendly component or mapping")
+        result.validate()
+        return result
+
+
 class PackedKinematicCodec:
     """Encode/decode the two 64-bit words used by ``PackedKinematicComponent``."""
 
@@ -367,6 +440,135 @@ class PackedKinematicCodec:
         if not 0 <= word < (1 << 64):
             raise ValueError(f"packed {label} must be an unsigned 64-bit integer")
         return word
+
+
+def polar_movement_from_component(
+    component: PackedKinematicComponent,
+    codec: PackedKinematicCodec,
+    lut: "PolarLookupTable | None" = None,
+) -> PolarMovementComponent3D:
+    """Decode the seven child-facing numbers from one quantized component."""
+
+    component.validate()
+    pose = codec.unpack_pose(component.pose_word)
+    motion = codec.unpack_motion(component.motion_word)
+    if lut is None:
+        radius = codec.profile.r0 * math.exp(pose.rho)
+    else:
+        if lut.profile != codec.profile:
+            raise ValueError("lookup table profile does not match the packed component codec")
+        radius = lut.radius(pose.rho)
+    movement = PolarMovementComponent3D(
+        radius,
+        math.degrees(pose.theta),
+        math.degrees(pose.heading),
+        motion.theta_velocity / TAU,
+        motion.rho_velocity,
+        motion.theta_acceleration / TAU,
+        motion.rho_acceleration,
+    )
+    movement.validate()
+    return movement
+
+
+def _replace_word_bits(word: int, shift: int, width: int, code: int) -> int:
+    mask = ((1 << width) - 1) << shift
+    return (word & ~mask) | ((int(code) << shift) & mask)
+
+
+def replace_polar_movement(
+    component: PackedKinematicComponent,
+    codec: PackedKinematicCodec,
+    value: PolarMovementComponent3D | Mapping[str, Any],
+    lut: "PolarLookupTable | None" = None,
+) -> PackedKinematicComponent:
+    """Re-encode edited friendly fields while preserving every untouched bit.
+
+    Inputs enter binary32 before bounds checks, matching the native graph value
+    domain.  The packed tick and any field not changed through the semantic view
+    are retained bit-for-bit.
+    """
+
+    component.validate()
+    target = PolarMovementComponent3D.from_value(value)
+    current = polar_movement_from_component(component, codec, lut)
+    pose_word = component.pose_word
+    motion_word = component.motion_word
+
+    if target.radius != current.radius:
+        minimum = _binary32(
+            codec.profile.r0 * math.exp(codec.profile.rho_min), "minimum radius"
+        )
+        maximum = _binary32(
+            codec.profile.r0 * math.exp(codec.profile.rho_max), "maximum radius"
+        )
+        if not minimum <= target.radius <= maximum:
+            raise ValueError(
+                f"radius must stay between {minimum:g} and {maximum:g} for this movement profile"
+            )
+        rho = math.log(target.radius / codec.profile.r0)
+        rho = _clamp(rho, codec.profile.rho_min, codec.profile.rho_max)
+        rho_code = _quantize_closed(
+            rho, codec.profile.rho_min, codec.profile.rho_max, _POSE_BITS[0]
+        )
+        pose_word = _replace_word_bits(pose_word, 44, 20, rho_code)
+
+    if target.angle_degrees != current.angle_degrees:
+        theta_code = _quantize_periodic(math.radians(target.angle_degrees), 18)
+        pose_word = _replace_word_bits(pose_word, 26, 18, theta_code)
+
+    if target.facing_degrees != current.facing_degrees:
+        heading_code = _quantize_periodic(math.radians(target.facing_degrees), 12)
+        pose_word = _replace_word_bits(pose_word, 0, 12, heading_code)
+
+    motion_fields = (
+        (
+            "turns_per_second",
+            32,
+            codec.motion_range.theta_velocity / TAU,
+            codec.motion_range.theta_velocity,
+            TAU,
+        ),
+        (
+            "growth_per_second",
+            48,
+            codec.motion_range.rho_velocity,
+            codec.motion_range.rho_velocity,
+            1.0,
+        ),
+        (
+            "turn_acceleration",
+            0,
+            codec.motion_range.theta_acceleration / TAU,
+            codec.motion_range.theta_acceleration,
+            TAU,
+        ),
+        (
+            "growth_acceleration",
+            16,
+            codec.motion_range.rho_acceleration,
+            codec.motion_range.rho_acceleration,
+            1.0,
+        ),
+    )
+    for name, shift, friendly_limit, encoded_limit, multiplier in motion_fields:
+        requested = getattr(target, name)
+        if requested == getattr(current, name):
+            continue
+        limit = _binary32(friendly_limit, f"{name} limit")
+        if abs(requested) > limit:
+            raise ValueError(
+                f"{name.replace('_', ' ')} must stay between {-limit:g} and {limit:g} "
+                "for this movement profile"
+            )
+        code = _encode_signed(requested * multiplier, encoded_limit)
+        motion_word = _replace_word_bits(motion_word, shift, 16, code)
+
+    result = PackedKinematicComponent(
+        pose_word, motion_word, component.profile_id
+    )
+    result.validate()
+    return result
 
 
 def packed_kinematic_codecs_from_dict(

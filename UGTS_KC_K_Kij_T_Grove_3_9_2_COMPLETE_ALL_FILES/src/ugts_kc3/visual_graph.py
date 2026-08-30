@@ -36,12 +36,20 @@ _PORTABLE_QUERY_TAG_SET = frozenset(PORTABLE_QUERY_TAGS)
 # literal contract is checked again by the Android graph-pack compiler and
 # inspector so desktop-authored graphs cannot change meaning after deployment.
 PORTABLE_MESSAGE_PATTERN = r"[a-z][a-z0-9_.-]{0,63}"
+PORTABLE_ANIMATION_CLIP_PATTERN = r"[a-z][a-z0-9_.-]{0,31}"
 GRAPH_MESSAGE_MAX_EVENTS = 64
 GRAPH_MESSAGE_MAX_STEPS = 16384
 
 
 def _is_portable_message(value: Any) -> bool:
     return isinstance(value, str) and re.fullmatch(PORTABLE_MESSAGE_PATTERN, value) is not None
+
+
+def _is_portable_animation_clip(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and re.fullmatch(PORTABLE_ANIMATION_CLIP_PATTERN, value) is not None
+    )
 
 
 class FrozenDict(Mapping[str, Any]):
@@ -784,6 +792,37 @@ def _validation_issues(graph: VisualGraph, registry: NodeRegistry) -> tuple[Grap
                                 node.id,
                             )
                         )
+
+        if node.type == "action.play_animation":
+            clip_links = incoming_data.get((node.id, "clip"), ())
+            if not clip_links:
+                port = definition.port(PortDirection.INPUT, "clip")
+                assert port is not None
+                supplied, literal = _node_property(definition, node, "clip", port)
+                if (
+                    supplied
+                    and _value_matches_type(literal, "string")
+                    and not _is_portable_animation_clip(literal)
+                ):
+                    issues.append(
+                        GraphValidationIssue(
+                            "animation_clip_name",
+                            "Play Animation Clip must start with a lowercase letter, use only lowercase letters, digits, dot, underscore, or hyphen, and be at most 32 characters.",
+                            node.id,
+                        )
+                    )
+
+        if node.type == "action.set_polar_population_visible":
+            entity_links = incoming_data.get((node.id, "entity"), ())
+            if entity_links:
+                issues.append(
+                    GraphValidationIssue(
+                        "polar_population_target_literal_only",
+                        "Show or Hide Extra Copies Object must be chosen on the block, not connected from another block.",
+                        node.id,
+                        entity_links[0],
+                    )
+                )
 
         if node.type == "query.nearest_tag":
             if (node.id, "tag") not in incoming_data:
@@ -2072,6 +2111,15 @@ def _nearest_in_cone(
     )
 
 
+_VECTOR_FIELD_INDEX = {"x": 0, "y": 1, "z": 2, "w": 3}
+
+
+def _sequence_field_index(part: str) -> int | None:
+    if part.isdigit():
+        return int(part)
+    return _VECTOR_FIELD_INDEX.get(part)
+
+
 def _read_field(value: Any, path: str, default: Any = NO_DEFAULT) -> Any:
     if not path:
         return value
@@ -2082,8 +2130,11 @@ def _read_field(value: Any, path: str, default: Any = NO_DEFAULT) -> Any:
                 raise ValueError("component field names cannot be empty or private")
             if isinstance(current, Mapping):
                 current = current[part]
-            elif isinstance(current, (tuple, list)) and part.isdigit():
-                current = current[int(part)]
+            elif isinstance(current, (tuple, list)):
+                index = _sequence_field_index(part)
+                if index is None:
+                    raise AttributeError(part)
+                current = current[index]
             else:
                 current = getattr(current, part)
         return current
@@ -2097,21 +2148,61 @@ def _write_field(value: Any, path: str, new_value: Any) -> None:
     parts = path.split(".")
     if not parts or any(not part or part.startswith("_") for part in parts):
         raise ValueError("component field names cannot be empty or private")
-    current = value
-    for part in parts[:-1]:
+    def replace_field(current: Any, remaining: list[str]) -> Any:
+        part = remaining[0]
+        if len(remaining) == 1:
+            if isinstance(current, MutableMapping):
+                current[part] = new_value
+                return current
+            if isinstance(current, list):
+                index = _sequence_field_index(part)
+                if index is None:
+                    raise AttributeError(part)
+                current[index] = new_value
+                return current
+            if isinstance(current, tuple):
+                index = _sequence_field_index(part)
+                if index is None:
+                    raise AttributeError(part)
+                updated = list(current)
+                updated[index] = new_value
+                return tuple(updated)
+            setattr(current, part, new_value)
+            return current
+
         if isinstance(current, Mapping):
-            current = current[part]
-        elif isinstance(current, list) and part.isdigit():
-            current = current[int(part)]
+            child = current[part]
+        elif isinstance(current, (tuple, list)):
+            index = _sequence_field_index(part)
+            if index is None:
+                raise AttributeError(part)
+            child = current[index]
         else:
-            current = getattr(current, part)
-    last = parts[-1]
-    if isinstance(current, MutableMapping):
-        current[last] = new_value
-    elif isinstance(current, list) and last.isdigit():
-        current[int(last)] = new_value
-    else:
-        setattr(current, last, new_value)
+            child = getattr(current, part)
+        replacement = replace_field(child, remaining[1:])
+        if replacement is child:
+            return current
+        if isinstance(current, MutableMapping):
+            current[part] = replacement
+        elif isinstance(current, list):
+            index = _sequence_field_index(part)
+            if index is None:
+                raise AttributeError(part)
+            current[index] = replacement
+        elif isinstance(current, tuple):
+            index = _sequence_field_index(part)
+            if index is None:
+                raise AttributeError(part)
+            updated = list(current)
+            updated[index] = replacement
+            return tuple(updated)
+        else:
+            setattr(current, part, replacement)
+        return current
+
+    replacement = replace_field(value, parts)
+    if replacement is not value:
+        raise TypeError("cannot replace an immutable root component field")
 
 
 def _event_ready(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
@@ -2263,6 +2354,18 @@ def _component(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]
     return NodeResult({"value": _read_field(component, str(inputs.get("field") or ""), default)})
 
 
+def _polar_movement_value(
+    context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]
+) -> NodeResult:
+    """Read one friendly packed-movement number without exposing its component name."""
+
+    return _component(
+        context,
+        node,
+        {**inputs, "component": "polar_movement"},
+    )
+
+
 def _math(operation: str) -> NodeExecutor:
     def execute(context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]) -> NodeResult:
         a, b = inputs["a"], inputs["b"]
@@ -2324,8 +2427,22 @@ def _set_component(context: GraphContext, node: GraphNode, inputs: Mapping[str, 
     component_name = str(inputs["component"])
     field_path = str(inputs.get("field") or "")
     new_value = copy.deepcopy(_thaw(inputs["value"]))
+    ownership_validator = getattr(context.world, "validate_component_write", None)
+    if callable(ownership_validator):
+        ownership_validator(entity_id, component_name, field_path)
     if not field_path:
-        context.world.add_component(entity_id, new_value, component_name, replace_existing=True)
+        if callable(ownership_validator):
+            context.world.add_component(
+                entity_id,
+                new_value,
+                component_name,
+                replace_existing=True,
+                _ownership_field_path=field_path,
+            )
+        else:
+            context.world.add_component(
+                entity_id, new_value, component_name, replace_existing=True
+            )
     else:
         component = context.world.require(entity_id, component_name)
         updated = copy.deepcopy(component)
@@ -2333,7 +2450,122 @@ def _set_component(context: GraphContext, node: GraphNode, inputs: Mapping[str, 
         validate = getattr(updated, "validate", None)
         if callable(validate):
             validate()
-        context.world.add_component(entity_id, updated, component_name, replace_existing=True)
+        if callable(ownership_validator):
+            context.world.add_component(
+                entity_id,
+                updated,
+                component_name,
+                replace_existing=True,
+                _ownership_field_path=field_path,
+            )
+        else:
+            context.world.add_component(
+                entity_id, updated, component_name, replace_existing=True
+            )
+    return NodeResult(flow=("out",))
+
+
+def _set_polar_movement(
+    context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]
+) -> NodeResult:
+    """Change one semantic packed-movement number through the normal ownership gate."""
+
+    return _set_component(
+        context,
+        node,
+        {**inputs, "component": "polar_movement"},
+    )
+
+
+def _set_polar_population_visible(
+    context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]
+) -> NodeResult:
+    """Toggle only the render-only copies derived from one Make Many prototype."""
+
+    visible = inputs.get("visible")
+    if not isinstance(visible, bool):
+        raise ValueError("Show or Hide Extra Copies must be set to Show or Hide.")
+    entity_id = _entity_id(context, inputs.get("entity"))
+    setter = getattr(context.world, "set_polar_population_copies_visible", None)
+    if not callable(setter):
+        raise ValueError("Show or Hide Extra Copies needs the Make Many runtime.")
+    setter(entity_id, visible)
+    return NodeResult(flow=("out",))
+
+
+def _animation_component(context: GraphContext, entity_id: str, action: str) -> Any:
+    try:
+        component = context.world.require(entity_id, "transform_animation")
+    except (KeyError, LookupError) as error:
+        raise ValueError(
+            f"{action} target {entity_id!r} has no transform animation."
+        ) from error
+    return component
+
+
+def _play_animation(
+    context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]
+) -> NodeResult:
+    entity_id = _entity_id(context, inputs.get("entity"))
+    clip = inputs.get("clip")
+    if not _is_portable_animation_clip(clip):
+        raise ValueError(
+            "Play Animation Clip must start with a lowercase letter, use only "
+            "lowercase letters, digits, dot, underscore, or hyphen, and be at "
+            "most 32 characters."
+        )
+    restart = inputs.get("restart")
+    if not isinstance(restart, bool):
+        raise TypeError("Play Animation Restart must be true or false.")
+    component = _animation_component(context, entity_id, "Play Animation")
+    play = getattr(component, "play", None)
+    if not callable(play):
+        raise TypeError(
+            f"Play Animation target {entity_id!r} has an incompatible transform animation component."
+        )
+    previous_clip = getattr(component, "active_clip", None)
+    play(clip, restart)
+    if restart or previous_clip != clip:
+        entity = context.world.require(entity_id)
+        try:
+            entity.position = tuple(component.base_translation)
+            entity.rotation = tuple(component.base_rotation)
+            entity.scale = tuple(component.base_scale)
+        except (AttributeError, TypeError) as error:
+            raise TypeError(
+                f"Play Animation target {entity_id!r} cannot compose its time-zero pose."
+            ) from error
+    return NodeResult(flow=("out",))
+
+
+def _stop_animation(
+    context: GraphContext, node: GraphNode, inputs: Mapping[str, Any]
+) -> NodeResult:
+    entity_id = _entity_id(context, inputs.get("entity"))
+    reset = inputs.get("reset")
+    if not isinstance(reset, bool):
+        raise TypeError("Stop Animation Reset must be true or false.")
+    component = _animation_component(context, entity_id, "Stop Animation")
+    stop = getattr(component, "stop", None)
+    if not callable(stop):
+        raise TypeError(
+            f"Stop Animation target {entity_id!r} has an incompatible transform animation component."
+        )
+    stop(reset)
+    if reset:
+        entity = context.world.require(entity_id)
+        reset_pose = getattr(component, "reset_pose", None)
+        if callable(reset_pose):
+            reset_pose(entity)
+        else:
+            try:
+                entity.position = tuple(component.base_translation)
+                entity.rotation = tuple(component.base_rotation)
+                entity.scale = tuple(component.base_scale)
+            except (AttributeError, TypeError) as error:
+                raise TypeError(
+                    f"Stop Animation target {entity_id!r} cannot restore its base pose."
+                ) from error
     return NodeResult(flow=("out",))
 
 
@@ -2476,6 +2708,23 @@ def create_builtin_registry() -> NodeRegistry:
             _component, {"entity": None, "component": "transform", "field": "position", "default": None},
         ),
         NodeDefinition(
+            "value.polar_movement",
+            "Read Movement",
+            "Movement",
+            (
+                "Reads one friendly number from a compact Movement Pattern without "
+                "showing component names or packed words."
+            ),
+            (
+                _in_data("entity", "entity"),
+                _in_data("field", "string", required=True),
+                _in_data("default", "number"),
+                _out_data("value", "number"),
+            ),
+            _polar_movement_value,
+            {"entity": None, "field": "radius", "default": 0.0},
+        ),
+        NodeDefinition(
             "query.nearest_tag",
             "Find Nearby Object",
             "Sensing",
@@ -2547,6 +2796,66 @@ def create_builtin_registry() -> NodeRegistry:
             _set_component, {"entity": None, "component": "transform", "field": "position", "value": [0, 0]},
         ),
         NodeDefinition(
+            "action.set_polar_movement",
+            "Change Movement",
+            "Movement",
+            (
+                "Changes one friendly number in a compact Movement Pattern and "
+                "rebuilds the matching packed pose or motion immediately."
+            ),
+            flow_action_ports
+            + (
+                _in_data("entity", "entity"),
+                _in_data("field", "string", required=True),
+                _in_data("value", "number", required=True),
+            ),
+            _set_polar_movement,
+            {"entity": None, "field": "turns_per_second", "value": 0.25},
+        ),
+        NodeDefinition(
+            "action.set_polar_population_visible",
+            "Show or Hide Extra Copies",
+            "Looks",
+            (
+                "Shows or hides only the extra display copies made by Make Many. "
+                "The real object stays visible and remains the Logic Blocks owner."
+            ),
+            flow_action_ports
+            + (
+                _in_data("entity", "entity"),
+                _in_data("visible", "boolean", required=True),
+            ),
+            _set_polar_population_visible,
+            {"entity": None, "visible": True},
+        ),
+        NodeDefinition(
+            "action.play_animation",
+            "Play Animation",
+            "Actions",
+            "Starts a named transform-animation clip on an animated object.",
+            flow_action_ports
+            + (
+                _in_data("entity", "entity"),
+                _in_data("clip", "string", required=True),
+                _in_data("restart", "boolean", required=True),
+            ),
+            _play_animation,
+            {"entity": None, "clip": "main", "restart": True},
+        ),
+        NodeDefinition(
+            "action.stop_animation",
+            "Stop Animation",
+            "Actions",
+            "Stops an object's transform animation and optionally restores its authored pose.",
+            flow_action_ports
+            + (
+                _in_data("entity", "entity"),
+                _in_data("reset", "boolean", required=True),
+            ),
+            _stop_animation,
+            {"entity": None, "reset": True},
+        ),
+        NodeDefinition(
             "action.emit_event", "Emit Event", "Actions", "Emits a normal GameWorld event for audio, UI or gameplay listeners.",
             flow_action_ports + (_in_data("kind", "string", required=True), _in_data("source", "entity"), _in_data("target", "entity"), _in_data("payload", "mapping"), _out_data("event")),
             _emit_event, {"kind": "graph_event", "source": None, "target": None, "payload": {}},
@@ -2597,6 +2906,7 @@ __all__ = [
     "PortDirection",
     "PortKind",
     "PORTABLE_QUERY_TAGS",
+    "PORTABLE_ANIMATION_CLIP_PATTERN",
     "PORTABLE_MESSAGE_PATTERN",
     "GRAPH_MESSAGE_MAX_EVENTS",
     "GRAPH_MESSAGE_MAX_STEPS",

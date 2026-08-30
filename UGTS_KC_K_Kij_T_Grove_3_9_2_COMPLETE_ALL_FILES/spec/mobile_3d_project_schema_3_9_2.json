@@ -224,6 +224,17 @@
         "metadata": {
           "type": "object"
         },
+        "parent_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "restitution": {
           "maximum": 1,
           "minimum": 0,

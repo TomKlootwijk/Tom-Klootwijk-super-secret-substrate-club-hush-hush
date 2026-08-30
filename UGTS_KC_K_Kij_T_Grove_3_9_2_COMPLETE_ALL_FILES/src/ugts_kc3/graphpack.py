@@ -16,11 +16,13 @@ import struct
 from typing import Any, Mapping, Sequence
 
 from .mobile3d import Mobile3DProject
+from .packed_kinematics import POLAR_MOVEMENT_FIELDS
 from .visual_graph import (
     BUILTIN_NODE_REGISTRY,
     GRAPH_MESSAGE_MAX_EVENTS,
     GRAPH_MESSAGE_MAX_STEPS,
     GraphNode,
+    PORTABLE_ANIMATION_CLIP_PATTERN,
     PORTABLE_MESSAGE_PATTERN,
     PORTABLE_QUERY_TAGS,
     PortDirection,
@@ -32,6 +34,21 @@ from .visual_graph import (
 GRAPH_PACK_MAGIC = b"KCVG001\0"
 GRAPH_PACK_ENDIAN = 0x01020304
 GRAPH_PACK_VERSION = 1
+
+_SAVED_SCENE_METADATA_KEYS = frozenset({"saved_scenes", "saved_scene_instances"})
+
+
+def _materialized_project(project: Mobile3DProject) -> Mobile3DProject:
+    metadata = getattr(project, "metadata", {})
+    if not isinstance(metadata, Mapping) or not any(
+        key in metadata for key in _SAVED_SCENE_METADATA_KEYS
+    ):
+        return project
+    from .saved_scene import materialize_saved_scenes
+
+    return materialize_saved_scenes(project)
+
+
 GRAPH_PACK_ASSET = "visual_graphs.kcvg"
 # Reserved scene-node index for a graph attached to the world rather than to
 # one scene object.  Existing node-bound KCVG001 packs remain byte-compatible.
@@ -85,6 +102,11 @@ NODE_OPCODES: dict[str, int] = {
     "event.timer": 23,
     "query.nearest_in_cone": 24,
     "event.message": 25,
+    "action.play_animation": 26,
+    "action.stop_animation": 27,
+    "value.polar_movement": 28,
+    "action.set_polar_movement": 29,
+    "action.set_polar_population_visible": 30,
 }
 OPCODE_TYPES = {opcode: type_id for type_id, opcode in NODE_OPCODES.items()}
 
@@ -105,6 +127,7 @@ NODE_INPUTS: dict[str, tuple[str, ...]] = {
     "query.nearest_in_cone": ("origin", "tag", "radius", "cone"),
     "value.state": ("key", "default"),
     "value.component": ("entity", "component", "field", "default"),
+    "value.polar_movement": ("entity", "field", "default"),
     "math.add": ("a", "b"),
     "math.subtract": ("a", "b"),
     "math.multiply": ("a", "b"),
@@ -112,10 +135,14 @@ NODE_INPUTS: dict[str, tuple[str, ...]] = {
     "compare": ("a", "b", "operator"),
     "action.set_state": ("key", "value"),
     "action.set_component": ("entity", "component", "field", "value"),
+    "action.set_polar_movement": ("entity", "field", "value"),
+    "action.set_polar_population_visible": ("entity", "visible"),
     "action.emit_event": ("kind", "source", "target", "payload"),
     "action.set_active": ("entity", "active"),
     "action.despawn": ("entity",),
     "action.apply_force": ("entity", "force"),
+    "action.play_animation": ("entity", "clip", "restart"),
+    "action.stop_animation": ("entity", "reset"),
 }
 
 NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
@@ -133,6 +160,7 @@ NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
     "query.nearest_in_cone": ("found", "entity", "distance"),
     "value.state": ("value",),
     "value.component": ("value",),
+    "value.polar_movement": ("value",),
     "math.add": ("result",),
     "math.subtract": ("result",),
     "math.multiply": ("result",),
@@ -140,12 +168,16 @@ NODE_DATA_OUTPUTS: dict[str, tuple[str, ...]] = {
     "compare": ("result",),
     "action.set_state": (),
     "action.set_component": (),
+    "action.set_polar_movement": (),
+    "action.set_polar_population_visible": (),
     # The Python event record is intentionally not faked on Android.  Emitting
     # and logging the event is supported, but consuming its record is not.
     "action.emit_event": ("event",),
     "action.set_active": (),
     "action.despawn": (),
     "action.apply_force": (),
+    "action.play_animation": (),
+    "action.stop_animation": (),
 }
 
 NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
@@ -163,6 +195,7 @@ NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
     "query.nearest_in_cone": (),
     "value.state": (),
     "value.component": (),
+    "value.polar_movement": (),
     "math.add": (),
     "math.subtract": (),
     "math.multiply": (),
@@ -170,10 +203,14 @@ NODE_FLOW_OUTPUTS: dict[str, tuple[str, ...]] = {
     "compare": (),
     "action.set_state": ("out",),
     "action.set_component": ("out",),
+    "action.set_polar_movement": ("out",),
+    "action.set_polar_population_visible": ("out",),
     "action.emit_event": ("out",),
     "action.set_active": ("out",),
     "action.despawn": ("out",),
     "action.apply_force": ("out",),
+    "action.play_animation": ("out",),
+    "action.stop_animation": ("out",),
 }
 
 
@@ -469,10 +506,12 @@ def _component_result_tag(component: str, field: str) -> int:
             return VALUE_NUMBER
     elif component in {"alive", "active"} and field == "":
         return VALUE_BOOL
+    elif component == "polar_movement" and field in POLAR_MOVEMENT_FIELDS:
+        return VALUE_NUMBER
     raise GraphPackError(
         "Android NodeData supports transform.position/translation/scale (Vector3), "
         "transform.rotation (Vector4), their numeric fields, velocity/angular_velocity "
-        "and fields, plus alive/active"
+        "and fields, alive/active, plus the numeric fields of polar_movement"
     )
 
 
@@ -626,6 +665,37 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
                     node,
                     "When Timer Rings Repeat must be true or false",
                 )
+        if node.type == "action.play_animation":
+            clip = by_name["clip"]
+            if clip.literal is not None:
+                if (
+                    clip.literal.tag != VALUE_STRING
+                    or re.fullmatch(
+                        PORTABLE_ANIMATION_CLIP_PATTERN,
+                        str(clip.literal.payload),
+                    )
+                    is None
+                ):
+                    raise _fail(
+                        graph.id,
+                        node,
+                        "Play Animation Clip must start with a lowercase letter, use only lowercase letters, digits, dot, underscore, or hyphen, and be at most 32 characters",
+                    )
+            restart = by_name["restart"]
+            if restart.literal is not None and restart.literal.tag != VALUE_BOOL:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "Play Animation Restart must be true or false or connected",
+                )
+        if node.type == "action.stop_animation":
+            reset = by_name["reset"]
+            if reset.literal is not None and reset.literal.tag != VALUE_BOOL:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "Stop Animation Reset must be true or false or connected",
+                )
         if node.type in {"value.state", "action.set_state"}:
             key = _literal_text(graph.id, node, "key", by_name["key"])
             if not key:
@@ -740,6 +810,49 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
                         raise _fail(graph.id, node, "transform.scale components must be non-zero")
                     if field == "rotation" and math.sqrt(sum(item * item for item in literal.payload)) <= 1e-8:
                         raise _fail(graph.id, node, "transform.rotation quaternion must be non-zero")
+        if node.type in {"value.polar_movement", "action.set_polar_movement"}:
+            field = _literal_text(graph.id, node, "field", by_name["field"])
+            if field not in POLAR_MOVEMENT_FIELDS:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "Movement number must be Distance from centre, Angle around centre, "
+                    "Facing direction, Turns per second, Grow / shrink speed, Turn "
+                    "acceleration, or Grow / shrink acceleration",
+                )
+            if node.type == "action.set_polar_movement":
+                value = by_name["value"]
+                if value.literal is not None and value.literal.tag != VALUE_NUMBER:
+                    raise _fail(
+                        graph.id,
+                        node,
+                        "Change Movement Value must be a number, not "
+                        f"{VALUE_TAG_NAMES[value.literal.tag]}",
+                    )
+            else:
+                default = by_name["default"]
+                if default.literal is not None and default.literal.tag != VALUE_NUMBER:
+                    raise _fail(
+                        graph.id,
+                        node,
+                        "Read Movement Fallback value must be a number, not "
+                        f"{VALUE_TAG_NAMES[default.literal.tag]}",
+                    )
+        if node.type == "action.set_polar_population_visible":
+            target = by_name["entity"]
+            if target.source_node is not None or target.literal is None:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "Show or Hide Extra Copies Object must be chosen on the block, not connected",
+                )
+            visible = by_name["visible"]
+            if visible.literal is not None and visible.literal.tag != VALUE_BOOL:
+                raise _fail(
+                    graph.id,
+                    node,
+                    "Show or Hide Extra Copies must be true or false or connected",
+                )
         if node.type == "action.emit_event":
             if by_name["payload"].source_node is not None:
                 raise _fail(graph.id, node, "Android emit_event payload cannot be connected")
@@ -775,6 +888,7 @@ def _compile_graph(project: Mobile3DProject, graph: VisualGraph) -> _GraphSpec:
 def compile_graph_pack_bytes(project: Mobile3DProject) -> bytes:
     """Compile project graph metadata, returning ``b''`` when no graphs exist."""
 
+    project = _materialized_project(project)
     project.validate()
     graphs = _graphs_from_project(project)
     graph_ids = {graph.id for graph in graphs}
@@ -1131,6 +1245,78 @@ def inspect_graph_pack(data_or_path: bytes | str | Path) -> dict[str, Any]:
                     raise GraphPackError(
                         "When Timer Rings Repeat must be true or false"
                     )
+            if type_id == "action.play_animation":
+                clip_token = node_tokens[1]
+                if clip_token >> 30 == 0:
+                    clip_tag, clip = values[clip_token & 0xFFFF]
+                    if (
+                        clip_tag != VALUE_STRING
+                        or re.fullmatch(
+                            PORTABLE_ANIMATION_CLIP_PATTERN, str(clip)
+                        )
+                        is None
+                    ):
+                        raise GraphPackError(
+                            "Play Animation Clip is not a portable animation clip name"
+                        )
+                restart_token = node_tokens[2]
+                if restart_token >> 30 == 0:
+                    restart_tag, _ = values[restart_token & 0xFFFF]
+                    if restart_tag != VALUE_BOOL:
+                        raise GraphPackError(
+                            "Play Animation Restart must be true or false"
+                        )
+            if type_id == "action.stop_animation":
+                reset_token = node_tokens[1]
+                if reset_token >> 30 == 0:
+                    reset_tag, _ = values[reset_token & 0xFFFF]
+                    if reset_tag != VALUE_BOOL:
+                        raise GraphPackError(
+                            "Stop Animation Reset must be true or false"
+                        )
+            if type_id in {"value.polar_movement", "action.set_polar_movement"}:
+                field_token = node_tokens[1]
+                if field_token >> 30 != 0:
+                    raise GraphPackError(
+                        "Movement number must be a packed literal, not a link"
+                    )
+                field_tag, field = values[field_token & 0xFFFF]
+                if field_tag != VALUE_STRING or field not in POLAR_MOVEMENT_FIELDS:
+                    raise GraphPackError("Movement number is not a portable field")
+                if type_id == "action.set_polar_movement":
+                    value_token = node_tokens[2]
+                    if value_token >> 30 == 0:
+                        value_tag, _ = values[value_token & 0xFFFF]
+                        if value_tag != VALUE_NUMBER:
+                            raise GraphPackError(
+                                "Change Movement Value must be a number"
+                            )
+                else:
+                    default_token = node_tokens[2]
+                    if default_token >> 30 == 0:
+                        default_tag, _ = values[default_token & 0xFFFF]
+                        if default_tag != VALUE_NUMBER:
+                            raise GraphPackError(
+                                "Read Movement Fallback value must be a number"
+                            )
+            if type_id == "action.set_polar_population_visible":
+                target_token = node_tokens[0]
+                if target_token >> 30 != 0:
+                    raise GraphPackError(
+                        "Show or Hide Extra Copies Object must be a packed literal, not a link"
+                    )
+                target_tag, _ = values[target_token & 0xFFFF]
+                if target_tag not in {VALUE_NULL, VALUE_STRING}:
+                    raise GraphPackError(
+                        "Show or Hide Extra Copies Object must be a scene-node id or null"
+                    )
+                visible_token = node_tokens[1]
+                if visible_token >> 30 == 0:
+                    visible_tag, _ = values[visible_token & 0xFFFF]
+                    if visible_tag != VALUE_BOOL:
+                        raise GraphPackError(
+                            "Show or Hide Extra Copies value must be true or false"
+                        )
             for target in flows[flow_start:flow_start + flow_zero + flow_one]:
                 if target >= count:
                     raise GraphPackError("visual-graph flow target is invalid")

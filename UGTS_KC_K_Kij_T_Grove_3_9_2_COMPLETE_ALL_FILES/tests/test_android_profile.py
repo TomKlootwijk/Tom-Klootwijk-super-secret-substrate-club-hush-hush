@@ -10,8 +10,11 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from ugts_kc3.androidbuild import (
+from ugts_kc3.androidbuild import (  # noqa: E402
     AndroidDevice,
+    _cpu_tick_delta,
+    _parse_cpu_ticks,
+    parse_gpu_timer_log,
     parse_surfaceflinger_latency,
     profile_android_app,
 )
@@ -47,6 +50,16 @@ class AndroidProfileTests(unittest.TestCase):
         sdk = Path("C:/Android/Sdk")
         adb = sdk / "platform-tools/adb.exe"
         calls: list[tuple[str, ...]] = []
+        system_cpu_samples = iter((
+            "cpu 1000 0 0 7000 0 0 0 0\n"
+            + "\n".join(f"cpu{index} 1 0 0 9" for index in range(8)),
+            "cpu 1100 0 0 7700 0 0 0 0\n"
+            + "\n".join(f"cpu{index} 1 0 0 9" for index in range(8)),
+        ))
+        process_cpu_samples = iter((
+            "123 (UGTS game) " + " ".join(("S", *("0" for _ in range(10)), "70", "30")),
+            "123 (UGTS game) " + " ".join(("S", *("0" for _ in range(10)), "85", "35")),
+        ))
 
         def fake_adb(_adb: Path, serial: str, *arguments: str, timeout=30.0) -> str:
             self.assertEqual(serial, "poco-1")
@@ -68,6 +81,10 @@ class AndroidProfileTests(unittest.TestCase):
                 return ""
             if "dumpsys meminfo" in joined:
                 return "TOTAL PSS: 133713 TOTAL RSS: 254002\n"
+            if arguments[-2:] == ("cat", "/proc/stat"):
+                return next(system_cpu_samples)
+            if arguments[-2:] == ("cat", "/proc/123/stat"):
+                return next(process_cpu_samples)
             if "dumpsys thermalservice" in joined:
                 return "\n".join(
                     (
@@ -80,6 +97,15 @@ class AndroidProfileTests(unittest.TestCase):
             if "dumpsys battery" in joined:
                 return "level: 81\ntemperature: 360\n"
             if "logcat" in arguments:
+                if "UGTS-KC392:I" in arguments:
+                    self.assertIn("--pid=123", arguments)
+                    return (
+                        "I/UGTS-KC392: gpu timer supported=true bits=64 "
+                        "scope=renderer_start samples=599 "
+                        "total_ms=1272.8750 "
+                        "mean_ms=2.1250 max_ms=4.5000 last_ms=2.0000 "
+                        "disjoint=1 pending=2\n"
+                    )
                 return ""
             self.fail(f"unexpected ADB call: {arguments!r}")
 
@@ -106,12 +132,82 @@ class AndroidProfileTests(unittest.TestCase):
         self.assertEqual(result.gpu_c_max, 49.5)
         self.assertEqual(result.battery_level_start, 81)
         self.assertEqual(result.battery_level_end, 81)
+        self.assertEqual(result.cpu_logical_cores, 8)
+        self.assertEqual(result.cpu_total_capacity_pct_mean, 2.5)
+        self.assertEqual(result.cpu_one_core_pct_mean, 20.0)
+        self.assertTrue(result.gpu_timer_supported)
+        self.assertEqual(result.gpu_timer_counter_bits, 64)
+        self.assertEqual(result.gpu_timer_samples_since_renderer_start, 599)
+        self.assertEqual(result.gpu_render_ms_total_since_renderer_start, 1272.875)
+        self.assertEqual(result.gpu_render_ms_mean_since_renderer_start, 2.125)
+        self.assertEqual(result.gpu_render_ms_max_since_renderer_start, 4.5)
+        self.assertEqual(result.gpu_timer_disjoint_intervals_since_renderer_start, 1)
         self.assertEqual(result.crash_buffer_lines, 0)
-        self.assertEqual(result.to_dict()["schema"], "ugts-kc-android-profile-1")
+        self.assertEqual(result.to_dict()["schema"], "ugts-kc-android-profile-3")
         flattened = " ".join(" ".join(call) for call in calls)
         self.assertNotIn(" input ", f" {flattened} ")
         self.assertNotIn(" settings ", f" {flattened} ")
         self.assertNotIn(" am start ", f" {flattened} ")
+
+    def test_cpu_ticks_handle_process_names_and_report_both_scales(self) -> None:
+        system = "\n".join((
+            "cpu 100 20 30 650 0 0 0 0",
+            "cpu0 25 5 7 163",
+            "cpu1 25 5 8 162",
+            "cpu2 25 5 7 163",
+            "cpu3 25 5 8 162",
+        ))
+        process = "77 (name with ) parenthesis) " + " ".join(
+            ("S", *("0" for _ in range(10)), "12", "8")
+        )
+        before = _parse_cpu_ticks(system, process)
+        self.assertEqual(before, (800, 20, 4))
+        self.assertEqual(_cpu_tick_delta(before, (1000, 30, 4)), (5.0, 20.0))
+        self.assertIsNone(_parse_cpu_ticks("garbage", process))
+
+    def test_gpu_timer_parser_reports_measurement_support_or_absence(self) -> None:
+        measured = parse_gpu_timer_log(
+            "old\n"
+            "gpu timer supported=true bits=48 scope=renderer_start samples=120 "
+            "total_ms=390.0000 "
+            "mean_ms=3.2500 max_ms=8.0000 last_ms=2.7500 disjoint=0 pending=3\n"
+        )
+        self.assertEqual(
+            measured,
+            {
+                "supported": True,
+                "counter_bits": 48,
+                "samples_since_renderer_start": 120,
+                "total_ms_since_renderer_start": 390.0,
+                "mean_ms": 3.25,
+                "max_ms": 8.0,
+                "last_ms": 2.75,
+                "disjoint_intervals_since_renderer_start": 0,
+                "pending_queries": 3,
+            },
+        )
+        self.assertEqual(
+            parse_gpu_timer_log("gpu timer supported=false nonblocking=true"),
+            {"supported": False},
+        )
+        self.assertIsNone(parse_gpu_timer_log("ordinary game log"))
+        self.assertEqual(
+            parse_gpu_timer_log(
+                "gpu timer supported=true bits=48 scope=renderer_start samples=12 "
+                "total_ms=30.0000 "
+                "mean_ms=2.5000 max_ms=4.0000 last_ms=2.0000 disjoint=0 pending=2\n"
+                "gpu timer supported=false bits=0 reason=runtime_error"
+            ),
+            {"supported": False, "counter_bits": 0},
+        )
+        self.assertEqual(
+            parse_gpu_timer_log(
+                "gpu timer supported=true bits=48 scope=renderer_start samples=0 "
+                "total_ms=0.0000 "
+                "mean_ms=0.0000 max_ms=0.0000 last_ms=0.0000 disjoint=0 pending=1"
+            ),
+            {"supported": True, "counter_bits": 48},
+        )
 
     def test_profile_bounds_and_missing_process_fail_before_sampling(self) -> None:
         with self.assertRaisesRegex(ValueError, "between 5 and 900"):

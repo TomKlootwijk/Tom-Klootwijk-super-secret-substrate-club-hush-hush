@@ -73,8 +73,10 @@ class AndroidPbrLiteShaderTests(unittest.TestCase):
             "vec3 n = normalize(vWorldNormal);",
             "vec3 l = normalize(-uLightDirection);",
             "vec3 v = normalize(uCameraPosition - vWorldPosition);",
-            "vec3 h = normalize(l + v);",
-            "vec3 f0 = mix(vec3(0.04), uBaseColor.rgb, metallic);",
+            "vec3 halfway = l + v;",
+            "float halfwayLength2 = dot(halfway, halfway);",
+            "vec3 h = halfwayLength2 <= 1.0e-12 ? vec3(0.0) : halfway * inversesqrt(halfwayLength2);",
+            "vec3 f0 = mix(vec3(0.04), materialBase, metallic);",
             "float fresnel2 = oneMinusNdotV * oneMinusNdotV;",
             "float fresnel4 = fresnel2 * fresnel2;",
             "float fresnel = fresnel4 * oneMinusNdotV;",
@@ -99,20 +101,47 @@ class AndroidPbrLiteShaderTests(unittest.TestCase):
     def test_renderer_uploads_camera_and_every_packed_material_field(self) -> None:
         header = RENDERER_HPP.read_text(encoding="utf-8")
         renderer = RENDERER_CPP.read_text(encoding="utf-8")
-        for location in ("uMetallic_", "uRoughness_", "uCameraPosition_"):
+        for location in (
+            "uMetallic_",
+            "uRoughness_",
+            "uCameraPosition_",
+            "uPolarGlowField_",
+            "uPolarMaterialCoord_",
+            "uPolarMaterialMode_",
+            "uPolarMaterialBands_",
+            "uPolarMaterialStrength_",
+        ):
             self.assertIn(location, header)
         for lookup in (
             'uMetallic_=glGetUniformLocation(program_,"uMetallic");',
             'uRoughness_=glGetUniformLocation(program_,"uRoughness");',
             'uCameraPosition_=glGetUniformLocation(program_,"uCameraPosition");',
+            'uPolarGlowField_=glGetUniformLocation(program_,"uPolarGlowField");',
+            'uPolarMaterialCoord_=glGetUniformLocation(program_,"uPolarMaterialCoord");',
+            'uPolarMaterialMode_=glGetUniformLocation(program_,"uPolarMaterialMode");',
+            'uPolarMaterialBands_=glGetUniformLocation(program_,"uPolarMaterialBands");',
+            'uPolarMaterialStrength_=glGetUniformLocation(program_,"uPolarMaterialStrength");',
             "glUniform3f(uCameraPosition_,eye.x,eye.y,eye.z);",
         ):
             self.assertIn(lookup, renderer)
 
-        ordinary_start = renderer.index("for (const auto& node:nodes)")
+        ordinary_draw_start = renderer.index("const auto drawOrdinaryNode=")
+        ordinary_loop_start = renderer.index("for (const auto& node:nodes)")
         scatter_start = renderer.index("if (drawn<maxNodes && !scatterGroups_.empty())")
-        ordinary = renderer[ordinary_start:scatter_start]
+        ordinary = renderer[ordinary_draw_start:ordinary_loop_start]
+        ordinary_dispatch = renderer[ordinary_loop_start:scatter_start]
         scatter = renderer[scatter_start:]
+        self.assertIn(
+            "drawOrdinaryNode(node,glowField,materialCoordinate);",
+            ordinary_dispatch,
+        )
+        self.assertIn("glUniform1f(uPolarGlowField_,glowField);", ordinary)
+        self.assertIn("uPolarMaterialCoord_,materialCoordinate.normalizedRho", ordinary)
+        self.assertIn("glUniform1f(uPolarGlowField_,0.0f);", scatter)
+        self.assertIn(
+            "glUniform4f(uPolarMaterialCoord_,0.0f,0.0f,0.0f,-1.0f);",
+            scatter,
+        )
         for draw_path in (ordinary, scatter):
             self.assertIn("glUniform1f(uMetallic_,material.metallic);", draw_path)
             self.assertIn("glUniform1f(uRoughness_,material.roughness);", draw_path)

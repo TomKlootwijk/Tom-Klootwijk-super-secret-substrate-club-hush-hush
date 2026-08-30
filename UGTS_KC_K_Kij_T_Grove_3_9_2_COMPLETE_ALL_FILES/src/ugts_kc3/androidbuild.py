@@ -107,6 +107,11 @@ class AndroidProfileResult:
     pss_kib_max: int | None
     rss_kib_min: int | None
     rss_kib_max: int | None
+    cpu_total_capacity_pct_mean: float | None
+    cpu_total_capacity_pct_max: float | None
+    cpu_one_core_pct_mean: float | None
+    cpu_one_core_pct_max: float | None
+    cpu_logical_cores: int | None
     gpu_c_min: float | None
     gpu_c_max: float | None
     battery_c_min: float | None
@@ -118,10 +123,19 @@ class AndroidProfileResult:
     crash_buffer_lines: int | None
     summary: str
     warnings: tuple[str, ...] = ()
+    gpu_timer_supported: bool | None = None
+    gpu_timer_counter_bits: int | None = None
+    gpu_timer_samples_since_renderer_start: int | None = None
+    gpu_render_ms_total_since_renderer_start: float | None = None
+    gpu_render_ms_mean_since_renderer_start: float | None = None
+    gpu_render_ms_max_since_renderer_start: float | None = None
+    gpu_render_ms_last: float | None = None
+    gpu_timer_disjoint_intervals_since_renderer_start: int | None = None
+    gpu_timer_pending_queries: int | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
-            "schema": "ugts-kc-android-profile-1",
+            "schema": "ugts-kc-android-profile-3",
             "application_id": self.application_id,
             "serial": self.serial,
             "model": self.model,
@@ -138,8 +152,32 @@ class AndroidProfileResult:
             "pss_kib_max": self.pss_kib_max,
             "rss_kib_min": self.rss_kib_min,
             "rss_kib_max": self.rss_kib_max,
+            "cpu_total_capacity_pct_mean": self.cpu_total_capacity_pct_mean,
+            "cpu_total_capacity_pct_max": self.cpu_total_capacity_pct_max,
+            "cpu_one_core_pct_mean": self.cpu_one_core_pct_mean,
+            "cpu_one_core_pct_max": self.cpu_one_core_pct_max,
+            "cpu_logical_cores": self.cpu_logical_cores,
             "gpu_c_min": self.gpu_c_min,
             "gpu_c_max": self.gpu_c_max,
+            "gpu_timer_supported": self.gpu_timer_supported,
+            "gpu_timer_counter_bits": self.gpu_timer_counter_bits,
+            "gpu_timer_samples_since_renderer_start": (
+                self.gpu_timer_samples_since_renderer_start
+            ),
+            "gpu_render_ms_total_since_renderer_start": (
+                self.gpu_render_ms_total_since_renderer_start
+            ),
+            "gpu_render_ms_mean_since_renderer_start": (
+                self.gpu_render_ms_mean_since_renderer_start
+            ),
+            "gpu_render_ms_max_since_renderer_start": (
+                self.gpu_render_ms_max_since_renderer_start
+            ),
+            "gpu_render_ms_last": self.gpu_render_ms_last,
+            "gpu_timer_disjoint_intervals_since_renderer_start": (
+                self.gpu_timer_disjoint_intervals_since_renderer_start
+            ),
+            "gpu_timer_pending_queries": self.gpu_timer_pending_queries,
             "battery_c_min": self.battery_c_min,
             "battery_c_max": self.battery_c_max,
             "battery_level_start": self.battery_level_start,
@@ -539,6 +577,61 @@ def parse_surfaceflinger_latency(output: str) -> tuple[int, tuple[float, ...]]:
     return period_ns, intervals
 
 
+_GPU_TIMER_STATS_LINE = re.compile(
+    r"gpu timer\s+supported=true\s+"
+    r"bits=(?P<bits>\d+)\s+"
+    r"scope=renderer_start\s+"
+    r"samples=(?P<samples>\d+)\s+"
+    r"total_ms=(?P<total>[0-9]+(?:\.[0-9]+)?)\s+"
+    r"mean_ms=(?P<mean>[0-9]+(?:\.[0-9]+)?)\s+"
+    r"max_ms=(?P<maximum>[0-9]+(?:\.[0-9]+)?)\s+"
+    r"last_ms=(?P<last>[0-9]+(?:\.[0-9]+)?)\s+"
+    r"disjoint=(?P<disjoint>\d+)\s+"
+    r"pending=(?P<pending>\d+)"
+)
+_GPU_TIMER_SUPPORT_LINE = re.compile(
+    r"gpu timer\s+supported=(?P<supported>true|false)\b"
+    r"(?:\s+bits=(?P<bits>\d+))?"
+)
+
+
+def parse_gpu_timer_log(output: str) -> dict[str, object] | None:
+    """Parse the last non-blocking native GPU timer report, if one exists."""
+
+    text = str(output)
+    measurements = tuple(_GPU_TIMER_STATS_LINE.finditer(text))
+    support = tuple(_GPU_TIMER_SUPPORT_LINE.finditer(text))
+    latest_measurement = measurements[-1] if measurements else None
+    latest_support = support[-1] if support else None
+    if latest_measurement is not None and (
+        latest_support is None or latest_measurement.start() >= latest_support.start()
+    ):
+        values = latest_measurement.groupdict()
+        samples = int(values["samples"])
+        if samples < 1:
+            return {"supported": True, "counter_bits": int(values["bits"])}
+        return {
+            "supported": True,
+            "counter_bits": int(values["bits"]),
+            "samples_since_renderer_start": samples,
+            "total_ms_since_renderer_start": float(values["total"]),
+            "mean_ms": float(values["mean"]),
+            "max_ms": float(values["maximum"]),
+            "last_ms": float(values["last"]),
+            "disjoint_intervals_since_renderer_start": int(values["disjoint"]),
+            "pending_queries": int(values["pending"]),
+        }
+    if latest_support is None:
+        return None
+    result: dict[str, object] = {
+        "supported": latest_support.group("supported") == "true"
+    }
+    bits = latest_support.group("bits")
+    if bits is not None:
+        result["counter_bits"] = int(bits)
+    return result
+
+
 def _nearest_rank(values: Sequence[float], fraction: float) -> float:
     if not values:
         return 0.0
@@ -578,6 +671,61 @@ def _parse_battery(output: str) -> tuple[int | None, float | None]:
         None if temperature_match is None else int(temperature_match.group(1)) / 10.0
     )
     return level, temperature
+
+
+def _parse_cpu_ticks(
+    system_stat: str, process_stat: str
+) -> tuple[int, int, int] | None:
+    """Read total-device and one-process scheduler ticks from Linux procfs.
+
+    ``/proc/<pid>/stat`` may put spaces and parentheses in the process name, so
+    splitting the complete line is incorrect.  Everything after its final
+    closing parenthesis starts at documented field 3 (state); utime/stime are
+    fields 14/15 and therefore suffix indexes 11/12.
+    """
+
+    system_lines = str(system_stat).splitlines()
+    aggregate = next(
+        (line for line in system_lines if re.match(r"^cpu\s+", line)), None
+    )
+    if aggregate is None:
+        return None
+    try:
+        total_ticks = sum(int(value) for value in aggregate.split()[1:])
+    except ValueError:
+        return None
+    logical_cores = sum(
+        re.match(r"^cpu\d+\s+", line) is not None for line in system_lines
+    )
+
+    process_line = str(process_stat).strip()
+    closing_parenthesis = process_line.rfind(")")
+    if closing_parenthesis < 0:
+        return None
+    suffix = process_line[closing_parenthesis + 1 :].split()
+    if len(suffix) <= 12:
+        return None
+    try:
+        process_ticks = int(suffix[11]) + int(suffix[12])
+    except ValueError:
+        return None
+    if total_ticks < 0 or process_ticks < 0 or logical_cores < 1:
+        return None
+    return total_ticks, process_ticks, logical_cores
+
+
+def _cpu_tick_delta(
+    before: tuple[int, int, int], after: tuple[int, int, int]
+) -> tuple[float, float] | None:
+    """Return (whole-phone capacity %, one-core-equivalent %) for a tick span."""
+
+    total_delta = after[0] - before[0]
+    process_delta = after[1] - before[1]
+    if total_delta <= 0 or process_delta < 0 or process_delta > total_delta:
+        return None
+    capacity_percent = process_delta * 100.0 / total_delta
+    one_core_percent = capacity_percent * after[2]
+    return capacity_percent, one_core_percent
 
 
 def _adb_text(
@@ -694,12 +842,17 @@ def profile_android_app(
     periods: list[int] = []
     pss_values: list[int] = []
     rss_values: list[int] = []
+    cpu_capacity_values: list[float] = []
+    cpu_one_core_values: list[float] = []
+    cpu_core_counts: list[int] = []
     gpu_values: list[float] = []
     battery_temperatures: list[float] = []
     battery_levels: list[int] = []
     thermal_statuses: list[int] = []
+    last_cpu_ticks: tuple[int, int, int] | None = None
 
     def snapshot() -> None:
+        nonlocal last_cpu_ticks
         memory = _parse_meminfo(
             _optional_adb_text(
                 adb, device.serial, "shell", "dumpsys", "meminfo", application_id
@@ -708,6 +861,22 @@ def profile_android_app(
         if memory is not None:
             pss_values.append(memory[0])
             rss_values.append(memory[1])
+        cpu_ticks = _parse_cpu_ticks(
+            _optional_adb_text(
+                adb, device.serial, "shell", "cat", "/proc/stat"
+            ),
+            _optional_adb_text(
+                adb, device.serial, "shell", "cat", f"/proc/{pid}/stat"
+            ),
+        )
+        if cpu_ticks is not None:
+            cpu_core_counts.append(cpu_ticks[2])
+            if last_cpu_ticks is not None:
+                cpu_delta = _cpu_tick_delta(last_cpu_ticks, cpu_ticks)
+                if cpu_delta is not None:
+                    cpu_capacity_values.append(cpu_delta[0])
+                    cpu_one_core_values.append(cpu_delta[1])
+        last_cpu_ticks = cpu_ticks
         thermal_status, gpu = _parse_thermal(
             _optional_adb_text(
                 adb, device.serial, "shell", "dumpsys", "thermalservice"
@@ -786,6 +955,21 @@ def profile_android_app(
         warnings.append("Android reported severe-or-higher thermal pressure.")
     if not pss_values:
         warnings.append("Android did not expose process memory totals.")
+    if not cpu_capacity_values:
+        warnings.append("Android did not expose readable process CPU counters.")
+    engine_log = _optional_adb_text(
+        adb,
+        device.serial,
+        "logcat",
+        f"--pid={pid}",
+        "-d",
+        "-v",
+        "brief",
+        "-s",
+        "UGTS-KC392:I",
+        "*:S",
+    )
+    gpu_timer = parse_gpu_timer_log(engine_log)
     crash_output = _optional_adb_text(
         adb,
         device.serial,
@@ -825,6 +1009,25 @@ def profile_android_app(
         pss_kib_max=max(pss_values, default=None),
         rss_kib_min=min(rss_values, default=None),
         rss_kib_max=max(rss_values, default=None),
+        cpu_total_capacity_pct_mean=(
+            round(sum(cpu_capacity_values) / len(cpu_capacity_values), 3)
+            if cpu_capacity_values
+            else None
+        ),
+        cpu_total_capacity_pct_max=(
+            round(max(cpu_capacity_values), 3) if cpu_capacity_values else None
+        ),
+        cpu_one_core_pct_mean=(
+            round(sum(cpu_one_core_values) / len(cpu_one_core_values), 3)
+            if cpu_one_core_values
+            else None
+        ),
+        cpu_one_core_pct_max=(
+            round(max(cpu_one_core_values), 3) if cpu_one_core_values else None
+        ),
+        cpu_logical_cores=(
+            max(cpu_core_counts) if cpu_core_counts else None
+        ),
         gpu_c_min=min(gpu_values, default=None),
         gpu_c_max=max(gpu_values, default=None),
         battery_c_min=min(battery_temperatures, default=None),
@@ -836,4 +1039,48 @@ def profile_android_app(
         crash_buffer_lines=crash_lines,
         summary=summary,
         warnings=tuple(warnings),
+        gpu_timer_supported=(
+            bool(gpu_timer["supported"]) if gpu_timer is not None else None
+        ),
+        gpu_timer_counter_bits=(
+            int(gpu_timer["counter_bits"])
+            if gpu_timer is not None and "counter_bits" in gpu_timer
+            else None
+        ),
+        gpu_timer_samples_since_renderer_start=(
+            int(gpu_timer["samples_since_renderer_start"])
+            if gpu_timer is not None and "samples_since_renderer_start" in gpu_timer
+            else None
+        ),
+        gpu_render_ms_total_since_renderer_start=(
+            float(gpu_timer["total_ms_since_renderer_start"])
+            if gpu_timer is not None and "total_ms_since_renderer_start" in gpu_timer
+            else None
+        ),
+        gpu_render_ms_mean_since_renderer_start=(
+            float(gpu_timer["mean_ms"])
+            if gpu_timer is not None and "mean_ms" in gpu_timer
+            else None
+        ),
+        gpu_render_ms_max_since_renderer_start=(
+            float(gpu_timer["max_ms"])
+            if gpu_timer is not None and "max_ms" in gpu_timer
+            else None
+        ),
+        gpu_render_ms_last=(
+            float(gpu_timer["last_ms"])
+            if gpu_timer is not None and "last_ms" in gpu_timer
+            else None
+        ),
+        gpu_timer_disjoint_intervals_since_renderer_start=(
+            int(gpu_timer["disjoint_intervals_since_renderer_start"])
+            if gpu_timer is not None
+            and "disjoint_intervals_since_renderer_start" in gpu_timer
+            else None
+        ),
+        gpu_timer_pending_queries=(
+            int(gpu_timer["pending_queries"])
+            if gpu_timer is not None and "pending_queries" in gpu_timer
+            else None
+        ),
     )

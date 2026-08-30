@@ -13,13 +13,39 @@ import json
 import math
 from pathlib import Path
 import re
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 import unicodedata
 
 from PySide6.QtCore import QObject, Signal
 
+from ..animation3d import (
+    DEFAULT_ANIMATION_CLIP_ID,
+    TransformAnimationLibrary3D,
+    TransformAnimation3D,
+    TransformAnimationError,
+    TransformClip3D,
+    TransformKey3D,
+    default_transform_animation,
+    default_transform_animation_library,
+    metadata_with_transform_animation,
+    metadata_with_transform_animation_library,
+    transform_animation_from_metadata,
+    transform_animation_library_from_metadata,
+)
 from ..game import Transform2D
 from ..game_input import InputFrame
+from ..hierarchy3d import (
+    MAX_HIERARCHY_DEPTH_3D,
+    Hierarchy3D,
+    Hierarchy3DError,
+    TransformTRS3D,
+    build_hierarchy3d,
+    local_trs_from_world_3d,
+    remove_node3d_promote_children,
+    reparent_node3d,
+    world_trs_by_id,
+)
+from ..math3d import add, quat_mul, quat_normalize, quat_rotate
 from ..mobile3d import (
     Collider3DRecord,
     InputFrame3D,
@@ -48,11 +74,52 @@ from ..project import (
     visual_graph_binding_ids,
     visual_graphs_from_rules,
 )
+from ..polar_population import (
+    POLAR_BURST_MATH_SCHEDULE,
+    POLAR_POPULATION_MATH_SCHEDULE,
+    POLAR_POPULATION_METADATA_KEY,
+    POLAR_POPULATION_PRESETS,
+    PolarPopulationError,
+    PolarPopulationRecipe,
+    collect_polar_population_project_spec,
+    polar_population_glow_sample,
+    polar_population_instance,
+    polar_population_preset,
+)
+from ..polar_population_pack import (
+    POLAR_POPULATION_RECIPE_BYTES,
+    compile_polar_population_pack_bytes,
+)
+from ..polarpack import quantized_profile_lut
+from ..renderpack import render_substrate_config_from_metadata
 from ..scatter import (
     SCATTER_METADATA_KEY,
     ScatterError,
     ScatterPopulation,
+    f32,
     validate_scatter_prototype,
+)
+from ..saved_scene import (
+    SavedScene3D,
+    SavedSceneInstance3D,
+    bake_saved_scene_instance,
+    instantiate_saved_scene,
+    make_saved_scene,
+    materialized_node_id,
+    metadata_with_saved_scene_instances,
+    metadata_with_saved_scenes,
+    saved_scene_owner_id,
+    saved_scene_instances_from_metadata,
+    saved_scenes_from_metadata,
+)
+from ..reusable import (
+    REUSABLE_INSTANCE_KEY,
+    ReusableObject3D,
+    instantiate_reusable_object,
+    make_reusable_object,
+    metadata_with_reusable_objects,
+    reusable_objects_from_metadata,
+    reusable_source_id,
 )
 from ..visual_graph import GraphExecutionError, TraceEntry, VisualGraph
 
@@ -167,6 +234,8 @@ class GraphAuthoringContext:
     entity_choices: tuple[tuple[str, str], ...]
     default_origin_id: str | None
     creation_problem: str | None = None
+    animation_choices: tuple[tuple[str, str], ...] = ()
+    polar_population_choices: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -243,6 +312,7 @@ class EditorDocument(QObject):
     selectionChanged = Signal(object)
     transformChanged = Signal(object)
     graphChanged = Signal()
+    animationChanged = Signal(object)
     structureChanged = Signal()
     logicTraceChanged = Signal(object)
 
@@ -442,6 +512,247 @@ class EditorDocument(QObject):
         return ()
 
     @staticmethod
+    def _hierarchy_name(value: str) -> str:
+        return str(value).replace("_", " ").replace("-", " ").strip().title()
+
+    @classmethod
+    def _friendly_hierarchy_error(cls, error: Hierarchy3DError) -> ValueError:
+        """Translate exact core rejection codes into short authoring guidance."""
+
+        name = cls._hierarchy_name(error.node_id)
+        messages = {
+            "parent_missing": (
+                f"{name} points to a parent that is no longer in the scene. "
+                "Run Check Project before changing this attachment."
+            ),
+            "cycle": (
+                f"That attachment would make {name} carry one of its own parents. "
+                "Choose an object outside this branch."
+            ),
+            "depth": (
+                "That attachment chain would be too deep. Keep attached objects to "
+                f"{MAX_HIERARCHY_DEPTH_3D} levels or fewer."
+            ),
+            "parent_scale": (
+                f"{name} cannot carry another object yet. Give it the same positive "
+                "Scale X, Y, and Z first."
+            ),
+            "child_dynamic": (
+                f"Physics moves {name}. Turn Dynamic off before attaching it."
+            ),
+            "child_collider": (
+                f"{name} has collision or is a Trigger Area. Only a display object "
+                "with Collision set to None can be attached."
+            ),
+            "child_tags": (
+                f"{name} has a gameplay tag. Remove its tags before attaching it, so "
+                "gameplay still knows which object owns that role."
+            ),
+            "child_angular_velocity": (
+                f"{name} already spins by itself. Set its Spin to zero before attaching it."
+            ),
+            "child_visual_graph": (
+                f"{name} owns Logic Blocks. Move those blocks to its parent or remove the "
+                "binding before attaching it."
+            ),
+            "child_packed_movement": (
+                f"A Movement Pattern already moves {name}. Choose Off / Static before "
+                "attaching it."
+            ),
+            "child_population": (
+                f"Populate Area already owns {name}. Turn Populate Area off before "
+                "attaching it."
+            ),
+            "child_transform_animation": (
+                f"{name} has its own Animation. Remove that Animation before attaching it."
+            ),
+        }
+        return ValueError(messages.get(error.code, str(error)))
+
+    def _ordinary_hierarchy_owner_allowed(
+        self, node_id: str, parent_id: str | None
+    ) -> bool:
+        """Keep compact linked-scene children owned by their linked group."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return False
+        by_id = {node.id: node for node in self.project.nodes}
+        node = by_id.get(str(node_id))
+        parent = None if parent_id is None else by_id.get(str(parent_id))
+        return (
+            node is not None
+            and saved_scene_owner_id(node) is None
+            and (parent_id is None or (parent is not None and saved_scene_owner_id(parent) is None))
+        )
+
+    def node_hierarchy(self) -> Hierarchy3D:
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Attachments are available in Mobile 3D projects.")
+        try:
+            return build_hierarchy3d(self.project.nodes)
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+
+    def node_child_ids(self, node_id: str) -> tuple[str, ...]:
+        """Return the selected node's direct ordinary children."""
+
+        try:
+            return self.node_hierarchy().children(str(node_id))
+        except KeyError as exc:
+            raise ValueError("That object is no longer in the scene.") from exc
+
+    def reparent_node_snapshot(
+        self, node_id: str, parent_id: str | None
+    ) -> tuple[Node3DRecord, ...]:
+        """Return an atomic, world-pose-preserving attachment snapshot."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Attachments are available in Mobile 3D projects.")
+        if self.is_saved_scene_instance_id(node_id) or (
+            parent_id is not None and self.is_saved_scene_instance_id(parent_id)
+        ):
+            raise ValueError(
+                "A linked Saved Scene must stay one group. Choose Unlink before attaching "
+                "one of its objects."
+            )
+        try:
+            return reparent_node3d(
+                self.project.nodes,
+                str(node_id),
+                None if parent_id is None else str(parent_id),
+                preserve_world=True,
+                allow=self._ordinary_hierarchy_owner_allowed,
+            )
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+        except PermissionError as exc:
+            raise ValueError(
+                "A linked Saved Scene must stay one group. Choose Unlink before changing "
+                "its attachments."
+            ) from exc
+        except KeyError as exc:
+            raise ValueError("One of those objects is no longer in the scene.") from exc
+
+    def delete_node_snapshot(self, node_id: str) -> tuple[Node3DRecord, ...]:
+        """Delete one node and safely promote its children without moving them."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Attachments are available in Mobile 3D projects.")
+        try:
+            return remove_node3d_promote_children(
+                self.project.nodes,
+                str(node_id),
+                preserve_world=True,
+                allow=self._ordinary_hierarchy_owner_allowed,
+            )
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+        except PermissionError as exc:
+            raise ValueError(
+                "A linked Saved Scene must stay one group. Choose Unlink before deleting "
+                "one of its objects."
+            ) from exc
+        except KeyError as exc:
+            raise ValueError("That object is no longer in the scene.") from exc
+
+    def node_world_trs(self, node_id: str) -> TransformTRS3D:
+        """Resolve one ordinary node's exact world pose through the core hierarchy."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("World 3D transforms need a Mobile 3D project.")
+        try:
+            return world_trs_by_id(self.project.nodes)[str(node_id)]
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+        except KeyError as exc:
+            raise ValueError("That object is no longer in the scene.") from exc
+
+    def local_transform_for_world_translation(
+        self, node_id: str, translation: Sequence[float]
+    ) -> dict[str, tuple[float, ...]]:
+        """Convert one world-space gizmo move back into authored parent-local TRS."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("World 3D transforms need a Mobile 3D project.")
+        try:
+            hierarchy = build_hierarchy3d(self.project.nodes)
+            worlds = world_trs_by_id(self.project.nodes, hierarchy)
+            world = replace(
+                worlds[str(node_id)],
+                translation=tuple(float(value) for value in translation),
+            )
+            parent_id = hierarchy.parent(str(node_id))
+            local = (
+                world
+                if parent_id is None
+                else local_trs_from_world_3d(worlds[parent_id], world)
+            )
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+        except KeyError as exc:
+            raise ValueError("That object is no longer in the scene.") from exc
+        return {
+            "translation": tuple(local.translation),
+            "rotation": tuple(local.rotation),
+            "scale": tuple(local.scale),
+        }
+
+    def preview_world_trs_after_translation(
+        self, node_id: str, translation: Sequence[float]
+    ) -> dict[str, TransformTRS3D]:
+        """Resolve transient world poses for a moved node and its descendants."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return {}
+        local = self.local_transform_for_world_translation(node_id, translation)
+        replacement_nodes = tuple(
+            replace(
+                node,
+                transform=replace(
+                    node.transform,
+                    translation=local["translation"],
+                    rotation=local["rotation"],
+                    scale=local["scale"],
+                ),
+            )
+            if node.id == str(node_id)
+            else node
+            for node in self.project.nodes
+        )
+        try:
+            hierarchy = build_hierarchy3d(replacement_nodes)
+            worlds = world_trs_by_id(replacement_nodes, hierarchy)
+            affected = (str(node_id), *hierarchy.descendants(str(node_id)))
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+        except KeyError as exc:
+            raise ValueError("That object is no longer in the scene.") from exc
+        return {affected_id: worlds[affected_id] for affected_id in affected}
+
+    def world_node_records_snapshot(self) -> tuple[Node3DRecord, ...]:
+        """Return a detached flat view for previews and one-object snapshots."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return ()
+        try:
+            worlds = world_trs_by_id(self.project.nodes)
+        except Hierarchy3DError as exc:
+            raise self._friendly_hierarchy_error(exc) from exc
+        return tuple(
+            replace(
+                node,
+                transform=replace(
+                    node.transform,
+                    translation=worlds[node.id].translation,
+                    rotation=worlds[node.id].rotation,
+                    scale=worlds[node.id].scale,
+                ),
+                parent_id=None,
+            )
+            for node in self.project.nodes
+        )
+
+    @staticmethod
     def _friendly_id_base(label: str, fallback: str = "new_object") -> str:
         ascii_label = unicodedata.normalize("NFKD", str(label)).encode("ascii", "ignore").decode("ascii")
         base = re.sub(r"[^a-z0-9]+", "_", ascii_label.casefold()).strip("_")
@@ -490,6 +801,492 @@ class EditorDocument(QObject):
         while f"{base}_{suffix}" in used:
             suffix += 1
         return f"{base}_{suffix}"
+
+    def reusable_objects(self) -> tuple[ReusableObject3D, ...]:
+        """Return the project's validated reusable 3D-object library."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return ()
+        return reusable_objects_from_metadata(self.project.metadata)
+
+    def collision_free_reusable_id(self, label: str) -> str:
+        """Create a readable stable library id without replacing a definition."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Reusable Objects are available in mobile 3D projects.")
+        base = self._friendly_id_base(label, "reusable_object")
+        used = {definition.id for definition in self.reusable_objects()}
+        if base not in used:
+            return base
+        suffix = 2
+        while f"{base}_{suffix}" in used:
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def saved_scenes(self) -> tuple[SavedScene3D, ...]:
+        """Return the validated linked multi-object scene library."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return ()
+        return saved_scenes_from_metadata(self.project.metadata)
+
+    def saved_scene_instances(self) -> tuple[SavedSceneInstance3D, ...]:
+        """Return compact linked-scene placements without materializing them."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return ()
+        return saved_scene_instances_from_metadata(self.project.metadata)
+
+    def saved_scene_instance(
+        self, selection: SelectionRef | None = None
+    ) -> SavedSceneInstance3D | None:
+        """Resolve one selected linked-scene group descriptor."""
+
+        selection = selection or self.selection
+        if selection is None or selection.kind != "saved_scene_instance":
+            return None
+        return next(
+            (
+                instance
+                for instance in self.saved_scene_instances()
+                if instance.id == selection.object_id
+            ),
+            None,
+        )
+
+    def saved_scene_materialized_owner_map(self) -> dict[str, str]:
+        """Map each virtual materialized node to its editable group instance."""
+
+        definitions = {definition.id: definition for definition in self.saved_scenes()}
+        owners: dict[str, str] = {}
+        for instance in self.saved_scene_instances():
+            definition = definitions.get(instance.scene_id)
+            if definition is None:
+                continue
+            for saved_node in definition.nodes:
+                owners[
+                    materialized_node_id(
+                        instance.id,
+                        saved_node.node.id,
+                        definition.root_id,
+                    )
+                ] = instance.id
+        return owners
+
+    def is_saved_scene_instance_id(self, object_id: str) -> bool:
+        return any(
+            instance.id == str(object_id)
+            for instance in self.saved_scene_instances()
+        )
+
+    def collision_free_saved_scene_id(self, label: str) -> str:
+        """Create a readable definition id without replacing a saved group."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Saved Scenes are available in mobile 3D projects.")
+        base = self._friendly_id_base(label, "saved_scene")
+        used = {definition.id for definition in self.saved_scenes()}
+        if base not in used:
+            return base
+        suffix = 2
+        while f"{base}_{suffix}" in used:
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def collision_free_saved_scene_instance_id(
+        self,
+        label: str,
+        definition: SavedScene3D | None = None,
+    ) -> str:
+        """Create an instance id that cannot collide before or after expansion."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Saved Scenes are available in mobile 3D projects.")
+        base = self._friendly_id_base(label, "saved_scene_instance")
+        used = {node.id for node in self.project.nodes}
+        used.update(self.saved_scene_materialized_owner_map())
+        used.update(instance.id for instance in self.saved_scene_instances())
+
+        def available(instance_id: str) -> bool:
+            if instance_id in used:
+                return False
+            if definition is None:
+                return True
+            materialized_ids = {
+                materialized_node_id(
+                    instance_id,
+                    saved_node.node.id,
+                    definition.root_id,
+                )
+                for saved_node in definition.nodes
+            }
+            return len(materialized_ids) == len(definition.nodes) and not (
+                materialized_ids & used
+            )
+
+        if available(base):
+            return base
+        suffix = 2
+        while not available(f"{base}_{suffix}"):
+            suffix += 1
+        return f"{base}_{suffix}"
+
+    def saved_scene_metadata_snapshot(
+        self,
+        label: str,
+        node_ids: Sequence[str],
+        *,
+        root_id: str | None = None,
+    ) -> tuple[dict[str, Any], SavedScene3D]:
+        """Capture two or more authored nodes as one linked Saved Scene."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Saved Scenes are available in mobile 3D projects.")
+        display_label = str(label).strip()
+        if not display_label:
+            raise ValueError("Give the Saved Scene a short name.")
+        requested = tuple(dict.fromkeys(str(node_id) for node_id in node_ids))
+        selected = tuple(
+            node for node in self.project.nodes if node.id in set(requested)
+        )
+        if len(selected) != len(requested):
+            raise ValueError(
+                "One of those objects is no longer an editable object in the scene."
+            )
+        if len(selected) < 2:
+            raise ValueError(
+                "Select at least two 3D objects in the Scene Tree to save them together."
+            )
+        pivot_id = str(root_id or selected[0].id)
+        if pivot_id not in {node.id for node in selected}:
+            raise ValueError("The Saved Scene root must be one of the selected objects.")
+
+        # Saved Scenes own their internal hierarchy. Feed the existing helper
+        # detached world poses so a selection that already contains attached
+        # objects does not accidentally store parent-local values as world.
+        world_nodes = {node.id: node for node in self.world_node_records_snapshot()}
+        selected = tuple(world_nodes[node.id] for node in selected)
+
+        graph_ids: list[str] = []
+        for node in selected:
+            for graph_id in visual_graph_binding_ids(
+                node.metadata.get(BINDING_KEY),
+                f"node {node.id} Logic Blocks",
+            ):
+                if graph_id not in graph_ids:
+                    graph_ids.append(graph_id)
+        graphs_by_id = {
+            graph.id: graph
+            for graph in visual_graphs_from_metadata(self.project.metadata)
+        }
+        missing = [graph_id for graph_id in graph_ids if graph_id not in graphs_by_id]
+        if missing:
+            names = ", ".join(missing)
+            raise ValueError(
+                f"The selected objects use missing Logic Blocks: {names}. Run Check Project first."
+            )
+        definition = make_saved_scene(
+            self.collision_free_saved_scene_id(display_label),
+            display_label,
+            selected,
+            pivot_id,
+            tuple(graphs_by_id[graph_id] for graph_id in graph_ids),
+        )
+        metadata = metadata_with_saved_scenes(
+            self.project.metadata,
+            (*self.saved_scenes(), definition),
+        )
+        candidate = copy.deepcopy(self.project)
+        candidate.metadata = copy.deepcopy(metadata)
+        candidate.validate()
+        return metadata, definition
+
+    def instantiate_saved_scene_snapshot(
+        self, saved_scene_id: str
+    ) -> tuple[dict[str, Any], SavedSceneInstance3D]:
+        """Build one compact linked placement in the first free diagonal spot."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Saved Scenes are available in mobile 3D projects.")
+        definition = next(
+            (
+                value
+                for value in self.saved_scenes()
+                if value.id == str(saved_scene_id)
+            ),
+            None,
+        )
+        if definition is None:
+            raise ValueError("That Saved Scene is no longer in this project.")
+        occupied = [node.transform.translation for node in self.project.nodes]
+        occupied.extend(
+            instance.transform.translation
+            for instance in self.saved_scene_instances()
+        )
+        placement: tuple[float, float, float] | None = None
+        for diagonal_step in range(1, 4097):
+            candidate = (float(diagonal_step), 0.0, float(diagonal_step))
+            if all(
+                sum((candidate[axis] - point[axis]) ** 2 for axis in range(3))
+                > 1.0e-8
+                for point in occupied
+            ):
+                placement = candidate
+                break
+        if placement is None:
+            raise ValueError("The scene is too crowded to place this Saved Scene safely.")
+        instance = instantiate_saved_scene(
+            definition,
+            self.collision_free_saved_scene_instance_id(
+                definition.label, definition
+            ),
+            Transform3DRecord(translation=placement),
+        )
+        metadata = metadata_with_saved_scene_instances(
+            self.project.metadata,
+            (*self.saved_scene_instances(), instance),
+        )
+        candidate_project = copy.deepcopy(self.project)
+        candidate_project.metadata = copy.deepcopy(metadata)
+        candidate_project.validate()
+        return metadata, instance
+
+    def bake_saved_scene_instance_snapshot(
+        self, instance_id: str
+    ) -> tuple[tuple[Node3DRecord, ...], dict[str, Any], SavedSceneInstance3D]:
+        """Detach one linked instance into ordinary editable scene nodes."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Saved Scenes are available in mobile 3D projects.")
+        instance = next(
+            (
+                value
+                for value in self.saved_scene_instances()
+                if value.id == str(instance_id)
+            ),
+            None,
+        )
+        if instance is None:
+            raise ValueError("Choose a linked Saved Scene before unlinking it.")
+        baked = bake_saved_scene_instance(self.project, instance.id)
+        baked.validate()
+        return copy.deepcopy(baked.nodes), copy.deepcopy(baked.metadata), instance
+
+    def reusable_object_metadata_snapshot(
+        self,
+        label: str,
+        selection: SelectionRef | None = None,
+    ) -> tuple[dict[str, Any], ReusableObject3D]:
+        """Capture the selected node as a detached, validated library snapshot."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Reusable Objects are available in mobile 3D projects.")
+        source = self.entity(selection)
+        if not isinstance(source, Node3DRecord):
+            raise ValueError("Choose a 3D object before saving it for reuse.")
+        display_label = str(label).strip()
+        if not display_label:
+            raise ValueError("Give the saved object a short name.")
+        if "player" in source.tags:
+            raise ValueError(
+                "Keep one Player in a phone game. Save a different object instead."
+            )
+        if source.metadata.get(MOVEMENT_COMPONENT_KEY) is not None:
+            raise ValueError(
+                "This object uses a Movement Pattern whose orbit is tied to the world center. "
+                "Turn its Movement Pattern Off before saving it, so placed copies cannot jump "
+                "onto the same orbit."
+            )
+        if source.metadata.get(SCATTER_METADATA_KEY) is not None:
+            raise ValueError(
+                "This object uses Populate Area, whose generated garden is larger than one "
+                "saved object. Turn Populate Area Off before saving it."
+            )
+        raw_bindings = source.metadata.get(BINDING_KEY)
+        if raw_bindings is not None:
+            graph_ids = visual_graph_binding_ids(
+                raw_bindings,
+                f"node {source.id} Logic Blocks",
+            )
+            graphs = {
+                graph.id: graph for graph in visual_graphs_from_metadata(self.project.metadata)
+            }
+            reference_fields = {"entity", "origin", "source", "target"}
+            for graph_id in graph_ids:
+                graph = graphs.get(graph_id)
+                if graph is None:
+                    continue
+                graph_nodes = {graph_node.id: graph_node for graph_node in graph.nodes}
+                for graph_node in graph.nodes:
+                    if any(
+                        key in reference_fields and value == source.id
+                        for key, value in graph_node.properties.items()
+                    ):
+                        raise ValueError(
+                            f"{source.id}'s Logic Blocks name that exact object inside "
+                            f"{graph_node.id}. Choose This Object instead, then save it."
+                        )
+                for link in graph.links:
+                    if link.target_port not in reference_fields:
+                        continue
+                    value_node = graph_nodes.get(link.source_node)
+                    if (
+                        value_node is not None
+                        and value_node.type == "value.constant"
+                        and value_node.properties.get("value") == source.id
+                    ):
+                        raise ValueError(
+                            f"{source.id}'s Logic Blocks feed that exact object name into "
+                            f"{link.target_node}. Choose This Object instead, then save it."
+                        )
+        reusable = make_reusable_object(
+            self.collision_free_reusable_id(display_label),
+            display_label,
+            next(
+                node
+                for node in self.world_node_records_snapshot()
+                if node.id == source.id
+            ),
+        )
+        metadata = metadata_with_reusable_objects(
+            self.project.metadata,
+            (*self.reusable_objects(), reusable),
+        )
+        candidate = copy.deepcopy(self.project)
+        candidate.metadata = copy.deepcopy(metadata)
+        candidate.validate()
+        return metadata, reusable
+
+    def instantiate_reusable_object_record(self, reusable_id: str) -> Node3DRecord:
+        """Build one ordinary flat ECS node from a reusable library entry."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Reusable Objects are available in mobile 3D projects.")
+        definitions = {definition.id: definition for definition in self.reusable_objects()}
+        definition = definitions.get(str(reusable_id))
+        if definition is None:
+            raise ValueError("That reusable object is no longer in this project.")
+        if getattr(definition.node, "parent_id", None) is not None:
+            raise ValueError(
+                "That Saved Object still remembers a parent that was not stored with it. "
+                "Remove it from Saved Objects, then save a fresh detached snapshot."
+            )
+        def xz_bounds(node: Node3DRecord) -> tuple[float, float, float, float]:
+            mesh = self.project.meshes[node.mesh_id]
+            sx, sy, sz = node.transform.scale
+            points = [
+                quat_rotate(
+                    node.transform.rotation,
+                    (vertex[0] * sx, vertex[1] * sy, vertex[2] * sz),
+                )
+                for vertex in mesh.vertices
+            ]
+            xs = [point[0] for point in points] or [0.0]
+            zs = [point[2] for point in points] or [0.0]
+            local_min_x, local_max_x = min(xs), max(xs)
+            local_min_z, local_max_z = min(zs), max(zs)
+            collider = node.collider
+            if collider.shape != "none":
+                # Runtime collision uses this conservative radius for both
+                # spheres and boxes, so placement must honor it too. In
+                # particular a large Y scale can enlarge horizontal runtime
+                # collision even when the visible X/Z footprint stays small.
+                radius = collider.bounding_radius(node.transform.scale)
+                local_min_x = min(local_min_x, -radius)
+                local_max_x = max(local_max_x, radius)
+                local_min_z = min(local_min_z, -radius)
+                local_max_z = max(local_max_z, radius)
+            tx, _, tz = node.transform.translation
+            return (
+                local_min_x + tx,
+                local_max_x + tx,
+                local_min_z + tz,
+                local_max_z + tz,
+            )
+
+        occupied_nodes = self.world_node_records_snapshot()
+        occupied_bounds = tuple(xz_bounds(node) for node in occupied_nodes)
+        source_bounds = xz_bounds(definition.node)
+        source_translation = definition.node.transform.translation
+        placement: float | None = None
+        for diagonal_step in range(1, 4097):
+            offset = float(diagonal_step)
+            candidate_bounds = (
+                source_bounds[0] + offset,
+                source_bounds[1] + offset,
+                source_bounds[2] + offset,
+                source_bounds[3] + offset,
+            )
+            if all(
+                candidate_bounds[1] + 0.25 <= other[0]
+                or other[1] + 0.25 <= candidate_bounds[0]
+                or candidate_bounds[3] + 0.25 <= other[2]
+                or other[3] + 0.25 <= candidate_bounds[2]
+                for other in occupied_bounds
+            ):
+                # Also keep the center distinct even for degenerate zero-area meshes.
+                candidate_translation = (
+                    source_translation[0] + offset,
+                    source_translation[1],
+                    source_translation[2] + offset,
+                )
+                if all(
+                    sum(
+                        (
+                            node.transform.translation[axis]
+                            - candidate_translation[axis]
+                        )
+                        ** 2
+                        for axis in range(3)
+                    )
+                    > 1.0e-8
+                    for node in occupied_nodes
+                ):
+                    placement = offset
+                    break
+        if placement is None:
+            raise ValueError("The scene is too crowded to place this saved object safely.")
+        record = instantiate_reusable_object(
+            definition,
+            self.collision_free_object_id(definition.label),
+            translation_offset=(placement, 0.0, placement),
+        )
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = (*candidate.nodes, record)
+        candidate.validate()
+        return record
+
+    def remove_reusable_object_snapshot(
+        self, reusable_id: str
+    ) -> tuple[tuple[Node3DRecord, ...], dict[str, Any], ReusableObject3D]:
+        """Remove one library entry while keeping placed objects as ordinary nodes."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Saved Objects are available in mobile 3D projects.")
+        definitions = self.reusable_objects()
+        removed = next(
+            (definition for definition in definitions if definition.id == reusable_id),
+            None,
+        )
+        if removed is None:
+            raise ValueError("That saved object is no longer in this project.")
+        metadata = metadata_with_reusable_objects(
+            self.project.metadata,
+            (definition for definition in definitions if definition.id != reusable_id),
+        )
+        nodes: list[Node3DRecord] = []
+        for node in self.project.nodes:
+            if reusable_source_id(node) != reusable_id:
+                nodes.append(node)
+                continue
+            node_metadata = copy.deepcopy(node.metadata)
+            node_metadata.pop(REUSABLE_INSTANCE_KEY, None)
+            nodes.append(replace(node, metadata=node_metadata))
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = tuple(nodes)
+        candidate.metadata = copy.deepcopy(metadata)
+        candidate.validate()
+        return tuple(nodes), metadata, removed
 
     def imported_obj_mesh(self, path: str | Path) -> Mesh3DRecord:
         """Parse an OBJ into a new, collision-free project mesh snapshot."""
@@ -724,6 +1521,10 @@ class EditorDocument(QObject):
                     raise ValueError(f"{record.id} uses a missing mesh: {record.mesh_id}")
                 if record.material_id not in self.project.materials:
                     raise ValueError(f"{record.id} uses a missing material: {record.material_id}")
+            try:
+                build_hierarchy3d(snapshot)
+            except Hierarchy3DError as exc:
+                raise self._friendly_hierarchy_error(exc) from exc
             self.project.nodes = snapshot
         else:
             raise RuntimeError("Open a project before editing its scene.")
@@ -731,6 +1532,71 @@ class EditorDocument(QObject):
         self.set_dirty(True)
         self.structureChanged.emit()
         self.set_selection(selection)
+
+    def replace_reusable_objects(
+        self,
+        records: tuple[Node3DRecord, ...],
+        metadata: Mapping[str, Any],
+        selection: SelectionRef | None,
+    ) -> None:
+        """Atomically restore scene nodes and the reusable-object library."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before editing Reusable Objects.")
+        nodes = copy.deepcopy(tuple(records))
+        if not all(isinstance(record, Node3DRecord) for record in nodes):
+            raise ValueError("Reusable Object snapshots require 3D scene objects.")
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = nodes
+        candidate.metadata = copy.deepcopy(dict(metadata))
+        candidate.validate()
+        self.project.nodes = nodes
+        self.project.metadata = candidate.metadata
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
+        self.set_selection(selection)
+
+    def replace_saved_scenes(
+        self,
+        records: tuple[Node3DRecord, ...],
+        metadata: Mapping[str, Any],
+        selection: SelectionRef | None,
+    ) -> None:
+        """Atomically restore nodes plus Saved Scene definitions and instances."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before editing Saved Scenes.")
+        nodes = copy.deepcopy(tuple(records))
+        if not all(isinstance(record, Node3DRecord) for record in nodes):
+            raise ValueError("Saved Scene snapshots require 3D scene objects.")
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = nodes
+        candidate.metadata = copy.deepcopy(dict(metadata))
+        candidate.validate()
+        self.project.nodes = nodes
+        self.project.metadata = candidate.metadata
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
+        self.set_selection(selection)
+
+    def replace_project_metadata(self, metadata: Mapping[str, Any]) -> None:
+        """Apply validated mobile-3D project settings as one editor mutation."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a mobile 3D project before changing its settings.")
+        snapshot = copy.deepcopy(dict(metadata))
+        # Mobile3DProject.validate deliberately stays independent of optional
+        # exporter settings, so validate the compact render contract here too.
+        render_substrate_config_from_metadata(snapshot)
+        candidate = copy.deepcopy(self.project)
+        candidate.metadata = snapshot
+        candidate.validate()
+        self.project.metadata = snapshot
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.structureChanged.emit()
 
     def replace_mesh_resources(self, meshes: Mapping[str, Mesh3DRecord]) -> None:
         """Apply a validated 3D-mesh snapshot and refresh all editor surfaces."""
@@ -1009,6 +1875,12 @@ class EditorDocument(QObject):
                     ),
                 )
                 updated = replace(selected, transform=transform, metadata=metadata)
+            # A Movement Pattern is the sole facing authority.  The complete
+            # node snapshot retained by the undo command restores an authored
+            # spin (for example the stock Goal's 0.5 Y spin) if the edit is
+            # undone; disabling later keeps the explicit zero because no
+            # hidden pre-pattern state is invented.
+            updated = replace(updated, angular_velocity=(0.0, 0.0, 0.0))
         updated.validate()
         nodes = tuple(
             updated if node.id == selected.id else copy.deepcopy(node)
@@ -1145,6 +2017,255 @@ class EditorDocument(QObject):
         candidate.validate()
         return updated
 
+    @staticmethod
+    def _polar_population_field_preview(
+        prototype: Node3DRecord,
+        group: Any,
+    ) -> dict[str, Any] | None:
+        """Summarize deterministic stopped Glow samples for the selected recipe.
+
+        This is deliberately derived display data.  It calls the same core
+        instance and Glow evaluators as the viewport, retains no authored
+        state, and samples the selected recipe's first 64 generated copies at
+        most.  It does not describe the viewport's shared preview allocation.
+        """
+
+        if group.glow_parameters is None or group.recipe.glow_by_distance is None:
+            return None
+        try:
+            lut = quantized_profile_lut(group.profile)
+            prototype_sample = polar_population_glow_sample(
+                group,
+                index=0,
+                pose_word=group.component.pose_word,
+                lut=lut,
+            )
+            if prototype_sample is None:
+                return None
+            sampled_copies = min(64, group.recipe.instance_count - 1)
+            copy_samples = []
+            for index in range(1, sampled_copies + 1):
+                instance = polar_population_instance(
+                    prototype,
+                    group,
+                    index,
+                    lut=lut,
+                )
+                sample = instance.glow_sample
+                if sample is None:
+                    sample = polar_population_glow_sample(
+                        group,
+                        index=instance.index,
+                        pose_word=instance.pose_word,
+                        lut=lut,
+                    )
+                if sample is None:
+                    return None
+                copy_samples.append(sample)
+        except (
+            IndexError,
+            KeyError,
+            OverflowError,
+            PolarPopulationError,
+            TypeError,
+            ValueError,
+        ):
+            return None
+        if not copy_samples:
+            return None
+        return {
+            "preview_label": "Stopped preview",
+            "distance_label": (
+                "Local Burst distance for copies; Movement distance for real object"
+                if group.recipe.preset == "burst"
+                else "Movement distance"
+            ),
+            "prototype_glow": prototype_sample.glow,
+            # Grow is generated-display-only even though its shared field
+            # sample can describe the real prototype's Glow lighting.
+            "prototype_scale_multiplier": 1.0,
+            "copy_glow_min": min(sample.glow for sample in copy_samples),
+            "copy_glow_max": max(sample.glow for sample in copy_samples),
+            "copy_scale_multiplier_min": min(
+                sample.display_scale_multiplier for sample in copy_samples
+            ),
+            "copy_scale_multiplier_max": max(
+                sample.display_scale_multiplier for sample in copy_samples
+            ),
+            "sampled_copies": len(copy_samples),
+            "total_copies": group.recipe.instance_count - 1,
+        }
+
+    def polar_population_state(
+        self, selection: SelectionRef | None = None
+    ) -> dict[str, Any] | None:
+        """Describe one selected prototype's child-facing Make Many recipe."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return None
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return None
+        raw = selected.metadata.get(POLAR_POPULATION_METADATA_KEY)
+        recipe = polar_population_preset("ring")
+        saved_error = ""
+        if raw is not None:
+            try:
+                if isinstance(raw, PolarPopulationRecipe):
+                    recipe = PolarPopulationRecipe.from_mapping(raw.to_dict())
+                elif isinstance(raw, Mapping):
+                    recipe = PolarPopulationRecipe.from_mapping(raw)
+                else:
+                    raise PolarPopulationError(
+                        "the saved Make Many recipe is not an object"
+                    )
+            except PolarPopulationError as exc:
+                saved_error = str(exc)
+
+        safety_error = ""
+        if "player" in selected.tags:
+            safety_error = (
+                "The Player controller already owns this object's movement. "
+                "Choose a non-Player display object for Make Many."
+            )
+        elif selected.dynamic:
+            safety_error = (
+                "Physics already moves this object. Turn Dynamic off, then add a "
+                "Movement Pattern before using Make Many."
+            )
+        elif selected.metadata.get(MOVEMENT_COMPONENT_KEY) is None:
+            safety_error = (
+                "Add a Movement Pattern first. Make Many reuses that compact path "
+                "to place and face every display copy."
+            )
+        elif any(f32(value) != 0.0 for value in selected.angular_velocity):
+            safety_error = (
+                "Movement Pattern must own facing before Make Many can use it. "
+                "Set Spin velocity to zero."
+            )
+        elif selected.metadata.get(SCATTER_METADATA_KEY) is not None:
+            safety_error = (
+                "Populate Area already makes display copies. Turn it off before "
+                "using Make Many."
+            )
+
+        pack_bytes = 0
+        content_address = ""
+        lineage_namespace = ""
+        compiled_group = None
+        if raw is not None and not saved_error:
+            try:
+                spec = collect_polar_population_project_spec(self.project)
+                compiled_group = next(
+                    group for group in spec.groups if group.prototype_id == selected.id
+                )
+                packed = compile_polar_population_pack_bytes(self.project)
+                pack_bytes = len(packed)
+                content_address = compiled_group.content_address.hex()
+                lineage_namespace = compiled_group.lineage_namespace.hex()
+            except (PolarPopulationError, StopIteration, TypeError, ValueError) as exc:
+                if not safety_error:
+                    safety_error = str(exc)
+
+        field_preview = None
+        if compiled_group is not None and not saved_error and not safety_error:
+            field_preview = self._polar_population_field_preview(
+                selected,
+                compiled_group,
+            )
+
+        preset_defaults = {
+            preset: polar_population_preset(preset).to_dict()
+            for preset in POLAR_POPULATION_PRESETS
+        }
+        values = recipe.to_dict()
+        movement_state = self.movement_pattern_state(selection)
+        glow_distance_max = 4.0
+        try:
+            raw_component = selected.metadata.get(MOVEMENT_COMPONENT_KEY)
+            if isinstance(raw_component, Mapping):
+                component = PackedKinematicComponent.from_dict(raw_component)
+                codec = packed_kinematic_codecs_from_dict(
+                    self.movement_profiles()
+                )[component.profile_id]
+                # Match the core compiler's staged binary32 profile maximum,
+                # so the spin-box cannot offer a value the exact pack rejects.
+                reference_radius = f32(codec.profile.r0)
+                maximum_rho = f32(codec.profile.rho_max)
+                glow_distance_max = f32(
+                    reference_radius * math.exp(maximum_rho)
+                )
+            elif movement_state is not None:
+                candidate_max = float(movement_state.get("radius_max", 4.0))
+                if math.isfinite(candidate_max) and candidate_max > 0.0:
+                    glow_distance_max = candidate_max
+        except (KeyError, OverflowError, ScatterError, TypeError, ValueError):
+            pass
+        return {
+            "enabled": raw is not None,
+            "valid": not saved_error and not safety_error,
+            "can_enable": not safety_error,
+            **values,
+            "generated_copy_count": recipe.instance_count - 1,
+            "ecs_prototype_count": 1,
+            "generated_members_are_ecs_entities": False,
+            "pack_bytes": pack_bytes,
+            "record_bytes": POLAR_POPULATION_RECIPE_BYTES,
+            "content_address": content_address,
+            "lineage_namespace": lineage_namespace,
+            "math_schedule": (
+                POLAR_BURST_MATH_SCHEDULE
+                if recipe.preset == "burst"
+                else POLAR_POPULATION_MATH_SCHEDULE
+            ),
+            "glow_distance_max": glow_distance_max,
+            "field_preview": field_preview,
+            "preset_defaults": preset_defaults,
+            "error": saved_error or safety_error,
+        }
+
+    def record_with_polar_population(
+        self,
+        selection: SelectionRef,
+        values: Mapping[str, Any],
+    ) -> Node3DRecord:
+        """Return one validated node after a discriminated Make Many edit."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Make Many is available in mobile 3D projects.")
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            raise ValueError("Choose a 3D object before using Make Many.")
+        preset = str(values.get("preset", "off"))
+        if preset not in {"off", *POLAR_POPULATION_PRESETS}:
+            raise ValueError(
+                "Choose Off, Ring, Spiral, Polar Field, or Radial Burst."
+            )
+        metadata = copy.deepcopy(selected.metadata)
+        if preset == "off":
+            metadata.pop(POLAR_POPULATION_METADATA_KEY, None)
+        else:
+            defaults = polar_population_preset(preset).to_dict()
+            recipe_values = {
+                key: values.get(key, default)
+                for key, default in defaults.items()
+            }
+            raw_glow = values.get("glow_by_distance")
+            if raw_glow is not None:
+                recipe_values["glow_by_distance"] = copy.deepcopy(raw_glow)
+            recipe = PolarPopulationRecipe.from_mapping(
+                recipe_values
+            )
+            metadata[POLAR_POPULATION_METADATA_KEY] = recipe.to_dict()
+        updated = replace(selected, metadata=metadata)
+        updated.validate()
+        candidate = copy.deepcopy(self.project)
+        candidate.nodes = tuple(
+            updated if node.id == selected.id else node for node in candidate.nodes
+        )
+        candidate.validate()
+        return updated
+
     def record_with_resource(
         self,
         selection: SelectionRef,
@@ -1241,6 +2362,9 @@ class EditorDocument(QObject):
         shared = any(
             node.id != selected.id and node.material_id == selected.material_id
             for node in self.project.nodes
+        ) or any(
+            definition.node.material_id == selected.material_id
+            for definition in self.reusable_objects()
         )
         if shared:
             clone_id = self.collision_free_material_id(f"{source.id}_{look}")
@@ -1350,6 +2474,13 @@ class EditorDocument(QObject):
         return updated
 
     def transform(self, selection: SelectionRef | None = None) -> dict[str, Any] | None:
+        instance = self.saved_scene_instance(selection)
+        if instance is not None:
+            return {
+                "translation": tuple(instance.transform.translation),
+                "rotation": tuple(instance.transform.rotation),
+                "scale": tuple(instance.transform.scale),
+            }
         selected = self.entity(selection)
         if isinstance(selected, EntitySpec):
             value = selected.components.get("transform")
@@ -1374,6 +2505,38 @@ class EditorDocument(QObject):
 
     def set_transform(self, selection: SelectionRef, transform: Mapping[str, Any]) -> None:
         """Replace a transform through the authoritative project record model."""
+
+        if (
+            isinstance(self.project, Mobile3DProject)
+            and selection.kind == "saved_scene_instance"
+        ):
+            record = Transform3DRecord(
+                tuple(float(v) for v in transform["translation"]),  # type: ignore[arg-type]
+                tuple(float(v) for v in transform["rotation"]),  # type: ignore[arg-type]
+                self._safe_scale(tuple(transform["scale"])),  # type: ignore[arg-type]
+            )
+            record.validate()
+            found = False
+            instances: list[SavedSceneInstance3D] = []
+            for instance in self.saved_scene_instances():
+                if instance.id == selection.object_id:
+                    found = True
+                    instances.append(replace(instance, transform=record))
+                else:
+                    instances.append(instance)
+            if not found:
+                raise KeyError(selection.object_id)
+            metadata = metadata_with_saved_scene_instances(
+                self.project.metadata, instances
+            )
+            candidate = copy.deepcopy(self.project)
+            candidate.metadata = copy.deepcopy(metadata)
+            candidate.validate()
+            self.project.metadata = candidate.metadata
+            self._runtime_world = None
+            self.set_dirty(True)
+            self.transformChanged.emit(selection)
+            return
 
         if isinstance(self.project, GameProject):
             scene_id = selection.scene_id or self.current_scene_id or ""
@@ -1426,7 +2589,314 @@ class EditorDocument(QObject):
         self.set_dirty(True)
         self.transformChanged.emit(selection)
 
+    def animation_authoring_problem(
+        self, selection: SelectionRef | None = None
+    ) -> str | None:
+        """Return a child-readable reason the selected object cannot animate."""
+
+        selection = selection or self.selection
+        selected = self.entity(selection)
+        if not isinstance(self.project, Mobile3DProject):
+            return "Animation is available for Mobile 3D objects in this first version."
+        if not isinstance(selected, Node3DRecord) or selection is None:
+            return "Choose a static 3D object in the Scene Tree to animate."
+        if selected.dynamic:
+            return "Physics moves this object. Turn Dynamic off before animating it."
+        if "player" in selected.tags:
+            return "The Player is controlled by the game. Choose another object to animate."
+        if selected.metadata.get(MOVEMENT_COMPONENT_KEY) is not None:
+            return "Movement Pattern already moves this object. Choose Off / Static first."
+        if selected.metadata.get(SCATTER_METADATA_KEY) is not None:
+            return "Populate Area uses this object as a display prototype. Turn it off first."
+        if any(abs(float(value)) > 1.0e-12 for value in selected.angular_velocity):
+            return "Spin velocity already turns this object. Set its spin to zero first."
+        try:
+            transform_animation_from_metadata(selected.metadata)
+        except TransformAnimationError as exc:
+            return f"This object's saved Animation needs attention: {exc}"
+        return None
+
+    def transform_animation(
+        self, selection: SelectionRef | None = None
+    ) -> TransformAnimation3D | None:
+        """Return the legacy autoplay/first-clip compatibility view."""
+
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return None
+        return transform_animation_from_metadata(selected.metadata)
+
+    def transform_animation_library(
+        self, selection: SelectionRef | None = None
+    ) -> TransformAnimationLibrary3D | None:
+        """Return a whole clip library, adapting one legacy clip in memory."""
+
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return None
+        library = transform_animation_library_from_metadata(selected.metadata)
+        if library is not None:
+            return library
+        legacy = transform_animation_from_metadata(selected.metadata)
+        if legacy is None:
+            return None
+        return TransformAnimationLibrary3D(
+            (TransformClip3D(DEFAULT_ANIMATION_CLIP_ID, "Main", legacy),),
+            DEFAULT_ANIMATION_CLIP_ID,
+        )
+
+    def transform_animation_data(
+        self, selection: SelectionRef | None = None
+    ) -> dict[str, Any] | None:
+        animation = self.transform_animation(selection)
+        return None if animation is None else copy.deepcopy(animation.to_dict())
+
+    def transform_animation_library_data(
+        self, selection: SelectionRef | None = None
+    ) -> dict[str, Any] | None:
+        library = self.transform_animation_library(selection)
+        return None if library is None else copy.deepcopy(library.to_dict())
+
+    def default_transform_animation_data(self) -> dict[str, Any]:
+        return default_transform_animation().to_dict()
+
+    def default_transform_animation_library_data(self) -> dict[str, Any]:
+        return default_transform_animation_library().to_dict()
+
+    def animation_timeline_clip(
+        self,
+        selection: SelectionRef | None = None,
+        clip_id: str | None = None,
+    ) -> dict[str, Any] | None:
+        """Project a quaternion clip into the timeline's Euler-degree view."""
+
+        library = self.transform_animation_library(selection)
+        if library is None:
+            return None
+        wanted = clip_id or library.autoplay or library.clips[0].id
+        animation = library.clip(wanted).animation
+        return self._animation_timeline_clip(animation)
+
+    @staticmethod
+    def _animation_timeline_clip(animation: TransformAnimation3D) -> dict[str, Any]:
+        return {
+            "schema": "ugts-studio-transform-animation-view-1",
+            "duration": animation.duration,
+            "loop_mode": animation.loop_mode,
+            "keys": [
+                {
+                    "time": key.time,
+                    "translation": list(key.translation),
+                    "rotation": list(quaternion_to_euler_degrees(key.rotation)),
+                    "scale": list(key.scale),
+                    "easing": key.easing,
+                }
+                for key in animation.keys
+            ],
+        }
+
+    def animation_timeline_library(
+        self, selection: SelectionRef | None = None
+    ) -> dict[str, Any] | None:
+        """Return every clip in the detached, child-facing timeline view."""
+
+        library = self.transform_animation_library(selection)
+        if library is None:
+            return None
+        return {
+            "clips": [
+                {
+                    "id": clip.id,
+                    "label": clip.label,
+                    "clip": self._animation_timeline_clip(clip.animation),
+                }
+                for clip in library.clips
+            ],
+            "autoplay": library.autoplay,
+        }
+
+    @staticmethod
+    def animation_from_timeline_clip(
+        clip: Mapping[str, Any],
+    ) -> TransformAnimation3D:
+        """Convert the timeline's Euler-degree view into engine quaternions."""
+
+        raw_keys = clip.get("keys")
+        if not isinstance(raw_keys, (list, tuple)):
+            raise TransformAnimationError("animation keys must be a list")
+        keys: list[TransformKey3D] = []
+        for raw in raw_keys:
+            if not isinstance(raw, Mapping):
+                raise TransformAnimationError("each animation key must be an object")
+            try:
+                rotation = tuple(float(value) for value in raw.get("rotation", (0, 0, 0)))
+                if len(rotation) != 3:
+                    raise ValueError
+                key = TransformKey3D(
+                    float(raw["time"]),
+                    tuple(float(value) for value in raw.get("translation", (0, 0, 0))),  # type: ignore[arg-type]
+                    euler_degrees_to_quaternion(rotation),  # type: ignore[arg-type]
+                    tuple(float(value) for value in raw.get("scale", (1, 1, 1))),  # type: ignore[arg-type]
+                    str(raw.get("easing", "smoothstep")),
+                )
+            except (KeyError, TypeError, ValueError) as exc:
+                raise TransformAnimationError(
+                    "animation key Position, Turn, Size, and time must be numbers"
+                ) from exc
+            keys.append(key)
+        try:
+            duration = float(clip.get("duration", 2.0))
+        except (TypeError, ValueError) as exc:
+            raise TransformAnimationError("animation length must be a number") from exc
+        animation = TransformAnimation3D(
+            duration,
+            tuple(keys),
+            str(clip.get("loop_mode", "once")),
+        )
+        animation.validate()
+        return animation
+
+    def set_transform_animation(
+        self,
+        selection: SelectionRef,
+        animation: Mapping[str, Any] | TransformAnimation3D | None,
+    ) -> None:
+        """Atomically replace one node's animation after whole-project validation."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a Mobile 3D project before editing Animation.")
+        parsed = (
+            animation
+            if isinstance(animation, TransformAnimation3D)
+            else None if animation is None else TransformAnimation3D.from_dict(animation)
+        )
+        candidate = copy.deepcopy(self.project)
+        found = False
+        nodes: list[Node3DRecord] = []
+        for node in candidate.nodes:
+            if node.id != selection.object_id:
+                nodes.append(node)
+                continue
+            found = True
+            nodes.append(
+                replace(
+                    node,
+                    metadata=metadata_with_transform_animation(node.metadata, parsed),
+                )
+            )
+        if not found:
+            raise KeyError(selection.object_id)
+        candidate.nodes = tuple(nodes)
+        candidate.validate()
+        self.project.nodes = candidate.nodes
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.animationChanged.emit(selection)
+
+    def set_transform_animation_library(
+        self,
+        selection: SelectionRef,
+        library: Mapping[str, Any] | TransformAnimationLibrary3D | None,
+    ) -> None:
+        """Atomically replace a node's whole clip library."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            raise ValueError("Open a Mobile 3D project before editing Animation.")
+        parsed = (
+            library
+            if isinstance(library, TransformAnimationLibrary3D)
+            else None
+            if library is None
+            else TransformAnimationLibrary3D.from_dict(library)
+        )
+        candidate = copy.deepcopy(self.project)
+        found = False
+        nodes: list[Node3DRecord] = []
+        for node in candidate.nodes:
+            if node.id != selection.object_id:
+                nodes.append(node)
+                continue
+            found = True
+            nodes.append(
+                replace(
+                    node,
+                    metadata=metadata_with_transform_animation_library(
+                        node.metadata, parsed
+                    ),
+                )
+            )
+        if not found:
+            raise KeyError(selection.object_id)
+        candidate.nodes = tuple(nodes)
+        candidate.validate()
+        self.project.nodes = candidate.nodes
+        self._runtime_world = None
+        self.set_dirty(True)
+        self.animationChanged.emit(selection)
+
+    def collision_free_animation_clip_id(
+        self,
+        label: str,
+        selection: SelectionRef | None = None,
+    ) -> str:
+        """Make a readable stable clip ID unique on the selected object."""
+
+        base = self._friendly_id_base(label, "new_clip")[:32].rstrip("_") or "new_clip"
+        library = self.transform_animation_library(selection)
+        used = set() if library is None else {clip.id for clip in library.clips}
+        if base not in used:
+            return base
+        suffix = 2
+        while True:
+            ending = f"_{suffix}"
+            candidate = f"{base[: 32 - len(ending)].rstrip('_')}{ending}"
+            if candidate not in used:
+                return candidate
+            suffix += 1
+
+    def animation_preview_state(
+        self, selection: SelectionRef, pose: Mapping[str, Any]
+    ) -> dict[str, dict[str, Any]]:
+        """Build a complete, non-authoring viewport state for one relative pose."""
+
+        if not isinstance(self.project, Mobile3DProject):
+            return {}
+        selected = self.entity(selection)
+        if not isinstance(selected, Node3DRecord):
+            return {}
+        try:
+            translation = tuple(float(value) for value in pose.get("translation", (0, 0, 0)))
+            rotation_degrees = tuple(float(value) for value in pose.get("rotation", (0, 0, 0)))
+            scale = tuple(float(value) for value in pose.get("scale", (1, 1, 1)))
+            if len(translation) != 3 or len(rotation_degrees) != 3 or len(scale) != 3:
+                raise ValueError
+            relative_rotation = euler_degrees_to_quaternion(rotation_degrees)  # type: ignore[arg-type]
+        except (TypeError, ValueError) as exc:
+            raise TransformAnimationError("animation preview pose must contain XYZ numbers") from exc
+        state = {
+            node.id: {
+                "translation": tuple(node.transform.translation),
+                "rotation": tuple(node.transform.rotation),
+                "scale": tuple(node.transform.scale),
+            }
+            for node in self.project.nodes
+        }
+        state[selected.id] = {
+            "translation": add(selected.transform.translation, translation),
+            "rotation": quat_normalize(
+                quat_mul(selected.transform.rotation, relative_rotation)
+            ),
+            "scale": tuple(
+                authored * multiplier
+                for authored, multiplier in zip(selected.transform.scale, scale)
+            ),
+        }
+        return state
+
     def object_details(self, selection: SelectionRef | None = None) -> dict[str, Any]:
+        instance = self.saved_scene_instance(selection)
+        if instance is not None:
+            return instance.to_dict()
         selected = self.entity(selection)
         if isinstance(selected, EntitySpec):
             return selected.to_dict()
@@ -1604,6 +3074,13 @@ class EditorDocument(QObject):
                 bound_ids = ()
                 binding_problem = f"This object's Logic Blocks binding needs repair: {exc}"
             owner_label = f"Logic for {self._friendly_graph_name(selection.object_id)}"
+        elif selection is not None and selection.kind == "saved_scene_instance":
+            bound_ids = ()
+            owner_label = f"Linked {self._friendly_graph_name(selection.object_id)}"
+            binding_problem = (
+                "This is a linked Saved Scene. Unlink it before changing the Logic Blocks "
+                "inside the group."
+            )
         else:
             bound_ids = tuple(graph_by_id)
             owner_label = "Project Logic"
@@ -1665,6 +3142,30 @@ class EditorDocument(QObject):
             default_origin_id = entity_choices[0][0]
         creation_problem = collection_problem or binding_problem
         selected = self.entity(selection) if selection is not None else None
+        animation_choices: tuple[tuple[str, str], ...] = ()
+        polar_population_choices: tuple[tuple[str, str], ...] = ()
+        if isinstance(project, Mobile3DProject):
+            try:
+                population_ids = {
+                    group.prototype_id
+                    for group in collect_polar_population_project_spec(project).groups
+                }
+            except PolarPopulationError:
+                population_ids = set()
+            polar_population_choices = tuple(
+                (entity_id, label)
+                for entity_id, label in entity_choices
+                if entity_id in population_ids
+            )
+        if isinstance(selected, Node3DRecord):
+            try:
+                library = self.transform_animation_library(selection)
+            except TransformAnimationError:
+                library = None
+            if library is not None:
+                animation_choices = tuple(
+                    (clip.id, clip.label) for clip in library.clips
+                )
         if (
             creation_problem is None
             and not persisted
@@ -1685,6 +3186,8 @@ class EditorDocument(QObject):
             entity_choices=entity_choices,
             default_origin_id=default_origin_id,
             creation_problem=creation_problem,
+            animation_choices=animation_choices,
+            polar_population_choices=polar_population_choices,
         )
 
     def graph_data(self, active_graph_id: str | None = None) -> dict[str, Any]:
@@ -2153,16 +3656,51 @@ class EditorDocument(QObject):
                 jump=bool({"space", "j"} & pressed_keys),
                 action=bool({"space", "enter", "shift"} & pressed_keys),
             )
+            previous_packed_poses = {
+                entity_id: component.pose_word
+                for entity_id, entity in self._runtime_world.entities.items()
+                if isinstance(
+                    component := entity.extra_components.get("packed_kinematic"),
+                    PackedKinematicComponent,
+                )
+            }
             events = self._runtime_world.step(frame3d)
-            state = {
-                entity_id: {
+            state: dict[str, dict[str, Any]] = {}
+            for entity_id, entity in self._runtime_world.entities.items():
+                if not entity.alive:
+                    continue
+                entity_state: dict[str, Any] = {
                     "translation": entity.position,
                     "rotation": entity.rotation,
                     "scale": entity.scale,
+                    "velocity": entity.velocity,
+                    "active": entity.active,
                 }
-                for entity_id, entity in self._runtime_world.entities.items()
-                if entity.alive
-            }
+                component = entity.extra_components.get("packed_kinematic")
+                if isinstance(component, PackedKinematicComponent):
+                    entity_state["packed_kinematic"] = {
+                        "previous_pose_word": previous_packed_poses.get(
+                            entity_id, component.pose_word
+                        ),
+                        "pose_word": component.pose_word,
+                        "motion_word": component.motion_word,
+                        "profile_id": component.profile_id,
+                    }
+                population_runtime = getattr(
+                    self._runtime_world, "polar_population_runtime", None
+                )
+                if (
+                    population_runtime is not None
+                    and population_runtime.has_prototype(entity_id)
+                ):
+                    entity_state["make_many_copies_visible"] = (
+                        population_runtime.copies_visible(entity_id)
+                    )
+                    # Render-only Burst phase follows the real fixed clock. It
+                    # stays outside world.state/snapshots and is attached only
+                    # to actual Make Many prototypes.
+                    entity_state["make_many_fixed_tick"] = self._runtime_world.tick
+                state[entity_id] = entity_state
             state["__world__"] = copy.deepcopy(self._runtime_world.state)
             return state, events
         finally:
@@ -2177,6 +3715,7 @@ __all__ = [
     "GRAPHS_KEY",
     "LogicTraceSnapshot",
     "MATERIAL_LOOK_CHOICES",
+    "ReusableObject3D",
     "SelectionRef",
     "classify_material_look",
     "euler_degrees_to_quaternion",
