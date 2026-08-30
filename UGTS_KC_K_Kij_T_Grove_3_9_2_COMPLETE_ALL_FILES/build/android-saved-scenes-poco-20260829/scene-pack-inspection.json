@@ -1,0 +1,185 @@
+{
+  "author": "UGTS-KC example",
+  "byte_length": 3126,
+  "format_version": 1,
+  "material_count": 7,
+  "materials": [
+    "floor_navy",
+    "gate_teal",
+    "goal_green",
+    "lantern_gold",
+    "orbit_blue",
+    "player_cyan",
+    "sparkle_pink"
+  ],
+  "mesh_count": 1,
+  "meshes": [
+    {
+      "id": "cube",
+      "index_count": 36,
+      "vertex_count": 24
+    }
+  ],
+  "node_count": 13,
+  "nodes": [
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "floor",
+      "material_index": 0,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 1,
+      "dynamic": true,
+      "id": "player",
+      "material_index": 5,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 1
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "goal",
+      "material_index": 2,
+      "mesh_index": 0,
+      "sensor": true,
+      "tag_mask": 4
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "orbit_marker",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_east",
+      "material_index": 1,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_east__lantern",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_east__sparkle",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_north",
+      "material_index": 1,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_north__lantern",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_north__sparkle",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_west",
+      "material_index": 1,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_west__lantern",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "gate_west__sparkle",
+      "material_index": 6,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    }
+  ],
+  "project_hash": "24a9febcf1eba983670e4d505d3f6ddadce52ccf9369f77bc58f82392ed1a5d0",
+  "project_id": "linked_saved_scenes_3d",
+  "qualities": [
+    {
+      "id": "signature_ultra",
+      "max_visible_nodes": 256,
+      "render_scale": 1.0,
+      "target_fps": 120
+    }
+  ],
+  "quality_count": 1,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
+  "sha256": "cad4d5eece8910f8b1682cf870246a3cad9f280f6fd7694f9aca6bab6de7a6b1",
+  "start_quality": "signature_ultra",
+  "target_count": 1,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "signature_ultra",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB / Mali-G720",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Three Linked Glow Gates"
+}

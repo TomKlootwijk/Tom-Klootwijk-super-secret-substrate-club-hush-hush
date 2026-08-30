@@ -1,0 +1,55 @@
+{
+  "schema": "ugts-kc-built-only-evidence-1",
+  "created_local": "2026-08-30T00:56:25+02:00",
+  "status": "built_only",
+  "project": "examples/packed_polar_gpu_lab_3d/project.json",
+  "project_content_sha256": "69ee05cbaa5572e0ae0b3e70c1ec500a086199e50d7f2f08f2ba439b960bc5ac",
+  "variant": "poco-debug",
+  "application_id": "org.ugts.games.packed_polar_gpu_lab_3d.pocox7pro",
+  "min_sdk": 26,
+  "target_sdk": 36,
+  "signing": {
+    "apk_signature_scheme_v2": true,
+    "debug_certificate_sha256": "e32bb1f2b68c55f4af54944c3ce5d0384716a01b77ac7fc66df9aa2132db45ba"
+  },
+  "build_command": "python -m ugts_kc3 build-android examples/packed_polar_gpu_lab_3d/project.json <short-temp-output> --apk --variant poco-debug --debug-assets",
+  "apk": {
+    "path": "UGTS-Packed-Polar-Op29-Poco-debug.apk",
+    "bytes": 1804539,
+    "sha256": "78a195491b8d46d6946ea3b8c08fb86b3452b66d02105dd7f9a2d8aa51f386b9"
+  },
+  "visual_graphs_kcvg": {
+    "path": "visual_graphs.kcvg",
+    "bytes": 752,
+    "sha256": "8e3625036d1c0533a95ab19d19ac5e9751e84c193a6bac65258154cea6ab1cad",
+    "node_count": 4,
+    "binding_count": 64,
+    "input_count": 10,
+    "dedicated_opcodes": [28, 29],
+    "contains_polar_movement_string": false
+  },
+  "packed_kinematics_kcpk": {
+    "bytes": 3202,
+    "sha256": "29bffbc8b3832f7d83cf54408ce5b0f73f4b91a0e9633acffa05d8e512de6dde",
+    "component_count": 64,
+    "profile_count": 1
+  },
+  "render_substrate_kcrp": {
+    "bytes": 32,
+    "sha256": "6678455186cabde5125d77c26511d2766800d6473dd5a94b2dfa6ee4e6f81d44",
+    "polar_mode": "auto",
+    "bayer_mode": "subtle"
+  },
+  "native_library": {
+    "path_in_apk": "lib/arm64-v8a/libugts_kc_native.so",
+    "bytes": 1757248,
+    "sha256": "e3cefa9cc7be0144b8a7145cdf40d877de47f4b04d1483e6f27200adf1f7e166"
+  },
+  "device": {
+    "adb_devices": [],
+    "installed": false,
+    "launched": false,
+    "profiled": false
+  },
+  "evidence_boundary": "This proves generation, native compilation, APK packaging, and embedded asset bytes only. It does not prove POCO/Mali execution, rendering, screenshots, frame timing, power, or thermals."
+}

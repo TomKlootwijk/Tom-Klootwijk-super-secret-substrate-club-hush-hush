@@ -1,0 +1,5 @@
+[console_scripts]
+ugts-kc = ugts_kc3.cli:main
+
+[gui_scripts]
+ugts-studio = ugts_kc3.editor.__main__:main

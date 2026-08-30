@@ -1,0 +1,10 @@
+CMake Error at C:/Users/Tom/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeDetermineCompilerABI.cmake:49 (try_compile):
+  Failed to set working directory to C:/Tom Klootwijk super secret substrate
+  club hush
+  hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/poco-polar-render-benchmarks/20260829T213228Z-seed-5eed3920c0dec0de/cases/polar-1024-direct-off/android-project/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/CMakeTmp
+  : No such file or directory
+Call Stack (most recent call first):
+  C:/Users/Tom/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)
+  CMakeLists.txt:2 (project)
+
+

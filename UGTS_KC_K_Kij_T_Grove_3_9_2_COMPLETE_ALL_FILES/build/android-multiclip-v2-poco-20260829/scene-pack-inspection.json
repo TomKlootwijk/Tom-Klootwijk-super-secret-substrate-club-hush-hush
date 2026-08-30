@@ -1,0 +1,81 @@
+{
+  "author": "UGTS-KC example",
+  "byte_length": 1172,
+  "format_version": 1,
+  "material_count": 2,
+  "materials": [
+    "floor_blue",
+    "motion_gold"
+  ],
+  "mesh_count": 1,
+  "meshes": [
+    {
+      "id": "cube",
+      "index_count": 36,
+      "vertex_count": 8
+    }
+  ],
+  "node_count": 2,
+  "nodes": [
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "floor",
+      "material_index": 0,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 2,
+      "dynamic": false,
+      "id": "motion_cube",
+      "material_index": 1,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    }
+  ],
+  "project_hash": "6cf1cc043fd32ca1230b6749edbfa30c53d73bc05f3300cbe0a2ec71e9ae4b59",
+  "project_id": "multiclip_animation_3d",
+  "qualities": [
+    {
+      "id": "signature_ultra",
+      "max_visible_nodes": 1024,
+      "render_scale": 1.0,
+      "target_fps": 120
+    }
+  ],
+  "quality_count": 1,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
+  "sha256": "394605273e4bb35224cbe37bbd829f4c7f4520d283f0f58e6905321454049c9e",
+  "start_quality": "signature_ultra",
+  "target_count": 1,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "signature_ultra",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB Signature Target",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Two Clips, One Motion Cube"
+}

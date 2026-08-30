@@ -1,0 +1,12 @@
+{
+  "python_launcher": "py -3.12",
+  "wheel": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T221800Z-documented-final\\ugts_kc_signature-3.9.2-py3-none-any.whl",
+  "temporary_environment": "C:\\Users\\Tom\\AppData\\Local\\Temp\\ugts-wheel-smoke-g7hsdn3s",
+  "create_returncode": 0,
+  "install_returncode": 0,
+  "import_returncode": 0,
+  "cli_help_returncode": 0,
+  "import_output": "{\"distribution_version\": \"3.9.2\", \"package_file\": \"C:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Temp\\\\ugts-wheel-smoke-g7hsdn3s\\\\v\\\\Lib\\\\site-packages\\\\ugts_kc3\\\\__init__.py\", \"required_resources\": {\"android_template/project/app/src/main/assets/shaders/polar_scene.vert\": true, \"android_template/project/app/src/main/cpp/gpu_timer_query.cpp\": true, \"android_template/project/app/src/main/cpp/gpu_timer_query.hpp\": true, \"android_template/project/app/src/main/cpp/polar_populations.cpp\": true, \"android_template/project/app/src/main/cpp/polar_populations.hpp\": true, \"conformance/polar_substrate_vectors.tsv\": true}, \"version\": \"3.9.2\"}",
+  "cli_help_first_line": "usage: ugts-kc [-h]",
+  "pip_output": "Processing c:\\tom klootwijk super secret substrate club hush hush\\ugts_kc_k_kij_t_grove_3_9_2_complete_all_files\\build\\release-content-verification\\20260829t221800z-documented-final\\ugts_kc_signature-3.9.2-py3-none-any.whl\nInstalling collected packages: ugts-kc-signature\nSuccessfully installed ugts-kc-signature-3.9.2\n"
+}

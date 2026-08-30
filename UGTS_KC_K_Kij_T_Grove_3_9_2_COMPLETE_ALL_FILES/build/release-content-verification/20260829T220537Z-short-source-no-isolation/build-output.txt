@@ -1,0 +1,645 @@
+* Getting build dependencies for sdist...
+running egg_info
+creating src\ugts_kc_signature.egg-info
+writing src\ugts_kc_signature.egg-info\PKG-INFO
+writing dependency_links to src\ugts_kc_signature.egg-info\dependency_links.txt
+writing entry points to src\ugts_kc_signature.egg-info\entry_points.txt
+writing requirements to src\ugts_kc_signature.egg-info\requires.txt
+writing top-level names to src\ugts_kc_signature.egg-info\top_level.txt
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching 'tests'
+no previously-included directories found matching '.pytest_cache'
+no previously-included directories found matching '.ruff_cache'
+no previously-included directories found matching '.mypy_cache'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+* Building sdist...
+running sdist
+running egg_info
+writing src\ugts_kc_signature.egg-info\PKG-INFO
+writing dependency_links to src\ugts_kc_signature.egg-info\dependency_links.txt
+writing entry points to src\ugts_kc_signature.egg-info\entry_points.txt
+writing requirements to src\ugts_kc_signature.egg-info\requires.txt
+writing top-level names to src\ugts_kc_signature.egg-info\top_level.txt
+reading manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching 'tests'
+no previously-included directories found matching '.pytest_cache'
+no previously-included directories found matching '.ruff_cache'
+no previously-included directories found matching '.mypy_cache'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+running check
+creating ugts_kc_signature-3.9.2
+creating ugts_kc_signature-3.9.2\docs
+creating ugts_kc_signature-3.9.2\src\ugts_kc3
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\assets\shaders
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\res\values
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\gradle\wrapper
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\conformance
+creating ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+creating ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying files to ugts_kc_signature-3.9.2...
+copying CHANGELOG.md -> ugts_kc_signature-3.9.2
+copying MANIFEST.in -> ugts_kc_signature-3.9.2
+copying README.md -> ugts_kc_signature-3.9.2
+copying README_K_KIJ_T_GROVE_3_9_2.md -> ugts_kc_signature-3.9.2
+copying RUN_UGTS_STUDIO.cmd -> ugts_kc_signature-3.9.2
+copying VERSION -> ugts_kc_signature-3.9.2
+copying pyproject.toml -> ugts_kc_signature-3.9.2
+copying docs\ANDROID_NATIVE_GUIDE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\API_OVERVIEW.md -> ugts_kc_signature-3.9.2\docs
+copying docs\ATTRIBUTION_NOTICE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\BUILD_STATUS_3_9_1.md -> ugts_kc_signature-3.9.2\docs
+copying docs\BUILD_STATUS_3_9_2.md -> ugts_kc_signature-3.9.2\docs
+copying docs\CHANGELOG.md -> ugts_kc_signature-3.9.2\docs
+copying docs\ENGINE_ARCHITECTURE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\EVIDENCE_BOUNDARY.md -> ugts_kc_signature-3.9.2\docs
+copying docs\FIRST_10_MINUTES.md -> ugts_kc_signature-3.9.2\docs
+copying docs\FOUR_D_ROADMAP.md -> ugts_kc_signature-3.9.2\docs
+copying docs\GAME_CREATION_GUIDE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\GETTING_STARTED.md -> ugts_kc_signature-3.9.2\docs
+copying docs\GROVE_3_9_2_JUICE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\HTML5_RUNTIME_GUIDE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\MIGRATION_3_0_TO_3_9.md -> ugts_kc_signature-3.9.2\docs
+copying docs\MIGRATION_3_9_TO_3_9_1.md -> ugts_kc_signature-3.9.2\docs
+copying docs\MOBILE_3D_GUIDE.md -> ugts_kc_signature-3.9.2\docs
+copying docs\PCG_FUTURE_TODO.md -> ugts_kc_signature-3.9.2\docs
+copying docs\REFERENCES.md -> ugts_kc_signature-3.9.2\docs
+copying docs\RELEASE_NOTES_3_9.md -> ugts_kc_signature-3.9.2\docs
+copying docs\RELEASE_NOTES_3_9_1.md -> ugts_kc_signature-3.9.2\docs
+copying docs\RELEASE_NOTES_3_9_2.md -> ugts_kc_signature-3.9.2\docs
+copying docs\ROADMAP.md -> ugts_kc_signature-3.9.2\docs
+copying docs\SIGNATURE_EDITION.md -> ugts_kc_signature-3.9.2\docs
+copying docs\UGTS_ENGINE_TODO.md -> ugts_kc_signature-3.9.2\docs
+copying docs\UGTS_ENGINE_WORKLOG.md -> ugts_kc_signature-3.9.2\docs
+copying docs\UGTS_SUBSTRATE_MECHANISM_MAP.md -> ugts_kc_signature-3.9.2\docs
+copying src\ugts_kc3\__init__.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\__main__.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\androidbuild.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\androidexport.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\animation.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\animation3d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\animationpack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\audio.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\cli.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\collision2d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\diagnostics.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\export.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\game.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\game_input.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\geometry.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\graphpack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\grove.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\hands.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\hierarchy3d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\hierarchypack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\materials.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\math3d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\mobile3d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\objimport.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\packed_kinematics.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\polar_population.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\polar_population_pack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\polarpack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\project.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\py.typed -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\render.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\renderpack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\replay.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\reusable.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\runtime.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\saved_scene.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\scatter.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\scatterpack.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\scene.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\spatial.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\templates.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\templates3d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\tilemap.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\vector2d.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\version.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\visual_graph.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\webexport.py -> ugts_kc_signature-3.9.2\src\ugts_kc3
+copying src\ugts_kc3\android_template\__init__.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template
+copying src\ugts_kc3\android_template\project\README.md -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\build.gradle -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\gradle.properties -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\gradlew -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\gradlew.bat -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\settings.gradle -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\app\build.gradle -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app
+copying src\ugts_kc3\android_template\project\app\proguard-rules.pro -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app
+copying src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\grove_post.frag -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\grove_post.vert -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\polar_scene.vert -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\scene.frag -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\scene.vert -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\CMakeLists.txt -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\adaptive_quality.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\adaptive_quality.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\body_physics.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\body_physics.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\device_profile.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\device_profile.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\engine.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\engine.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\gpu_timer_query.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\gpu_timer_query.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\graph_component_access.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\graph_vm.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\graph_vm.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_juice.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_juice.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_tuning.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_tuning.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\kc_math.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\main.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_kinematics.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_kinematics.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_populations.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_populations.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\render_substrate.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\render_substrate.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\renderer_gles3.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\renderer_gles3.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scatter_population.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scatter_population.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scene_pack.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scene_pack.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\touch_router.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\touch_router.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_animation.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_animation.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_hierarchy.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_hierarchy.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\trigger_area.cpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\trigger_area.hpp -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\res\values\strings.xml -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\res\values
+copying src\ugts_kc3\android_template\project\app\src\main\res\values\styles.xml -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\app\src\main\res\values
+copying src\ugts_kc3\android_template\project\gradle\wrapper\gradle-wrapper.jar -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\gradle\wrapper
+copying src\ugts_kc3\android_template\project\gradle\wrapper\gradle-wrapper.properties -> ugts_kc_signature-3.9.2\src\ugts_kc3\android_template\project\gradle\wrapper
+copying src\ugts_kc3\conformance\__init__.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\conformance
+copying src\ugts_kc3\conformance\polar_substrate_vectors.tsv -> ugts_kc_signature-3.9.2\src\ugts_kc3\conformance
+copying src\ugts_kc3\editor\__init__.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\__main__.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\document.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\graph.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\main_window.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\scene_view.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\smoke.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\theme.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\timeline.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc3\editor\widgets.py -> ugts_kc_signature-3.9.2\src\ugts_kc3\editor
+copying src\ugts_kc_signature.egg-info\PKG-INFO -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying src\ugts_kc_signature.egg-info\SOURCES.txt -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying src\ugts_kc_signature.egg-info\dependency_links.txt -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying src\ugts_kc_signature.egg-info\entry_points.txt -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying src\ugts_kc_signature.egg-info\requires.txt -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying src\ugts_kc_signature.egg-info\top_level.txt -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+copying src\ugts_kc_signature.egg-info\SOURCES.txt -> ugts_kc_signature-3.9.2\src\ugts_kc_signature.egg-info
+Writing ugts_kc_signature-3.9.2\setup.cfg
+Creating tar archive
+removing 'ugts_kc_signature-3.9.2' (and everything under it)
+* Building wheel from sdist
+* Getting build dependencies for wheel...
+running egg_info
+writing src\ugts_kc_signature.egg-info\PKG-INFO
+writing dependency_links to src\ugts_kc_signature.egg-info\dependency_links.txt
+writing entry points to src\ugts_kc_signature.egg-info\entry_points.txt
+writing requirements to src\ugts_kc_signature.egg-info\requires.txt
+writing top-level names to src\ugts_kc_signature.egg-info\top_level.txt
+reading manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching 'tests'
+no previously-included directories found matching '.pytest_cache'
+no previously-included directories found matching '.ruff_cache'
+no previously-included directories found matching '.mypy_cache'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+* Building wheel...
+running bdist_wheel
+running build
+running build_py
+creating build\lib\ugts_kc3
+copying src\ugts_kc3\androidbuild.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\androidexport.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\animation.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\animation3d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\animationpack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\audio.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\cli.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\collision2d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\diagnostics.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\export.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\game.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\game_input.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\geometry.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\graphpack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\grove.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\hands.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\hierarchy3d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\hierarchypack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\materials.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\math3d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\mobile3d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\objimport.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\packed_kinematics.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\polarpack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\polar_population.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\polar_population_pack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\project.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\render.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\renderpack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\replay.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\reusable.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\runtime.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\saved_scene.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\scatter.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\scatterpack.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\scene.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\spatial.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\templates.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\templates3d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\tilemap.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\vector2d.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\version.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\visual_graph.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\webexport.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\__init__.py -> build\lib\ugts_kc3
+copying src\ugts_kc3\__main__.py -> build\lib\ugts_kc3
+creating build\lib\ugts_kc3\android_template
+copying src\ugts_kc3\android_template\__init__.py -> build\lib\ugts_kc3\android_template
+creating build\lib\ugts_kc3\conformance
+copying src\ugts_kc3\conformance\__init__.py -> build\lib\ugts_kc3\conformance
+creating build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\document.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\graph.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\main_window.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\scene_view.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\smoke.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\theme.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\timeline.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\widgets.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\__init__.py -> build\lib\ugts_kc3\editor
+copying src\ugts_kc3\editor\__main__.py -> build\lib\ugts_kc3\editor
+running egg_info
+writing src\ugts_kc_signature.egg-info\PKG-INFO
+writing dependency_links to src\ugts_kc_signature.egg-info\dependency_links.txt
+writing entry points to src\ugts_kc_signature.egg-info\entry_points.txt
+writing requirements to src\ugts_kc_signature.egg-info\requires.txt
+writing top-level names to src\ugts_kc_signature.egg-info\top_level.txt
+reading manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching 'tests'
+no previously-included directories found matching '.pytest_cache'
+no previously-included directories found matching '.ruff_cache'
+no previously-included directories found matching '.mypy_cache'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+copying src\ugts_kc3\py.typed -> build\lib\ugts_kc3
+creating build\lib\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\build.gradle -> build\lib\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\gradle.properties -> build\lib\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\gradlew -> build\lib\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\gradlew.bat -> build\lib\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\README.md -> build\lib\ugts_kc3\android_template\project
+copying src\ugts_kc3\android_template\project\settings.gradle -> build\lib\ugts_kc3\android_template\project
+creating build\lib\ugts_kc3\android_template\project\app
+copying src\ugts_kc3\android_template\project\app\build.gradle -> build\lib\ugts_kc3\android_template\project\app
+copying src\ugts_kc3\android_template\project\app\proguard-rules.pro -> build\lib\ugts_kc3\android_template\project\app
+creating build\lib\ugts_kc3\android_template\project\app\src\main
+copying src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml -> build\lib\ugts_kc3\android_template\project\app\src\main
+creating build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\grove_post.frag -> build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\grove_post.vert -> build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\polar_scene.vert -> build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\scene.frag -> build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying src\ugts_kc3\android_template\project\app\src\main\assets\shaders\scene.vert -> build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders
+creating build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\adaptive_quality.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\adaptive_quality.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\body_physics.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\body_physics.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\CMakeLists.txt -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\device_profile.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\device_profile.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\engine.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\engine.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\gpu_timer_query.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\gpu_timer_query.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\graph_component_access.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\graph_vm.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\graph_vm.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_juice.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_juice.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_tuning.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\grove_tuning.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\kc_math.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\main.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_kinematics.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_kinematics.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_populations.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\polar_populations.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\renderer_gles3.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\renderer_gles3.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\render_substrate.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\render_substrate.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scatter_population.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scatter_population.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scene_pack.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\scene_pack.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\touch_router.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\touch_router.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_animation.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_animation.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_hierarchy.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\transform_hierarchy.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\trigger_area.cpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+copying src\ugts_kc3\android_template\project\app\src\main\cpp\trigger_area.hpp -> build\lib\ugts_kc3\android_template\project\app\src\main\cpp
+creating build\lib\ugts_kc3\android_template\project\app\src\main\res\values
+copying src\ugts_kc3\android_template\project\app\src\main\res\values\strings.xml -> build\lib\ugts_kc3\android_template\project\app\src\main\res\values
+copying src\ugts_kc3\android_template\project\app\src\main\res\values\styles.xml -> build\lib\ugts_kc3\android_template\project\app\src\main\res\values
+creating build\lib\ugts_kc3\android_template\project\gradle\wrapper
+copying src\ugts_kc3\android_template\project\gradle\wrapper\gradle-wrapper.jar -> build\lib\ugts_kc3\android_template\project\gradle\wrapper
+copying src\ugts_kc3\android_template\project\gradle\wrapper\gradle-wrapper.properties -> build\lib\ugts_kc3\android_template\project\gradle\wrapper
+copying src\ugts_kc3\conformance\polar_substrate_vectors.tsv -> build\lib\ugts_kc3\conformance
+installing to build\bdist.win-amd64\wheel
+running install
+running install_lib
+creating build\bdist.win-amd64\wheel
+creating build\bdist.win-amd64\wheel\ugts_kc3
+copying build\lib\ugts_kc3\androidbuild.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\androidexport.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app
+copying build\lib\ugts_kc3\android_template\project\app\build.gradle -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app
+copying build\lib\ugts_kc3\android_template\project\app\proguard-rules.pro -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src\main
+copying build\lib\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src\main\assets
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders\grove_post.frag -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders\grove_post.vert -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders\polar_scene.vert -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders\scene.frag -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\assets\shaders
+copying build\lib\ugts_kc3\android_template\project\app\src\main\assets\shaders\scene.vert -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\assets\shaders
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\adaptive_quality.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\adaptive_quality.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\body_physics.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\body_physics.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\CMakeLists.txt -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\device_profile.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\device_profile.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\engine.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\engine.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\gpu_timer_query.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\gpu_timer_query.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\graph_component_access.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\graph_vm.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\graph_vm.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\grove_juice.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\grove_juice.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\grove_tuning.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\grove_tuning.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\kc_math.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\main.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\polar_kinematics.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\polar_kinematics.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\polar_populations.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\polar_populations.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\renderer_gles3.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\renderer_gles3.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\render_substrate.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\render_substrate.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\scatter_population.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\scatter_population.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\scene_pack.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\scene_pack.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\touch_router.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\touch_router.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\transform_animation.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\transform_animation.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\transform_hierarchy.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\transform_hierarchy.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\trigger_area.cpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+copying build\lib\ugts_kc3\android_template\project\app\src\main\cpp\trigger_area.hpp -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\cpp
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src\main\res
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\app\src\main\res\values
+copying build\lib\ugts_kc3\android_template\project\app\src\main\res\values\strings.xml -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\res\values
+copying build\lib\ugts_kc3\android_template\project\app\src\main\res\values\styles.xml -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\app\src\main\res\values
+copying build\lib\ugts_kc3\android_template\project\build.gradle -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\gradle
+creating build\bdist.win-amd64\wheel\ugts_kc3\android_template\project\gradle\wrapper
+copying build\lib\ugts_kc3\android_template\project\gradle\wrapper\gradle-wrapper.jar -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\gradle\wrapper
+copying build\lib\ugts_kc3\android_template\project\gradle\wrapper\gradle-wrapper.properties -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project\gradle\wrapper
+copying build\lib\ugts_kc3\android_template\project\gradle.properties -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project
+copying build\lib\ugts_kc3\android_template\project\gradlew -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project
+copying build\lib\ugts_kc3\android_template\project\gradlew.bat -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project
+copying build\lib\ugts_kc3\android_template\project\README.md -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project
+copying build\lib\ugts_kc3\android_template\project\settings.gradle -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template\project
+copying build\lib\ugts_kc3\android_template\__init__.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\android_template
+copying build\lib\ugts_kc3\animation.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\animation3d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\animationpack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\audio.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\cli.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\collision2d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+creating build\bdist.win-amd64\wheel\ugts_kc3\conformance
+copying build\lib\ugts_kc3\conformance\polar_substrate_vectors.tsv -> build\bdist.win-amd64\wheel\.\ugts_kc3\conformance
+copying build\lib\ugts_kc3\conformance\__init__.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\conformance
+copying build\lib\ugts_kc3\diagnostics.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+creating build\bdist.win-amd64\wheel\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\document.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\graph.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\main_window.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\scene_view.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\smoke.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\theme.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\timeline.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\widgets.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\__init__.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\editor\__main__.py -> build\bdist.win-amd64\wheel\.\ugts_kc3\editor
+copying build\lib\ugts_kc3\export.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\game.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\game_input.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\geometry.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\graphpack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\grove.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\hands.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\hierarchy3d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\hierarchypack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\materials.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\math3d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\mobile3d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\objimport.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\packed_kinematics.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\polarpack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\polar_population.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\polar_population_pack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\project.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\py.typed -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\render.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\renderpack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\replay.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\reusable.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\runtime.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\saved_scene.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\scatter.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\scatterpack.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\scene.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\spatial.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\templates.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\templates3d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\tilemap.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\vector2d.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\version.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\visual_graph.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\webexport.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\__init__.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+copying build\lib\ugts_kc3\__main__.py -> build\bdist.win-amd64\wheel\.\ugts_kc3
+running install_egg_info
+Copying src\ugts_kc_signature.egg-info to build\bdist.win-amd64\wheel\.\ugts_kc_signature-3.9.2-py3.13.egg-info
+running install_scripts
+creating build\bdist.win-amd64\wheel\ugts_kc_signature-3.9.2.dist-info\WHEEL
+creating 'C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T220537Z-short-source-no-isolation\\.tmp-n_gpcejm\\ugts_kc_signature-3.9.2-py3-none-any.whl' and adding 'build\\bdist.win-amd64\\wheel' to it
+adding 'ugts_kc3/__init__.py'
+adding 'ugts_kc3/__main__.py'
+adding 'ugts_kc3/androidbuild.py'
+adding 'ugts_kc3/androidexport.py'
+adding 'ugts_kc3/animation.py'
+adding 'ugts_kc3/animation3d.py'
+adding 'ugts_kc3/animationpack.py'
+adding 'ugts_kc3/audio.py'
+adding 'ugts_kc3/cli.py'
+adding 'ugts_kc3/collision2d.py'
+adding 'ugts_kc3/diagnostics.py'
+adding 'ugts_kc3/export.py'
+adding 'ugts_kc3/game.py'
+adding 'ugts_kc3/game_input.py'
+adding 'ugts_kc3/geometry.py'
+adding 'ugts_kc3/graphpack.py'
+adding 'ugts_kc3/grove.py'
+adding 'ugts_kc3/hands.py'
+adding 'ugts_kc3/hierarchy3d.py'
+adding 'ugts_kc3/hierarchypack.py'
+adding 'ugts_kc3/materials.py'
+adding 'ugts_kc3/math3d.py'
+adding 'ugts_kc3/mobile3d.py'
+adding 'ugts_kc3/objimport.py'
+adding 'ugts_kc3/packed_kinematics.py'
+adding 'ugts_kc3/polar_population.py'
+adding 'ugts_kc3/polar_population_pack.py'
+adding 'ugts_kc3/polarpack.py'
+adding 'ugts_kc3/project.py'
+adding 'ugts_kc3/py.typed'
+adding 'ugts_kc3/render.py'
+adding 'ugts_kc3/renderpack.py'
+adding 'ugts_kc3/replay.py'
+adding 'ugts_kc3/reusable.py'
+adding 'ugts_kc3/runtime.py'
+adding 'ugts_kc3/saved_scene.py'
+adding 'ugts_kc3/scatter.py'
+adding 'ugts_kc3/scatterpack.py'
+adding 'ugts_kc3/scene.py'
+adding 'ugts_kc3/spatial.py'
+adding 'ugts_kc3/templates.py'
+adding 'ugts_kc3/templates3d.py'
+adding 'ugts_kc3/tilemap.py'
+adding 'ugts_kc3/vector2d.py'
+adding 'ugts_kc3/version.py'
+adding 'ugts_kc3/visual_graph.py'
+adding 'ugts_kc3/webexport.py'
+adding 'ugts_kc3/android_template/__init__.py'
+adding 'ugts_kc3/android_template/project/README.md'
+adding 'ugts_kc3/android_template/project/build.gradle'
+adding 'ugts_kc3/android_template/project/gradle.properties'
+adding 'ugts_kc3/android_template/project/gradlew'
+adding 'ugts_kc3/android_template/project/gradlew.bat'
+adding 'ugts_kc3/android_template/project/settings.gradle'
+adding 'ugts_kc3/android_template/project/app/build.gradle'
+adding 'ugts_kc3/android_template/project/app/proguard-rules.pro'
+adding 'ugts_kc3/android_template/project/app/src/main/AndroidManifest.xml'
+adding 'ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.frag'
+adding 'ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.vert'
+adding 'ugts_kc3/android_template/project/app/src/main/assets/shaders/polar_scene.vert'
+adding 'ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.frag'
+adding 'ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.vert'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/CMakeLists.txt'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/adaptive_quality.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/adaptive_quality.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/body_physics.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/body_physics.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/device_profile.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/device_profile.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/engine.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/engine.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/graph_component_access.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/graph_vm.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/graph_vm.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/grove_juice.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/grove_juice.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/grove_tuning.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/grove_tuning.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/kc_math.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/main.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/scatter_population.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/scatter_population.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/scene_pack.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/scene_pack.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/touch_router.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/touch_router.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/transform_animation.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/transform_animation.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/transform_hierarchy.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/transform_hierarchy.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/trigger_area.cpp'
+adding 'ugts_kc3/android_template/project/app/src/main/cpp/trigger_area.hpp'
+adding 'ugts_kc3/android_template/project/app/src/main/res/values/strings.xml'
+adding 'ugts_kc3/android_template/project/app/src/main/res/values/styles.xml'
+adding 'ugts_kc3/android_template/project/gradle/wrapper/gradle-wrapper.jar'
+adding 'ugts_kc3/android_template/project/gradle/wrapper/gradle-wrapper.properties'
+adding 'ugts_kc3/conformance/__init__.py'
+adding 'ugts_kc3/conformance/polar_substrate_vectors.tsv'
+adding 'ugts_kc3/editor/__init__.py'
+adding 'ugts_kc3/editor/__main__.py'
+adding 'ugts_kc3/editor/document.py'
+adding 'ugts_kc3/editor/graph.py'
+adding 'ugts_kc3/editor/main_window.py'
+adding 'ugts_kc3/editor/scene_view.py'
+adding 'ugts_kc3/editor/smoke.py'
+adding 'ugts_kc3/editor/theme.py'
+adding 'ugts_kc3/editor/timeline.py'
+adding 'ugts_kc3/editor/widgets.py'
+adding 'ugts_kc_signature-3.9.2.dist-info/METADATA'
+adding 'ugts_kc_signature-3.9.2.dist-info/WHEEL'
+adding 'ugts_kc_signature-3.9.2.dist-info/entry_points.txt'
+adding 'ugts_kc_signature-3.9.2.dist-info/top_level.txt'
+adding 'ugts_kc_signature-3.9.2.dist-info/RECORD'
+removing build\bdist.win-amd64\wheel
+Successfully built ugts_kc_signature-3.9.2.tar.gz and ugts_kc_signature-3.9.2-py3-none-any.whl

@@ -1,0 +1,28 @@
+{
+  "source_root": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES",
+  "temporary_source": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kp-guu9h19h\\s",
+  "temporary_source_path_characters": 45,
+  "copied_file_count": 152,
+  "source_hash_mismatches": [],
+  "source_snapshot_sha256": "948cd26fd532b36fff0db31e88f9aaf29fa305bcf0b82358ab3334904863d5da",
+  "tracked_freshness_hashes": {
+    "README.md": "10b08ec7f012637c88a1f684f4de13eb39e7d407d94b80892cefe71c71330100",
+    "src/ugts_kc3/cli.py": "c04ca3fd1adc6f9817bbc481e37fb458c666de77b90673ed0e0eeec2050bfb75",
+    "MANIFEST.in": "123c81477141e1fe788e9074f91bfd2757f9a696ffd749df295a9633749b544e",
+    "pyproject.toml": "4fc7cfba1429e066cc4c01704ffe401cce1dbb955fc62ed756328b54b3dd049d",
+    "src/ugts_kc3/conformance/polar_substrate_vectors.tsv": "cdf8b4a20869c2bc35c4330c35dc7e43c33459ce40f37fd63139c0a41b01db57",
+    "docs/UGTS_ENGINE_TODO.md": "cd6c1cf957eac3354d46b52bd11b33e714036d90148afd8e5ceebcc466844f04",
+    "docs/UGTS_ENGINE_WORKLOG.md": "20a9537e2131ce5dcd5d8375057cef89cb5ffc3ce4b0d46de4ea883f9ae7ab5c",
+    "docs/UGTS_SUBSTRATE_MECHANISM_MAP.md": "d0c9b5613cc5250ccafb24aced4d6ad92e903dc149a5de69830cc4cf80039554"
+  },
+  "command": [
+    "C:\\Users\\Tom\\miniconda3\\python.exe",
+    "-m",
+    "build",
+    "--no-isolation",
+    "--outdir",
+    "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T221517Z-final-package-go",
+    "."
+  ],
+  "returncode": 0
+}

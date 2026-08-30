@@ -1,0 +1,35 @@
+* Getting build dependencies for sdist...
+running egg_info
+writing src\ugts_kc_signature.egg-info\PKG-INFO
+writing dependency_links to src\ugts_kc_signature.egg-info\dependency_links.txt
+writing entry points to src\ugts_kc_signature.egg-info\entry_points.txt
+writing requirements to src\ugts_kc_signature.egg-info\requires.txt
+writing top-level names to src\ugts_kc_signature.egg-info\top_level.txt
+reading manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching '.pytest_cache'
+no previously-included directories found matching '.ruff_cache'
+no previously-included directories found matching '.mypy_cache'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+* Building sdist...
+running sdist
+running egg_info
+writing src\ugts_kc_signature.egg-info\PKG-INFO
+writing dependency_links to src\ugts_kc_signature.egg-info\dependency_links.txt
+writing entry points to src\ugts_kc_signature.egg-info\entry_points.txt
+writing requirements to src\ugts_kc_signature.egg-info\requires.txt
+writing top-level names to src\ugts_kc_signature.egg-info\top_level.txt
+reading manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+no previously-included directories found matching '.pytest_cache'
+no previously-included directories found matching '.ruff_cache'
+no previously-included directories found matching '.mypy_cache'
+warning: no previously-included files matching '__pycache__' found anywhere in distribution
+warning: no previously-included files matching '*.py[cod]' found anywhere in distribution
+writing manifest file 'src\ugts_kc_signature.egg-info\SOURCES.txt'
+error: [Errno 22] Invalid argument: 'src\\ugts_kc_signature.egg-info\\SOURCES.txt'
+
+TIP pass --env-dir and --sdist-extract-dir to keep the build environment and sources, then see https://build.pypa.io/en/stable/how-to/troubleshooting.html#debug-a-failed-build for help debugging a failed build
+ERROR Backend subprocess exited when trying to invoke build_sdist

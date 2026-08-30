@@ -1,0 +1,25 @@
+{
+  "build_stage": "cases/polar-1024-cpu-off/build-stage.json",
+  "case": {
+    "bayer_mode": "off",
+    "count": 1024,
+    "levels": 2,
+    "name": "polar-1024-cpu-off",
+    "polar_mode": "cpu",
+    "strength": 0.0
+  },
+  "kind": "build-attempt",
+  "number": 1,
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "started_at": "2026-08-29T22:01:01+00:00",
+  "status": "complete",
+  "temporary_workspace": {
+    "android_project_name": "a",
+    "path": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kc392-qzqmqt0y",
+    "path_characters": 48,
+    "retained": false
+  },
+  "updated_at": "2026-08-29T22:01:11+00:00",
+  "workload": "recipe",
+  "workspace_strategy": "short-system-temporary-directory"
+}

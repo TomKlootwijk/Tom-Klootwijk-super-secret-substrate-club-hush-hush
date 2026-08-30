@@ -1,0 +1,593 @@
+{
+  "author": "UGTS-KC example",
+  "background": [
+    0.025,
+    0.04,
+    0.075,
+    1.0
+  ],
+  "camera": {
+    "far": 80.0,
+    "near": 0.05,
+    "position": [
+      6.5,
+      4.5,
+      8.0
+    ],
+    "target": [
+      0.0,
+      1.2,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "vertical_fov_degrees": 52.0
+  },
+  "edition": "3.9.2 - K-Kij-T / Grove",
+  "id": "multiclip_animation_3d",
+  "light": {
+    "ambient": 0.22,
+    "color": [
+      1.0,
+      0.96,
+      0.9
+    ],
+    "direction": [
+      -0.45,
+      -1.0,
+      -0.3
+    ],
+    "intensity": 1.3
+  },
+  "materials": [
+    {
+      "base_color": [
+        0.07,
+        0.12,
+        0.2,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.0,
+        0.01,
+        0.025
+      ],
+      "id": "floor_blue",
+      "metallic": 0.15,
+      "roughness": 0.8
+    },
+    {
+      "base_color": [
+        1.0,
+        0.55,
+        0.12,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.16,
+        0.045,
+        0.005
+      ],
+      "id": "motion_gold",
+      "metallic": 0.45,
+      "roughness": 0.28
+    }
+  ],
+  "meshes": [
+    {
+      "id": "cube",
+      "metadata": {
+        "primitive": "cube",
+        "size": 1.0
+      },
+      "normals": [],
+      "triangles": [
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          2
+        ],
+        [
+          4,
+          5,
+          6
+        ],
+        [
+          4,
+          6,
+          7
+        ],
+        [
+          0,
+          1,
+          5
+        ],
+        [
+          0,
+          5,
+          4
+        ],
+        [
+          3,
+          7,
+          6
+        ],
+        [
+          3,
+          6,
+          2
+        ],
+        [
+          1,
+          2,
+          6
+        ],
+        [
+          1,
+          6,
+          5
+        ],
+        [
+          0,
+          4,
+          7
+        ],
+        [
+          0,
+          7,
+          3
+        ]
+      ],
+      "vertices": [
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "example": "multi-clip transform Animation plus Logic Blocks Play/Stop",
+    "visual_graphs": [
+      {
+        "id": "hop_after_half_second",
+        "links": [
+          {
+            "source_node": "timer_once",
+            "source_port": "out",
+            "target_node": "stop_current",
+            "target_port": "in"
+          },
+          {
+            "source_node": "stop_current",
+            "source_port": "out",
+            "target_node": "play_hop",
+            "target_port": "in"
+          }
+        ],
+        "metadata": {
+          "lesson": "After half a second: stop the current clip, reset the pose, then play hop."
+        },
+        "nodes": [
+          {
+            "id": "timer_once",
+            "position": [
+              0.0,
+              0.0
+            ],
+            "properties": {
+              "repeat": false,
+              "seconds": 0.5
+            },
+            "type": "event.timer"
+          },
+          {
+            "id": "stop_current",
+            "position": [
+              280.0,
+              0.0
+            ],
+            "properties": {
+              "entity": null,
+              "reset": true
+            },
+            "type": "action.stop_animation"
+          },
+          {
+            "id": "play_hop",
+            "position": [
+              560.0,
+              0.0
+            ],
+            "properties": {
+              "clip": "hop",
+              "entity": null,
+              "restart": true
+            },
+            "type": "action.play_animation"
+          }
+        ],
+        "schema": "ugts-visual-graph-1"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "box"
+      },
+      "dynamic": false,
+      "id": "floor",
+      "mass": 1.0,
+      "material_id": "floor_blue",
+      "mesh_id": "cube",
+      "metadata": {},
+      "restitution": 0.0,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          9.0,
+          0.2,
+          9.0
+        ],
+        "translation": [
+          0.0,
+          -0.2,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "box"
+      },
+      "dynamic": false,
+      "id": "motion_cube",
+      "mass": 1.0,
+      "material_id": "motion_gold",
+      "mesh_id": "cube",
+      "metadata": {
+        "transform_animation_library": {
+          "autoplay": "sway",
+          "clips": [
+            {
+              "animation": {
+                "duration": 2.0,
+                "keys": [
+                  {
+                    "easing": "linear",
+                    "rotation": [
+                      1.0,
+                      0.0,
+                      0.0,
+                      0.0
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 0.0,
+                    "translation": [
+                      0.0,
+                      0.0,
+                      0.0
+                    ]
+                  },
+                  {
+                    "easing": "smoothstep",
+                    "rotation": [
+                      0.9914448614,
+                      0.0,
+                      0.0,
+                      0.1305261922
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 0.5,
+                    "translation": [
+                      -0.5,
+                      0.0,
+                      0.0
+                    ]
+                  },
+                  {
+                    "easing": "smoothstep",
+                    "rotation": [
+                      0.9914448614,
+                      0.0,
+                      0.0,
+                      -0.1305261922
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 1.5,
+                    "translation": [
+                      0.5,
+                      0.0,
+                      0.0
+                    ]
+                  },
+                  {
+                    "easing": "smoothstep",
+                    "rotation": [
+                      1.0,
+                      0.0,
+                      0.0,
+                      0.0
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 2.0,
+                    "translation": [
+                      0.0,
+                      0.0,
+                      0.0
+                    ]
+                  }
+                ],
+                "loop_mode": "loop",
+                "schema": "ugts-transform-animation-1"
+              },
+              "id": "sway",
+              "label": "Gentle Sway"
+            },
+            {
+              "animation": {
+                "duration": 1.0,
+                "keys": [
+                  {
+                    "easing": "linear",
+                    "rotation": [
+                      1.0,
+                      0.0,
+                      0.0,
+                      0.0
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 0.0,
+                    "translation": [
+                      0.0,
+                      0.0,
+                      0.0
+                    ]
+                  },
+                  {
+                    "easing": "linear",
+                    "rotation": [
+                      0.0,
+                      0.0,
+                      1.0,
+                      0.0
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 0.5,
+                    "translation": [
+                      0.0,
+                      2.0,
+                      0.0
+                    ]
+                  },
+                  {
+                    "easing": "linear",
+                    "rotation": [
+                      1.0,
+                      0.0,
+                      0.0,
+                      0.0
+                    ],
+                    "scale": [
+                      1.0,
+                      1.0,
+                      1.0
+                    ],
+                    "time": 1.0,
+                    "translation": [
+                      0.0,
+                      0.0,
+                      0.0
+                    ]
+                  }
+                ],
+                "loop_mode": "once",
+                "schema": "ugts-transform-animation-1"
+              },
+              "id": "hop",
+              "label": "Timer Hop"
+            }
+          ],
+          "schema": "ugts-transform-animation-library-1"
+        },
+        "visual_graph": "hop_after_half_second"
+      },
+      "restitution": 0.0,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.4,
+          1.4,
+          1.4
+        ],
+        "translation": [
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "quality_tiers": [
+    {
+      "id": "signature_ultra",
+      "max_visible_nodes": 1024,
+      "msaa_samples": 4,
+      "post_processing": true,
+      "render_scale": 1.0,
+      "shadow_quality": 2,
+      "target_fps": 120
+    }
+  ],
+  "schema": "ugts-kc-mobile-3d-project-3.9.1",
+  "start_quality": "signature_ultra",
+  "target_profiles": [
+    {
+      "compile_sdk": 36,
+      "default_quality": "signature_ultra",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB Signature Target",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "preferred_abis": [
+        "arm64-v8a"
+      ],
+      "required_gles": [
+        3,
+        0
+      ],
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Two Clips, One Motion Cube",
+  "world": {
+    "bounds_max": [
+      12.0,
+      16.0,
+      12.0
+    ],
+    "bounds_min": [
+      -12.0,
+      -4.0,
+      -12.0
+    ],
+    "fixed_dt": 0.008333333333333333,
+    "floor_y": 0.0,
+    "gravity": [
+      0.0,
+      -9.81,
+      0.0
+    ],
+    "jump_speed": 0.0,
+    "player_speed": 0.0
+  }
+}

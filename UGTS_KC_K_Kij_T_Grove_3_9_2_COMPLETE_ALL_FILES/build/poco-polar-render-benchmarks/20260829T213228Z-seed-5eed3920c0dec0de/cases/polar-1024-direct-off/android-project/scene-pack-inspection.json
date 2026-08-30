@@ -1,0 +1,140 @@
+{
+  "author": "UGTS-KC substrate lab",
+  "byte_length": 2774,
+  "format_version": 1,
+  "material_count": 4,
+  "materials": [
+    "core_neon",
+    "edge_neon",
+    "floor_ink",
+    "orbit_cyan"
+  ],
+  "mesh_count": 4,
+  "meshes": [
+    {
+      "id": "core_spire",
+      "index_count": 18,
+      "vertex_count": 5
+    },
+    {
+      "id": "lab_floor",
+      "index_count": 6,
+      "vertex_count": 4
+    },
+    {
+      "id": "neon_bar",
+      "index_count": 36,
+      "vertex_count": 24
+    },
+    {
+      "id": "orbit_shard",
+      "index_count": 18,
+      "vertex_count": 5
+    }
+  ],
+  "node_count": 6,
+  "nodes": [
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "environment_floor",
+      "material_index": 2,
+      "mesh_index": 1,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "environment_core",
+      "material_index": 0,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "environment_core_cap",
+      "material_index": 1,
+      "mesh_index": 2,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "environment_axis_x",
+      "material_index": 1,
+      "mesh_index": 2,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "environment_axis_z",
+      "material_index": 1,
+      "mesh_index": 2,
+      "sensor": false,
+      "tag_mask": 8
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "orbit_mover_0000",
+      "material_index": 3,
+      "mesh_index": 3,
+      "sensor": false,
+      "tag_mask": 8
+    }
+  ],
+  "project_hash": "09deee5d7983ad02856e901b12e3c12f3acbdf947815ec92c3f77ffc534fae44",
+  "project_id": "packed_polar_recipe_lab_3d",
+  "qualities": [
+    {
+      "id": "lab_120",
+      "max_visible_nodes": 2048,
+      "render_scale": 1.0,
+      "target_fps": 120
+    },
+    {
+      "id": "lab_60",
+      "max_visible_nodes": 2048,
+      "render_scale": 0.8199999928474426,
+      "target_fps": 60
+    }
+  ],
+  "quality_count": 2,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
+  "sha256": "62849b4056bb33ebda496a39d9baabbd28aa995123e035401f98ebfc375231d3",
+  "start_quality": "lab_120",
+  "target_count": 1,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "lab_120",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB / Mali-G720",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Packed Polar Recipe Lab \u2014 1024 displays from one ECS mover"
+}

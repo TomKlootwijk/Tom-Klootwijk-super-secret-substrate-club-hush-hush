@@ -1,0 +1,589 @@
+{
+  "android_source": {
+    "file_count": 66,
+    "profile_hint": "auto",
+    "retained": false,
+    "total_bytes": 410171,
+    "workspace_strategy": "short-system-temporary-directory"
+  },
+  "application_id": "org.ugts.games.packed_polar_recipe_lab_3d.pocox7pro",
+  "artifacts": {
+    "apk": {
+      "bytes": 1786734,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\evidence\\polar-0256-lut-off-poco-debug.apk",
+      "relative_path": "cases/polar-0256-lut-off/evidence/polar-0256-lut-off-poco-debug.apk",
+      "sha256": "67e1186a67fcecfe0f2cfdd3c549b97d79b64f260839baa1979261c8e9561bc5"
+    },
+    "build_report": {
+      "bytes": 17840,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\evidence\\build-report.json",
+      "relative_path": "cases/polar-0256-lut-off/evidence/build-report.json",
+      "sha256": "bb390cd65b7f45173ad0026043af83638f75f3d76e490d72f6fa646616820a66"
+    },
+    "gradle_output": {
+      "bytes": 3374,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\evidence\\gradle-output.txt",
+      "relative_path": "cases/polar-0256-lut-off/evidence/gradle-output.txt",
+      "sha256": "6e1105c327211cfeaf9c02b06b047ab99c11c0767415ea4156e9710c86b0b4a8"
+    },
+    "kcpk": {
+      "bytes": 1690,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\evidence\\packed_kinematics.kcpk",
+      "relative_path": "cases/polar-0256-lut-off/evidence/packed_kinematics.kcpk",
+      "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0"
+    },
+    "kcpr": {
+      "bytes": 240,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\evidence\\polar_populations.kcpr",
+      "relative_path": "cases/polar-0256-lut-off/evidence/polar_populations.kcpr",
+      "sha256": "dfece72445b5d20fd4751ac642f0eaf187950db0586b4dae33ead99f6bcbd19b"
+    },
+    "kcrp": {
+      "bytes": 32,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\evidence\\render_substrate.kcrp",
+      "relative_path": "cases/polar-0256-lut-off/evidence/render_substrate.kcrp",
+      "sha256": "1785c67afc4cd164e85eee2c8c69a9a3405694db1edc1f8b587b1b87786406d8"
+    },
+    "project": {
+      "bytes": 21287,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de\\cases\\polar-0256-lut-off\\project.json",
+      "relative_path": "cases/polar-0256-lut-off/project.json",
+      "sha256": "948360cd1d8672e5e628b15c56b7c07c12c252e81f00524b6e607dba3cd10154"
+    }
+  },
+  "build_report_data": {
+    "agp": "8.13.2",
+    "application_id": "org.ugts.games.packed_polar_recipe_lab_3d",
+    "authoring_assets_packaged": false,
+    "authoring_project_hash": "5fe3f55f1cf178a57a41cfd7ee834f57d17916395c405ee9ae1fa9e763f0aebb",
+    "compile_sdk": 36,
+    "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+    "files": [
+      {
+        "bytes": 1748,
+        "path": "app/build.gradle",
+        "sha256": "c310b2bc0cd2e665c6f508df5c15b5aec09abcb2387418aead9ce7c8bca1865a"
+      },
+      {
+        "bytes": 57,
+        "path": "app/proguard-rules.pro",
+        "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+      },
+      {
+        "bytes": 1511,
+        "path": "app/src/main/AndroidManifest.xml",
+        "sha256": "8ec30ea970c150784fa1bc42b2fdd4044cc6745d12fd03a8fb840993a91e19e7"
+      },
+      {
+        "bytes": 1690,
+        "path": "app/src/main/assets/packed_kinematics.kcpk",
+        "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0"
+      },
+      {
+        "bytes": 240,
+        "path": "app/src/main/assets/polar_populations.kcpr",
+        "sha256": "dfece72445b5d20fd4751ac642f0eaf187950db0586b4dae33ead99f6bcbd19b"
+      },
+      {
+        "bytes": 32,
+        "path": "app/src/main/assets/render_substrate.kcrp",
+        "sha256": "1785c67afc4cd164e85eee2c8c69a9a3405694db1edc1f8b587b1b87786406d8"
+      },
+      {
+        "bytes": 2265,
+        "path": "app/src/main/assets/shaders/grove_post.frag",
+        "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+      },
+      {
+        "bytes": 190,
+        "path": "app/src/main/assets/shaders/grove_post.vert",
+        "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+      },
+      {
+        "bytes": 4241,
+        "path": "app/src/main/assets/shaders/polar_scene.vert",
+        "sha256": "d26ecd660237579c06a455ba669b4e4373abedf72f5b5675479e29edcc3bc90f"
+      },
+      {
+        "bytes": 1904,
+        "path": "app/src/main/assets/shaders/scene.frag",
+        "sha256": "668ecb423b49e39a4e745a19c4737279e2cc870ec6fa50127368aa980f3ec8ee"
+      },
+      {
+        "bytes": 807,
+        "path": "app/src/main/assets/shaders/scene.vert",
+        "sha256": "b094f5b3e5d28967b1dd206ecf26e0ece3ce9ca33d5f43cc38a3eff2af977e91"
+      },
+      {
+        "bytes": 2773,
+        "path": "app/src/main/assets/signature_scene.kc3d",
+        "sha256": "00745ed56d896834fa9d3597bf7bdf34f3d67ca44f42372ee60845398cb46c77"
+      },
+      {
+        "bytes": 277,
+        "path": "app/src/main/assets/visual_graphs.kcvg",
+        "sha256": "449adff0bd1f844eb4275b5485b903e103678d49c572da9a4bab889e7a1cc67f"
+      },
+      {
+        "bytes": 860,
+        "path": "app/src/main/cpp/adaptive_quality.cpp",
+        "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+      },
+      {
+        "bytes": 464,
+        "path": "app/src/main/cpp/adaptive_quality.hpp",
+        "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+      },
+      {
+        "bytes": 6536,
+        "path": "app/src/main/cpp/body_physics.cpp",
+        "sha256": "7d4efd4840faf17fde5a27e2f417cb07811e0fbb3d019c72c04ce7406e0a8bd2"
+      },
+      {
+        "bytes": 1094,
+        "path": "app/src/main/cpp/body_physics.hpp",
+        "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
+      },
+      {
+        "bytes": 2791,
+        "path": "app/src/main/cpp/CMakeLists.txt",
+        "sha256": "93473c171e16c9352bb259ec219185edf2ca611f2aed816865da9f9e5fca3267"
+      },
+      {
+        "bytes": 3497,
+        "path": "app/src/main/cpp/device_profile.cpp",
+        "sha256": "cf9076926932f88136fce6074395ac51e9dcc9b912f4c06b2123b54bb9c18e94"
+      },
+      {
+        "bytes": 676,
+        "path": "app/src/main/cpp/device_profile.hpp",
+        "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+      },
+      {
+        "bytes": 25077,
+        "path": "app/src/main/cpp/engine.cpp",
+        "sha256": "2df2e1c92fdd43b74e9589b2cf98cc95ed317d72d491a96db5d69303f634eda1"
+      },
+      {
+        "bytes": 3094,
+        "path": "app/src/main/cpp/engine.hpp",
+        "sha256": "499c17cc9286c9fc1bf7384e7eadc0c42c85798726d43d52723b02c452d3c812"
+      },
+      {
+        "bytes": 7432,
+        "path": "app/src/main/cpp/gpu_timer_query.cpp",
+        "sha256": "51e359ae1802bf31bd6901215d1fa67a1d0f59098e3256457f2d18bbe2ec56ba"
+      },
+      {
+        "bytes": 1979,
+        "path": "app/src/main/cpp/gpu_timer_query.hpp",
+        "sha256": "a73c3885315d67329c78fbbbb189fe66b8474f0288ac601b55578c2733dfe525"
+      },
+      {
+        "bytes": 1098,
+        "path": "app/src/main/cpp/graph_component_access.hpp",
+        "sha256": "1af799a35631aeaa0a84d97bc059877954ca842c7dbdc9fb3f7f2ab42a6db23a"
+      },
+      {
+        "bytes": 58443,
+        "path": "app/src/main/cpp/graph_vm.cpp",
+        "sha256": "f4c226702092ec3dc1f8008f3067e85bc56e87964d5b03c29ac75f644b6f0d69"
+      },
+      {
+        "bytes": 7290,
+        "path": "app/src/main/cpp/graph_vm.hpp",
+        "sha256": "ea492e36c2af666b8ae9e3b3d627efff6a9e643661b408022ef83f8650be8dc1"
+      },
+      {
+        "bytes": 2370,
+        "path": "app/src/main/cpp/grove_juice.cpp",
+        "sha256": "247fed02dd45217041950146fae868e28477d0029161ddb32fdf8bca483f7dec"
+      },
+      {
+        "bytes": 1098,
+        "path": "app/src/main/cpp/grove_juice.hpp",
+        "sha256": "fc8c20fefb35cbc8833ad786f7d672ba2c1142d4338cf4f4fdfb9e0a985affbb"
+      },
+      {
+        "bytes": 1642,
+        "path": "app/src/main/cpp/grove_tuning.cpp",
+        "sha256": "16ebd1f20c9bb846af5b46444cf4e04df513bd66177ba8a996cc3db126ddf4ab"
+      },
+      {
+        "bytes": 404,
+        "path": "app/src/main/cpp/grove_tuning.hpp",
+        "sha256": "8cab2c99999ca7493ef0c660f331cc3259485e1ad1e4fbe1312cdff2b4fe9133"
+      },
+      {
+        "bytes": 3792,
+        "path": "app/src/main/cpp/kc_math.hpp",
+        "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+      },
+      {
+        "bytes": 1889,
+        "path": "app/src/main/cpp/main.cpp",
+        "sha256": "2e81982574f1621c6bdb5e60e5a5afc8f487df61820420c81c109396caa9bfd9"
+      },
+      {
+        "bytes": 24608,
+        "path": "app/src/main/cpp/polar_kinematics.cpp",
+        "sha256": "aeb997710840663457506bf98488ca82c8ef55309ff4a7c6cd31a2eb03b45c89"
+      },
+      {
+        "bytes": 3102,
+        "path": "app/src/main/cpp/polar_kinematics.hpp",
+        "sha256": "b03dee67a22fa33a85a308b387c8a5b3640ddbac24fe2be3b7441ce433d5b018"
+      },
+      {
+        "bytes": 31229,
+        "path": "app/src/main/cpp/polar_populations.cpp",
+        "sha256": "3193a1c90a20524bd47270c863d7d4cadfe5a1bb1e1482ec4f9cab2448e8a9dc"
+      },
+      {
+        "bytes": 2748,
+        "path": "app/src/main/cpp/polar_populations.hpp",
+        "sha256": "1c01b81d3fdb92605a009a1106774c721e88186134ef40320d1c27c7c8786e18"
+      },
+      {
+        "bytes": 3793,
+        "path": "app/src/main/cpp/render_substrate.cpp",
+        "sha256": "eb63fa6f4773a2537300152cf78939edba8e4895f97edae246e3e2705f426ec5"
+      },
+      {
+        "bytes": 834,
+        "path": "app/src/main/cpp/render_substrate.hpp",
+        "sha256": "d025ef17fc9fc98b6cf28daca59efcd9938e2de9c43d9faf22fd30fa8d0b9566"
+      },
+      {
+        "bytes": 54646,
+        "path": "app/src/main/cpp/renderer_gles3.cpp",
+        "sha256": "ce2b58d87ec2e992c5d1ec2c5e2ae67c29e635e6278f5b4049c970f90e73ed8d"
+      },
+      {
+        "bytes": 5714,
+        "path": "app/src/main/cpp/renderer_gles3.hpp",
+        "sha256": "c4b4beb3da8fefe7dd3401c7b532e6bf0049ddde391b2363d9a9fe41e3767e76"
+      },
+      {
+        "bytes": 16221,
+        "path": "app/src/main/cpp/scatter_population.cpp",
+        "sha256": "d46febf3421cda5c83833d2bb11534d9a539490cab57e90f21ea1562b79dde18"
+      },
+      {
+        "bytes": 2574,
+        "path": "app/src/main/cpp/scatter_population.hpp",
+        "sha256": "e9b27c2836841f9c509421a749b99dc14746d9a8698557153520d89b16e3422f"
+      },
+      {
+        "bytes": 6306,
+        "path": "app/src/main/cpp/scene_pack.cpp",
+        "sha256": "84d1bd5193c0eec7613d615de419a952ad86faa57c5b93ca726dd90c866d483b"
+      },
+      {
+        "bytes": 2860,
+        "path": "app/src/main/cpp/scene_pack.hpp",
+        "sha256": "da19a53b7370cc1e0ba7852744ee2d84ec63b3b6fb77266db402e32dddc56388"
+      },
+      {
+        "bytes": 5743,
+        "path": "app/src/main/cpp/touch_router.cpp",
+        "sha256": "83e05dd6e2e4e8c8b0befef08e20e447fa21f812a3848a9f24916d20ebd69721"
+      },
+      {
+        "bytes": 2150,
+        "path": "app/src/main/cpp/touch_router.hpp",
+        "sha256": "037972a00ca70bc766309b83099028203a4e3758c52532ba271212df6984568a"
+      },
+      {
+        "bytes": 20172,
+        "path": "app/src/main/cpp/transform_animation.cpp",
+        "sha256": "14bd6ec6c6bf458aff96ac212b7f2a65be595a1f8e0ded326a3899f24ca2ae0b"
+      },
+      {
+        "bytes": 2647,
+        "path": "app/src/main/cpp/transform_animation.hpp",
+        "sha256": "92f88b412a4bce7f35dbf44c8a36e715af95a5b1cc67693504261939a72f4cfa"
+      },
+      {
+        "bytes": 6019,
+        "path": "app/src/main/cpp/transform_hierarchy.cpp",
+        "sha256": "e7bbadc55d72f73bbcf9cdea6b5f346b591aac82801d9545d880d340e0de1376"
+      },
+      {
+        "bytes": 1262,
+        "path": "app/src/main/cpp/transform_hierarchy.hpp",
+        "sha256": "cda00bf3218f151ff7d3f44a7b553d66613f7088fad0a81c5f5c938d78c9eebf"
+      },
+      {
+        "bytes": 4752,
+        "path": "app/src/main/cpp/trigger_area.cpp",
+        "sha256": "84fdc47aa5f8e5e12044031f9cdfc4b9041e4d53a75b81ba3751f038b9676d31"
+      },
+      {
+        "bytes": 1296,
+        "path": "app/src/main/cpp/trigger_area.hpp",
+        "sha256": "ed490f5bec08bcff5c7dd0beadc8a02d52c77ed0c981254bd3261851409a5c9c"
+      },
+      {
+        "bytes": 165,
+        "path": "app/src/main/res/values/strings.xml",
+        "sha256": "1814a266d21dadab3aea5f83ce8856fb45ebc7162cee4494e538345f3e4486f9"
+      },
+      {
+        "bytes": 766,
+        "path": "app/src/main/res/values/styles.xml",
+        "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+      },
+      {
+        "bytes": 74,
+        "path": "build.gradle",
+        "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+      },
+      {
+        "bytes": 8042,
+        "path": "gradle/wrapper/gradle-wrapper.jar",
+        "sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b"
+      },
+      {
+        "bytes": 338,
+        "path": "gradle/wrapper/gradle-wrapper.properties",
+        "sha256": "3fb35582e5424775b45f566273d3909032a49f26c0d7d063f92a92e7b5e467d5"
+      },
+      {
+        "bytes": 159,
+        "path": "gradle.properties",
+        "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+      },
+      {
+        "bytes": 362,
+        "path": "gradlew",
+        "sha256": "d7014b2f5807fd975867dbb2e3651dbc19dd88d9a13d0df4c9061260d662fd95"
+      },
+      {
+        "bytes": 267,
+        "path": "gradlew.bat",
+        "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
+      },
+      {
+        "bytes": 21287,
+        "path": "project.json",
+        "sha256": "948360cd1d8672e5e628b15c56b7c07c12c252e81f00524b6e607dba3cd10154"
+      },
+      {
+        "bytes": 9500,
+        "path": "README.md",
+        "sha256": "49df179b32e55151be2ebe3f4bf6198dcb36237df04b87759c73b910498e418c"
+      },
+      {
+        "bytes": 3101,
+        "path": "scene-pack-inspection.json",
+        "sha256": "d90bda25f6fef82447233262ba25b9c1df5dc0de75555da216c1668202eea265"
+      },
+      {
+        "bytes": 333,
+        "path": "settings.gradle",
+        "sha256": "e15aa169810e33620d11fbf6723bf7ddf619f3dfd07801748c3cbd07245fe9b8"
+      }
+    ],
+    "gradle": "8.13",
+    "min_sdk": 26,
+    "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+    "ndk": "r29 / 29.0.14206865",
+    "packed_kinematic_runtime": {
+      "byte_length": 1690,
+      "component_count": 1,
+      "components": [
+        {
+          "motion": "000025fd00000000",
+          "node_index": 5,
+          "pose": "1865edbd4cc5c1bd",
+          "profile": "shared_orbit_profile",
+          "profile_index": 0
+        }
+      ],
+      "format_version": 1,
+      "profile_count": 1,
+      "profiles": [
+        {
+          "id": "shared_orbit_profile",
+          "lut_bytes": 1584,
+          "lut_resolution": 256,
+          "motion_range": {
+            "rho_acceleration": 0.5,
+            "rho_velocity": 0.25,
+            "theta_acceleration": 4.39822971502571,
+            "theta_velocity": 2.199114857512855
+          },
+          "profile": {
+            "core_radius": 0.0001,
+            "r0": 6.0,
+            "rho_max": 0.7922380832041763,
+            "rho_min": -0.9373441410719874
+          }
+        }
+      ],
+      "schema": "ugts-kc-native-packed-kinematics-inspection-3.9.2",
+      "sha256": "9752c2a9c9a892a87628e71b3d9e5a88b41dcac2410a9f8f1360bd79666480b0"
+    },
+    "polar_population_recipe_asset": {
+      "byte_length": 240,
+      "ecs_prototype_count": 1,
+      "format_version": 1,
+      "generated_copy_count": 255,
+      "generated_members_are_ecs_entities": false,
+      "math_schedule": "v2: KCPR stores exact binary32 log-radius offsets; SplitMix lanes are exact 24-bit binary32; each add/subtract/multiply/divide is rounded to binary32; spiral saturation is x/(1+x); fractional turns are added directly to extracted theta18/heading12 integer codes; the shared profile clamps and packs rho20",
+      "native_consumer": "android-kcpr392-v1",
+      "native_consumer_wired": true,
+      "native_modes": [
+        "cpu",
+        "direct",
+        "lut"
+      ],
+      "operator_count": 5,
+      "operators": [
+        {
+          "arity": 3,
+          "code": 1,
+          "code_hex": "0x0001",
+          "meaning": "ugts.kc392.polar-population.splitmix64-lineage(seed,namespace,index).v1",
+          "meaning_hash": "8bf057fe8b6a4c18",
+          "name": "splitmix64_lineage",
+          "slot": 0
+        },
+        {
+          "arity": 3,
+          "code": 16,
+          "code_hex": "0x0010",
+          "meaning": "ugts.kc392.polar-population.binary32-rho+=lerp(serialized-log-min,serialized-log-max,u);profile-clamp+pack20.v2",
+          "meaning_hash": "2c683232ab8619b0",
+          "name": "log_radius_multiplier",
+          "slot": 1
+        },
+        {
+          "arity": 3,
+          "code": 32,
+          "code_hex": "0x0020",
+          "meaning": "ugts.kc392.polar-population.binary32-turns=seeded-phase+index*step+seeded-jitter;theta18+heading12+=floor(frac(turns)*2^bits).v2",
+          "meaning_hash": "c6cb9d947ad82c97",
+          "name": "periodic_angle",
+          "slot": 3
+        },
+        {
+          "arity": 2,
+          "code": 48,
+          "code_hex": "0x0030",
+          "meaning": "ugts.kc392.polar-population.binary32-y+=centered-seeded-unit*height-span.v1",
+          "meaning_hash": "108012bf057981af",
+          "name": "seeded_height",
+          "slot": 4
+        },
+        {
+          "arity": 3,
+          "code": 64,
+          "code_hex": "0x0040",
+          "meaning": "ugts.kc392.polar-population.binary32-scale*=lerp(scale-min,scale-max,seeded-unit).v1",
+          "meaning_hash": "276bd26b782ef226",
+          "name": "uniform_scale",
+          "slot": 5
+        }
+      ],
+      "recipe_count": 1,
+      "recipes": [
+        {
+          "content_address": "b9360cfca0e05bae6c6c0091295ed3bc",
+          "generated_copy_count": 255,
+          "instance_count": 256,
+          "lineage_namespace": "7baa1d2d2a0e4d360c5ad27758dbc33d",
+          "operator_mask": 59,
+          "operator_parameters": {
+            "angle_jitter_turns": 0.0,
+            "angle_step_turns": 0.3819660246372223,
+            "height_spread": 0.0,
+            "radial_rate": 0.0,
+            "radius_max_log_offset": 0.0,
+            "radius_min_log_offset": 0.0,
+            "scale_max": 1.0,
+            "scale_min": 1.0
+          },
+          "preset": "ring",
+          "preset_label": "Ring",
+          "profile_semantics_address": "549d193cc10172d00eff9353a66ee363",
+          "prototype_node_index": 5,
+          "prototype_semantics_address": "06f76fcb0df5827e9e1e89bfa4979760",
+          "recipe_seed": 5786927889630441985,
+          "root_seed": 6840186221883211998
+        }
+      ],
+      "root_seed": 6840186221883211998,
+      "schema": "ugts-kc-polar-population-inspection-3.9.2",
+      "sha256": "dfece72445b5d20fd4751ac642f0eaf187950db0586b4dae33ead99f6bcbd19b",
+      "total_instances": 256
+    },
+    "population_runtime": null,
+    "profile_hint": "auto",
+    "project_hash": "5fe3f55f1cf178a57a41cfd7ee834f57d17916395c405ee9ae1fa9e763f0aebb",
+    "project_id": "packed_polar_recipe_lab_3d",
+    "render_substrate_runtime": {
+      "bayer_enabled": false,
+      "bayer_mode": "off",
+      "bayer_mode_code": 0,
+      "byte_length": 32,
+      "format_version": 1,
+      "levels": 2,
+      "polar_mode": "lut",
+      "polar_mode_code": 1,
+      "schema": "ugts-kc-render-substrate-inspection-3.9.2",
+      "seed": 6840186221883211998,
+      "sha256": "1785c67afc4cd164e85eee2c8c69a9a3405694db1edc1f8b587b1b87786406d8",
+      "strength": 0.0
+    },
+    "schema": "ugts-kc-android-source-build-3.9.2",
+    "target_sdk": 36,
+    "transform_animation_runtime": null,
+    "transform_hierarchy_runtime": null,
+    "visual_graph_runtime": {
+      "binding_count": 1,
+      "bindings": [
+        {
+          "graph": "periodic_owner_relative_reverse",
+          "scene_node_index": 5,
+          "scope": "node"
+        }
+      ],
+      "byte_length": 277,
+      "flow_target_count": 1,
+      "format_version": 1,
+      "graph_count": 1,
+      "graphs": [
+        {
+          "id": "periodic_owner_relative_reverse",
+          "max_steps": 1024,
+          "node_count": 4
+        }
+      ],
+      "input_count": 12,
+      "node_count": 4,
+      "schema": "ugts-kc-android-visual-graph-pack-1",
+      "sha256": "449adff0bd1f844eb4275b5485b903e103678d49c572da9a4bab889e7a1cc67f",
+      "state_key_count": 0,
+      "state_keys": [],
+      "string_count": 3,
+      "value_count": 7,
+      "world_binding_count": 0
+    },
+    "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed"
+  },
+  "case": {
+    "bayer_mode": "off",
+    "count": 256,
+    "levels": 2,
+    "name": "polar-0256-lut-off",
+    "polar_mode": "lut",
+    "strength": 0.0
+  },
+  "created_at": "2026-08-29T21:59:51+00:00",
+  "kind": "build-stage",
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "source_project_hash": "5fe3f55f1cf178a57a41cfd7ee834f57d17916395c405ee9ae1fa9e763f0aebb",
+  "workload": "recipe"
+}

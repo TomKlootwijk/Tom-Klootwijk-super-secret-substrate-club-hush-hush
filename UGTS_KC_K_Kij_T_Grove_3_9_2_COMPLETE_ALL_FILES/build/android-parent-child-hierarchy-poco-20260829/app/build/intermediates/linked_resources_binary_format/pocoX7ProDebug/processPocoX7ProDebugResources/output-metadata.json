@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "LINKED_RESOURCES_BINARY_FORMAT",
+    "kind": "Directory"
+  },
+  "applicationId": "org.ugts.games.parent_child_hierarchy_3d.pocox7pro",
+  "variantName": "pocoX7ProDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 392,
+      "versionName": "3.9.2-poco-x7-pro",
+      "outputFile": "linked-resources-binary-format-pocoX7ProDebug.ap_"
+    }
+  ],
+  "elementType": "File"
+}

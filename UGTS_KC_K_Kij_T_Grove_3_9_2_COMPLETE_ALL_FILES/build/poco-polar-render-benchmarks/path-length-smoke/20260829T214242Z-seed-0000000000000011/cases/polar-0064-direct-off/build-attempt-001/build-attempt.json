@@ -1,0 +1,81 @@
+{
+  "artifacts": {
+    "apk": {
+      "bytes": 1786658,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\app-pocoX7Pro-debug.apk",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/app-pocoX7Pro-debug.apk",
+      "sha256": "37f9cbb19734c71435c3a18e9b9ee5d969ba49e1cd00fe1e33a92765a4e12b53"
+    },
+    "build_report": {
+      "bytes": 17788,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\build-report.json",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/build-report.json",
+      "sha256": "6096dede00a33513345e1f7ef80865683dfc4cdcf24d44cfc36d8b62a21f2567"
+    },
+    "error": {
+      "bytes": 68,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\error.txt",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/error.txt",
+      "sha256": "2a4b745e68acfe76de7495b0bf99297ac41319061347ecc58432456868175958"
+    },
+    "gradle_output": {
+      "bytes": 3374,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\gradle-output.txt",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/gradle-output.txt",
+      "sha256": "5cb7c481ed86180625a4e8e96b933717c835fb2ac9acbd2d23ce4d2cb5f47d67"
+    },
+    "kcpk": {
+      "bytes": 1690,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\packed_kinematics.kcpk",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/packed_kinematics.kcpk",
+      "sha256": "25dacf6a2ccc2e14bf2852700d0e491d29b29468047138897d06efdc85797b12"
+    },
+    "kcpr": {
+      "bytes": 240,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\polar_populations.kcpr",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/polar_populations.kcpr",
+      "sha256": "386541211d10861d72e9a9b81b65d6950698a71c40ec8ae3a6f936f4c250b90a"
+    },
+    "kcrp": {
+      "bytes": 32,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\render_substrate.kcrp",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/render_substrate.kcrp",
+      "sha256": "d0e730801568ec29f791c4fe15bb3f286eca489185b533cd1746c958cb2c959b"
+    },
+    "project": {
+      "bytes": 21252,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\project.json",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/project.json",
+      "sha256": "ee817fa888e9b3f3988e276c1d15050dfbc4f83c21f4d640245aaea9284db5bc"
+    },
+    "source_project": {
+      "bytes": 21252,
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\path-length-smoke\\20260829T214242Z-seed-0000000000000011\\cases\\polar-0064-direct-off\\build-attempt-001\\partial-evidence\\project.json",
+      "relative_path": "cases/polar-0064-direct-off/build-attempt-001/partial-evidence/project.json",
+      "sha256": "ee817fa888e9b3f3988e276c1d15050dfbc4f83c21f4d640245aaea9284db5bc"
+    }
+  },
+  "case": {
+    "bayer_mode": "off",
+    "count": 64,
+    "levels": 2,
+    "name": "polar-0064-direct-off",
+    "polar_mode": "direct",
+    "strength": 0.0
+  },
+  "error": "build report and APK metadata application ids differ",
+  "kind": "build-attempt",
+  "number": 1,
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "started_at": "2026-08-29T21:42:42+00:00",
+  "status": "failed",
+  "temporary_workspace": {
+    "android_project_name": "a",
+    "path": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kc392-tk2zyoia",
+    "path_characters": 48,
+    "retained": false
+  },
+  "updated_at": "2026-08-29T21:43:12+00:00",
+  "workload": "recipe",
+  "workspace_strategy": "short-system-temporary-directory"
+}

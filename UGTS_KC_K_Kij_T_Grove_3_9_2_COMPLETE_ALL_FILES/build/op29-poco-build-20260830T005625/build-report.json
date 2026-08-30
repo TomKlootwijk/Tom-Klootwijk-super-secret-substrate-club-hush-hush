@@ -1,0 +1,1180 @@
+{
+  "agp": "8.13.2",
+  "application_id": "org.ugts.games.packed_polar_gpu_lab_3d",
+  "authoring_assets_packaged": true,
+  "authoring_project_hash": "69ee05cbaa5572e0ae0b3e70c1ec500a086199e50d7f2f08f2ba439b960bc5ac",
+  "compile_sdk": 36,
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "files": [
+    {
+      "bytes": 1742,
+      "path": "app/build.gradle",
+      "sha256": "18e453f07fb54db26e6f83f6a329c30c3d4d8557bc4c95582be02d50d88f7a61"
+    },
+    {
+      "bytes": 57,
+      "path": "app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1511,
+      "path": "app/src/main/AndroidManifest.xml",
+      "sha256": "8ec30ea970c150784fa1bc42b2fdd4044cc6745d12fd03a8fb840993a91e19e7"
+    },
+    {
+      "bytes": 3202,
+      "path": "app/src/main/assets/packed_kinematics.kcpk",
+      "sha256": "29bffbc8b3832f7d83cf54408ce5b0f73f4b91a0e9633acffa05d8e512de6dde"
+    },
+    {
+      "bytes": 103179,
+      "path": "app/src/main/assets/project.json",
+      "sha256": "43b346f06a747a282d50b5043b582cdb2d0d4f88cd60e518b5a20a2be4ac4568"
+    },
+    {
+      "bytes": 32,
+      "path": "app/src/main/assets/render_substrate.kcrp",
+      "sha256": "6678455186cabde5125d77c26511d2766800d6473dd5a94b2dfa6ee4e6f81d44"
+    },
+    {
+      "bytes": 15501,
+      "path": "app/src/main/assets/scene-pack-inspection.json",
+      "sha256": "86d1017e652a248b884d627183856539a1d36a2e0df681db1a6aca6c01d18c20"
+    },
+    {
+      "bytes": 2265,
+      "path": "app/src/main/assets/shaders/grove_post.frag",
+      "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+    },
+    {
+      "bytes": 190,
+      "path": "app/src/main/assets/shaders/grove_post.vert",
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    {
+      "bytes": 4241,
+      "path": "app/src/main/assets/shaders/polar_scene.vert",
+      "sha256": "d26ecd660237579c06a455ba669b4e4373abedf72f5b5675479e29edcc3bc90f"
+    },
+    {
+      "bytes": 1904,
+      "path": "app/src/main/assets/shaders/scene.frag",
+      "sha256": "668ecb423b49e39a4e745a19c4737279e2cc870ec6fa50127368aa980f3ec8ee"
+    },
+    {
+      "bytes": 807,
+      "path": "app/src/main/assets/shaders/scene.vert",
+      "sha256": "b094f5b3e5d28967b1dd206ecf26e0ece3ce9ca33d5f43cc38a3eff2af977e91"
+    },
+    {
+      "bytes": 10446,
+      "path": "app/src/main/assets/signature_scene.kc3d",
+      "sha256": "0da26defbc5f76b699f841ae06bda650327ca6c085b5388feaff2102c204a1b8"
+    },
+    {
+      "bytes": 752,
+      "path": "app/src/main/assets/visual_graphs.kcvg",
+      "sha256": "8e3625036d1c0533a95ab19d19ac5e9751e84c193a6bac65258154cea6ab1cad"
+    },
+    {
+      "bytes": 860,
+      "path": "app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 6536,
+      "path": "app/src/main/cpp/body_physics.cpp",
+      "sha256": "7d4efd4840faf17fde5a27e2f417cb07811e0fbb3d019c72c04ce7406e0a8bd2"
+    },
+    {
+      "bytes": 1094,
+      "path": "app/src/main/cpp/body_physics.hpp",
+      "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
+    },
+    {
+      "bytes": 2791,
+      "path": "app/src/main/cpp/CMakeLists.txt",
+      "sha256": "93473c171e16c9352bb259ec219185edf2ca611f2aed816865da9f9e5fca3267"
+    },
+    {
+      "bytes": 3497,
+      "path": "app/src/main/cpp/device_profile.cpp",
+      "sha256": "cf9076926932f88136fce6074395ac51e9dcc9b912f4c06b2123b54bb9c18e94"
+    },
+    {
+      "bytes": 676,
+      "path": "app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 25077,
+      "path": "app/src/main/cpp/engine.cpp",
+      "sha256": "2df2e1c92fdd43b74e9589b2cf98cc95ed317d72d491a96db5d69303f634eda1"
+    },
+    {
+      "bytes": 3094,
+      "path": "app/src/main/cpp/engine.hpp",
+      "sha256": "499c17cc9286c9fc1bf7384e7eadc0c42c85798726d43d52723b02c452d3c812"
+    },
+    {
+      "bytes": 7432,
+      "path": "app/src/main/cpp/gpu_timer_query.cpp",
+      "sha256": "51e359ae1802bf31bd6901215d1fa67a1d0f59098e3256457f2d18bbe2ec56ba"
+    },
+    {
+      "bytes": 1979,
+      "path": "app/src/main/cpp/gpu_timer_query.hpp",
+      "sha256": "a73c3885315d67329c78fbbbb189fe66b8474f0288ac601b55578c2733dfe525"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/graph_component_access.hpp",
+      "sha256": "1af799a35631aeaa0a84d97bc059877954ca842c7dbdc9fb3f7f2ab42a6db23a"
+    },
+    {
+      "bytes": 61116,
+      "path": "app/src/main/cpp/graph_vm.cpp",
+      "sha256": "50e5aa7507102befeee031aab1370774c2ba22ac84ca10b4dbbfe272a9dafec4"
+    },
+    {
+      "bytes": 7290,
+      "path": "app/src/main/cpp/graph_vm.hpp",
+      "sha256": "ea492e36c2af666b8ae9e3b3d627efff6a9e643661b408022ef83f8650be8dc1"
+    },
+    {
+      "bytes": 2370,
+      "path": "app/src/main/cpp/grove_juice.cpp",
+      "sha256": "247fed02dd45217041950146fae868e28477d0029161ddb32fdf8bca483f7dec"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/grove_juice.hpp",
+      "sha256": "fc8c20fefb35cbc8833ad786f7d672ba2c1142d4338cf4f4fdfb9e0a985affbb"
+    },
+    {
+      "bytes": 1642,
+      "path": "app/src/main/cpp/grove_tuning.cpp",
+      "sha256": "16ebd1f20c9bb846af5b46444cf4e04df513bd66177ba8a996cc3db126ddf4ab"
+    },
+    {
+      "bytes": 404,
+      "path": "app/src/main/cpp/grove_tuning.hpp",
+      "sha256": "8cab2c99999ca7493ef0c660f331cc3259485e1ad1e4fbe1312cdff2b4fe9133"
+    },
+    {
+      "bytes": 3792,
+      "path": "app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1889,
+      "path": "app/src/main/cpp/main.cpp",
+      "sha256": "2e81982574f1621c6bdb5e60e5a5afc8f487df61820420c81c109396caa9bfd9"
+    },
+    {
+      "bytes": 24608,
+      "path": "app/src/main/cpp/polar_kinematics.cpp",
+      "sha256": "aeb997710840663457506bf98488ca82c8ef55309ff4a7c6cd31a2eb03b45c89"
+    },
+    {
+      "bytes": 3102,
+      "path": "app/src/main/cpp/polar_kinematics.hpp",
+      "sha256": "b03dee67a22fa33a85a308b387c8a5b3640ddbac24fe2be3b7441ce433d5b018"
+    },
+    {
+      "bytes": 31229,
+      "path": "app/src/main/cpp/polar_populations.cpp",
+      "sha256": "3193a1c90a20524bd47270c863d7d4cadfe5a1bb1e1482ec4f9cab2448e8a9dc"
+    },
+    {
+      "bytes": 2748,
+      "path": "app/src/main/cpp/polar_populations.hpp",
+      "sha256": "1c01b81d3fdb92605a009a1106774c721e88186134ef40320d1c27c7c8786e18"
+    },
+    {
+      "bytes": 3793,
+      "path": "app/src/main/cpp/render_substrate.cpp",
+      "sha256": "eb63fa6f4773a2537300152cf78939edba8e4895f97edae246e3e2705f426ec5"
+    },
+    {
+      "bytes": 834,
+      "path": "app/src/main/cpp/render_substrate.hpp",
+      "sha256": "d025ef17fc9fc98b6cf28daca59efcd9938e2de9c43d9faf22fd30fa8d0b9566"
+    },
+    {
+      "bytes": 54646,
+      "path": "app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "ce2b58d87ec2e992c5d1ec2c5e2ae67c29e635e6278f5b4049c970f90e73ed8d"
+    },
+    {
+      "bytes": 5714,
+      "path": "app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "c4b4beb3da8fefe7dd3401c7b532e6bf0049ddde391b2363d9a9fe41e3767e76"
+    },
+    {
+      "bytes": 16221,
+      "path": "app/src/main/cpp/scatter_population.cpp",
+      "sha256": "d46febf3421cda5c83833d2bb11534d9a539490cab57e90f21ea1562b79dde18"
+    },
+    {
+      "bytes": 2574,
+      "path": "app/src/main/cpp/scatter_population.hpp",
+      "sha256": "e9b27c2836841f9c509421a749b99dc14746d9a8698557153520d89b16e3422f"
+    },
+    {
+      "bytes": 6306,
+      "path": "app/src/main/cpp/scene_pack.cpp",
+      "sha256": "84d1bd5193c0eec7613d615de419a952ad86faa57c5b93ca726dd90c866d483b"
+    },
+    {
+      "bytes": 2860,
+      "path": "app/src/main/cpp/scene_pack.hpp",
+      "sha256": "da19a53b7370cc1e0ba7852744ee2d84ec63b3b6fb77266db402e32dddc56388"
+    },
+    {
+      "bytes": 5743,
+      "path": "app/src/main/cpp/touch_router.cpp",
+      "sha256": "83e05dd6e2e4e8c8b0befef08e20e447fa21f812a3848a9f24916d20ebd69721"
+    },
+    {
+      "bytes": 2150,
+      "path": "app/src/main/cpp/touch_router.hpp",
+      "sha256": "037972a00ca70bc766309b83099028203a4e3758c52532ba271212df6984568a"
+    },
+    {
+      "bytes": 20172,
+      "path": "app/src/main/cpp/transform_animation.cpp",
+      "sha256": "14bd6ec6c6bf458aff96ac212b7f2a65be595a1f8e0ded326a3899f24ca2ae0b"
+    },
+    {
+      "bytes": 2647,
+      "path": "app/src/main/cpp/transform_animation.hpp",
+      "sha256": "92f88b412a4bce7f35dbf44c8a36e715af95a5b1cc67693504261939a72f4cfa"
+    },
+    {
+      "bytes": 6019,
+      "path": "app/src/main/cpp/transform_hierarchy.cpp",
+      "sha256": "e7bbadc55d72f73bbcf9cdea6b5f346b591aac82801d9545d880d340e0de1376"
+    },
+    {
+      "bytes": 1262,
+      "path": "app/src/main/cpp/transform_hierarchy.hpp",
+      "sha256": "cda00bf3218f151ff7d3f44a7b553d66613f7088fad0a81c5f5c938d78c9eebf"
+    },
+    {
+      "bytes": 4752,
+      "path": "app/src/main/cpp/trigger_area.cpp",
+      "sha256": "84fdc47aa5f8e5e12044031f9cdfc4b9041e4d53a75b81ba3751f038b9676d31"
+    },
+    {
+      "bytes": 1296,
+      "path": "app/src/main/cpp/trigger_area.hpp",
+      "sha256": "ed490f5bec08bcff5c7dd0beadc8a02d52c77ed0c981254bd3261851409a5c9c"
+    },
+    {
+      "bytes": 155,
+      "path": "app/src/main/res/values/strings.xml",
+      "sha256": "dcd8afa0cb94cbc506d7842f5286a2c9c721b92df9f10e6f3b8da1f3b57f1a2d"
+    },
+    {
+      "bytes": 766,
+      "path": "app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 74,
+      "path": "build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 8042,
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b"
+    },
+    {
+      "bytes": 338,
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "3fb35582e5424775b45f566273d3909032a49f26c0d7d063f92a92e7b5e467d5"
+    },
+    {
+      "bytes": 159,
+      "path": "gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 362,
+      "path": "gradlew",
+      "sha256": "d7014b2f5807fd975867dbb2e3651dbc19dd88d9a13d0df4c9061260d662fd95"
+    },
+    {
+      "bytes": 267,
+      "path": "gradlew.bat",
+      "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
+    },
+    {
+      "bytes": 9500,
+      "path": "README.md",
+      "sha256": "49df179b32e55151be2ebe3f4bf6198dcb36237df04b87759c73b910498e418c"
+    },
+    {
+      "bytes": 333,
+      "path": "settings.gradle",
+      "sha256": "e15aa169810e33620d11fbf6723bf7ddf619f3dfd07801748c3cbd07245fe9b8"
+    }
+  ],
+  "gradle": "8.13",
+  "min_sdk": 26,
+  "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+  "ndk": "r29 / 29.0.14206865",
+  "packed_kinematic_runtime": {
+    "byte_length": 3202,
+    "component_count": 64,
+    "components": [
+      {
+        "motion": "000025fd00000000",
+        "node_index": 5,
+        "pose": "1865edbd4cc5c1bd",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000218900000000",
+        "node_index": 6,
+        "pose": "54054dad164011ad",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000268200000000",
+        "node_index": 7,
+        "pose": "795271b5f6bd85b5",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000246b00000000",
+        "node_index": 8,
+        "pose": "9daa9fa3bdeed3a3",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e20400000000",
+        "node_index": 9,
+        "pose": "b5e9160a4e8e520a",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "000023fa00000000",
+        "node_index": 10,
+        "pose": "cc96333621e69736",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000137b00000000",
+        "node_index": 11,
+        "pose": "e10d1ebb603f62bb",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000de9300000000",
+        "node_index": 12,
+        "pose": "f250233ceebdef3c",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000ee4300000000",
+        "node_index": 13,
+        "pose": "136f50b5b0fb6cb5",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00000f2000000000",
+        "node_index": 14,
+        "pose": "543650807b309480",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000da0000000000",
+        "node_index": 15,
+        "pose": "7c37964414d26244",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001d4f00000000",
+        "node_index": 16,
+        "pose": "9bc05b5d598f5f5d",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000defd00000000",
+        "node_index": 17,
+        "pose": "b62f95c669ddb1c6",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00002a0900000000",
+        "node_index": 18,
+        "pose": "ce078e18bb058218",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e20800000000",
+        "node_index": 19,
+        "pose": "e21bed581a039958",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000ea0100000000",
+        "node_index": 20,
+        "pose": "f1fabe49bff74a49",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001e7700000000",
+        "node_index": 21,
+        "pose": "13c4158d8a81d98d",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00002cd900000000",
+        "node_index": 22,
+        "pose": "56179a7d30d39e7d",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000275800000000",
+        "node_index": 23,
+        "pose": "7bf12413778c3813",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001e6700000000",
+        "node_index": 24,
+        "pose": "9db0dd2fd604212f",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000ea1200000000",
+        "node_index": 25,
+        "pose": "b5ecf6e0b19e12e0",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000de4400000000",
+        "node_index": 26,
+        "pose": "cc8892a4d2bcbea4",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000f0c600000000",
+        "node_index": 27,
+        "pose": "e18f0581236d5181",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e22800000000",
+        "node_index": 28,
+        "pose": "f4602fd6edfb5bd6",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000290700000000",
+        "node_index": 29,
+        "pose": "184a0175d6999575",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001a3e00000000",
+        "node_index": 30,
+        "pose": "4da65e5a39ceb25a",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000f04300000000",
+        "node_index": 31,
+        "pose": "7a727eada37e5aad",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001fde00000000",
+        "node_index": 32,
+        "pose": "9e7287902cc0fb90",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000268700000000",
+        "node_index": 33,
+        "pose": "b8c48cbefd4640be",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e43d00000000",
+        "node_index": 34,
+        "pose": "cc2cbff19fc37bf1",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001a4800000000",
+        "node_index": 35,
+        "pose": "e235e8c8523cacc8",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001a2c00000000",
+        "node_index": 36,
+        "pose": "f2601a2924195e29",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e51300000000",
+        "node_index": 37,
+        "pose": "144acfa5b8d7dba5",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d54100000000",
+        "node_index": 38,
+        "pose": "5610f1ee0ab1bdee",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000175600000000",
+        "node_index": 39,
+        "pose": "7d8ad13ee1e5453e",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "000023d300000000",
+        "node_index": 40,
+        "pose": "9d4ce9ee5da72dee",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000101800000000",
+        "node_index": 41,
+        "pose": "b5ffee44c5a0f244",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d64400000000",
+        "node_index": 42,
+        "pose": "ccc0494992b2a549",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d9b100000000",
+        "node_index": 43,
+        "pose": "e0b647a69e1ad3a6",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00002bdc00000000",
+        "node_index": 44,
+        "pose": "f1fe2dad64c6d1ad",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000154f00000000",
+        "node_index": 45,
+        "pose": "1b76d907a68f7d07",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "000018ca00000000",
+        "node_index": 46,
+        "pose": "54328051058be451",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d3bc00000000",
+        "node_index": 47,
+        "pose": "7db040bf10306cbf",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001aab00000000",
+        "node_index": 48,
+        "pose": "9e0c7928f484bd28",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000ddb800000000",
+        "node_index": 49,
+        "pose": "b53f3cf5a46c98f5",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "000015a200000000",
+        "node_index": 50,
+        "pose": "cd1c12931bb6f693",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d45d00000000",
+        "node_index": 51,
+        "pose": "e08078b5976f44b5",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000dec200000000",
+        "node_index": 52,
+        "pose": "f3b178fc87f324fc",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e7fa00000000",
+        "node_index": 53,
+        "pose": "16a2d53334737133",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00002d9700000000",
+        "node_index": 54,
+        "pose": "4e47103c9774343c",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "000026f700000000",
+        "node_index": 55,
+        "pose": "7db9433b4eb1f73b",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001db700000000",
+        "node_index": 56,
+        "pose": "9ba06cddf6b1f0dd",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000280400000000",
+        "node_index": 57,
+        "pose": "b74271454f0d3545",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d58b00000000",
+        "node_index": 58,
+        "pose": "ccbd07ddb22f43dd",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001c7400000000",
+        "node_index": 59,
+        "pose": "e017ddb5c85f71b5",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00000d7800000000",
+        "node_index": 60,
+        "pose": "f44997938bbd9b93",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e47d00000000",
+        "node_index": 61,
+        "pose": "1b38922fe0e4ee2f",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d9bb00000000",
+        "node_index": 62,
+        "pose": "52b4828435115e84",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e06d00000000",
+        "node_index": 63,
+        "pose": "7c1988f9bb1644f9",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "00001cb900000000",
+        "node_index": 64,
+        "pose": "9eda1b03fe8f8f03",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000156800000000",
+        "node_index": 65,
+        "pose": "b5afb9bb11e67dbb",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e82200000000",
+        "node_index": 66,
+        "pose": "ccee3c9e3c70789e",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000e99b00000000",
+        "node_index": 67,
+        "pose": "e1a627a2477363a2",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      },
+      {
+        "motion": "0000d2e100000000",
+        "node_index": 68,
+        "pose": "f1c153f7dfb2fff7",
+        "profile": "shared_orbit_profile",
+        "profile_index": 0
+      }
+    ],
+    "format_version": 1,
+    "profile_count": 1,
+    "profiles": [
+      {
+        "id": "shared_orbit_profile",
+        "lut_bytes": 1584,
+        "lut_resolution": 256,
+        "motion_range": {
+          "rho_acceleration": 0.5,
+          "rho_velocity": 0.25,
+          "theta_acceleration": 4.39822971502571,
+          "theta_velocity": 2.199114857512855
+        },
+        "profile": {
+          "core_radius": 0.0001,
+          "r0": 6.0,
+          "rho_max": 0.7922380832041763,
+          "rho_min": -0.9373441410719874
+        }
+      }
+    ],
+    "schema": "ugts-kc-native-packed-kinematics-inspection-3.9.2",
+    "sha256": "29bffbc8b3832f7d83cf54408ce5b0f73f4b91a0e9633acffa05d8e512de6dde"
+  },
+  "polar_population_recipe_asset": null,
+  "population_runtime": null,
+  "profile_hint": "auto",
+  "project_hash": "69ee05cbaa5572e0ae0b3e70c1ec500a086199e50d7f2f08f2ba439b960bc5ac",
+  "project_id": "packed_polar_gpu_lab_3d",
+  "render_substrate_runtime": {
+    "bayer_enabled": true,
+    "bayer_mode": "subtle",
+    "bayer_mode_code": 1,
+    "byte_length": 32,
+    "format_version": 1,
+    "levels": 64,
+    "polar_mode": "auto",
+    "polar_mode_code": 0,
+    "schema": "ugts-kc-render-substrate-inspection-3.9.2",
+    "seed": 6840186221883211998,
+    "sha256": "6678455186cabde5125d77c26511d2766800d6473dd5a94b2dfa6ee4e6f81d44",
+    "strength": 0.30000001192092896
+  },
+  "schema": "ugts-kc-android-source-build-3.9.2",
+  "target_sdk": 36,
+  "transform_animation_runtime": null,
+  "transform_hierarchy_runtime": null,
+  "visual_graph_runtime": {
+    "binding_count": 64,
+    "bindings": [
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 5,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 6,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 7,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 8,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 9,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 10,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 11,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 12,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 13,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 14,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 15,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 16,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 17,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 18,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 19,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 20,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 21,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 22,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 23,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 24,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 25,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 26,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 27,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 28,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 29,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 30,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 31,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 32,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 33,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 34,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 35,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 36,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 37,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 38,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 39,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 40,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 41,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 42,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 43,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 44,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 45,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 46,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 47,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 48,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 49,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 50,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 51,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 52,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 53,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 54,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 55,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 56,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 57,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 58,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 59,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 60,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 61,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 62,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 63,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 64,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 65,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 66,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 67,
+        "scope": "node"
+      },
+      {
+        "graph": "periodic_owner_relative_reverse",
+        "scene_node_index": 68,
+        "scope": "node"
+      }
+    ],
+    "byte_length": 752,
+    "flow_target_count": 1,
+    "format_version": 1,
+    "graph_count": 1,
+    "graphs": [
+      {
+        "id": "periodic_owner_relative_reverse",
+        "max_steps": 1024,
+        "node_count": 4
+      }
+    ],
+    "input_count": 10,
+    "node_count": 4,
+    "schema": "ugts-kc-android-visual-graph-pack-1",
+    "sha256": "8e3625036d1c0533a95ab19d19ac5e9751e84c193a6bac65258154cea6ab1cad",
+    "state_key_count": 0,
+    "state_keys": [],
+    "string_count": 2,
+    "value_count": 6,
+    "world_binding_count": 0
+  },
+  "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed"
+}

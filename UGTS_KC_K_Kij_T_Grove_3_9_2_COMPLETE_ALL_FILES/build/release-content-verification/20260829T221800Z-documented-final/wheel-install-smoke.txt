@@ -1,0 +1,44 @@
+CREATE
+
+INSTALL
+Processing c:\tom klootwijk super secret substrate club hush hush\ugts_kc_k_kij_t_grove_3_9_2_complete_all_files\build\release-content-verification\20260829t221800z-documented-final\ugts_kc_signature-3.9.2-py3-none-any.whl
+Installing collected packages: ugts-kc-signature
+Successfully installed ugts-kc-signature-3.9.2
+
+IMPORT
+{"distribution_version": "3.9.2", "package_file": "C:\\Users\\Tom\\AppData\\Local\\Temp\\ugts-wheel-smoke-g7hsdn3s\\v\\Lib\\site-packages\\ugts_kc3\\__init__.py", "required_resources": {"android_template/project/app/src/main/assets/shaders/polar_scene.vert": true, "android_template/project/app/src/main/cpp/gpu_timer_query.cpp": true, "android_template/project/app/src/main/cpp/gpu_timer_query.hpp": true, "android_template/project/app/src/main/cpp/polar_populations.cpp": true, "android_template/project/app/src/main/cpp/polar_populations.hpp": true, "conformance/polar_substrate_vectors.tsv": true}, "version": "3.9.2"}
+
+CLI
+usage: ugts-kc [-h]
+               {info,editor,new,validate,build-web,simulate,export-svg,demo,new-3d,validate-3d,simulate-3d,pack-3d,export-gltf3d,build-android,android-devices,profile-android,pack-ecs,unpack-ecs,make-polar-lut}
+               ...
+
+UGTS-KC 3.9.2 — K-Kij-T / Grove game-creation tools
+
+positional arguments:
+  {info,editor,new,validate,build-web,simulate,export-svg,demo,new-3d,validate-3d,simulate-3d,pack-3d,export-gltf3d,build-android,android-devices,profile-android,pack-ecs,unpack-ecs,make-polar-lut}
+    info                show runtime and edition information
+    editor              launch the UGTS desktop editor
+    new                 create a starter 2D vector-game project
+    validate            validate a 2D project.json file
+    build-web           build a browser-playable HTML5 game
+    simulate            run a headless deterministic 2D simulation
+    export-svg          write every vector asset as SVG
+    demo                write and build Elizabeth's Vector Garden demo
+    new-3d              create a mobile 3D project
+    validate-3d         validate a mobile 3D project
+    simulate-3d         run deterministic 3D arcade simulation
+    pack-3d             compile a KC3D392 native binary scene
+    export-gltf3d       export a mobile 3D project through the retained glTF
+                        path
+    build-android       materialize a native Android Studio source project
+    android-devices     list attached Android Debug Bridge devices
+    profile-android     measure a running Android game's frames, memory and
+                        thermals
+    pack-ecs            compress project/ECS/graph JSON into a small UGECS1
+                        file
+    unpack-ecs          restore a UGECS1 file to readable JSON
+    make-polar-lut      build a compact shared binary16 log-encoded polar LUT
+
+options:
+  -h, --help            show this help message and exit

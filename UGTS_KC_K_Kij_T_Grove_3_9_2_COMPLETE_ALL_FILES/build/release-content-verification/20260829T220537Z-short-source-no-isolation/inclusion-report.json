@@ -1,0 +1,250 @@
+{
+  "artifacts": {
+    "wheel": {
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T220537Z-short-source-no-isolation\\ugts_kc_signature-3.9.2-py3-none-any.whl",
+      "bytes": 533513,
+      "sha256": "e9e3f2c180e6ba9940e96f3c49d586d4e5b7663d199fc1100c89bac52ede786b",
+      "member_count": 123
+    },
+    "sdist": {
+      "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T220537Z-short-source-no-isolation\\ugts_kc_signature-3.9.2.tar.gz",
+      "bytes": 616863,
+      "sha256": "98b3bed9e73db5ef3d9ee408f127b065787dee8f7541ee1b56f4ea73157162a3",
+      "file_member_count": 160
+    }
+  },
+  "expected_count": 25,
+  "wheel": {
+    "ugts_kc3/conformance/polar_substrate_vectors.tsv": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/CMakeLists.txt": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.cpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.hpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.cpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.hpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.cpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.hpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.cpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.hpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.cpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.hpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/engine.cpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/engine.hpp": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/polar_scene.vert": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.frag": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.vert": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.frag": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.vert": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/packed_kinematics.py": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/polarpack.py": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/polar_population.py": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/polar_population_pack.py": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/renderpack.py": {
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/androidexport.py": {
+      "present": true,
+      "matches_source": true
+    }
+  },
+  "sdist": {
+    "ugts_kc3/conformance/polar_substrate_vectors.tsv": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/conformance/polar_substrate_vectors.tsv",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/CMakeLists.txt": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/CMakeLists.txt",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.cpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.cpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.hpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/gpu_timer_query.hpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.cpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.cpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.hpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/polar_populations.hpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.cpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.cpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.hpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/polar_kinematics.hpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.cpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.cpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.hpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/render_substrate.hpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.cpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.cpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.hpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/renderer_gles3.hpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/engine.cpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/engine.cpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/cpp/engine.hpp": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/cpp/engine.hpp",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/polar_scene.vert": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/assets/shaders/polar_scene.vert",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.frag": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.frag",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.vert": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/assets/shaders/grove_post.vert",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.frag": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.frag",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.vert": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/android_template/project/app/src/main/assets/shaders/scene.vert",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/packed_kinematics.py": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/packed_kinematics.py",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/polarpack.py": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/polarpack.py",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/polar_population.py": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/polar_population.py",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/polar_population_pack.py": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/polar_population_pack.py",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/renderpack.py": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/renderpack.py",
+      "present": true,
+      "matches_source": true
+    },
+    "ugts_kc3/androidexport.py": {
+      "archive_path": "ugts_kc_signature-3.9.2/src/ugts_kc3/androidexport.py",
+      "present": true,
+      "matches_source": true
+    }
+  },
+  "wheel_all_present_and_exact": true,
+  "sdist_all_present_and_exact": true,
+  "wheel_unexpected_bytecode": [],
+  "sdist_unexpected_bytecode": []
+}

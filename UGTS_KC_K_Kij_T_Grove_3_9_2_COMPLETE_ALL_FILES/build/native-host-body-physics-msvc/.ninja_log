@@ -1,0 +1,24 @@
+# ninja log v7
+36	1178	8097310322130001	CMakeFiles/body_physics_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/body_physics.cpp.obj	261db8cc10cd1c0e
+28	1301	8097310322054907	CMakeFiles/body_physics_tests.dir/body_physics_tests.cpp.obj	6014b3b9f0193972
+1301	1945	8097310334790490	body_physics_tests.exe	8ae4ee999057ea58
+33	7751	8097310961115327	CMakeFiles/touch_router_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/touch_router.cpp.obj	92abc6cf84be45c0
+25	7769	8097310961040272	CMakeFiles/touch_router_tests.dir/touch_router_tests.cpp.obj	88013e5dc9a46620
+61	7773	8097310961396534	CMakeFiles/graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/transform_animation.cpp.obj	d252b7b9b021d389
+283	7774	8097310963613206	CMakeFiles/message_graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/transform_animation.cpp.obj	3e72a458af944f5a
+52	7777	8097310961301442	CMakeFiles/graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/scatter_population.cpp.obj	33abbbc8307e639
+81	7778	8097310961594773	CMakeFiles/nearest_tag_graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/scatter_population.cpp.obj	d6918071edc5410f
+86	7780	8097310961649886	CMakeFiles/nearest_tag_graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/transform_animation.cpp.obj	ff8719e1cfea3558
+132	7781	8097310962105436	CMakeFiles/timer_graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/scatter_population.cpp.obj	334c74cd6b04df4
+139	7786	8097310962170584	CMakeFiles/timer_graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/transform_animation.cpp.obj	4e7d196542764360
+263	7794	8097310963417991	CMakeFiles/message_graph_vm_tests.dir/70e2548cf3f25d31d30bc061203042e7/app/src/main/cpp/scatter_population.cpp.obj	64b92237300686e8
+65	7802	8097310961439687	CMakeFiles/nearest_tag_graph_vm_tests.dir/nearest_tag_graph_vm_tests.cpp.obj	8f9f0dad4946fe28
+122	7804	8097310962000311	CMakeFiles/timer_graph_vm_tests.dir/timer_graph_vm_tests.cpp.obj	4f8e34390f14121a
+101	7840	8097310961800151	CMakeFiles/nearest_in_cone_graph_vm_tests.dir/nearest_in_cone_graph_vm_tests.cpp.obj	d1a0f00510164224
+106	7840	8097310961845204	CMakeFiles/nearest_in_cone_graph_vm_tests.dir/24c3cf650af3fb0a0aa40fd4b3118f88/project/app/src/main/cpp/graph_vm.cpp.obj	79d991ba83096667
+195	7854	8097310962730129	CMakeFiles/message_graph_vm_tests.dir/24c3cf650af3fb0a0aa40fd4b3118f88/project/app/src/main/cpp/graph_vm.cpp.obj	e87960630d75863f
+47	7872	8097310961251443	CMakeFiles/graph_vm_tests.dir/24c3cf650af3fb0a0aa40fd4b3118f88/project/app/src/main/cpp/graph_vm.cpp.obj	b36efb51fd747177
+72	7918	8097310961499676	CMakeFiles/nearest_tag_graph_vm_tests.dir/24c3cf650af3fb0a0aa40fd4b3118f88/project/app/src/main/cpp/graph_vm.cpp.obj	574b6dc91bd9b245
+167	7952	8097310962459504	CMakeFiles/message_graph_vm_tests.dir/message_graph_vm_tests.cpp.obj	21632a41174cc2e5
+127	8230	8097310962055425	CMakeFiles/timer_graph_vm_tests.dir/24c3cf650af3fb0a0aa40fd4b3118f88/project/app/src/main/cpp/graph_vm.cpp.obj	d8d2c89923ff3379
+42	8230	8097310961206333	CMakeFiles/graph_vm_tests.dir/graph_vm_tests.cpp.obj	748051925b1b774d

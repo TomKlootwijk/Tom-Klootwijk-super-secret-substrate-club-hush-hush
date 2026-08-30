@@ -1,0 +1,25 @@
+{
+  "build_stage": "cases/polar-0128-lut-off/build-stage.json",
+  "case": {
+    "bayer_mode": "off",
+    "count": 128,
+    "levels": 2,
+    "name": "polar-0128-lut-off",
+    "polar_mode": "lut",
+    "strength": 0.0
+  },
+  "kind": "build-attempt",
+  "number": 1,
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "started_at": "2026-08-30T00:10:20+00:00",
+  "status": "complete",
+  "temporary_workspace": {
+    "android_project_name": "a",
+    "path": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kc392-_s0q70jj",
+    "path_characters": 48,
+    "retained": false
+  },
+  "updated_at": "2026-08-30T00:10:34+00:00",
+  "workload": "burst",
+  "workspace_strategy": "short-system-temporary-directory"
+}

@@ -1,0 +1,45 @@
+{
+    "logs": [
+        {
+            "outputFile": "org.ugts.games.packed_polar_recipe_lab_3d.app-pocoX7ProDebug-4:/values_values.arsc.flat",
+            "map": [
+                {
+                    "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T213228Z-seed-5eed3920c0dec0de\\cases\\polar-1024-direct-off\\android-project\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "13",
+                        "endColumns": "12",
+                        "endOffsets": "752"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "151",
+                        "endLines": "14",
+                        "endColumns": "12",
+                        "endOffsets": "848"
+                    }
+                },
+                {
+                    "source": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T213228Z-seed-5eed3920c0dec0de\\cases\\polar-1024-direct-off\\android-project\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "57",
+                        "endColumns": "95",
+                        "endOffsets": "148"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "95",
+                        "endOffsets": "146"
+                    }
+                }
+            ]
+        }
+    ]
+}

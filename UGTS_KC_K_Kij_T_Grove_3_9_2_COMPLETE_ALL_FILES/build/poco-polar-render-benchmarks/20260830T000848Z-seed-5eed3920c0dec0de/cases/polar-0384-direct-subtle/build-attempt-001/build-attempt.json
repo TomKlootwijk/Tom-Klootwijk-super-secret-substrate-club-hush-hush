@@ -1,0 +1,25 @@
+{
+  "build_stage": "cases/polar-0384-direct-subtle/build-stage.json",
+  "case": {
+    "bayer_mode": "subtle",
+    "count": 384,
+    "levels": 64,
+    "name": "polar-0384-direct-subtle",
+    "polar_mode": "direct",
+    "strength": 0.3
+  },
+  "kind": "build-attempt",
+  "number": 1,
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "started_at": "2026-08-30T00:11:23+00:00",
+  "status": "complete",
+  "temporary_workspace": {
+    "android_project_name": "a",
+    "path": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kc392-pdds9muq",
+    "path_characters": 48,
+    "retained": false
+  },
+  "updated_at": "2026-08-30T00:11:43+00:00",
+  "workload": "burst",
+  "workspace_strategy": "short-system-temporary-directory"
+}

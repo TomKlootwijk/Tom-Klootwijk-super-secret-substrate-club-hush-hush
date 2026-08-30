@@ -1,0 +1,1197 @@
+{
+  "author": "UGTS-KC example",
+  "background": [
+    0.012,
+    0.025,
+    0.055,
+    1.0
+  ],
+  "camera": {
+    "far": 250.0,
+    "near": 0.05,
+    "position": [
+      11.0,
+      7.5,
+      15.0
+    ],
+    "target": [
+      0.0,
+      1.0,
+      -0.5
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "vertical_fov_degrees": 55.0
+  },
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "id": "linked_saved_scenes_3d",
+  "light": {
+    "ambient": 0.24,
+    "color": [
+      1.0,
+      0.95,
+      0.88
+    ],
+    "direction": [
+      -0.45,
+      -1.0,
+      -0.25
+    ],
+    "intensity": 1.35
+  },
+  "materials": [
+    {
+      "base_color": [
+        0.035,
+        0.07,
+        0.13,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "floor_navy",
+      "metallic": 0.12,
+      "roughness": 0.82
+    },
+    {
+      "base_color": [
+        0.08,
+        0.72,
+        0.68,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.01,
+        0.12,
+        0.11
+      ],
+      "id": "gate_teal",
+      "metallic": 0.28,
+      "roughness": 0.3
+    },
+    {
+      "base_color": [
+        0.25,
+        0.95,
+        0.48,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.05,
+        0.2,
+        0.07
+      ],
+      "id": "goal_green",
+      "metallic": 0.1,
+      "roughness": 0.25
+    },
+    {
+      "base_color": [
+        1.0,
+        0.62,
+        0.12,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.25,
+        0.08,
+        0.01
+      ],
+      "id": "lantern_gold",
+      "metallic": 0.35,
+      "roughness": 0.22
+    },
+    {
+      "base_color": [
+        0.16,
+        0.46,
+        1.0,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.02,
+        0.06,
+        0.24
+      ],
+      "id": "orbit_blue",
+      "metallic": 0.4,
+      "roughness": 0.24
+    },
+    {
+      "base_color": [
+        0.15,
+        0.82,
+        1.0,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.01,
+        0.13,
+        0.2
+      ],
+      "id": "player_cyan",
+      "metallic": 0.18,
+      "roughness": 0.3
+    },
+    {
+      "base_color": [
+        1.0,
+        0.24,
+        0.68,
+        1.0
+      ],
+      "double_sided": false,
+      "emissive": [
+        0.28,
+        0.02,
+        0.12
+      ],
+      "id": "sparkle_pink",
+      "metallic": 0.18,
+      "roughness": 0.25
+    }
+  ],
+  "meshes": [
+    {
+      "id": "cube",
+      "metadata": {
+        "primitive": "cube",
+        "size": 1.0
+      },
+      "normals": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6
+        ],
+        [
+          4,
+          6,
+          7
+        ],
+        [
+          8,
+          9,
+          10
+        ],
+        [
+          8,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14
+        ],
+        [
+          12,
+          14,
+          15
+        ],
+        [
+          16,
+          17,
+          18
+        ],
+        [
+          16,
+          18,
+          19
+        ],
+        [
+          20,
+          21,
+          22
+        ],
+        [
+          20,
+          22,
+          23
+        ]
+      ],
+      "vertices": [
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "lesson": "One three-object definition is stored once, then three tiny instance descriptors place it around a normal playable scene.",
+    "packed_kinematic_profiles": {
+      "showcase_orbit": {
+        "lut_resolution": 64,
+        "motion_range": {
+          "rho_acceleration": 1.0,
+          "rho_velocity": 1.0,
+          "theta_acceleration": 1.0,
+          "theta_velocity": 1.0
+        },
+        "profile": {
+          "core_radius": 1e-05,
+          "r0": 1.0,
+          "rho_max": 2.0,
+          "rho_min": -2.0
+        }
+      }
+    },
+    "saved_scene_instances": [
+      {
+        "id": "gate_east",
+        "scene_id": "glow_gate",
+        "schema": "ugts-studio-saved-scene-instance-1",
+        "transform": {
+          "rotation": [
+            0.9510565162951536,
+            -0.0,
+            -0.30901699437494745,
+            -0.0
+          ],
+          "scale": [
+            0.9,
+            0.9,
+            0.9
+          ],
+          "translation": [
+            5.0,
+            0.25,
+            2.0
+          ]
+        }
+      },
+      {
+        "id": "gate_north",
+        "scene_id": "glow_gate",
+        "schema": "ugts-studio-saved-scene-instance-1",
+        "transform": {
+          "rotation": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "translation": [
+            0.0,
+            0.25,
+            -2.5
+          ]
+        }
+      },
+      {
+        "id": "gate_west",
+        "scene_id": "glow_gate",
+        "schema": "ugts-studio-saved-scene-instance-1",
+        "transform": {
+          "rotation": [
+            0.9510565162951536,
+            0.0,
+            0.30901699437494745,
+            0.0
+          ],
+          "scale": [
+            1.05,
+            1.05,
+            1.05
+          ],
+          "translation": [
+            -5.0,
+            0.25,
+            2.0
+          ]
+        }
+      }
+    ],
+    "saved_scenes": [
+      {
+        "graphs": [
+          {
+            "id": "keep_bobbing",
+            "links": [
+              {
+                "source_node": "every_two_seconds",
+                "source_port": "out",
+                "target_node": "restart_bob",
+                "target_port": "in"
+              }
+            ],
+            "metadata": {
+              "android_supported": true,
+              "beginner": true,
+              "lesson": "This object stays owner-relative, so one graph can be shared by every copy.",
+              "title": "Keep this lantern bobbing"
+            },
+            "nodes": [
+              {
+                "id": "every_two_seconds",
+                "position": [
+                  0.0,
+                  80.0
+                ],
+                "properties": {
+                  "repeat": true,
+                  "seconds": 2.0
+                },
+                "type": "event.timer"
+              },
+              {
+                "id": "restart_bob",
+                "position": [
+                  320.0,
+                  80.0
+                ],
+                "properties": {
+                  "clip": "bob",
+                  "entity": null,
+                  "restart": true
+                },
+                "type": "action.play_animation"
+              }
+            ],
+            "schema": "ugts-visual-graph-1"
+          },
+          {
+            "id": "reveal_lantern",
+            "links": [
+              {
+                "source_node": "ready",
+                "source_port": "out",
+                "target_node": "show_lantern",
+                "target_port": "in"
+              }
+            ],
+            "metadata": {
+              "android_supported": true,
+              "beginner": true,
+              "lesson": "The lantern reference is remapped independently for every linked gate.",
+              "title": "Reveal this gate's lantern"
+            },
+            "nodes": [
+              {
+                "id": "ready",
+                "position": [
+                  0.0,
+                  80.0
+                ],
+                "properties": {},
+                "type": "event.ready"
+              },
+              {
+                "id": "show_lantern",
+                "position": [
+                  300.0,
+                  80.0
+                ],
+                "properties": {
+                  "active": true,
+                  "entity": "@node/lantern"
+                },
+                "type": "action.set_active"
+              }
+            ],
+            "schema": "ugts-visual-graph-1"
+          }
+        ],
+        "id": "glow_gate",
+        "label": "Glow Gate Trio",
+        "nodes": [
+          {
+            "id": "arch",
+            "node": {
+              "angular_velocity": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "collider": {
+                "half_extents": [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                "radius": 0.5,
+                "sensor": false,
+                "shape": "none"
+              },
+              "dynamic": false,
+              "id": "arch",
+              "mass": 1.0,
+              "material_id": "gate_teal",
+              "mesh_id": "cube",
+              "metadata": {
+                "description": "The static root is the safe transform pivot for the linked group.",
+                "visual_graph": "reveal_lantern"
+              },
+              "restitution": 0.35,
+              "tags": [],
+              "transform": {
+                "rotation": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "scale": [
+                  3.0,
+                  0.25,
+                  0.65
+                ],
+                "translation": [
+                  0.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              "velocity": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "parent_id": null
+          },
+          {
+            "id": "lantern",
+            "node": {
+              "angular_velocity": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "collider": {
+                "half_extents": [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                "radius": 0.5,
+                "sensor": false,
+                "shape": "none"
+              },
+              "dynamic": false,
+              "id": "lantern",
+              "mass": 1.0,
+              "material_id": "lantern_gold",
+              "mesh_id": "cube",
+              "metadata": {
+                "description": "A leaf object may animate safely inside a linked Saved Scene.",
+                "transform_animation_library": {
+                  "autoplay": "bob",
+                  "clips": [
+                    {
+                      "animation": {
+                        "duration": 2.0,
+                        "keys": [
+                          {
+                            "easing": "smoothstep",
+                            "rotation": [
+                              1.0,
+                              0.0,
+                              0.0,
+                              0.0
+                            ],
+                            "scale": [
+                              1.0,
+                              1.0,
+                              1.0
+                            ],
+                            "time": 0.0,
+                            "translation": [
+                              0.0,
+                              0.0,
+                              0.0
+                            ]
+                          },
+                          {
+                            "easing": "ease_in_out",
+                            "rotation": [
+                              6.123233995736766e-17,
+                              0.0,
+                              1.0,
+                              0.0
+                            ],
+                            "scale": [
+                              1.18,
+                              1.18,
+                              1.18
+                            ],
+                            "time": 1.0,
+                            "translation": [
+                              0.0,
+                              2.8,
+                              0.0
+                            ]
+                          },
+                          {
+                            "easing": "smoothstep",
+                            "rotation": [
+                              1.0,
+                              0.0,
+                              0.0,
+                              0.0
+                            ],
+                            "scale": [
+                              1.0,
+                              1.0,
+                              1.0
+                            ],
+                            "time": 2.0,
+                            "translation": [
+                              0.0,
+                              0.0,
+                              0.0
+                            ]
+                          }
+                        ],
+                        "loop_mode": "loop",
+                        "schema": "ugts-transform-animation-1"
+                      },
+                      "id": "bob",
+                      "label": "Friendly Bob"
+                    }
+                  ],
+                  "schema": "ugts-transform-animation-library-1"
+                },
+                "visual_graph": "keep_bobbing"
+              },
+              "restitution": 0.35,
+              "tags": [],
+              "transform": {
+                "rotation": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "scale": [
+                  0.12,
+                  1.44,
+                  0.5538461538461538
+                ],
+                "translation": [
+                  -0.45,
+                  5.2,
+                  -0.23076923076923075
+                ]
+              },
+              "velocity": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "parent_id": "arch"
+          },
+          {
+            "id": "sparkle",
+            "node": {
+              "angular_velocity": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "collider": {
+                "half_extents": [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                "radius": 0.5,
+                "sensor": false,
+                "shape": "none"
+              },
+              "dynamic": false,
+              "id": "sparkle",
+              "mass": 1.0,
+              "material_id": "sparkle_pink",
+              "mesh_id": "cube",
+              "metadata": {
+                "description": "One tiny authored sparkle becomes four render-only sparkles per gate.",
+                "scatter_population": {
+                  "instance_count": 4,
+                  "random_yaw": true,
+                  "scale_max": 1.25,
+                  "scale_min": 0.65,
+                  "seed": 392,
+                  "size": [
+                    1.35,
+                    0.4,
+                    1.35
+                  ]
+                }
+              },
+              "restitution": 0.35,
+              "tags": [],
+              "transform": {
+                "rotation": [
+                  1.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "scale": [
+                  0.06666666666666667,
+                  0.8,
+                  0.3076923076923077
+                ],
+                "translation": [
+                  0.45,
+                  4.4,
+                  -0.23076923076923075
+                ]
+              },
+              "velocity": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "parent_id": "arch"
+          }
+        ],
+        "root_id": "arch",
+        "schema": "ugts-studio-saved-scene-2"
+      }
+    ],
+    "signature_edition": true,
+    "template": "linked-saved-scenes-3d"
+  },
+  "nodes": [
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "floor",
+      "mass": 1.0,
+      "material_id": "floor_navy",
+      "mesh_id": "cube",
+      "metadata": {
+        "description": "A calm floor for testing the linked gates."
+      },
+      "restitution": 0.35,
+      "tags": [],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          13.0,
+          0.2,
+          13.0
+        ],
+        "translation": [
+          0.0,
+          -0.2,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "sphere"
+      },
+      "dynamic": true,
+      "id": "player",
+      "mass": 1.0,
+      "material_id": "player_cyan",
+      "mesh_id": "cube",
+      "metadata": {
+        "description": "The ordinary playable object; use WASD or touch controls."
+      },
+      "restitution": 0.08,
+      "tags": [
+        "player"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.7,
+          1.0,
+          0.7
+        ],
+        "translation": [
+          0.0,
+          0.6,
+          8.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": true,
+        "shape": "box"
+      },
+      "dynamic": false,
+      "id": "goal",
+      "mass": 1.0,
+      "material_id": "goal_green",
+      "mesh_id": "cube",
+      "metadata": {
+        "description": "An ordinary reachable Goal keeps the example playable."
+      },
+      "restitution": 0.35,
+      "tags": [
+        "goal"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.2,
+          2.4,
+          0.45
+        ],
+        "translation": [
+          0.0,
+          1.2,
+          -8.5
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "orbit_marker",
+      "mass": 1.0,
+      "material_id": "orbit_blue",
+      "mesh_id": "cube",
+      "metadata": {
+        "description": "A compact two-word polar movement marker exercises KCPK.",
+        "packed_kinematic": {
+          "motion": "00002ccc00000000",
+          "pose": "c0be000000000000",
+          "profile": "showcase_orbit"
+        }
+      },
+      "restitution": 0.35,
+      "tags": [],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          0.3,
+          0.3,
+          0.3
+        ],
+        "translation": [
+          2.75,
+          0.35,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "quality_tiers": [
+    {
+      "id": "signature_ultra",
+      "max_visible_nodes": 256,
+      "msaa_samples": 4,
+      "post_processing": true,
+      "render_scale": 1.0,
+      "shadow_quality": 2,
+      "target_fps": 120
+    }
+  ],
+  "schema": "ugts-kc-mobile-3d-project-3.9.1",
+  "start_quality": "signature_ultra",
+  "target_profiles": [
+    {
+      "compile_sdk": 36,
+      "default_quality": "signature_ultra",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB / Mali-G720",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "preferred_abis": [
+        "arm64-v8a"
+      ],
+      "required_gles": [
+        3,
+        0
+      ],
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Three Linked Glow Gates",
+  "world": {
+    "bounds_max": [
+      14.0,
+      14.0,
+      14.0
+    ],
+    "bounds_min": [
+      -14.0,
+      -3.0,
+      -14.0
+    ],
+    "fixed_dt": 0.008333333333333333,
+    "floor_y": 0.0,
+    "gravity": [
+      0.0,
+      -9.81,
+      0.0
+    ],
+    "jump_speed": 7.0,
+    "player_speed": 5.5
+  }
+}

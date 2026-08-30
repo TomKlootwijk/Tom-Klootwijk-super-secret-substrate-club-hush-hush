@@ -1,0 +1,142 @@
+{
+  "build_only": true,
+  "cases": [
+    {
+      "bayer_mode": "off",
+      "count": 64,
+      "levels": 2,
+      "name": "polar-0064-direct-off",
+      "polar_mode": "direct",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "off",
+      "count": 64,
+      "levels": 2,
+      "name": "polar-0064-lut-off",
+      "polar_mode": "lut",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 64,
+      "levels": 64,
+      "name": "polar-0064-direct-subtle",
+      "polar_mode": "direct",
+      "strength": 0.3
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 64,
+      "levels": 64,
+      "name": "polar-0064-lut-subtle",
+      "polar_mode": "lut",
+      "strength": 0.3
+    },
+    {
+      "bayer_mode": "off",
+      "count": 256,
+      "levels": 2,
+      "name": "polar-0256-direct-off",
+      "polar_mode": "direct",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "off",
+      "count": 256,
+      "levels": 2,
+      "name": "polar-0256-lut-off",
+      "polar_mode": "lut",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 256,
+      "levels": 64,
+      "name": "polar-0256-direct-subtle",
+      "polar_mode": "direct",
+      "strength": 0.3
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 256,
+      "levels": 64,
+      "name": "polar-0256-lut-subtle",
+      "polar_mode": "lut",
+      "strength": 0.3
+    },
+    {
+      "bayer_mode": "off",
+      "count": 1024,
+      "levels": 2,
+      "name": "polar-1024-direct-off",
+      "polar_mode": "direct",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "off",
+      "count": 1024,
+      "levels": 2,
+      "name": "polar-1024-lut-off",
+      "polar_mode": "lut",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 1024,
+      "levels": 64,
+      "name": "polar-1024-direct-subtle",
+      "polar_mode": "direct",
+      "strength": 0.3
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 1024,
+      "levels": 64,
+      "name": "polar-1024-lut-subtle",
+      "polar_mode": "lut",
+      "strength": 0.3
+    },
+    {
+      "bayer_mode": "off",
+      "count": 64,
+      "levels": 2,
+      "name": "polar-0064-cpu-off",
+      "polar_mode": "cpu",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "off",
+      "count": 256,
+      "levels": 2,
+      "name": "polar-0256-cpu-off",
+      "polar_mode": "cpu",
+      "strength": 0.0
+    },
+    {
+      "bayer_mode": "off",
+      "count": 1024,
+      "levels": 2,
+      "name": "polar-1024-cpu-off",
+      "polar_mode": "cpu",
+      "strength": 0.0
+    }
+  ],
+  "counts": [
+    64,
+    256,
+    1024
+  ],
+  "created_at": "2026-08-29T21:58:36+00:00",
+  "include_cpu": true,
+  "kind": "run-manifest",
+  "profile_seconds": 30.0,
+  "requested_serial": null,
+  "run_dir": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\poco-polar-render-benchmarks\\20260829T215836Z-seed-5eed3920c0dec0de",
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "seed": 6840186221883211998,
+  "status": "built_only",
+  "updated_at": "2026-08-29T22:01:11+00:00",
+  "warmup_seconds": 5.0,
+  "workload": "recipe"
+}

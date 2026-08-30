@@ -1,0 +1,439 @@
+{
+  "cases": [
+    {
+      "bayer_mode": "off",
+      "count": 64,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0064-direct-off",
+      "polar_mode": "direct",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 64,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0064-lut-off",
+      "polar_mode": "lut",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 64,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0064-direct-subtle",
+      "polar_mode": "direct",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 64,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0064-lut-subtle",
+      "polar_mode": "lut",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 256,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0256-direct-off",
+      "polar_mode": "direct",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 256,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0256-lut-off",
+      "polar_mode": "lut",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 256,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0256-direct-subtle",
+      "polar_mode": "direct",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 256,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0256-lut-subtle",
+      "polar_mode": "lut",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 1024,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-1024-direct-off",
+      "polar_mode": "direct",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 1024,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-1024-lut-off",
+      "polar_mode": "lut",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 1024,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-1024-direct-subtle",
+      "polar_mode": "direct",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "subtle",
+      "count": 1024,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-1024-lut-subtle",
+      "polar_mode": "lut",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 64,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0064-cpu-off",
+      "polar_mode": "cpu",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 256,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-0256-cpu-off",
+      "polar_mode": "cpu",
+      "status": "built_only",
+      "valid": null
+    },
+    {
+      "bayer_mode": "off",
+      "count": 1024,
+      "effective_fps": null,
+      "frame_ms_p95": null,
+      "name": "polar-1024-cpu-off",
+      "polar_mode": "cpu",
+      "status": "built_only",
+      "valid": null
+    }
+  ],
+  "comparisons": [
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 64,
+        "levels": 2,
+        "name": "polar-0064-direct-off",
+        "polar_mode": "direct",
+        "strength": 0.0
+      },
+      "bayer_mode": "off",
+      "candidate": {
+        "bayer_mode": "off",
+        "count": 64,
+        "levels": 2,
+        "name": "polar-0064-lut-off",
+        "polar_mode": "lut",
+        "strength": 0.0
+      },
+      "count": 64,
+      "delta_candidate_minus_baseline": {},
+      "kind": "lut_minus_direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "subtle",
+        "count": 64,
+        "levels": 64,
+        "name": "polar-0064-direct-subtle",
+        "polar_mode": "direct",
+        "strength": 0.3
+      },
+      "bayer_mode": "subtle",
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 64,
+        "levels": 64,
+        "name": "polar-0064-lut-subtle",
+        "polar_mode": "lut",
+        "strength": 0.3
+      },
+      "count": 64,
+      "delta_candidate_minus_baseline": {},
+      "kind": "lut_minus_direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 64,
+        "levels": 2,
+        "name": "polar-0064-direct-off",
+        "polar_mode": "direct",
+        "strength": 0.0
+      },
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 64,
+        "levels": 64,
+        "name": "polar-0064-direct-subtle",
+        "polar_mode": "direct",
+        "strength": 0.3
+      },
+      "count": 64,
+      "delta_candidate_minus_baseline": {},
+      "kind": "subtle_minus_off",
+      "polar_mode": "direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 64,
+        "levels": 2,
+        "name": "polar-0064-lut-off",
+        "polar_mode": "lut",
+        "strength": 0.0
+      },
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 64,
+        "levels": 64,
+        "name": "polar-0064-lut-subtle",
+        "polar_mode": "lut",
+        "strength": 0.3
+      },
+      "count": 64,
+      "delta_candidate_minus_baseline": {},
+      "kind": "subtle_minus_off",
+      "polar_mode": "lut"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 256,
+        "levels": 2,
+        "name": "polar-0256-direct-off",
+        "polar_mode": "direct",
+        "strength": 0.0
+      },
+      "bayer_mode": "off",
+      "candidate": {
+        "bayer_mode": "off",
+        "count": 256,
+        "levels": 2,
+        "name": "polar-0256-lut-off",
+        "polar_mode": "lut",
+        "strength": 0.0
+      },
+      "count": 256,
+      "delta_candidate_minus_baseline": {},
+      "kind": "lut_minus_direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "subtle",
+        "count": 256,
+        "levels": 64,
+        "name": "polar-0256-direct-subtle",
+        "polar_mode": "direct",
+        "strength": 0.3
+      },
+      "bayer_mode": "subtle",
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 256,
+        "levels": 64,
+        "name": "polar-0256-lut-subtle",
+        "polar_mode": "lut",
+        "strength": 0.3
+      },
+      "count": 256,
+      "delta_candidate_minus_baseline": {},
+      "kind": "lut_minus_direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 256,
+        "levels": 2,
+        "name": "polar-0256-direct-off",
+        "polar_mode": "direct",
+        "strength": 0.0
+      },
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 256,
+        "levels": 64,
+        "name": "polar-0256-direct-subtle",
+        "polar_mode": "direct",
+        "strength": 0.3
+      },
+      "count": 256,
+      "delta_candidate_minus_baseline": {},
+      "kind": "subtle_minus_off",
+      "polar_mode": "direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 256,
+        "levels": 2,
+        "name": "polar-0256-lut-off",
+        "polar_mode": "lut",
+        "strength": 0.0
+      },
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 256,
+        "levels": 64,
+        "name": "polar-0256-lut-subtle",
+        "polar_mode": "lut",
+        "strength": 0.3
+      },
+      "count": 256,
+      "delta_candidate_minus_baseline": {},
+      "kind": "subtle_minus_off",
+      "polar_mode": "lut"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 1024,
+        "levels": 2,
+        "name": "polar-1024-direct-off",
+        "polar_mode": "direct",
+        "strength": 0.0
+      },
+      "bayer_mode": "off",
+      "candidate": {
+        "bayer_mode": "off",
+        "count": 1024,
+        "levels": 2,
+        "name": "polar-1024-lut-off",
+        "polar_mode": "lut",
+        "strength": 0.0
+      },
+      "count": 1024,
+      "delta_candidate_minus_baseline": {},
+      "kind": "lut_minus_direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "subtle",
+        "count": 1024,
+        "levels": 64,
+        "name": "polar-1024-direct-subtle",
+        "polar_mode": "direct",
+        "strength": 0.3
+      },
+      "bayer_mode": "subtle",
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 1024,
+        "levels": 64,
+        "name": "polar-1024-lut-subtle",
+        "polar_mode": "lut",
+        "strength": 0.3
+      },
+      "count": 1024,
+      "delta_candidate_minus_baseline": {},
+      "kind": "lut_minus_direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 1024,
+        "levels": 2,
+        "name": "polar-1024-direct-off",
+        "polar_mode": "direct",
+        "strength": 0.0
+      },
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 1024,
+        "levels": 64,
+        "name": "polar-1024-direct-subtle",
+        "polar_mode": "direct",
+        "strength": 0.3
+      },
+      "count": 1024,
+      "delta_candidate_minus_baseline": {},
+      "kind": "subtle_minus_off",
+      "polar_mode": "direct"
+    },
+    {
+      "available": false,
+      "baseline": {
+        "bayer_mode": "off",
+        "count": 1024,
+        "levels": 2,
+        "name": "polar-1024-lut-off",
+        "polar_mode": "lut",
+        "strength": 0.0
+      },
+      "candidate": {
+        "bayer_mode": "subtle",
+        "count": 1024,
+        "levels": 64,
+        "name": "polar-1024-lut-subtle",
+        "polar_mode": "lut",
+        "strength": 0.3
+      },
+      "count": 1024,
+      "delta_candidate_minus_baseline": {},
+      "kind": "subtle_minus_off",
+      "polar_mode": "lut"
+    }
+  ],
+  "generated_at": "2026-08-29T22:01:11+00:00",
+  "interpretation": "Deltas are candidate minus baseline and exist only when both cases have a profile and passed native runtime-path proof.",
+  "kind": "comparison-summary",
+  "schema": "ugts-kc-poco-polar-render-benchmark-1",
+  "status_counts": {
+    "built_only": 15
+  }
+}

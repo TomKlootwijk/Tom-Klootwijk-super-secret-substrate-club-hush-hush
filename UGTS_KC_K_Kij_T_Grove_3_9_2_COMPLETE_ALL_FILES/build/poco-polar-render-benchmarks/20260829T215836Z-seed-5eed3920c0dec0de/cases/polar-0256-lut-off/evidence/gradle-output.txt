@@ -1,0 +1,65 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:prePocoX7ProDebugBuild UP-TO-DATE
+> Task :app:mergePocoX7ProDebugNativeDebugMetadata NO-SOURCE
+> Task :app:javaPreCompilePocoX7ProDebug
+> Task :app:checkPocoX7ProDebugAarMetadata
+> Task :app:processPocoX7ProDebugNavigationResources
+> Task :app:compilePocoX7ProDebugNavigationResources
+> Task :app:generatePocoX7ProDebugResValues
+> Task :app:mapPocoX7ProDebugSourceSetPaths
+> Task :app:generatePocoX7ProDebugResources
+> Task :app:packagePocoX7ProDebugResources
+> Task :app:mergePocoX7ProDebugResources
+> Task :app:createPocoX7ProDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksPocoX7ProDebug
+> Task :app:parsePocoX7ProDebugLocalResources
+> Task :app:processPocoX7ProDebugMainManifest
+> Task :app:processPocoX7ProDebugManifest
+> Task :app:mergePocoX7ProDebugShaders
+> Task :app:compilePocoX7ProDebugShaders NO-SOURCE
+> Task :app:generatePocoX7ProDebugAssets UP-TO-DATE
+> Task :app:mergePocoX7ProDebugAssets
+> Task :app:desugarPocoX7ProDebugFileDependencies
+> Task :app:checkPocoX7ProDebugDuplicateClasses
+> Task :app:compressPocoX7ProDebugAssets
+> Task :app:mergeExtDexPocoX7ProDebug
+> Task :app:processPocoX7ProDebugJavaRes NO-SOURCE
+> Task :app:mergeLibDexPocoX7ProDebug
+> Task :app:mergePocoX7ProDebugJavaResource
+> Task :app:configureCMakeDebug[arm64-v8a]-2
+
+> Task :app:buildCMakeDebug[arm64-v8a]-2
+C/C++: ninja: Entering directory `C:\Users\Tom\AppData\Local\Temp\kc392-bj65ibf7\a\app\.cxx\Debug\665c36c4\arm64-v8a'
+C/C++: C:/Users/Tom/AppData/Local/Temp/kc392-bj65ibf7/a/app/src/main/cpp/main.cpp:24:5: warning: 'app_dummy' is deprecated: Calls to app_dummy are no longer necessary. See https://github.com/android-ndk/ndk/issues/381. [-Wdeprecated-declarations]
+C/C++:    24 |     app_dummy();
+C/C++:       |     ^
+C/C++: C:/Users/Tom/AppData/Local/Temp/kc392-bj65ibf7/a/app/.cxx/Debug/665c36c4/arm64-v8a/android_native_app_glue.h:340:5: note: 'app_dummy' has been explicitly marked deprecated here
+C/C++:   340 |     deprecated("Calls to app_dummy are no longer necessary. See "
+C/C++:       |     ^
+C/C++: 1 warning generated.
+
+> Task :app:mergePocoX7ProDebugJniLibFolders
+> Task :app:validateSigningPocoX7ProDebug
+> Task :app:mergePocoX7ProDebugNativeLibs
+> Task :app:writePocoX7ProDebugAppMetadata
+> Task :app:writePocoX7ProDebugSigningConfigVersions
+> Task :app:processPocoX7ProDebugManifestForPackage
+> Task :app:stripPocoX7ProDebugDebugSymbols
+> Task :app:processPocoX7ProDebugResources
+> Task :app:compilePocoX7ProDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderPocoX7ProDebug
+> Task :app:mergeProjectDexPocoX7ProDebug
+> Task :app:packagePocoX7ProDebug
+> Task :app:createPocoX7ProDebugApkListingFileRedirect
+> Task :app:assemblePocoX7ProDebug
+
+[Incubating] Problems report is available at: file:///C:/Users/Tom/AppData/Local/Temp/kc392-bj65ibf7/a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 14s
+36 actionable tasks: 36 executed

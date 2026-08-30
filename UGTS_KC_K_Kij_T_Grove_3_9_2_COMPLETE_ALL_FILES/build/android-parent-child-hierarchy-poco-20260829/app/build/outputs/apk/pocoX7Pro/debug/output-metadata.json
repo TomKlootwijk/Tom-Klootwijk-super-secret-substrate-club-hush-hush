@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "org.ugts.games.parent_child_hierarchy_3d.pocox7pro",
+  "variantName": "pocoX7ProDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 392,
+      "versionName": "3.9.2-poco-x7-pro",
+      "outputFile": "app-pocoX7Pro-debug.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 26
+}

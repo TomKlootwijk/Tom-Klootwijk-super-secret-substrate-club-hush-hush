@@ -1,0 +1,112 @@
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - setuptools>=68
+> C:\Users\Tom\miniconda3\python.exe -m pip --python
+  C:\Users\Tom\AppData\Local\Temp\build-env-djzg83c5\Scripts\python.exe
+  install --ignore-installed --use-pep517 --no-warn-script-location --no-
+  compile --no-input -r C:\Users\Tom\AppData\Local\Temp\build-requirements-
+  ppqtwlz2.txt
+< Traceback (most recent call last):
+<   File "C:\Users\Tom\miniconda3\Lib\site-packages\pip\__pip-runner__.py",
+  line 50, in <module>
+<     runpy.run_module("pip", run_name="__main__", alter_sys=True)
+<     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<   File "<frozen runpy>", line 226, in run_module
+<   File "<frozen runpy>", line 98, in _run_module_code
+<   File "<frozen runpy>", line 88, in _run_code
+<   File "C:\Users\Tom\miniconda3\Lib\site-packages\pip\__main__.py", line 24,
+  in <module>
+<     sys.exit(_main())
+<              ~~~~~^^
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\cli\main.py", line 83, in main
+<     command = create_command(cmd_name, isolated=("--isolated" in cmd_args))
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\commands\__init__.py", line 121, in create_command
+<     module = importlib.import_module(module_path)
+<   File "C:\Users\Tom\miniconda3\Lib\importlib\__init__.py", line 88, in
+  import_module
+<     return _bootstrap._gcd_import(name[level:], package, level)
+<            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+<   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+<   File "<frozen importlib._bootstrap>", line 1331, in
+  _find_and_load_unlocked
+<   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+<   File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+<   File "<frozen importlib._bootstrap>", line 488, in
+  _call_with_frames_removed
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\commands\install.py", line 22, in <module>
+<     import pip._internal.self_outdated_check  # noqa: F401
+<     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\self_outdated_check.py", line 21, in <module>
+<     from pip._internal.index.package_finder import PackageFinder
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\index\package_finder.py", line 42, in <module>
+<     from pip._internal.req import InstallRequirement
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\req\__init__.py", line 12, in <module>
+<     from .req_install import InstallRequirement
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\req\req_install.py", line 37, in <module>
+<     from pip._internal.operations.install.wheel import install_wheel
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_internal\operations\install\wheel.py", line 33, in <module>
+<     from pip._vendor.distlib.scripts import ScriptMaker
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_vendor\distlib\scripts.py", line 16, in <module>
+<     from .compat import sysconfig, detect_encoding, ZipFile
+<   File "C:\Users\Tom\miniconda3\Lib\site-
+  packages\pip\_vendor\distlib\compat.py", line 81, in <module>
+<     import xmlrpc.client as xmlrpclib
+<   File "C:\Users\Tom\miniconda3\Lib\xmlrpc\client.py", line 138, in <module>
+<     from xml.parsers import expat
+<   File "C:\Users\Tom\miniconda3\Lib\xml\parsers\expat.py", line 4, in
+  <module>
+<     from pyexpat import *
+< ImportError: DLL load failed while importing pyexpat: The specified module
+  could not be found.
+
+Traceback (most recent call last):
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\__main__.py", line 289, in _handle_build_error
+    yield
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\__main__.py", line 755, in main
+    built = run_build(args.srcdir, outdir)
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\__main__.py", line 405, in build_package_via_sdist
+    sdist = _build(
+        isolation,
+    ...<7 lines>...
+        env_dir,
+    )
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\__main__.py", line 272, in _build
+    with _bootstrap_build_env(
+         ~~~~~~~~~~~~~~~~~~~~^
+        isolation,
+        ^^^^^^^^^^
+    ...<7 lines>...
+        pyproject_hooks.quiet_subprocess_runner if _ctx.verbosity < 0 else None,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as builder:
+    ^
+  File "C:\Users\Tom\miniconda3\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\__main__.py", line 233, in _bootstrap_build_env
+    install(builder.build_system_requires, _fresh=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\env.py", line 230, in install
+    self._env_backend.install_dependencies(requirements, constraints, _fresh=_fresh)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\env.py", line 432, in install_dependencies
+    run_subprocess(cmd, env=_pip_env())
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\miniconda3\Lib\site-packages\build\_ctx.py", line 69, in run_subprocess
+    subprocess.run(cmd, capture_output=True, check=True, cwd=cwd, env=env)  # noqa: S603
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Tom\miniconda3\Lib\subprocess.py", line 577, in run
+    raise CalledProcessError(retcode, process.args,
+ERROR Command '['C:\\Users\\Tom\\miniconda3\\python.exe', '-m', 'pip', '--python', 'C:\\Users\\Tom\\AppData\\Local\\Temp\\build-env-djzg83c5\\Scripts\\python.exe', 'install', '--ignore-installed', '--use-pep517', '--no-warn-script-location', '--no-compile', '--no-input', '-r', 'C:\\Users\\Tom\\AppData\\Local\\Temp\\build-requirements-ppqtwlz2.txt']' returned non-zero exit status 1.
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['C:\\Users\\Tom\\miniconda3\\python.exe', '-m', 'pip', '--python', 'C:\\Users\\Tom\\AppData\\Local\\Temp\\build-env-djzg83c5\\Scripts\\python.exe', 'install', '--ignore-installed', '--use-pep517', '--no-warn-script-location', '--no-compile', '--no-input', '-r', 'C:\\Users\\Tom\\AppData\\Local\\Temp\\build-requirements-ppqtwlz2.txt']' returned non-zero exit status 1.
+

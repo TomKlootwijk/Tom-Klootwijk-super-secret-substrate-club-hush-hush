@@ -1,0 +1,20 @@
+{
+  "source_root": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES",
+  "temporary_source": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kp-yd7ismlr\\s",
+  "temporary_source_path_characters": 45,
+  "copied_file_count": 152,
+  "source_hash_mismatches": [],
+  "source_snapshot_sha256": "8fa0a42d3ed9d7b73fb0d90af69f1d49734a5c9dbf0df7a8cfff2c38436ea691",
+  "readme_sha256": "7b942f6f81e68a1e52a8f720738ee2bf4043c2bf842c45cee2a1392664011016",
+  "cli_sha256": "c04ca3fd1adc6f9817bbc481e37fb458c666de77b90673ed0e0eeec2050bfb75",
+  "command": [
+    "C:\\Users\\Tom\\miniconda3\\python.exe",
+    "-m",
+    "build",
+    "--no-isolation",
+    "--outdir",
+    "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T220720Z-final-short-source",
+    "."
+  ],
+  "returncode": 0
+}

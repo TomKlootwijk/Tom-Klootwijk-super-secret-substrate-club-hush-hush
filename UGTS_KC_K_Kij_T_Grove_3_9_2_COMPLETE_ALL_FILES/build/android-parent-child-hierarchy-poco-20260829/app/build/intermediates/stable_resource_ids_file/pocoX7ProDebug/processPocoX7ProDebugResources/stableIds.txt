@@ -1,0 +1,2 @@
+org.ugts.games.parent_child_hierarchy_3d.pocox7pro:style/AppTheme = 0x7f020000
+org.ugts.games.parent_child_hierarchy_3d.pocox7pro:string/app_name = 0x7f010000

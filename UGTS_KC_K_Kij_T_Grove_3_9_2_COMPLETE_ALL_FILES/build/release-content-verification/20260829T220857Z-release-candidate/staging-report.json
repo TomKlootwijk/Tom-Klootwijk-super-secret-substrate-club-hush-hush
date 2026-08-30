@@ -1,0 +1,23 @@
+{
+  "source_root": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES",
+  "temporary_source": "C:\\Users\\Tom\\AppData\\Local\\Temp\\kp-_q590zam\\s",
+  "temporary_source_path_characters": 45,
+  "copied_file_count": 152,
+  "source_hash_mismatches": [],
+  "source_snapshot_sha256": "da4d65899d6a3aed77ccb4bf75c95b7143dc321804a683ad26526cded305f5de",
+  "readme_sha256": "10b08ec7f012637c88a1f684f4de13eb39e7d407d94b80892cefe71c71330100",
+  "cli_sha256": "c04ca3fd1adc6f9817bbc481e37fb458c666de77b90673ed0e0eeec2050bfb75",
+  "manifest_sha256": "123c81477141e1fe788e9074f91bfd2757f9a696ffd749df295a9633749b544e",
+  "pyproject_sha256": "4fc7cfba1429e066cc4c01704ffe401cce1dbb955fc62ed756328b54b3dd049d",
+  "conformance_sha256": "cdf8b4a20869c2bc35c4330c35dc7e43c33459ce40f37fd63139c0a41b01db57",
+  "command": [
+    "C:\\Users\\Tom\\miniconda3\\python.exe",
+    "-m",
+    "build",
+    "--no-isolation",
+    "--outdir",
+    "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\build\\release-content-verification\\20260829T220857Z-release-candidate",
+    "."
+  ],
+  "returncode": 0
+}

@@ -1,0 +1,111 @@
+{
+  "author": "UGTS-KC example",
+  "byte_length": 1633,
+  "format_version": 1,
+  "material_count": 5,
+  "materials": [
+    "arm_amber",
+    "beacon_lime",
+    "carrier_cyan",
+    "floor_navy",
+    "mast_violet"
+  ],
+  "mesh_count": 1,
+  "meshes": [
+    {
+      "id": "cube",
+      "index_count": 36,
+      "vertex_count": 8
+    }
+  ],
+  "node_count": 5,
+  "nodes": [
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "floor",
+      "material_index": 3,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": true,
+      "id": "carrier",
+      "material_index": 2,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "arm",
+      "material_index": 0,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "mast",
+      "material_index": 4,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    },
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "beacon",
+      "material_index": 1,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 0
+    }
+  ],
+  "project_hash": "201ac0c62fd761fa65c2f72abd7aeb9f5b7ef806210679812ef882cf1768d8a4",
+  "project_id": "parent_child_hierarchy_3d",
+  "qualities": [
+    {
+      "id": "balanced",
+      "max_visible_nodes": 64,
+      "render_scale": 1.0,
+      "target_fps": 60
+    }
+  ],
+  "quality_count": 1,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
+  "sha256": "d61049e17f196df928d1e5a8387e22c7df63e33932c756dd6629fd4d28a86bb9",
+  "start_quality": "balanced",
+  "target_count": 1,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "balanced",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB / Mali-G720",
+      "memory_floor_mb": 10240,
+      "min_sdk": 26,
+      "target_refresh_hz": 120,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "The Moving Carrier Family"
+}
