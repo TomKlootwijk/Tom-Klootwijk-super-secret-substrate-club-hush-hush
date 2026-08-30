@@ -1,0 +1,69 @@
+{
+  "video": "C:\\Users\\Tom\\Videos\\KasiaDansGedicht\\sam_2353410928515192.mp4",
+  "decoded_frames": 229,
+  "analysis_resolution": [
+    640,
+    360
+  ],
+  "settings": {
+    "pair_sampling": "up to 24 uniformly spaced starts per gap",
+    "shi_tomasi_max_corners": 800,
+    "shi_tomasi_quality": 0.01,
+    "shi_tomasi_min_distance_px": 7,
+    "lk_window": [
+      21,
+      21
+    ],
+    "lk_pyramid_levels": 4,
+    "forward_backward_limit_px": 1.5,
+    "homography_ransac_px": 3.0,
+    "fundamental_ransac_px": 1.5
+  },
+  "gaps": [
+    {
+      "gap_frames": 1,
+      "pair_count": 24,
+      "initial_features": 19200,
+      "forward_backward_retained_fraction": 0.9331770833333334,
+      "median_flow_px": 3.012922525405884,
+      "homography_inlier_fraction": 0.8931740804822236,
+      "homography_residual_gt_3px_fraction": 0.10682591951777641,
+      "median_homography_residual_px": 0.39887696504592896,
+      "fundamental_inlier_fraction": 0.8990902494837305
+    },
+    {
+      "gap_frames": 5,
+      "pair_count": 24,
+      "initial_features": 19200,
+      "forward_backward_retained_fraction": 0.6540104166666667,
+      "median_flow_px": 11.199980735778809,
+      "homography_inlier_fraction": 0.7919885322927451,
+      "homography_residual_gt_3px_fraction": 0.20801146770725493,
+      "median_homography_residual_px": 0.8837388753890991,
+      "fundamental_inlier_fraction": 0.8341164290833798
+    },
+    {
+      "gap_frames": 12,
+      "pair_count": 24,
+      "initial_features": 19200,
+      "forward_backward_retained_fraction": 0.40291666666666665,
+      "median_flow_px": 16.829715728759766,
+      "homography_inlier_fraction": 0.670760082730093,
+      "homography_residual_gt_3px_fraction": 0.3292399172699069,
+      "median_homography_residual_px": 1.4383312463760376,
+      "fundamental_inlier_fraction": 0.7905894519131335
+    },
+    {
+      "gap_frames": 25,
+      "pair_count": 24,
+      "initial_features": 19200,
+      "forward_backward_retained_fraction": 0.24833333333333332,
+      "median_flow_px": 21.50615406036377,
+      "homography_inlier_fraction": 0.5580956375838926,
+      "homography_residual_gt_3px_fraction": 0.44190436241610737,
+      "median_homography_residual_px": 2.134119391441345,
+      "fundamental_inlier_fraction": 0.7076342281879194
+    }
+  ],
+  "interpretation_limit": "Tracks are unsegmented and mix people with background. These values diagnose motion/projective inconsistency only; they are not camera calibration, metric depth, or a person mesh."
+}

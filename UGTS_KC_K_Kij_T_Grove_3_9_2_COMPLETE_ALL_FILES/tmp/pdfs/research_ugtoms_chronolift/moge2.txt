@@ -1,0 +1,1360 @@
+
+===== PAGE 1 =====
+MoGe-2: Accurate Monocular Geometry with Metric
+                               Scale and Sharp Details
+
+
+
+
+    Ruicheng Wang1∗ Sicheng Xu2  Yue Dong2  Yu Deng2  Jianfeng Xiang3∗  Zelong Lv1∗
+                            Guangzhong Sun1  Xin Tong2  Jiaolong Yang2†
+                        1USTC     2Microsoft Research     3Tsinghua University
+
+                                                 Abstract
+
+          WeproposeMoGe-2,anadvancedopen-domaingeometryestimationmodelthat
+          recoversa metricscale 3Dpoint mapof ascene froma singleimage. Ourmethod
+          buildsupontherecentmonoculargeometryestimationapproach,MoGe[61],which
+          predicts affine-invariant point maps with unknown scales. We explore effective
+          strategiestoextendMoGeformetricgeometrypredictionwithoutcompromising
+          therelativegeometryaccuracyprovidedbytheaffine-invariantpointrepresentation.
+          Additionally,wediscoverthatnoiseanderrorsinrealdatadiminishfine-grained
+          detail in the predicted geometry.  We address this by developing a unified data
+          refinementapproachthatfiltersandcompletesrealdatafromdifferentsourcesusing
+          sharp synthetic labels, significantly enhancing the granularity of the reconstructed
+          geometry while maintaining the overall accuracy. We train our model on a large
+          corpusofmixeddatasetsandconductedcomprehensiveevaluations,demonstrating
+          its superior performance in achieving accurate relative geometry, precise metric
+          scale,andfine-graineddetailrecovery–capabilitiesthatnopreviousmethodshave
+          simultaneously achieved.
+
+1   Introduction
+
+Estimating 3D geometry from a single monocular image is a challenging task with numerous
+applications in computer vision and beyond. Recent advancements in Monocular Depth Estimation
+(MDE)and MonocularGeometry Estimation(MGE)havebeen driven byfoundation modelstrained
+onlarge-scaledatasets[66,67,44,27,61,7]. Comparedtodepthestimation,MGEapproaches often
+also predict camera intrinsics, allowing pixels to be lifted into 3D space, thus enabling a broader
+range of applications.
+Despite the promising results of recent MGE models, they remain far from perfect and broadly
+applicable. We expect an ideal MGE method to excel in three key areas: 1) geometry accuracy,
+2) metric prediction, and 3) geometry granularity. While accurate global and relative geometry is
+essential, metric scale is crucial for real-world applications such as SLAM [54, 36], Autonomous
+Driving[56,76],andEmbodiedAI[81,80,46]. Inaddition,recoveringfine-graineddetailsandsharp
+featuresisalsocriticalforthesefieldsaswellasotherslikeimageeditingandgeneration[78,74,60].
+To our knowledge, no existing method addresses all these needs well simultaneously.
+In this paper, we introduce a new MGE method towards achieving these goals, while maintaining a
+simple,principled,andpragmaticdesign. OurmethodisbuiltupontherecentMoGeapproach[61],
+which predicts affine-invariant point maps from single images and achieves state-of-the-art geometry
+accuracy. The cornerstone of MoGe is its optimized training scheme, including a robust and optimal
+point cloud alignment solver as well as a multi-scale supervision method which enhances local
+geometry accuracy.   Our work extends MoGe [61] by introducing metric geometry prediction
+capabilities and improving its geometry granularity to capture intricate details.
+
+   ∗Work done during internship at Microsoft Research
+   †Corresponding author
+===== PAGE 2 =====
+Figure1: Rankingsincomprehensiveevaluations. Ourmethodachievesaccurate Relative Geometry
+(RG),preciseMetricGeometry(MG),andSharpDetailrecovery(SD)-capabilitiesnotsimultane-
+ously achieved by previous approaches.∗ Methods do not predict camera intrinsics and are evaluated
+on depth only.† MoGe [61] does not predict metric scale. Please refer to Sec. 4.1 for details.
+
+Formetricgeometryestimation,astraightforwardsolutioninvolvesdirectlypredictingabsolutepoint
+mapsin metricspace. However, thisis suboptimaldueto thefocal-distance ambiguityissue[61]. To
+addressthis,weexploretwosimple,intuitive,yeteffectivealternatives. Thefirstusesashift-invariant
+pointmaprepresentationwhichdirectlyintegratesmetricscaleintopointmapprediction. Thesecond
+retainsaffine-invariantrepresentation butadditionallypredicts aglobalscalefactor inadecoupled
+manner. Both strategies mitigate the focal-distance ambiguity, but the latter yields more accurate
+results, likely due to its well-normalized point map space that better preserves relative geometry.
+In the latter regard, we propose a pragmatic data refinement approach to generate sharp depth labels
+for real-world training data. Real data labels are often noisy and incomplete, particularly at object
+boundaries, which impede fine geometry detail learning. Previous works such as Depth Anything
+V2[67]haveoptedtouseonlysyntheticdatalabels,sacrificingthegeometryaccuracy,despitebeing
+sharpupon2Dvisualization. Similarly,DepthPro[7]employsonlysyntheticdataintheirsecondof
+the two stages. In contrast, we embrace real data throughout the training to ensure high geometry
+accuracy – a critical goal for our method. Our pipeline filters mismatched or false depth values in
+realdata,primarilyfoundaroundobjectboundaries,followedbyedge-preservingdepthinpaintingto
+fill missing regions using a model trained on synthetic data. This approach results in significantly
+finer details, with geometry accuracy comparable to models trained on full unprocessed real data.
+We trainour model onan extensive collection of synthetic andreal datasets andconduct a compre-
+hensive evaluation across various datasets and metrics. Experiments demonstrate that our method
+achieves superior performance in terms of relative geometry accuracy, metric scale precision, and
+fine-grained detail recovery, surpassing multiple recently proposed baselines, as shown in Fig. 1.
+Our contributions are summarized as follows:
+
+        • WeintroduceaMetricMGEframeworkwiththerepresentationofdecoupledaffine-invariant
+          pointmapandglobalscale. Weprovidebothinsightsandempiricalevidencesforthisdesign.
+        • Weproposeapragmaticrealdatarefinementapproachwhichenablessharpdetailprediction
+          while maintaining the generality by fully leveraging large scale real data.
+        • Our method achieves state-of-the-art results in both geometry accuracy and sharpness,
+          significantly surpassing prior methods in global and local geometry accuracy.
+
+Webelieveourmethodenhancesmonoculargeometryestimation’spotentialinreal-worldapplications
+andcanserveasafoundationaltoolfacilitatingdiversetaskssuchas3Dworldmodeling,autonomous
+systems, and 3D content creation.
+
+2   Related Works
+
+Monocularmetricdepthestimation.    Earlyworksinthisfield[13,15,70,4,20]primarilyfocused
+onpredictingmetricdepthinspecificdomainslikeindoorenvironmentsorstreetviews,usinglimited
+datafromcertainRGBDcamerasorLiDARsensors. Withtheincreasingavailabilityofdepthdata
+from various sources, recent methods [5, 73, 23, 66, 67, 44, 7] have aimed to predict metric depth
+inopen-domainsettings. Forexample,Metric3D[73,23]utilizednumerousmetricdepthdatasets
+and introduced a canonical camera transformation module to address metric ambiguity from diverse
+datasources. ZoeDepth[5]built ona relativedepthestimation framework[47,6]that ispre-trained
+on extensive non-metric depth data and employed domain-specific metric heads. UniDepth [44, 45]
+
+
+                                                         2
+===== PAGE 3 =====
+instead simultaneously learned from metric and non-metric depth data to improve generalizability.
+Our method focuses on metric geometry estimation and also enables metric depth estimation by
+directly using the z-channel from the predicted point map, outperforming existing approaches in
+open-domain metric depth predictions.
+Monocular geometry estimation.   This task aims to predict the 3D point map of a scene from
+a single image.  Common approaches [71, 72, 44, 45] decouple point map prediction into depth
+estimation and camera parameter recovery. For instance, LeRes [71] estimates an affine-invariant
+depthmapandcamerafocalandshiftwithtwoseparatemodules. UniDepthseries[44,45]predicted
+camera embeddings and facilitate depth map prediction with the estimated camera information.
+Along another line, DUSt3R [62] proposed an end-to-end 3D point map prediction framework for
+stereo images, bypassing explicit camera prediction.  In a similar vein, MoGe [61] predicted an
+affine-invariantpointmapformonocularinput,achievingstate-of-the-artperformancewitharobust
+andoptimalalignmentsolver. However,itdoesnotaccountformetricscaleandlacksthefinerdetails,
+thereby limiting its applicability in many downstream tasks.
+Depth prediction with fine-graineddetails.   Numerous methods[40, 35, 45, 67, 27, 7, 25, 39, 79]
+have been developed to recover fine-grained details in depth prediction.  Some [40, 35] enhance
+local details by fusing depth maps for image patches, but suffer from stitching artifacts.  Other
+works [27, 16, 18] leverage pretrained image diffusion models [50] to generate detailed depth
+maps.  Depth Anything V2 [67] highlights the importance of synthetic data labels by finetuning
+a DINOv2 [43] encoder with synthetic data and distilling from a larger teacher model. However,
+synthetic-to-real domain gaps persist and hinder the prediction accuracy. Depth Pro [7] integrates
+multi-patchvisiontransformers[11]andasyntheticdatatrainingstage,significantlyimprovingdepth
+map sharpness over previous methods, but still falls short in geometric accuracy. In contrast, our
+model achieves both fine detail recovery and precise geometry through the joint use of synthetic data
+and real data with a carefully designed real data refinement strategy.
+RGB-depth data misalignment artifacts    Despite their overallaccuracy, depthdatasets captured
+with LiDAR [64, 53, 56, 19] or structure-from-motion (SfM) reconstructions [77, 69, 34] often
+exhibit various misalignment artifacts.  Common issues include spatial misalignment caused by
+sensorasynchrony[75],ghostsurfaces,andincompletesurfacereconstruction[69]. Existingmethods
+addressLiDAR-specificissues usingstereocues [56]or epipolargeometry[83],while SfMartifacts
+aremitigatedby regeneratingdepthmapswith neuralrendering[37,2]. However,these approaches
+are often tailored to specific types of artifacts or rely on computationally expensive pipelines. We
+propose aunified data refinementapproach that canhandle diversemisalignment artifacts inRGB-
+depth data regardless of their source or underlying error patterns.
+
+3   Methodology
+
+Ourmethodprocessesa singleimagetopredictthe3D pointmapofthescene, achievingaccurate
+relativegeometry,metricscale,andfine-graineddetail. ItbuildsupontherecentMoGeapproach[61]
+that focuses on affine-invariant point map reconstruction (Sec. 3.1). We explore effective strategies
+to extend it to accurate metric geometry estimation (Sec. 3.2).  Additionally, we develop a data
+refinement approach that fully leverages real-world training data to achieve both precise and detailed
+geometry reconstruction simultaneously (Sec. 3.3).
+
+3.1   Preliminaries: MoGe
+
+GivenasingleimageI∈RH×W×3,MoGeestimatesanaffine-invariant3Dpointmap ˆP∈RH×W×3
+with an unknown global scaleand shift relative to theground truth geometryP, achieved by learning
+through a robustL1 loss:
+                                      LG =X         1
+                                              i∈M   zi∥s∗ˆpi+t∗−pi∥1,                                               (1)
+whereMisthevalidmaskofgroundtruthpointmap,1/zi isaweightingscalarusinginverseground
+truth depth, ands∗ andt∗ are the optimal global scale and shift alignment factors. To determine
+s∗ andt∗, MoGe employs a robust and optimal (ROE) alignment solver [61] based on an efficient
+parallel searching algorithm.  To enhance local geometry accuracy, it further applies the robust
+supervision in Eq. (1) to multi-scale local spherical regions
+                                     Sj ={i|∥pi−pj∥≤rj,i∈M},                                              (2)
+
+
+                                                         3
+===== PAGE 4 =====
+Figure 2: Overview of our model architecture. With the key insight of decoupling metric MGE into
+affine-invariant point map prediction [61] and global scale recovery, our network design extends
+MoGe [61] with an additional head for metric scale prediction. This design preserves the benefits of
+affine-invariantrepresentationsforaccuraterelativegeometrywhileenablingmetricscaleestimation
+with the global features captured by the ViT encoder’s classification token.
+
+centeredatsampledgroundtruthpointpj withdifferentradiusrj. Afterobtainingtheaffine-invariant
+point map, the camera’s focal and shift can be recovered by a simple and efficient optimization
+process (see [61] for more details).
+While MoGe accurately predicts relative geometries, it falls short in addressing metric scale and
+lacksfine-graineddetails,limitingitsbroaderapplications. Weexplorethesechallengesandpropose
+effective solutions to achieve accurate metric scale geometry estimation and fine-grained detail
+reconstruction, as detailed below.
+
+3.2   Metric Scale Geometry Estimation
+
+We explore two alternatives to extend MoGe with metric
+scale prediction, with corresponding design choices illus-
+trated in Fig. 3.
+
+Shift-invariant geometry prediction.   As illustrated in
+Fig. 3-1, a natural extension of MoGe is to predict a shift-
+invariantpointmapby absorbingthemetric scales intothe
+affinepointmap,whilecomputingtheglobalshifttviaROE
+alignmentduringtrainingandresolvingitagainatinference
+time. Thisdesignbypassesthefocal-distanceambiguity[61]
+andyieldsreasonablemetricreconstructionresults(Tab.4).
+However, due to the large variation in scene scale across
+open-domain images (e.g., indoors vs. landscapes), the pre-
+dictedvaluesinshift-invariantspacespanawiderange. This
+makesscalelearninglessstable,andinaccuratescalepredic-
+tionscanproducelargegradientsthatinterferewithrelative                   Figure 3:  Model design choices for
+geometry learning (i.e., the middle section of Tab. 4). This             metric scale geometry estimation.
+motivatesourchoicetodecouplescaleestimationfromthe
+point map prediction entirely.
+
+Scaleandrelativegeometrydecomposition.   Topreventscaleaffectingrelativegeometryaccuracy,
+we maintain the geometry branch for affine-invariant point map as in MoGe, and introduce an
+additional branch for scale prediction with exclusive supervision:
+                                    Ls =∥log(ˆs)−stopgrad(log(s∗))∥22,                                            (3)
+wherelog(ˆs) isthepredictedmetricscaleinlogarithmicspace,ands∗ istheoptimalscalecalculated
+online between the predicted affine-invariant point map ˆP and the ground truth using the ROE solver.
+Thefinalmetricscalegeometryisobtainedbymultiplyingthepredictedscalewiththeaffine-invariant
+point map. We explore two design options for the additional scale prediction branch:
+
+(a) Convolutional head. A naive design, as shown in Fig. 3-2(a), is to add a convolution head to
+outputasinglescalevalue,sharingtheconvolutionneckwiththeaffine-invariantpointmap. However,
+this approach doesnot improve relative geometryand worsens metric scalepredictions (see Tab. 4).
+
+
+                                                          4
+===== PAGE 5 =====
+Figure 4: Filtering and completion for real captured datasets. Top: The ScanNet++ dataset [69],
+based on SfM reconstruction, struggles with thin structures and metallic surfaces.  Our filtering
+processremovestheseartifacts,andourcompletionschemereconstructsdepthmapsthatmaintain
+robustabsolute depthwhile compensating forlocal detailsthat alignwith theimage. Bottom: In the
+Argoverse2dataset[64],depthandcolorimagediscrepanciesoccurduetotemporallyunsynchronized
+sensors. Markingthevehicleboundaryincolorimages(yellowlines)indicatesasignificantmismatch.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 5: Our mismatch filtering scheme with local geometry alignment effectively avoids depth
+bias of thepredicted results and helps to identifycorrect artifacts in the real data, whereasa global
+alignmentfailstoaddressthebiasandintroducesforegrounderrors,makingitunsuitableforfiltering.
+
+We suspect that simply adding a convolution head results in most information being processed in
+the convolutionneck, which fails todecouple scaleprediction from itseffect on relative geometry.
+Moreover, the small output head is ineffective at aggregating local features from the convolution
+neck, while accurate metric scale prediction requires global information.
+(b)CLS-token-conditionedMLP.Tobetterdecouplerelativegeometryandmetricscalepredictions,
+ourseconddesign(Fig.3-2(b))usesanMLPheadtolearnthemetricscaledirectlyfromtheDINOv2
+encoder’s classification (CLS) token (see Fig. 2). The global information in the token enables the
+networktopredictanaccuratemetricscale. AsdemonstratedinTable4,suchsimpledesignimproves
+metric geometry accuracy compared to the convolution head method while maintaining accurate
+relative geometry. Thus, we adopt this design as our final configuration.
+
+3.3   Real Data Refinement for Detail Recovery
+
+We found that the MoGe model struggles to accurately reconstruct fine-grained structures due to
+noise and incompleteness in real training data. Previous studies [67, 27] have also noted this issue
+and suggest training with synthetic data of sharp labels and pretrained vision foundation models
+for real-world generalization. However, this still limits geometry accuracy because synthetic data
+rarely captures real-world diversity. Therefore, using real datasets while reducing their noise and
+incompleteness is crucial for accurate geometry estimation. To address this, we design a real data
+refinementpipelinethatincorporatessyntheticlabelstomitigatecommonfailurepatternsinrealdata.
+Failurepattern analysis.   Realdata oftenoriginated fromLiDAR scansor Structurefrom Motion
+(SfM) reconstructions. LiDAR data can suffer from synchronization issues, causing depth and color
+mismatches, especially at object boundaries. SfM data might miss structures like reflective surfaces,
+
+
+                                                          5
+===== PAGE 6 =====
+thinstructures,andsharpboundaries,asshowninFig.4. Ourrefinementapproachleveragesthefact
+thatmodelstrainedonsyntheticdataachieveexactcolor-depthmatchingandcapturesharp,complete
+local geometries. Thesepseudo labelscan helpfilter incorrectdepths andfill in missingparts inreal
+data given accurate local geometries.
+Mismatch filtering.   To filter real captured depth data, we train a MoGe model exclusively on
+synthetic data, denoted asGsyn. This model then infers geometry from real images. Due to potential
+inaccuracies inGsyn’s absolute depth predictions (see Fig. 5), we focus on comparing the relative
+structuresoflocalregionsinrealandpredicteddepth. Foreachestimatedpointatposition ˆpj,we
+sample a spherical region ˆSj centered at ˆpj with a specific radiusˆrj:
+                                         ˆSj ={i|∥ˆpi− ˆpj∥≤ ˆrj,i∈M}.                                             (4)
+
+We align the corresponding real-captured points{pi}i∈ ˆSj with the predictions{ˆpi}i∈ ˆSj via the
+ROE solverand mark areal-captured point asan outlierif deviates fromthe predictions beyondthe
+specified radius, forming a setOj:
+                                           n                                            o
+                                   Oj =      i|∥s∗jpi+t∗j − ˆpi∥> ˆrj,i∈ ˆSj               ,                                       (5)
+
+with(s∗j,t∗j) asoptimalalignmentfactorsforlocalregions. Theoutliersetsderivedfromallsampled
+local regions of different ˆrj are combined and excluded from the mask, yielding the final valid area
+                                                                     [
+                                             Mfiltered =M\                 Oj    .                                                    (6)
+                                                                        j
+Note that comparing the predicted depth with real data locally can largely avoid the absolute bias of
+the former. Using global alignment instead would lead to incorrect filtering, as illustrated in Fig. 5.
+Geometry completion.    After filtering out mismatch regions, we create a complete depth map
+by integrating the detailed structures predicted by Gsyn with the remaining ground truth depth.
+Specifically, we reconstruct the depth in the filtered-out regions{dci}i∈Mcfiltered using logarithmic-
+space Poisson completion:
+
+               min X              ∥∇(logdci)−∇(log ˆdi)∥2,    s.t.   dci =di,∀i∈∂Mcfiltered,              (7)
+                    i∈Mcfiltered
+
+whereMcfiltered isthecomplementareaofMfiltered, ˆdi anddi denotepredicteddepthbyGsyn and
+thereal captureddepth, respectively. Thisstrategy ensuresthat thereconstructeddepth alignswith
+the gradient ofthe predicted depth atlocal regions while maintainingthe ground truth depth asthe
+boundary condition.
+Figure4illustratesourfilteringandcompletionprocess. Ourmethodeffectivelyremovesmismatched
+depths from LiDAR scans and fills in missing content in SfM-reconstructed depth maps.  The
+completed depth map retains sharp geometric boundaries that align with the input image while
+preserving the robust absolute depth from the original map. The refined training data effectively
+enhances the model’s sharpness and maintains accurate geometry estimation, as shown in Tab. 4.
+
+Table 1: Quantitative evaluation for relative geometry. The numbers are averaged across the 10
+evaluation datasets. The metrics are visualized with a color gradient from                          green  (best) to      red
+(worst). Numbersin         gray  cellsindicatethatsometestdatasetswereusedintraining. Non-applicable
+cases are marked with "        -". Detailed results on each dataset can be found in  suppl. materials.
+
+                                      Point                                                Depth                         Avg.
+ Method           Scale-inv.       Affine-inv.         Local           Scale-inv.        Affine-inv.    Affine-inv. (disp)
+              Relp↓ δp1↑  Rk.↓  Relp↓ δp1↑  Rk.↓  Relp↓ δp1↑  Rk.↓  Reld↓ δd1↑  Rk.↓ Reld↓ δd1↑  Rk.↓  Reld↓ δd1↑  Rk.↓  Rk.↓
+ ZoeDepth        -    -     -     -     -     -     -     -    -    12.7  83.9  8.75  10.1  88.5 9.09   11.1  88.3 8.78  8.87
+ DA V1           -    -     -     -     -     -     -     -    -    11.7  85.8  8.22  8.76  90.4 6.91   8.63  92.2 5.62  6.92
+ DA V2           -    -     -     -     -     -     -     -    -    10.7  87.6  6.80  8.48  90.8 6.15   8.82  91.6 5.42  6.12
+ Metric3D V2     -    -     -     -     -     -     -     -    -    7.92  91.8  3.39  7.66  92.9 4.53   9.51  89.4 6.17  4.70
+ MASt3R        14.5  82.1 5.45   11.6  86.0 5.45  8.09  92.2  5.40  11.2  86.5  7.65  9.38  89.1 7.97   11.6  87.8 8.60  6.75
+ UniDepth V1   13.6  85.0 3.83   10.9  88.1 3.95  9.21  91.0  5.55  10.1  89.1  5.12  8.61  91.0 5.67   9.75  89.9 5.92  5.01
+ UniDepth V2   11.6  87.7 2.98   8.56  91.9 2.55  6.34  94.9  3.10  8.61  90.8  3.10  6.42  93.9 2.80   7.35  93.0 2.75  2.88
+ Depth Pro     12.4  87.7 3.83   9.93  89.4 4.30  6.91  94.1  3.55  9.81  89.1  5.33  7.65  92.0 5.05   8.42  91.7 5.08  4.52
+ MoGe          7.46  94.1 2.14   5.69  95.2 2.14  5.50  95.6  2.05  5.77  94.5  2.72  4.51  96.1 2.94   5.58  95.4 3.17  2.53
+ Ours          10.8  88.5 2.40   7.98  91.7 2.23  5.33  95.9  1.35  7.35  92.2  2.12  5.62  94.8 2.02   6.66  93.8 2.17  2.05
+
+                                                              6
+===== PAGE 7 =====
+Table2: Quantitativeevaluationformetricgeometry.                           Table 3: Evaluation of boundary sharp-
+The numbers areaveraged across 7 datasets.                                 ness using F1 scores (↑) in percentages.
+
+Method           Point            Depth      Depth (w/ GT Cam)   Avg.       Method     iBims-1  HAMMER Sintel Spring  Avg. Rk.↓
+            Relp↓ δp1↑ Rk.↓ Reld↓ δd1↑ Rk.↓  Relp↓ δp1↑    Rk.↓ Rk.↓        ZoeDepth     2.47     0.17    2.30  0.43     7.75
+ZoeDepth      -     -    -   39.3  49.9 5.90    -    -      -    5.90       DA V1        3.68     0.76    5.64  1.09     6.75
+DA V1         -     -    -   31.8  54.8 5.50    -    -      -    5.50       DA V2        13.9     4.74    32.5  6.10     3.75
+DA V2         -     -    -   29.9  56.6 4.43    -    -      -    4.43       Metric3D V2  7.36     1.40    25.3  7.23     5.25
+Metric3D V2   -     -    -     -    -     -   18.3  73.9  2.75   2.75       MASt3R       1.24     0.05    1.72  0.15     9.50
+MASt3R      26.2  55.3 4.93  49.7  30.3 6.71    -    -      -    5.82       UniDepth V1  2.35     0.06    0.73  0.17     9.00
+UniDepth V1 12.1  87.2 2.71  23.2  67.5 3.32  21.4  68.6  2.50   2.84       UniDepth V2  11.2     4.40    39.7  7.08     3.75
+UniDepth V2 10.1  91.9 2.43  21.3  75.3 2.54  18.5  82.6  2.57   2.51       Depth Pro    14.3     5.36    41.6  11.0     1.50
+Depth Pro   13.7  81.9 3.29  27.6  54.4 4.36    -    -      -    3.83       MoGe         11.4     3.89    26.3  8.36     4.67
+Ours        8.19  93.6 1.64  15.7  76.8 2.21  13.6  87.4  2.00   1.95       Ours         17.9     5.42    35.2  8.63     1.75
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure 6: Qualitative comparison of metric scale point and disparity maps. The top two rows are
+selected from unseen metric scale test datasets. We also labeled key metric measurements in both the
+groundtruthandtheestimatedgeometry. Ourestimatedmetricgeometrybestmatchestheground
+truthandmaintainssharpdetails. Foropen-domaininputs,ourmethodproducesreasonablegeometry
+with rich details, while results of Depth Pro [7] are severely distorted. Best viewed zoomed in.
+
+4   Experiments
+
+Implementationdetails.    Wetrainourmodelusingacombinationof24datasetswith16synthetic
+datasets[10, 58, 49, 59, 42, 33, 14, 24, 82, 51, 63, 21, 1, 65, 55, 72],3 LiDARscanneddatasets [17,
+64,53],and5 SfM-reconstructeddatasets[3,77,69,34,68]. WefollowMoGe[61]tobalance the
+weightsandlossfunctionsamongdifferentdatasets,andalsoadopttheirapproachforimagecropping
+and data augmentation. More details of the training datasets can be found insuppl. material.
+Weuse DINOv2-ViT-Largeasthebackbone forthefullmodel,and DINOv2-ViT-Basemodelfor all
+ablation studies to ensure efficiency. Our convolutional heads follow MoGe’s design but remove all
+
+
+                                                               7
+===== PAGE 8 =====
+normalization layersin order to significantly reduceinference latency. Themodels are trained with
+initial learning rates of1×10−5 for the ViT backbone and1×10−4 for the neck and heads. The
+learning rate decays by half every 25K steps. The full model is trained for 120K iterations with 32
+NVIDIA A100 GPUs for 120 hours. Ablation models are trained for 100K iterations. Additional
+implementation details and runtime analysis are provided in thesupplementary material.
+
+4.1   Quantitative Evaluation
+
+Benchmarks.   Weevaluatetheaccuracyofourmethodon10datasets: NYUv2[41],KITTI[56],
+ETH3D [52], iBims-1 [31, 30], GSO [12] , Sintel [8], DDAD [19], DIODE [57], Spring [38], and
+HAMMER [26]. These datasets encompass a wide range of domains, including indoor scenes, street
+views, object scans, and synthetic animations.
+Baselines.   Wecompareourmethodwithseveralmonoculargeometryestimationmethods,including
+UniDepth V1 and V2 [44, 45], Depth Pro [7], MoGe [61], MASt3R [32], as well as depth estimation
+baselines: Depth Anything V1 (DA V1) and V2 (DA V2) [66, 67], ZoeDepth [5] and Metric3D
+V2 [73]. We evaluate the performance of these methods based on relative scale geometry, metric
+scale geometry, and boundary sharpness.
+Relativegeometryanddepth.    Whiletheprimarygoalofourmethodistoestimatemetricscale
+geometry,measuringrelativegeometry providesvaluableinsightsintohoweachmethodreconstructs
+thegeometricshapefromtheinputimage. WeemploytheevaluationmetricsofMoGe,measuring
+over the scale-invariant point maps, affine-invariant point maps, local point maps, scale-invariant
+depth, affine-invariant depth, and affine-invariant disparity.
+Table1presentstheaveragerelativeerror–Relp (∥ˆp−p∥2/∥p∥2)forpointmapsandReld (|ˆz−z|/z)
+for depth map), and the percentage of inliers (δp1, where∥ˆp−p∥2/∥p∥2 < 0.25, and δd1, where
+max(ˆd/d,d/ˆd) < 1.25) across the 10 test datasets, along with the average ranking among the 8
+methods. Note that ZoeDepth,DAV1, DA V2,and Metric3DV2 are notevaluated for pointsettings
+due to the lack of camera focal prediction. Our method outperforms all existing baselines across
+every evaluation metric and achieves results comparable to the state-of-the-art relative geometry
+estimation method, MoGe. This demonstrates that our model does not compromise the accuracy of
+relative geometry for achieving metric scale estimation.
+Metricgeometryanddepth.   Weevaluatetheaccuracyofmetricscalegeometryanddepthusing
+7 datasets with metric scale annotations, including NYUv2 [41], KITTI [56], ETH3D [52], iBims-
+1[31,30],DDAD[19],DIODE[57]andHAMMER[26]. Wemeasuretherelativepointerror(Relp)
+and percentage of inliers (δp1) on estimated metric point maps. Similarly, we evaluate the metric
+depth accuracy via relative depth error (Reld) and depth inliers (δd1). Additionally, we evaluate metric
+depth estimation using ground truth camera intrinsics for methods that accept this input, which helps
+eliminate theinfluence of inaccuraciesin the estimated cameraintrinsics. Asshown in Table 2, our
+method largely surpasses all existing methods across every metric measurement, demonstrating the
+advantagesofoursimpleandeffectivedesignfordecouplingmetricscaleandaffine-invariantpoint
+estimation.
+Boundarysharpness.    To evaluatethesharpnessofthe estimatedgeometry,we usetwosynthetic
+datasets,Spring[38]andSintel[8],aswellastworeal-worldtestdatasetsiBims-1[31]andHAM-
+MER [26], which contain high-quality, densely annotated geometry. We employ the boundary F1
+score metric proposed by Depth Pro [7] to measure boundary sharpness.  As shown in Table 3,
+our method achieves boundary sharpness comparable to that of Depth Pro [7] and significantly
+outperforms it in terms of both relative and metric scale geometry accuracy.
+
+4.2   Qualitative Evaluation
+
+Figure6presentsavisualcomparisonofmetricscalepointmapsanddisparitymapsestimatedby
+different methods. We have annotatedkey metricscale measurements on both the ground truth and
+the estimatedgeometry to facilitatecomparison of metricscale accuracy. Our method successfully
+produces metric scale geometry with sharp details, whereas MoGe and UniDepth V2 miss significant
+geometricdetails. DepthProexhibitsreducedgeometricaccuracy,particularlyintheopen-domain
+test image of a crocodile.
+
+
+                                                        8
+===== PAGE 9 =====
+  Table 4: Ablation study resultsaveraged over 10 datasets, conducted with a ViT-Base encoder.
+
+                        Metric geometry                               Relative geometry                           Sharpness
+Configuration           Point     Depth                  Point                              Depth
+                                            Scale-inv.Affine-inv.   Local    Scale-inv. Affine-inv.Affine-inv. (disp)
+                     Relp↓ δp1↑ Reld↓ δd1↑ Relp↓ δp1↑ Relp↓ δp1↑ Relp↓ δp1↑ Reld↓ δd1↑ Reld↓ δd1↑ Reld↓    δd1↑      F1↑
+                                                 Metric scale prediction design
+Entangled (SI-Log)    10.0 90.7  17.9 68.6  12.9 86.2  10.3 88.8  8.21 93.0  9.83 89.0  7.97  92.0 9.03    91.1      10.7
+Entangled (Shift inv.)8.99 92.1  16.9 68.8  12.0 87.2  9.05 90.2  6.69 94.6  8.46 90.6  6.75  93.2 7.80    92.1      11.8
+Decoupled (Conv. head)9.62 91.4  17.7 68.4  12.2 86.3  9.15 90.0  6.34 94.9  8.46 90.2  6.62  93.2 7.74    92.1      12.7
+Decoupled (CLS-MLP)   9.20 91.9  16.5 72.8  11.6 87.6  8.87 90.6  6.26 95.1  8.23 91.0  6.53  93.4 7.53    92.6      12.5
+                                                        Training data
+Synthetic data only   12.4 87.3  21.7 65.0  12.3 85.9  9.77 88.9  6.42 94.9  9.04 89.6  7.25  92.5 8.37    91.6      13.3
+w/ Raw real data      9.01 92.2  15.8 75.7  11.4 87.8  8.69 90.7  6.37 94.9  8.40 90.4  6.63  93.3 7.69    92.2      10.3
+w/ Improved real data 9.20 91.9  16.5 72.8  11.6 87.6  8.87 90.6  6.26 95.1  8.23 91.0  6.53  93.4 7.53    92.6      12.5
+
+
+
+
+
+
+
+
+               Figure 7: Showcase of ablation study on models trained with different data.
+
+4.3   Ablation Study
+
+Metric scaleprediction.    In Sec.3.2, weexplored various strategies for accuratemetric geometry
+estimationfromopen-domainimages. Weevaluatetheseconfigurationsacrossthe10testdatasets
+usingtheaforementionedevaluationmetrics. Wealsointroduceanaivebaselinethatdirectlypredicts
+ametricpointmapwithentangledscaleandshiftfactorsusingthecommonlyadoptedSI-logloss[13].
+Table4showstheevaluationresults,highlightingtheimportanceofadecoupleddesignthatseparates
+metric scale from relative geometry estimation to improve overall performance.  For the scale
+predictionhead,theMLPmoduleoutperformstheconvolutionalhead,particularlyinmetricgeometry.
+This indicates the importance of using global information to predict the metric scale and better
+decoupling of relative geometry from scale prediction.
+
+Real data refinement.   To evaluate the impact of our data refinement pipeline, we conducted
+ablationstudyusingdifferentdataconfigurationsfortraining–onlysyntheticdata,rawreal-world
+data,andourrefinedreal-worlddata. AsshowninTab.4,trainingexclusivelyonsyntheticdatayields
+the highest sharpness but significantly reduces geometric accuracy. This supports the effectiveness of
+using synthetic-data-trainedmodel predictions tofilter mismatched realdata via localerror. Training
+with real-world datasets enhancesgeometric accuracybutreduces sharpness. Our refinedreal-world
+datasets achieve nearly the same geometric accuracy as the original datasets while maintaining
+reasonable sharpness, as further confirmed by the visual comparison in Figure 7.
+
+5   Conclusion
+
+WehavepresentedMoGe-2,afoundationalmodelformonoculargeometryestimationinopen-domain
+images, extending the recent MoGe model to achieve metric scale estimation and fine-grained detail
+recovery. By decoupling the task into relative geometry recovery and global scale prediction, our
+method retains the advantages of affine-invariant representations while enabling accurate metric
+reconstruction.  Alongside, we proposed a practical data refinement pipeline that enhances real
+data with synthetic labels, largely improving geometric granularity without compromising accu-
+racy. MoGe-2achievessuperiorperformanceinaccurategeometry,precisemetricscaleandvisual
+sharpness,advancingtheapplicabilityformonoculargeometryestimationinreal-worldapplications.
+Limitations.   Our method struggles with capturing extremely fine structures, such as thin lines
+and hair, and with maintaining straight and aligned structures under a significant scale difference
+betweentheforeground andbackground. Theambiguityinreal-worldmetric scalecanalsoleadto
+deviationsinout-of-distributionscenarios. Weaimtoaddressthesechallengesbyenhancingnetwork
+architectures and incorporating more real-world priors in the future.
+
+
+                                                             9
+===== PAGE 10 =====
+References
+ [1]Baidu Apollo. Apollo synthetic dataset, 2019. Accessed: 2025-03-06.
+
+ [2]  JonathanTBarron,BenMildenhall,DorVerbin,PratulPSrinivasan,andPeterHedman. Zip-nerf: Anti-
+      aliasedgrid-basedneuralradiancefields. InProceedingsoftheIEEE/CVFInternationalConferenceon
+      Computer Vision, pages 19697–19705, 2023.
+
+ [3]  Gilad Baruch, Zhuoyuan Chen, Afshin Dehghan, Tal Dimry, Yuri Feigin, Peter Fu, Thomas Gebauer,
+      Brandon Joffe, Daniel Kurz, Arik Schwartz, and Elad Shulman.  ARKitscenes - a diverse real-world
+      datasetfor3dindoorsceneunderstandingusingmobileRGB-ddata. InThirty-fifthConferenceonNeural
+      Information Processing Systems Datasets and Benchmarks Track (Round 1), 2021.
+
+ [4]  Shariq Farooq Bhat, Ibraheem Alhashim, and Peter Wonka. Adabins: Depth estimation using adaptive
+      bins.  In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages
+      4009–4018, 2021.
+
+ [5]  Shariq FarooqBhat, ReinerBirkl, DianaWofk,Peter Wonka, andMatthias Müller. Zoedepth: Zero-shot
+      transfer by combining relative and metric depth. arXiv preprint arXiv:2302.12288, 2023.
+
+ [6]  ReinerBirkl,DianaWofk,andMatthiasMüller. Midasv3.1–amodelzooforrobustmonocularrelative
+      depth estimation. arXiv preprint arXiv:2307.14460, 2023.
+
+ [7]  AlekseiBochkovskii,AmaëlDelaunoy,HugoGermain,MarcelSantos,YichaoZhou,StephanR.Richter,
+      and Vladlen Koltun. Depth pro: Sharp monocular metric depth in less than a second. arXiv, 2024.
+
+ [8]  D. J. Butler, J. Wulff, G. B. Stanley, and M. J. Black. A naturalistic open source movie for optical flow
+      evaluation. InEuropean Conf. on Computer Vision (ECCV), pages 611–625. Springer-Verlag, 2012.
+
+ [9]  Angela Dai, Angel X. Chang, Manolis Savva, Maciej Halber, Thomas Funkhouser, and Matthias Nießner.
+      Scannet: Richly-annotated 3d reconstructions of indoor scenes. In Proc. Computer Vision and Pattern
+      Recognition (CVPR), IEEE, 2017.
+
+[10]  MattDeitke,DustinSchwenk,JordiSalvador,LucaWeihs,OscarMichel,EliVanderBilt,LudwigSchmidt,
+      KianaEhsani,Aniruddha Kembhavi,andAliFarhadi. Objaverse: Auniverseofannotated3d objects. In
+      Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 13142–
+      13153, 2023.
+
+[11]  Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas
+      Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, and
+      Neil Houlsby. An imageis worth16x16 words: Transformers forimage recognitionat scale. ICLR, 2021.
+
+[12]  Laura Downs, Anthony Francis, Nate Koenig, Brandon Kinman, Ryan Hickman, Krista Reymann,
+      Thomas B. McHugh, and Vincent Vanhoucke.  Google scanned objects: A high-quality dataset of 3d
+      scanned household items, 2022.
+
+[13]  David Eigen, Christian Puhrsch, and Rob Fergus.  Depth map prediction from a single image using a
+      multi-scale deep network. Advances in neural information processing systems, 27, 2014.
+
+[14]  MichaelFonderand MarcVanDroogenbroeck. Mid-air: Amulti-modaldataset forextremelylowaltitude
+      drone flights. InConference on Computer Vision and Pattern Recognition Workshop (CVPRW), 2019.
+
+[15]  Huan Fu, Mingming Gong, Chaohui Wang, Kayhan Batmanghelich, and Dacheng Tao.  Deep ordinal
+      regressionnetworkformonoculardepthestimation. InProceedingsoftheIEEEconferenceoncomputer
+      vision and pattern recognition, pages 2002–2011, 2018.
+
+[16]  Xiao Fu, Wei Yin, Mu Hu, Kaixuan Wang, Yuexin Ma, Ping Tan, Shaojie Shen, Dahua Lin, and Xiaoxiao
+      Long. Geowizard: Unleashingthe diffusion priors for 3dgeometry estimation from a singleimage. arXiv
+      preprint arXiv:2403.12013, 2024.
+
+[17]  JakobGeyer,YohannesKassahun,MentarMahmudi,XavierRicou,RupeshDurgesh,AndrewS.Chung,
+      LorenzHauswald,VietHoangPham,MaximilianMühlegg,SebastianDorn,TiffanyFernandez,Martin
+      Jänicke,SudeshMirashi,ChiragkumarSavani,MartinSturm,OleksandrVorobiov,MartinOelker,Sebastian
+      Garreis, and Peter Schuberth. A2D2: Audi Autonomous Driving Dataset. 2020.
+
+[18]  Ming Gui, Johannes S Fischer, Ulrich Prestel, Pingchuan Ma, Dmytro Kotovenko, Olga Grebenkova,
+      Stefan Andreas Baumann, Vincent Tao Hu, and Björn Ommer. Depthfm: Fast monocular depth estimation
+      with flow matching. arXiv preprint arXiv:2403.13788, 2024.
+
+
+                                                            10
+===== PAGE 11 =====
+[19]  Vitor Guizilini, Rares Ambrus, Sudeep Pillai, Allan Raventos, and Adrien Gaidon. 3d packing for self-
+      supervised monocular depth estimation. In IEEE Conference on Computer Vision and Pattern Recognition
+      (CVPR), 2020.
+
+[20]  Vitor Guizilini, Igor Vasiljevic, Dian Chen, Rares, Ambrus,, and Adrien Gaidon.   Towards zero-shot
+      scale-aware monocular depth estimation. InProceedingsof the IEEE/CVF InternationalConference on
+      Computer Vision, pages 9233–9243, 2023.
+
+[21]  Jose L. Gómez, Manuel Silva, Antonio Seoane, Agnès Borrás, Mario Noriega, Germán Ros, Jose A.
+      Iglesias-Guitian,andAntonioM.López. Allforone,andoneforall: Urbansyndataset,thethirdmusketeer
+      of synthetic driving scenes, 2023.
+
+[22]  KaimingHe,Xiangyu Zhang,ShaoqingRen,andJian Sun. Deep residuallearningforimagerecognition.
+      InProceedingsoftheIEEEconferenceoncomputervisionandpatternrecognition,pages770–778,2016.
+
+[23]  Mu Hu, Wei Yin, Chi Zhang, Zhipeng Cai, Xiaoxiao Long, Hao Chen, Kaixuan Wang, Gang Yu, Chunhua
+      Shen, and Shaojie Shen. Metric3d v2: A versatile monocular geometric foundation model for zero-shot
+      metric depth and surface normal estimation. arXiv preprint arXiv:2404.15506, 2024.
+
+[24]  Po-Han Huang, Kevin Matzen, Johannes Kopf, Narendra Ahuja, and Jia-Bin Huang. Deepmvs: Learning
+      multi-view stereopsis. InIEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
+
+[25]  Tak-Wai Hui, Chen Change Loy, and Xiaoou Tang.  Depth map super-resolution by deep multi-scale
+      guidance. In Computer Vision–ECCV 2016: 14th European Conference, Amsterdam, The Netherlands,
+      October 11-14, 2016, Proceedings, Part III 14, pages 353–369. Springer, 2016.
+
+[26]  HyunJunJung,PatrickRuhkamp,GuangyaoZhai,NikolasBrasch,YitongLi,YannickVerdie,JifeiSong,
+      Yiren Zhou,Anil Armagan, Slobodan Ilic, etal. On theimportance of accurategeometry data fordense 3d
+      visiontasks. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,
+      pages 780–791, 2023.
+
+[27]  BingxinKe,AntonObukhov,ShengyuHuang,NandoMetzger,RodrigoCayeDaudt,andKonradSchindler.
+      Repurposing diffusion-based image generators for monocular depth estimation. In Proceedings of the
+      IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 9492–9502, 2024.
+
+[28]  AlexKendall,YarinGal,andRobertoCipolla. Multi-tasklearningusinguncertaintytoweighlossesfor
+      scene geometry and semantics. In Proceedings of the IEEE conference on computer vision and pattern
+      recognition, pages 7482–7491, 2018.
+
+[29]  Alexander Kirillov,EricMintun, NikhilaRavi, HanziMao, ChloeRolland,Laura Gustafson,Tete Xiao,
+      Spencer Whitehead, Alexander C Berg, Wan-Yen Lo, et al.  Segment anything.  In Proceedings of the
+      IEEE/CVF international conference on computer vision, pages 4015–4026, 2023.
+
+[30]  Tobias Koch, Lukas Liebel, Friedrich Fraundorfer, and Marco Körner. Evaluation of cnn-based single-
+      image depth estimation methods.   In Proceedings of the European Conference on Computer Vision
+      Workshops (ECCV-WS), pages 331–348. Springer International Publishing, 2019.
+
+[31]  TobiasKoch,LukasLiebel,MarcoKörner,andFriedrichFraundorfer. Comparisonofmonoculardepth
+      estimation methods using geometrically relevant metrics on the ibims-1 dataset. Computer Vision and
+      Image Understanding (CVIU), 191:102877, 2020.
+
+[32]  Vincent Leroy, Yohann Cabon, and Jérôme Revaud. Grounding image matching in 3d with mast3r. In
+      European Conference on Computer Vision, pages 71–91. Springer, 2024.
+
+[33]  Yixuan Li, Lihan Jiang, Linning Xu, Yuanbo Xiangli, Zhenzhi Wang, Dahua Lin, and Bo Dai. Matrixcity:
+      A large-scale city dataset for city-scale neural rendering and beyond. In Proceedings of the IEEE/CVF
+      International Conference on Computer Vision, pages 3205–3215, 2023.
+
+[34]  ZhengqiLiandNoahSnavely. Megadepth: Learningsingle-viewdepthpredictionfrominternetphotos. In
+      Computer Vision and Pattern Recognition (CVPR), 2018.
+
+[35]  Zhenyu Li, Shariq Farooq Bhat, and Peter Wonka.  Patchfusion: An end-to-end tile-based framework
+      for high-resolution monocular metric depth estimation. In Proceedings of the IEEE/CVF Conference on
+      Computer Vision and Pattern Recognition, pages 10016–10025, 2024.
+
+[36]  Zhengqi Li, Richard Tucker, Forrester Cole, Qianqian Wang, Linyi Jin, Vickie Ye, Angjoo Kanazawa,
+      Aleksander Holynski, and Noah Snavely. Megasam: Accurate, fast, and robust structure and motion from
+      casual dynamic videos. arXiv preprint arXiv:2412.04463, 2024.
+
+
+                                                             11
+===== PAGE 12 =====
+[37]  HaotongLin,SidaPeng,JingxiaoChen,SongyouPeng,JiamingSun,MinghuanLiu,HujunBao,Jiashi
+      Feng, Xiaowei Zhou, and BingyiKang. Prompting depth anythingfor 4k resolution accurate metric depth
+      estimation. arXiv preprint arXiv:2412.14015, 2024.
+
+[38]  Lukas Mehl, Jenny Schmalfuss, Azin Jahedi, Yaroslava Nalivayko, and Andrés Bruhn. Spring: A high-
+      resolutionhigh-detaildatasetandbenchmarkforsceneflow,opticalflowandstereo. InProc.IEEE/CVF
+      Conference on Computer Vision and Pattern Recognition (CVPR), 2023.
+
+[39]  Nando Metzger, Rodrigo Caye Daudt, and Konrad Schindler.  Guided depth super-resolution by deep
+      anisotropic diffusion.  In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+      Recognition, pages 18237–18246, 2023.
+
+[40]  S Mahdi HMiangoleh, Sebastian Dille, Long Mai,Sylvain Paris, and Yagiz Aksoy. Boosting monocular
+      depthestimationmodelsto high-resolutionviacontent-adaptive multi-resolution merging. In Proceedings
+      of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 9685–9694, 2021.
+
+[41]  Pushmeet Kohli Nathan Silberman, Derek Hoiem and Rob Fergus.  Indoor segmentation and support
+      inference from rgbd images. InECCV, 2012.
+
+[42]  Simon Niklaus, Long Mai, Jimei Yang, and Feng Liu. 3d ken burns effect from a single image. ACM
+      Transactions on Graphics, 38(6):184:1–184:15, 2019.
+
+[43]  Maxime Oquab, Timothée Darcet, Théo Moutakanni, Huy Vo, Marc Szafraniec, Vasil Khalidov, Pierre
+      Fernandez,DanielHaziza,FranciscoMassa,AlaaeldinEl-Nouby,etal. Dinov2: Learningrobustvisual
+      features without supervision. arXiv preprint arXiv:2304.07193, 2023.
+
+[44]  LuigiPiccinelli,Yung-HsuYang,ChristosSakaridis,MattiaSegu,SiyuanLi,LucVanGool,andFisher
+      Yu. UniDepth: Universalmonocularmetricdepthestimation. InProceedingsoftheIEEE/CVFConference
+      on Computer Vision and Pattern Recognition (CVPR), 2024.
+
+[45]  Luigi Piccinelli, Christos Sakaridis, Yung-Hsu Yang, Mattia Segu, Siyuan Li, Wim Abbeloos, and Luc
+      Van Gool.  Unidepthv2: Universal monocular metric depth estimation made simpler.  arXiv preprint
+      arXiv:2502.20110, 2025.
+
+[46]  Delin Qu, Haoming Song, Qizhi Chen, Yuanqi Yao, Xinyi Ye, Yan Ding, Zhigang Wang, JiaYuan Gu, Bin
+      Zhao,DongWang,etal. Spatialvla: Exploringspatialrepresentationsforvisual-language-actionmodel.
+      arXiv preprint arXiv:2501.15830, 2025.
+
+[47]  René Ranftl, Katrin Lasinger, David Hafner, Konrad Schindler, and Vladlen Koltun.  Towards robust
+      monoculardepthestimation: Mixingdatasetsforzero-shotcross-datasettransfer. IEEEtransactionson
+      pattern analysis and machine intelligence, 44(3):1623–1637, 2020.
+
+[48]  René Ranftl, Alexey Bochkovskiy, and Vladlen Koltun.  Vision transformers for dense prediction.  In
+      Proceedings of the IEEE/CVF international conference on computer vision, pages 12179–12188, 2021.
+
+[49]  Mike Roberts, Jason Ramapuram, Anurag Ranjan, Atulit Kumar, Miguel Angel Bautista, Nathan Paczan,
+      Russ Webb, and Joshua M. Susskind. Hypersim: A photorealistic synthetic dataset for holistic indoor
+      scene understanding. InInternational Conference on Computer Vision (ICCV) 2021, 2021.
+
+[50]  RobinRombach,AndreasBlattmann,DominikLorenz,PatrickEsser,andBjörnOmmer. High-resolution
+      image synthesis with latent diffusion models, 2021.
+
+[51]  German Ros, Laura Sellart, Joanna Materzynska, David Vazquez, and Antonio M. Lopez. The synthia
+      dataset: A large collection of synthetic images for semantic segmentation of urban scenes. In The IEEE
+      Conference on Computer Vision and Pattern Recognition (CVPR), 2016.
+
+[52]  ThomasSchöps,TorstenSattler,andMarcPollefeys. BADSLAM:BundleadjusteddirectRGB-DSLAM.
+      In Conference on Computer Vision and Pattern Recognition (CVPR), 2019.
+
+[53]  Pei Sun, Henrik Kretzschmar, Xerxes Dotiwalla, Aurelien Chouard, Vijaysai Patnaik, Paul Tsui, James
+      Guo, Yin Zhou, Yuning Chai, Benjamin Caine, Vijay Vasudevan, Wei Han, Jiquan Ngiam, Hang Zhao,
+      AlekseiTimofeev, ScottEttinger, MaximKrivokon, AmyGao, AdityaJoshi, YuZhang, Jonathon Shlens,
+      ZhifengChen,andDragomirAnguelov. Scalabilityinperceptionforautonomousdriving: Waymoopen
+      dataset. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition(CVPR),
+      2020.
+
+[54]  Zachary Teed and Jia Deng.  Droid-slam: Deep visual slam for monocular, stereo, and rgb-d cameras.
+      Advances in neural information processing systems, 34:16558–16569, 2021.
+
+
+                                                             12
+===== PAGE 13 =====
+[55]  FabioTosi,YiyiLiao,CarolinSchmitt,andAndreasGeiger. Smd-nets: Stereomixturedensitynetworks.
+      In Conference on Computer Vision and Pattern Recognition (CVPR), 2021.
+
+[56]  Jonas Uhrig, Nick Schneider, Lukas Schneider, Uwe Franke, Thomas Brox, and Andreas Geiger. Sparsity
+      invariant cnns. InInternational Conference on 3D Vision (3DV), 2017.
+
+[57]  Igor Vasiljevic, Nick Kolkin, Shanyi Zhang, Ruotian Luo, Haochen Wang, Falcon Z. Dai, Andrea F.
+      Daniele, Mohammadreza Mostajabi, Steven Basart, Matthew R. Walter, and Gregory Shakhnarovich.
+      DIODE: A Dense Indoor and Outdoor DEpth Dataset. CoRR, abs/1908.00463, 2019.
+
+[58]  Kaixuan Wang and Shaojie Shen.  Flow-motion and depth network for monocular stereo and beyond.
+      CoRR, abs/1909.05452, 2019.
+
+[59]  Qiang Wang,Shizhen Zheng, QingsongYan, Fei Deng,Kaiyong Zhao, andXiaowenChu. IRS:A large
+      syntheticindoorroboticsstereodatasetfordisparityandsurfacenormalestimation. CoRR,abs/1912.09678,
+      2019.
+
+[60]  Ruicheng Wang, Jianfeng Xiang, Jiaolong Yang, and Xin Tong. Diffusion models are geometry critics:
+      Single image 3d editing using pre-trained diffusion priors. In European Conference on Computer Vision,
+      pages 441–458. Springer, 2024.
+
+[61]  Ruicheng Wang, Sicheng Xu, Cassie Dai, Jianfeng Xiang, Yu Deng, Xin Tong, and Jiaolong Yang.
+      Moge: Unlocking accuratemonoculargeometryestimation foropen-domainimageswith optimaltraining
+      supervision. 2024.
+
+[62]  Shuzhe Wang, Vincent Leroy,YohannCabon, BorisChidlovskii, andJerome Revaud. Dust3r: Geometric
+      3d vision made easy. InCVPR, 2024.
+
+[63]  Wenshan Wang, Delong Zhu, Xiangwei Wang, Yaoyu Hu, Yuheng Qiu, Chen Wang, Yafei Hu, Ashish
+      Kapoor, and Sebastian Scherer. Tartanair: A dataset to push the limits of visual slam. 2020.
+
+[64]  Benjamin Wilson, William Qi, Tanmay Agarwal, John Lambert, Jagjeet Singh, Siddhesh Khandelwal,
+      Bowen Pan, Ratnesh Kumar, Andrew Hartnett, Jhony Kaesemodel Pontes, Deva Ramanan, Peter Carr,
+      and James Hays. Argoverse 2: Next generation datasets for self-driving perception and forecasting. In
+      Proceedings ofthe Neural Information Processing Systems Track onDatasets and Benchmarks(NeurIPS
+      Datasets and Benchmarks 2021), 2021.
+
+[65]  MagnusWrenningeandJonasUnger. Synscapes: Aphotorealisticsyntheticdatasetforstreetsceneparsing.
+      CoRR, abs/1810.08705, 2018.
+
+[66]  LiheYang,BingyiKang,ZilongHuang,XiaogangXu,JiashiFeng,andHengshuangZhao. Depthanything:
+      Unleashing the power of large-scale unlabeled data. InCVPR, 2024.
+
+[67]  LiheYang,BingyiKang,ZilongHuang,ZhenZhao,XiaogangXu,JiashiFeng,andHengshuangZhao.
+      Depth anything v2. arXiv:2406.09414, 2024.
+
+[68]  Yao Yao, Zixin Luo, Shiwei Li, Jingyang Zhang, Yufan Ren, Lei Zhou, Tian Fang, and Long Quan.
+      Blendedmvs: A large-scale dataset for generalized multi-view stereo networks.  Computer Vision and
+      Pattern Recognition (CVPR), 2020.
+
+[69]  Chandan Yeshwanth, Yueh-Cheng Liu, Matthias Nießner, and Angela Dai. Scannet++: A high-fidelity
+      datasetof3dindoorscenes. InProceedingsoftheInternationalConferenceonComputerVision(ICCV),
+      2023.
+
+[70]  Wei Yin, Yifan Liu, Chunhua Shen, and Youliang Yan. Enforcing geometric constraints of virtual normal
+      for depth prediction. In Proceedings of the IEEE/CVF international conference on computer vision, pages
+      5684–5693, 2019.
+
+[71]  Wei Yin, Jianming Zhang, Oliver Wang, Simon Niklaus, Long Mai, Simon Chen, and Chunhua Shen.
+      Learning to recover 3d scene shape from a single image. CoRR, abs/2012.09365, 2020.
+
+[72]  Wei Yin, Jianming Zhang, Oliver Wang, Simon Niklaus, Simon Chen, Yifan Liu, and Chunhua Shen.
+      Towardsaccuratereconstructionof3dsceneshapefromasinglemonocularimage. IEEETransactionson
+      Pattern Analysis and Machine Intelligence, 45(5):6480–6494, 2022.
+
+[73]  WeiYin,ChiZhang,HaoChen,ZhipengCai,GangYu,KaixuanWang,XiaozhiChen,andChunhuaShen.
+      Metric3d: Towardszero-shotmetric3dpredictionfromasingleimage. InProceedingsoftheIEEE/CVF
+      International Conference on Computer Vision, pages 9043–9053, 2023.
+
+
+                                                            13
+===== PAGE 14 =====
+[74]  Hong-Xing Yu, Haoyi Duan, Charles Herrmann, William T Freeman, and Jiajun Wu.  Wonderworld:
+      Interactive 3d scene generation from a single image. arXiv preprint arXiv:2406.09394, 2024.
+
+[75]  Kaicheng Yu, Tang Tao, Hongwei Xie, Zhiwei Lin, Tingting Liang, Bing Wang, Peng Chen, Dayang Hao,
+      Yongtao Wang, and Xiaodan Liang. Benchmarking the robustness of lidar-camera fusion for 3d object
+      detection. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition,
+      pages 3188–3198, 2023.
+
+[76]  EkimYurtsever,JacobLambert,AlexanderCarballo,andKazuyaTakeda. Asurveyofautonomousdriving:
+      Common practices and emerging technologies. IEEE access, 8:58443–58469, 2020.
+
+[77]  AmirRZamir,AlexanderSax,, WilliamBShen, LeonidasGuibas,JitendraMalik,andSilvioSavarese.
+      Taskonomy: Disentangling task transfer learning.  In 2018 IEEE Conference on Computer Vision and
+      Pattern Recognition (CVPR). IEEE, 2018.
+
+[78]  Lvmin Zhang, Anyi Rao, and Maneesh Agrawala. Adding conditional control to text-to-image diffusion
+      models. InProceedingsoftheIEEE/CVFinternationalconferenceoncomputervision,pages3836–3847,
+      2023.
+
+[79]  Zixiang Zhao, Jiangshe Zhang, Shuang Xu, Zudi Lin, and Hanspeter Pfister. Discrete cosine transform
+      network for guided depth map super-resolution. In Proceedings of the IEEE/CVF conference on computer
+      vision and pattern recognition, pages 5697–5707, 2022.
+
+[80]  HaoyuZhen,Xiaowen Qiu,PeihaoChen,JinchengYang,XinYan, YilunDu,YiningHong, andChuang
+      Gan.  3d-vla: A 3d vision-language-action generative world model.  arXiv preprint arXiv:2403.09631,
+      2024.
+
+[81]  DuoZheng,ShijiaHuang,LinZhao,YiwuZhong,andLiweiWang. Towardslearningageneralistmodel
+      for embodied navigation. In Proceedings of the IEEE/CVF Conference on Computer Visionand Pattern
+      Recognition, pages 13624–13634, 2024.
+
+[82]  JiaZheng, JunfeiZhang,JingLi, RuiTang,Shenghua Gao, andZihanZhou. Structured3d: Alargephoto-
+      realistic dataset for structured 3d modeling. In Proceedings of The European Conference on Computer
+      Vision (ECCV), 2020.
+
+[83]  Shengjie Zhu, Girish Chandar Ganesan, Abhinav Kumar, and Xiaoming Liu. Replay: Remove projective
+      lidar depthmapartifacts via exploitingepipolar geometry. In EuropeanConferenceon ComputerVision,
+      pages 393–411. Springer, 2024.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                            14
+===== PAGE 15 =====
+A   Implementation Details
+
+A.1   Network architectures
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          Figure A.1: Illustration of the convolutional neck and head module architectures.
+
+The detailed architectures of our model components are described as follows.
+DINOv2 Image Encoder.    Our model supports variable input resolutions by leveraging the in-
+terpolatable positional embeddings of DINOv2 [43].  The native resolution is determined by a
+user-specified numberof imagetokens. Given aninput imageof arbitrarysize and atarget number
+of tokens, we compute a patch-level resolution h×w that best matches the desired token count.
+The image is then resized to(14h,14w) to match DINOv2’s input requirement, and encoded into
+h×w imagetokensalongwithoneclassificationtoken. Weextractfourintermediatefeaturelayers
+from DINOv2—specifically, the 6th, 12th, 18th, and final transformer layers—project them to a
+commondimension,reshapetheirspatialsizeto(h,w),andsumthemtoformtheinputforthedense
+prediction decoder.
+ConvolutionalNeckandHeads.   Inspiredbypriormulti-taskdensepredictionarchitectures[48,
+28, 61], we design a lightweight decoder consisting of a shared convolutional neck and multiple
+task-specificheads,asillustratedinFigA.1. Boththeneckandtheheadsarecomposedofprogressive
+residualconvolutionblocks(ResBlocks)[22]interleaved withtransposeconvolutionlayers(kernel
+size2,stride2)forprogressiveupsamplingfromresolution(h,w) to(16h,16w). Finally,theoutput
+mapisresizedthroughbilinearinterpolationtomatchtherawimagesize. Toreduceinferencelatency
+onmodernGPUs,allnormalizationlayersaresimplyremovedfromtheResBlocks,withoutaffecting
+performance or training stability.
+At each scale level of the neck, we inject a UV positional encoding, defined as a mapping of the
+image’s rectangular domain into a unit circle, preserving the raw aspect ratio information.  The
+resulting intermediate feature pyramid is shared across all heads, each of which independently
+decodesitsrespectiveoutputmap. Thisdesignenablesmulti-scalefeaturesharingwhilemaintaining
+head-specific decoding tailored to each prediction task.
+CLS-token-conditioned MLP Head.    For scalar prediction, we use a two-layer MLP that takes
+the CLS token feature from DINOv2 as input and outputs a single scale factor, followed by an
+exponential mapping to ensure a positive scale output. The hidden layer size is equal to the input
+feature dimension.
+
+A.2   Training Data
+
+The datasets usedfor trainingour modelare listedin Tab. A.1. All datasetsare publiclyavailable for
+academic use, and their sampling weights follow the protocol established in MoGe [61].
+Tab. A.2 provides a rough summary of the number of training frames used by several representative
+monocular geometry estimation methods. As there is no shared or standardized training set in this
+
+
+                                                        1
+===== PAGE 16 =====
+field, this table serves to contextualize the scale of training data across methods. Notably, model
+performance does not necessarily correlate with the amount of training data used.
+                                   Table A.1: List of datasets used to train our model.
+         Name                                       Domain               #Frames        Type        Weight     Metric Scale
+         A2D2[17]                         Outdoor/Driving          196K         LiDAR        0.8%          ✓
+         Argoverse2[64]                Outdoor/Driving          1.1M         LiDAR        7.1%          ✓
+         ARKitScenes[3]                       Indoor                  449K           SfM          8.3%          ✓
+         BlendedMVS[68]                 In-the-wild              115K           SfM         11.5%
+         MegaDepth[34]             Outdoor/In-the-wild        92K            SfM          5.4%
+         ScanNet++[9]                           Indoor                  176K           SfM          4.6%          ✓
+         Taskonomy[77]                        Indoor                  3.6M           SfM         14.1%          ✓
+         Waymo[53]                      Outdoor/Driving          788K         LiDAR        6.2%          ✓
+         ApolloSynthetic[1]          Outdoor/Driving          194K       Synthetic      3.8%          ✓
+         EDEN[72]                        Outdoor/Garden          369K       Synthetic      1.2%
+         GTA-SfM[58]                Outdoor/In-the-wild        19K        Synthetic      2.7%          ✓
+         Hypersim[49]                           Indoor                   75K        Synthetic      4.8%          ✓
+         IRS[59]                                    Indoor                  101K       Synthetic      5.4%          ✓
+         KenBurns[42]                       In-the-wild               76K        Synthetic      1.5 %
+         MatrixCity[33]                 Outdoor/Driving          390K       Synthetic      1.3%          ✓
+         MidAir[14]                    Outdoor/In-the-wild       423K       Synthetic      3.8%          ✓
+         MVS-Synth[24]               Outdoor/Driving           12K        Synthetic      1.2%          ✓
+         Structured3D[82]                     Indoor                   77K        Synthetic      4.6%          ✓
+         Synthia[51]                      Outdoor/Driving           96K        Synthetic      1.1%          ✓
+         Synscapes[65]                  Outdoor/Driving           25K        Synthetic      1.9%          ✓
+         UnrealStereo4K [55]            In-the-wild                8K         Synthetic        1.6           ✓
+         TartanAir[63]                        In-the-wild              306K       Synthetic      4.8%          ✓
+         UrbanSyn[21]                  Outdoor/Driving            7K         Synthetic      2.0%          ✓
+         ObjaverseV1[10]                      Object                  167K       Synthetic      4.6%
+
+Table A.2: Summary of labeled training frame counts and pretrained backbones for the models
+compared in this paper.
+                   Method                           #TotalTraining Frames             Pretrained Backbone
+                   ZoeDepth [5]                    ∼ 2M                        MiDaS BEiT384-L [47]
+                   DA V1 [66]               1.5M (+62M pseudo-labeled)         DINOv2 ViT-Large
+                   DA V2 [67]               595K (+62M pseudo-labeled)        DINOv2 ViT-Large
+                   Metric3D V2 [23]                         16M                             DINOv2 ViT-Large
+                   UniDepth V1 [44]                        3.7M                            DINOv2 ViT-Large
+                   UniDepth V2 [45]                         16M                             DINOv2 ViT-Large
+                   Depth Pro [7]                    ∼ 6M                            DINOv2 ViT-Large
+                   MoGe [61]                                     9M                              DINOv2 ViT-Large
+                   Ours                                             8.9M                            DINOv2 ViT-Large
+
+A.3   Evaluation Protocol
+
+Relative Geometry   We follow the evaluation protocol of alignment in MoGe [61]. Predictions and
+ground truth are aligned in scale (and shift, if applicable) for each image before measuring errors as
+specified below
+          • Scale-invariantpointmap. Thescalea∗ toalignpredictionwithgroundtruthiscomputed
+             as:                                                          X      1
+                                                     a∗ = argmin                 zi∥aˆpi−pi∥1,                                        (8)
+                                                                  a      i∈M
+          • Affine-invariant point map. The scalea∗ and shiftb∗ are computed as:
+                                             (a∗,b∗) = argmin              X      1
+
+                                                                  a,b     i∈M    zi∥aˆpi+b−pi∥1.                               (9)
+
+          • Scale-invariant depth map, the scalea∗ is computed as
+                                                       a∗ = argmin          X      1
+
+                                                                     s     i∈M     zi|aˆzi−zi|.                                        (10)
+
+
+                                                                       2
+===== PAGE 17 =====
+        • Affine-invariant depth map. The scalea∗ and shiftb∗ are computed as
+                                                              X     1
+                                       (a∗,b∗) = argmin             zi|aˆzi+b−zi|.                                (11)
+                                                        s     i∈M
+
+        • Affine-invariant disparity map. We follow the established protocol for affine disparity
+          alignment [47], using least-squares to align predictions in disparity space:
+                                                               X
+                                        (a∗,b∗) = argmin           (aˆdi+b−di)2,                                 (12)
+                                                         s    i∈M
+
+          where ˆdi is the predicted disparity and di is the ground truth, defined asdi = 1/zi. To
+          prevent aligned disparities from taking excessively small or negative values, the aligned
+          disparity is truncated by the inverted maximum depth 1/zmax before inversion. The final
+          aligned depth ˆz∗i is computed as:
+
+                                             ˆz∗i :=                  1max(a∗ˆdi+b∗,1/zmax).                                        (13)
+
+Metric Geometry
+
+        • Metricdepth. The outputisevaluated withoutalignment andclamping rangeof values for
+          all methods, unless specific post-processing is hard-coded in its model inference pipeline.
+        • Metricpointmap. Thepointmappredictionisalignedwiththegroundtruthbytheoptimal
+          translation:                                    X     1
+                                         b∗ = argmin           zi∥ˆpi+b−pi∥1.                                   (14)
+                                                    b    i∈M
+
+B   Additional Experiments and Results
+
+B.1   Test-time Resolution Scaling
+
+InViT-basedmodels,thenativeinputresolutionisdeterminedbythenumberofimagetokensderived
+from fixed-size patches, specifically,142 for DINOv2 models. As such, resolution scaling can be
+effectively studiedthrough varying token counts. Ourmodel is trained acrossa wide range oftoken
+counts from 1200 to 3600, corresponding to native input resolutions ranging approximately from
+4842 to11882. Thistrainingsetupenablesrobustgeneralizationtoabroadrangeofresolutionsand
+flexible usage with details as follows.
+GeometryAccuracy    MoGe[61]andUniDepthV2[44]arebothtrainedondiverseinputresolutions
+and aspect ratios, which helps them maintain accuracy under resolution shifts within a moderate
+range(1200-3000). Incontrast,modelssuchasDepthAnything[66,67]andMetric3DV2[23]are
+trainedwithfixedinputresolutionandexhibitsubstantialperformancedegradationwhenevaluatedat
+resolutions that diverge from their training setting. Our method, trained over a broader resolution
+spectrum,remainsrobustundertest-timescaling. AsshowninFig.B.3a,itmaintainsthetopaccuracy
+when scaled up for improved detail or down for faster inference—even beyond the training range.
+BoundarySharpness    Higherinputresolutionsandmoreimagetokensgenerallyleadtosharper
+boundaries in dense prediction tasks, as observed in prior works [67, 48, 29] and also shown in
+Fig. B.2.  In Fig. B.3b, we evaluate several DINOv2-based methods for boundary sharpness at
+different test-time resolutions. Note that Depth Pro operates at a fixed high resolution due to its
+specialized multi-scale, patch-based architecture. Our approach consistently delivers the sharpest
+predictionsateachresolutionandoutperformsDepthProusingsignificantlyfewertokenstoreach
+similar levels of detail.
+Latency Trade-off    As shown in Fig. B.3c, inference latency scales roughly linearly with the
+numberoftokens. AlthoughallcomparedmethodssharethesameViTbackbone,overallruntime
+can vary due to differences in decoder complexity and architectural choices.  Our model adopts
+a lightweight design that enables fast inference while maintaining strong accuracy, achieving a
+favorable trade-off between latency and performance across a wide range of resolutions—within a
+single unified framework.
+
+
+                                                         3
+===== PAGE 18 =====
+        Figure B.2: Trading latency for improved visual sharpness by increasing image tokens.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      (a) Geometry accuracy(↑)                    (b) Boundary sharpness (↑)                     (c) Inference latency (↓)
+Figure B.3:  Performance comparison under test-time resolution scaling. ★ denotes the default
+configurationfor eachmethod. (a) Percentilerank( x−worstbest−worst)averaged acrossall evaluateddatasets
+and two geometrymetrics (metric andrelativegeometry accuracy). (b)Average percentilerank for
+boundary sharpness. Both are evaluated on a 1/10 subset uniformly sampled from the evaluation
+benchmarks. (c) Inferencelatencymeasured onan NVIDIAA100 GPUwith FP16precision. Our
+method demonstrates the most favorable balance between latency and performance across different
+resolutions.
+
+B.2   Runtime Analysis
+
+AsshowninTableB.3,weevaluatetheruntimeperformanceofeachmethodundertheirrepresen-
+tative test-time configurations. Specifically, we measure single-frame inference latency and peak
+GPU memory usage on an NVIDIA A100 GPU. These metrics provide a practical comparison of
+computational efficiency and resource requirements across different architectures.
+
+Table B.3: Runtime statistics measured on a single NVIDIA A100 GPU for single-frame inference.
+            Method              #Parameters     #Tokens        Native              Latency (ms)     Memory (GB)
+                                                                 Resolution        FP16     FP32     FP16     FP32
+
+            DA V2                    335M             1369            5182            24         86        0.91        1.8
+            Metric3D V2          412M             3344        1064×616       87        255        1.4         2.3
+
+            UniDepth V2          354M             1020            4482            33         84         1.1         1.83061            7742            50        206        1.8         2.5
+
+            Depth Pro               504M            20160          15362          139       906        3.7         8.0
+
+            MoGe                     314M             1200            4842            40         93        0.74        1.42500            7002            70        192       0.88        1.6
+
+                                                     1200            4842            29         82        0.96        1.7
+            Ours                        326M         2500            7002            39        157        1.1         2.1
+                                                     3600            8402            55        238        1.3         2.5
+                                                     7200           11882          108       565        1.9         3.8
+
+
+B.3   More Visual Results
+
+More visual results for qualitative comparison are included in Fig. B.4 and Fig. B.5.
+
+
+                                                                  4
+===== PAGE 19 =====
+B.4   Complete Evaluation on Individual Datasets
+
+Inthepaper,weonlylistedtheaverageperformanceacrossmultipledatasetsforqualitativecompari-
+son and ablation study. Table B.4 and Table B.5 list all the results for each individual datasets.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       Figure B.4: More visual results on open-domain images (1/2). Best viewed zoomed in.
+
+
+
+
+
+
+
+                                                          5
+===== PAGE 20 =====
+Figure B.5: More visual results on open-domain images (2/2). Best viewed zoomed in.
+
+
+
+
+
+                                                  6
+===== PAGE 21 =====
+Method           NYUv2        KITTI       ETH3D        iBims-1       GSO         Sintel      DDAD        DIODE        Spring    HAMMER                Avg.
+                Rel↓ δ1↑    Rel↓ δ1↑     Rel↓ δ1↑     Rel↓ δ1↑    Rel↓ δ1↑     Rel↓ δ1↑    Re↓ δ1↑     Rel↓ δ1↑     Rel↓ δ1↑    Rel↓ δ1↑      Rel↓ δ1↑ Rank↓
+                                                                       Metric point map
+MASt3R          7.11  95.6   26.0  45.8  27.4   43.1  10.1  89.3    -      -     -     -   35.4  28.7   21.7  66.3    -     -    56.0   18.3   26.2  55.3   4.93
+UniDepth V1     4.80  98.3   4.52  98.5  22.4   63.1  10.8  92.8    -      -     -     -   11.4  89.5   12.8  88.9    -     -    18.0   79.5   12.1  87.2   2.71
+UniDepth V2     4.83  98.0   5.88  97.5  9.46   95.0  5.23  97.9    -      -     -     -   13.3  90.3   17.0  80.8    -     -    15.0   83.9   10.1  91.9   2.43
+Depth Pro       6.13  97.3   11.1  85.3  21.2   64.9  6.89  96.9    -      -     -     -   22.6  61.3   13.5  81.8    -     -    14.5   86.0   13.7  81.9   3.29
+Ours            4.44  98.3   7.44  94.4  7.19   97.7  5.63  97.4    -      -     -     -   11.4  87.9   7.85  92.3    -     -    13.4   87.0   8.19  93.6   1.64
+                                                            Metric depth map (wo/ GT intrinsics)
+ZoeDepth        11.0  91.9   17.0  85.4  57.1   33.7  17.4  67.2    -      -     -     -   38.9  38.6   39.3  29.3    -     -    94.3   3.23   39.3  49.9   5.90
+MASt3R          10.8  89.7   56.7  9.84  47.2   20.1  18.7  61.5    -      -     -     -   62.4  5.51   54.9  19.0    -     -    97.2   6.74   49.7  30.3   6.71
+DA V1           10.5  94.9   11.6  94.5  40.2   24.0  12.9  81.8    -      -     -     -   34.5  44.7   58.0  16.2    -     -    54.8   27.3   31.8  54.8   5.50
+DA V2           16.4  80.9   10.6  88.6  36.1   36.3  11.1  91.7    -      -     -     -   41.7  37.5   41.2  22.1    -     -    52.1   38.9   29.9  56.6   4.43
+UniDepth V1     7.59  97.6   4.69  98.4  56.9   14.9  23.8  57.6    -      -     -     -   13.8  85.1   17.1  71.9    -     -    38.2   46.7   23.2  67.5   3.32
+UniDepth V2     10.6  92.8   8.58  95.4  20.7   69.5  9.52  93.2    -      -     -     -   18.4  77.6   43.0  51.8    -     -    38.2   46.8   21.3  75.3   2.54
+Depth Pro       10.7  91.9   23.5  38.3  38.5   32.8  15.9  81.5    -      -     -     -   33.4  35.3   31.9  37.7    -     -    39.1   63.0   27.6  54.4   4.36
+Ours            7.33  96.1   18.1  62.9  10.4   90.8  13.6  83.0    -      -     -     -   15.8  73.0   17.5  66.4    -     -    26.9   65.6   15.7  76.8   2.21
+                                                            Metric depth map (w/ GT intrinsics)
+Metric3D V2     7.16  96.5   5.25  98.0  11.8   88.8  9.96  94.1    -      -     -     -   9.21  93.7   49.1  1.98    -     -    35.7   44.3   18.3  73.9   2.75
+UniDepth V1     5.98  97.9   4.43  98.5  44.5   26.7  22.6  60.5    -      -     -     -   13.0  87.2   21.0  63.5    -     -    38.6   45.9   21.4  68.6   2.50
+UniDepth V2     7.81  96.0   5.98  97.7  15.0   85.2  7.71  95.5    -      -     -     -   14.1  89.3   41.0  67.1    -     -    37.7   47.1   18.5  82.6   2.57
+Ours            6.46  96.9   8.64  93.7  10.5   92.2  9.92  92.4    -      -     -     -   13.1  85.6   16.2  77.1    -     -    30.4   74.2   13.6  87.4   2.00
+                                                                  Scale-invariant point map
+MASt3R          6.26  96.0   10.0  93.8  6.28   95.5  7.55  95.1  5.03   99.0  31.5  50.2  15.9  77.6   12.8  85.0  39.3  33.7   10.7   95.0   14.5  82.1   5.45
+UniDepth V1     5.33  98.4   5.96  98.5  18.5   77.6  5.29  97.4  6.58   99.6  33.0  48.9  11.4  90.2   12.3  91.0  33.1  49.8   4.83   98.5   13.6  85.0   3.83
+UniDepth V2     5.59  98.3   5.41  98.0  6.58   97.2  5.56  98.1  4.53   99.7  27.2  56.3  13.4  91.2   12.0  93.4  31.9  46.0   4.20   99.2   11.6  87.7   2.98
+Depth Pro       5.04  97.7   10.6  95.1  11.2   92.0  5.84  97.1  4.94   99.8  26.9  63.9  15.8  81.0   8.52  91.6  28.1  60.5   6.82   98.7   12.4  87.7   3.83
+MoGe            4.86  98.4   5.47  97.4  4.58   98.9  4.63  97.1  2.58   100   22.3  69.5  12.3  90.3   6.58  94.5  4.84  96.4   6.45   98.1   7.46  94.1   2.14
+Ours            3.94  98.3   8.27  97.5  5.45   98.6  5.34  98.3  2.55   100   23.1  66.8  11.0  90.7   8.42  93.7  31.1  42.4   8.77   98.4   10.8  88.5   2.40
+                                                                  Affine-invariant point map
+MASt3R          5.30  96.3   8.32  92.3  5.48   96.6  5.72  95.0  3.50   99.2  26.3  62.8  14.7  79.6   8.10  90.1  33.3  51.1   5.34   96.6   11.6  86.0   5.45
+UniDepth V1     3.93  98.4   4.29  98.6  12.2   89.6  4.65  98.0  2.99   99.8  28.5  58.4  10.3  90.5   8.56  90.9  29.6  58.5   4.15   98.7   10.9  88.1   3.95
+UniDepth V2     3.66  98.4   4.75  98.0  4.35   98.4  4.05  98.1  2.91   99.9  17.9  76.5  12.0  90.8   7.45  92.4  25.1  66.9   3.45   99.4   8.56  91.9   2.55
+Depth Pro       4.36  97.9   9.15  90.7  7.73   94.0  4.34  97.4  3.16   99.7  19.6  74.5  14.4  81.2   6.28  93.7  25.0  66.0   5.31   98.8   9.93  89.4   4.30
+MoGe            3.68  98.3   4.86  97.2  3.57   99.0  3.61  97.3  1.14   100   16.8  77.8  10.5  91.4   4.37  96.4  4.45  96.4   3.88   98.1   5.69  95.2   2.14
+Ours            3.33  98.4   6.47  96.4  3.89   98.7  3.65  98.5  1.16   100   17.4  77.0  10.1  90.3   5.13  94.9  24.5  63.7   4.19   99.1   7.98  91.7   2.23
+                                                                        Local point map
+MASt3R            -     -      -     -   5.54   95.3  6.19  95.0    -      -   11.4  87.9  8.58  91.8   8.75  90.9    -     -      -      -    8.09  92.2   5.40
+UniDepth V1       -     -      -     -   8.61   92.6  5.92  96.0    -      -   13.4  84.3  8.18  92.0   9.95  90.0    -     -      -      -    9.21  91.0   5.55
+UniDepth V2       -     -      -     -   3.99   97.4  4.02  97.3    -      -   9.35  92.2  8.18  92.4   6.15  95.3    -     -      -      -    6.34  94.9   3.10
+Depth Pro         -     -      -     -   4.76   96.9  4.11  97.5    -      -   10.8  89.5  8.08  92.4   6.80  94.1    -     -      -      -    6.91  94.1   3.55
+MoGe              -     -      -     -   3.21   98.1  4.16  96.8    -      -   8.63  92.7  6.74  94.3   4.78  96.3    -     -      -      -    5.50  95.6   2.05
+Ours              -     -      -     -   3.27   98.2  3.61  97.7    -      -   8.13  93.2  6.57  94.3   5.09  96.1    -     -      -      -    5.33  95.9   1.35
+                                                                  Scale-invariant depth map
+ZoeDepth        5.62  96.3   7.27  91.9  10.4   87.3  7.45  93.2  3.23   99.9  27.4  61.8  17.0  72.8   11.3  85.2  30.3  55.9   7.42   94.7   12.7  83.9   8.75
+MASt3R          5.37  96.0   6.24  94.5  5.68   95.5  5.58  95.2  3.72   99.1  26.3  63.7  13.5  81.5   8.37  89.4  32.2  53.5   5.50   96.5   11.2  86.5   7.65
+DA V1           4.77  97.5   5.61  95.6  9.41   88.9  5.53  95.8  5.49   99.3  28.3  56.7  13.2  81.5   10.3  87.5  27.3  59.1   6.88   96.4   11.7  85.8   8.22
+DA V2           5.03  97.3   7.23  93.7  6.12   95.5  4.32  97.9  4.38   99.3  23.0  65.2  14.7  78.0   7.95  90.0  28.0  61.1   5.92   97.7   10.7  87.6   6.80
+Metric3D V2     4.69  97.4   4.00  98.5  3.84   98.5  4.23  97.7  2.46   99.9  20.7  69.8  7.41  94.6   3.29  98.4  24.4  64.4   4.19   99.1   7.92  91.8   3.39
+UniDepth V1     3.86  98.4   3.73  98.6  5.67   97.0  4.79  97.4  4.18   99.7  28.3  58.8  10.1  90.5   6.83  92.8  29.2  59.3   4.19   98.4   10.1  89.1   5.12
+UniDepth V2     3.65  98.4   4.24  98.0  3.23   98.9  3.45  98.1  3.16   99.7  23.1  65.3  11.0  91.5   5.92  94.1  24.9  65.1   3.48   99.1   8.61  90.8   3.10
+Depth Pro       4.42  97.6   5.47  96.2  7.54   94.1  4.13  97.4  2.18   99.9  23.9  68.7  14.0  82.0   7.05  92.0  25.1  63.8   4.36   98.9   9.81  89.1   5.33
+MoGe            3.44  98.4   4.25  97.8  3.36   98.9  3.46  97.0  1.47   100   19.3  73.4  9.17  90.5   4.89  94.7  4.63  96.4   3.77   98.1   5.77  94.5   2.72
+Ours            3.44  98.2   4.11  98.0  3.55   98.7  3.16  98.2  1.49   100   19.6  71.6  8.91  91.2   5.30  94.6  20.0  72.4   3.96   99.2   7.35  92.2   2.12
+                                                                    Affine-invariant depth
+ZoeDepth        4.76  97.3   5.59  95.1  7.27   94.2  5.85  95.7  2.54   99.9  21.8  69.2  14.2  80.1   7.80  90.9  24.3  66.6   6.65   95.7   10.1  88.5   9.09
+MASt3R          4.67  96.7   5.79  95.1  4.64   97.0  4.62  95.6  2.85   99.4  21.3  70.3  12.5  83.4   5.79  94.1  27.4  62.8   4.21   96.8   9.38  89.1   7.97
+DA V1           3.82  98.3   5.04  96.4  6.23   95.2  4.23  97.3  1.98   100   20.1  71.8  11.3  86.1   6.75  92.6  22.4  68.9   5.77   97.3   8.76  90.4   6.91
+DA V2           4.16  97.9   6.77  94.3  4.63   97.2  3.44  98.3  1.44   100   17.1  76.6  13.4  81.8   5.41  94.6  23.7  68.7   4.73   98.9   8.48  90.8   6.15
+Metric3D V2     3.94  97.6   3.50  98.4  3.24   99.0  3.28  98.3  2.10   99.4  26.6  71.7  7.15  94.8   2.75  98.7  21.0  72.5   3.02   99.0   7.66  92.9   4.53
+UniDepth V1     3.40  98.6   3.55  98.7  4.92   97.5  3.76  98.2  2.48   99.9  24.9  64.1  9.46  90.8   4.90  96.2  25.2  67.3   3.55   98.9   8.61  91.0   5.67
+UniDepth V2     2.96  98.6   3.85  98.1  2.95   98.5  2.64  98.4  1.37   100   13.3  83.2  10.5  90.9   4.05  96.5  20.1  75.4   2.48   99.6   6.42  93.9   2.80
+Depth Pro       3.67  98.2   5.12  96.8  4.97   96.4  3.23  98.3  1.46   100   15.8  80.1  12.6  84.1   4.66  95.6  21.7  70.5   3.30   99.6   7.65  92.0   5.05
+MoGe            2.92  98.6   3.94  98.0  2.69   99.2  2.74  97.9  0.94   100   13.0  83.2  8.40  92.1   3.16  97.5  4.34  96.4   3.00   98.3   4.51  96.1   2.94
+Ours            2.89  98.6   3.75  98.1  2.80   99.1  2.36  98.8  0.94   100   13.3  82.5  8.26  92.5   3.14  97.4  15.9  81.2   2.85   99.3   5.62  94.8   2.02
+                                                                   Affine-invariant disparity
+ZoeDepth        5.21  97.7   5.84  95.6  8.07   94.0  6.19  96.1  2.60   99.9  26.9  66.3  14.1  81.7   8.17  92.0  27.2  63.0   6.84   96.4   11.1  88.3   8.78
+DA V1           4.20  98.4   5.40  97.0  4.68   98.2  4.18  97.6  1.54   100   20.2  77.6  12.7  86.9   5.69  95.7  22.2  72.5   5.56   98.0   8.63  92.2   5.62
+DA V2           4.14  98.3   5.61  96.7  4.71   97.9  3.47  98.5  1.24   100   21.4  72.8  13.1  86.4   5.29  96.1  24.3  70.6   4.97   99.1   8.82  91.6   5.42
+Metric3D V2     13.4  81.5   3.76  98.2  4.30   97.7  8.55  92.3  1.80   100   21.8  72.4  7.35  94.1   7.70  90.2  23.3  68.1   3.17   99.2   9.51  89.4   6.17
+MASt3R          5.07  96.8   5.93  95.5  5.25   96.4  5.39  95.7  2.98   99.7  30.2  65.1  13.0  83.6   6.41  94.3  37.3  53.2   4.41   97.2   11.6  87.8   8.60
+UniDepth V1     3.78  98.7   3.64  98.7  5.34   97.2  4.06  98.1  2.56   99.9  28.6  60.7  9.94  89.1   5.95  95.5  30.0  61.6   3.64   99.1   9.75  89.9   5.92
+UniDepth V2     3.38  98.7   3.99  98.0  2.97   99.0  3.15  98.3  1.30   100   17.2  79.9  10.2  90.2   4.43  96.4  24.4  69.6   2.51   99.6   7.35  93.0   2.75
+Depth Pro       4.21  98.1   5.10  97.0  4.94   96.7  3.74  98.2  1.49   100   17.4  79.1  11.7  87.1   4.84  96.4  27.5  64.5   3.31   99.6   8.42  91.7   5.08
+MoGe            3.38  98.6   4.05  98.1  3.11   98.9  3.23  98.0  0.96   100   18.4  79.5  8.99  91.5   3.98  97.2  6.43  93.7   3.30   98.5   5.58  95.4   3.17
+Ours            3.35  98.6   3.92  98.1  3.21   98.9  2.85  98.7  0.96   100   18.0  78.7  8.69  92.1   4.03  97.2  18.7  76.6   2.90   99.5   6.66  93.8   2.17
+                   Table B.4: Evaluation results of baselines and our method on each dataset.
+
+
+
+                                                                              7
+===== PAGE 22 =====
+Ablation                               NYUv2         KITTI       ETH3D        iBims-1        GSO         Sintel      DDAD        DIODE         Spring     HAMMER            Avg.
+Data             Scale Prediction     Rel↓δ1↑      Rel↓δ1↑      Rel↓δ1↑      Rel↓δ1↑      Rel↓δ1↑      Rel↓δ1↑      Re↓ δ1↑     Rel↓δ1↑      Rel↓δ1↑      Rel↓ δ1↑      Rel↓δ1↑
+                                                                             Metric point map
+Improved real  Entangled (SI-Log)     6.00   97.3  8.33   93.4  11.6   89.4  7.78   94.6    -      -     -      -   14.4  83.1  10.6   88.4    -      -   11.4   88.7    10.0  90.7
+Improved real  Entangled (Shift inv.) 5.26   97.6  8.81   92.6  10.4   91.7  6.14   96.6    -      -     -      -   13.0  84.8  8.97   91.0    -      -   10.4   90.3    9.00  92.1
+Improved real  Decoupled (Conv)       5.37   97.8  9.56   91.8  9.46   94.1  6.49   95.6    -      -     -      -   13.3  83.5  8.93   91.9    -      -   14.2   85.1    9.62  91.4
+Synthetic only Decoupled (MLP)        8.58   94.7  9.48   91.9  14.9   83.4  8.20   94.2    -      -     -      -   16.5  80.4  11.0   88.8    -      -   18.4   78.2    12.4  87.4
+Raw real          Decoupled (MLP)     5.36   97.8  7.70   94.5  8.58   94.6  6.60   95.7    -      -     -      -   12.2  85.5  9.01   91.5    -      -   13.7   85.4    9.02  92.1
+Improved real  Decoupled (MLP)        5.47   97.6  8.98   92.6  8.75   94.3  6.24   96.1    -      -     -      -   12.8  84.6  9.26   90.9    -      -   12.9   87.4    9.20  91.9
+                                                                 Metric depth map (wo/ GT intrinsics)
+Improved real  Entangled (SI-Log)     9.65   91.4  14.5   77.3  16.4   73.7  20.1   56.2    -      -     -      -   19.1  67.7  22.3   54.3    -      -   23.0   59.8    17.9  68.6
+Improved real  Entangled (Shift inv.) 9.04   93.1  19.1   56.8  15.5   76.8  15.1   72.1    -      -     -      -   18.0  67.9  19.9   59.8    -      -   22.0   55.3    16.9  68.8
+Improved real  Decoupled (Conv)       9.22   92.7  20.3   51.8  13.8   79.8  15.8   71.0    -      -     -      -   18.1  66.6  19.0   61.8    -      -   27.5   54.9    17.7  68.4
+Synthetic only Decoupled (MLP)        18.1   73.7  15.8   71.0  24.7   53.2  15.8   76.6    -      -     -      -   21.9  62.4  22.7   56.5    -      -   32.8   62.0    21.7  65.1
+Raw real          Decoupled (MLP)     9.22   92.9  13.8   80.5  13.8   82.1  16.7   72.4    -      -     -      -   16.5  72.3  19.7   61.5    -      -   20.8   67.9    15.8  75.7
+Improved real  Decoupled (MLP)        9.48   92.2  18.7   59.2  13.5   82.6  13.6   79.3    -      -     -      -   17.0  69.2  20.0   59.7    -      -   23.4   67.4    16.5  72.8
+                                                                        Scale-invariant point map
+Improved real  Entangled (SI-Log)     6.03   97.4  9.68   95.3  8.13   95.3  8.63   96.8  4.01   100   26.6  59.4   13.8  84.8  10.3   89.8  31.2   48.0  10.4   95.6    12.9  86.2
+Improved real  Entangled (Shift inv.) 5.00   97.8  10.7   95.8  7.02   96.7  7.42   97.4  3.42   100   26.0  58.2   12.7  86.6  8.97   92.2  28.9   49.8  10.5   97.5    12.1  87.2
+Improved real  Decoupled (Conv)       4.84   97.8  12.1   94.8  6.55   96.9  7.15   96.9  3.19   100   26.3  55.8   12.9  85.5  9.11   91.8  29.9   46.9  10.4   97.0    12.2  86.3
+Synthetic only Decoupled (MLP)        6.66   96.9  11.3   93.0  6.85   95.8  5.99   96.7  3.14   100   25.4  61.3   15.0  81.1  10.5   89.4  30.9   46.8  7.39   97.5    12.3  85.8
+Raw real          Decoupled (MLP)     4.88   98.0  9.15   96.0  6.08   97.1  7.31   96.8  3.06   100   24.8  60.8   11.8  87.7  8.34   92.3  28.1   53.2  10.9   96.2    11.4  87.8
+Improved real  Decoupled (MLP)        5.00   97.8  11.2   95.0  6.21   97.4  6.52   97.3  2.97   100   25.6  60.3   12.6  87.0  8.76   92.3  28.3   51.0  9.10   98.3    11.6  87.6
+                                                                       Affine-invariant point map
+Improved real  Entangled (SI-Log)     5.00   97.7  8.22   93.0  6.72   96.1  5.71   96.8  2.57   100   21.1  71.0   12.9  84.5  7.36   91.9  26.7   59.7  6.37   97.1    10.3  88.8
+Improved real  Entangled (Shift inv.) 4.17   97.9  8.58   93.0  5.42   97.0  4.74   96.8  1.78   100   19.7  72.7   11.7  86.6  6.07   93.5  23.3   66.3  5.02   98.6    9.05  90.2
+Improved real  Decoupled (Conv)       4.08   98.0  9.65   90.8  5.12   97.0  4.67   97.0  1.66   100   19.6  72.2   12.0  85.4  6.11   93.4  23.4   67.9  5.24   98.0    9.15  90.0
+Synthetic only Decoupled (MLP)        5.48   97.0  9.11   90.2  5.93   96.2  4.94   96.6  1.56   100   20.0  73.1   13.7  81.9  7.01   91.6  25.5   63.7  4.44   98.7    9.77  88.9
+Raw real          Decoupled (MLP)     4.06   98.2  7.37   94.5  4.89   97.5  4.74   96.8  1.61   100   19.0  73.6   10.9  87.9  5.89   93.7  23.4   67.0  5.09   98.2    8.70  90.7
+Improved real  Decoupled (MLP)        4.14   98.0  8.95   92.0  4.94   97.5  4.50   97.2  1.62   100   19.6  73.6   11.7  86.6  6.06   93.3  22.8   68.7  4.40   98.9    8.87  90.6
+                                                                             Local point map
+Improved real  Entangled (SI-Log)        -     -      -     -   6.30   95.6  5.96   96.6    -      -   12.0  87.5   8.14  92.5  8.63   92.5    -      -     -       -    8.21  92.9
+Improved real  Entangled (Shift inv.)    -     -      -     -   4.61   97.2  4.56   97.2    -      -   10.3  90.2   7.38  93.5  6.61   94.7    -      -     -       -    6.69  94.6
+Improved real  Decoupled (Conv)          -     -      -     -   4.25   97.5  4.34   97.3    -      -   9.72  91.0   7.24  93.6  6.17   95.1    -      -     -       -    6.34  94.9
+Synthetic only Decoupled (MLP)           -     -      -     -   4.37   97.4  4.45   97.2    -      -   9.33  91.7   7.51  93.3  6.44   94.9    -      -     -       -    6.42  94.9
+Raw real          Decoupled (MLP)        -     -      -     -   4.28   97.4  4.55   97.1    -      -   9.64  91.2   7.11  93.7  6.28   94.9    -      -     -       -    6.37  94.9
+Improved real  Decoupled (MLP)           -     -      -     -   4.20   97.5  4.31   97.3    -      -   9.34  91.9   7.21  93.7  6.21   95.0    -      -     -       -    6.25  95.1
+                                                                       Scale-invariant depth map
+Improved real  Entangled (SI-Log)     4.99   97.4  5.18   96.7  6.48   95.2  5.26   97.3  2.64   100   23.2  65.7   11.6  86.2  7.76   91.3  24.8   63.4  6.40   96.7    9.83  89.0
+Improved real  Entangled (Shift inv.) 4.17   97.8  4.57   97.5  5.03   96.7  4.42   97.6  2.09   100   22.4  66.7   10.3  88.0  6.16   93.5  20.8   69.2  4.69   98.6    8.46  90.6
+Improved real  Decoupled (Conv)       4.08   97.9  4.61   97.3  4.80   96.9  4.32   97.1  1.92   100   22.5  64.9   10.3  87.7  6.26   93.2  21.0   68.8  4.81   98.2    8.46  90.2
+Synthetic only Decoupled (MLP)        5.05   96.9  5.47   96.3  5.64   95.9  4.76   96.9  1.90   100   21.7  68.0   12.0  85.1  7.16   91.2  22.2   67.4  4.66   97.9    9.05  89.6
+Raw real          Decoupled (MLP)     4.09   98.0  4.60   97.2  4.82   97.1  4.49   97.0  1.92   100   21.8  66.5   9.79  88.4  6.09   93.2  21.8   68.6  4.67   98.1    8.41  90.4
+Improved real  Decoupled (MLP)        4.16   97.8  4.59   97.2  4.62   97.4  4.20   97.4  1.89   100   21.9  67.8   10.1  88.4  6.08   93.3  20.4   71.6  4.34   98.9    8.23  91.0
+                                                                          Affine-invariant depth
+Improved real  Entangled (SI-Log)     4.32   98.0  4.91   97.0  5.21   96.9  4.15   97.8  2.11   100   17.4  76.3   10.8  87.9  5.17   95.7  20.3   72.6  5.26   97.6    7.96  92.0
+Improved real  Entangled (Shift inv.) 3.57   98.2  4.26   97.6  3.98   97.9  3.35   98.2  1.44   100   16.0  78.4   9.58  89.7  4.01   96.8  17.7   76.7  3.58   98.7    6.75  93.2
+Improved real  Decoupled (Conv)       3.48   98.3  4.31   97.4  3.77   98.1  3.23   98.0  1.35   100   15.2  79.2   9.48  89.5  3.99   96.4  17.7   76.4  3.74   98.5    6.62  93.2
+Synthetic only Decoupled (MLP)        4.19   97.8  5.04   96.6  4.40   97.6  3.73   97.7  1.27   100   15.6  78.9   11.1  86.8  4.50   95.7  19.1   75.0  3.58   98.8    7.25  92.5
+Raw real          Decoupled (MLP)     3.48   98.4  4.29   97.3  3.75   98.3  3.37   98.0  1.32   100   15.2  80.1   8.95  90.2  3.91   96.7  18.6   75.7  3.48   98.4    6.63  93.3
+Improved real  Decoupled (MLP)        3.53   98.3  4.30   97.3  3.69   98.3  3.16   98.3  1.33   100   15.3  79.3   9.28  90.1  3.95   96.6  17.6   76.8  3.19   99.0    6.53  93.4
+                                                                        Affine-invariant disparity
+Improved real  Entangled (SI-Log)     4.69   98.1  4.99   97.2  5.73   96.7  4.63   97.8  2.14   100   21.9  71.1   11.3  88.0  5.69   95.8  23.8   68.4  5.46   98.3    9.03  91.1
+Improved real  Entangled (Shift inv.) 4.03   98.3  4.39   97.7  4.48   97.8  3.85   98.2  1.47   100   20.2  73.8   9.84  89.8  4.75   96.5  21.3   69.5  3.74   99.0    7.80  92.1
+Improved real  Decoupled (Conv)       3.96   98.4  4.49   97.5  4.29   97.9  3.75   98.4  1.39   100   19.9  74.4   9.89  89.7  4.75   96.3  21.1   70.0  3.81   98.8    7.73  92.1
+Synthetic only Decoupled (MLP)        4.75   97.8  5.17   96.7  4.86   97.6  4.29   98.0  1.31   100   20.8  74.0   11.5  87.3  5.21   95.9  22.2   69.7  3.66   99.0    8.38  91.6
+Raw real          Decoupled (MLP)     3.92   98.4  4.50   97.4  4.23   98.0  3.95   98.2  1.35   100   19.9  74.8   9.22  90.6  4.78   96.3  21.4   69.6  3.61   98.7    7.69  92.2
+Improved real  Decoupled (MLP)        4.03   98.3  4.45   97.5  4.11   98.1  3.74   98.2  1.37   100   19.8  75.4   9.71  90.1  4.79   96.2  20.0   72.5  3.30   99.3    7.53  92.6
+                                 Table B.5: Evaluation results of ablation study on each sets
+
+
+
+
+
+
+
+
+
+
+                                                                                   8

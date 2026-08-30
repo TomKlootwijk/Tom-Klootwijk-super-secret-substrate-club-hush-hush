@@ -1,0 +1,1796 @@
+
+===== PAGE 1 =====
+                                     DepthAnything3:
+          RecoveringtheVisualSpacefromAnyViews
+
+
+ HaotongLin∗,SiliChen∗,JunHaoLiew∗,DonnyY.Chen∗,ZhenyuLi,GuangShi,
+                                    JiashiFeng,BingyiKang          ∗,†
+
+                                             ByteDanceSeed
+
+                                    †ProjectLead,        ∗EqualContribution
+
+
+                                                 Abstract
+
+     WepresentDepthAnything3(DA3),amodelthatpredictsspatiallyconsistentgeometryfroman
+     arbitrarynumberofvisualinputs,withorwithoutknowncameraposes.Inpursuitofminimal
+     modeling,DA3yieldstwokeyinsights:asingleplaintransformer(e.g.,vanillaDINOencoder)is
+     sufficientasabackbonewithoutarchitecturalspecialization,andasingulardepth-rayprediction
+     targetobviatestheneedforcomplexmulti-tasklearning.Throughourteacher-studenttraining
+     paradigm,themodelachievesalevelofdetailandgeneralizationonparwithDepthAnything2
+     (DA2).Weestablishanewvisualgeometrybenchmarkcoveringcameraposeestimation,any-view
+     geometryandvisualrendering. Onthisbenchmark,DA3setsanewstate-of-the-artacrossall
+     tasks,surpassingpriorSOTAVGGTbyanaverageof35.7%incameraposeaccuracyand23.6%
+     ingeometricaccuracy.Moreover,itoutperformsDA2inmonoculardepthestimation.Allmodels
+     aretrainedexclusivelyonpublicacademicdatasets.
+
+     Correspondence:BingyiKang
+     ProjectPage:depth-anything-3.github.io
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  1“DepthAnything3”marksanewgenerationfortheseries,expandingfrommonoculartoany-viewinputs,builtonour
+convictionthatdepthisthecornerstoneofunderstandingthephysicalworld.
+
+                                                      1
+===== PAGE 2 =====
+Contents
+
+1   Introduction. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     3
+
+2   RelatedWork. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     4
+
+3   DepthAnything3. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     6
+    3.1  Formulation. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   6
+    3.2 Architecture. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   7
+    3.3 Training. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   7
+    3.4  ImplementationDetails. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   8
+
+4  Teacher-StudentLearning. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     8
+    4.1  ConstructingtheTeacherModel. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   8
+    4.2 TeachingDepthAnything3. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+    4.3 TeachingMonocularModel. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+    4.4 TeachingMetricModel. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+
+5   Application:Feed-Forward3DGaussianSplattings. . . . . . . . . . . . . . . . . . . . . . .    11
+    5.1  Pose-ConditionedFeed-Forward3DGS. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  11
+    5.2  Pose-AdaptiveFeed-Forward3DGS. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  11
+    5.3  ImplementationDetails. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+
+6   VisualGeometryBenchmark. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   12
+    6.1  BenchmarkPipeline. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+    6.2  Metrics. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  12
+    6.3  Datasets. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  13
+
+7   Experiments. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   14
+    7.1  ComparisonwithStateoftheArt. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  14
+    7.2 AnalysisforDepthAnything3. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  16
+           7.2.1  SufficiencyoftheDepth-RayRepresentation. . . . . . . . . . . . . . . . . . . . . . .  16
+           7.2.2  SufficiencyofaSinglePlainTransformer. . . . . . . . . . . . . . . . . . . . . . . . . .  17
+           7.2.3  AblationandAnalysis. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  17
+    7.3 AnalysisforDepth-Anything-3-Monocular. . . . . . . . . . . . . . . . . . . . . . . . . . . . .  18
+           7.3.1  TeacherModel. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+           7.3.2  StudentModel. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+    7.4 AnalysisforDepth-Anything-3-Metric. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+    7.5 AnalysisforFeed-forward3DGS. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  20
+
+8   ConclusionandDiscussion. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   22
+
+A  DataProcessing. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   31
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                     2
+===== PAGE 3 =====
+Figure1Givenanynumberofimagesandoptionalcameraposes,DepthAnything3reconstructsthevisualspace,
+producingconsistentdepthandraymapsthatcanbefusedintoaccuratepointclouds,resultinginhigh-fidelity3D
+Gaussiansandgeometry.ItsignificantlyoutperformsVGGTinmulti-viewgeometryandposeaccuracy;withmonocular
+inputs,italsosurpassesDepthAnything2whilematchingitsdetailandrobustness.
+
+
+1  Introduction
+
+Theabilitytoperceiveandunderstand3Dspatialinformationfromvisualinputisacornerstoneofhuman
+spatialintelligence[4]andacriticalrequirementforapplicationslikeroboticsandmixedreality. This
+fundamentalcapabilityhasinspiredawidearrayof3Dvisiontasks,includingMonocularDepthEstimation[23],
+StructurefromMotion[80],Multi-ViewStereo[73]andSimultaneousLocalizationandMapping[58].Despite
+thestrongconceptualoverlapbetweenthesetasks—oftendifferingbyonlyasinglefactor,suchasthenumberof
+inputviews—theprevailingparadigmhasbeentodevelophighlyspecializedmodelsforeachone.Whilerecent
+efforts[91,97]haveexploredunifiedmodelstoaddressmultipletaskssimultaneously,theytypicallysuffer
+fromkeylimitations:theyoftenrelyoncomplex,bespokearchitectures,aretrainedviajointoptimization
+overtasksfromscratch,andconsequentlycannoteffectivelyleveragelarge-scalepretrainedmodels.
+Inthiswork,westepbackfromestablished3Dtaskdefinitionsandreturntoamorefundamentalgoal
+inspiredbyhumanspatialintelligence:recovering3Dstructurefromarbitraryvisualinputs,beitasingle
+image,multipleviewsofascene,oravideostream.Forsakingintricatearchitecturalengineering,wepursue
+aminimalmodelingstrategyguidedbytwocentralquestions. First,istherea minimal set of prediction
+targets,orisjointmodelingacrossnumerous3Dtasksnecessary?Second,canasingleplaintransformer
+
+                                                          3
+===== PAGE 4 =====
+sufficeforthisobjective?Ourworkprovidesanaffirmativeanswertoboth.WepresentDepthAnything3,a
+singletransformermodeltrainedexclusivelyforjointany-view depth and pose estimationviaaspecially
+chosenrayrepresentation.Wedemonstratethatthisminimalapproachissufficienttoreconstructthevisual
+spacefromanynumberofimages,withorwithoutknowncameraposes.
+
+Depth Anything 3formulatestheabovegeometricreconstructiontargetasadensepredictiontask. Fora
+givensetof Ninputimages,themodelistrainedtooutput Ncorrespondingdepthmapsandraymaps,each
+pixel-alignedwithitsrespectiveinput.Thearchitecturetoachievethisbeginswithastandardpretrainedvision
+transformer(e.g., Oquabetal.61),asitsbackbone,leveragingitspowerfulfeatureextractioncapabilities.
+Tohandlearbitraryviewcounts,weintroduceakeymodification:aninput-adaptivecross-viewself-attention
+mechanism.Thismoduledynamicallyrearrangestokensduringtheforwardpassinselectedlayers,enabling
+efficientinformationexchangeacrossallviews.Forthefinalprediction,weproposeanewdualDPThead
+designedtojointlyoutputsbothdepthandrayvalues,byprocessingthesamesetoffeatureswithdistinct
+fusionparameters.Toenhanceflexibility,themodelcanoptionallyincorporateknowncameraposesviaa
+simplecameraencoder,allowingittoadapttovariouspracticalsettings.Thisoveralldesignresultsinaclean
+andscalablearchitecturethatdirectlyinheritsthescalingpropertiesofitspretrainedbackbone.
+WetrainDepthAnything3viaateacher-studentparadigmtounifydiversetrainingdata,whichisnecessary
+forageneralistmodel.Ourdatasourcesincludevariedformatslikereal-worlddepthcameracaptures(e.g.,
+Baruchetal.5),3Dreconstruction(e.g.,Reizensteinetal.68),andsyntheticdata,wherereal-worlddepth
+maybeofpoorquality(Fig.4). Toresolvethis,weadoptapseudo-labelingstrategyinspiredbyprior
+works[112,113]. Specifically,wetrainapowerfulteachermonoculardepthmodelonsyntheticdatato
+generatedense,high-qualitypseudo-depthforallreal-worlddata.Crucially,topreservegeometricintegrity,
+wealignthesedensepseudo-depthmapswiththeoriginalsparseornoisydepth. Thisapproachproved
+remarkablyeffective,significantlyenhancinglabeldetailandcompletenesswithoutsacrificingthegeometric
+accuracy.
+Tobetterevaluateourmodelandtrackprogressinthefield,weestablishacomprehensivebenchmarkfor
+assessinggeometryandposeaccuracy.Thebenchmarkcomprises5distinctdatasets,totalingover89scenes,
+rangingfromobject-leveltoindoorandoutdoorenvironments.Bydirectlyevaluatingposeaccuracyacross
+scenesandfusingthepredictedposeanddepthintoa3Dpointcloudforaccuracyassessment,thebenchmark
+faithfullymeasurestheposeanddepthaccuracyofvisualgeometryestimators.Experimentsshowthatour
+modelachievesstate-of-the-artperformanceon18outof20settings. Moreover,onstandardmonocular
+benchmarks,ourmodeloutperformsDepthAnything2[113].
+TofurtherdemonstratethefundamentalcapabilityofDepthAnything3inadvancingother3Dvisiontasks,
+weintroduceachallengingbenchmarkforfeed-forwardnovelviewsynthesis(FF-NVS),comprisingover160
+scenes.Weadheretotheminimalmodelingstrategyandfine-tuneourmodelwithanadditionalDPThead
+topredictpixel-aligned3DGaussianparameters.Extensiveexperimentsyieldtwokeyfindings:1)fine-tuning
+ageometryfoundationmodelforNVSsubstantiallyoutperformshighlyspecializedtask-specificmodels[108];
+2)enhancedgeometricreconstructioncapabilitydirectlycorrelateswithimprovedFF-NVSperformance,
+establishingDepthAnything3astheoptimalbackboneforthistask.
+
+2 RelatedWork
+
+Multi-viewvisualgeometryestimation.Traditionalsystems[         70,71]decomposereconstructionintofeature
+detectionandmatching,robustrelativeposeestimation,incrementalorglobalSfMwithbundleadjustment,
+anddensemulti-viewstereoforper-viewdepthandfusedpointclouds. Thesemethodsremainstrongon
+well-texturedscenes,buttheirmodularityandbrittlecorrespondencescomplicaterobustnessunderlowtexture,
+specularities,orlargeviewpointchanges. Earlylearningmethodsinjectedrobustnessatthecomponent
+level:learneddetectors[20],descriptorsformatching[22],anddifferentiableoptimizationlayersthatexpose
+pose/depthupdatestogradientflow[31,33,62].Onthedenseside,cost-volumenetworks[106,114]forMVS
+replacedhand-craftedregularizationwith3DCNNs,improvingdepthaccuracyespeciallyatlargebaselines
+andthinstructurescomparedwithclassicalPatchMatch.Earlyend-to-endapproaches[86,90]movedbeyond
+modularSfM/MVSpipelinesbydirectlyregressingcameraposesandper-imagedepthsfrompairsofimages.
+
+
+
+                                                         4
+===== PAGE 5 =====
+Figure2  PipelineofDepthAnything3.DepthAnything3employsasingletransformer(vanillaDINOv2model)
+withoutanyarchitecturalmodifications.Toenablecross-viewreasoning,aninput-adaptivecross-viewself-attention
+mechanismisintroduced. Adual-DPTheadisusedtopredictdepthandraymapsfromvisualtokens. Camera
+parameters,ifavailable,areencodedascameratokensandconcatenatedwithpatchtokens,participatinginall
+attentionoperations.
+
+
+Theseapproachesreducedengineeringcomplexityanddemonstratedthefeasibilityoflearnedjointdepthpose
+estimation,buttheyoftenstruggledwithscalability,generalization,andhandlingarbitraryinputcardinalities.
+AturningpointcamewithDUSt3R[96],whichleveragedtransformerstodirectlypredictpointmapbetween
+twoviewsandcomputebothdepthandrelativeposeinapurelyfeed-forwardmanner.Thisworklaidthe
+foundationforsubsequenttransformer-basedmethodsaimingtounifymulti-viewgeometryestimationatscale.
+Follow-upmodelsextendedthisparadigmwithmulti-viewinputs[10,85,94,110],videoinput[19,59,94,121],
+robustcorrespondencemodeling [48],cameraparameterinjection[39,43],large-scaleSfM[18],SLAM
+applications[54],andviewsynthesiswith3DGaussians[11,13,41,79,108,122].Amongthese,[91]push
+accuracytoanewlevelthroughlarge-scaletraining,amulti-stagearchitecture,andredundancyindesign.In
+contrast,wefocusonaminimalmodelingstrategybuiltaroundasingle,simpletransformer.
+
+Monoculardepthestimation.Earlymonoculardepthestimationmethodsreliedonfullysupervisedlearning
+onsingle-domaindatasets,whichoftenproducedmodelsspecializedtoeitherindoorrooms[75]oroutdoor
+drivingscenes[26].Theseearlydeepmodelsachievedgoodaccuracywithintheirtrainingdomainbutstruggled
+togeneralizetonovelenvironments,highlightingthechallengeofcross-domaindepthprediction.Modern
+generalistapproaches[6,42,95,112,113,118]exemplifythistrendbyleveragingmassivemulti-datasettraining
+andadvancedarchitectureslikevisiontransformers[67]orDiT[64]. Trainedonmillionsofimages,they
+learnbroadvisualcuesandincorporatetechniquessuchasaffine-invariantdepthnormalization.Incontrast,
+ourmethodisprimarilydesignedforaunifiedvisualgeometryestimationtask,yetitstilldemonstrates
+competitivemonoculardepthperformance.
+
+Feed-ForwardNovelViewSynthesisNovelviewsynthesis(NVS)haslongbeenacoreproblemincomputer
+visionandgraphics[8,34,49],andinteresthasincreasedwiththeriseofneuralrendering[28,44,57,77,78].
+Aparticularlypromisingdirectionisfeed-forwardNVS,whichproduces3Drepresentationsinasinglepass
+throughanimage-to-3Dnetwork,avoidingtediousper-sceneoptimization.EarlymethodsadoptedNeRFas
+theunderlying3Drepresentation[12,14,35,52,107,119],butrecentworkhaslargelyshiftedto3DGSdue
+toitsexplicitstructureandreal-timerendering.Representativeapproachesimproveimage-to-3Dnetworks
+withgeometrypriors,e.g.,epipolarattention[        11],costvolumes[13],anddepthpriors[107].Morerecently,
+multi-viewgeometryfoundationmodels[85,91,96,110]havebeenintegratedtoimprovemodelingcapacity,
+particularlyinpose-freesettings,yetmethodsbuiltuponsuchmodelsareoftenevaluatedbyrelyingona
+singlechosenfoundationmodel[41,79,116].Here,wesystematicallybenchmarkthecontributionofdifferent
+geometryfoundationmodelstoNVSandproposestrategiestobetterexploitthem,enablingfeed-forward
+3DGStohandlebothposedandpose-freeinputs,variablenumbersofviews,andarbitraryresolutions.
+
+
+                                                         5
+===== PAGE 6 =====
+3 DepthAnything3
+
+Wetackletherecoveryofconsistent3Dgeometryfromdiversevisualinputs—singleimage,multi-view
+collections,orvideos—andoptionallyincorporateknowncameraposeswhenavailable.
+
+3.1Formulation
+
+WedenotetheinputasI ={Ii}Nvi=1 witheachI  i∈R  H×W×3     .For Nv = 1thisisamonocularimage,andfor
+Nv > 1itrepresentsavideoormulti-viewset.EachimagehasdepthD            i∈R  H×W  ,cameraextrinsicsRi|ti,
+andintrinsicsK            i.Thecameracanalsoberepresentedasv   i∈R  9withtranslationt                   i∈R  3,rotationquaternion
+qi∈R  4,andFOVparametersf                    i∈R  2.Apixelp= (u,v,1)            ⊤projectstoa3DpointP= (X,Y,Z,1)      ⊤by
+
+                                            P=R      iDi(u,v)K    −1i  p+t   i,
+
+throughwhichtheunderlying3Dvisualspacecanbefaithfullyrecovered.
+
+Depth-ray representation.PredictingavalidrotationmatrixR                                         iischallengingduetotheorthogonality
+constraint.Toavoidthis,werepresentcameraposeimplicitlywithaper-pixelraymap,alignedwiththeinput
+imageanddepthmap.Foreachpixelp,thecamerarayr          ∈R  6isdefinedbyitsorigint       ∈R  3anddirection
+d∈R  3:r= (t   ,d).Thedirectionisobtainedbybackprojectingpintothecameraframeandrotatingitto
+theworldframe:d=RK              −1  p.ThedenseraymapM      ∈R  H×W×6      storestheseparametersforallpixels.We
+donotnormalized,soitsmagnitudepreservestheprojectionscale.Thus,a3Dpointinworldcoordinatesis
+simplyP=t+D(                     u,v)·d.Thisformulationenablesconsistentpointcloudgenerationbycombiningpredicted
+depthandraymapsthroughelement-wiseoperations.
+
+DerivingCameraParametersfromtheRayMap.GivenaninputimageI             ∈R  H×W×3     ,thecorrespondingray
+mapisdenotedbyM  ∈R  H×W×6     .Thismapcomprisesper-pixelrayorigins,storedinthefirstthreechannels
+(M(:,:,: 3)),andraydirections,storedinthelastthree(M(:,:,3 :)).
+First,thecameracentert     cisestimatedbyaveragingtheper-pixelrayoriginvectors:
+
+                                                          HX  WX
+                                          tc =      1H×W          M(h,w,: 3).                             (1)
+                                                         h=1  w=1
+
+ToestimatetherotationRandintrinsicsK,weformulatetheproblemasfindingahomographyH. We
+beginbydefininga“identity”camerawithanidentityintrinsicsmatrix,K       I =I. Foragivenpixelp,its
+correspondingraydirectioninthiscanonicalcamera’scoordinatesystemissimplyd         I =K  −1I  p=p. The
+transformationfromthiscanonicalrayd  Itotheraydirectiond                caminthetargetcamera’scoordinatesystem
+isgivenbyd  cam =KRd   I.Thisestablishesadirecthomographyrelationship,H=KR,betweenthetwosets
+ofrays.Wecanthensolveforthishomographybyminimizingthegeometricerrorbetweenthetransformed
+canonicalraysandasetofpre-computedtargetrays,M(       h,w,3 :).Thisleadstothefollowingoptimization
+problem:
+                                                     HX  WX
+                                 H∗ = arg  min               ||Hp  h,w×M(h,w,3 :)||.                       (2)
+                                             ||H||=1h=1 w=1
+
+Thisisastandardleast-squaresproblemthatcanbeefficientlysolvedusingtheDirectLinearTransform
+(DLT)algorithm[2].OncetheoptimalhomographyH ∗isfound,werecoverthecameraparameters.Sincethe
+intrinsicmatrixKisupper-triangularandtherotationmatrixRisorthonormal,wecanuniquelydecompose
+H∗usingRQdecompositiontoobtainK,R.
+
+Minimal prediction targets.Recentworksaimtobuildunifiedmodelsfordiverse3Dtasks,oftenusing
+multitasklearningwithdifferenttargets—forexample,pointmapsalone[96],orredundantcombinationsof
+pose,local/globalpointmaps,anddepth[91,94,110].Whilepointmapsareinsufficienttoensureconsistency,
+redundanttargetscanimproveposeaccuracybutoftenintroduceentanglementthatcompromisesit. In
+
+
+                                                             6
+===== PAGE 7 =====
+contrast,ourexperiments(Tab.6)showthatadepth-rayrepresentationformsaminimalyetsufficienttarget
+setforcapturingbothscenestructureandcameramotion,outperformingalternativeslikepointmapsor
+morecomplexoutputs.However,recoveringcameraposefromtheraymapatinferenceiscomputationally
+costly. Weaddressthisbyaddingalightweightcamerahead, DC. Thistransformeroperatesoncamera
+tokenstopredictthefieldofview(f  ∈R  2),rotationasaquaternion(q ∈R  4),andtranslation(t ∈R  3).Since
+itprocessesonlyonetokenperview,theaddedcostisnegligible.
+
+3.2Architecture
+WenowdetailthearchitectureofDepthAnything3,whichisillustratedinFig.2.Thenetworkiscomposed
+ofthreemaincomponents:asingletransformermodelasthebackbone,anoptionalcameraencoderforpose
+conditioning,andaDual-DPTheadforgeneratingpredictions.
+
+Singletransformerbackbone.WeuseaVisionTransformerwith                Lblocks,pretrainedonlarge-scalemonocular
+imagecorpora(e.g.,DINOv2[   61]). Cross-viewreasoningisenabledwithoutarchitecturalchangesviaan
+input-adaptiveself-attention,implementedbyrearranginginputtokens.Wedividethetransformerintotwo
+groupsofsizes Lsand Lg.Thefirst Lslayersapplyself-attentionwithineachimage,whilethesubsequent
+Lglayersalternatebetweencross-viewandwithin-viewattention,operatingonalltokensjointlythrough
+tensorreordering. Inpractice,weset Ls : Lg = 2 : 1with   L = Ls +Lg. Asshowninourablationstudy
+inTab.7,thisconfigurationprovidestheoptimaltrade-offbetweenperformanceandefficiencycompared
+tootherarrangements.Thisdesignisinput-adaptive:withasingleimage,themodelnaturallyreducesto
+monoculardepthestimationwithoutextracost.
+
+Cameraconditioninjection.Toseamlesslyhandlebothposedandunposedinputs,weprependeachviewwith
+acameratokenc    i.Ifcameraparameters(K                      i,Ri,ti)areavailable,thetokenisobtainedviaalightweight
+MLPEc:c i =Ec(f i,qi,ti).Otherwise,asharedlearnabletokenc     lisused.Concatenatedwithpatchtokens,
+thesecameratokensparticipateinallattentionoperations,providingeitherexplicitgeometriccontextora
+consistentlearnedplaceholder.
+
+Dual-DPT head.Forthefinalpredictionstage,
+weproposeanovelDual-DPTheadthatjointly
+producesdensedepthandrayvalues. Asshown
+inTab.6,thisdesignisbothpowerfulandeffi-
+cient.Givenasetoffeaturesfromthebackbone,
+theDual-DPTheadfirstprocessesthemthrough
+asharedsetofreassemblymodules.Subsequently,
+theprocessedfeaturesarefusedusingtwodistinct
+setsoffusionlayers:oneforthedepthbranchand
+onefortheraybranch.Finally,twoseparateout-
+putlayersproducethefinaldepthandraymap
+predictions. Thisarchitectureensuresthatboth
+branchesoperateonthesamesetofprocessedfea-
+tures,differingonlyinthefinalfusionstage.Such
+adesignencouragesstronginteractionbetweenthe              Figure3  Dual-DPTHead.Twobranchssharereassembly
+twopredictiontasks,whileavoidingredundantin-              modulesforbetteroutputsalignment.
+termediaterepresentations.
+
+3.3Training
+
+Teacher-student learning paradigm.Ourtrainingdatacomesfromdiversesources,includingreal-world
+depthcaptures,3Dreconstructions,andsyntheticdatasets.Real-worlddepthisoftennoisyandincomplete
+(Fig.4),limitingitssupervisoryvalue. Tomitigatethis,wetrainamonocularrelativedepthestimation
+“teacher”modelsolelyonsyntheticdatatogeneratehigh-qualitypseudo-labels.Thesepseudo-depthmapsare
+alignedwiththeoriginalsparseornoisygroundtruthviaRANSACleastsquares,enhancinglabeldetailand
+completenesswhilepreservinggeometricaccuracy.WetermthismodelDepth-Anything-3-Teacher,trainedon
+
+
+
+                                                          7
+===== PAGE 8 =====
+alargesyntheticcorpuscoveringindoor,outdoor,object-centric,anddiversein-the-wildscenestocapture
+finegeometry.WedetailourteacherdesignintheSec.4.1.
+
+Trainingobjectives.FollowingtheformulationinSec.3.1,ourmodel                   FθmapsaninputItoasetofoutputs
+comprisingadepthmap ˆD,araymap ˆR,andanoptionalcamerapose ˆc: Fθ :I7→{ˆD,    ˆR,   ˆc} .Thegraycolor
+indicatesthat ˆcisanoptionaloutput,includedprimarilyforpracticalconvenience.Priortolosscomputation,
+allground-truthsignalsarenormalizedbyacommonscalefactor.Thisscaleisdefinedasthemeanℓ2normof
+thevalidreprojectedpointmapsP,astepthatensuresconsistentmagnitudeacrossdifferentmodalitiesand
+stabilizesthetrainingprocess.Theoveralltrainingobjectiveisdefinedasaweightedsumofseveralterms:
+
+                L=L      D(ˆD,D)+L           M(ˆR,M)+L            P(ˆD⊙d+t,P)+βL                        C(ˆc,v)+αL             grad(ˆD,D),
+                                                   X
+                           LD(ˆD,D;D         c) =   1ZΩmp    Dc,pˆDp−D   p−λ   clogD     c,p,
+                                                   p∈Ω
+where Dc,pdenotestheconfidenceofdepth Dp.Alllosstermsarebasedonthe ℓ1norm,withweightssetto
+α= 1andβ= 1.Thegradientloss,L                        grad,penalizesthedepthgradients:
+
+                                Lgrad(ˆD,D) =||∇           xˆD−∇   xD||   1+||∇   yˆD−∇   yD||   1,                     (3)
+
+where∇xand∇yarethehorizontalandverticalfinitedifferenceoperators.Thislosspreservessharpedges
+whileensuringsmoothnessinplanarregions.Inpractice,wesetα= 1andβ= 1.
+
+3.4ImplementationDetails
+
+Traingdatasets.WeprovideourtrainingdatasetsinTable1.Notethatfordatasetswithpotentialoverlap
+betweentrainingandtesting(ScanNet++),weensureastrictseparationatthescenelevel,i.e.,scenesin
+trainingandtestingaremutuallyexclusive.NotethatusingScannet++fortrainingisfairtoothermethods,
+asitiswidelyusedfortrainingin [91,96].
+
+Training details.Wetrainourmodelon128H100GPUsfor200ksteps,usingan8k-stepwarm-upand
+apeaklearningrateof2   ×10−4 . Thebaseresolutionis504  ×504,whichisdivisibleby2,3,4,6,9and
+14,makingitmorecompatiblewithcommonphotoaspectratiossuchas2:3,3:4,and9:16.Trainingimage
+resolutionsarerandomlysampledfrom504      ×504,504     ×378,504     ×336,504     ×280,336     ×504,896     ×504,
+756×504,672     ×504.Forthe504        ×504resolution,thenumberofviewsissampleduniformlyfrom[2,18].
+Thebatchsizeisdynamicallyadjustedtokeepthetokencountperstepapproximatelyconstant.Supervision
+transitionsfromground-truthdepthtoteacher-modellabelsat120ksteps.Poseconditioningisrandomly
+activatedduringtrainingwithprobability0.2.
+
+4 Teacher-StudentLearning
+
+AsshowninFig.4,thereal-worlddatasetsare
+ofpoorquality,thuswetraintheteachermodel
+exclusivelyonsyntheticdatatoprovidesupervision
+forreal-worlddata.Ourteachermodelistrained
+asamonocularrelativedepthpredictor. During
+inferenceorsupervision,noisyground-truthdepth
+canbeusedtoprovidescaleandshiftparameters,
+allowingforthealignmentofthepredictedrelative
+depthwithabsolutedepthmeasurements.
+
+4.1ConstructingtheTeacherModel
+BuildinguponDepthAnything2[112],weextend                     Figure 4  Poor quality real-world datasets.Weshow
+theapproachinseveralkeyaspects,includingboth                 someexamplesofthepoorqualityreal-worlddatasets.
+
+
+                                                            8
+===== PAGE 9 =====
+                Table1DatasetsusedinDepthAnything3,includingnumberofscenes,datatype.
+
+                       Usage              Dataset                              #Scenes    DataType
+                                          HiRoom(ours)         29        Synthetic
+                       Pose-geometry      ETH3D[72]           11         LiDAR
+                         benchmark        DTU[1]               22         LiDAR
+                                          7Scenes[74]            7          LiDAR
+                                          ScanNet++[117]       20         LiDAR
+                                          AriaDigitalTwin[63]    237       Synthetic
+                                          AriaSyntheticENV[63]  99950     Synthetic
+                                          ArkitScenes[5]         4388       LiDAR
+                                          BlendedMVS[115]      503       3DRecon
+                                          Co3dv2[68]            30616      Colmap
+                                          DL3DV[53]            6379       Colmap
+                                          HyperSim[69]          344       Synthetic
+                                          MapFree[3]            921        Colmap
+                                          MegaDepth[51]        268        Colmap
+                       Pose-geometry      MegaSynth[40]        6049      Synthetic
+                          Training        MvsSynth[38]          121       Synthetic
+                                          Objaverse[17]          505557    Synthetic
+                                          Omniobject[102]       5885      Synthetic
+                                          OmniWorld[128]       1039      Synthetic
+                                          PointOdyssey[127]     44        Synthetic
+                                          ReplicaVMAP[83]      17        Synthetic
+                                          ScanNet++[117]       230        LiDAR
+                                          ScenenetRGBD[55]     16866     Synthetic
+                                          TartanAir[98]          355       Synthetic
+                                          Trellis[104]            557408    Synthetic
+                                          vKitti2[9]             50        Synthetic
+                                          WildRGBD[103]       23050      LiDAR
+
+
+dataandrepresentation.Weobservethatexpand-
+ingthetrainingcorpusyieldsclearimprovementsindepthestimationperformance,substantiatingthebenefits
+ofdatascaling.Furthermore,whileourreviseddepthrepresentationmaynotshowstrikingimprovementson
+standard2Devaluationmetrics,itleadstoqualitativelybetter3Dpointclouds,exhibitingfewergeometric
+distortionsandmorerealisticscenestructures.Itisimportanttonotethatourteachernetworkbackbone
+isdirectlyalignedwiththeaboveDA3framework,consistingsolelyofaDINOv2visiontransformerwitha
+DPTdecoder—nospecializedarchitecturalmodificationsareintroduced.Weelaborateonthefulldesignand
+implementationdetailsinthefollowingsections.
+Data scaling.Wetraintheteachermodelexclusivelyonsyntheticdatatoachievefinergeometricdetail.
+ThesyntheticdatasetsusedinDA2arerelativelylimited. InDA3,wesubstantiallyexpandthetraining
+corpustoinclude:Hypersim[69],TartanAir[98],IRS[93],vKITTI2[9],BlendedMVS[115],SPRING[56],
+MVSSynth[38], UnrealStereo4K[123], GTA-SfM[92], TauAgent[27], KenBurns[60], MatrixCity[50],
+EDEN[47],ReplicaGSO[82],UrbanSyn[32],PointOdyssey[127],Structured3D[125],Objaverse[17],Trel-
+lis[104],andOmniObject[102].Thiscollectionspansindoor,outdoor,object-centric,anddiversein-the-wild
+scenes,improvinggeneralizationoftheteachermodel.
+Depth representation.UnlikeDA2,whichpredictsscale–shift-invariantdisparity,ourteacheroutputs
+scale–shift-invariantdepth.Depthispreferablefordownstreamtasks,suchasmetricdepthestimationand
+multiviewgeometry,thatdirectlyoperateindepthspaceratherthandisparity.Toaddressdepth’sreduced
+sensitivityfornear-cameraregionscomparingtodisparity,wepredictexponentialdepthinsteadoflinear
+depth,enhancingdiscriminationatsmalldistances.
+
+
+                                                          9
+===== PAGE 10 =====
+Training objectives.Forgeometricsupervision,inadditiontoastandarddepth-gradientloss,weadopt
+ROEalignmentwiththeglobal–locallossintroducedin[95].Tofurtherrefinelocalgeometry,weintroducea
+distance-weightedsurface-normalloss.Foreachcenterpixel,wesamplefourneighboringpointsandcompute
+unnormalizednormalsn              i.Wethenweightthesenormalsby:
+
+                                                    4X
+                                             wi =      ∥n  j ∥−∥n  i∥,                                 (4)
+                                                   j=0
+
+whichdownweightscontributionsfromneighborsfartherfromthecenter,yieldingameannormalclosertothe
+truelocalsurfacenormal:                                 4X
+                                                nm =       wi   ni∥n  i∥,                                   (5)
+                                                       i=0
+Thefinalnormallossis
+                                                                4X
+                                         LN =E(ˆn       m,nm)+     E(ˆn    i,ni)                              (6)
+                                                               i=0
+where E denotestheangularerrorbetweennormals. Groundtruthisundefinedinskyregionsandin
+backgroundareasofobject-onlydatasets.Topreventtheseregionsfromdegradingthedepthpredictionand
+tofacilitatedownstreamuse,wejointlypredictaskymaskandanobjectmaskalignedwiththedepthoutput,
+supervisedwithMSEloss.Theoveralltrainingobjectiveis
+
+                                     LT =αL      grad+L   gl+L   N +L   sky+L   obj                           (7)
+
+where α = 0.5.Here,  Lgrad,Lgl,Lsky,andLobjdenotethegradientloss,global–localloss,sky-maskloss,and
+object-maskloss,respectively.
+
+4.2TeachingDepthAnything3
+Real-worlddatasetsarecrucialforgeneralizingcameraposeestimation,yettheyrarelyprovidecleandepths;
+supervisionisoftennoisyorsparse(Fig.4).DepthAnything3Teacherprovideshigh-qualityrelativedepth,
+whichwealigntonoisymetricmeasurements(e.g.,COLMAPoractivesensors)viaarobustransacscale–shift
+procedure.Let ˜Ddenotetheteacher’srelativedepthandDtheavailablesparsedepthwithvaliditymask       mp
+overdomainΩ.Weestimatescale              sandshift tbyRANSACleastsquares,usinganinlierthresholdequalto
+themeanabsolutedeviationfromtheresidualmedian:
+                                           X
+                         (ˆs,  ˆt) = arg mins>0,tmps ˜Dp+t−D        p2,  D T→M      = ˆs   ˜D+    ˆt.                (8)
+                                           p∈Ω
+
+ThealignedD             T→M   providesscale-consistentandpose–depthcoherentsupervisionforDepthAnything3,
+complementingourjointdepth–rayobjectivesandimprovingreal-worldgeneralization,asevidencedinFig.8.
+
+4.3TeachingMonocularModel
+Weadditionallytrainamonoculardepthmodelunderateacher–studentparadigm. WefollowtheDA2
+framework,trainingthemonocularstudentonunlabeledimageswithteacher-generatedpseudo-labels.The
+keydifferencefromDA2liesinthepredictiontarget:ourstudentpredictsdepthmaps,whereasDA2predicts
+disparity.Wefurthersupervisethestudentwiththesamelossusedfortheteacher,appliedtothepseudo-depth
+labels. Themonocularmodelalsopredictsrelativedepth. Trainedsolelyonunlabeleddatawithteacher
+supervision,itachievesstate-of-the-artperformanceonstandardmonoculardepthbenchmarksasshownin
+Tab.10.
+
+4.4TeachingMetricModel
+Next,wedemonstratethatourteachermodelcanbeusedfortrainingametricdepthestimationmodelwith
+sharpboundaries.FollowingMetric3Dv2[37],weapplycanonicalcameraspacetransformationtoaddress
+
+
+                                                         10
+===== PAGE 11 =====
+depthambiguitycausedbyvaryingfocallengths.Specifically,werescaletheground-truthdepthusingratio
+fc/f,where fcand fdenotethecanonicalfocallengthandcamerafocallength,respectively. Toensure
+sharpdetails,weemployTeachermodel’spredictionastraininglabels.Wealignthescaleandshiftofthe
+teachermodel’spredicteddepthswiththeground-truthmetricdepthlabelsforsupervision.
+
+Training dataset.Wetrainedourmetricdepthmodelon14datasets,includingTaskonomy[       120],DIML
+(Outdoor)[15],DDAD[30],Argoverse[101],Lyft[],PandaSet[105],Waymo[84],ScanNet++[117],ARK-
+itScenes[5],Map-free[3],DSEC[24],DrivingStereo[109]andCityscapes[16]datasets.Forstereodatasets,
+weleveragethepredictionofFoundationStereo[100]astraininglabels.
+
+ImplementationDetails.Thetraininglargelyfollowsthatofthemonocularteachermodel.Allimagesare
+trainedatabaseresolutionof504withvaryingaspectratios(1:1,1:2,16:9,9:16,3:4,1:1.5,1.5:1,1:1.8).We
+employAdamWoptimizerandsetthelearningrateforencoderanddecoderto5e-6and5e-5,respectively.
+Weapplyrandomrotationaugmentationwheretrainingimagesarerotatedat90or270degreewith5%
+probability.Wesetcanonicalfocallength fcto300.Weusethealignedpredictionfromteachermodelas
+supervision.Withaprobabilityof20%,weusetheoriginalground-truthlabelsfortraining.Wetrainwith
+batchsizeof64for160Kiterations.ThetrainingobjectiveisaweightedsumofdepthlossLdepth,Lgradand
+sky-masklossL      sky.
+
+5 Application:Feed-Forward3DGaussianSplattings
+
+5.1Pose-ConditionedFeed-Forward3DGS
+Inspiredbyhumanspatialintelligence,webelievethatconsistentdepthestimationcangreatlyenhance
+downstream3Dvisiontasks.Wechoosefeed-forwardnovelviewsynthesis(FF-NVS)asthedemonstration
+task,givenitsgrowingattentiondrivenbyadvancesinneural3Drepresentations(i.e.,wechoose3DGS)and
+itsrelevancetonumerousapplications.Adheretotheminimalmodelingstrategy,weperformFF-NVSby
+fine-tuningwithanaddedDPThead(GS-DPT)toinferpixel-aligned3DGaussians[11,13].
+
+GS-DPThead.Givenvisualtokensforeachviewextractedviaoursingletransformerbackbone(Sec.3.2),
+GS-DPTpredictsthecamera-space3DGaussianparameters{σ  i,qi,si,ci}H×Wi=1  ,where σi,q i∈H ,s i∈R  3,
+ci∈R  3denotetheopacity,rotationquaternion,scale,andRGBcolorofthe i-th3DGaussian,respectively.
+Amongthem, σiispredictedbytheconfidencehead,whileothersarepredictedbythemainGS-DPThead.
+TheestimateddepthisunprojectedtoworldcoordinatestoobtaintheglobalpositionsP              i∈R  3ofthe3D
+Gaussians.Theseprimitivesarethenrasterizedtosynthesizenovelviewsfromgivencameraposes.
+
+Trainingobjectives.TheNVSmodelisfine-tunedwithtwotrainingobjectives,namelyphotometricloss(i.e.,
+LMSEandLLPIPS)onrenderednovelviewsandscale-shift-invariantdepthlossLDontheestimateddepthof
+observedviews,followingtheteacher–studentlearningparadigm(Sec.3.3).
+
+5.2Pose-AdaptiveFeed-Forward3DGS
+Unliketheabovepose-conditionedversionintendedtobenchmarkDA3asastrongfeed-forward3DGS
+backbone,wealsopresentanalternativebettersuitedtoin-the-wildevaluation. Thisversionisdesigned
+tointegrateseamlesslywithDA3usingidenticalpretrainedweights,enablingnovelviewsynthesiswithor
+withoutcameraposes,andacrossvaryingresolutionsandinputviewcounts.
+
+Pose-adaptiveformulation.Ratherthanassumingthatallinputimagesareuncalibrated[          41,79,116,122],
+weadoptapose-adaptivedesignthatacceptsbothposedandunposedinputs,yieldingaflexibleframework
+thatworkswithorwithoutposes.Twodesignchoicesarerequiredtoachievethis:1)all3DGSparametersare
+predictedinlocalcameraspace.2)thebackbonemusthandleposedandunposedimagesseamlessly.Our
+DA3backbonesatisfiesbothrequirements(Sec.3.2).Inparticular,whenposesareavailable,wescale(via
+[87])andunprojectthepredicteddepthandcamera-space3DGStoworldspacetoalignwiththem.When
+posesarenotavailable,wedirectlyusethepredictedposesfortheunprojectiontoworldspace.
+
+
+
+
+                                                        11
+===== PAGE 12 =====
+Toreducethetrade-offbetweenaccuratesurfacegeometryandrenderingquality[29],wepredictanadditional
+depthoffsetintheGS-DPThead.Formorein-the-wildrobustness,wereplaceper3DGaussiancolorwith
+sphericalharmoniccoefficientstoreduceconflictswithgeometryviamodelingview-dependentsurface.
+
+Enhancedtrainingstrategies.Toavoidunstabletraining,weinitializetheDA3backbonefrompretrained
+weightsandfreezeitwhentraining,tuningonlytheGS-DPThead.Toimprovein-the-wildperformance,we
+trainwithvaryingimageresolutionsandvaryingnumbersofcontextviews.Specifically,higher-resolution
+inputsarepairedwithfewercontextviewsandlower-resolutioninputswithmoreviews,whichstabilizes
+trainingwhilesupportingdiverseevaluationscenarios.
+
+5.3ImplementationDetails
+
+Training datasets.FortrainingtheNVSmodel,weleveragethelarge-scaleDL3DVdataset[        53],which
+providesdiversereal-worldsceneswithcameraposesestimatedbyCOLMAP.Weuse10,015scenesfrom
+DL3DVfortrainingthefeed-forward3DGSmodel.Toensurefairevaluation,westrictlymaintainexclusivity
+betweentrainingandtestingsplits:the140DL3DVscenesusedforbenchmarkingarecompletelydisjoint
+fromthetrainingset,preventinganydataleakage.
+
+6 VisualGeometryBenchmark
+
+Wefurtherintroduceavisualgeometrybenchmarktoassessgeometrypredictionmodels.Itdirectlyevaluates
+poseaccuracy,depthviareconstructionaccuracyandvisualrenderingquality.
+
+6.1BenchmarkPipeline
+
+Pose estimation.Foreachscene,weselectallavailableimages;ifthetotalnumberexceedsthelimit,we
+randomlysample100imagesusingafixedrandomseed. Theselectedimagesarethenprocessedthrough
+afeed-forwardmodeltogenerateconsistentposeanddepthestimations,afterwhichtheposeaccuracyis
+computed.
+
+Geometryestimation.Forthesameimageset,weperformreconstructionusingthepredictedposestogether
+withthepredicteddepths.Toalignthereconstructedpointcloudwiththeground-truth,weemployevo[87]to
+alignthepredictedposestotheground-truthposes,obtainingatransformationthatmapsthereconstruction
+intotheground-truthcoordinatesystem. Toimproverobustness,weadoptaRANSAC-basedalignment
+procedure. Specifically,werepeatedlyapplyevoonrandomlysampledposesubsetsandevaluateeach
+candidatetransformationbycountingthenumberofinlierposes,whereinliersaredefinedasthosewith
+translationerrorsbelowthemedianoftheoverallposedeviations.Thetransformationwiththelargestinlier
+setisthenchosenandappliedtofusethealignedpredictedpointcloudwiththepredicteddepthmapsby
+TSDFfusion.Finally,reconstructionqualityisassessedbycomparingthealignedreconstructionwiththe
+ground-truthpointcloudusingthemetricsdescribedinSec.6.2.
+
+Visualrendering.Foreachtestingscene,thenumberofimagestypicallyrangesfrom300to400acrossall
+benchmarkdatasets.Wesampleoneoutofevery8imagesastargetnovelviewsforevaluation.Fromthe
+remainingviewpoints,weuseCOLMAPcameraposesprovidedbyeachdatasetandapplyfarthestpoint
+sampling,consideringbothcameratranslationandrotationdistances,toselect12imagesasinputcontext
+views.ForDL3DV,weusetheofficialBenchmarksetfortesting.ForTanksandTemples,allTrainingData
+scenesareincludedexcept Courthouse.ForMegaDepth,weselectscenesnumberedfrom 5000to 5018,as
+thesearemostsuitableforNVS.
+
+6.2Metrics
+
+Posemetrics.Forassessingposeestimation,wefollowtheevaluationprotocolintroducedin[       89,91]and
+reportresultsusingtheAUC.Thismetricisderivedfromtwocomponents:RelativeRotationAccuracy(RRA)
+andRelativeTranslationAccuracy(RTA).RRAandRTAquantifytheangulardeviationinrotationand
+translation,respectively,betweentwoimages.Eacherroriscomparedagainstasetofthresholdstoobtain
+
+
+                                                       12
+===== PAGE 13 =====
+accuracyvalues.AUCisthencomputedastheintegraloftheaccuracy–thresholdcurve,wherethecurveis
+determinedbythesmallerofRRAandRTAateachthreshold. Toillustrateperformanceunderdifferent
+tolerancelevels,weprimarilyreportresultsatthresholdsof3and30.
+
+Reconstrutionmetrics.Let           Gdenotetheground-truthpointsetandRthereconstructedpointsetunder
+evaluation.Wemeasureaccuracyusingdist(R→G)andcompletenessusing dist(G→R)following[1].The
+ChamferDistance(CD)isthendefinedastheaverageofthesetwoterms.Basedonthesedistances,wedefine
+theprecisionandrecallofthereconstructionRwithrespecttoadistancethreshold d.PrecisionisgivenbyPdist(Ri→G)<d,andrecallby   1Pdist(Gi→R)<d,where [·] denotestheIversonbracket[46].
+ 1
+|R|                                        |G|
+Tojointlycapturebothmeasures,wereporttheF1-score,computedasF1=      2×precision×recall
+                                                                                   precision+recall        .
+
+6.3Datasets
+Ourbenchmarkisbuiltonfivedatasets: HiRoom[129],ETH3D[72],DTU[1],7Scenes[74],andScan-
+Net++[117].Together,theycoverdiversescenariosrangingfromobject-centriccapturestocomplexindoor
+andoutdoorenvironments,andarewidelyadoptedinpriorresearch.Below,wepresentmoredetailsabout
+thedatasetpreparationprocess.
+
+HiRoomisaBlender-renderedsyntheticdatasetcomprising30indoorlivingscenescreatedbyprofessional
+artists.Weuseathreshold dof0.05mfortheF1reconstructionmetriccalculation.ForTSDFfusion,weset
+theparametersvoxelsizeto0.007m.
+
+ETH3Dprovideshigh-resolutionindoorandoutdoorimageswithground-truthdepthfromlasersensors.We
+aggregatetheground-truthdepthmapswithTSDFfusionforGT3Dshapes.Weselect11scenes: courtyard,
+electro, kicker, pipes, relief, delivery  area, facade, office, playground, relief  2, terrains,for
+thebenchmark.Allframesareusedintheevaluation.Weuseathreshold dof0.25fortheF1reconstruction
+metriccalculation.ForTSDFfusion,wesettheparametersvoxelsizeto0.039m.
+
+DTUisanindoordatasetconsistingof124differentobjects,eachsceneisrecordedfrom49views.Itprovides
+ground-truthpointcloudscollectedunderwell-controlledconditions.Weevaluatemodelsonthe22evaluation
+scansoftheDTUdatasetfollowing[114].WeadopttheRMBG2.0[126]toremovemeaninglessbackground
+pixelsandusethedefaultdepthfusionstrategyproposedin[124].Allframesareusedintheevaluation.
+
+7Scenesisachallengingreal-worlddataset,consistingoflow-resolutionimageswithseveremotionblursfor
+in-doorscenes.Wefollowtheimplementationin[130]tofuseRGBDimageswithTSDFfusionandprepare
+ground-truth3Dshapes.Wedownsamplethenumberofframesforeachsceneby11tofaciliateevaluation.
+Weuseathreshold dof0.05mfortheF1reconstructionmetriccalculation. ForTSDFfusion,wesetthe
+parametersvoxelsizeto0.007m.
+
+ScanNet++isanextensiveindoordatasetprovidinghigh-resolutionimages,depthmapsfromiPhoneLiDAR,
+andhigh-resolutiondepthmapssampledfromreconstructionsoflaserscans. Weselect20scenesforthe
+benchmark.AsdepthmapsfromiPhoneLiDARlackofinvalidground-truthindicators,weusedepthmaps
+sampledfromreconstructionsoflaserscansasground-truthdepthbydefault.Weaggregatetheground-truth
+depthmapswithTSDFfusionforGT3Dshapes.Wedownsamplethenumberofframesforeachsceneby5
+tofaciliateevaluation.Weuseathreshold dof0.05mfortheF1reconstructionmetriccalculation.ForTSDF
+fusion,wesettheparametersvoxelsizeto0.02m.
+
+Visualrenderingquality.Weevaluatevisualrenderingqualityondiverselarge-scalescenes.Weintroducea
+newNVSbenchmarkbuiltfromthreedatasets,includingDL3DV[53]with140scenes,TanksandTemples[45]
+with6,andMegaDepth[51]with19,eachspanningaround300sampledframes.Groundtruthcameraposes,
+estimatedwithCOLMAP,areuseddirectlytoensureaccurateandfaircomparisonacrossdiversemodels.We
+reportPSNR,SSIM,andLPIPSmetricsonrenderednovelviewsusinggivencameraposes.
+
+
+
+
+
+
+                                                       13
+===== PAGE 14 =====
+               Table2  ComparisonswithSOTAmethodsonposeaccuracy.WereportbothAuc3             ↑andAuc30↑metrics.The
+               top-3resultsarehighlightedas     first,second,and    third.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               Figure5  Comparisonsofposeestimationquality.Cameratrajectoriesfortwovideosareshown.Ground-truth
+               trajectoriesarederivedusingCOLMAPonimageswithdynamicobjectsmasked.
+
+               7 Experiments
+
+               7.1ComparisonwithStateoftheArt
+
+               Baselines.VGGT[        91]isanend-to-endtransformerthatjointlypredictscameraparameters,depth,and
+               3Dpointsfromoneormanyviews. Pi3[99]furtheradoptsapermutation-equivariantdesigntorecover
+               affine-invariantcamerasandscale-invariantpointmapsfromunorderedimages.MapAnything[43]providesa
+               feed-forwardframeworkthatcanalsotakecameraposeasinputfordensegeometricprediction.Fast3R[111]
+               extendspoint-mapregressiontohundredsoreventhousandsofimagesinasingleforwardpass. Finally,
+               DUSt3R[97]tacklesuncalibratedimagepairsbyregressingpointmapsandaligningthemglobally. Our
+               methodissimilartoVGGT[91],butadoptsanewarchitectureandadifferentcamerarepresentation,andit
+               isorthogonaltoPi3[99].
+
+               Poseestimation.AsshowninTab.2andFig.5,comparingagainstfivebaselines[                43,91,96,99,110],our
+               DA3-Giantmodelattainsthebestperformanceonnearlyallmetrics,withtheonlyexceptionbeingAuc30
+               ontheDTUdataset. Notably,onAuc3ourmodeldeliversatleastan8%relativeimprovementoverall
+               competingmethods,andonScanNet++itachievesa33%relativegainoverthesecond-bestmodel.
+
+               Geometryestimation.AsshowninTab.3,ourDA3-GaintestablishesanewSOTAinnearlyallscenarios,HiRoom               ETH3D                  DTU                 7Scenes           ScanNet++
+Methods            Paramsoutperformingallcompetitorsinallfivepose-freesettings. Onaverage,DA3-GaintachievesarelativeAuc3  Auc30  Auc3  Auc30  Auc3  Auc30  Auc3  Auc30  Auc3  Auc30
+
+DUSt3R       0.57B   17.6   54.3   4.30   27.3   4.00   74.3   6.90   61.6   8.10   33.9
+Fast3R        0.65B   25.9   77.0   8.10   44.4   9.50   79.1   19.0   78.6   17.9   72.514
+MapAnything   0.56B   17.9   82.8   19.2   77.4   6.50   72.7   12.6   79.7   20.2   84.1
+Pi3           0.96B         67.0     94.8     35.2    87.3   62.5   94.9         25.5    86.3   50.7   92.1
+VGGT        1.19B   49.1   88.0   26.3   80.8                  79.2     99.8   23.9   85.0        62.6     95.1
+DA3-Giant     1.10B         80.3     95.9     48.4    91.2     94.1     99.4     28.5    86.8     85.0     98.1
+DA3-Large     0.36B         58.7     94.2     32.2    86.9     70.2     96.7     29.2    86.6     60.2     94.7
+DA3-Base      0.11B   19.0   83.2   15.1   74.6   60.1   95.9   20.1   82.9   25.1   83.4
+DA3-Small     0.03B   9.49   75.2   8.59   62.1   30.6   91.2   14.0   78.7   10.9   71.9
+===== PAGE 15 =====
+               Table3  ComparisonswithSOTAmethodsonreconstructionaccuracy.ForalldatasetsexceptDTU,wereport
+               theF-Score(F1 ↑).ForDTU,wereportthechamferdistance(CD ↓,unit:mm).w/op.andw/p.denotewithout
+               poseandwithpose,indicatingwhetherground-truthcameraposesareprovidedforreconstruction.Thetop-3results
+               arehighlightedas   first, second,and    third.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               improvementof25.1%overVGGTand21.5%overPi3.Fig.7andFig.6visualizeourpredicteddepthand
+               recoveredpointclouds.Theresultsarenotonlyclean,accurate,andcomplete,butalsopreservefine-grained
+               geometricdetails,clearlydemonstratingasuperiorityoverothermethods. Evenmorenotably,ourmuch
+               smallerDA3-Large(0.30Bparameters)demonstratesremarkableefficiency. Despitebeing3×smaller,it
+               surpassesthepriorSOTAVGGT(1.19Bparameters)infiveoutofthetensettings,withparticularlystrong
+               performanceontheETH3D.
+               Whencameraposesareavailable,bothourmethodandMapAnythingcanexploitthemforimprovedresults,
+               andothermethodsalsobenefitfromground-truthposefusion.Ourmodelshowscleargainsonmostdatasets
+               except7Scenes,wherethelimitedvideosettingalreadysaturatesperformanceandreducesthebenefitofpose
+               conditioning.Notably,withposeconditioning,performancegainsfromscalingmodelsizearesmallerthanin
+               pose-freemodels,indicatingthatposeestimationscalesmorestronglythandepthestimationandrequires
+               largermodelstofullyrealizeimprovements.
+               Monoculardepthaccuracyalsoreflectsgeometryquality.AsshowninTab.4,onthestandardmonocular
+               depthbenchmarksreportedin[113],ourmodeloutperformsVGGTandDepthAnything2.Forreference,we
+               alsoincludetheresultsofourteachermodel.
+
+                                                  Table4  Monoculardepthcomparisons.δ                               1↑
+
+                                      Method  KITTI  NYU  SINTEL  ETH3D  DIODE  Rank
+                                      DA2      94.6    97.9    77.2     86.5     95.2    2.60
+                                      VGGT    91.7    97.9    67.9     97.5     95.3    3.75
+                                      DA3      95.3    97.4    75.5     98.6     95.4    2.20
+                                      Teacher   97.2    97.9    81.4     99.8     96.6    1.00
+
+
+
+               Visualrendering.Tofairlyevaluatefeed-forwardnovelviewsynthesis(FF-NVS),wecompareagainstthree
+               recent3DGSmodels—pixelSplat[11],MVSplat[13],andDepthSplat[108]—andfurthertestalternative
+               frameworksbyreplacingourgeometrybackbonewithFast3R[111],MV-DUSt3R[85],andVGGT[91].All
+               modelsaretrainedonDL3DV-10Ktrainingsetunderaunifiedprotocolandevaluatedonourbenchmark
+               (Sec.6.3).
+               AsreportedinTab.5,allmodelsperformsubstantiallybetteronDL3DVthanontheotherdatasets,
+               suggestingthat3DGS-basedNVSissensitivetotrajectoryandposedistributionsstandardizedbyDL3DV,
+               ratherthanscenecontent. Comparingthetwogroups, geometry-model-basedframeworksconsistentlyHiRoom                ETH3D                   DTU                 7Scenes            ScanNet++
+Methods            Paramsoutperformspecializedfeed-forwardmodels,demonstratingthatasimplebackboneplusDPTheadcanw/op.  w/p.  w/op.  w/p.  w/op.  w/p.  w/op.  w/p.  w/op.  w/p.
+
+DUSt3R       0.57B    30.1   39.5   19.7   18.8   7.60   7.97   26.6   39.8   18.9   27.3
+Fast3R        0.65B    40.7   48.2   38.5   50.3   6.88   8.20   41.0   49.8   37.1   53.715
+MapAnything   0.56B    32.4   69.2   54.8   71.9   7.91   3.97   44.8                     55.2   39.4   71.3
+Pi3           0.96B         75.8     85.0     72.7     80.6   3.28      1.72   44.2       57.5   63.1       73.3
+VGGT        1.19B    56.7   70.2   57.2   66.7                 2.05     1.44   47.9   51.4         66.4   70.7
+DA3-Giant     1.10B         85.1     95.6     79.0     87.1    1.85   1.85       53.5     56.5     77.0     79.3
+DA3-Large     0.36B         69.5     87.1     65.8     75.2    2.08     1.23     56.3   49.2       67.9     75.7
+DA3-Base      0.11B    25.9   71.4   49.5   66.7   2.87   2.36                   49.9   50.6   47.2   67.8
+DA3-Small     0.03B    18.3   52.2   41.6   63.4   5.83   2.49   41.0   46.8   32.3   53.8
+===== PAGE 16 =====
+Figure6  Comparisonsofpointcloudquality.Ourmodelproducespointcloudsthataremoregeometricallyregular
+andsubstantiallylessnoisythanthosegeneratedbyothermethods.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Figure7  Comparisonsofdepthquality.Comparedwithothermethods,ourdepthmapsexhibitfinerstructural
+detailandhighersemanticcorrectnessacrossdiversescenes.
+
+
+surpasscomplextask-specificdesigns.Theadvantagestemsfromlarge-scalepretraining,whichenablesbetter
+generalizationandscalabilitythanapproachesrelyingonepipolartransformers,costvolumes,orcascaded
+modules. Withinthisgroup,NVSperformancecorrelateswithgeometryestimationcapability,making
+DA3thestrongestbackbone.Lookingforward,weexpectFF-NVScanbeeffectivelyaddressedwithsimple
+architecturesleveragingpretrainedgeometrybackbones,andthatthestrongspatialunderstandingofDA3
+willbenefitother3Dvisiontasks.
+
+7.2AnalysisforDepthAnything3
+TrainingourDA3-Giantmodelrequires128×H100GPUsforapproximately10days. Toreducecarbon
+footprintandcomputationalcost,allablationexperimentsreportedinthissectionareconductedusingthe
+ViT-Lbackbonewithamaximumof10views,requiringapproximately4dayson32×H100GPUs.
+
+7.2.1SufficiencyoftheDepth-RayRepresentation
+Tovalidateourdepth-rayrepresentation,wecomparedifferentpredictioncombinationssummarizedinTab.6.
+AllmodelsuseaViT-Lbackbone,identicaltrainingsettings(viewsize:10,batchsize:128,steps:120k).We
+evaluatefourheads:1)depthfordensedepthmaps;2)pcdfordirect3Dpointclouds;3)camfor9-DoF
+cameraposec= (t       ,q,f);and4)ourproposedray,predictingper-pixelraymaps(Sec.3.1).Therayhead
+usesaDual-DPTarchitecture,whilepcdusesaseparateDPThead.Formodelswithoutpcd,pointclouds
+
+
+                                                         16
+===== PAGE 17 =====
+                Table5  ComparisonswithSOTAmethodsonNVStask.WereportNVScomparsionswithexisitingfeed-forward
+                3DGSmodelsandcounterpartsusingotherbackbones.Foreachscene,weuse12inputcontextviewsandteston
+                targetviewssampledevery8viewsoverasetofover300views.Imageresolutionis270×480.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Table6  Ablationsofprediction-targetcombinations.Notethatallexperimentsinthistabledonothavecamera
+                conditiontoken.Thebestandsecondbest            arehighlighted.
+
+
+
+
+
+
+
+
+
+
+
+                areobtainedbycombiningdepthwithcameraparametersfromrayorcam.AsshowninTable6,theminimal
+                depth+rayconfigurationconsistentlyoutperformsdepth+pcd+camanddepth+camacrossalldatasets
+                andmetrics,achievingnearly100%relativegaininAuc3overdepth+cam.Addinganauxiliarycamhead
+                (depth+ray+cam)yieldsnofurtherbenefit,confirmingthesufficiencyofthedepth-rayrepresentation.We
+                adoptdepth+ray+camasourfinalrepresentation,asthecameraheadincursnegligiblecomputational
+                overhead,amountingtoapproximately0.1%ofthecomputationcostofthemainbackbone.
+
+                7.2.2SufficiencyofaSinglePlainTransformer
+                WecompareastandardViT-LbackbonewithaVGGT-stylearchitecturethatstackstwodistincttransformers,
+                triplingtheblockcount.Forfaircapacitycomparison,theVGGT-stylemodelusessmallerViT-Bbackbones,
+                yieldingasimilarparametersizetoourViT-L.Ourbackbonesupportstwoattentionstrategies:Full Alt.,
+                whichalternatescross-view/within-viewattentioninalllayers(L =Lg),andourdefaultpartialalternation.
+                AsshowninTable7,theVGGT-stylemodeldropsto79.8%ofourbaselineperformance,confirmingthe
+                superiorityofasingle-transformerdesignatsimilarscale.Weattributethisgaptofullpretrainingofour
+                backboneversustwo-thirdsuntrainedblocksinVGGT.Moreover,theFullAlt.variantdegradesacrossnearly
+                allmetrics—exceptF1on7Scenes—indicatingthatpartialalternationisthemoreeffectiveandrobuststrategy.
+
+                7.2.3AblationandAnalysis
+
+                Dual-DPTHead.Weassesstheeffectivenessofthedual-DPTheadviaanablationinwhichtwoseparate
+                DPTheadspredictdepthandraymapsindependently.ResultsarereportedinTab.7,item(d).Compared
+                withthemodelequippedwiththedual-DPThead,thevariantwithoutitshowsconsistentdropsacross
+                metrics,confirmingtheeffectivenessofourdual-DPTdesign.
+                       In-domainDataset                                       Out-of-domainDatasets
+Methods            DL3DV-Benchmarks(140)          TanksandTemples(6)                  MegaDepth(19)
+                  PSNR↑ SSIM↑ LPIPS↓ PSNR↑ SSIMHiRoom             ETH3D                 DTU                7Scenes         ScanNet++↑ LPIPS↓ PSNR↑ SSIM↑ LPIPS↓
+Methods                  Auc3↑ F1↑ Auc3↑ F1↑ Auc3↑ CD↓ Auc3↑ F1↑ Auc3↑ F1↑   17
+pixelSplat      16.55   0.456    0.480    13.81   0.347    0.558    13.87   0.367    0.561
+depth+pcd+cam     9.1    12.8   19.0   60.4MVSplat      18.13   0.559    0.393    14.81   0.391    0.508    14.67   0.398    0.53342.3   4.918   20.8   43.4   22.0   43.0
+depth+cam          10.8   16.5    9.9    48.0   23.3   5.316   13.0   38.5   13.3   41.0
+DepthSplat    19.24   0.620    0.322    15.80   0.474    0.418    15.90   0.471    0.450
+depth+ray                  48.7      60.3      25.5      65.446.5     3.919     24.0    46.5      35.553.4
+Fast3R        19.30   0.604    0.320    16.24   0.478    0.409    16.43   0.493    0.421
+depth+ray+cam37.2                  45.4     22.3    59.456.3      3.066      25.745.6            34.1     56.5
+MV-DUSt3R   20.01   0.645    0.294    17.04   0.529    0.370    16.20   0.484    0.437
+VGGT        20.96   0.697    0.253    17.18   0.550    0.347    16.45   0.500    0.417
+DAv3(Ours)21.33         0.711         0.241         18.10        0.578        0.311         17.89        0.561        0.351
+===== PAGE 18 =====
+               Table7  Ablationstudy.Weevaluatethreearchitecturaldesignswithcomparablemodelsizes(a-c),theeffectsofthe
+               dual-DPThead(d),teacherlabelsupervision(e),andtheposeconditioningmodule(f-g).Thebestand        secondbest
+               arehighlighted.Methodsmarkedwith"*"areevaluatedwithground-truthposefusion.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               Table 8  Comparison of Models with Parameters and Running Speed.Themaximumnumberofimageswas
+               testedonan80GBA100GPU.IfwestoresomeintermediatetokensinCPUmemory,wecouldprocessmanymore
+               images. TherunningspeedwasmeasuredonanA100GPUwithasceneof32images,andwereporttheaverage
+               speedperimage.Theimageresolutionis504×336.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               Teacher model supervision.Weablatetheuseofteachermodellabelsassupervision,withquantitative
+               resultsreportedinTab.7,item(e).TrainingwithoutteacherlabelsyieldsaslightimprovementonDTUbut
+               leadstoperformancedropson7ScenesandScanNet++.Notably,thedegradationispronouncedonHiRoom.
+               WeattributethistoHiRoom’ssyntheticnatureanditsgroundtruthcontainingabundantfinestructures;
+               supervisionfromtheteacherhelpsthestudentcapturesuchdetailsmoreaccurately.Qualitativecomparisons
+               inFig.8corroboratethistrend: modelstrainedwithteacher-labelsupervisionproducedepthmapswith
+               substantiallyricherdetailandfinerstructures.
+
+               Poseconditioning.Toassessthepose-conditioningmodule,weablateitontheViT-Lbackboneandreport
+               resultsinTab.7,items(f)and(g).Unlikeotherentriesinthetable,thesetwoareevaluatedwithground-truth
+               posefusion(markedwith“*”),whereastherestusepredictedposefusion.Acrossmetrics,configurationswith
+               poseconditioningconsistentlyoutperformthosewithout,confirmingtheeffectivenessofthepose-conditioning
+               module.
+
+               Runningtime.WepresentanalysisonParameters,maxnumberofimagesandrunningspeedinTab.8
+
+               Morevisualizations.Weprovideadditionalvisualizationsofcameraposeanddepthestimationonin-the-wild
+               scenesinFig.9,demonstratingtherobustnessandqualityofourmodelacrossdiversereal-worldscenarios.
+
+               7.3AnalysisforDepth-Anything-3-Monocular
+
+
+
+                           HiRoom              ETH3D                 DTU                7Scenes          ScanNet++
+Methods                Auc3↑ F1↑ Auc3↑ F1↑ Auc3↑ CD↓ Auc3↑ F1↑ Auc3↑ F1↑Parameters
+Model                        Max # of Images  Backbone  DualDPT  CameraHead                Running Speed
+a.ProposedArch.     39.2      47.0      21.0      55.4      45.8       3.82       26.247.618  30.3       51.1
+b.VGGTStyle      3.72   14.5   2.31   27.4   1.38   6.93   0.97   21.4   2.03   12.2
+VGGT(Reference)       400-500         0.91B     0.064B       0.22B         34.1FPS
+c.FullAlt.          24.7         29.3     13.1    51.9     44.6     4.23    21.1     48.627.7         47.5
+DA3-Giant              900-1000        1.130B     0.050B      0.018B        37.6FPS
+d.w/oDualDPT    5.59   11.5   13.6   33.4   21.7   5.14   14.2   49.4   26.5   46.6
+DA3-Large             1500-1600        0.300B     0.047B      0.008B        78.37FPS
+e.w/oTeacher      11.2   16.0   16.2   57.6   52.5   3.29   23.3   40.3   26.2   47.7
+DA3-Base              2100-2200        0.086B     0.015B      0.004B        126.5FPS
+DA3-Small             4000-4100        0.022B     0.003B      0.001B        160.5FPS
+f.w/oPoseCond.*         65.8         63.2          3.65          58.4         62.8
+g.w/PoseCond.*          73.8         70.9          2.14          46.0         65.7
+===== PAGE 19 =====
+               Figure8  Comparisonofteacher-labelsupervision.Supervisionwithteacher-generatedlabelsyieldsdepthmaps
+               withsubstantiallyricherdetailandfinerstructures.
+
+               Table 9  Ablations for teacher model.TrainingwithV3datasetsandmulti-resolutionstrategyyieldsthebest
+               performance. Depth-basedgeometryachievesthebestAbsRelandSqRel. Thefullteacher-lossoutperformsother
+               variants.(AbsRel: ↓,SqRel: ↓, δ1: ↑).TheresultsareaveragedoverKITTI,NYU,ETH3D,SUN-RGBDandDIODE.
+
+
+
+
+
+
+
+
+
+               7.3.1TeacherModel
+               Theteachermodel’smetricsarereportedinTab.4.OurnewteacherconsistentlyoutperformsDA2acrossall
+               datasets,withthesoleexceptionofNYU,whereperformanceisonparwithDA2.Fortheteacherablation,
+               weemployaViT-Lbackboneandabatchsizeof64.EvaluationfollowstheDA2benchmarkprotocol,andwe
+               additionallyreportSquaredRelativeError(SqRel),definedasthemeansquarederrorbetweenpredictions
+               andgroundtruthnormalizedbythegroundtruth.AsshowninTab.9,acrossgeometries,depthemergesas
+               themosteffectivetargetcomparedwithdisparityandpointmaps.Fortrainingobjectives,thefullteacher
+               lossproposedinthisworkoutperformsboththeDA2lossandavariantwithoutproposednormal-lossterm.
+               Finally,datascalingcontributenotablytoperformance:upgradingdatasetsfromV2toV3andadoptinga
+               multi-resolutiontrainingstrategyyieldconsistentimprovementsintheteacher’sfinalmetrics.
+
+               7.3.2StudentModel
+               AsshowninTab.10,ourmonocularstudentmodelwithaViT-LbackboneoutperformstheDA2student
+               acrossallevaluationdatasets.Notably,ontheETH3D[72]benchmarkthenewmonocularstudentachieves
+               animprovementofover10%comparedwithDA2.Theimprovedperformanceisattributedtotheenhanced
+               teachermodelwithbettergeometrysupervisionandthescaledtrainingdata(V3).Onchallengingdatasets
+               likeSINTEL,ourstudentalsodemonstratessubstantialgains(+5.1%),validatingtheeffectivenessofour
+               teacher-studentdistillationframework.
+
+               7.4AnalysisforDepth-Anything-3-Metric
+               Wecomparewithstate-of-the-artmetricdepthestimationmethods, includingDepthPro[7], Metric3D
+               v2[37],UniDepthv1[65]andUniDepthv2[66],on5benchmarks: NYUv2[76],KITTI[25],ETH3D[72],
+
+
+              Data                               Geometry                 19                 Loss
+Data   δ        1   AbsRel  SqRel   Geometryδ                1   AbsRel  SqRelLoss             δ       1   AbsRel  SqRel
+V2      0.919  0.087   0.596        Disparity   0.9190.095        1.033    MAE-Loss     0.918  0.089   0.637
+V3      0.929      0.079    0.508   Pointmap  0.912  0.096   0.693         w/oDist.Nor.  0.9180.0870.600
+V3+mr.    0.938     0.072      0.452Depth0.918           0.089      0.637  Fullloss              0.919      0.087      0.596
+===== PAGE 20 =====
+                           Figure9  Visualizationsofcameraposeanddepthestimationonin-the-wildscenes.
+               SUN-RGBD[81]andDIODE(indoor)[88].
+               AsshowninTab.11,DA3-metricachievesstate-of-the-art performance on ETH3D(                   δ1=0.917,AbsRel
+               =0.104),substantiallyoutperformingthesecond-bestmethodUniDepthv2(δ1=0.863)byalargemargin.
+               DA3-metricalsoachievesbest performance on SUN-RGBDforAbsRel(0.105)andsecond-best on DIODE
+              (δ1=0.838,AbsRel=0.128).WhileUniDepthv1andUniDepthv2achievethebestresultsonNYUv2and
+               KITTI,DA3-metricdemonstratesstronggeneralizationandcompetitiveperformanceacrossallbenchmarks,
+               particularlyexcellingondiverseoutdoorsceneslikeETH3D.
+               WeablatetheTeachersupervisioninTab.11. Theresultsshowinterestingtrade-offs: removingTeacher
+               supervisionslightlyimprovesmetricsonNYUv2andKITTI,whilemaintainingcomparableperformanceon
+               otherdatasets. AsshowninFig.10,Teachersupervisionsignificantlyimprovessharpnessandfinedetail
+               quality,demonstratingthatTeacherprovidescomplementaryknowledgebeyondstandardmetrics.
+
+               7.5AnalysisforFeed-forward3DGS
+               Weretrainallcomparedfeed-forward3DGSmodels,ensuringthatthetrainingconfigurationmatchesthe
+               testingsetupbyusing12inputcontextviewsselectedthroughfarthestpointsampling.Weapplyengineering
+               optimizationssuchasflashattentionandfullyshareddataparallelismtoenableallmodelstoprocess12
+
+
+                                            Table10  Monocularstudentdepthcomparisons.δ                               1↑
+
+
+
+
+
+
+
+
+Method       KITTI  NYU  SINTEL  ETH3D  DIODE                           20
+
+DA2           94.6   97.9    77.2     86.5     95.2
+mono-student   97.1   98.0    82.3     98.8     96.5
+===== PAGE 21 =====
+                Table 11   Comparison with state-of-the-arts on metric depth estimation.Thebestand                   secondbest             are
+                highlighted.Bottomrowsshowablationresultswithandwithoutteachersupervision.Notethattheablationsetting
+                isslightlydifferentfromthefinalmodelontrainingresolution,whichleadstominordifferencesinperformance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                Figure10  EffectivenessofTeachermodelforsupervisingmetricdepthestimation.IncorporatingTeachermodel
+                forsupervisionsignificantlyimprovesthemetricdepthsharpness.
+
+
+                inputviewsefficiently.Depthtraininglossareincorporatedforallbaselinestoensurestabletrainingand
+                convergence. Allmodelsaretrainedon8A100GPUsfor200Kstepswithabatchsizeof1,exceptfor
+                pixelSplat,whichistrainedfor100Kstepsduetoratherslowepipolarattention.Allresultsarereportedat
+                H×W= 270×480.
+
+                Visual quality analysis.WepresentvisualcomparisonswithothermodelsinFig.11undernovelview
+                synthesissettings.Asillustrated,simplyaugmentingourDA3modelwitha3DGaussianDPTheadyields
+                significantlyimprovedrenderingqualityoverexistingstate-of-the-artapproaches.Ourmodeldemonstrates
+                particularstrengthinchallengingregions,suchasthinstructures(e.g.,columnsinthefirstandthirdscenes)
+                andlarge-scaleoutdoorenvironmentswithwide-baselineinputviews(lasttwoscenes),asshowninFig.11.
+                Theseresultsunderscoretheimportanceofarobustgeometrybackboneforhigh-qualityvisualrendering,
+                consistentwithourquantitativefindingsinTab.5.Weanticipatethatthestronggeometricunderstandingof
+                DA3willalsobenefitother3Dvisiontasks.
+
+
+
+                           NYUv2                    KITTI                    ETH3D                SUN-RGBD                DIODE
+Methods               δ1↑  AbsRel↓   δ                 1↑  AbsRel↓   δ                 1↑  AbsRel↓   δ                 1↑  AbsRel↓   δ                 1↑  AbsRel↓
+
+DepthPro[7]     0.932   0.093   0.843   0.121   0.386   0.349   0.950   0.126   0.734   0.17321
+Metric3Dv2[36]  0.971          0.067   0.976        0.0510.830   0.138             0.954   0.132   0.018   0.154
+UniDepthv1[65]    0.980       0.061       0.978       0.0510.234   0.464   0.971              0.113   0.570   0.266
+UniDepthv2[66]  0.968   0.064             0.968   0.076   0.863          0.1520.9770.111                0.856       0.123
+DA3-metric      0.963   0.070   0.953   0.0860.917       0.1040.973                           0.1050.838           0.128
+w/teacher       0.966   0.073   0.947   0.086   0.906   0.105   0.973   0.104   0.824   0.132
+w/oteacher      0.969   0.066   0.965   0.067   0.907   0.105   0.975   0.099   0.816   0.134
+===== PAGE 22 =====
+8 ConclusionandDiscussion
+
+DepthAnything3showsthataplaintransformer,trainedondepth-and-raytargetswithteacher–student
+supervision,canunifyany-viewgeometrywithoutornatearchitectures.Scale-awaredepth,per-pixelrays,and
+adaptivecross-viewattentionletthemodelinheritstrongpretrainedfeatureswhileremaininglightweightand
+easytoextend.Ontheproposedvisualgeometrybenchmarktheapproachsetsnewposeandreconstruction
+records,withbothgiantandcompactvariantssurpassingpriormodels,whilethesamebackbonepowers
+efficientfeed-forwardnovelviewsynthesismodel.
+WeviewDepthAnything3asasteptowardversatile3Dfoundationmodels. Futureworkcanextendits
+reasoningtodynamicscenes,integratelanguageandinteractioncues,andexplorelarger-scalepretrainingto
+closetheloopbetweengeometryunderstandingandactionableworldmodels.Wehopethemodelanddataset
+releases,benchmark,andsimplemodelingprinciplesofferedherecatalyzebroaderresearchongeneral-purpose
+3Dperception.
+
+Acknowledgement
+
+WethankXiaoweiZhou,SidaPengandHengkaiGuofortheirvaluablediscussionsduringthedevelopmentof
+thisproject.WearealsogratefultoYangZhaoforhisengineeringsupport.Theinputimagesintheteaser
+demowereextractedfromapubliclyavailableYouTubevideo[21],creditedtotheoriginalcreator.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                       22
+===== PAGE 23 =====
+Figure11  Qualitativecomparisonswithstate-of-the-artmethodsforvisualrendering.Thefirstcolumnshows
+theselectedinputviews,whiletheremainingcolumnsdisplaynovelviewsrenderedbycomparisonmodelsandground
+truth.Foreachscene,tworenderednovelviewpointsarepresentedinconsecutiverows.Thefirstthreescenesarefrom
+DL3DV,thefollowingtwoarefromTanksandTemples,andthelastthreearefromMegaDepth.Comparedtoother
+methods,ourmodelconsistentlyachievessuperiorrenderingqualityacrossdiverseandchallengingscenes.
+
+
+
+
+                                                            23
+===== PAGE 24 =====
+References
+
+  [1] HenrikAanæs,RasmusRamsbølJensen,GeorgeVogiatzis,EnginTola,andAndersBjorholmDahl.Large-scale
+      dataformultiple-viewstereopsis.     Int. J. Comput.   Vis.,120(2):153–168,2016.
+  [2] YoussetIAbdel-Aziz,HauckMichaelKarara,andMichaelHauck.Directlineartransformationfromcomparator
+      coordinatesintoobjectspacecoordinatesinclose-rangephotogrammetry.                  Photogrammetric     engineering  &
+      remote  sensing,81(2):103–107,2015.
+  [3] EduardoArnold,JamieWynn,SaraVicente,GuillermoGarcia-Hernando,AronMonszpart,VictorPrisacariu,
+      DaniyarTurmukhambetov,andEricBrachmann.Map-freevisualrelocalization:Metricposerelativetoasingle
+      image.In   European   Conference  on  Computer   Vision,pages690–708.Springer,2022.
+  [4] MarthaEArterberryandAlbertYonas. Perceptionofthree-dimensionalshapespecifiedbyopticflowby
+      8-week-oldinfants.   Perception  &  Psychophysics,62(3):550–556,2000.
+  [5] GiladBaruch,ZhuoyuanChen,AfshinDehghan,TalDimry,YuriFeigin,PeterFu,ThomasGebauer,Brandon
+      Joffe, DanielKurz, ArikSchwartz, etal. Arkitscenes: Adiversereal-worlddatasetfor3dindoorscene
+      understandingusingmobilergb-ddata.         Adv.  Neural  Inform.  Process. Syst.,2021.
+  [6]AlekseiBochkovskii,AmaÃG     ,lDelaunoy,HugoGermain,MarcelSantos,YichaoZhou,StephanRRichter,and
+      VladlenKoltun.Depthpro:Sharpmonocularmetricdepthinlessthanasecond.                  arXiv preprint arXiv:2410.02073,
+      2024.
+  [7] AlexeyBochkovskiy,AmaëlDelaunoy,HugoGermain,MarcelSantos,YichaoZhou,StephanRichter,andVladlen
+      Koltun.Depthpro:Sharpmonocularmetricdepthinlessthanasecond.In                    Int. Conf.  Learn. Represent.,2025.
+  [8] ChrisBuehler,MichaelBosse,LeonardMcMillan,StevenGortler,andMichaelCohen.Unstructuredlumigraph
+      rendering.In  Proceedings  of the 28th  annual conference  on Computer    graphics and  interactive techniques,pages
+      425–432,2001.
+  [9]YohannCabon,NailaMurray,andMartinHumenberger.Virtualkitti2,2020.
+ [10] YohannCabon,LucasStoffl,LeonidAntsfeld,GabrielaCsurka,BorisChidlovskii,JeromeRevaud,andVincent
+      Leroy.Must3r:Multi-viewnetworkforstereo3dreconstruction.In               IEEE   Conf. Comput.    Vis. Pattern  Recog.,
+      pages1050–1060,2025.
+ [11] DavidCharatan,SizheLesterLi,AndreaTagliasacchi,andVincentSitzmann.pixelsplat:3dgaussiansplats
+      fromimagepairsforscalablegeneralizable3dreconstruction.In          IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages
+      19457–19467,2024.
+ [12] AnpeiChen,ZexiangXu,FuqiangZhao,XiaoshuaiZhang,FanboXiang,JingyiYu,andHaoSu.Mvsnerf:Fast
+      generalizableradiancefieldreconstructionfrommulti-viewstereo.In          IEEE   Conf. Comput.    Vis. Pattern  Recog.,
+      pages14124–14133,2021.
+ [13] YuedongChen,HaofeiXu,ChuanxiaZheng,BohanZhuang,MarcPollefeys,AndreasGeiger,Tat-JenCham,
+      andJianfeiCai.Mvsplat:Efficient3dgaussiansplattingfromsparsemulti-viewimages.In                  Eur. Conf.  Comput.
+      Vis.,pages370–386.Springer,2024.
+ [14] YuedongChen,HaofeiXu,QianyiWu,ChuanxiaZheng,Tat-JenCham,andJianfeiCai.Explicitcorrespondence
+      matchingforgeneralizableneuralradiancefields.        IEEE   Trans. Pattern  Anal.  Mach.  Intell.,2025.
+ [15] JaehoonCho,DongboMin,YoungjungKim,andKwanghoonSohn.Diml/cvlrgb-ddataset:2mrgb-dimagesof
+      naturalindoorandoutdoorscenes.        arXiv  preprint arXiv:2110.11590,2021.
+ [16] MariusCordts,MohamedOmran,SebastianRamos,TimoRehfeld,MarkusEnzweiler,RodrigoBenenson,Uwe
+      Franke,StefanRoth,andBerntSchiele. Thecityscapesdatasetforsemanticurbansceneunderstanding. In
+      Proceedings  of the IEEE   conference  on computer   vision and  pattern recognition,pages3213–3223,2016.
+ [17] MattDeitke,DustinSchwenk,JordiSalvador,LucaWeihs,OscarMichel,EliVanderBilt,LudwigSchmidt,Kiana
+      Ehsani,AniruddhaKembhavi,andAliFarhadi.Objaverse:Auniverseofannotated3dobjects.In                        Proceedings
+      of the IEEE/CVF     conference  on computer   vision and  pattern recognition,pages13142–13153,2023.
+ [18] JunyuanDeng,HengLi,TaoXie,WeiqiangRen,QianZhang,PingTan,andXiaoyangGuo.Sail-recon:Large
+      sfmbyaugmentingsceneregressionwithlocalization.           arXiv  preprint arXiv:2508.17972,2025.
+
+
+
+                                                            24
+===== PAGE 25 =====
+[19] KaiDeng,ZexinTi,JiaweiXu,JianYang,andJinXie.Vggt-long:Chunkit,loopit,alignit–pushingvggt’s
+     limitsonkilometer-scalelongrgbsequences.        arXiv preprint  arXiv:2507.11539,2025.
+[20] DanielDeTone,TomaszMalisiewicz,andAndrewRabinovich.Superpoint:Self-supervisedinterestpointdetection
+     anddescription.In    CVPR   workshops,pages224–236,2018.
+[21] MTSDrones.Droneaustraliaglidingep025:Sydneyviews|operahouse,harbourbridge&hydepark|djimavic
+    4k.  https://www.youtube.com/watch?v=qbgKDaGraTA,2024. Accessed: Sep.25,2025.UsedunderYouTube
+     StandardLicense.
+[22] MihaiDusmanu,IgnacioRocco,TomasPajdla,MarcPollefeys,JosefSivic,AkihikoTorii,andTorstenSattler.
+     D2-net:Atrainablecnnforjointdescriptionanddetectionoflocalfeatures.In            IEEE   Conf. Comput.   Vis. Pattern
+     Recog.,pages8092–8101,2019.
+[23] DavidEigen,ChristianPuhrsch,andRobFergus.Depthmappredictionfromasingleimageusingamulti-scale
+     deepnetwork.In    Adv.  Neural  Inform.  Process. Syst.,2014.
+[24] MathiasGehrig,WillemAarents,DanielGehrig,andDavideScaramuzza.Dsec:Astereoeventcameradataset
+     fordrivingscenarios.   IEEE  Robotics  and  Automation    Letters,6(3):4947–4954,2021.
+[25] AndreasGeiger,PhilipLenz,ChristophStiller,andRaquelUrtasun.Visionmeetsrobotics:Thekittidataset.
+     The  international journal of robotics research,32(11):1231–1237,2013.
+[26] AndreasGeiger,PhilipLenz,ChristophStiller,andRaquelUrtasun.Visionmeetsrobotics:Thekittidataset.
+     The  international journal of robotics research,32(11):1231–1237,2013.
+[27] YotamGil,ShayElmalem,HarelHaim,EmanuelMarom,andRajaGiryes. Onlinetrainingofstereoself-
+     calibrationusingmonoculardepthestimation.        IEEE   Transactions  on Computational    Imaging,7:812–823,2021.
+[28] ShrisudhanGovindarajan,DanielRebain,KwangMooYi,andAndreaTagliasacchi.Radiantfoam:Real-time
+     differentiableraytracing.In   Int. Conf.  Comput.   Vis.,2025.
+[29] AntoineGuédonandVincentLepetit. Sugar: Surface-alignedgaussiansplattingforefficient3dmeshrecon-
+     structionandhigh-qualitymeshrendering. In           IEEE  Conf.  Comput.   Vis.  Pattern  Recog.,pages5354–5363,
+     2024.
+[30] VitorGuizilini,RaresAmbrus,SudeepPillai,AllanRaventos,andAdrienGaidon.3dpackingforself-supervised
+     monoculardepthestimation.In       IEEE   Conf. Comput.   Vis. Pattern  Recog.,2020.
+[31] HaoyuGuo,HeZhu,SidaPeng,HaotongLin,YunzhiYan,TaoXie,WenguanWang,XiaoweiZhou,and
+     HujunBao.Multi-viewreconstructionviasfm-guidedmonoculardepthestimation.In                 IEEE   Conf. Comput.   Vis.
+     Pattern Recog.,pages5272–5282,2025.
+[32] JoseL.Gómez,ManuelSilva,AntonioSeoane,AgnésBorràs,MarioNoriega,GermanRos,JoseA.Iglesias-Guitian,
+     andAntonioM.López.Allforone,andoneforall:Urbansyndataset,thethirdmusketeerofsyntheticdriving
+     scenes. Neurocomputing,637:130038,2025.ISSN0925-2312.doi:https://doi.org/10.1016/j.neucom.2025.130038.
+     URLhttps://www.sciencedirect.com/science/article/pii/S0925231225007106.
+[33] XingyiHe,JiamingSun,YifanWang,SidaPeng,QixingHuang,HujunBao,andXiaoweiZhou.Detector-free
+     structurefrommotion.In      IEEE  Conf.  Comput.   Vis. Pattern  Recog.,pages21594–21603,2024.
+[34] BennoHeigl,ReinhardKoch,MarcPollefeys,JoachimDenzler,andLucVanGool. Plenopticmodelingand
+     renderingfromimagesequencestakenbyahand-heldcamera.In              Mustererkennung    1999: 21. DAGM-Symposium
+     Bonn,  15.–17.September    1999,pages94–101.Springer,1999.
+[35] YicongHong,KaiZhang,JiuxiangGu,SaiBi,YangZhou,DifanLiu,FengLiu,KalyanSunkavalli,TrungBui,
+     andHaoTan.Lrm:Largereconstructionmodelforsingleimageto3d.In                    Int. Conf. Learn.  Represent.,2024.
+[36] MuHu,WeiYin,ChiZhang,ZhipengCai,XiaoxiaoLong,HaoChen,KaixuanWang,GangYu,ChunhuaShen,
+     andShaojieShen.Metric3dv2:Aversatilemonoculargeometricfoundationmodelforzero-shotmetricdepth
+     andsurfacenormalestimation.      IEEE   Transactions  on  Pattern Analysis  and  Machine   Intelligence,2024.
+[37] MuHu,WeiYin,ChiZhang,ZhipengCai,XiaoxiaoLong,HaoChen,KaixuanWang,GangYu,ChunhuaShen,
+     andShaojieShen.Metric3dv2:Aversatilemonoculargeometricfoundationmodelforzero-shotmetricdepth
+     andsurfacenormalestimation.      TPAMI,2024.
+
+
+
+
+                                                           25
+===== PAGE 26 =====
+[38] Po-HanHuang,KevinMatzen,JohannesKopf,NarendraAhuja,andJia-BinHuang. Deepmvs: Learning
+     multi-viewstereopsis.In   IEEE   Conference  on Computer    Vision and  Pattern  Recognition  (CVPR),2018.
+[39] WonbongJang,PhilippeWeinzaepfel,VincentLeroy,LourdesAgapito,andJeromeRevaud.Pow3r:Empowering
+     unconstrained3dreconstructionwithcameraandscenepriors. In              IEEE   Conf.  Comput.   Vis. Pattern Recog.,
+     pages1071–1081,2025.
+[40] HanwenJiang,ZexiangXu,DesaiXie,ZiwenChen,HaianJin,FujunLuan,ZhixinShu,KaiZhang,SaiBi,
+    XinSun,etal. Megasynth:Scalingup3dscenereconstructionwithsynthesizeddata. In                     Proceedings   ofthe
+     Computer   Vision and  Pattern  Recognition  Conference,pages16441–16452,2025.
+[41] LihanJiang,YuchengMao,LinningXu,TaoLu,KeruiRen,YichenJin,XudongXu,MulinYu,JiangmiaoPang,
+     FengZhao,etal.Anysplat:Feed-forward3dgaussiansplattingfromunconstrainedviews.                 ACM    Trans. Graph.,
+    2025.
+[42] BingxinKe,AntonObukhov,ShengyuHuang,NandoMetzger,RodrigoCayeDaudt,andKonradSchindler.
+     Repurposingdiffusion-basedimagegeneratorsformonoculardepthestimation.In             CVPR,pages9492–9502,2024.
+[43] NikhilKeetha,NormanMüller,JohannesSchönberger,LorenzoPorzi,YuchenZhang,TobiasFischer,Arno
+     Knapitsch, Duncan Zauss, Ethan Weber, Nelson Antunes, Jonathon Luiten, Manuel Lopez-Antequera,
+     SamuelRotaBulò,ChristianRichardt,DevaRamanan,SebastianScherer,andPeterKontschieder.MapAnything:
+     Universalfeed-forwardmetric3Dreconstruction,2025.arXivpreprintarXiv:2509.13414.
+[44] BernhardKerbl,GeorgiosKopanas,ThomasLeimkühler,andGeorgeDrettakis. 3dgaussiansplattingfor
+     real-timeradiancefieldrendering.    ACM    Trans. Graph.,42(4):139–1,2023.
+[45] ArnoKnapitsch,JaesikPark,Qian-YiZhou,andVladlenKoltun.Tanksandtemples:Benchmarkinglarge-scale
+     scenereconstruction.  ACM    Trans. Graph.,36(4):1–13,2017.
+[46] ArnoKnapitsch,JaesikPark,Qian-YiZhou,andVladlenKoltun.Tanksandtemples:Benchmarkinglarge-scale
+     scenereconstruction.  ACM    Trans. Graph.,36(4):1–13,2017.
+[47] Hoang-AnLe,ThomasMensink,ParthaDas,SezerKaraoglu,andTheoGevers.Eden:Multimodalsynthetic
+     datasetofenclosedgardenscenes. In        Proceedings   of the IEEE/CVF     Winter   Conference  on  Applications  of
+     Computer   Vision,pages1579–1589,2021.
+[48] VincentLeroy,YohannCabon,andJérômeRevaud. Groundingimagematchingin3dwithmast3r. In                              Eur.
+     Conf. Comput.   Vis.,pages71–91.Springer,2024.
+[49]MarcLevoyandPatHanrahan.Lightfieldrendering.              ACM    Trans. Graph.,1996.
+[50] YixuanLi,LihanJiang,LinningXu,YuanboXiangli,ZhenzhiWang,DahuaLin,andBoDai.Matrixcity:A
+     large-scalecitydatasetforcity-scaleneuralrenderingandbeyond.In        Proceedings  of theIEEE/CVF     International
+     Conference  on Computer    Vision,pages3205–3215,2023.
+[51] ZhengqiLiandNoahSnavely.Megadepth:Learningsingle-viewdepthpredictionfrominternetphotos.In                     IEEE
+     Conf. Comput.   Vis. Pattern  Recog.,pages2041–2050,2018.
+[52] HaotongLin,SidaPeng,ZhenXu,YunzhiYan,QingShuai,HujunBao,andXiaoweiZhou.Efficientneural
+     radiancefieldsforinteractivefree-viewpointvideo. In        SIGGRAPH      Asia 2022  Conference  Papers,pages1–9,
+    2022.
+[53] LuLing,YichenSheng,ZhiTu,WentianZhao,ChengXin,KunWan,LantaoYu,QianyuGuo,ZixunYu,Yawen
+     Lu,etal.Dl3dv-10k:Alarge-scalescenedatasetfordeeplearning-based3dvision.In               IEEE   Conf. Comput.   Vis.
+     Pattern Recog.,pages22160–22169,2024.
+[54] DominicMaggio,HyungtaeLim,andLucaCarlone.Vggt-slam:Densergbslamoptimizedonthesl(4)manifold.
+     arXiv preprint arXiv:2505.12549,2025.
+[55] JohnMcCormac,AnkurHanda,StefanLeutenegger,andAndrewJDavison.Scenenetrgb-d:Can5msynthetic
+     imagesbeatgenericimagenetpre-trainingonindoorsegmentation? In              Proceedings   ofthe  IEEE  International
+     Conference  on Computer    Vision,pages2678–2687,2017.
+[56] LukasMehl,JennySchmalfuss,AzinJahedi,YaroslavaNalivayko,andAndrésBruhn.Spring:Ahigh-resolution
+     high-detaildatasetandbenchmarkforsceneflow,opticalflowandstereo. In                Proceedings   of the IEEE/CVF
+     Conference  on Computer    Vision and  Pattern Recognition,pages4981–4991,2023.
+
+
+
+                                                          26
+===== PAGE 27 =====
+[57] BenMildenhall,PratulPSrinivasan,MatthewTancik,JonathanTBarron,RaviRamamoorthi,andRenNg.
+     Nerf:Representingscenesasneuralradiancefieldsforviewsynthesis.In              Eur. Conf.  Comput.   Vis.,2020.
+[58] RaulMur-Artal,JoseMariaMartinezMontiel,andJuanDTardos.Orb-slam:Aversatileandaccuratemonocular
+     slamsystem.   IEEE   transactions  on robotics,31(5):1147–1163,2015.
+[59] RikuMurai,EricDexheimer,andAndrewJDavison.Mast3r-slam:Real-timedenseslamwith3dreconstruction
+     priors.In IEEE   Conf.  Comput.   Vis. Pattern  Recog.,pages16695–16705,2025.
+[60] SimonNiklaus,LongMai,JimeiYang,andFengLiu.3dkenburnseffectfromasingleimage.                      ACM    Transactions
+     on Graphics  (ToG),38(6):1–15,2019.
+[61] MaximeOquab,TimothéeDarcet,ThéoMoutakanni,HuyVo,MarcSzafraniec,VasilKhalidov,PierreFernandez,
+     DanielHaziza,FranciscoMassa,AlaaeldinEl-Nouby,etal.Dinov2:Learningrobustvisualfeatureswithout
+     supervision. arXiv  preprint arXiv:2304.07193,2023.
+[62] LinfeiPan,DánielBaráth,MarcPollefeys,andJohannesLSchönberger.Globalstructure-from-motionrevisited.
+     In Eur. Conf.  Comput.   Vis.,pages58–77.Springer,2024.
+[63] XiaqingPan,NicholasCharron,YongqianYang,ScottPeters,ThomasWhelan,ChenKong,OmkarParkhi,
+     RichardNewcombe,andYuhengCarlRen. Ariadigitaltwin: Anewbenchmarkdatasetforegocentric3d
+     machineperception. In     Proceedings   of the IEEE/CVF     International  Conference   on Computer    Vision,pages
+     20133–20143,2023.
+[64] WilliamPeeblesandSainingXie.Scalablediffusionmodelswithtransformers.In               Proceedings  of the IEEE/CVF
+     international conference  on computer   vision,pages4195–4205,2023.
+[65] LuigiPiccinelli,Yung-HsuYang,ChristosSakaridis,MattiaSegu,SiyuanLi,LucVanGool,andFisherYu.
+     Unidepth:Universalmonocularmetricdepthestimation.In               IEEE  Conf.  Comput.   Vis. Pattern  Recog.,pages
+    10106–10116,2024.
+[66] LuigiPiccinelli,ChristosSakaridis,Yung-HsuYang,MattiaSegu,SiyuanLi,WimAbbeloos,andLucVanGool.
+     Unidepthv2:Universalmonocularmetricdepthestimationmadesimpler.               arXiv preprint  arXiv:2502.20110,2025.
+[67] RenéRanftl,AlexeyBochkovskiy,andVladlenKoltun.Visiontransformersfordenseprediction.In                       Int.Conf.
+     Comput.   Vis.,pages12179–12188,2021.
+[68] JeremyReizenstein,RomanShapovalov,PhilippHenzler,LucaSbordone,PatrickLabatut,andDavidNovotny.
+     Commonobjectsin3d:Large-scalelearningandevaluationofreal-life3dcategoryreconstruction.In                    Int.Conf.
+     Comput.   Vis.,pages10901–10911,2021.
+[69] MikeRoberts,JasonRamapuram,AnuragRanjan,AtulitKumar,MiguelAngelBautista,NathanPaczan,
+     RussWebb,andJoshuaMSusskind. Hypersim: Aphotorealisticsyntheticdatasetforholisticindoorscene
+     understanding. In   Proceedings   of the IEEE/CVF      international conference  on  computer   vision,pages10912–
+    10922,2021.
+[70]JohannesLutzSchönbergerandJan-MichaelFrahm.Structure-from-motionrevisited.In                    IEEE   Conf.  Comput.
+     Vis. Pattern Recog.,2016.
+[71] JohannesLutzSchönberger,EnliangZheng,MarcPollefeys,andJan-MichaelFrahm.Pixelwiseviewselection
+     forunstructuredmulti-viewstereo.In       Eur. Conf.  Comput.   Vis.,2016.
+[72] ThomasSchops,JohannesLSchonberger,SilvanoGalliani,TorstenSattler,KonradSchindler,MarcPollefeys,
+     andAndreasGeiger.Amulti-viewstereobenchmarkwithhigh-resolutionimagesandmulti-cameravideos.In
+     IEEE  Conf.  Comput.   Vis. Pattern  Recog.,pages3260–3269,2017.
+[73] StevenMSeitz,BrianCurless,JamesDiebel,DanielScharstein,andRichardSzeliski.Acomparisonandevaluation
+     ofmulti-viewstereoreconstructionalgorithms.In         IEEE   Conf.  Comput.   Vis. Pattern  Recog.,volume1,pages
+     519–528.IEEE,2006.
+[74] JamieShotton,BenGlocker,ChristopherZach,ShahramIzadi,AntonioCriminisi,andAndrewFitzgibbon.
+     Scenecoordinateregressionforestsforcamerarelocalizationinrgb-dimages. In                  IEEE   Conf. Comput.    Vis.
+     Pattern Recog.,pages2930–2937,2013.
+[75] NathanSilberman,DerekHoiem,PushmeetKohli,andRobFergus.Indoorsegmentationandsupportinference
+     fromrgbdimages.In      Eur. Conf.  Comput.   Vis.,pages746–760.Springer,2012.
+
+
+
+                                                           27
+===== PAGE 28 =====
+[76] NathanSilberman,DerekHoiem,PushmeetKohli,andRobFergus.Indoorsegmentationandsupportinference
+     fromrgbdimages.In      Eur. Conf.  Comput.   Vis.,pages746–760.Springer,2012.
+[77] VincentSitzmann,MichaelZollhöfer,andGordonWetzstein. Scenerepresentationnetworks: Continuous
+    3d-structure-awareneuralscenerepresentations.       Adv.  Neural  Inform. Process.  Syst.,32,2019.
+[78]VincentSitzmann,SemonRezchikov,BillFreeman,JoshTenenbaum,andFredoDurand.Lightfieldnetworks:
+     Neuralscenerepresentationswithsingle-evaluationrendering.          Adv.  Neural  Inform.  Process. Syst.,34:19313–
+    19325,2021.
+[79] BrandonSmart,ChuanxiaZheng,IroLaina,andVictorAdrianPrisacariu.Splatt3r:Zero-shotgaussiansplatting
+     fromuncalibratedimagepairs.      arXiv  preprint arXiv:2408.13912,2024.
+[80] NoahSnavely,StevenMSeitz,andRichardSzeliski.Phototourism:exploringphotocollectionsin3d.                       ACM
+     Trans. Graph.,pages835–846,2006.
+[81] ShuranSong,SamuelPLichtenberg,andJianxiongXiao.Sunrgb-d:Argb-dsceneunderstandingbenchmark
+     suite.In IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages567–576,2015.
+[82] JulianStraub,ThomasWhelan,LingniMa,YufanChen,ErikWijmans,SimonGreen,JakobJ.Engel,Raul
+     Mur-Artal,CarlRen,ShobhitVerma,AntonClarkson,MingfeiYan,BrianBudge,YajieYan,XiaqingPan,June
+    Yon,YuyangZou,KimberlyLeon,NigelCarter,JesusBriales,TylerGillingham,EliasMueggler,LuisPesqueira,
+     ManolisSavva,DhruvBatra,HaukeM.Strasdat,RenzoDeNardi,MichaelGoesele,StevenLovegrove,and
+     RichardNewcombe.TheReplicadataset:Adigitalreplicaofindoorspaces.                  arXiv preprint  arXiv:1906.05797,
+    2019.
+[83] JulianStraub,ThomasWhelan,LingniMa,YufanChen,ErikWijmans,SimonGreen,JakobJEngel,Raul
+     Mur-Artal,CarlRen,ShobhitVerma,etal. Thereplicadataset: Adigitalreplicaofindoorspaces.                        arXiv
+     preprint arXiv:1906.05797,2019.
+[84] PeiSun,HenrikKretzschmar,XerxesDotiwalla,AurelienChouard,VijaysaiPatnaik,PaulTsui,JamesGuo,Yin
+     Zhou,YuningChai,BenjaminCaine,VijayVasudevan,WeiHan,JiquanNgiam,HangZhao,AlekseiTimofeev,
+     ScottEttinger,MaximKrivokon,AmyGao,AdityaJoshi,YuZhang,JonathonShlens,ZhifengChen,and
+     DragomirAnguelov.Scalabilityinperceptionforautonomousdriving:Waymoopendataset.In                     Proceedings  of
+     the IEEE/CVF     Conference  on Computer    Vision and  Pattern  Recognition  (CVPR),June2020.
+[85] ZhenggangTang,YuchenFan,DilinWang,HongyuXu,RakeshRanjan,AlexanderSchwing,andZhichengYan.
+     Mv-dust3r+: Single-stagescenereconstructionfromsparseviewsin2seconds. In                 IEEE   Conf. Comput.   Vis.
+     Pattern Recog.,pages5283–5293,2025.
+[86] ZacharyTeedandJiaDeng.Deepv2d:Videotodepthwithdifferentiablestructurefrommotion.                     arXiv  preprint
+     arXiv:1812.04605,2018.
+[87] ShinjiUmeyama. Least-squaresestimationoftransformationparametersbetweentwopointpatterns.                      IEEE
+     Trans. Pattern  Anal. Mach.  Intell.,13(4):376–380,2002.
+[88] IgorVasiljevic,NickKolkin,ShanyiZhang,RuotianLuo,HaochenWang,FalconZDai,AndreaFDaniele,
+     MohammadrezaMostajabi,StevenBasart,MatthewRWalter,etal.Diode:Adenseindoorandoutdoordepth
+     dataset. arXiv  preprint arXiv:1908.00463,2019.
+[89] JianyuanWang,ChristianRupprecht,andDavidNovotny.Posediffusion:Solvingposeestimationviadiffusion-
+     aidedbundleadjustment.In      IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages9773–9783,2023.
+[90] JianyuanWang,NikitaKaraev,ChristianRupprecht,andDavidNovotny.Vggsfm:Visualgeometrygrounded
+     deepstructurefrommotion.In       IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages21686–21697,2024.
+[91] JianyuanWang,MinghaoChen,NikitaKaraev,AndreaVedaldi,ChristianRupprecht,andDavidNovotny.Vggt:
+    Visualgeometrygroundedtransformer.In          IEEE  Conf.  Comput.   Vis. Pattern  Recog.,pages5294–5306,2025.
+[92] KaixuanWangandShaojieShen. Flow-motionanddepthnetworkformonocularstereoandbeyond.                             IEEE
+     Robotics  and Automation    Letters,5(2):3307–3314,2020.
+[93] QiangWang,ShizhenZheng,QingsongYan,FeiDeng,KaiyongZhao,andXiaowenChu.Irs:Alargenaturalistic
+     indoorroboticsstereodatasettotraindeepmodelsfordisparityandsurfacenormalestimation.                  arXiv  preprint
+     arXiv:1912.09678,2019.
+
+
+
+                                                          28
+===== PAGE 29 =====
+ [94] QianqianWang,YifeiZhang,AleksanderHolynski,AlexeiAEfros,andAngjooKanazawa. Continuous3d
+      perceptionmodelwithpersistentstate.In       IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages10510–10522,2025.
+ [95] RuichengWang,SichengXu,CassieDai,JianfengXiang,YuDeng,XinTong,andJiaolongYang. Moge:
+      Unlockingaccuratemonoculargeometryestimationforopen-domainimageswithoptimaltrainingsupervision.
+      In IEEE  Conf.  Comput.  Vis. Pattern  Recog.,pages5261–5271,2025.
+ [96] ShuzheWang,VincentLeroy,YohannCabon,BorisChidlovskii,andJeromeRevaud.Dust3r:Geometric3d
+      visionmadeeasy.In     IEEE  Conf.  Comput.   Vis.Pattern  Recog.,pages20697–20709,2024.
+ [97] ShuzheWang,VincentLeroy,YohannCabon,BorisChidlovskii,andJeromeRevaud.Dust3r:Geometric3d
+      visionmadeeasy.In     IEEE  Conf.  Comput.   Vis.Pattern  Recog.,pages20697–20709,2024.
+ [98] WenshanWang,DelongZhu,XiangweiWang,YaoyuHu,YuhengQiu,ChenWang,YafeiHu,AshishKapoor,
+      andSebastianScherer.Tartanair:Adatasettopushthelimitsofvisualslam.In                2020 IEEE/RSJ    International
+      Conference  on Intelligent Robots  and Systems   (IROS),pages4909–4916.IEEE,2020.
+ [99] YifanWang,JianjunZhou,HaoyiZhu,WenzhengChang,YangZhou,ZizunLi,JunyiChen,JiangmiaoPang,
+      ChunhuaShen,andTongHe.  π3: Scalablepermutation-equivariantvisualgeometrylearning,2025. URL
+      https://arxiv.org/abs/2507.13347.
+[100] BowenWen,MatthewTrepte,JosephAribido,JanKautz,OrazioGallo,andStanBirchfield.Foundationstereo:
+      Zero-shotstereomatching.In     IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages5249–5260,2025.
+[101] BenjaminWilson,WilliamQi,TanmayAgarwal,JohnLambert,JagjeetSingh,SiddheshKhandelwal,Bowen
+      Pan,RatneshKumar,AndrewHartnett,JhonyKaesemodelPontes,etal.Argoverse2:Nextgenerationdatasets
+      forself-drivingperceptionandforecasting.In      Adv.  Neural Inform.  Process. Syst.,2021.
+[102] TongWu,JiaruiZhang,XiaoFu,YuxinWang,LiangPanJiaweiRen,WayneWu,LeiYang,JiaqiWang,Chen
+      Qian,DahuaLin,andZiweiLiu.Omniobject3d:Large-vocabulary3dobjectdatasetforrealisticperception,
+      reconstructionandgeneration.In    IEEE/CVF     Conference  on Computer   Vision and Pattern  Recognition  (CVPR),
+      2023.
+[103] HongchiXia,YangFu,SifeiLiu,andXiaolongWang.Rgbdobjectsinthewild:Scalingreal-world3dobject
+      learningfromrgb-dvideos,2024.
+[104] JianfengXiang,ZelongLv,SichengXu,YuDeng,RuichengWang,BowenZhang,DongChen,XinTong,and
+      JiaolongYang.Structured3dlatentsforscalableandversatile3dgeneration.             arXiv  preprint arXiv:2412.01506,
+      2024.
+[105] PengchuanXiao,ZhenleiShao,StevenHao,ZishuoZhang,XiaolinChai,JudyJiao,ZesongLi,JianWu,KaiSun,
+      KunJiang,etal.Pandaset:Advancedsensorsuitedatasetforautonomousdriving.In                  2021 IEEE   international
+      intelligenttransportation  systems conference  (ITSC),pages3095–3101.IEEE,2021.
+[106] GangweiXu,XianqiWang,XiaohuanDing,andXinYang. Iterativegeometryencodingvolumeforstereo
+      matching.In   IEEE  Conf.  Comput.   Vis. Pattern Recog.,pages21919–21928,2023.
+[107] HaofeiXu,AnpeiChen,YuedongChen,ChristosSakaridis,YulunZhang,MarcPollefeys,AndreasGeiger,and
+      FisherYu.Murf:multi-baselineradiancefields.In      IEEE   Conf. Comput.   Vis. Pattern Recog.,pages20041–20050,
+      2024.
+[108] HaofeiXu,SongyouPeng,FangjinhuaWang,HermannBlum,DanielBarath,AndreasGeiger,andMarcPollefeys.
+      Depthsplat: Connectinggaussiansplattinganddepth. In            IEEE   Conf. Comput.    Vis. Pattern Recog.,pages
+      16453–16463,2025.
+[109] GuorunYang,XiaoSong,ChaoqinHuang,ZhidongDeng,JianpingShi,andBoleiZhou. Drivingstereo: A
+      large-scaledatasetforstereomatchinginautonomousdrivingscenarios. In               IEEE   Conference  on Computer
+      Vision and  Pattern Recognition  (CVPR),2019.
+[110] JianingYang,AlexanderSax,KevinJLiang,MikaelHenaff,HaoTang,AngCao,JoyceChai,FranziskaMeier,
+      andMattFeiszli. Fast3r: Towards3dreconstructionof1000+imagesinoneforwardpass. In                       IEEE   Conf.
+      Comput.   Vis.Pattern  Recog.,pages21924–21935,2025.
+[111] JianingYang,AlexanderSax,KevinJLiang,MikaelHenaff,HaoTang,AngCao,JoyceChai,FranziskaMeier,
+      andMattFeiszli. Fast3r: Towards3dreconstructionof1000+imagesinoneforwardpass. In                       IEEE   Conf.
+      Comput.   Vis.Pattern  Recog.,pages21924–21935,2025.
+
+
+                                                           29
+===== PAGE 30 =====
+[112] LiheYang,BingyiKang,ZilongHuang,ZhenZhao,XiaogangXu,JiashiFeng,andHengshuangZhao.Depth
+      anythingv2.   Adv.  Neural Inform.  Process. Syst.,37:21875–21911,2024.
+[113] LiheYang,BingyiKang,ZilongHuang,ZhenZhao,XiaogangXu,JiashiFeng,andHengshuangZhao.Depth
+      anythingv2.In    Adv.  Neural Inform.  Process. Syst.,2024.
+[114] YaoYao,ZixinLuo,ShiweiLi,TianFang,andLongQuan.Mvsnet:Depthinferenceforunstructuredmulti-view
+      stereo.In  Eur. Conf. Comput.   Vis.,pages767–783,2018.
+[115] YaoYao,ZixinLuo,ShiweiLi,JingyangZhang,YufanRen,LeiZhou,TianFang,andLongQuan.Blendedmvs:
+      Alarge-scaledatasetforgeneralizedmulti-viewstereonetworks.In            Proceedings  of the IEEE/CVF     conference
+      on computer   visionand  pattern  recognition,pages1790–1799,2020.
+[116] BotaoYe,SifeiLiu,HaofeiXu,XuetingLi,MarcPollefeys,Ming-HsuanYang,andSongyouPeng.Nopose,no
+      problem:Surprisinglysimple3dgaussiansplatsfromsparseunposedimages.In                  Int.Conf.  Learn. Represent.,
+      2024.
+[117] ChandanYeshwanth,Yueh-ChengLiu,MatthiasNießner,andAngelaDai.Scannet++:Ahigh-fidelitydataset
+      of3dindoorscenes.In     Int. Conf. Comput.   Vis.,pages12–22,2023.
+[118] WeiYin,ChiZhang,HaoChen,ZhipengCai,GangYu,KaixuanWang,XiaozhiChen,andChunhuaShen.
+      Metric3d:Towardszero-shotmetric3dpredictionfromasingleimage.In                CVPR,pages9043–9053,2023.
+[119] AlexYu,VickieYe,MatthewTancik,andAngjooKanazawa.pixelnerf:Neuralradiancefieldsfromoneorfew
+      images.In  IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages4578–4587,2021.
+[120] AmirRZamir, AlexanderSax, , WilliamBShen, LeonidasGuibas, JitendraMalik, andSilvioSavarese.
+      Taskonomy:Disentanglingtasktransferlearning.In         IEEE   Conf. Comput.   Vis. Pattern  Recog.IEEE,2018.
+[121] JunyiZhang,CharlesHerrmann,JunhwaHur,VarunJampani,TrevorDarrell,ForresterCole,DeqingSun,and
+      Ming-HsuanYang.Monst3r:Asimpleapproachforestimatinggeometryinthepresenceofmotion.In                       Int.Conf.
+      Learn. Represent.,2025.
+[122] ShangzhanZhang,JianyuanWang,YinghaoXu,NanXue,ChristianRupprecht,XiaoweiZhou,YujunShen,
+      andGordonWetzstein.Flare:Feed-forwardgeometry,appearanceandcameraestimationfromuncalibrated
+      sparseviews.In   IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages21936–21947,2025.
+[123] YiZhang,WeichaoQiu,QiChen,XiaolinHu,andAlanYuille.Unrealstereo:Controllinghazardousfactorsto
+      analyzestereovision.In    2018  International Conference  on 3D  Vision  (3DV),pages228–237.IEEE,2018.
+[124] ZheZhang,RuiPeng,YuxiHu,andRonggangWang.Geomvsnet:Learningmulti-viewstereowithgeometry
+      perception.In  IEEE   Conf. Comput.   Vis. Pattern  Recog.,pages21508–21518,2023.
+[125] JiaZheng,JunfeiZhang,JingLi,RuiTang,ShenghuaGao,andZihanZhou.Structured3d:Alargephoto-realistic
+      datasetforstructured3dmodeling. In         European   Conference  on  Computer   Vision,pages519–535.Springer,
+      2020.
+[126] PengZheng,DehongGao,Deng-PingFan,LiLiu,JormaLaaksonen,WanliOuyang,andNicuSebe.Bilateral
+      referenceforhigh-resolutiondichotomousimagesegmentation.          CAAI   ArtificialIntelligence Research,2024.
+[127] YangZheng,AdamWHarley,BokuiShen,GordonWetzstein,andLeonidasJGuibas.Pointodyssey:Alarge-scale
+      syntheticdatasetforlong-termpointtracking.In         Proceedings   ofthe IEEE/CVF     International  Conference  on
+      Computer   Vision,pages19855–19865,2023.
+[128] YangZhou,YifanWang,JianjunZhou,WenzhengChang,HaoyuGuo,ZizunLi,KaijingMa,XinyueLi,Yating
+      Wang,HaoyiZhu,MingyuLiu,DingningLiu,JiangeYang,ZhoujieFu,JunyiChen,ChunhuaShen,Jiangmiao
+      Pang,KaipengZhang,andTongHe.Omniworld:Amulti-domainandmulti-modaldatasetfor4dworldmodeling,
+      2025.URLhttps://arxiv.org/abs/2509.12201.
+[129] RuiZhu,SecondAuthor,andThirdAuthor. Svlightverse: Large-scalephotorealisticindoordatasetwith
+      spatially-varyinghdrilighting.  https://jerrypiglet.github.io/SVLightVerse/,2025. Projectpage.Affil-
+      iations: UniversityofCaliforniaSanDiego;PICO(ByteDance);KooLab(Manycore);Rembrand.Accessed:
+      2025-11-11.
+[130] ZihanZhu,SongyouPeng,ViktorLarsson,ZhaopengCui,MartinROswald,AndreasGeiger,andMarcPollefeys.
+      Nicer-slam:Neuralimplicitsceneencodingforrgbslam.In            3DV,pages42–52.IEEE,2024.
+
+
+
+                                                           30
+===== PAGE 31 =====
+Appendix
+Whilesyntheticdatasetsprovidelarge-scaletrainingdatawithground-truthdepthannotations,manycontain
+qualityissuessuchasinvalidbackgrounds,spatialmisalignments,clippingartifacts,anderroneousdepth
+valuesthatcandegrademodeltraining.Wethereforeapplycarefulpreprocessingtofilterproblematicsamples
+andclipunrealisticdepthranges,ensuringhigh-qualitysupervisionforourteachermodel.
+
+ADataProcessing
+
+Wepreprocessthefollowingrawtrainingdatasetsasfollowstotraintheteachermodel.
+
+TartanAir.Weremovethe                  amusementscenefromtrainingduetoitsinvalidbackground(skybox)(Fig.12).
+Weclipthemaximumdepthvaluesof carwelding, hospital, ocean, officeand office2scenesat80,30,
+1000,30and30,respectively.
+
+
+
+
+
+
+
+
+
+
+
+
+                    Figure12  InvalidbackgroundofamusementsceneinTartanAirdataset.
+
+
+IRS.WenoticedthatsomeofthescenesinIRSexhibitspatialmisalignmentbetweentheimageanddepth
+maps(Fig.13).Tofilterthosesampleswithimage-depthmisalignment,wefirstrunCannyedgedetectors
+onboththeimage(convertedtograyscale)anddepthmaptoextracttheboundaries.Next,wedilatethe
+boundariesby1pixelandcomputethepercentageofintersectionbetweenimageanddepthboundaries.
+Then,wefurtherdilatetheboundariesby3pixelsandcomputetheintersectionbetweenimageanddepth
+boundaries.Finally,wecomputetheratiobetweenthetwointersectionsandremovesampleswhoseratiofalls
+belowacertainthreshold.
+
+
+
+
+
+
+
+
+
+                          Figure13  Image-depthspatialmisalignmentinIRSdataset.
+
+
+UnrealStereo4K.Weremovethescene                            00003whichconsistsoflargeerroneousregions.Wealsoremovethe
+scene 00004whichsuffersfromclippingissue.Forscene 00008,weremovesampleswheretheseadoesnot
+havedepthvalues(images9-13,23-29,80-82,86-88,96,103-111,126-136,144-145,148-154,173-176,178-179,
+186-187,191-192,198-199)(Fig.14).
+
+GTA-SfM.Weclipthemaximumdepthvalueat1000.
+
+Kenburns.Weclipthedepthvalueat50,000followingGitHubissue                    1.
+
+  1https://github.com/sniklaus/3d-ken-burns/issues/40
+
+
+
+
+                                                         31
+===== PAGE 32 =====
+Figure 14  Erroneous samples in UnrealStereo4K dataset.Thewindowsinscene                 00003aretransparent;scene
+00004suffersfromclippingissue;theseainscene00008doesnothavedepthvalues.
+
+
+PointOdyssey.Weremovethetwoscenes                         animal2_sand dancingroom3_3rdwherethegrounddepthis
+incorrect 2.
+
+TRELLIS.Weremoveallsampleswithsuffix              stl, abc, STL, PLY, plyaswenoticedthatthesesamplesdonot
+containtexture.
+
+OmniObject3D.Weclipthemaximumdepthvalueat10.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2https://github.com/y-zheng18/point_odyssey/issues/6
+
+
+                                                              32
