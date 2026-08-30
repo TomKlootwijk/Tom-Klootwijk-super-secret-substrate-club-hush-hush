@@ -1,0 +1,67 @@
+{
+  "authoritative_media": true,
+  "decode_backend": "PyAV CPU decode with exact PTS",
+  "embedded_media": false,
+  "first_pts": 0,
+  "frame_count": 229,
+  "last_pts": 9079872,
+  "schema": "ugts-chrono-video-source-receipt-0.1",
+  "source_bytes": 12132305,
+  "source_file_name": "sam_2353410928515192.mp4",
+  "source_path": "C:\\Users\\Tom\\Videos\\KasiaDansGedicht\\sam_2353410928515192.mp4",
+  "source_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+  "time_base_den": 1000000,
+  "time_base_num": 1,
+  "video_stream": {
+    "avg_frame_rate": "62500/2489",
+    "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+    "codec_name": "h264",
+    "display_aspect_ratio": "16:9",
+    "disposition": {
+      "attached_pic": 0,
+      "captions": 0,
+      "clean_effects": 0,
+      "comment": 0,
+      "default": 1,
+      "dependent": 0,
+      "descriptions": 0,
+      "dub": 0,
+      "forced": 0,
+      "hearing_impaired": 0,
+      "karaoke": 0,
+      "lyrics": 0,
+      "metadata": 0,
+      "multilayer": 0,
+      "non_diegetic": 0,
+      "original": 0,
+      "still_image": 0,
+      "timed_thumbnails": 0,
+      "visual_impaired": 0
+    },
+    "duration": "9.119696",
+    "duration_ts": 9119696,
+    "height": 720,
+    "index": 0,
+    "level": 50,
+    "pix_fmt": "yuv420p",
+    "profile": "Main",
+    "r_frame_rate": "62500/2489",
+    "sample_aspect_ratio": "1:1",
+    "side_data_list": [
+      {
+        "displaymatrix": "\n00000000:            0           0           0\n00000001:            0           0           0\n00000002:            0           0           0\n",
+        "rotation": 0,
+        "side_data_type": "Display Matrix"
+      }
+    ],
+    "start_pts": 0,
+    "tags": {
+      "encoder": "avc1 Compressor",
+      "handler_name": "Track created with MP4Box.js",
+      "language": "eng",
+      "vendor_id": "[0][0][0][0]"
+    },
+    "time_base": "1/1000000",
+    "width": 1280
+  }
+}

@@ -1,0 +1,1464 @@
+{
+  "agp": "8.13.2",
+  "application_id": "org.ugts.games.chrono_video_observation_inspector",
+  "authoring_assets_packaged": true,
+  "authoring_project_hash": "c815a4867f66a19eacd3d33ff4edff3bcb6b18b52138c2816a7ab57c3119731a",
+  "chrono_video_assets": [
+    {
+      "bytes": 2001,
+      "path": "chrono/source_receipt.json",
+      "sha256": "97073f12c8a9a4992758dd35234bdf5ee1ba76efb86c238d79349a7c014265a3"
+    },
+    {
+      "bytes": 102061,
+      "path": "chrono/observations.jsonl",
+      "sha256": "8eda37a84a1e8cc651589155d8f35d4a67a4adb7a727cd9ba64dcc550336319b"
+    },
+    {
+      "bytes": 2927828,
+      "path": "chrono/proposals.jsonl",
+      "sha256": "aa1ee1bf61c44d98854bd5b79f9e4339caa176e3eb90ca82bb67c1bd01ce1067"
+    },
+    {
+      "bytes": 258950,
+      "path": "chrono/joint_hypotheses.jsonl",
+      "sha256": "7b00fc2d8bbba1f716e2c3bc7a1097e99eda39211a4391f08ebc4425e773fc58"
+    },
+    {
+      "bytes": 328110,
+      "path": "chrono/novelty.jsonl",
+      "sha256": "4e6fd1f691d784cea13a9949ffe88479a6f7c4676484f599a1bfe4807863c527"
+    },
+    {
+      "bytes": 4194412,
+      "path": "chrono/polar_lut.ugcv1",
+      "sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf"
+    },
+    {
+      "bytes": 684,
+      "path": "chrono/polar_lut_inspection.json",
+      "sha256": "9d5e8d2009e443ea3f05b3917ce7cb189dcab86b4fa0601f8b20a19892bd7675"
+    },
+    {
+      "bytes": 2114651,
+      "path": "chrono/polar_preview.mp4",
+      "sha256": "97f729b0b0347bcba7dea87adc883557fc19a8ffea85ed0906ecea2c47e4e708"
+    },
+    {
+      "bytes": 8948,
+      "path": "chrono/preview_timeline.json",
+      "sha256": "7b6078284270b6123d4ee3f07ef9a54366a4e3fea436343787efd5106eaa822f"
+    },
+    {
+      "bytes": 1528,
+      "path": "chrono/reconstruction_receipt.json",
+      "sha256": "f51a8b05ee278ab73a3b7fc2a8938dbcc8de461ad57b828e5a8909fabf379496"
+    },
+    {
+      "bytes": 4267,
+      "path": "chrono/manifest.json",
+      "sha256": "65beb74a64a3789fbc32b8fbcee35896ee646fc05c1ecd35e3d360262a7059b3"
+    }
+  ],
+  "compile_sdk": 36,
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "files": [
+    {
+      "bytes": 17,
+      "path": ".gradle/8.13/checksums/checksums.lock",
+      "sha256": "764b37b6980dd62c6ab9c9e34db3315912516dd164fae46bd7526eb8820db676"
+    },
+    {
+      "bytes": 73108,
+      "path": ".gradle/8.13/executionHistory/executionHistory.bin",
+      "sha256": "3d060b0e2c8194f8cf88740c5af0df273e705443497bb00505de4d1329296cd0"
+    },
+    {
+      "bytes": 17,
+      "path": ".gradle/8.13/executionHistory/executionHistory.lock",
+      "sha256": "9cafc9e7d5a37946d9fd6970f47c3a184eb06e54dfd5928ca9194f31592f3bc1"
+    },
+    {
+      "bytes": 1,
+      "path": ".gradle/8.13/fileChanges/last-build.bin",
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    },
+    {
+      "bytes": 21847,
+      "path": ".gradle/8.13/fileHashes/fileHashes.bin",
+      "sha256": "a83fac2960a16cee68f0e6aef5103b0ea50379073072681804a9e2113139eaa9"
+    },
+    {
+      "bytes": 17,
+      "path": ".gradle/8.13/fileHashes/fileHashes.lock",
+      "sha256": "661d3a9fec99e43563732a9850e880886217690856618022ad3e60081662f018"
+    },
+    {
+      "bytes": 0,
+      "path": ".gradle/8.13/gc.properties",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 17,
+      "path": ".gradle/buildOutputCleanup/buildOutputCleanup.lock",
+      "sha256": "32c81a77f2411180856811d3c95c55f1f6056ba0df646b2448afe6f6a8da7f50"
+    },
+    {
+      "bytes": 53,
+      "path": ".gradle/buildOutputCleanup/cache.properties",
+      "sha256": "d0e4d9bc0aaf9546faaf1f0f9b36db5615d318475e6c2add7391337168bfea5b"
+    },
+    {
+      "bytes": 20837,
+      "path": ".gradle/buildOutputCleanup/outputFiles.bin",
+      "sha256": "2cf756d06e8097fd3e2923894236b59df47c295256cc3e85b9dcc3f21e6db0be"
+    },
+    {
+      "bytes": 8,
+      "path": ".gradle/file-system.probe",
+      "sha256": "e968cc7a1d34ecf995dea9b4119ce3033433ec29db600167e2e170d7b044e7de"
+    },
+    {
+      "bytes": 0,
+      "path": ".gradle/vcs-1/gc.properties",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 28377,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/cache-v2-8b325486051d4be1dfaf.json",
+      "sha256": "aa72f299310accd1f53389e3c8a3448a5bbdfa88ca2b906fd272ccda931db794"
+    },
+    {
+      "bytes": 30671,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/cmakeFiles-v1-55b9dcfb2cac9373d05b.json",
+      "sha256": "a287452753f2cde009427f821bd8d22c29893504223ef201fc530b6d4d003a57"
+    },
+    {
+      "bytes": 1535,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-505d74e26a8f73714523.json",
+      "sha256": "d91b2d676dd4fa14080ae5eefddc558a13356c1456e4030a06cf332996c44d76"
+    },
+    {
+      "bytes": 168,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json",
+      "sha256": "7934b0ebd3c2643b221b784bf8c5ad209d92cde7491e640a65ffe2138a34e8f2"
+    },
+    {
+      "bytes": 1739,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/index-2026-08-29T23-33-20-0008.json",
+      "sha256": "ea465050b13534f308b5fbd2c3fe7c509727750d77c06bd798a41b2361542f7c"
+    },
+    {
+      "bytes": 2574,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/target-native_app_glue-Debug-55438a44d053dc342846.json",
+      "sha256": "28be968a20b41c6e9fbb229f4a1723100ab880be7902e5c7e32a408906a85cc8"
+    },
+    {
+      "bytes": 7257,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.cmake/api/v1/reply/target-ugts_kc_native-Debug-13fd8de7dab776671c95.json",
+      "sha256": "98a5cab4e4dfd4a4e546495f2676c67bd73b154c3f29201ca88f9ee8af75368d"
+    },
+    {
+      "bytes": 258900,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.ninja_deps",
+      "sha256": "5431ca2993b4736e35f91ad9c3eb8037b4fcf09704a59ea00eb2d7f06e782d1f"
+    },
+    {
+      "bytes": 3650,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/.ninja_log",
+      "sha256": "4b9c77e19aff1aa76e43faa2cf7f8a8bf2e9a17ab56c34ff71dc416f9f02e3d6"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/additional_project_files.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2197,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/android_gradle_build.json",
+      "sha256": "830fd1c3971b0080777772a6c4a2af494c397b384509e4d78d92265e3a2b0765"
+    },
+    {
+      "bytes": 1718,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/android_gradle_build_mini.json",
+      "sha256": "c91f1d2bed4a5a892b98e08290bb6229256a5094ef99a460fc40582536eafeef"
+    },
+    {
+      "bytes": 17270,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/android_native_app_glue.c",
+      "sha256": "36b26c94ae8a580d3550dfd3e320c1ebf304023fdcec4fe38336d06b2736b5b7"
+    },
+    {
+      "bytes": 12107,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/android_native_app_glue.h",
+      "sha256": "01b20cfa5c2dce8b9248cb0cc76ecaf1a902ccc71a8067c25e31f99b5703063e"
+    },
+    {
+      "bytes": 68081,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/build.ninja",
+      "sha256": "b5dc2d2a1ce28c022a54a5811771aef6323e72e667957ff9caa50150dbeaf432"
+    },
+    {
+      "bytes": 171,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/build_file_index.txt",
+      "sha256": "2d0262fd33304b0a42e91e2e930ea72e6c5ca8d5b65bd355adf823a116a76277"
+    },
+    {
+      "bytes": 2085,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/cmake_install.cmake",
+      "sha256": "c97a9d0d46d744e7d745eb211bd5b108663452fefae8f995109b8916a2fbdbe6"
+    },
+    {
+      "bytes": 17847,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeCache.txt",
+      "sha256": "b453b111c3f024eb93d867cbec529a67e631ee8763f0a34a2b348dbc3697b121"
+    },
+    {
+      "bytes": 3780,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake",
+      "sha256": "7693ca691a30dd53f718a5bcf9399202b99c2a3363c8187a343bc73ad276b173"
+    },
+    {
+      "bytes": 6826,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake",
+      "sha256": "e8db6646882d552241a1d13af6afbcacee560d38d3020a62107c37edd8e082e1"
+    },
+    {
+      "bytes": 8128,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin",
+      "sha256": "60690056ea7975371ce253df93775d9876966ac7e09a67934afe19227175e8ba"
+    },
+    {
+      "bytes": 8272,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin",
+      "sha256": "f28a7fad8989f70b2757dd7ad72bc50e5c45a6fb540e92a067e918320d0cca4a"
+    },
+    {
+      "bytes": 481,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake",
+      "sha256": "b579116e89d2fea0bf04eb9e3550e1cda7f6d30b9d33484ef4af07d39503543a"
+    },
+    {
+      "bytes": 25656,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c",
+      "sha256": "a5bc5d659352bb93e28ce0ec49b3b97490ecc65afce5456f43d04795d0ad627f"
+    },
+    {
+      "bytes": 6032,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o",
+      "sha256": "574f1a362563f24e6bb6dd8129a881b7c8b20947b32814a2a0c63713a5a03426"
+    },
+    {
+      "bytes": 25388,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp",
+      "sha256": "6ee4286c9b42405ee114ccf00a8ae3093b7c2ff079cae1a946af11d96a5898ab"
+    },
+    {
+      "bytes": 6120,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o",
+      "sha256": "2bc6910ca7ebd86401a65d686ce198194d021bab44dc913992e27198da454148"
+    },
+    {
+      "bytes": 86,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/cmake.check_cache",
+      "sha256": "95079b44bcef481d601432c2fd3c654d7fe85b9c8386c355f2874502b47441d7"
+    },
+    {
+      "bytes": 46939,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/CMakeOutput.log",
+      "sha256": "08aec5ca7291b58c83da64bfed122726c21089fb6e8eb6f97197935e92ff9082"
+    },
+    {
+      "bytes": 75752,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o",
+      "sha256": "67a65d1f630f341a8188851f5815047cb3bcffefdf497c47d8cf196d5959550a"
+    },
+    {
+      "bytes": 4211,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/rules.ninja",
+      "sha256": "ab77fc3e90bbac0bc4a15a916ba1b1f4758761c8ac2c8bda1b334b1f94cca5e9"
+    },
+    {
+      "bytes": 816,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/TargetDirectories.txt",
+      "sha256": "a75afcbb0662e1fd8b20fa6fb3c9393b6b5db3c931f165f52ab8a326c08c72ac"
+    },
+    {
+      "bytes": 235632,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o",
+      "sha256": "cb1ba94396189e3cf689491d26f9bc59ef4865f2c88b530fc13757ef00d13b04"
+    },
+    {
+      "bytes": 397184,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o",
+      "sha256": "150b13fac75f7f3134f31dfcb54f4988f341d088c19387f8c619d24850aa2350"
+    },
+    {
+      "bytes": 397232,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o",
+      "sha256": "b5e2532b12e67f5ae374828b83795f5e0e144adefae81263d3d712d1e5900871"
+    },
+    {
+      "bytes": 2172736,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/engine.cpp.o",
+      "sha256": "b23a6d80d98fcaab80807eeef9494140895e50c6335b8c4909ab738358604c38"
+    },
+    {
+      "bytes": 104840,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o",
+      "sha256": "bea8c9fd615421b989b5db5df66c9c6f1d663eefd1d482c5427bf4f3dd68d64e"
+    },
+    {
+      "bytes": 1209264,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o",
+      "sha256": "0996eb012f2f2e92cbc1233b5fc35204002c6c7b79734462f3078e1441ba36bd"
+    },
+    {
+      "bytes": 48152,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o",
+      "sha256": "6e6b5da0013af8ec37792ded953290e7aee7ea5d3d0e04ec48efda9a62a13ac7"
+    },
+    {
+      "bytes": 129160,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o",
+      "sha256": "e16846cc8c8ad830e2b801e542244be9073c36dad00ffd27d5803d6625af6f7e"
+    },
+    {
+      "bytes": 1444776,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/main.cpp.o",
+      "sha256": "baa34ab0d09858de11d5d6fa20ec6b7ebd889338a27a5a0d5625643fab49dcc6"
+    },
+    {
+      "bytes": 713128,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o",
+      "sha256": "948342e1bb90179ee43d1325567b2ef4f6da9f213cab6f5c2b8c2397d22c9e9f"
+    },
+    {
+      "bytes": 1066176,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o",
+      "sha256": "f51bbca6231be8b768d2394aa82ee4be45412d48f9fcef65b31bd96bfdb16580"
+    },
+    {
+      "bytes": 123096,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o",
+      "sha256": "b3668849a75cd25db24af2a5db2d3eeb8a0032349226ff13b0e4985eb20559ad"
+    },
+    {
+      "bytes": 1837856,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o",
+      "sha256": "eb0a764bf0e217f357384118ea8d270c7f8b7a6ca42f43f2986bdad85101732a"
+    },
+    {
+      "bytes": 429360,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o",
+      "sha256": "ae5e6c6e18f81c1d82423d306450178c53cb1a4e42370cd601b1c492d3ca6c3b"
+    },
+    {
+      "bytes": 916952,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o",
+      "sha256": "ce64597b219dbababf95e8c6eb04ddbfbef739330a32b45c89377b92e2c60467"
+    },
+    {
+      "bytes": 98320,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o",
+      "sha256": "371b96dcd66015fc81b87f23b2e54e8307b6de9878b0442aebcf1eb18ba6bdd6"
+    },
+    {
+      "bytes": 541248,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o",
+      "sha256": "a234fcd2f630e683726b7dc08c20acf7f2d2339eb9471f0a1726e45259ac5408"
+    },
+    {
+      "bytes": 508584,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o",
+      "sha256": "b195c6d0f30511e72f3479688e788596b410ee7fd75290e0428e6b82ef4b11f6"
+    },
+    {
+      "bytes": 352872,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o",
+      "sha256": "305fc3cf4a23de2c9b49c36e6dc0523a0ebcb3d8697d73f0b56c44c1be5d6028"
+    },
+    {
+      "bytes": 37389,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/compile_commands.json",
+      "sha256": "c3261321f6190c710053e9b99f9e977c6b42d5543949ea502ceb0b30590d4542"
+    },
+    {
+      "bytes": 6680,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/compile_commands.json.bin",
+      "sha256": "4eb132f35c3c3246d0833e7aef79a9e92f78a55d265d22cff4971050f5ff13fd"
+    },
+    {
+      "bytes": 2827,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/configure_fingerprint.bin",
+      "sha256": "19bdb307de44b38803e6545dfbae191c50813f6d1cb3e09d5318fe2a5c341c6f"
+    },
+    {
+      "bytes": 76102,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/libnative_app_glue.a",
+      "sha256": "ccd0b656f49876d90d8ce54f51f9f0b63c3b928bb3552e67df3e57cd3c237102"
+    },
+    {
+      "bytes": 1581,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/metadata_generation_command.txt",
+      "sha256": "19d9efcaed8473913399ed1583d78cffb2d0de3822b3bae5d4c98b7ee0299fcf"
+    },
+    {
+      "bytes": 40,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/prefab_config.json",
+      "sha256": "49d9b46541d1200043f62d4db4020feed6336d9c0778630f5e33a0c260206a5e"
+    },
+    {
+      "bytes": 196,
+      "path": "app/.cxx/Debug/4bi4y374/arm64-v8a/symbol_folder_index.txt",
+      "sha256": "26a95abb06088881579fde259ee3f4e527376819ad05892c839d149c0475ff51"
+    },
+    {
+      "bytes": 1202,
+      "path": "app/.cxx/Debug/4bi4y374/hash_key.txt",
+      "sha256": "c67c71cad9060543c57c8b83b749dcc2dddeec960256589390124962c1f2f8f0"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 28377,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/cache-v2-85fb9711ca4422ac80f4.json",
+      "sha256": "831077d5528dbfb41ea831f7159a414b2efac448b28fbddb9a582b147f86b224"
+    },
+    {
+      "bytes": 30671,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/cmakeFiles-v1-85512ac207057b424938.json",
+      "sha256": "116509f78f3d2b98ab30ae17758caf08553eb5e62205a27f804143c4d545675a"
+    },
+    {
+      "bytes": 1535,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-88384d289151b7b79659.json",
+      "sha256": "908659fae1eb370d7c90c40621fc0880600c6da731dbbaa4ad3227ad3e6892fd"
+    },
+    {
+      "bytes": 168,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json",
+      "sha256": "7934b0ebd3c2643b221b784bf8c5ad209d92cde7491e640a65ffe2138a34e8f2"
+    },
+    {
+      "bytes": 1739,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/index-2026-08-29T23-33-00-0911.json",
+      "sha256": "193d742e734c52e708d77849e74ba744e5581867af7e6c147ad4757fe4e10965"
+    },
+    {
+      "bytes": 2574,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/target-native_app_glue-Debug-becc6d2a0bb31c76988e.json",
+      "sha256": "1062baa95548514a74d76b273f6854e5bd2149114211e2e23d9f82ac66cd246d"
+    },
+    {
+      "bytes": 7257,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.cmake/api/v1/reply/target-ugts_kc_native-Debug-414c2469e385f742aab6.json",
+      "sha256": "bf6acb324422aefaf9ce5d4cb30c5863ceb10a585226c057976d82d769d671b8"
+    },
+    {
+      "bytes": 252596,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.ninja_deps",
+      "sha256": "0f9342b995598e8699dacddcee31ff5095f8caacc1674e39f50eda7e55b43d5d"
+    },
+    {
+      "bytes": 3443,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/.ninja_log",
+      "sha256": "4627492e60c37808c04b1da933ec690b2081db82d199fd7f00112722f08b067c"
+    },
+    {
+      "bytes": 0,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/additional_project_files.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2197,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/android_gradle_build.json",
+      "sha256": "7e79ba87207aa116ef8930273dc1efdbffe48412caa841e0c598376d029a7403"
+    },
+    {
+      "bytes": 1718,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/android_gradle_build_mini.json",
+      "sha256": "48207faa9b27f919542aee25dbe1f3ad2313d289983328a1f7e63a847f6a0065"
+    },
+    {
+      "bytes": 17270,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/android_native_app_glue.c",
+      "sha256": "36b26c94ae8a580d3550dfd3e320c1ebf304023fdcec4fe38336d06b2736b5b7"
+    },
+    {
+      "bytes": 12107,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/android_native_app_glue.h",
+      "sha256": "01b20cfa5c2dce8b9248cb0cc76ecaf1a902ccc71a8067c25e31f99b5703063e"
+    },
+    {
+      "bytes": 68081,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/build.ninja",
+      "sha256": "a5e46dabf2411dddcbbd9127c2eb3c874e1df723f2711cef62bb30a4e764f15b"
+    },
+    {
+      "bytes": 171,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/build_file_index.txt",
+      "sha256": "2d0262fd33304b0a42e91e2e930ea72e6c5ca8d5b65bd355adf823a116a76277"
+    },
+    {
+      "bytes": 2085,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/cmake_install.cmake",
+      "sha256": "89e783e1e40563d309d7aa533543d8c780be5cd5a0d167ac9ff7f0373b70070a"
+    },
+    {
+      "bytes": 17847,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeCache.txt",
+      "sha256": "81ae5ffe583c234bb9a1537821f9628e83c2e129693b4cabb732eda2c2b40bde"
+    },
+    {
+      "bytes": 3780,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake",
+      "sha256": "7693ca691a30dd53f718a5bcf9399202b99c2a3363c8187a343bc73ad276b173"
+    },
+    {
+      "bytes": 6826,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake",
+      "sha256": "e8db6646882d552241a1d13af6afbcacee560d38d3020a62107c37edd8e082e1"
+    },
+    {
+      "bytes": 8128,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin",
+      "sha256": "648b4b2cb620bbe5dc206838cf2fb893b9c5276f53a4f40f9cff2562d4cb73b7"
+    },
+    {
+      "bytes": 8272,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin",
+      "sha256": "f60dd910b3b99e72a5394c0b7ff4793c66bee3c33e65b6f163e6ac9754d98c7c"
+    },
+    {
+      "bytes": 481,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake",
+      "sha256": "b579116e89d2fea0bf04eb9e3550e1cda7f6d30b9d33484ef4af07d39503543a"
+    },
+    {
+      "bytes": 25656,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c",
+      "sha256": "a5bc5d659352bb93e28ce0ec49b3b97490ecc65afce5456f43d04795d0ad627f"
+    },
+    {
+      "bytes": 6032,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o",
+      "sha256": "c397afdd4403c41339abd31fc33e4bec5879d5d2a90f4432e5c1d96523da8a17"
+    },
+    {
+      "bytes": 25388,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp",
+      "sha256": "6ee4286c9b42405ee114ccf00a8ae3093b7c2ff079cae1a946af11d96a5898ab"
+    },
+    {
+      "bytes": 6120,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o",
+      "sha256": "fb8462e85e3caf51f4e294f94374caa2b111dfa9b8244e935fd35bfba81c6eaf"
+    },
+    {
+      "bytes": 86,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/cmake.check_cache",
+      "sha256": "95079b44bcef481d601432c2fd3c654d7fe85b9c8386c355f2874502b47441d7"
+    },
+    {
+      "bytes": 46939,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/CMakeOutput.log",
+      "sha256": "93588ad2d4a4387a78abce0c0a11ca61a60a1e187a304df048417f57c147df57"
+    },
+    {
+      "bytes": 75752,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o",
+      "sha256": "67a65d1f630f341a8188851f5815047cb3bcffefdf497c47d8cf196d5959550a"
+    },
+    {
+      "bytes": 4211,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/rules.ninja",
+      "sha256": "3a8f6837da6ac704e723fc52b1fb6e65625af538b84f82835727e299259d0578"
+    },
+    {
+      "bytes": 816,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/TargetDirectories.txt",
+      "sha256": "6c924535d21f2d2d7e512290295a2f8e20db71bb1ba935958e573705bc78717c"
+    },
+    {
+      "bytes": 235632,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o",
+      "sha256": "cb1ba94396189e3cf689491d26f9bc59ef4865f2c88b530fc13757ef00d13b04"
+    },
+    {
+      "bytes": 397184,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o",
+      "sha256": "150b13fac75f7f3134f31dfcb54f4988f341d088c19387f8c619d24850aa2350"
+    },
+    {
+      "bytes": 397232,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o",
+      "sha256": "b5e2532b12e67f5ae374828b83795f5e0e144adefae81263d3d712d1e5900871"
+    },
+    {
+      "bytes": 2185592,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/engine.cpp.o",
+      "sha256": "fbd7a395991dcb0bbc1f329ad6876797e2f281c44ba2a4d1bbdd5012eb1e833f"
+    },
+    {
+      "bytes": 104840,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o",
+      "sha256": "bea8c9fd615421b989b5db5df66c9c6f1d663eefd1d482c5427bf4f3dd68d64e"
+    },
+    {
+      "bytes": 1209264,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o",
+      "sha256": "0996eb012f2f2e92cbc1233b5fc35204002c6c7b79734462f3078e1441ba36bd"
+    },
+    {
+      "bytes": 48152,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o",
+      "sha256": "6e6b5da0013af8ec37792ded953290e7aee7ea5d3d0e04ec48efda9a62a13ac7"
+    },
+    {
+      "bytes": 129160,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o",
+      "sha256": "e16846cc8c8ad830e2b801e542244be9073c36dad00ffd27d5803d6625af6f7e"
+    },
+    {
+      "bytes": 1446352,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/main.cpp.o",
+      "sha256": "4a00270f02b57c10ad44db9e049b86289583cbf9ce175ae8a73d4f4b61c0dbdf"
+    },
+    {
+      "bytes": 713128,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o",
+      "sha256": "948342e1bb90179ee43d1325567b2ef4f6da9f213cab6f5c2b8c2397d22c9e9f"
+    },
+    {
+      "bytes": 1118896,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o",
+      "sha256": "05711d0d5de2b6c52bb9b0636539a749659c9374db6ae645811677804e10953a"
+    },
+    {
+      "bytes": 123096,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o",
+      "sha256": "b3668849a75cd25db24af2a5db2d3eeb8a0032349226ff13b0e4985eb20559ad"
+    },
+    {
+      "bytes": 1858032,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o",
+      "sha256": "9eff395919a7ad59f8471c7deb4c2617a45dc119c213a2fc2b6b07b9f40e4488"
+    },
+    {
+      "bytes": 429360,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o",
+      "sha256": "ae5e6c6e18f81c1d82423d306450178c53cb1a4e42370cd601b1c492d3ca6c3b"
+    },
+    {
+      "bytes": 916952,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o",
+      "sha256": "ce64597b219dbababf95e8c6eb04ddbfbef739330a32b45c89377b92e2c60467"
+    },
+    {
+      "bytes": 98320,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o",
+      "sha256": "371b96dcd66015fc81b87f23b2e54e8307b6de9878b0442aebcf1eb18ba6bdd6"
+    },
+    {
+      "bytes": 541248,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o",
+      "sha256": "a234fcd2f630e683726b7dc08c20acf7f2d2339eb9471f0a1726e45259ac5408"
+    },
+    {
+      "bytes": 508584,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o",
+      "sha256": "b195c6d0f30511e72f3479688e788596b410ee7fd75290e0428e6b82ef4b11f6"
+    },
+    {
+      "bytes": 352872,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o",
+      "sha256": "305fc3cf4a23de2c9b49c36e6dc0523a0ebcb3d8697d73f0b56c44c1be5d6028"
+    },
+    {
+      "bytes": 37389,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/compile_commands.json",
+      "sha256": "a5718f4c9097b771fe9cc945834def41a7e354443630b0e4b17b25b7745dc83d"
+    },
+    {
+      "bytes": 6680,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/compile_commands.json.bin",
+      "sha256": "8058050b7a05c1776b5f387a51ce0d2d1f9250a7f1286e2ed8a91611dd0e444f"
+    },
+    {
+      "bytes": 2827,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/configure_fingerprint.bin",
+      "sha256": "7db37457567d80b8605cff82bdca642592109245bdade14f7b48a78adf08f52e"
+    },
+    {
+      "bytes": 76102,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/libnative_app_glue.a",
+      "sha256": "ccd0b656f49876d90d8ce54f51f9f0b63c3b928bb3552e67df3e57cd3c237102"
+    },
+    {
+      "bytes": 1581,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/metadata_generation_command.txt",
+      "sha256": "80b8cace129d5818ec9740ecc424f07bd7ecc08f224f016b3fe6ddc487567ad1"
+    },
+    {
+      "bytes": 40,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/prefab_config.json",
+      "sha256": "49d9b46541d1200043f62d4db4020feed6336d9c0778630f5e33a0c260206a5e"
+    },
+    {
+      "bytes": 196,
+      "path": "app/.cxx/Debug/665c36c4/arm64-v8a/symbol_folder_index.txt",
+      "sha256": "917796069b07f05abc940f74f24915a166d12ad64b0b0a82969d411402e23b45"
+    },
+    {
+      "bytes": 1202,
+      "path": "app/.cxx/Debug/665c36c4/hash_key.txt",
+      "sha256": "32e7d3cb82680611a20650276e5459ce6b96bde8edb49cd1297b9af50c0a01f5"
+    },
+    {
+      "bytes": 37389,
+      "path": "app/.cxx/tools/pocoX7ProDebug/arm64-v8a/compile_commands.json",
+      "sha256": "a5718f4c9097b771fe9cc945834def41a7e354443630b0e4b17b25b7745dc83d"
+    },
+    {
+      "bytes": 37389,
+      "path": "app/.cxx/tools/universalDebug/arm64-v8a/compile_commands.json",
+      "sha256": "c3261321f6190c710053e9b99f9e977c6b42d5543949ea502ceb0b30590d4542"
+    },
+    {
+      "bytes": 2,
+      "path": "app/build/intermediates/annotation_processor_list/pocoX7ProDebug/javaPreCompilePocoX7ProDebug/annotationProcessors.json",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "bytes": 2265,
+      "path": "app/build/intermediates/assets/pocoX7ProDebug/mergePocoX7ProDebugAssets/shaders/grove_post.frag",
+      "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+    },
+    {
+      "bytes": 190,
+      "path": "app/build/intermediates/assets/pocoX7ProDebug/mergePocoX7ProDebugAssets/shaders/grove_post.vert",
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    {
+      "bytes": 8484,
+      "path": "app/build/intermediates/assets/pocoX7ProDebug/mergePocoX7ProDebugAssets/shaders/polar_scene.vert",
+      "sha256": "691dfaf755f86fe2e8ea35947a2ca7f30ec996f94d24cddb71d8424122300d71"
+    },
+    {
+      "bytes": 1970,
+      "path": "app/build/intermediates/assets/pocoX7ProDebug/mergePocoX7ProDebugAssets/shaders/scene.frag",
+      "sha256": "dfd6615c877e8b061691acdc7abc3172dbaca58b727fc58f1a4749604befb6fd"
+    },
+    {
+      "bytes": 899,
+      "path": "app/build/intermediates/assets/pocoX7ProDebug/mergePocoX7ProDebugAssets/shaders/scene.vert",
+      "sha256": "bb8d0e0d715315269a532f6a1f903ef865ec967a07911677c1ff40d62b36ce8c"
+    },
+    {
+      "bytes": 213,
+      "path": "app/build/intermediates/compatible_screen_manifest/pocoX7ProDebug/createPocoX7ProDebugCompatibleScreenManifests/output-metadata.json",
+      "sha256": "6df3f6b192f5e0da37400e3b75b4bf91a643581207de17027ee01a90bd63938c"
+    },
+    {
+      "bytes": 1213,
+      "path": "app/build/intermediates/compressed_assets/pocoX7ProDebug/compressPocoX7ProDebugAssets/out/assets/shaders/grove_post.frag.jar",
+      "sha256": "1ae42a56e96e8478072d41079f2c30d3962e43ab2608353094943e3ba18d0506"
+    },
+    {
+      "bytes": 304,
+      "path": "app/build/intermediates/compressed_assets/pocoX7ProDebug/compressPocoX7ProDebugAssets/out/assets/shaders/grove_post.vert.jar",
+      "sha256": "9d9b4defc319802779498cb96ed34ab43eb9e0d75eab3edb52b3b9408142d0dd"
+    },
+    {
+      "bytes": 2803,
+      "path": "app/build/intermediates/compressed_assets/pocoX7ProDebug/compressPocoX7ProDebugAssets/out/assets/shaders/polar_scene.vert.jar",
+      "sha256": "d64800ccb2e4577881ee64a13ecb343ead2e10edc199ac32ba7a4f049e541854"
+    },
+    {
+      "bytes": 887,
+      "path": "app/build/intermediates/compressed_assets/pocoX7ProDebug/compressPocoX7ProDebugAssets/out/assets/shaders/scene.frag.jar",
+      "sha256": "e15f0b12068896b8b76124090f3c9c458e58c6f1546e16196c84ccb205cfe007"
+    },
+    {
+      "bytes": 512,
+      "path": "app/build/intermediates/compressed_assets/pocoX7ProDebug/compressPocoX7ProDebugAssets/out/assets/shaders/scene.vert.jar",
+      "sha256": "829779b8b8434a4853a7291aa7342dbc30ec7ffdd32ae310f0d940caa139dc4e"
+    },
+    {
+      "bytes": 305,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/build_command_ugts_kc_native.bat",
+      "sha256": "ffaaa530b9f070f9180e683485dd37efe036d6723d4e1ac6a65574881adf3b52"
+    },
+    {
+      "bytes": 11218,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/build_model.json",
+      "sha256": "fca954613ff14e64882871cc635808f5c89e0bdfed9670c3f7a4423a0ad43a3b"
+    },
+    {
+      "bytes": 0,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/build_stderr_ugts_kc_native.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1587,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/build_stdout_ugts_kc_native.txt",
+      "sha256": "1da3fa59d50becdb79b53547de5fff048f8f6a823b3a30ae65c234bf5375f06e"
+    },
+    {
+      "bytes": 1762,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/configure_command.bat",
+      "sha256": "ae080ff75c2371ae552480fb0e0ffccae97e45f8494656ae674a9f1ef79e2115"
+    },
+    {
+      "bytes": 1036,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/configure_stderr.txt",
+      "sha256": "0a59b90927ecb268dc916df4d6fa5142f9f827cce06c83dac87926af164b54b4"
+    },
+    {
+      "bytes": 958,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/configure_stdout.txt",
+      "sha256": "d6ac5bd65e48daf4af258429563e321c96d73177bdf00a1b5e238ac076b711ec"
+    },
+    {
+      "bytes": 421,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/generate_cxx_metadata_135_timing.txt",
+      "sha256": "4e31e63fb4427255851cd00c68d526525ebe83742c63ad64f99e1a3a716de800"
+    },
+    {
+      "bytes": 194,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/generate_cxx_metadata_139_timing.txt",
+      "sha256": "b6afda2216a58a870f5d9c1d51166ad7860a13de8ed412ed5c0a2b0ddf3b0936"
+    },
+    {
+      "bytes": 1683,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/logs/arm64-v8a/metadata_generation_record.json",
+      "sha256": "cd63501bcd84c28935a4de8a5b060bf472337739cee28904eb25664e861bc685"
+    },
+    {
+      "bytes": 10975584,
+      "path": "app/build/intermediates/cxx/Debug/4bi4y374/obj/arm64-v8a/libugts_kc_native.so",
+      "sha256": "9d8fa51023df0122ea2ca39a8bce5c9014c0cb6abca36199e85c90d4f276433a"
+    },
+    {
+      "bytes": 305,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/build_command_ugts_kc_native.bat",
+      "sha256": "02232db6340c6e3634cd5826579c41a44f3a795072adbeab5f394b27a69ab643"
+    },
+    {
+      "bytes": 11235,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/build_model.json",
+      "sha256": "35cbf9fa6de467c1f99887b3d7358f909aaeb4411b6d4938738559dd58501b0b"
+    },
+    {
+      "bytes": 0,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/build_stderr_ugts_kc_native.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1513,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/build_stdout_ugts_kc_native.txt",
+      "sha256": "1f4a077ae47c02ab7797b18fb50f0656947b2432e61af477c119248b08acf2d2"
+    },
+    {
+      "bytes": 1762,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/configure_command.bat",
+      "sha256": "b453ab44d2e9c203f5686bb25cc7dba795ae5e403092e2a72818cdc1acf96505"
+    },
+    {
+      "bytes": 1032,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/configure_stderr.txt",
+      "sha256": "1587b35220fbf5c9fdfa2160f41b759736f06a22485d28b4d2d14298a2856813"
+    },
+    {
+      "bytes": 958,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/configure_stdout.txt",
+      "sha256": "db1b4aa0e8372ecdfc28bfefc7475f59a22c245f231e46759164571363e7c030"
+    },
+    {
+      "bytes": 158,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/generate_cxx_metadata_136_timing.txt",
+      "sha256": "9bfc7d2e12101ccf0fc5fff7e44f4d53f5e893646fb03cf38578b0974e04a391"
+    },
+    {
+      "bytes": 158,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/generate_cxx_metadata_138_timing.txt",
+      "sha256": "b7eeab86dc41be47fc75750a491deae998c4ebb2d8590ee59b7a6bca16f80ba5"
+    },
+    {
+      "bytes": 158,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/generate_cxx_metadata_148_timing.txt",
+      "sha256": "953370a986f8769b052b18b2cccf83e6662bf26288affa1bc0643cb019f848e6"
+    },
+    {
+      "bytes": 295,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/generate_cxx_metadata_152_timing.txt",
+      "sha256": "df8fa81497ee3baaa8f93973a4fd19654842ae01b71cbd245978f7004bced97e"
+    },
+    {
+      "bytes": 1683,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/logs/arm64-v8a/metadata_generation_record.json",
+      "sha256": "212ec82e0edaf6f09e1c58c27538ef7f1d823070ec25ff38d074ea193d11911f"
+    },
+    {
+      "bytes": 11014584,
+      "path": "app/build/intermediates/cxx/Debug/665c36c4/obj/arm64-v8a/libugts_kc_native.so",
+      "sha256": "810fab391ba4dded65dcc1b6ce4d2069d63cd7ea827fe8c834bda6a4b9635e86"
+    },
+    {
+      "bytes": 2809,
+      "path": "app/build/intermediates/incremental/mergePocoX7ProDebugAssets/merger.xml",
+      "sha256": "5bf68c03fdba142df9d5c007180a09a53602c3b3464fccd7313c595514694a39"
+    },
+    {
+      "bytes": 1305,
+      "path": "app/build/intermediates/incremental/mergePocoX7ProDebugShaders/merger.xml",
+      "sha256": "147f0e5d9df4eb1628510aa41dd9c02a0c92325d87cf43a552c3886e8074d55b"
+    },
+    {
+      "bytes": 32,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug/mergePocoX7ProDebugResources/compile-file-map.properties",
+      "sha256": "2557a091dff53c81dc2d639da9cfc512d9e8aad693b4fe158d5b1bb6c7b4489d"
+    },
+    {
+      "bytes": 816,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug/mergePocoX7ProDebugResources/merged.dir/values/values.xml",
+      "sha256": "d739e7701bd372d8b012ad67aa110cecdd4e5cf320fa6f371670897fc8e5c141"
+    },
+    {
+      "bytes": 5342,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug/mergePocoX7ProDebugResources/merger.xml",
+      "sha256": "4dc7368c1dcf42b56698d3ce103db4bb337107a4b72e2714e2be5a86da39c159"
+    },
+    {
+      "bytes": 32,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug/packagePocoX7ProDebugResources/compile-file-map.properties",
+      "sha256": "2557a091dff53c81dc2d639da9cfc512d9e8aad693b4fe158d5b1bb6c7b4489d"
+    },
+    {
+      "bytes": 816,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug/packagePocoX7ProDebugResources/merged.dir/values/values.xml",
+      "sha256": "d739e7701bd372d8b012ad67aa110cecdd4e5cf320fa6f371670897fc8e5c141"
+    },
+    {
+      "bytes": 5342,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug/packagePocoX7ProDebugResources/merger.xml",
+      "sha256": "4dc7368c1dcf42b56698d3ce103db4bb337107a4b72e2714e2be5a86da39c159"
+    },
+    {
+      "bytes": 478,
+      "path": "app/build/intermediates/incremental/pocoX7ProDebug-mergeJavaRes/merge-state",
+      "sha256": "6d4c33409838be34c75913e2cb3a09343c2e2a9a2e0e580c4dc65fb5819253b2"
+    },
+    {
+      "bytes": 0,
+      "path": "app/build/intermediates/incremental/processPocoX7ProDebugResources/resources-list-for-linked-resources-binary-format-pocoX7ProDebug.ap_.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 86,
+      "path": "app/build/intermediates/local_only_symbol_list/pocoX7ProDebug/parsePocoX7ProDebugLocalResources/R-def.txt",
+      "sha256": "59f1516f5e1f301e685b5381989a5adb2738fbd0a3ad72ed7019751d45e1691d"
+    },
+    {
+      "bytes": 8698,
+      "path": "app/build/intermediates/manifest_merge_blame_file/pocoX7ProDebug/processPocoX7ProDebugMainManifest/manifest-merger-blame-pocoX7Pro-debug-report.txt",
+      "sha256": "70c132b6ff51638e877ef008569fb8476930ecd27bec20984ecb72affb44a32e"
+    },
+    {
+      "bytes": 22,
+      "path": "app/build/intermediates/merged_java_res/pocoX7ProDebug/mergePocoX7ProDebugJavaResource/base.jar",
+      "sha256": "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85"
+    },
+    {
+      "bytes": 1933,
+      "path": "app/build/intermediates/merged_manifest/pocoX7ProDebug/processPocoX7ProDebugMainManifest/AndroidManifest.xml",
+      "sha256": "3b8dc5f9fd2820e61b3c0d634f2c806fc7a8ceedde72fa54ec893649759e2a97"
+    },
+    {
+      "bytes": 1933,
+      "path": "app/build/intermediates/merged_manifests/pocoX7ProDebug/processPocoX7ProDebugManifest/AndroidManifest.xml",
+      "sha256": "3b8dc5f9fd2820e61b3c0d634f2c806fc7a8ceedde72fa54ec893649759e2a97"
+    },
+    {
+      "bytes": 422,
+      "path": "app/build/intermediates/merged_manifests/pocoX7ProDebug/processPocoX7ProDebugManifest/output-metadata.json",
+      "sha256": "cf13e4584fefd39c6d484868e984d13eadb3aa762d98af8305378186b50d1da8"
+    },
+    {
+      "bytes": 940,
+      "path": "app/build/intermediates/merged_res/pocoX7ProDebug/mergePocoX7ProDebugResources/values_values.arsc.flat",
+      "sha256": "f36af80ce566efe5f6ac831c759ec32baacca009d80ab652774399df7a1df599"
+    },
+    {
+      "bytes": 1592,
+      "path": "app/build/intermediates/merged_res_blame_folder/pocoX7ProDebug/mergePocoX7ProDebugResources/out/multi-v2/mergePocoX7ProDebugResources.json",
+      "sha256": "c2ccd3e996e5a286b158bc4a44bf389c7827a6e311f17ca9fd22062523fd7a4e"
+    },
+    {
+      "bytes": 1600,
+      "path": "app/build/intermediates/merged_res_blame_folder/pocoX7ProDebug/mergePocoX7ProDebugResources/out/multi-v2/values.json",
+      "sha256": "0872f3aaaf52067d70a2fb80bdd595772b61b6658cb999b8dcf3aaa35611ef29"
+    },
+    {
+      "bytes": 2,
+      "path": "app/build/intermediates/navigation_json/pocoX7ProDebug/extractDeepLinksPocoX7ProDebug/navigation.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "bytes": 15,
+      "path": "app/build/intermediates/nested_resources_validation_report/pocoX7ProDebug/generatePocoX7ProDebugResources/nestedResourcesValidationReport.txt",
+      "sha256": "9c480558a2abf161482051a883120398c77c97be0a2c7a60df38dff324aade96"
+    },
+    {
+      "bytes": 1933,
+      "path": "app/build/intermediates/packaged_manifests/pocoX7ProDebug/processPocoX7ProDebugManifestForPackage/AndroidManifest.xml",
+      "sha256": "3b8dc5f9fd2820e61b3c0d634f2c806fc7a8ceedde72fa54ec893649759e2a97"
+    },
+    {
+      "bytes": 424,
+      "path": "app/build/intermediates/packaged_manifests/pocoX7ProDebug/processPocoX7ProDebugManifestForPackage/output-metadata.json",
+      "sha256": "16cb750cd2ebc7357ed6ce44b351cdb65660b9037f84bd173b00cdc765c1bfe2"
+    },
+    {
+      "bytes": 816,
+      "path": "app/build/intermediates/packaged_res/pocoX7ProDebug/packagePocoX7ProDebugResources/values/values.xml",
+      "sha256": "d739e7701bd372d8b012ad67aa110cecdd4e5cf320fa6f371670897fc8e5c141"
+    },
+    {
+      "bytes": 2310,
+      "path": "app/build/intermediates/source_set_path_map/pocoX7ProDebug/mapPocoX7ProDebugSourceSetPaths/file-map.txt",
+      "sha256": "1118507052d500391b0748c2920a5e522b699091f2e750fe1c0643677531b69e"
+    },
+    {
+      "bytes": 10979,
+      "path": "app/build/outputs/logs/manifest-merger-pocoX7Pro-debug-report.txt",
+      "sha256": "4750dda47976d6c77bedd3f194917269f9fa9b951c40012a294facdbd7774ad5"
+    },
+    {
+      "bytes": 1776,
+      "path": "app/build.gradle",
+      "sha256": "8856693b5bfeede889b4ac8f9b158ef89b4741c58ea10652c799203e8b12b860"
+    },
+    {
+      "bytes": 57,
+      "path": "app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1511,
+      "path": "app/src/main/AndroidManifest.xml",
+      "sha256": "8ec30ea970c150784fa1bc42b2fdd4044cc6745d12fd03a8fb840993a91e19e7"
+    },
+    {
+      "bytes": 258950,
+      "path": "app/src/main/assets/chrono/joint_hypotheses.jsonl",
+      "sha256": "7b00fc2d8bbba1f716e2c3bc7a1097e99eda39211a4391f08ebc4425e773fc58"
+    },
+    {
+      "bytes": 4267,
+      "path": "app/src/main/assets/chrono/manifest.json",
+      "sha256": "65beb74a64a3789fbc32b8fbcee35896ee646fc05c1ecd35e3d360262a7059b3"
+    },
+    {
+      "bytes": 328110,
+      "path": "app/src/main/assets/chrono/novelty.jsonl",
+      "sha256": "4e6fd1f691d784cea13a9949ffe88479a6f7c4676484f599a1bfe4807863c527"
+    },
+    {
+      "bytes": 102061,
+      "path": "app/src/main/assets/chrono/observations.jsonl",
+      "sha256": "8eda37a84a1e8cc651589155d8f35d4a67a4adb7a727cd9ba64dcc550336319b"
+    },
+    {
+      "bytes": 4194412,
+      "path": "app/src/main/assets/chrono/polar_lut.ugcv1",
+      "sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf"
+    },
+    {
+      "bytes": 684,
+      "path": "app/src/main/assets/chrono/polar_lut_inspection.json",
+      "sha256": "9d5e8d2009e443ea3f05b3917ce7cb189dcab86b4fa0601f8b20a19892bd7675"
+    },
+    {
+      "bytes": 2114651,
+      "path": "app/src/main/assets/chrono/polar_preview.mp4",
+      "sha256": "97f729b0b0347bcba7dea87adc883557fc19a8ffea85ed0906ecea2c47e4e708"
+    },
+    {
+      "bytes": 8948,
+      "path": "app/src/main/assets/chrono/preview_timeline.json",
+      "sha256": "7b6078284270b6123d4ee3f07ef9a54366a4e3fea436343787efd5106eaa822f"
+    },
+    {
+      "bytes": 2927828,
+      "path": "app/src/main/assets/chrono/proposals.jsonl",
+      "sha256": "aa1ee1bf61c44d98854bd5b79f9e4339caa176e3eb90ca82bb67c1bd01ce1067"
+    },
+    {
+      "bytes": 1528,
+      "path": "app/src/main/assets/chrono/reconstruction_receipt.json",
+      "sha256": "f51a8b05ee278ab73a3b7fc2a8938dbcc8de461ad57b828e5a8909fabf379496"
+    },
+    {
+      "bytes": 2001,
+      "path": "app/src/main/assets/chrono/source_receipt.json",
+      "sha256": "97073f12c8a9a4992758dd35234bdf5ee1ba76efb86c238d79349a7c014265a3"
+    },
+    {
+      "bytes": 10958,
+      "path": "app/src/main/assets/project.json",
+      "sha256": "1eefe425edc85b70819df691e6a44965964b9dc5f1d6d6dd147591a30009216b"
+    },
+    {
+      "bytes": 1813,
+      "path": "app/src/main/assets/scene-pack-inspection.json",
+      "sha256": "d5e4123fe2a4f6b125bd3c69f88efcfdd41ce75b672c25677cbf4a881eeac3dc"
+    },
+    {
+      "bytes": 2265,
+      "path": "app/src/main/assets/shaders/grove_post.frag",
+      "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+    },
+    {
+      "bytes": 190,
+      "path": "app/src/main/assets/shaders/grove_post.vert",
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    {
+      "bytes": 9412,
+      "path": "app/src/main/assets/shaders/polar_scene.vert",
+      "sha256": "f408bd7a9b510cbdaddcb0e551913aeee40707809b9304bb5c8edf1f357c497f"
+    },
+    {
+      "bytes": 2610,
+      "path": "app/src/main/assets/shaders/scene.frag",
+      "sha256": "86f4b4412db3f001ebec7930e79a0145a62d1ff06b632c0e36a9e5b402c6404b"
+    },
+    {
+      "bytes": 1005,
+      "path": "app/src/main/assets/shaders/scene.vert",
+      "sha256": "6751493fb3360e1ce75c8b87af79d7b6190d55e02661866cd19c112323fabba0"
+    },
+    {
+      "bytes": 1468,
+      "path": "app/src/main/assets/signature_scene.kc3d",
+      "sha256": "fb04aebe136a72f336794509b08c6a8e137078c83876f689935d0d88d683beb2"
+    },
+    {
+      "bytes": 860,
+      "path": "app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 6536,
+      "path": "app/src/main/cpp/body_physics.cpp",
+      "sha256": "7d4efd4840faf17fde5a27e2f417cb07811e0fbb3d019c72c04ce7406e0a8bd2"
+    },
+    {
+      "bytes": 1094,
+      "path": "app/src/main/cpp/body_physics.hpp",
+      "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
+    },
+    {
+      "bytes": 7493,
+      "path": "app/src/main/cpp/chrono_video_lut.cpp",
+      "sha256": "a688d00d912a776f67ce5ce3aee2202743b403bcd3b3dd23afc4f20c67c2bc56"
+    },
+    {
+      "bytes": 670,
+      "path": "app/src/main/cpp/chrono_video_lut.hpp",
+      "sha256": "cb2ee488e918564f7d55fbbf70068c607f7ef5af7cb7d9a03e7dd73832afe6a9"
+    },
+    {
+      "bytes": 2816,
+      "path": "app/src/main/cpp/CMakeLists.txt",
+      "sha256": "bb33e27b8436c46754db6a75e480140ff93dcded97b4277db1537d17dfb88050"
+    },
+    {
+      "bytes": 3497,
+      "path": "app/src/main/cpp/device_profile.cpp",
+      "sha256": "cf9076926932f88136fce6074395ac51e9dcc9b912f4c06b2123b54bb9c18e94"
+    },
+    {
+      "bytes": 676,
+      "path": "app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 27396,
+      "path": "app/src/main/cpp/engine.cpp",
+      "sha256": "536fece0e8925f454dbcc736d11c946b9d53e44c6528410f5e705305fc830c9a"
+    },
+    {
+      "bytes": 3162,
+      "path": "app/src/main/cpp/engine.hpp",
+      "sha256": "a88658623ce9ec0bf4ef9ea8fb9df3d324feb5102d45302d40ac511d722678c3"
+    },
+    {
+      "bytes": 7432,
+      "path": "app/src/main/cpp/gpu_timer_query.cpp",
+      "sha256": "51e359ae1802bf31bd6901215d1fa67a1d0f59098e3256457f2d18bbe2ec56ba"
+    },
+    {
+      "bytes": 1979,
+      "path": "app/src/main/cpp/gpu_timer_query.hpp",
+      "sha256": "a73c3885315d67329c78fbbbb189fe66b8474f0288ac601b55578c2733dfe525"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/graph_component_access.hpp",
+      "sha256": "1af799a35631aeaa0a84d97bc059877954ca842c7dbdc9fb3f7f2ab42a6db23a"
+    },
+    {
+      "bytes": 1533,
+      "path": "app/src/main/cpp/graph_render_recipe_access.hpp",
+      "sha256": "d796b420fa0c021f00fcebe497dd81c0f3d0bfa2dececbcbcbe970534b6eff2a"
+    },
+    {
+      "bytes": 62806,
+      "path": "app/src/main/cpp/graph_vm.cpp",
+      "sha256": "13710f4fe8426e0d7c2111ee5e692106be829e02f3bd389530aab1c7d39144d4"
+    },
+    {
+      "bytes": 7640,
+      "path": "app/src/main/cpp/graph_vm.hpp",
+      "sha256": "64e64a2c8d5226939d09e9a1d4191c5c8c5bdbde248f29d754d2a3cf06167ae8"
+    },
+    {
+      "bytes": 2370,
+      "path": "app/src/main/cpp/grove_juice.cpp",
+      "sha256": "247fed02dd45217041950146fae868e28477d0029161ddb32fdf8bca483f7dec"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/grove_juice.hpp",
+      "sha256": "fc8c20fefb35cbc8833ad786f7d672ba2c1142d4338cf4f4fdfb9e0a985affbb"
+    },
+    {
+      "bytes": 1642,
+      "path": "app/src/main/cpp/grove_tuning.cpp",
+      "sha256": "16ebd1f20c9bb846af5b46444cf4e04df513bd66177ba8a996cc3db126ddf4ab"
+    },
+    {
+      "bytes": 404,
+      "path": "app/src/main/cpp/grove_tuning.hpp",
+      "sha256": "8cab2c99999ca7493ef0c660f331cc3259485e1ad1e4fbe1312cdff2b4fe9133"
+    },
+    {
+      "bytes": 3792,
+      "path": "app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1889,
+      "path": "app/src/main/cpp/main.cpp",
+      "sha256": "2e81982574f1621c6bdb5e60e5a5afc8f487df61820420c81c109396caa9bfd9"
+    },
+    {
+      "bytes": 28862,
+      "path": "app/src/main/cpp/polar_kinematics.cpp",
+      "sha256": "6652247e661031f2630183f6bf8a7de88a3295566c0d2f058ab83c2cf122ce4d"
+    },
+    {
+      "bytes": 3718,
+      "path": "app/src/main/cpp/polar_kinematics.hpp",
+      "sha256": "99ae7b7ca2fdab68ff65d37ff9b9ed64fa3ae2e945d051d4b4d8af98fea62ea5"
+    },
+    {
+      "bytes": 57218,
+      "path": "app/src/main/cpp/polar_populations.cpp",
+      "sha256": "3449eec40de4828c15b37cf803a4c50a939e981f870b6097369484e01a12797d"
+    },
+    {
+      "bytes": 5434,
+      "path": "app/src/main/cpp/polar_populations.hpp",
+      "sha256": "2dcf142c204992a303541cba8b34269ada3b086d5171abdf180bdcd851f1de3c"
+    },
+    {
+      "bytes": 5432,
+      "path": "app/src/main/cpp/render_substrate.cpp",
+      "sha256": "72020c031d94139e63eed78b24d0bc69b39786100fffd4fb5fe31067104982b5"
+    },
+    {
+      "bytes": 1335,
+      "path": "app/src/main/cpp/render_substrate.hpp",
+      "sha256": "f88b4d03b4509220dfec623c75ce9c8c26616153266d3c2525748ebd07bc45e5"
+    },
+    {
+      "bytes": 71166,
+      "path": "app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "65f9133983fcaedc025c071a9c4abd7e2d0ed28bfb55f36e310f977ae89802d7"
+    },
+    {
+      "bytes": 7033,
+      "path": "app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "a1b6ead6af60246b7cc547972a192364a97d6a74ab3ce06c7305fff9db2b090c"
+    },
+    {
+      "bytes": 16221,
+      "path": "app/src/main/cpp/scatter_population.cpp",
+      "sha256": "d46febf3421cda5c83833d2bb11534d9a539490cab57e90f21ea1562b79dde18"
+    },
+    {
+      "bytes": 2574,
+      "path": "app/src/main/cpp/scatter_population.hpp",
+      "sha256": "e9b27c2836841f9c509421a749b99dc14746d9a8698557153520d89b16e3422f"
+    },
+    {
+      "bytes": 6306,
+      "path": "app/src/main/cpp/scene_pack.cpp",
+      "sha256": "84d1bd5193c0eec7613d615de419a952ad86faa57c5b93ca726dd90c866d483b"
+    },
+    {
+      "bytes": 2860,
+      "path": "app/src/main/cpp/scene_pack.hpp",
+      "sha256": "da19a53b7370cc1e0ba7852744ee2d84ec63b3b6fb77266db402e32dddc56388"
+    },
+    {
+      "bytes": 5743,
+      "path": "app/src/main/cpp/touch_router.cpp",
+      "sha256": "83e05dd6e2e4e8c8b0befef08e20e447fa21f812a3848a9f24916d20ebd69721"
+    },
+    {
+      "bytes": 2150,
+      "path": "app/src/main/cpp/touch_router.hpp",
+      "sha256": "037972a00ca70bc766309b83099028203a4e3758c52532ba271212df6984568a"
+    },
+    {
+      "bytes": 20172,
+      "path": "app/src/main/cpp/transform_animation.cpp",
+      "sha256": "14bd6ec6c6bf458aff96ac212b7f2a65be595a1f8e0ded326a3899f24ca2ae0b"
+    },
+    {
+      "bytes": 2647,
+      "path": "app/src/main/cpp/transform_animation.hpp",
+      "sha256": "92f88b412a4bce7f35dbf44c8a36e715af95a5b1cc67693504261939a72f4cfa"
+    },
+    {
+      "bytes": 6019,
+      "path": "app/src/main/cpp/transform_hierarchy.cpp",
+      "sha256": "e7bbadc55d72f73bbcf9cdea6b5f346b591aac82801d9545d880d340e0de1376"
+    },
+    {
+      "bytes": 1262,
+      "path": "app/src/main/cpp/transform_hierarchy.hpp",
+      "sha256": "cda00bf3218f151ff7d3f44a7b553d66613f7088fad0a81c5f5c938d78c9eebf"
+    },
+    {
+      "bytes": 4752,
+      "path": "app/src/main/cpp/trigger_area.cpp",
+      "sha256": "84fdc47aa5f8e5e12044031f9cdfc4b9041e4d53a75b81ba3751f038b9676d31"
+    },
+    {
+      "bytes": 1296,
+      "path": "app/src/main/cpp/trigger_area.hpp",
+      "sha256": "ed490f5bec08bcff5c7dd0beadc8a02d52c77ed0c981254bd3261851409a5c9c"
+    },
+    {
+      "bytes": 140,
+      "path": "app/src/main/res/values/strings.xml",
+      "sha256": "3fef2a788a53c71fd0d6ac6d8d0e248d789821751fe35861203f46bbb143f40a"
+    },
+    {
+      "bytes": 766,
+      "path": "app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 132467,
+      "path": "build/reports/problems/problems-report.html",
+      "sha256": "3118af8413b72cf53d2671eaf5a8cb05dff2b8fb18ddd187ce5550f58f99c5e5"
+    },
+    {
+      "bytes": 74,
+      "path": "build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 8042,
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b"
+    },
+    {
+      "bytes": 338,
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "3fb35582e5424775b45f566273d3909032a49f26c0d7d063f92a92e7b5e467d5"
+    },
+    {
+      "bytes": 159,
+      "path": "gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 362,
+      "path": "gradlew",
+      "sha256": "d7014b2f5807fd975867dbb2e3651dbc19dd88d9a13d0df4c9061260d662fd95"
+    },
+    {
+      "bytes": 267,
+      "path": "gradlew.bat",
+      "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
+    },
+    {
+      "bytes": 9500,
+      "path": "README.md",
+      "sha256": "49df179b32e55151be2ebe3f4bf6198dcb36237df04b87759c73b910498e418c"
+    },
+    {
+      "bytes": 333,
+      "path": "settings.gradle",
+      "sha256": "e15aa169810e33620d11fbf6723bf7ddf619f3dfd07801748c3cbd07245fe9b8"
+    }
+  ],
+  "gradle": "8.13",
+  "min_sdk": 26,
+  "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+  "ndk": "r29 / 29.0.14206865",
+  "packed_kinematic_runtime": null,
+  "polar_population_recipe_asset": null,
+  "population_runtime": null,
+  "profile_hint": "poco_x7_pro_12gb",
+  "project_hash": "c815a4867f66a19eacd3d33ff4edff3bcb6b18b52138c2816a7ab57c3119731a",
+  "project_id": "chrono_video_observation_inspector",
+  "render_substrate_runtime": null,
+  "schema": "ugts-kc-android-source-build-3.9.2",
+  "target_sdk": 36,
+  "transform_animation_runtime": null,
+  "transform_hierarchy_runtime": null,
+  "visual_graph_runtime": null,
+  "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed"
+}

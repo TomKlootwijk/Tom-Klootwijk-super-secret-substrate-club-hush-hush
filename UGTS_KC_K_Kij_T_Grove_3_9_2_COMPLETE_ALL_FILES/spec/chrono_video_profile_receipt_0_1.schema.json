@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ugts.local/schema/chrono-video-profile-receipt-0.1.json",
+  "title": "UGTOMS Chrono Video Profile Receipt 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "canonical_profile", "profile_sha256", "implementation"],
+  "properties": {
+    "schema": {"const": "ugts-chrono-video-profile-receipt-0.1"},
+    "canonical_profile": {"$ref": "#/$defs/profile"},
+    "profile_sha256": {"$ref": "#/$defs/sha256"},
+    "implementation": {"$ref": "#/$defs/implementation"}
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nonempty": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "profile",
+        "theta_bins",
+        "rho_bins",
+        "sample_stride",
+        "tile_size",
+        "batch_size",
+        "max_vram_mib",
+        "r0_pixels",
+        "core_radius_pixels",
+        "proposal_dynamic_fraction",
+        "proposal_mad_multiplier",
+        "target_kind",
+        "embed_source_for_phone"
+      ],
+      "properties": {
+        "schema": {"const": "ugts-chrono-video-profile-0.1"},
+        "profile": {"const": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL"},
+        "theta_bins": {"type": "integer", "minimum": 16, "maximum": 8192, "multipleOf": 2},
+        "rho_bins": {"type": "integer", "minimum": 16, "maximum": 4096, "multipleOf": 2},
+        "sample_stride": {"type": "integer", "minimum": 1},
+        "tile_size": {"type": "integer", "minimum": 8, "maximum": 1024},
+        "batch_size": {"type": "integer", "minimum": 1, "maximum": 64},
+        "max_vram_mib": {"type": "integer", "minimum": 128, "maximum": 10240},
+        "r0_pixels": {"type": "number", "exclusiveMinimum": 0},
+        "core_radius_pixels": {"type": "number", "exclusiveMinimum": 0},
+        "proposal_dynamic_fraction": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+        "proposal_mad_multiplier": {"type": "number", "exclusiveMinimum": 0},
+        "target_kind": {"enum": ["scene", "human"]},
+        "embed_source_for_phone": {"type": "boolean"}
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "ugts_kc3", "python", "dependencies", "executables", "selected"],
+      "properties": {
+        "schema": {"const": "ugts-chrono-video-implementation-receipt-0.1"},
+        "ugts_kc3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version", "chrono_video_module_sha256"],
+          "properties": {
+            "version": {"$ref": "#/$defs/nonempty"},
+            "chrono_video_module_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "python": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["implementation", "version"],
+          "properties": {
+            "implementation": {"$ref": "#/$defs/nonempty"},
+            "version": {"$ref": "#/$defs/nonempty"}
+          }
+        },
+        "dependencies": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["numpy", "pyav", "opencv", "torch", "torch_cuda_runtime"],
+          "properties": {
+            "numpy": {"$ref": "#/$defs/nonempty"},
+            "pyav": {"$ref": "#/$defs/nonempty"},
+            "opencv": {"$ref": "#/$defs/nonempty"},
+            "torch": {"oneOf": [{"$ref": "#/$defs/nonempty"}, {"type": "null"}]},
+            "torch_cuda_runtime": {"oneOf": [{"$ref": "#/$defs/nonempty"}, {"type": "null"}]}
+          }
+        },
+        "executables": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ffmpeg", "ffprobe"],
+          "properties": {
+            "ffmpeg": {"type": "string", "pattern": "^ffmpeg version .+"},
+            "ffprobe": {"type": "string", "pattern": "^ffprobe version .+"}
+          }
+        },
+        "selected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["compute_backend", "decode_backend", "preview_encoder"],
+          "properties": {
+            "compute_backend": {"enum": ["numpy-cpu-q8", "torch-cuda-q8"]},
+            "decode_backend": {"const": "pyav-cpu-exact-pts"},
+            "preview_encoder": {"const": "ffmpeg-libx264"}
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "selected": {
+                "properties": {"compute_backend": {"const": "torch-cuda-q8"}}
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "dependencies": {
+                "properties": {
+                  "torch": {"$ref": "#/$defs/nonempty"},
+                  "torch_cuda_runtime": {"$ref": "#/$defs/nonempty"}
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "dependencies": {
+                "properties": {
+                  "torch": {"type": "null"},
+                  "torch_cuda_runtime": {"type": "null"}
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+#Sun Aug 30 13:06:05 CEST 2026
+base.0=C\:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL\\android_poco_physical_receipt\\app\\build\\intermediates\\dex\\pocoX7ProDebug\\mergeProjectDexPocoX7ProDebug\\0\\classes.dex
+base.1=C\:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL\\android_poco_physical_receipt\\app\\build\\intermediates\\dex\\pocoX7ProDebug\\mergeProjectDexPocoX7ProDebug\\5\\classes.dex
+path.0=0/classes.dex
+path.1=5/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

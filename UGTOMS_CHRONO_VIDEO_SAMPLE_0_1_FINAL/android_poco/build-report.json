@@ -1,0 +1,469 @@
+{
+  "agp": "8.13.2",
+  "application_id": "org.ugts.games.chrono_video_observation_inspector",
+  "authoring_assets_packaged": true,
+  "authoring_project_hash": "c815a4867f66a19eacd3d33ff4edff3bcb6b18b52138c2816a7ab57c3119731a",
+  "chrono_video_assets": [
+    {
+      "bytes": 2001,
+      "path": "chrono/source_receipt.json",
+      "sha256": "97073f12c8a9a4992758dd35234bdf5ee1ba76efb86c238d79349a7c014265a3"
+    },
+    {
+      "bytes": 102061,
+      "path": "chrono/observations.jsonl",
+      "sha256": "8eda37a84a1e8cc651589155d8f35d4a67a4adb7a727cd9ba64dcc550336319b"
+    },
+    {
+      "bytes": 2927828,
+      "path": "chrono/proposals.jsonl",
+      "sha256": "aa1ee1bf61c44d98854bd5b79f9e4339caa176e3eb90ca82bb67c1bd01ce1067"
+    },
+    {
+      "bytes": 258950,
+      "path": "chrono/joint_hypotheses.jsonl",
+      "sha256": "7b00fc2d8bbba1f716e2c3bc7a1097e99eda39211a4391f08ebc4425e773fc58"
+    },
+    {
+      "bytes": 328110,
+      "path": "chrono/novelty.jsonl",
+      "sha256": "4e6fd1f691d784cea13a9949ffe88479a6f7c4676484f599a1bfe4807863c527"
+    },
+    {
+      "bytes": 4194412,
+      "path": "chrono/polar_lut.ugcv1",
+      "sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf"
+    },
+    {
+      "bytes": 684,
+      "path": "chrono/polar_lut_inspection.json",
+      "sha256": "9d5e8d2009e443ea3f05b3917ce7cb189dcab86b4fa0601f8b20a19892bd7675"
+    },
+    {
+      "bytes": 2114651,
+      "path": "chrono/polar_preview.mp4",
+      "sha256": "97f729b0b0347bcba7dea87adc883557fc19a8ffea85ed0906ecea2c47e4e708"
+    },
+    {
+      "bytes": 8948,
+      "path": "chrono/preview_timeline.json",
+      "sha256": "7b6078284270b6123d4ee3f07ef9a54366a4e3fea436343787efd5106eaa822f"
+    },
+    {
+      "bytes": 1528,
+      "path": "chrono/reconstruction_receipt.json",
+      "sha256": "f51a8b05ee278ab73a3b7fc2a8938dbcc8de461ad57b828e5a8909fabf379496"
+    },
+    {
+      "bytes": 4267,
+      "path": "chrono/manifest.json",
+      "sha256": "65beb74a64a3789fbc32b8fbcee35896ee646fc05c1ecd35e3d360262a7059b3"
+    }
+  ],
+  "compile_sdk": 36,
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "files": [
+    {
+      "bytes": 1776,
+      "path": "app/build.gradle",
+      "sha256": "8856693b5bfeede889b4ac8f9b158ef89b4741c58ea10652c799203e8b12b860"
+    },
+    {
+      "bytes": 57,
+      "path": "app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 1511,
+      "path": "app/src/main/AndroidManifest.xml",
+      "sha256": "8ec30ea970c150784fa1bc42b2fdd4044cc6745d12fd03a8fb840993a91e19e7"
+    },
+    {
+      "bytes": 258950,
+      "path": "app/src/main/assets/chrono/joint_hypotheses.jsonl",
+      "sha256": "7b00fc2d8bbba1f716e2c3bc7a1097e99eda39211a4391f08ebc4425e773fc58"
+    },
+    {
+      "bytes": 4267,
+      "path": "app/src/main/assets/chrono/manifest.json",
+      "sha256": "65beb74a64a3789fbc32b8fbcee35896ee646fc05c1ecd35e3d360262a7059b3"
+    },
+    {
+      "bytes": 328110,
+      "path": "app/src/main/assets/chrono/novelty.jsonl",
+      "sha256": "4e6fd1f691d784cea13a9949ffe88479a6f7c4676484f599a1bfe4807863c527"
+    },
+    {
+      "bytes": 102061,
+      "path": "app/src/main/assets/chrono/observations.jsonl",
+      "sha256": "8eda37a84a1e8cc651589155d8f35d4a67a4adb7a727cd9ba64dcc550336319b"
+    },
+    {
+      "bytes": 4194412,
+      "path": "app/src/main/assets/chrono/polar_lut.ugcv1",
+      "sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf"
+    },
+    {
+      "bytes": 684,
+      "path": "app/src/main/assets/chrono/polar_lut_inspection.json",
+      "sha256": "9d5e8d2009e443ea3f05b3917ce7cb189dcab86b4fa0601f8b20a19892bd7675"
+    },
+    {
+      "bytes": 2114651,
+      "path": "app/src/main/assets/chrono/polar_preview.mp4",
+      "sha256": "97f729b0b0347bcba7dea87adc883557fc19a8ffea85ed0906ecea2c47e4e708"
+    },
+    {
+      "bytes": 8948,
+      "path": "app/src/main/assets/chrono/preview_timeline.json",
+      "sha256": "7b6078284270b6123d4ee3f07ef9a54366a4e3fea436343787efd5106eaa822f"
+    },
+    {
+      "bytes": 2927828,
+      "path": "app/src/main/assets/chrono/proposals.jsonl",
+      "sha256": "aa1ee1bf61c44d98854bd5b79f9e4339caa176e3eb90ca82bb67c1bd01ce1067"
+    },
+    {
+      "bytes": 1528,
+      "path": "app/src/main/assets/chrono/reconstruction_receipt.json",
+      "sha256": "f51a8b05ee278ab73a3b7fc2a8938dbcc8de461ad57b828e5a8909fabf379496"
+    },
+    {
+      "bytes": 2001,
+      "path": "app/src/main/assets/chrono/source_receipt.json",
+      "sha256": "97073f12c8a9a4992758dd35234bdf5ee1ba76efb86c238d79349a7c014265a3"
+    },
+    {
+      "bytes": 10958,
+      "path": "app/src/main/assets/project.json",
+      "sha256": "1eefe425edc85b70819df691e6a44965964b9dc5f1d6d6dd147591a30009216b"
+    },
+    {
+      "bytes": 1813,
+      "path": "app/src/main/assets/scene-pack-inspection.json",
+      "sha256": "d5e4123fe2a4f6b125bd3c69f88efcfdd41ce75b672c25677cbf4a881eeac3dc"
+    },
+    {
+      "bytes": 2265,
+      "path": "app/src/main/assets/shaders/grove_post.frag",
+      "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+    },
+    {
+      "bytes": 190,
+      "path": "app/src/main/assets/shaders/grove_post.vert",
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    {
+      "bytes": 9412,
+      "path": "app/src/main/assets/shaders/polar_scene.vert",
+      "sha256": "f408bd7a9b510cbdaddcb0e551913aeee40707809b9304bb5c8edf1f357c497f"
+    },
+    {
+      "bytes": 2610,
+      "path": "app/src/main/assets/shaders/scene.frag",
+      "sha256": "86f4b4412db3f001ebec7930e79a0145a62d1ff06b632c0e36a9e5b402c6404b"
+    },
+    {
+      "bytes": 1005,
+      "path": "app/src/main/assets/shaders/scene.vert",
+      "sha256": "6751493fb3360e1ce75c8b87af79d7b6190d55e02661866cd19c112323fabba0"
+    },
+    {
+      "bytes": 1468,
+      "path": "app/src/main/assets/signature_scene.kc3d",
+      "sha256": "fb04aebe136a72f336794509b08c6a8e137078c83876f689935d0d88d683beb2"
+    },
+    {
+      "bytes": 860,
+      "path": "app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 6536,
+      "path": "app/src/main/cpp/body_physics.cpp",
+      "sha256": "7d4efd4840faf17fde5a27e2f417cb07811e0fbb3d019c72c04ce7406e0a8bd2"
+    },
+    {
+      "bytes": 1094,
+      "path": "app/src/main/cpp/body_physics.hpp",
+      "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
+    },
+    {
+      "bytes": 7493,
+      "path": "app/src/main/cpp/chrono_video_lut.cpp",
+      "sha256": "a688d00d912a776f67ce5ce3aee2202743b403bcd3b3dd23afc4f20c67c2bc56"
+    },
+    {
+      "bytes": 670,
+      "path": "app/src/main/cpp/chrono_video_lut.hpp",
+      "sha256": "cb2ee488e918564f7d55fbbf70068c607f7ef5af7cb7d9a03e7dd73832afe6a9"
+    },
+    {
+      "bytes": 2816,
+      "path": "app/src/main/cpp/CMakeLists.txt",
+      "sha256": "bb33e27b8436c46754db6a75e480140ff93dcded97b4277db1537d17dfb88050"
+    },
+    {
+      "bytes": 3497,
+      "path": "app/src/main/cpp/device_profile.cpp",
+      "sha256": "cf9076926932f88136fce6074395ac51e9dcc9b912f4c06b2123b54bb9c18e94"
+    },
+    {
+      "bytes": 676,
+      "path": "app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 27396,
+      "path": "app/src/main/cpp/engine.cpp",
+      "sha256": "536fece0e8925f454dbcc736d11c946b9d53e44c6528410f5e705305fc830c9a"
+    },
+    {
+      "bytes": 3162,
+      "path": "app/src/main/cpp/engine.hpp",
+      "sha256": "a88658623ce9ec0bf4ef9ea8fb9df3d324feb5102d45302d40ac511d722678c3"
+    },
+    {
+      "bytes": 7432,
+      "path": "app/src/main/cpp/gpu_timer_query.cpp",
+      "sha256": "51e359ae1802bf31bd6901215d1fa67a1d0f59098e3256457f2d18bbe2ec56ba"
+    },
+    {
+      "bytes": 1979,
+      "path": "app/src/main/cpp/gpu_timer_query.hpp",
+      "sha256": "a73c3885315d67329c78fbbbb189fe66b8474f0288ac601b55578c2733dfe525"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/graph_component_access.hpp",
+      "sha256": "1af799a35631aeaa0a84d97bc059877954ca842c7dbdc9fb3f7f2ab42a6db23a"
+    },
+    {
+      "bytes": 1533,
+      "path": "app/src/main/cpp/graph_render_recipe_access.hpp",
+      "sha256": "d796b420fa0c021f00fcebe497dd81c0f3d0bfa2dececbcbcbe970534b6eff2a"
+    },
+    {
+      "bytes": 62806,
+      "path": "app/src/main/cpp/graph_vm.cpp",
+      "sha256": "13710f4fe8426e0d7c2111ee5e692106be829e02f3bd389530aab1c7d39144d4"
+    },
+    {
+      "bytes": 7640,
+      "path": "app/src/main/cpp/graph_vm.hpp",
+      "sha256": "64e64a2c8d5226939d09e9a1d4191c5c8c5bdbde248f29d754d2a3cf06167ae8"
+    },
+    {
+      "bytes": 2370,
+      "path": "app/src/main/cpp/grove_juice.cpp",
+      "sha256": "247fed02dd45217041950146fae868e28477d0029161ddb32fdf8bca483f7dec"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/grove_juice.hpp",
+      "sha256": "fc8c20fefb35cbc8833ad786f7d672ba2c1142d4338cf4f4fdfb9e0a985affbb"
+    },
+    {
+      "bytes": 1642,
+      "path": "app/src/main/cpp/grove_tuning.cpp",
+      "sha256": "16ebd1f20c9bb846af5b46444cf4e04df513bd66177ba8a996cc3db126ddf4ab"
+    },
+    {
+      "bytes": 404,
+      "path": "app/src/main/cpp/grove_tuning.hpp",
+      "sha256": "8cab2c99999ca7493ef0c660f331cc3259485e1ad1e4fbe1312cdff2b4fe9133"
+    },
+    {
+      "bytes": 3792,
+      "path": "app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 1889,
+      "path": "app/src/main/cpp/main.cpp",
+      "sha256": "2e81982574f1621c6bdb5e60e5a5afc8f487df61820420c81c109396caa9bfd9"
+    },
+    {
+      "bytes": 28862,
+      "path": "app/src/main/cpp/polar_kinematics.cpp",
+      "sha256": "6652247e661031f2630183f6bf8a7de88a3295566c0d2f058ab83c2cf122ce4d"
+    },
+    {
+      "bytes": 3718,
+      "path": "app/src/main/cpp/polar_kinematics.hpp",
+      "sha256": "99ae7b7ca2fdab68ff65d37ff9b9ed64fa3ae2e945d051d4b4d8af98fea62ea5"
+    },
+    {
+      "bytes": 57218,
+      "path": "app/src/main/cpp/polar_populations.cpp",
+      "sha256": "3449eec40de4828c15b37cf803a4c50a939e981f870b6097369484e01a12797d"
+    },
+    {
+      "bytes": 5434,
+      "path": "app/src/main/cpp/polar_populations.hpp",
+      "sha256": "2dcf142c204992a303541cba8b34269ada3b086d5171abdf180bdcd851f1de3c"
+    },
+    {
+      "bytes": 5432,
+      "path": "app/src/main/cpp/render_substrate.cpp",
+      "sha256": "72020c031d94139e63eed78b24d0bc69b39786100fffd4fb5fe31067104982b5"
+    },
+    {
+      "bytes": 1335,
+      "path": "app/src/main/cpp/render_substrate.hpp",
+      "sha256": "f88b4d03b4509220dfec623c75ce9c8c26616153266d3c2525748ebd07bc45e5"
+    },
+    {
+      "bytes": 71166,
+      "path": "app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "65f9133983fcaedc025c071a9c4abd7e2d0ed28bfb55f36e310f977ae89802d7"
+    },
+    {
+      "bytes": 7033,
+      "path": "app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "a1b6ead6af60246b7cc547972a192364a97d6a74ab3ce06c7305fff9db2b090c"
+    },
+    {
+      "bytes": 16221,
+      "path": "app/src/main/cpp/scatter_population.cpp",
+      "sha256": "d46febf3421cda5c83833d2bb11534d9a539490cab57e90f21ea1562b79dde18"
+    },
+    {
+      "bytes": 2574,
+      "path": "app/src/main/cpp/scatter_population.hpp",
+      "sha256": "e9b27c2836841f9c509421a749b99dc14746d9a8698557153520d89b16e3422f"
+    },
+    {
+      "bytes": 6306,
+      "path": "app/src/main/cpp/scene_pack.cpp",
+      "sha256": "84d1bd5193c0eec7613d615de419a952ad86faa57c5b93ca726dd90c866d483b"
+    },
+    {
+      "bytes": 2860,
+      "path": "app/src/main/cpp/scene_pack.hpp",
+      "sha256": "da19a53b7370cc1e0ba7852744ee2d84ec63b3b6fb77266db402e32dddc56388"
+    },
+    {
+      "bytes": 5743,
+      "path": "app/src/main/cpp/touch_router.cpp",
+      "sha256": "83e05dd6e2e4e8c8b0befef08e20e447fa21f812a3848a9f24916d20ebd69721"
+    },
+    {
+      "bytes": 2150,
+      "path": "app/src/main/cpp/touch_router.hpp",
+      "sha256": "037972a00ca70bc766309b83099028203a4e3758c52532ba271212df6984568a"
+    },
+    {
+      "bytes": 20172,
+      "path": "app/src/main/cpp/transform_animation.cpp",
+      "sha256": "14bd6ec6c6bf458aff96ac212b7f2a65be595a1f8e0ded326a3899f24ca2ae0b"
+    },
+    {
+      "bytes": 2647,
+      "path": "app/src/main/cpp/transform_animation.hpp",
+      "sha256": "92f88b412a4bce7f35dbf44c8a36e715af95a5b1cc67693504261939a72f4cfa"
+    },
+    {
+      "bytes": 6019,
+      "path": "app/src/main/cpp/transform_hierarchy.cpp",
+      "sha256": "e7bbadc55d72f73bbcf9cdea6b5f346b591aac82801d9545d880d340e0de1376"
+    },
+    {
+      "bytes": 1262,
+      "path": "app/src/main/cpp/transform_hierarchy.hpp",
+      "sha256": "cda00bf3218f151ff7d3f44a7b553d66613f7088fad0a81c5f5c938d78c9eebf"
+    },
+    {
+      "bytes": 4752,
+      "path": "app/src/main/cpp/trigger_area.cpp",
+      "sha256": "84fdc47aa5f8e5e12044031f9cdfc4b9041e4d53a75b81ba3751f038b9676d31"
+    },
+    {
+      "bytes": 1296,
+      "path": "app/src/main/cpp/trigger_area.hpp",
+      "sha256": "ed490f5bec08bcff5c7dd0beadc8a02d52c77ed0c981254bd3261851409a5c9c"
+    },
+    {
+      "bytes": 140,
+      "path": "app/src/main/res/values/strings.xml",
+      "sha256": "3fef2a788a53c71fd0d6ac6d8d0e248d789821751fe35861203f46bbb143f40a"
+    },
+    {
+      "bytes": 766,
+      "path": "app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 74,
+      "path": "build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 8042,
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b"
+    },
+    {
+      "bytes": 338,
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "3fb35582e5424775b45f566273d3909032a49f26c0d7d063f92a92e7b5e467d5"
+    },
+    {
+      "bytes": 159,
+      "path": "gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 362,
+      "path": "gradlew",
+      "sha256": "d7014b2f5807fd975867dbb2e3651dbc19dd88d9a13d0df4c9061260d662fd95"
+    },
+    {
+      "bytes": 267,
+      "path": "gradlew.bat",
+      "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
+    },
+    {
+      "bytes": 9500,
+      "path": "README.md",
+      "sha256": "49df179b32e55151be2ebe3f4bf6198dcb36237df04b87759c73b910498e418c"
+    },
+    {
+      "bytes": 333,
+      "path": "settings.gradle",
+      "sha256": "e15aa169810e33620d11fbf6723bf7ddf619f3dfd07801748c3cbd07245fe9b8"
+    }
+  ],
+  "files_exclude": [
+    ".cxx",
+    ".gradle",
+    ".idea",
+    "*.iml",
+    "build",
+    "local.properties",
+    "build-report.json"
+  ],
+  "files_scope": "exported source inputs before Gradle build",
+  "gradle": "8.13",
+  "min_sdk": 26,
+  "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+  "ndk": "r29 / 29.0.14206865",
+  "packed_kinematic_runtime": null,
+  "polar_population_recipe_asset": null,
+  "population_runtime": null,
+  "profile_hint": "poco_x7_pro_12gb",
+  "project_hash": "c815a4867f66a19eacd3d33ff4edff3bcb6b18b52138c2816a7ab57c3119731a",
+  "project_id": "chrono_video_observation_inspector",
+  "render_substrate_runtime": null,
+  "schema": "ugts-kc-android-source-build-3.9.2",
+  "target_sdk": 36,
+  "transform_animation_runtime": null,
+  "transform_hierarchy_runtime": null,
+  "visual_graph_runtime": null,
+  "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed"
+}

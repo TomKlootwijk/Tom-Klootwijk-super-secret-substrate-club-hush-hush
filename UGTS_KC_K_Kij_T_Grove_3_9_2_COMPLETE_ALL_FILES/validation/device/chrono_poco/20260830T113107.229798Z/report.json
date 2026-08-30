@@ -1,0 +1,219 @@
+{
+  "artifacts": [
+    {
+      "bytes": 174,
+      "path": "activity_resolve.txt",
+      "sha256": "70bfea8de16c614a1dd389a06703a1aa4ff764725d673edfa572303ee5edfe24"
+    },
+    {
+      "bytes": 122,
+      "path": "adb_devices.txt",
+      "sha256": "67eb529529a241f4a31db5dbadc6e32a378b1a204df5566d38083b29f930151a"
+    },
+    {
+      "bytes": 546,
+      "path": "chrono_startup_failure.json",
+      "sha256": "09038abe01bfa3adf02d222a3f1f70e9196aaa79e55a07424abd9431457e43bc"
+    },
+    {
+      "bytes": 117358,
+      "path": "device_getprop.txt",
+      "sha256": "910bd90d0b46210b1bbd4f4d63bba001d79b54c2e34cc975e0c202042e71befa"
+    },
+    {
+      "bytes": 2738,
+      "path": "engine_log_startup.txt",
+      "sha256": "982cefaad536e19b9febd3c9a790f007a043130ae27079e565850816a7396fdb"
+    },
+    {
+      "bytes": 38,
+      "path": "install.txt",
+      "sha256": "c4aa470acafcf8576c15b0f0b5ae7e852d1ec5413372d0e6a9272e788e1306d3"
+    },
+    {
+      "bytes": 19047028,
+      "path": "installed_base.apk",
+      "sha256": "f64ef7b37e66dcbf3dffea0863741323188311f8e7d3a6dcabba265411e47fe4"
+    },
+    {
+      "bytes": 196,
+      "path": "installed_pull.txt",
+      "sha256": "c4adf9350c46f2483f4d507afe36a8abcc4683a909ebeef29028b2a48bbf15d4"
+    },
+    {
+      "bytes": 198,
+      "path": "installed_sha256_commands.txt",
+      "sha256": "149519c0fdec7b43b52aa27c9adff55b62d804216735cc3239507183ef987085"
+    },
+    {
+      "bytes": 301,
+      "path": "launch.txt",
+      "sha256": "deda1213bb0529f12e87b75b74b3a7c5e215fbf051e8fd54ba303c8bb10794a8"
+    },
+    {
+      "bytes": 9083,
+      "path": "package_dump.txt",
+      "sha256": "9c7693427012aeeb81066af6f1dbd4fec9902966a63bcb52460ea548f7bd31f4"
+    },
+    {
+      "bytes": 140,
+      "path": "pm_paths.txt",
+      "sha256": "c2f004c49eb6cdaead0b172662f6967c2f1a722450d0c5adf013f36cf760ee2a"
+    },
+    {
+      "bytes": 608690,
+      "path": "prelaunch_power.txt",
+      "sha256": "62e866716a04a24dd3d97abf5054d170a57e2f2c4a8190782e94cddad66371cc"
+    },
+    {
+      "bytes": 12452,
+      "path": "prelaunch_window_policy.txt",
+      "sha256": "8ed9d89aa8d3d815db0ff73b9404f97769f1e36120b7f29dfa567064d50b432c"
+    },
+    {
+      "bytes": 2063,
+      "path": "static_apk_audit.json",
+      "sha256": "556de89237f0dedf24ccf0a8038411e77eff4576f08c52a940b5e18e53b5dbd9"
+    }
+  ],
+  "completed_utc": "2026-08-30T11:31:12.813689Z",
+  "device": {
+    "android_release": "16",
+    "android_sdk": 36,
+    "brand": "POCO",
+    "build_fingerprint": "POCO/rodin_eea/rodin:16/BP2A.250605.031.A3/OS3.0.301.0.WOJEUXM:user/release-keys",
+    "comparison_device_override": false,
+    "device": "rodin",
+    "manufacturer": "Xiaomi",
+    "market_names": [
+      "0.006186207290738821",
+      "1",
+      "2412DPC0AG",
+      "MT6899",
+      "MT6899Z_A/ZA",
+      "POCO X7 Pro",
+      "mainline",
+      "miproduct",
+      "missi",
+      "true"
+    ],
+    "model": "2412DPC0AG",
+    "passed": true,
+    "primary_abi": "arm64-v8a",
+    "serial": "XOVSTSHYNREMZ5D6",
+    "target_poco_x7_pro": true
+  },
+  "failure": {
+    "code": "CHRONO_INITIALIZATION_FAILED_CLOSED",
+    "details": {
+      "fail_closed": true,
+      "log_line": "1788089474.570 22700  3679 E UGTS-KC392: chrono initialization failed closed mode=AUTHORITATIVE_SOURCE_LUT reason=chrono AMediaExtractor rejected the MP4 asset range and verified private transport (apk_status=-10000, private_status=-10000); preview_promotion=false",
+      "mode": "AUTHORITATIVE_SOURCE_LUT",
+      "phase": "initialization",
+      "preview_promotion": false,
+      "reason": "chrono AMediaExtractor rejected the MP4 asset range and verified private transport (apk_status=-10000, private_status=-10000)"
+    },
+    "message": "chrono AMediaExtractor rejected the MP4 asset range and verified private transport (apk_status=-10000, private_status=-10000)"
+  },
+  "gates": {
+    "device_identity": {
+      "android_release": "16",
+      "android_sdk": 36,
+      "brand": "POCO",
+      "build_fingerprint": "POCO/rodin_eea/rodin:16/BP2A.250605.031.A3/OS3.0.301.0.WOJEUXM:user/release-keys",
+      "comparison_device_override": false,
+      "device": "rodin",
+      "manufacturer": "Xiaomi",
+      "market_names": [
+        "0.006186207290738821",
+        "1",
+        "2412DPC0AG",
+        "MT6899",
+        "MT6899Z_A/ZA",
+        "POCO X7 Pro",
+        "mainline",
+        "miproduct",
+        "missi",
+        "true"
+      ],
+      "model": "2412DPC0AG",
+      "passed": true,
+      "primary_abi": "arm64-v8a",
+      "serial": "XOVSTSHYNREMZ5D6",
+      "target_poco_x7_pro": true
+    },
+    "installed_apk": {
+      "device_sha256": "f64ef7b37e66dcbf3dffea0863741323188311f8e7d3a6dcabba265411e47fe4",
+      "install_reported_success": true,
+      "local_sha256": "f64ef7b37e66dcbf3dffea0863741323188311f8e7d3a6dcabba265411e47fe4",
+      "passed": true,
+      "pulled": true,
+      "pulled_sha256": "f64ef7b37e66dcbf3dffea0863741323188311f8e7d3a6dcabba265411e47fe4",
+      "remote_base_apk": "/data/app/~~D_DmIyvMmvNxnM7n1bxJHg==/org.ugts.games.chrono_video_observation_inspector.pocox7pro-W0sblUCuON_ljr0UxibcIQ==/base.apk",
+      "verification_method": "device_sha256sum+adb_pull"
+    },
+    "static_apk": {
+      "activity": "org.ugts.runtime.UgtsNativeActivity",
+      "apk": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk",
+      "application_id": "org.ugts.games.chrono_video_observation_inspector.pocox7pro",
+      "build_report": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\build-report.json",
+      "build_report_sha256": "099a10b4a13c78accb1e19fbce6538a8e2a9cc1c9cf7f18822f62138258da71d",
+      "bytes": 19047028,
+      "chrono_asset_bytes": 22410086,
+      "chrono_asset_count": 17,
+      "expected_entries": 229,
+      "expected_sha256": "f64ef7b37e66dcbf3dffea0863741323188311f8e7d3a6dcabba265411e47fe4",
+      "manifest_sha256": "920ea8f09069e3fff9e8a514b1587ca0b3f8de0d104b80777e6f984f6f592d72",
+      "native_completion_receipt_present": true,
+      "native_libraries": [
+        "lib/arm64-v8a/libugts_kc_native.so"
+      ],
+      "output_metadata_present": true,
+      "passed": true,
+      "sha256": "f64ef7b37e66dcbf3dffea0863741323188311f8e7d3a6dcabba265411e47fe4",
+      "source_timeline": {
+        "content_sha256": "21cabb1211457ee162d04946e2b2501a83d531908905106298af60a7d0e226aa",
+        "end_source_pts_exclusive": 9119696,
+        "entry_bytes": 32,
+        "entry_count": 229,
+        "first_source_pts": 0,
+        "flags": 5,
+        "header_bytes": 208,
+        "magic": "UGCVPTS1",
+        "media_height": 720,
+        "media_role": "ORIGINAL_SOURCE",
+        "media_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+        "media_width": 1280,
+        "playback_mode": "ONCE_HOLD_LAST",
+        "profile_sha256": "03aa49806447188f8115da3124772690f8e45eb9383b84a4820d06af2c173e47",
+        "raster_mode": "APPLY_UGCVLUT1_Q8",
+        "schema": "ugts-chrono-video-pts-cache-inspection-0.1",
+        "source_frame_count": 229,
+        "source_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+        "time_base_den": 1000000,
+        "time_base_num": 1,
+        "version": "1.0"
+      }
+    }
+  },
+  "inputs": {
+    "apk": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk"
+  },
+  "nonclaims": [
+    "A PASS does not claim photon-time display equality.",
+    "MediaCodec device YUV-to-RGB conversion is not byte-authoritative.",
+    "The log-polar raster is deterministic observed-video evidence, not metric 3D or a hidden-surface reconstruction."
+  ],
+  "schema": "ugtoms-chrono-poco-physical-validation-1",
+  "started_utc": "2026-08-30T11:31:07.230211Z",
+  "status": "FAIL",
+  "target": {
+    "abi": "arm64-v8a",
+    "activity": "org.ugts.runtime.UgtsNativeActivity",
+    "application_id": "org.ugts.games.chrono_video_observation_inspector.pocox7pro",
+    "market_name": "POCO X7 Pro",
+    "runtime_mode": "AUTHORITATIVE_SOURCE_LUT"
+  },
+  "verified_physical_device": false,
+  "warnings": []
+}

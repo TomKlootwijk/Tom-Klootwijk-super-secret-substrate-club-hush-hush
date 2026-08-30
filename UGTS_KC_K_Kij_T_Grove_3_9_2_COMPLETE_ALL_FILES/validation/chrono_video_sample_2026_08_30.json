@@ -1,0 +1,96 @@
+{
+  "schema": "ugts-kc-chrono-video-validation-0.1",
+  "date": "2026-08-30",
+  "profile": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL",
+  "status": "PASS_SOURCE_AND_BUILD_FAIL_CLOSED_FOR_PHYSICAL_3D_AND_DEVICE",
+  "source": {
+    "path": "C:/Users/Tom/Videos/KasiaDansGedicht/sam_2353410928515192.mp4",
+    "bytes": 12132305,
+    "sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+    "codec": "H.264 Main",
+    "width": 1280,
+    "height": 720,
+    "frame_count": 229,
+    "time_base": "1/1000000",
+    "duration_ticks": 9119696
+  },
+  "host": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "vram_mib": 12227,
+    "driver": "591.59",
+    "compute_capability": "12.0"
+  },
+  "compile": {
+    "decode_backend": "pyav-cpu-exact-pts",
+    "compute_backend": "torch-cuda-q8",
+    "elapsed_seconds_one_run": 12.5368251,
+    "cuda_peak_allocated_mib": 396.87548828125,
+    "cpu_cuda_max_byte_difference": 0,
+    "observation_count": 229,
+    "analyzed_frame_count": 58,
+    "proposal_count": 57,
+    "joint_hypothesis_count": 57,
+    "novelty_event_count": 58,
+    "pixels_covered_once_per_frame": 921600,
+    "geometry_status": "UNBOUNDED_UNKNOWN"
+  },
+  "bundle": {
+    "path_from_workspace_root": "../UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL",
+    "manifest_sha256": "191d5f5a7b26e46669267584bc8af02ae6d2ca48a8b5869aef18454aacad0f9c",
+    "verification_report_sha256": "ff7216394b1979c5cb43576e4246a9d097b6f7041554ad3226303766ac903716",
+    "polar_lut_sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf",
+    "polar_preview_sha256": "1c36530c65ab21d2827d8e9cc3a51db9ce2e239515eb61ab1af19064ae3f2e7a",
+    "source_timeline_sha256": "3e97d07ce847162226d3892397f070c6dcaf0f700653334d73d119fa3b25098f",
+    "preview_timeline_sha256": "a63b07d41994108b8de075f2b4fadb3cf61805af823e38cd294e8efcdd25fcbd",
+    "asset_count": 15,
+    "asset_bytes": 22393549,
+    "embedded_source_byte_identical": true
+  },
+  "android": {
+    "target": "POCO X7 Pro / arm64-v8a / GLES 3.0",
+    "generated_project_path_from_workspace_root": "../UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL/android_poco_exact_timing",
+    "apk_bytes": 19036992,
+    "apk_sha256": "c9cf4d757a8961a45675a95c4c6f62cc1811f1db188e4dd7f01f13f7e9a89dd4",
+    "build_report_sha256": "e76bdab5b04f4753acb8761f301005beb0e3a9d22fd621872f58b7b382b7efc7",
+    "source_ledger_scope": "exported source inputs before Gradle build",
+    "source_ledger_entries": 90,
+    "source_ledger_mismatches_after_build": 0,
+    "packaged_chrono_asset_count": 16,
+    "packaged_chrono_asset_bytes": 22399330,
+    "mp4_zip_method": "STORED",
+    "zipalign_16k": "PASS",
+    "signature_scheme_v2": "PASS_DEBUG_CERTIFICATE",
+    "native_library_bytes_stripped": 1898048,
+    "native_library_sha256_stripped": "61361aafe2ecada98f8e9e930428f16e3c3fe3bfe9b29efc2d58dd15d2fbb7e0",
+    "native_links_libmediandk": true,
+    "runtime_modes": [
+      "AUTHORITATIVE_SOURCE_LUT",
+      "DERIVED_POLAR_PREVIEW"
+    ],
+    "delivered_playback_mode": "ONCE_HOLD_LAST",
+    "dual_owned_rgba8_staging": true,
+    "late_boundary_receipt": "physical_exact_timing=false",
+    "explicit_loop_wrap_status": "BEST_EFFORT_NOT_DELIVERED_NOT_DEVICE_VERIFIED",
+    "physical_device_run": "NOT_RUN_NO_ADB_DEVICE",
+    "physical_performance_claim": false
+  },
+  "verification": {
+    "bundle_command": "PYTHONPATH=src python -m ugts_kc3 verify-chrono-video ../UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL --json",
+    "editable_project_command": "PYTHONPATH=src python -m ugts_kc3 validate-3d ../UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL/project.json --json",
+    "full_test_command": "PYTHONPATH=src python -m pytest -q",
+    "tests_passed": 822,
+    "subtests_passed": 365,
+    "tests_failed": 0,
+    "full_test_elapsed_seconds": 146.29,
+    "pdf_sha256": "f9ae9148e1ccec0f113abe13082e5387a8e4e6f2feb5fbefee3733559f94a53b",
+    "todo_sha256": "ba369ab8741cfc9cb5162c46da6d8ac430e9031c6b72f450f90ec1446be6ec8b"
+  },
+  "nonclaims": [
+    "The log-polar cache is a deterministic derived address/resampling cache, not an invertible physical 3D reconstruction.",
+    "No static surface, moving-object surface, hidden human body, metric scale, persistent identity, or cross-time connected sheet is promoted from this uncalibrated MP4.",
+    "Motion/static labels, frame-local motion charts, and joint hypotheses are proposals only; canonical pixel coverage remains UNKNOWN.",
+    "The APK compile and static/runtime-contract checks prove source compatibility and exact packaged bytes, not physical POCO MediaCodec/SurfaceTexture/shader behavior, frame pacing, photon-time, power, or thermals.",
+    "Device YUV-to-RGB conversion is derived and not byte-authoritative; exactness applies to source bytes, timeline selection, LUT addresses, and Q8 weights.",
+    "Explicit LOOP wrap is best-effort and may be late; the delivered source and preview timelines use ONCE_HOLD_LAST."
+  ]
+}

@@ -1,0 +1,33 @@
+ninja: Entering directory `C:\Tom Klootwijk super secret substrate club hush hush\UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL\android_poco_physical_receipt\app\.cxx\Debug\665c36c4\arm64-v8a'
+[1/25] Building C object CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o
+[2/25] Linking C static library libnative_app_glue.a
+[3/25] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o
+[4/25] Building CXX object CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o
+[5/25] Building CXX object CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o
+[6/25] Building CXX object CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o
+[7/25] Building CXX object CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o
+[8/25] Building CXX object CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o
+[9/25] Building CXX object CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o
+[10/25] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o
+[11/25] Building CXX object CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o
+[12/25] Building CXX object CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o
+[13/25] Building CXX object CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o
+[14/25] Building CXX object CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o
+[15/25] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_video_timeline.cpp.o
+[16/25] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o
+[17/25] Building CXX object CMakeFiles/ugts_kc_native.dir/chrono_video_player.cpp.o
+[18/25] Building CXX object CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o
+[19/25] Building CXX object CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o
+[20/25] Building CXX object CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o
+[21/25] Building CXX object CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o
+[22/25] Building CXX object CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o
+[23/25] Building CXX object CMakeFiles/ugts_kc_native.dir/main.cpp.o
+C:/Tom Klootwijk super secret substrate club hush hush/UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL/android_poco_physical_receipt/app/src/main/cpp/main.cpp:29:5: warning: 'app_dummy' is deprecated: Calls to app_dummy are no longer necessary. See https://github.com/android-ndk/ndk/issues/381. [-Wdeprecated-declarations]
+   29 |     app_dummy();
+      |     ^
+C:/Tom Klootwijk super secret substrate club hush hush/UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL/android_poco_physical_receipt/app/.cxx/Debug/665c36c4/arm64-v8a/android_native_app_glue.h:340:5: note: 'app_dummy' has been explicitly marked deprecated here
+  340 |     deprecated("Calls to app_dummy are no longer necessary. See "
+      |     ^
+1 warning generated.
+[24/25] Building CXX object CMakeFiles/ugts_kc_native.dir/engine.cpp.o
+[25/25] Linking CXX shared library "C:\Tom Klootwijk super secret substrate club hush hush\UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL\android_poco_physical_receipt\app\build\intermediates\cxx\Debug\665c36c4\obj\arm64-v8a\libugts_kc_native.so"

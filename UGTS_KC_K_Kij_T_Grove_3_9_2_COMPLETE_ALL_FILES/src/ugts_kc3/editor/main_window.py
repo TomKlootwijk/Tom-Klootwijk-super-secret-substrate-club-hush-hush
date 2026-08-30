@@ -49,6 +49,12 @@ from ..animation3d import (
     TransformClip3D,
     default_transform_animation,
 )
+from ..chrono_desktop import (
+    ChronoDesktopPlayer,
+    chrono_bundle_from_project,
+    chrono_owner_node_id,
+)
+from ..chrono_video import ChronoVideoError
 from ..graphpack import GraphPackError, compile_graph_pack_bytes
 from ..mobile3d import Material3DRecord, Mesh3DRecord, Mobile3DProject
 from ..project import GameProject
@@ -597,6 +603,8 @@ class EditorMainWindow(QMainWindow):
         self._build_worker: BuildWorker | None = None
         self._profile_thread: QThread | None = None
         self._profile_worker: PhoneProfileWorker | None = None
+        self._chrono_player: ChronoDesktopPlayer | None = None
+        self._chrono_owner_node_id: str | None = None
         self._create_central_area()
         self._create_docks()
         self._create_actions()
@@ -2674,16 +2682,88 @@ class EditorMainWindow(QMainWindow):
         self.profile_phone_action.setEnabled(False)
         self._frame_count = 0
         self._fps_started = time.perf_counter()
+        self._start_chrono_player()
         self.play_timer.start()
         self.build_output.append("Preview started. Use WASD/arrow keys; Space acts or jumps.", "play")
         for warning in self.document.play_warnings:
             self.build_output.append(warning, "warning")
         self._gentle_message("Playing — press Stop when you want to edit again.")
 
+    def _start_chrono_player(self) -> None:
+        """Start source-authoritative chrono playback only for a bound bundle."""
+
+        self._stop_chrono_player()
+        project = self.document.project
+        if not isinstance(project, Mobile3DProject):
+            return
+        try:
+            bundle = chrono_bundle_from_project(project, self.document.path)
+            if bundle is None:
+                return
+            self._chrono_owner_node_id = chrono_owner_node_id(project)
+            player = ChronoDesktopPlayer(bundle, backend="auto", max_vram_mib=1536)
+            self._chrono_player = player
+            first = player.start()
+            self.viewport.set_chrono_frame(
+                first, owner_node_id=self._chrono_owner_node_id
+            )
+            device = str(player.backend_info.get("device", "CPU reference"))
+            self.build_output.append(
+                f"Chrono desktop source player ready: {player.backend} on {device}; "
+                "exact integer PTS/Q8 pixels before Qt presentation.",
+                "good",
+            )
+            self.build_output.append(
+                "Desktop compositor timing and Qt scaling remain unverified downstream presentation.",
+                "warning",
+            )
+        except (ChronoVideoError, OSError, RuntimeError, TypeError, ValueError) as exc:
+            self._stop_chrono_player()
+            self.build_output.append(
+                f"Chrono desktop source playback stayed disabled: {exc}", "warning"
+            )
+            self._show_output_dock()
+
+    def _stop_chrono_player(self) -> None:
+        player = self._chrono_player
+        self._chrono_player = None
+        self._chrono_owner_node_id = None
+        if player is not None:
+            player.close()
+        self.viewport.set_chrono_frame(None)
+
+    def _tick_chrono_player(self) -> None:
+        player = self._chrono_player
+        if player is None:
+            return
+        try:
+            frame = player.tick(time.perf_counter_ns())
+            current = self.viewport.chrono_frame_receipt
+            if (
+                current is None
+                or current.get("ordinal") != frame.ordinal
+                or current.get("rgb_sha256") != frame.rgb_sha256
+            ):
+                # Publish the selected raster before doing lookahead work.
+                self.viewport.set_chrono_frame(
+                    frame, owner_node_id=self._chrono_owner_node_id
+                )
+            player.prefetch_next()
+        except (ChronoVideoError, OSError, RuntimeError, TypeError, ValueError) as exc:
+            receipt = player.receipt()
+            self._stop_chrono_player()
+            self.build_output.append(
+                f"Chrono desktop source playback failed closed: {exc}; "
+                f"late boundaries before failure={receipt['late_boundary_count']}.",
+                "warning",
+            )
+            self._show_output_dock()
+
     def _play_frame(self) -> None:
         try:
             state, events = self.document.step_play(self.viewport.pressed_keys)
             self.viewport.set_runtime_state(state)
+            self._tick_chrono_player()
             self._refresh_logic_trace()
             world_state = state.get("__world__", {})
             if "score" in world_state:
@@ -2706,8 +2786,10 @@ class EditorMainWindow(QMainWindow):
 
     def stop(self) -> None:
         if not self._playing:
+            self._stop_chrono_player()
             return
         self.play_timer.stop()
+        self._stop_chrono_player()
         retained_trace = self._logic_trace_snapshot
         self._preserve_logic_trace_on_stop = True
         try:

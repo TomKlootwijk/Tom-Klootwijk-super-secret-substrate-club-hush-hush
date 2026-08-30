@@ -1,0 +1,16 @@
+--------- beginning of main
+         1788088767.434 13928 32338 I UGTS-KC392: UGCVLUT1 verified: source=1280x720 polar=1024x512 authority=derived_cache
+         1788088767.446 13928 32338 I UGTS-KC392: gpu timer supported=false bits=0 extension=GL_EXT_disjoint_timer_query nonblocking=true reason=extension_or_counter_bits_unavailable
+         1788088767.651 13928 32338 I UGTS-KC392: render shaders scene=linked polar_direct=linked polar_lut=linked post=linked
+         1788088767.653 13928 32338 I UGTS-KC392: render substrate polar_requested=cpu polar_effective=cpu gpu_instances=0 gpu_profiles=0 gpu_batches=0 cpu_fallbacks=0 animation_fallbacks=0 polar_recipes=0 generated=0 generated_gpu=0 generated_cpu=0 reason=no_polar_components polar_material=off material_bands=1 material_strength=0.000 bayer=off levels=2 strength=0.000
+         1788088767.655 13928 32338 I UGTS-KC392: UGCVLUT1 uploaded to GLES3: source=1280x720 polar=1024x512 bytes=4194304 authority=derived_cache
+         1788088769.176 13928 32338 I UGTS-KC392: chrono owned staging rasters=2 size=1024x512 format=RGBA8 prefetch=exactly_one_verified_ordinal external_filter=NEAREST
+         1788088769.176 13928 32338 I UGTS-KC392: chrono SurfaceTexture created; GL consumption stays on render thread
+         1788088769.187 13928 32338 E UGTS-KC392: chrono initialization failed closed mode=AUTHORITATIVE_SOURCE_LUT reason=chrono AMediaExtractor rejected the MP4 asset range; preview_promotion=false
+         1788088769.189 13928 32338 I UGTS-KC392: chrono SurfaceTexture released
+         1788088769.221 13928 32338 I UGTS-KC392: chrono runtime shutdown previous_mode=AUTHORITATIVE_SOURCE_LUT
+         1788088769.221 13928 32338 E UGTS-KC392: chrono_video=FAILED_CLOSED preview_promotion=false ordinary_editable_scene_continues=true
+         1788088769.224 13928 32338 I UGTS-KC392: UGTS-KC 3.9.2 profile=poco_x7_pro_12gb grove=grove_g720_mc7_120 quality=chrono_view_60 fps=60 scale=0.82 model=2412DPC0AG gpu=Mali-G720 MC7 ram=11312MB juice=1.00
+         1788088769.224 13928 32338 I UGTS-KC392: polar ECS profiles=0 components=0 graph_access=active
+         1788088769.224 13928 32338 I UGTS-KC392: polar population format_version=0 recipes=0 generated=0 glow_recipes=0 glow_instances=0 gpu_instance_stride_bytes=36 ecs_generated=false
+         1788088769.235 13928 32338 I UGTS-KC392: polar population generated_total=0 generated_visible=0 visible_gpu=0 visible_cpu=0 materialized=0 cartesian_composed=0

@@ -1,0 +1,77 @@
+{
+  "author": "Tom Klootwijk",
+  "byte_length": 1468,
+  "format_version": 1,
+  "material_count": 1,
+  "materials": [
+    "unknown_evidence"
+  ],
+  "mesh_count": 1,
+  "meshes": [
+    {
+      "id": "observation_volume",
+      "index_count": 36,
+      "vertex_count": 24
+    }
+  ],
+  "node_count": 1,
+  "nodes": [
+    {
+      "collider_type": 0,
+      "dynamic": false,
+      "id": "chrono_observation_root",
+      "material_index": 0,
+      "mesh_index": 0,
+      "sensor": false,
+      "tag_mask": 8
+    }
+  ],
+  "project_hash": "56825bb5244dc8e9fbb75894b4e70d803ffbddb1bb7c6ce84691e52fa1bd1108",
+  "project_id": "chrono_video_observation_inspector",
+  "qualities": [
+    {
+      "id": "chrono_view_60",
+      "max_visible_nodes": 512,
+      "render_scale": 0.8199999928474426,
+      "target_fps": 60
+    },
+    {
+      "id": "chrono_view_safe",
+      "max_visible_nodes": 256,
+      "render_scale": 0.6800000071525574,
+      "target_fps": 45
+    }
+  ],
+  "quality_count": 2,
+  "schema": "ugts-kc-native-scene-pack-inspection-3.9.2",
+  "sha256": "54ee6b2bd36118b20b062ee57cfb8b2262701461018e223bee9c38880472b432",
+  "start_quality": "chrono_view_60",
+  "target_count": 1,
+  "targets": [
+    {
+      "abis": [
+        "arm64-v8a"
+      ],
+      "compile_sdk": 36,
+      "default_quality": "chrono_view_60",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gles": [
+        3,
+        0
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB Chrono Viewer",
+      "memory_floor_mb": 8192,
+      "min_sdk": 26,
+      "target_refresh_hz": 60,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Chrono Video Observation Inspector"
+}

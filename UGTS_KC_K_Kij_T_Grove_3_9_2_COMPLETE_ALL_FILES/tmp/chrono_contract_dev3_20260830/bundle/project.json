@@ -1,0 +1,591 @@
+{
+  "author": "Tom Klootwijk",
+  "background": [
+    0.005,
+    0.009,
+    0.022,
+    1.0
+  ],
+  "camera": {
+    "far": 40.0,
+    "near": 0.05,
+    "position": [
+      0.0,
+      2.0,
+      8.5
+    ],
+    "target": [
+      0.0,
+      1.8,
+      0.0
+    ],
+    "up": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "vertical_fov_degrees": 48.0
+  },
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "id": "chrono_video_observation_inspector",
+  "light": {
+    "ambient": 0.25,
+    "color": [
+      0.82,
+      0.92,
+      1.0
+    ],
+    "direction": [
+      -0.4,
+      -1.0,
+      -0.25
+    ],
+    "intensity": 1.0
+  },
+  "materials": [
+    {
+      "base_color": [
+        0.1,
+        0.52,
+        0.95,
+        0.82
+      ],
+      "double_sided": true,
+      "emissive": [
+        0.02,
+        0.12,
+        0.28
+      ],
+      "id": "unknown_evidence",
+      "metallic": 0.05,
+      "roughness": 0.32
+    }
+  ],
+  "meshes": [
+    {
+      "id": "observation_volume",
+      "metadata": {
+        "primitive": "cube",
+        "size": 1.0
+      },
+      "normals": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          -1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          -1,
+          0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6
+        ],
+        [
+          4,
+          6,
+          7
+        ],
+        [
+          8,
+          9,
+          10
+        ],
+        [
+          8,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14
+        ],
+        [
+          12,
+          14,
+          15
+        ],
+        [
+          16,
+          17,
+          18
+        ],
+        [
+          16,
+          18,
+          19
+        ],
+        [
+          20,
+          21,
+          22
+        ],
+        [
+          20,
+          22,
+          23
+        ]
+      ],
+      "vertices": [
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          -0.5
+        ],
+        [
+          0.5,
+          -0.5,
+          0.5
+        ],
+        [
+          -0.5,
+          -0.5,
+          0.5
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "chrono_scene_observation": {
+      "authority": "OBSERVATION_ONLY",
+      "geometry_status": "UNBOUNDED_UNKNOWN",
+      "manifest": "manifest.json",
+      "manifest_sha256": "f98398c5add4e3004a44ce056d9602eeb67ca6e0876ce7b0fc8b5782a2f4ad13",
+      "phone_compile_status": "NOT_RUN_NO_ADB_DEVICE",
+      "phone_role": "compact exact-PTS evidence viewer and downstream rasterizer",
+      "runtime_assets": [
+        {
+          "bytes": 1901,
+          "path": "source_receipt.json",
+          "sha256": "6ed39fa4ce4602e5c6db809a1dc811a6be7aa51627be11cc52369593e10e913a"
+        },
+        {
+          "bytes": 1688,
+          "path": "observations.jsonl",
+          "sha256": "902b26170a1edee90c87ec6e758321d3f3007aebe3d6de6073ed7dfcea585342"
+        },
+        {
+          "bytes": 18867,
+          "path": "proposals.jsonl",
+          "sha256": "d9bb177f3c6719e6e7adb9ff657f81f48b8e7490f7071393f49d0f5794459d4b"
+        },
+        {
+          "bytes": 2217,
+          "path": "joint_hypotheses.jsonl",
+          "sha256": "ed2038017fb167e7ddc0db51bac01f0f3c33bed09553648783bc74485404bda7"
+        },
+        {
+          "bytes": 4016,
+          "path": "novelty.jsonl",
+          "sha256": "7c52f7e0b35dd0fd210f54c8952a69315dd839ba2b24344aa2f9932f08ace65a"
+        },
+        {
+          "bytes": 4204,
+          "path": "polar_lut.ugcv1",
+          "sha256": "db693cdf5582cb88fe7573836f092a680a05f3a542751a63559ab70762f79a12"
+        },
+        {
+          "bytes": 675,
+          "path": "polar_lut_inspection.json",
+          "sha256": "174baccc286a59feb51f903e095839b146a8361d4ee0a794e3fbc1a3505421a3"
+        },
+        {
+          "bytes": 1780,
+          "path": "polar_preview.mp4",
+          "sha256": "e9fe4e19eb0ded75c16e0db0e553031c4f1e2729c3546be5e4adc7bd9924eba6"
+        },
+        {
+          "bytes": 1449,
+          "path": "preview_timeline.json",
+          "sha256": "378608c41f2113eb5960a5c4dc83d2319e0cc4583a570aca9b744c997b0b53b4"
+        },
+        {
+          "bytes": 304,
+          "path": "preview_timeline.ugcvpts1",
+          "sha256": "a70afac2ccaef140762e84519d159f8b76f63eeb9a542fba53b1e15fdb236efb"
+        },
+        {
+          "bytes": 850,
+          "path": "preview_timeline_inspection.json",
+          "sha256": "45dd09ba9a2ab528b1a2c7bc9119c9c44c50974e49fd73ca4997d4157406101b"
+        },
+        {
+          "bytes": 2400,
+          "path": "reconstruction_receipt.json",
+          "sha256": "131efc01318fdabfdbf1349d29373643548933c4645bf1b2b09da48438ddc923"
+        },
+        {
+          "bytes": 5231,
+          "path": "manifest.json",
+          "sha256": "f98398c5add4e3004a44ce056d9602eeb67ca6e0876ce7b0fc8b5782a2f4ad13"
+        }
+      ],
+      "schema": "ugts-chrono-video-observation-manifest-0.1",
+      "source_duration_seconds": 0.8,
+      "source_sha256": "3577b52f0da89ca73eb96996b7e44f0676c11390950daa9de8a53bd54ef2cd74",
+      "target_kind": "scene"
+    }
+  },
+  "nodes": [
+    {
+      "angular_velocity": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "collider": {
+        "half_extents": [
+          0.5,
+          0.5,
+          0.5
+        ],
+        "radius": 0.5,
+        "sensor": false,
+        "shape": "none"
+      },
+      "dynamic": false,
+      "id": "chrono_observation_root",
+      "mass": 1.0,
+      "material_id": "unknown_evidence",
+      "mesh_id": "observation_volume",
+      "metadata": {
+        "chrono_observation_binding": {
+          "authority": "OBSERVATION_ONLY",
+          "manifest": "manifest.json",
+          "manifest_sha256": "f98398c5add4e3004a44ce056d9602eeb67ca6e0876ce7b0fc8b5782a2f4ad13",
+          "materialization": "PROXY_ONLY",
+          "schema": "ugts-chrono-video-observation-manifest-0.1",
+          "writer_owner": "chrono_scene_observation"
+        }
+      },
+      "restitution": 0.35,
+      "tags": [
+        "decorative"
+      ],
+      "transform": {
+        "rotation": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          5.6,
+          3.15,
+          0.08
+        ],
+        "translation": [
+          0.0,
+          1.8,
+          0.0
+        ]
+      },
+      "velocity": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "quality_tiers": [
+    {
+      "id": "chrono_view_60",
+      "max_visible_nodes": 512,
+      "msaa_samples": 0,
+      "post_processing": false,
+      "render_scale": 0.82,
+      "shadow_quality": 0,
+      "target_fps": 60
+    },
+    {
+      "id": "chrono_view_safe",
+      "max_visible_nodes": 256,
+      "msaa_samples": 0,
+      "post_processing": false,
+      "render_scale": 0.68,
+      "shadow_quality": 0,
+      "target_fps": 45
+    }
+  ],
+  "schema": "ugts-kc-mobile-3d-project-3.9.1",
+  "start_quality": "chrono_view_60",
+  "target_profiles": [
+    {
+      "compile_sdk": 36,
+      "default_quality": "chrono_view_60",
+      "device_hints": [
+        "POCO X7 Pro"
+      ],
+      "gpu_hints": [
+        "Mali-G720"
+      ],
+      "id": "poco_x7_pro_12gb",
+      "label": "POCO X7 Pro 12 GB Chrono Viewer",
+      "memory_floor_mb": 8192,
+      "min_sdk": 26,
+      "preferred_abis": [
+        "arm64-v8a"
+      ],
+      "required_gles": [
+        3,
+        0
+      ],
+      "target_refresh_hz": 60,
+      "target_sdk": 36,
+      "vulkan_optional": true
+    }
+  ],
+  "title": "Chrono Video Observation Inspector",
+  "world": {
+    "bounds_max": [
+      12.0,
+      10.0,
+      12.0
+    ],
+    "bounds_min": [
+      -12.0,
+      -6.0,
+      -12.0
+    ],
+    "fixed_dt": 0.016666666666666666,
+    "floor_y": -4.0,
+    "gravity": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "jump_speed": 0.0,
+    "player_speed": 0.0
+  }
+}

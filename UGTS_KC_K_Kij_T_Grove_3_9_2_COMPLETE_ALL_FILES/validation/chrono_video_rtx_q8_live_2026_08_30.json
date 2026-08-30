@@ -1,0 +1,42 @@
+{
+  "schema": "ugts-chrono-live-rtx-q8-check-0.1",
+  "date": "2026-08-30",
+  "source_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+  "polar_lut_sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf",
+  "backend": "torch-cuda-q8",
+  "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+  "driver": "591.59",
+  "compute_capability": [
+    12,
+    0
+  ],
+  "reported_vram_mib": 12227,
+  "physical_vram_bytes": 12820480000,
+  "workspace_limit_mib": 1536,
+  "peak_allocated_mib": 164.50048828125,
+  "samples": [
+    {
+      "source_frame_index": 0,
+      "source_pts": 0,
+      "cpu_gpu_equal": true,
+      "max_byte_difference": 0,
+      "polar_sha256": "dbb519b75efa9f299da9b067eb51b8c6a8ee0936502ad1863464288754c69acd"
+    },
+    {
+      "source_frame_index": 114,
+      "source_pts": 4539936,
+      "cpu_gpu_equal": true,
+      "max_byte_difference": 0,
+      "polar_sha256": "7b7eb18c0974f909fe8edf62aefb8d7afc4e9d77fbf25c51a8bddc47f10ca131"
+    },
+    {
+      "source_frame_index": 228,
+      "source_pts": 9079872,
+      "cpu_gpu_equal": true,
+      "max_byte_difference": 0,
+      "polar_sha256": "ca4fc8260e896a4d31b7e8018ef4fb3980e3fea19bac494f8a7fa1c4c8a37202"
+    }
+  ],
+  "passed": true,
+  "scope": "Live first/middle/last source-frame Q8 remap parity. This proves the selected desktop CUDA operator and hashes, not phone execution, physical 3D, or a performance distribution."
+}

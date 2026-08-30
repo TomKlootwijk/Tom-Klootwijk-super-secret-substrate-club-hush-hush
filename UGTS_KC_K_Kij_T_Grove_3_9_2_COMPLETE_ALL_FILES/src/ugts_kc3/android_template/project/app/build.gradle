@@ -68,4 +68,10 @@ android {
             useLegacyPackaging = false
         }
     }
+
+    // MediaExtractor needs a real file-descriptor range. Compressed APK assets
+    // cannot provide one, so MP4 is an explicit runtime ABI constraint.
+    androidResources {
+        noCompress += ["mp4"]
+    }
 }

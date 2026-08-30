@@ -10,7 +10,7 @@ Generated from the repository-wide evidence audit on 2026-08-30. This backlog im
 - [ ] First exact-Grove product proof: turn the preserved packed-polar Android workload into an editable, signed visual or microgame demonstrator without expanding it into a general engine.
 - [ ] Keep custom packed formats profile-specific and internal. Publish standards adapters, manifests, verifiers, and conventional materialized outputs.
 - [ ] Do not create a universal `.ugtoms` transcoder. A by-reference conformance envelope is allowed only after its promotion gates are met.
-- [ ] Treat `UGTOMS-CSO-0.1-PROPOSAL`, its `UGTOMS-HCO-0.1-PROPOSAL` human specialization, and Chrono-BRACE as hypothetical profile/design work—not an implemented UGTOMS capability, scanner, standard, or unique monocular reconstruction claim.
+- [x] Treat the implemented `UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL` compiler as a narrow observation/proposal capability, never as a scanner, standard, unique reconstruction claim, or proof of physical 3D. The broader CSO/HCO/Chrono-BRACE contractor remains proposal work.
 - [ ] Treat `UGTS_VSTL_MONOCULAR_CHRONO_LITERAL_HUMAN_0_1.pdf` as historical and architecturally superseded. Do not revive VSTL, a cross-time sheet, or an evidence-ledger object model.
 - [ ] Use named vision/body systems only as mathematical provenance, falsification references, or optional frozen-hash proposal seeds. Strip exact non-generative equations into native typed operators; never import their object ontology or allow learned/completed output to write ECS authority.
 - [ ] Keep negative memory strict: predictable canonical states are not stored. Retraction is a separate accepted novelty event; missing masks, occlusion, non-observation, or mask complement never mean empty space.
@@ -28,44 +28,92 @@ Generated from the repository-wide evidence audit on 2026-08-30. This backlog im
 
 Chrono-BRACE means **Bounded Ray-tube Adaptive Chart Evidence**. Its core is a bounded circular/fixed-point constraint process over camera, static/dynamic classification, target association, scale gauge, scene/object/chart motion, visibility, and deformation. Every decoded pixel footprint enters coverage as guarded static support, a moving-object branch, an occluder, unclassified, or unknown. A human object adds articulated HCO controls only when applicable. Rasterization is downstream and may feed a later proposal residual, but rendered pixels cannot certify themselves as observations.
 
+### Implemented fixture snapshot - 2026-08-30
+
+- [x] Added `src/ugts_kc3/chrono_video.py`, `compile-chrono-video`, and
+  `verify-chrono-video`; added the versioned contract and manifest schema under
+  `spec/`.
+- [x] Added independent `UGCVLUT1` RGBA16UI/Q8 pixel-address semantics without
+  changing UGLUT2. Python rejects bad magic/version/length/hash, NumPy is the
+  integer oracle, and PyTorch CUDA must match it byte-for-byte.
+- [x] Compiled the supplied MP4 into
+  `UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL/`: 229 exact-PTS
+  observations, 58 analyzed/preview slices, 57 proposal slices, 57
+  joint-hypothesis slices, and 921,600 pixels covered once per observation.
+  The bundle embeds a byte-identical 12,132,305-byte source copy and separate
+  strict `UGCVPTS1` source/preview timelines.
+- [x] Verified the full 1024x512 CUDA run at 396.88 MiB peak allocated VRAM,
+  12.54 seconds wall time, and maximum CPU/CUDA byte difference zero. These are
+  one-run engineering measurements, not a benchmark distribution.
+- [x] Added one editable, ordinary, non-dynamic Grove observation root and
+  hash-verified Android asset packaging. Native C++ verifies `UGCVLUT1` and
+  `UGCVPTS1`, validates source/input/output PTS, and keeps two explicit modes:
+  authoritative source + live Q8 LUT, or already-polar derived preview with LUT
+  reapplication forbidden.
+- [x] Implemented API-26 MediaCodec/MediaExtractor -> SurfaceTexture/external-OES
+  playback. Two owned RGBA8 slots publish ordinal zero before the clock anchor,
+  stage at most one verified next ordinal, swap on the integer half-open
+  selector boundary, discard stale outputs, and log any missed boundary as
+  `physical_exact_timing=false`. Runtime failure closes decoder resources,
+  remains fail-closed, and leaves the ordinary editable scene alive.
+- [x] Built and audited the 19,036,992-byte POCO-debug ARM64 APK, SHA-256
+  `C9CF4D757A8961A45675A95C4C6F62CC1811F1DB188E4DD7F01F13F7E9A89DD4`.
+  All 16 declared chrono assets (22,399,330 bytes) match the APK, both MP4s are
+  ZIP-stored, the package is 16 KiB aligned and v2 debug-signed, and the AArch64
+  library links `libmediandk.so`.
+- [x] Restricted the Android build report to 90 immutable exported-source
+  inputs; volatile Gradle/CMake/IDE/build state is excluded and all 90 ledger
+  entries still match after the APK build.
+- [ ] Attach the POCO over ADB; install/cold-launch; require the native
+  source/LUT/timeline/PTS receipts and zero late-boundary errors; verify shader
+  compilation, SurfaceTexture transform/crop/orientation, decoder component,
+  visible output, PSS, frame cadence, thermals, crash buffer, and fallback. No
+  physical-phone, photon-time, or device YUV-to-RGB byte-parity claim exists yet.
+- [ ] Either pre-stage ordinal zero before an explicit LOOP wrap or keep LOOP
+  best-effort and visibly labelled. The delivered source and preview timelines
+  are `ONCE_HOLD_LAST`, so this limitation is inactive in the audited fixture.
+- [ ] Add measured camera calibration/Camera2 timing or a calibration target,
+  then implement the outward-rounded circular contractor before promoting any
+  physical static, moving-object, or human support.
+
 ### Authority, time, and exact-math registry
 
-- [ ] Write a Chrono Scene Observation contract/JSON Schema for `UGTOMS-CSO-0.1-PROPOSAL` plus `spec/HUMAN_CHRONO_OBJECT_CONTRACT.md` for the conditional `UGTOMS-HCO-0.1-PROPOSAL`; map both onto the proposed eight-block UGTOMS envelope.
+- [~] The scoped chrono-video contract and manifest JSON Schema are implemented; a complete scene/object contract, separate `HUMAN_CHRONO_OBJECT_CONTRACT.md`, and full eight-block mapping remain open.
 - [ ] Define one scene-capture authority, guarded static-scene support, stable moving-object branches/entities, geometric chart/material lineage, one-writer ownership, and per-field `STATIC_SUPPORTED`, `OBJECT_OBSERVED_PARTIAL`, `PROXY_ONLY`, `DERIVED`, `BOUNDED_SUPPORT`, `UNCLASSIFIED`, or `UNKNOWN` status.
-- [ ] Define the all-pixel coverage rule. “Not the selected person,” “not detected as moving,” and mask complement are not synonyms for static background; static promotion requires repeated rigidity, camera, visibility, parallax, reprojection, and conditioning support.
-- [ ] Make chronology bitemporal: preserve exact decoded PTS/time base as effective/source time and an immutable commit/knowledge sequence. Record exposure/rolling-shutter row intervals separately; PTS is not an exact sensor exposure instant.
+- [x] Define and implement the all-pixel coverage rule. “Not the selected person,” “not detected as moving,” and mask complement are not synonyms for static background; every tile stays canonical `UNKNOWN`.
+- [~] Exact decoded PTS/time base and immutable commit/knowledge sequence are implemented. Exposure/rolling-shutter row intervals remain unavailable for the supplied MP4 and must be added for calibrated capture.
 - [ ] Key every materialization by `(revision_hash, target_source_pts, knowledge_cutoff_seq, policy_hash)` and support causal versus sealed-offline historical views without future-evidence leakage.
 - [ ] Create an exact-math operator registry. Each entry must bind primary source/equation, coordinate convention, units, normalized-versus-axial depth semantics, gauge, assumptions, input uncertainty/bounds, deterministic implementation/hash, failure state, and authority class.
 - [ ] First operator set: coded-pixel footprint and row-aware ray tube; mask-set/IoU; normalized feature cosine and deterministic candidate matching; epipolar/Sampson residuals; cheirality/parallax; robust reprojection triangulation/refinement; affine depth/point alignment; deterministic articulated transform composition; novelty fold.
-- [ ] Reject diffusion, amodal/content completion, Gaussian/novel-view generation, learned hidden body/texture, learned identity/shape spaces, pose correctives, and any metric-scale prediction as authoritative support.
+- [x] The implemented compiler uses no diffusion, amodal/content completion, Gaussian/novel-view generation, learned hidden body/texture, learned identity/shape space, pose corrective, or learned metric scale.
 
 ### Native bounded circular core
 
-- [ ] Implement bounded joint hypothesis records over camera/calibration, static/dynamic class, object association, scale gauge, scene/object root, part/chart motion, visibility, deformation class, timing interval, and depth interval. Do not invert one point estimate and call the result literal geometry.
+- [~] Joint hypothesis records now cover camera/calibration, static/dynamic class, object association, scale gauge, scene/object/chart motion, visibility, deformation, timing, and depth. They correctly remain `UNBOUNDED_UNKNOWN`; contraction/promotion is not implemented.
 - [ ] Implement an inclusion-sound, outward-rounded contractor with canonical branch/prune order, capacity/budget limits, contradiction receipts, and a fixed-point/budget-stop result.
-- [ ] Keep a ray support `UNBOUNDED_UNKNOWN` whenever calibration, timing, pose, gauge, or depth lacks finite bounds.
+- [x] Keep physical support `UNBOUNDED_UNKNOWN` whenever calibration, timing, pose, gauge, or depth lacks finite bounds; the bundle verifier rejects promotion in this fixture.
 - [ ] Promote support only when all surviving branches agree within spatial tolerance; genuinely independent original-observation groups pass; cheirality, parallax, reprojection, rigidity/seam, occlusion, reduced-rank, eigenvalue, and condition-number guards pass; and gauge/units are declared.
 - [ ] Treat silhouettes as motion-dependent visual-hull bounds, not surface points. Treat chart coordinates as parameterization, not material identity; material lineage starts at an accepted support event.
 - [ ] Split/discontinue charts for moving objects, vegetation/water/reflections, cloth, hair, skin sliding, seams, non-rigidity, crop gaps, or contradictions. Never average incompatible static/object branches into an attractive scene.
 - [ ] Define visibility as `VISIBLE`, `OCCLUDED`, `OUT_OF_VIEW`, or `UNKNOWN`; require a certified nearer occluder for `OCCLUDED` and never carve free space from mask complement alone.
 - [ ] Freeze canonical novelty events and ordering: root/chart pose delta, chart open/split/discontinuity, support birth/tighten/split/retract, owner handoff, and checkpoint seal. An equal pre/post state emits no event.
-- [ ] Store only typed novelty beyond tolerance or semantic change. Make checkpoints deterministic caches of novelty prefixes, never new facts; preserve source media by hash/reference because the log cannot regenerate unique photons.
+- [~] Proposal-label novelty is stored only on change, with no implicit retraction, and the source remains external by hash/reference. Authoritative support novelty/checkpoint folding awaits the contractor.
 
 ### Editable engine object and downstream outputs
 
-- [ ] Add the first fixture through an editable scene/project and inspector controls. Use one scene-capture authority plus one ordinary root per promoted moving object and strict sibling CSO/HCO sidecars/components; never use a hidden code-only/bootstrap path.
-- [ ] Keep current KC3D, KCAN, KCHI, KCPK, KCPR, and KCRP meanings unchanged. Static charts, object candidates, joints, supports, vertices, surfels, and voxels are component/sidecar data or derived display members, not ECS rows or scene nodes.
+- [~] The first fixture is an editable project with one ordinary observation root and strict sidecar binding, not a bootstrap. Inspector scrub controls and promoted moving-object roots remain open because nothing is promoted yet.
+- [x] Current KC3D, KCAN, KCHI, KCPK, KCPR, KCRP, and UGLUT2 meanings remain unchanged; chrono video uses separate `UGCVLUT1` and JSON/JSONL sidecars.
 - [ ] Make the CSO camera/object fold systems sole writers of their declared fields and execute before current packed movement/rigid animation. Static support never writes moving transforms. Use integer/rational PTS selection rather than floating `world.time` as evidence time.
 - [ ] Implement same-time surfel, sparse-voxel, observed-open-mesh, authored-proxy, hybrid, and raster materializers. Every face/voxel sample must share one source time; stitching, closure, smoothing, collision, and hidden topology remain `PROXY_ONLY` or `DERIVED`.
-- [ ] Permit raster residuals to return only as provenance-tagged proposals. Add a guard that prevents a render from becoming independent evidence for the state that produced it.
-- [ ] Export conventional derivatives first: JSON/JSONL receipts, glTF/GLB animation/proxy, PLY/open geometry, OpenUSD/Alembic caches, and OpenVDB volumes. Keep the original MP4/images as reprocessing truth.
+- [x] Homography-compensated raster residuals return only `PROPOSAL_ONLY`; canonical tiles remain `UNKNOWN`, and the verifier rejects geometry/static commits.
+- [~] JSON/JSONL receipts plus an H.264 raster preview are implemented and the original MP4 remains reprocessing truth. glTF/GLB, PLY, OpenUSD/Alembic, and OpenVDB must wait for genuinely promoted geometry.
 - [ ] Defer compact binary CSO/object/HCO sidecars and a by-reference UGTOMS manifest until editable JSON works, two readers agree, malformed inputs fail closed, and measured seek/runtime/distribution gains beat conventional baselines.
 
 ### Supplied-video fixture and promotion gates
 
-- [ ] Bind `C:/Users/Tom/Videos/KasiaDansGedicht/sam_2353410928515192.mp4` by SHA-256 `1867BAFA7C80C31F18856525CBF580EDAA36D524270B1FA59CC643B51964CBFD`; preserve 1280x720 H.264 Main, 229 frames, 62500/2489 fps, 1/1,000,000 time base, and 0.039824 s PTS step in the fixture receipt.
-- [ ] Keep the present fixture result fail-closed: ffprobe exposed no intrinsics, distortion, metric scale, IMU, depth, or shutter/exposure calibration. Do not claim exact physical rays, accepted static-scene 3D, metric camera motion, accepted moving-object/person 3D support, or a full body from this file alone.
-- [ ] Build the native manual/geometric baseline before optional model adapters: all-pixel coverage input, manual static/object masks and correspondences, guarded background camera/static-support branches, independently moving object branches, joint bounded contractor, optional authored proxies/HCO rig, bitemporal novelty fold, and same-time outputs.
+- [x] Bind `C:/Users/Tom/Videos/KasiaDansGedicht/sam_2353410928515192.mp4` by SHA-256 `1867BAFA7C80C31F18856525CBF580EDAA36D524270B1FA59CC643B51964CBFD`; preserve 1280x720 H.264 Main, 229 frames, 62500/2489 fps, 1/1,000,000 time base, and exact frame PTS in the fixture receipt.
+- [x] Keep the fixture fail-closed: no intrinsics, distortion, metric scale, IMU, depth, or shutter/exposure calibration means no exact physical rays, accepted static-scene 3D, metric camera motion, accepted moving-object/person 3D support, or full body.
+- [~] The model-free baseline now has all-pixel coverage, deterministic feature/homography residual proposals, static/dynamic/ambiguous branches, frame-local motion charts, human-specialized UNKNOWN records, proposal novelty, and same-time raster output. Manual constraints, persistent associations, calibrated camera/static support, and the bounded contractor remain open.
 - [ ] After the core is independently usable, optional learned mask/feature/depth/pose candidates may be added only with model/code/checkpoint/config/license hashes and removable proposal components. Adapter removal must not change schema, authority, or replay meaning.
 - [ ] Compare equal-quality objectives against original video, glTF curves, USD/Alembic geometry caches, OpenVDB, and conventional point/voxel storage. Measure bytes, residual density, edit time, random seek, replay equality, screen/world error where calibrated, CPU/GPU cost, memory, and privacy burden.
 - [ ] Kill or narrow the profile if uncertainty rarely contracts, the conventional baseline is simpler/equivalent, novelty density approaches source/cache size, circular contraction is unstable or too expensive, or users gain no material editability/seek/provenance benefit.

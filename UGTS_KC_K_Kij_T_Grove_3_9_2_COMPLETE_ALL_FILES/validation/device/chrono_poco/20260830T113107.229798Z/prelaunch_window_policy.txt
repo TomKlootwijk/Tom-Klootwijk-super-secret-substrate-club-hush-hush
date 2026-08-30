@@ -1,0 +1,251 @@
+WINDOW MANAGER POLICY STATE (dumpsys window policy)
+    mSafeMode=false mSystemReady=true mSystemBooted=true
+    mCameraLensCoverState=CAMERA_LENS_COVER_ABSENT
+    mWakeGestureEnabledSetting=false
+    mUiMode=UI_MODE_TYPE_NORMALmEnableCarDockHomeCapture=false
+    mLidKeyboardAccessibility=0 mLidNavigationAccessibility=0 getLidBehavior=LID_BEHAVIOR_SLEEP
+    mLongPressOnBackBehavior=LONG_PRESS_BACK_NOTHING
+    mLongPressOnHomeBehavior=LONG_PRESS_HOME_NOTHING
+    mDoubleTapOnHomeBehavior=DOUBLE_TAP_HOME_NOTHING
+    mShortPressOnPowerBehavior=SHORT_PRESS_POWER_GO_TO_SLEEP
+    mLongPressOnPowerBehavior=LONG_PRESS_POWER_NOTHING
+    mSettingsKeyBehavior=SETTINGS_KEY_BEHAVIOR_SETTINGS_ACTIVITY
+    mLongPressOnPowerAssistantTimeoutMs=500
+    mVeryLongPressOnPowerBehavior=VERY_LONG_PRESS_POWER_NOTHING
+    mDoublePressOnPowerBehavior=MULTI_PRESS_POWER_NOTHING
+    mTriplePressOnPowerBehavior=MULTI_PRESS_POWER_NOTHING
+    mSupportShortPressPowerWhenDefaultDisplayOn=false
+    mPowerVolUpBehavior=POWER_VOLUME_UP_BEHAVIOR_GLOBAL_ACTIONS
+    mShortPressOnSleepBehavior=SHORT_PRESS_SLEEP_GO_TO_SLEEP
+    mShortPressOnWindowBehavior=SHORT_PRESS_WINDOW_PICTURE_IN_PICTURE
+    mShortPressOnStemPrimaryBehavior=SHORT_PRESS_PRIMARY_NOTHING
+    mDoublePressOnStemPrimaryBehavior=DOUBLE_PRESS_PRIMARY_NOTHING
+    mTriplePressOnStemPrimaryBehavior=TRIPLE_PRESS_PRIMARY_NOTHING
+    mLongPressOnStemPrimaryBehavior=LONG_PRESS_PRIMARY_NOTHING
+    mAllowStartActivityForLongPressOnPowerDuringSetup=false
+    mHasSoftInput=true
+    mDismissImeOnBackKeyPressed=false mIncallPowerBehavior=sleep
+    mIncallBackBehavior=<nothing> mEndcallBehavior=sleep
+    mDisplayHomeButtonHandlers=
+    mKeyguardOccluded=false mKeyguardOccludedChanged=false mPendingKeyguardOccluded=false
+    mAllowLockscreenWhenOnDisplays=false mLockScreenTimeout=1800000 mLockScreenTimerActive=false
+    mKidsModeEnabled=false
+    mKeyMapping.size=0
+    KeyCombination rules:
+      KEYCODE_VOLUME_DOWN + KEYCODE_POWER
+      KEYCODE_VOLUME_DOWN + KEYCODE_VOLUME_UP
+      KEYCODE_VOLUME_UP + KEYCODE_POWER
+      KEYCODE_POWER + KEYCODE_BACK preCondition=false action=key_combination_power_back function=null
+      KEYCODE_POWER + KEYCODE_HOME preCondition=false action=key_combination_power_home function=null
+      KEYCODE_POWER + KEYCODE_MENU preCondition=false action=key_combination_power_menu function=null
+      KEYCODE_VOLUME_DOWN + KEYCODE_MENU preCondition=true action=key_combination_volume_down_menu function=screen_shot
+    SingleKey rules:
+      KeyCode=KEYCODE_STYLUS_BUTTON_TAIL, LongPress=false, VeryLongPress=false, MaxMultiPressCount=2
+      KeyCode=26, SupportLongPress=true, SupportVeryLongPress=true, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=5
+      KeyCode=3, SupportLongPress=true, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+      KeyCode=4, SupportLongPress=false, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+      KeyCode=82, SupportLongPress=false, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+      KeyCode=25, SupportLongPress=false, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+      KeyCode=27, SupportLongPress=true, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+    Deferred key action executor:
+      empty
+    WakeGestureListener
+      mTriggerRequested=false
+      mSensor=null
+    KeyguardServiceDelegate
+      showing=false
+      inputRestricted=false
+      occluded=false
+      secure=true
+      dreaming=false
+      systemIsReady=true
+      deviceHasKeyguard=true
+      enabled=true
+      offReason=OFF_BECAUSE_OF_USER
+      currentUser=-10000
+      bootCompleted=true
+      screenState=SCREEN_STATE_ON
+      interactiveState=INTERACTIVE_STATE_AWAKE
+      KeyguardStateMonitor
+        mIsShowing=false
+        mSimSecure=false
+        mInputRestricted=false
+        mTrusted=false
+        mCurrentUserId=0
+    Looper state:
+      Looper (android.ui, tid 31) {d36420c}
+        (MessageQueue is using Concurrent implementation)
+        State: android.os.MessageQueue$StateNode@ad8d6d3
+        PriorityQueue Messages: 
+        AsyncPriorityQueue Messages: 
+        (Total messages: 1, polling=true, quitting=false)
+        Dump time: 2026-08-30 13:31:12.402 CEST
+        Package: system_server
+        Current looper: Looper (android.ui, tid=1964)
+        History of long time messages on Looper (android.ui, tid=1964):
+
+    ModifierShortcutManager shortcuts:
+      e Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] sel=act=android.intent.action.MAIN cat=[android.intent.category.APP_EMAIL]} }
+          Resolves to: Gmail
+      u Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] sel=act=android.intent.action.MAIN cat=[android.intent.category.APP_CALCULATOR]} }
+          Resolves to: Calculator
+      p Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] sel=act=android.intent.action.MAIN cat=[android.intent.category.APP_CONTACTS]} }
+          Resolves to: Contacts
+      c Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] sel=act=android.intent.action.MAIN cat=[android.intent.category.APP_CALENDAR]} }
+          Resolves to: Complete action
+      b Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 pkg=com.android.chrome cmp=com.android.chrome/com.google.android.apps.chrome.Main (has extras) }
+          Resolves to: Chrome
+      m Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] sel=act=android.intent.action.MAIN cat=[android.intent.category.APP_MAPS]} }
+          Resolves to: Maps
+    BaseMiuiPhoneWindowManager
+      mInputMethodWindowVisibleHeight=0
+      mFrontFingerprintSensor=false
+      mSupportTapFingerprintSensorToHome=false
+      mScreenOffReason=4
+      mIsStatusBarVisibleInFullscreen=false
+      mScreenRecorderEnabled=false
+      mVoiceAssistEnabled=false
+      mWifiOnly=false
+      KEYCODE_MENU KeyBitmask=10
+      KEYCODE_APP_SWITCH KeyBitmask=100
+      KEYCODE_HOME KeyBitmask=1000
+      KEYCODE_BACK KeyBitmask=10000
+      KEYCODE_POWER KeyBitmask=100000
+      KEYCODE_VOLUME_DOWN KeyBitmask=1000000
+      KEYCODE_VOLUME_UP KeyBitmask=10000000
+      ElSE KEYCODE KeyBitmask=1
+      SHORTCUT_HOME_POWER=101000
+      SHORTCUT_BACK_POWER=110000
+      SHORTCUT_MENU_POWER=100100
+      SHORTCUT_SCREENSHOT_ANDROID=1100000
+      SHORTCUT_SCREENSHOT_MIUI=1000100
+      SHORTCUT_UNLOCK=10010000
+      mDpadCenterDown=false
+      mHomeDownAfterDpCenter=false
+    KeyResponseSetting
+      mCurrentUserId=0
+      mMikeymodeEnabled=false
+      mCameraKeyWakeScreen=false
+      mTrackballWakeScreen=false
+      mTestModeEnabled=false
+      mScreenButtonsDisabled=false
+      mVolumeButtonPrePressedTime=0
+      mVolumeButtonPressedCount=0
+      mHaveBankCard=false
+      mHaveTranksCard=false
+      mLongPressVolumeDownBehavior=0
+      mIsVRMode=false
+      mTalkBackIsOpened=false
+      mShortcutServiceIsTalkBack=false
+      mImperceptiblePowerKey=find_device_locate
+      Smart Cover Mode:
+ SUPPORT_SMART_COVER: false
+ mSmartCoverLidOpen : open
+ mSmartCoverModeSettings : 1
+    MiuiMultiFingerGestureManager
+      gestureName=MiuiThreeFingerDownGesture
+      gestureKey=three_gesture_down
+      gestureFunction=screen_shot
+
+      gestureName=MiuiThreeFingerLongPressGesture
+      gestureKey=three_gesture_long_press
+      gestureFunction=partial_screen_shot
+
+      gestureName=MiuiThreeFingerHorizontalGesture
+      gestureKey=three_gesture_horizontal
+      gestureFunction=null
+
+      gestureName=MiuiThreeFingerUpGesture
+      gestureKey=three_gesture_up
+      gestureFunction=null
+
+      mBootCompleted = false
+      mDeviceProvisioned = true
+      mIsScreenOn = true
+      mEnable = true
+      mIsFolded = false
+    MiuiSubScreenMultiFingerGestureManager = disable
+    MiuiLaunchAiFingerGestureManager
+      gestureName=MiuiTwoFingerLongPressGesture
+      gestureKey=two_gesture_long_press
+      gestureFunction=null
+
+      mBootCompleted = false
+      mDeviceProvisioned = true
+      mIsScreenOn = true
+      mAiGestureType = 0
+      mIsFolded = false
+    MiuiBackTapGestureService
+      mIsSupportBackTapSensor=false
+      mIsBackTapSensorListenerRegistered=false
+      mBackDoubleTapFunction=null
+      mBackTripleTapFunction=null
+      mIsGameMode=false
+      MiuiKeyShortcutRuleManager
+        MiuiSingleKeyRuleManager
+          KeyCode=82, SupportLongPress=false, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+              long_press_menu_key=null
+          KeyCode=3, SupportLongPress=true, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+              long_press_home_key_no_ui=launch_google_search
+          KeyCode=4, SupportLongPress=false, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+              long_press_back_key=null
+          KeyCode=25, SupportLongPress=false, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+              volumekey_launch_camera=-1
+          KeyCode=26, SupportLongPress=true, SupportVeryLongPress=true, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=5
+              long_press_power_key=launch_google_search
+              double_click_power_key=null
+              five_click_power_key=null
+          KeyCode=27, SupportLongPress=true, SupportVeryLongPress=false, LongPressTimeOut=500, VeryLongPressTimeOut=3000, MaxCount=1
+              long_press_camera_key=launch_camera
+        MiuiCombinationRuleManager
+          KEYCODE_POWER + KEYCODE_MENU preCondition=false action=key_combination_power_menu function=null
+          KEYCODE_VOLUME_DOWN + KEYCODE_MENU preCondition=true action=key_combination_volume_down_menu function=screen_shot
+          KEYCODE_POWER + KEYCODE_BACK preCondition=false action=key_combination_power_back function=null
+          KEYCODE_POWER + KEYCODE_VOLUME_DOWN preCondition=true action=key_combination_power_volume_down function=screen_shot
+          KEYCODE_POWER + KEYCODE_HOME preCondition=false action=key_combination_power_home function=null
+        MiuiGestureRuleManager
+          three_gesture_down=screen_shot
+          knock_slide_shape=null
+          knock_vertical_slid=null
+          knock_gesture_v=null
+          back_triple_tap=null
+          fingerprint_double_tap=null
+          three_gesture_long_press=partial_screen_shot
+          three_gesture_up=null
+          two_gesture_long_press=null
+          knock_long_press_horizontal_slid=null
+          double_knock=null
+          back_double_tap=null
+        MiuiShortcutTriggerHelp
+          mPressToAppSwitch=true
+          isMiuiSosCanBeTrigger=false
+          isGoogleSosEnable=true
+          mFingerPrintNavCenterAction=-1
+          mXiaoaiPowerGuideFlag=-1
+          mDefaultLongPressTimeOut=500
+          mTorchEnabled=false
+          mAOSPAssistantLongPressHomeEnabled=true
+          mIsCtsMode=false
+          mRSAGuideStatus=0
+          mHandledKeyCodeByLongPress=-1
+mSupportXiaoaiLongpressPowerKeyTalk=false
+    MiuiFingerPrintTapListener
+      mIsSetupComplete=false
+      mDoubleTapSideFp=null
+      FloatingWindowManager
+        mDisplayId = 0
+        mScreenOn = true
+        mSettingsValue = null
+        mCurrentShowWindow = false
+        mCurrentContent = 
+        mCurrentWindowContent = null
+
+    MiInputKeyRemap
+      mBluetoothAddress=[]
+      IsSupportVolumeKeyRemap=false
+    ScrollerOptimizationConfigProvider
+      localConfigVersion = 1
+      cloudConfigVersion = 0
+      cloudAppSize = 0
+      localAppSize = 3
+      localCommon = {"isOptimizeEnable":"1","isReverseOptimizeEnable":"1","friction":"-2.15","velocityThreshold":"50","flywheel":"1","flywheelTimeIntervalThreshold":"500","flywheelVelocityThreshold1":"3000","flywheelVelocityThreshold2":"1000","flywheelParam1":"5.0E-4","flywheelParam2":"1.8","flywheelParam3":"15000","flingVelocityThreshold":"500","flingVelocityScaled":"1","flingVelocityMaximum":"21000"}

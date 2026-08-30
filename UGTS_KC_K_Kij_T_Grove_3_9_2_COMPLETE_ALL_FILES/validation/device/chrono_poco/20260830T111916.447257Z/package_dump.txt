@@ -1,0 +1,174 @@
+Activity Resolver Table:
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        c4167bb org.ugts.games.chrono_video_observation_inspector.pocox7pro/org.ugts.runtime.UgtsNativeActivity filter b1654d8
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.LAUNCHER"
+
+Domain verification status:
+
+Key Set Manager:
+  [org.ugts.games.chrono_video_observation_inspector.pocox7pro]
+      Signing KeySets: 121
+
+Packages:
+  Package [org.ugts.games.chrono_video_observation_inspector.pocox7pro] (74d9c6d):
+    appId=10424
+    pkg=Package{5d79d90 org.ugts.games.chrono_video_observation_inspector.pocox7pro}
+    codePath=/data/app/~~imTuv9vrZKoRr3RotaXJxA==/org.ugts.games.chrono_video_observation_inspector.pocox7pro-7PaUj63xf2IosmSyTTsMBQ==
+    resourcePath=/data/app/~~imTuv9vrZKoRr3RotaXJxA==/org.ugts.games.chrono_video_observation_inspector.pocox7pro-7PaUj63xf2IosmSyTTsMBQ==
+    legacyNativeLibraryDir=/data/app/~~imTuv9vrZKoRr3RotaXJxA==/org.ugts.games.chrono_video_observation_inspector.pocox7pro-7PaUj63xf2IosmSyTTsMBQ==/lib
+    extractNativeLibs=false
+    primaryCpuAbi=arm64-v8a
+    secondaryCpuAbi=null
+    cpuAbiOverride=null
+    versionCode=392 minSdk=26 targetSdk=36
+    minExtensionVersions=[]
+    versionName=3.9.2-poco-x7-pro
+    hiddenApiEnforcementPolicy=2
+    usesNonSdkApi=false
+    isMiuiPreinstall=false
+    splits=[base]
+    apkSigningVersion=2
+    flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    privateFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    forceQueryable=false
+    pageSizeCompat=0
+    scannedAsStoppedSystemApp=false
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2026-08-30 13:19:19
+    lastUpdateTime=2026-08-30 13:19:24
+    installerPackageName=null
+    installerPackageUid=-1
+    initiatingPackageName=com.android.shell
+    originatingPackageName=null
+    packageSource=1
+    appMetadataFilePath=null
+    appMetadataSource=0
+    signatures=PackageSignatures{c302689 version:2, signatures:[1204d92d], past signatures:[]}
+    installPermissionsFixed=false
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP ]
+    privatePkgFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    apexModuleName=null
+    User 0: ceDataInode=431398 deDataInode=427165 installed=true hidden=false suspended=false distractionFlags=0 stopped=true notLaunched=true enabled=0 instant=false virtual=false quarantined=false
+      installReason=0
+      dataDir=/data/user/0/org.ugts.games.chrono_video_observation_inspector.pocox7pro
+      firstInstallTime=2026-08-30 13:19:24
+      uninstallReason=0
+      overlay paths:
+        /data/resource-cache/com.android.systemui-neutral-aiSG.frro
+        /data/resource-cache/com.android.systemui-accent-jBui.frro
+        /data/resource-cache/com.android.systemui-dynamic-XDcO.frro
+      runtime permissions:
+
+Queries:
+  system apps queryable: false
+  queries via forceQueryable:
+  queries via package name:
+  queries via component:
+    [com.novatek.novavis,com.miui.audiomonitor,com.xiaomi.mi_connect_service,com.miui.securitycore,com.mediatek.location.lppe.main,com.xiaomi.aiasst.vision,com.miui.cit,com.mediatek,com.android.keychain,com.xiaomi.mtb,com.xiaomi.barrage,com.android.server.telecom,com.android.systemui,com.xiaomi.misettings,com.bsp.catchlog,com.android.settings,com.android.localtransport,com.xiaomi.aon,com.miui.aod,com.mediatek.voicecommand,com.xiaomi.joyose,com.android.providers.settings,com.android.provision,com.android.location.fused,com.miui.securitycenter,com.miui.qr,com.android.DeviceAsWebcam,com.miui.bugreport,com.miui.daemon,com.android.inputdevices,com.xiaomi.touchservice,com.mediatek.atci.service,com.xiaomi.mirror,com.miui.misightservice,com.android.dynsystem,miui.systemui.plugin,com.miui.powerkeeper,com.xiaomi.trustservice,android,com.miui.touchassistant,com.miui.notification]:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.android.thememanager:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.aicr:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.player:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.videoplayer:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.gallery:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.android.settings.intelligence:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.google.android.as:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mi.appfinder:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mi.globalminusscreen:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mi.globalbrowser:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.google.android.as.oss:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.global.packageinstaller:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.msa.global:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.account:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.simactivate.service:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.glgm:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.payment:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.mipicks:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.notes:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.android.soundrecorder:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.weather2:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mi.global.pocobbs:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.miui.android.fashiongallery:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.midrop:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mi.global.shop:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.calendar:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.duokan.phone.remotecontroller:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.xiaomi.smarthome:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.hunters.legacy:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.adobe.reader:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.facebook.katana:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mintgames.triplecrush.tile.fun:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.mintgames.wordtrip:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.nf.snake:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.zhiliaoapp.musically:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.instagram.android:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.whatsapp:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.block.juggle:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.nebula.mahjongtile:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.lemon.lvoverseas:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.vitastudio.mahjong:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.nextinitiatives.minigames.mpp:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.oakever.tiletrip:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.ecffri.arrows:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+    com.apkcombo.app:
+      org.ugts.games.chrono_video_observation_inspector.pocox7pro
+  queryable via interaction:
+    User 0:
+  queryable via uses-library:
+
+Dexopt state:
+  [org.ugts.games.chrono_video_observation_inspector.pocox7pro]
+    path: /data/app/~~imTuv9vrZKoRr3RotaXJxA==/org.ugts.games.chrono_video_observation_inspector.pocox7pro-7PaUj63xf2IosmSyTTsMBQ==/base.apk
+      arm64: [status=run-from-apk] [reason=unknown] [primary-abi]
+        [location is error]
+    base APK odex file size: Oops,Some thing wrong when get dex file output paths!
+
+Compiler stats:
+  [org.ugts.games.chrono_video_observation_inspector.pocox7pro]
+    (No recorded stats)

@@ -2,6 +2,40 @@
 
 ## Demonstrated by the current source and local artifacts
 
+- The chrono-video proposal compiler binds the supplied MP4 by SHA-256
+  `1867BAFA7C80C31F18856525CBF580EDAA36D524270B1FA59CC643B51964CBFD`,
+  matches 229 PyAV frame PTS values to ffprobe at time base 1/1,000,000, and
+  covers all 921,600 source pixels once per observation as canonical `UNKNOWN`.
+  The full 1024x512 log-polar run used the RTX 5070 Ti CUDA backend, measured
+  396.88 MiB peak allocated CUDA memory, and matched the NumPy Q8 oracle with
+  maximum byte difference zero. Bundle verification passes over 15 hashed
+  assets, including a byte-identical embedded source, 229-entry source
+  `UGCVPTS1`, 58-entry derived-preview `UGCVPTS1`, 57 proposal slices and 57
+  circular joint-hypothesis slices. Both timelines are `ONCE_HOLD_LAST`.
+- The same fixture remains `UNBOUNDED_UNKNOWN` in physical 3D because the MP4
+  supplies no verified intrinsics, distortion, shutter/exposure timing, camera
+  poses or metric scale. The 7,721 static, 3,863 dynamic and 2,096 ambiguous
+  tile labels are proposal occurrences across time, not unique objects or
+  accepted scene classes. The 438 motion-chart candidates are likewise
+  frame-local proposals, not a body skeleton or persistent material identity.
+- Android source export packages the byte-identical source, both timeline
+  caches, manifest, ledgers, preview and separate `UGCVLUT1`. Native C++ verifies
+  asset/media/LUT hashes and exact source/input/output PTS; source mode applies
+  the Q8 LUT in an external-OES GLES shader, while preview mode has a separate
+  copy shader with no LUT interface. Two owned RGBA8 slots prime ordinal zero,
+  prefetch one verified ordinal, publish on integer half-open selection, discard
+  stale outputs, and explicitly count/log late boundaries. Decoder failure stays
+  fail-closed while the ordinary editable scene continues.
+- The audited 19,036,992-byte POCO-debug APK has SHA-256
+  `C9CF4D757A8961A45675A95C4C6F62CC1811F1DB188E4DD7F01F13F7E9A89DD4`.
+  Its 16 chrono assets total 22,399,330 bytes, both MP4s are ZIP-stored, all 90
+  exported-source ledger entries rehash, and the AArch64 library links
+  `libmediandk.so`. No ADB device is attached, so this remains build/source
+  evidence: MediaCodec/SurfaceTexture behavior, shader compilation, transform/
+  crop/orientation, app-to-display timing, YUV-to-RGB conversion, performance,
+  power and thermals are not physically proven. Explicit LOOP wrap is known to
+  be late/best-effort; it is inactive in the delivered ONCE profiles.
+
 - Focused opcode-25/PBR-lite desktop, browser, compact-pack, editor, shader and native-host checks
   pass, along with targeted Ruff. The full suite is green: 596 passed, 135 subtests passed in 127.49s.
 - Logic Blocks authoring is selection-owned: unbound 2D/3D objects remain absent from project data

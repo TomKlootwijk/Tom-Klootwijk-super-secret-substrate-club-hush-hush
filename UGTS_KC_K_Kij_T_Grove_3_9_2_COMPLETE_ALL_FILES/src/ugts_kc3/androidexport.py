@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shutil
 import struct
 import re
@@ -57,6 +57,18 @@ PACK_ENDIAN = 0x01020304
 PACK_VERSION = 1
 
 _SAVED_SCENE_METADATA_KEYS = frozenset({"saved_scenes", "saved_scene_instances"})
+_ANDROID_TEMPLATE_VOLATILE_NAMES = (
+    ".cxx",
+    ".gradle",
+    ".idea",
+    "*.iml",
+    "build",
+    "local.properties",
+)
+_CHRONO_RUNTIME_BINDING_HEADER = "chrono_runtime_binding.hpp"
+_CHRONO_SAFE_PATH = re.compile(r"[A-Za-z0-9._/-]+\Z")
+_SHA256_HEX = re.compile(r"[0-9a-fA-F]{64}\Z")
+_MAX_UINT64 = (1 << 64) - 1
 
 
 def _materialized_project(project: Mobile3DProject) -> Mobile3DProject:
@@ -412,6 +424,307 @@ def _file_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+@dataclass(frozen=True)
+class _ChronoRuntimeAsset:
+    relative_posix: str
+    relative_parts: tuple[str, ...]
+    source: Path
+    byte_count: int
+    sha256: str
+
+    @property
+    def packaged_path(self) -> str:
+        return f"chrono/{self.relative_posix}"
+
+
+@dataclass(frozen=True)
+class _ChronoRuntimeBinding:
+    present: bool
+    manifest_relative_posix: str
+    manifest_sha256: str
+    profile_relative_posix: str
+    profile_sha256: str
+    assets: tuple[_ChronoRuntimeAsset, ...]
+
+    @property
+    def manifest_packaged_path(self) -> str:
+        if not self.manifest_relative_posix:
+            return ""
+        return f"chrono/{self.manifest_relative_posix}"
+
+    @property
+    def profile_packaged_path(self) -> str:
+        if not self.profile_relative_posix:
+            return ""
+        return f"chrono/{self.profile_relative_posix}"
+
+
+def _canonical_chrono_asset_path(value: object, label: str) -> PurePosixPath:
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{label} path must be a non-empty string")
+    if not _CHRONO_SAFE_PATH.fullmatch(value) or "\\" in value:
+        raise ValueError(
+            f"{label} path must use portable ASCII asset characters and '/' separators"
+        )
+    path = PurePosixPath(value)
+    if (
+        path.is_absolute()
+        or value != path.as_posix()
+        or not path.parts
+        or any(part in ("", ".", "..") for part in path.parts)
+    ):
+        raise ValueError(f"{label} path must be a canonical safe relative path")
+    return path
+
+
+def _canonical_sha256(value: object, label: str) -> str:
+    if not isinstance(value, str) or not _SHA256_HEX.fullmatch(value):
+        raise ValueError(f"{label} SHA-256 must contain exactly 64 hexadecimal digits")
+    return value.lower()
+
+
+def _declared_byte_count(value: object, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"{label} byte count must be an integer")
+    if value < 0 or value > _MAX_UINT64:
+        raise ValueError(f"{label} byte count must fit an unsigned 64-bit integer")
+    return value
+
+
+def _validate_chrono_runtime_binding(
+    chrono_metadata: object,
+    asset_source_root: str | Path | None,
+) -> _ChronoRuntimeBinding:
+    if chrono_metadata is None:
+        return _ChronoRuntimeBinding(False, "", "", "", "", ())
+    if not isinstance(chrono_metadata, Mapping):
+        raise ValueError("metadata.chrono_scene_observation must be an object")
+    declared_assets = chrono_metadata.get("runtime_assets", ())
+    if not isinstance(declared_assets, (list, tuple)):
+        raise ValueError("metadata.chrono_scene_observation.runtime_assets must be a list")
+    if not declared_assets:
+        return _ChronoRuntimeBinding(False, "", "", "", "", ())
+    if asset_source_root is None:
+        raise ValueError(
+            "chrono runtime assets were declared but no asset source root was provided"
+        )
+    source_root = Path(asset_source_root).resolve()
+    if not source_root.is_dir():
+        raise FileNotFoundError(
+            f"chrono asset source root is not a directory: {source_root}"
+        )
+
+    assets: list[_ChronoRuntimeAsset] = []
+    folded_paths: dict[tuple[str, ...], str] = {}
+    for index, item in enumerate(declared_assets):
+        label = f"chrono runtime asset {index}"
+        if not isinstance(item, Mapping):
+            raise ValueError(f"{label} must be an object")
+        relative = _canonical_chrono_asset_path(item.get("path"), label)
+        folded = tuple(part.casefold() for part in relative.parts)
+        if folded in folded_paths:
+            raise ValueError(
+                "chrono runtime asset duplicate or case-collision: "
+                f"{folded_paths[folded]} and {relative.as_posix()}"
+            )
+        for prior_folded, prior_text in folded_paths.items():
+            common = min(len(folded), len(prior_folded))
+            if folded[:common] == prior_folded[:common] and len(folded) != len(prior_folded):
+                raise ValueError(
+                    "chrono runtime asset file/directory path collision: "
+                    f"{prior_text} and {relative.as_posix()}"
+                )
+        folded_paths[folded] = relative.as_posix()
+
+        expected_bytes = _declared_byte_count(item.get("bytes"), label)
+        expected_hash = _canonical_sha256(item.get("sha256"), label)
+        source_asset = source_root.joinpath(*relative.parts).resolve()
+        if not source_asset.is_relative_to(source_root) or not source_asset.is_file():
+            raise FileNotFoundError(
+                "chrono runtime asset is missing or escapes its root: "
+                f"{relative.as_posix()}"
+            )
+        actual_bytes = source_asset.stat().st_size
+        if actual_bytes != expected_bytes:
+            raise ValueError(
+                f"chrono runtime asset byte-count mismatch for {relative.as_posix()}: "
+                f"declared {expected_bytes}, found {actual_bytes}"
+            )
+        actual_hash = _file_digest(source_asset)
+        if actual_hash != expected_hash:
+            raise ValueError(
+                f"chrono runtime asset hash mismatch for {relative.as_posix()}"
+            )
+        assets.append(
+            _ChronoRuntimeAsset(
+                relative.as_posix(),
+                tuple(relative.parts),
+                source_asset,
+                expected_bytes,
+                expected_hash,
+            )
+        )
+
+    manifest_relative = _canonical_chrono_asset_path(
+        chrono_metadata.get("manifest"),
+        "metadata.chrono_scene_observation manifest",
+    )
+    manifest_sha256 = _canonical_sha256(
+        chrono_metadata.get("manifest_sha256"),
+        "metadata.chrono_scene_observation manifest",
+    )
+    manifest_assets = [
+        asset for asset in assets if asset.relative_posix == manifest_relative.as_posix()
+    ]
+    if len(manifest_assets) != 1:
+        raise ValueError(
+            "chrono manifest must be declared exactly once as a runtime asset"
+        )
+    if manifest_assets[0].sha256 != manifest_sha256:
+        raise ValueError(
+            "chrono manifest metadata SHA-256 does not match its runtime asset receipt"
+        )
+
+    try:
+        manifest_value = json.loads(
+            manifest_assets[0].source.read_text(encoding="utf-8")
+        )
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError("chrono manifest runtime asset is not readable JSON") from exc
+    if not isinstance(manifest_value, Mapping):
+        raise ValueError("chrono manifest runtime asset root must be an object")
+
+    profile_relative_posix = ""
+    profile_sha256 = ""
+    from .chrono_video import (
+        CHRONO_MANIFEST_SCHEMA,
+        ChronoVideoError,
+        inspect_chrono_profile_receipt,
+    )
+
+    if manifest_value.get("schema") == CHRONO_MANIFEST_SCHEMA:
+        profile_relative = _canonical_chrono_asset_path(
+            manifest_value.get("profile_asset"), "chrono manifest profile_asset"
+        )
+        if profile_relative.as_posix() != "profile.json":
+            raise ValueError("chrono manifest profile_asset must be profile.json")
+        profile_assets = [
+            asset
+            for asset in assets
+            if asset.relative_posix == profile_relative.as_posix()
+        ]
+        if len(profile_assets) != 1:
+            raise ValueError(
+                "chrono profile must be declared exactly once as a runtime asset"
+            )
+        manifest_asset_receipts = manifest_value.get("assets")
+        if not isinstance(manifest_asset_receipts, list):
+            raise ValueError("chrono manifest assets must be a list")
+        manifest_profile_receipts = [
+            item
+            for item in manifest_asset_receipts
+            if isinstance(item, Mapping)
+            and item.get("path") == profile_relative.as_posix()
+        ]
+        if len(manifest_profile_receipts) != 1:
+            raise ValueError(
+                "chrono manifest must hash-bind profile.json exactly once"
+            )
+        manifest_profile_receipt = manifest_profile_receipts[0]
+        manifest_profile_bytes = _declared_byte_count(
+            manifest_profile_receipt.get("bytes"), "chrono manifest profile asset"
+        )
+        manifest_profile_hash = _canonical_sha256(
+            manifest_profile_receipt.get("sha256"), "chrono manifest profile asset"
+        )
+        profile_asset = profile_assets[0]
+        if (
+            manifest_profile_bytes != profile_asset.byte_count
+            or manifest_profile_hash != profile_asset.sha256
+        ):
+            raise ValueError(
+                "chrono manifest and project profile asset receipts disagree"
+            )
+        try:
+            raw_profile = json.loads(profile_asset.source.read_text(encoding="utf-8"))
+            profile_report = inspect_chrono_profile_receipt(raw_profile)
+        except (OSError, json.JSONDecodeError, ChronoVideoError) as exc:
+            raise ValueError(f"chrono profile receipt is invalid: {exc}") from exc
+        profile_sha256 = _canonical_sha256(
+            manifest_value.get("profile_sha256"), "chrono manifest profile"
+        )
+        if profile_report["profile_sha256"] != profile_sha256:
+            raise ValueError(
+                "chrono manifest profile SHA-256 does not match recomputed profile"
+            )
+        profile_relative_posix = profile_relative.as_posix()
+    return _ChronoRuntimeBinding(
+        True,
+        manifest_relative.as_posix(),
+        manifest_sha256,
+        profile_relative_posix,
+        profile_sha256,
+        tuple(assets),
+    )
+
+
+def _cpp_sha256_array(digest: str) -> str:
+    values = (
+        [f"0x{digest[index:index + 2]}u" for index in range(0, len(digest), 2)]
+        if digest
+        else ["0u"] * 32
+    )
+    return "{{" + ", ".join(values) + "}}"
+
+
+def _chrono_runtime_binding_header(binding: _ChronoRuntimeBinding) -> str:
+    manifest_hex = binding.manifest_sha256
+    profile_hex = binding.profile_sha256
+    asset_lines = [
+        "        AssetBinding{"
+        f'"{asset.packaged_path}", std::uint64_t{{{asset.byte_count}}}, '
+        f"std::array<std::uint8_t, 32>{_cpp_sha256_array(asset.sha256)}"
+        "},"
+        for asset in binding.assets
+    ]
+    if asset_lines:
+        asset_initializer = "{{\n" + "\n".join(asset_lines) + "\n    }}"
+    else:
+        asset_initializer = "{}"
+    return (
+        "// Generated by ugts_kc3.androidexport; do not edit.\n"
+        "#pragma once\n"
+        "#include <array>\n"
+        "#include <cstdint>\n"
+        "#include <string_view>\n\n"
+        "namespace kc::chrono_runtime_binding {\n\n"
+        "struct AssetBinding {\n"
+        "    std::string_view path;\n"
+        "    std::uint64_t bytes;\n"
+        "    std::array<std::uint8_t, 32> sha256;\n"
+        "};\n\n"
+        f"inline constexpr bool kPresent = {'true' if binding.present else 'false'};\n"
+        f'inline constexpr std::string_view kManifestAssetPath{{"{binding.manifest_packaged_path}"}};\n'
+        f'inline constexpr std::string_view kManifestSha256Hex{{"{manifest_hex}"}};\n'
+        "inline constexpr std::array<std::uint8_t, 32> kManifestSha256"
+        f"{_cpp_sha256_array(manifest_hex)};\n"
+        f'inline constexpr std::string_view kProfileAssetPath{{"{binding.profile_packaged_path}"}};\n'
+        f'inline constexpr std::string_view kProfileSha256Hex{{"{profile_hex}"}};\n'
+        "inline constexpr std::array<std::uint8_t, 32> kProfileSha256"
+        f"{_cpp_sha256_array(profile_hex)};\n"
+        f"inline constexpr std::array<AssetBinding, {len(binding.assets)}> kAssets"
+        f"{asset_initializer};\n\n"
+        "[[nodiscard]] inline constexpr const AssetBinding* find(\n"
+        "    std::string_view path) noexcept {\n"
+        "    for (const auto& asset : kAssets) {\n"
+        "        if (asset.path == path) return &asset;\n"
+        "    }\n"
+        "    return nullptr;\n"
+        "}\n\n"
+        "} // namespace kc::chrono_runtime_binding\n"
+    )
+
+
 def android_application_id(project_id: str) -> str:
     """Derive a stable, install-safe package id so learner projects do not collide."""
     segments = []
@@ -437,11 +750,16 @@ def build_android_project(
     profile_hint: str = "auto",
     clean: bool = True,
     include_authoring_assets: bool = False,
+    asset_source_root: str | Path | None = None,
 ) -> AndroidProjectBuild:
     """Materialize a self-contained Android Studio/Gradle native source project."""
     authored_project = project
     project = _materialized_project(project)
     project.validate()
+    chrono_binding = _validate_chrono_runtime_binding(
+        authored_project.metadata.get("chrono_scene_observation"),
+        asset_source_root,
+    )
     # Compile metadata before touching an existing output directory.  A graph
     # outside the native subset must fail export clearly and non-destructively.
     hierarchy_pack_data = compile_hierarchy_pack_bytes(project)
@@ -489,7 +807,12 @@ def build_android_project(
         shutil.rmtree(output_dir)
     if output_dir.exists() and any(output_dir.iterdir()):
         raise FileExistsError(f"output is not empty: {output_dir}")
-    shutil.copytree(template, output_dir, dirs_exist_ok=True)
+    shutil.copytree(
+        template,
+        output_dir,
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns(*_ANDROID_TEMPLATE_VOLATILE_NAMES),
+    )
 
     strings_path = output_dir / "app/src/main/res/values/strings.xml"
     strings_path.write_text(
@@ -507,6 +830,36 @@ def build_android_project(
     )
     assets = output_dir / "app/src/main/assets"
     assets.mkdir(parents=True, exist_ok=True)
+    chrono_asset_receipts: list[dict[str, object]] = []
+    chrono_assets = assets / "chrono"
+    for asset in chrono_binding.assets:
+        target_asset = chrono_assets.joinpath(*asset.relative_parts)
+        if target_asset.exists():
+            raise FileExistsError(
+                f"chrono runtime asset target already exists: {asset.packaged_path}"
+            )
+        target_asset.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(asset.source, target_asset)
+        copied_bytes = target_asset.stat().st_size
+        copied_hash = _file_digest(target_asset)
+        if copied_bytes != asset.byte_count or copied_hash != asset.sha256:
+            raise ValueError(
+                "copied chrono runtime asset failed byte/SHA verification: "
+                f"{asset.packaged_path}"
+            )
+        chrono_asset_receipts.append(
+            {
+                "path": asset.packaged_path,
+                "bytes": copied_bytes,
+                "sha256": copied_hash,
+            }
+        )
+    binding_header = output_dir / "app/src/main/cpp" / _CHRONO_RUNTIME_BINDING_HEADER
+    binding_header.write_text(
+        _chrono_runtime_binding_header(chrono_binding),
+        encoding="utf-8",
+        newline="\n",
+    )
     # Authoring JSON and inspection evidence are not runtime inputs.  Keeping
     # them outside app/src/main/assets avoids silently packaging duplicate data
     # into every APK.  A diagnostic export can opt back into the old layout.
@@ -562,6 +915,19 @@ def build_android_project(
         "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed",
         "application_id": android_application_id(project.id),
         "authoring_assets_packaged": include_authoring_assets,
+        "chrono_video_assets": chrono_asset_receipts,
+        "chrono_runtime_binding": {
+            "present": chrono_binding.present,
+            "header": binding_header.relative_to(output_dir).as_posix(),
+            "manifest_asset_path": chrono_binding.manifest_packaged_path or None,
+            "manifest_sha256": chrono_binding.manifest_sha256 or None,
+            "profile_asset_path": chrono_binding.profile_packaged_path or None,
+            "profile_sha256": chrono_binding.profile_sha256 or None,
+            "asset_count": len(chrono_asset_receipts),
+            "asset_bytes": sum(
+                int(receipt["bytes"]) for receipt in chrono_asset_receipts
+            ),
+        },
         "transform_hierarchy_runtime": hierarchy_inspection,
         "visual_graph_runtime": graph_inspection,
         "packed_kinematic_runtime": polar_inspection,
@@ -575,6 +941,8 @@ def build_android_project(
         "agp": "8.13.2",
         "gradle": "8.13",
         "ndk": "r29 / 29.0.14206865",
+        "files_scope": "exported source inputs before Gradle build",
+        "files_exclude": list(_ANDROID_TEMPLATE_VOLATILE_NAMES) + ["build-report.json"],
         "files": [
             {
                 "path": path.relative_to(output_dir).as_posix(),

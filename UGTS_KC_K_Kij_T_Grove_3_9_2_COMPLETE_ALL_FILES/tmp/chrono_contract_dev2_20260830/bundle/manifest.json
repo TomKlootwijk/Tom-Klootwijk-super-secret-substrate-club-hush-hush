@@ -1,0 +1,168 @@
+{
+  "assets": [
+    {
+      "bytes": 1975,
+      "path": "source_receipt.json",
+      "sha256": "dffd18fff16ab403e3c9b0da099d0dfb8e0b32279b917c1f2648595cbf76f616"
+    },
+    {
+      "bytes": 1688,
+      "path": "observations.jsonl",
+      "sha256": "902b26170a1edee90c87ec6e758321d3f3007aebe3d6de6073ed7dfcea585342"
+    },
+    {
+      "bytes": 28189,
+      "path": "proposals.jsonl",
+      "sha256": "bb7f0782d6f07b5fe22d0c929595e42095803df20e334d7aff6357d09a164478"
+    },
+    {
+      "bytes": 3247,
+      "path": "joint_hypotheses.jsonl",
+      "sha256": "ee070affc67a0daa636453df9cb12a3606bcb9979c30ec6f73ddf542d9a850f8"
+    },
+    {
+      "bytes": 4431,
+      "path": "novelty.jsonl",
+      "sha256": "a4330681f1b00227f070bfe63e5e61b4a884ca7942c9238568ed653b504e7a58"
+    },
+    {
+      "bytes": 4204,
+      "path": "polar_lut.ugcv1",
+      "sha256": "db693cdf5582cb88fe7573836f092a680a05f3a542751a63559ab70762f79a12"
+    },
+    {
+      "bytes": 675,
+      "path": "polar_lut_inspection.json",
+      "sha256": "174baccc286a59feb51f903e095839b146a8361d4ee0a794e3fbc1a3505421a3"
+    },
+    {
+      "bytes": 1793,
+      "path": "polar_preview.mp4",
+      "sha256": "93a8abb35fba267d676b15312d08b7f2433a92514530728654e3dc0d353101b1"
+    },
+    {
+      "bytes": 1589,
+      "path": "preview_timeline.json",
+      "sha256": "2bde83226140ffc4576911ac2f84734a1b623f2eecaa2f0a297ab9ceb3bc5e3c"
+    },
+    {
+      "bytes": 336,
+      "path": "preview_timeline.ugcvpts1",
+      "sha256": "721558a7bb63b35f17095651e1a740d39358c65f5a566c14b6e839b152824d77"
+    },
+    {
+      "bytes": 850,
+      "path": "preview_timeline_inspection.json",
+      "sha256": "f8d7fb41d57e49bbccea037462e32972d177e7283f073e4d4570811853eea10d"
+    },
+    {
+      "bytes": 3331,
+      "path": "reconstruction_receipt.json",
+      "sha256": "bcaaa69f2a9d2a23fdc822d2131d0161b3f024f12da3c44f327169cf26300a54"
+    },
+    {
+      "bytes": 2694,
+      "path": "source_media.mp4",
+      "sha256": "3577b52f0da89ca73eb96996b7e44f0676c11390950daa9de8a53bd54ef2cd74"
+    },
+    {
+      "bytes": 336,
+      "path": "source_timeline.ugcvpts1",
+      "sha256": "cb9f4dcccf05cd88ee35145f98cae1d10c380f774b2b8a7aadde28db3d1d2fc0"
+    },
+    {
+      "bytes": 843,
+      "path": "source_timeline_inspection.json",
+      "sha256": "50d5bbdcb596726c0048a060057cd7b41618fe9d559da4ad61fb11a5c62ac777"
+    }
+  ],
+  "authority": {
+    "embedded_source_media": "AUTHORITATIVE_BYTE_IDENTICAL_COPY",
+    "joint_hypotheses": "PROPOSAL_ONLY_OR_UNBOUNDED_UNKNOWN",
+    "motion_static_tiles": "PROPOSAL_ONLY",
+    "negative_memory": "NOVELTY_ONLY_NO_IMPLICIT_RETRACTION",
+    "observations": "AUTHORITATIVE_DECODE_AND_PTS_RECEIPTS",
+    "polar_lut": "DETERMINISTIC_DERIVED_GPU_CACHE",
+    "polar_preview": "DERIVED_RASTER_PREVIEW",
+    "preview_timeline": "DERIVED_MEDIA_ORDINAL_TO_EXACT_SOURCE_PTS",
+    "scene_3d": "UNBOUNDED_UNKNOWN",
+    "source_media": "AUTHORITATIVE_BYTES"
+  },
+  "chronology": {
+    "duration_seconds_den": 5,
+    "duration_seconds_num": 4,
+    "duration_ticks": 8192,
+    "end_pts_exclusive": 8192,
+    "first_pts": 0,
+    "frame_count": 4,
+    "knowledge_axis": "commit_seq",
+    "last_pts": 6144,
+    "ordering": "effective_pts_then_decode_index",
+    "time_base_den": 10240,
+    "time_base_num": 1
+  },
+  "desktop_profile": {
+    "compute_backend": "numpy-cpu-q8",
+    "cuda_peak_allocated_mib": null,
+    "decode_backend": "pyav-cpu-exact-pts",
+    "role": "authoritative compiler and proposal tier",
+    "workspace_limit_mib": 128
+  },
+  "phone_profile": {
+    "compile_on_phone": false,
+    "physical_device_verification": "NOT_RUN_NO_ADB_DEVICE",
+    "playback_mode": "ONCE_HOLD_LAST",
+    "preview_media": "polar_preview.mp4",
+    "preview_raster_mode": "ALREADY_LOG_POLAR_DO_NOT_APPLY_LUT_AGAIN",
+    "preview_timeline": "preview_timeline.ugcvpts1",
+    "role": "compact evidence viewer and downstream rasterizer",
+    "source_media": "source_media.mp4",
+    "source_media_mode": "EMBEDDED_BYTE_IDENTICAL",
+    "source_raster_mode": "APPLY_UGCVLUT1_Q8",
+    "source_time_authority": "exact PTS, never display frame count",
+    "source_timeline": "source_timeline.ugcvpts1",
+    "target": "POCO X7 Pro / Mali-G720 / ARM64 / GLES 3.0",
+    "target_fps": 60
+  },
+  "profile": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL",
+  "profile_sha256": "7753c0988acbe392179188756cf376a87c122cf7290b7bf16814951be8926a0b",
+  "schema": "ugts-chrono-video-observation-manifest-0.1",
+  "source": {
+    "authority": "ORIGINAL_MEDIA",
+    "bytes": 2694,
+    "embedded_byte_identical": true,
+    "embedded_media": true,
+    "embedded_path": "source_media.mp4",
+    "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\chrono_contract_dev2_20260830\\source.mp4",
+    "sha256": "3577b52f0da89ca73eb96996b7e44f0676c11390950daa9de8a53bd54ef2cd74"
+  },
+  "spatial_observation": {
+    "coverage": {
+      "canonical_state": "UNKNOWN",
+      "coverage_multiplicity": 1,
+      "covered_pixels": 3072,
+      "partition": "half-open-raster-tiles-row-major",
+      "source_pixels": 3072,
+      "tile_count": 48
+    },
+    "geometry_status": "UNBOUNDED_UNKNOWN",
+    "pixel_to_chart": {
+      "center": [
+        31.5,
+        23.5
+      ],
+      "core": "radius < 0.5",
+      "radius": "sqrt((u-cx)^2+(v-cy)^2)",
+      "rho": "log(radius/r0)",
+      "theta": "atan2(v-cy,u-cx) mod 2pi"
+    },
+    "raster_domain": [
+      0,
+      0,
+      64,
+      48
+    ],
+    "reason": "The source provides no verified intrinsics, distortion, exposure/rolling shutter bounds, camera poses, or metric scale."
+  },
+  "target_kind": "scene"
+}

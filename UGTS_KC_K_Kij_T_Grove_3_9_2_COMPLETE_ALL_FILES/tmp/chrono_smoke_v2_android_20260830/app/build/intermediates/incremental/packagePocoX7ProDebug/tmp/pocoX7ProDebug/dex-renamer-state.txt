@@ -1,0 +1,4 @@
+#Sun Aug 30 11:29:50 CEST 2026
+base.0=C\:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\chrono_smoke_v2_android_20260830\\app\\build\\intermediates\\dex\\pocoX7ProDebug\\mergeProjectDexPocoX7ProDebug\\0\\classes.dex
+path.0=0/classes.dex
+renamed.0=classes.dex

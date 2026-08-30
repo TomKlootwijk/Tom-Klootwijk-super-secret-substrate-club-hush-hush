@@ -1,0 +1,24 @@
+# ninja log v5
+0	160	8097855844489203	CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o	e12fc5a3febb1c13
+163	293	8097855845591991	libnative_app_glue.a	28c08eddaa145569
+97	952	8097855852247642	CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o	10af75d9bf0eb239
+49	956	8097855852352877	CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o	3760e03b082d9dbd
+54	1164	8097855854357523	CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o	a50967acca754aa4
+103	1181	8097855854598303	CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o	4310fcd4d5b6e75
+77	1182	8097855854743529	CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o	6d522bd9b2530792
+84	1224	8097855855189740	CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o	c0079a471363a0a4
+14	1239	8097855855274877	CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o	366296bf9fe9b8b1
+27	1241	8097855855295020	CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o	4aa2d740ee9058b4
+110	1286	8097855855810950	CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o	71c214b65b525997
+60	1289	8097855855810950	CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o	277ece7021b27c49
+18	1311	8097855856061308	CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o	92660e0cec535f7a
+23	1341	8097855856362458	CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o	561d85ab018d189f
+37	1352	8097855856457588	CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o	a69d8cc851b77a97
+71	1354	8097855856492716	CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o	21b80c90c0cc92ba
+90	1391	8097855856845032	CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o	35a6c92fbc98d3c1
+32	1440	8097855857343185	CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o	8c96bc81d5134cd6
+43	1565	8097855858578356	CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o	d0259f992ae9eabe
+10	1747	8097855860384755	CMakeFiles/ugts_kc_native.dir/main.cpp.o	8d9c3efbe7ece042
+65	1752	8097855860404748	CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o	5aff1b8964889b51
+5	1999	8097855862870342	CMakeFiles/ugts_kc_native.dir/engine.cpp.o	7232707528df8462
+1999	2141	8097855864152405	C:/Tom Klootwijk super secret substrate club hush hush/UGTOMS_CHRONO_VIDEO_SAMPLE_0_1/android_poco/app/build/intermediates/cxx/Debug/665c36c4/obj/arm64-v8a/libugts_kc_native.so	b8b384fa7a2c3504

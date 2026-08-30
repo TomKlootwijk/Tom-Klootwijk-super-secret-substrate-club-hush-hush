@@ -199,6 +199,51 @@ def _parser() -> argparse.ArgumentParser:
     polar_lut.add_argument("--rho-min", type=float, default=-12.0)
     polar_lut.add_argument("--rho-max", type=float, default=12.0)
 
+    chrono = sub.add_parser(
+        "compile-chrono-video",
+        help=(
+            "compile exact video timing, a separate log-polar GPU LUT, and "
+            "proposal-only chrono-spatial evidence"
+        ),
+    )
+    chrono.add_argument("source", type=Path)
+    chrono.add_argument("output", type=Path)
+    chrono.add_argument("--backend", choices=("auto", "cuda", "cpu"), default="auto")
+    chrono.add_argument("--theta-bins", type=int, default=1024)
+    chrono.add_argument("--rho-bins", type=int, default=512)
+    chrono.add_argument("--sample-stride", type=int, default=4)
+    chrono.add_argument("--tile-size", type=int, default=64)
+    chrono.add_argument("--batch-size", type=int, default=8)
+    chrono.add_argument("--max-vram-mib", type=int, default=1536)
+    chrono.add_argument(
+        "--target-kind",
+        choices=("scene", "human"),
+        default="scene",
+        help="user-declared specialization; human adds no learned body completion",
+    )
+    chrono.add_argument(
+        "--embed-source-for-phone",
+        action="store_true",
+        help=(
+            "copy an MP4 byte-for-byte into the bundle and emit its exact-PTS "
+            "on-phone runtime timeline"
+        ),
+    )
+    chrono.add_argument("--json", action="store_true", dest="as_json")
+
+    verify_chrono = sub.add_parser(
+        "verify-chrono-video",
+        help="verify a chrono-video bundle, hashes, exact PTS ledger, and authority guards",
+    )
+    verify_chrono.add_argument("bundle", type=Path)
+    verify_chrono.add_argument(
+        "--no-source-bytes",
+        action="store_true",
+        help="verify the bundle without requiring its external authoritative MP4",
+    )
+    verify_chrono.add_argument("--output", type=Path)
+    verify_chrono.add_argument("--json", action="store_true", dest="as_json")
+
     return parser
 
 
@@ -237,7 +282,8 @@ def main(argv: list[str] | None = None) -> int:
             print("2D: vector art, deterministic game world, collision, animation, tilemaps, audio and HTML5 export")
             print("3D: validated mobile scene projects, deterministic arcade physics, glTF/KC3D scene packs and native Android NDK/GLES3 source export")
             print("Android: POCO X7 Pro 12 GB signature profile plus high, balanced and compatibility device tiers")
-            print("4D: design-contract TODO only; no 4D runtime is claimed in 3.9.2")
+            print("Chrono video: exact-PTS observation/proposal compiler with separate CVLUT1 log-polar GPU cache")
+            print("4D geometry: no metric or hidden-surface reconstruction is claimed without bounded physical evidence")
             return 0
 
         if args.command == "editor":
@@ -349,6 +395,65 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{args.output} ({args.output.stat().st_size} bytes)")
             return 0
 
+        if args.command == "compile-chrono-video":
+            # Kept lazy so the ordinary engine CLI does not require video,
+            # OpenCV, NumPy, PyAV, or CUDA packages at import time.
+            from .chrono_video import ChronoVideoProfile, compile_chrono_video
+
+            result = compile_chrono_video(
+                args.source,
+                args.output,
+                ChronoVideoProfile(
+                    theta_bins=args.theta_bins,
+                    rho_bins=args.rho_bins,
+                    sample_stride=args.sample_stride,
+                    tile_size=args.tile_size,
+                    batch_size=args.batch_size,
+                    max_vram_mib=args.max_vram_mib,
+                    target_kind=args.target_kind,
+                    embed_source_for_phone=args.embed_source_for_phone,
+                ),
+                backend=args.backend,
+            )
+            payload = result.to_dict()
+            if args.as_json:
+                print(json.dumps(payload, indent=2, sort_keys=True))
+            else:
+                print(result.manifest)
+                print(
+                    f"{result.decoded_frames} exact-PTS frames; "
+                    f"{result.analyzed_frames} analyzed; {result.compute_backend}; "
+                    f"{result.elapsed_seconds:.3f} s"
+                )
+                if result.cuda_peak_mib is not None:
+                    print(f"CUDA peak allocated: {result.cuda_peak_mib:.1f} MiB")
+                print(f"editable scene: {result.project}")
+            return 0
+
+        if args.command == "verify-chrono-video":
+            from .chrono_video import verify_chrono_bundle
+
+            report = verify_chrono_bundle(
+                args.bundle, verify_source_bytes=not args.no_source_bytes
+            )
+            if args.output is not None:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(
+                    json.dumps(report, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            if args.as_json:
+                print(json.dumps(report, indent=2, sort_keys=True))
+            else:
+                print(f"PASS: {report['bundle']}")
+                print(
+                    f"  {report['observation_count']} exact-PTS observations; "
+                    f"{report['proposal_count']} proposal slices; "
+                    f"{report['asset_count']} hash-verified assets"
+                )
+                print(f"  geometry: {report['geometry_status']}")
+            return 0
+
         if args.command == "new":
             if args.template == "elizabeth-quest":
                 project = elizabeth_vector_quest_project(args.author)
@@ -452,6 +557,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.profile,
                 clean=not args.no_clean,
                 include_authoring_assets=args.debug_assets,
+                asset_source_root=args.project.resolve().parent,
             )
             print(result.output_dir)
             print(f"{result.file_count} files, {result.total_bytes} bytes, project {result.project_hash[:12]}")

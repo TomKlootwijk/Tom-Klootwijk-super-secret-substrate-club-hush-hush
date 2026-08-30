@@ -47,16 +47,16 @@
 30        android:extractNativeLibs="false"
 31        android:fullBackupContent="false"
 31-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:11:9-42
-32        android:hasCode="false"
-32-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:12:9-32
+32        android:hasCode="true"
+32-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:12:9-31
 33        android:label="@string/app_name"
 33-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:13:9-41
 34        android:theme="@style/AppTheme" >
 34-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:14:9-40
 35        <activity
 35-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:15:9-29:20
-36            android:name="android.app.NativeActivity"
-36-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:16:13-54
+36            android:name="org.ugts.runtime.UgtsNativeActivity"
+36-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:16:13-63
 37            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode|density"
 37-->C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\src\ugts_kc3\android_template\project\app\src\main\AndroidManifest.xml:17:13-121
 38            android:exported="true"

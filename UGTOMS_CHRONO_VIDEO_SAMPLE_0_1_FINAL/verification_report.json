@@ -1,0 +1,41 @@
+{
+  "asset_bytes": 9939173,
+  "asset_count": 10,
+  "bundle": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_1_FINAL",
+  "cpu_backend_max_byte_difference": 0,
+  "cvlut": {
+    "center_x": 639.5,
+    "center_y": 359.5,
+    "core_radius_pixels": 0.5,
+    "interpolation": "explicit Q8 bilinear integer accumulation with +32768 then >>16",
+    "lane_contract": [
+      "x0",
+      "y0",
+      "fx_q8|(fy_q8<<8)",
+      "valid"
+    ],
+    "magic": "UGCVLUT1",
+    "payload_bytes": 4194304,
+    "payload_sha256": "09806b1be11e7f8721b89a9aca89efcb25d49c01dcea3e946c013763e8b60b68",
+    "r0_pixels": 1.0,
+    "rho_bins": 512,
+    "rho_max": 6.59799322314859,
+    "rho_min": -0.6931471805599453,
+    "schema": "ugts-chrono-video-lut-inspection-0.1",
+    "source_height": 720,
+    "source_width": 1280,
+    "texture_format": "RGBA16UI",
+    "theta_bins": 1024,
+    "version": "1.0"
+  },
+  "geometry_status": "UNBOUNDED_UNKNOWN",
+  "joint_hypothesis_count": 57,
+  "manifest_sha256": "65beb74a64a3789fbc32b8fbcee35896ee646fc05c1ecd35e3d360262a7059b3",
+  "novelty_event_count": 58,
+  "observation_count": 229,
+  "passed": true,
+  "proposal_count": 57,
+  "schema": "ugts-chrono-video-bundle-verification-0.1",
+  "source_bytes_verified": true,
+  "source_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd"
+}

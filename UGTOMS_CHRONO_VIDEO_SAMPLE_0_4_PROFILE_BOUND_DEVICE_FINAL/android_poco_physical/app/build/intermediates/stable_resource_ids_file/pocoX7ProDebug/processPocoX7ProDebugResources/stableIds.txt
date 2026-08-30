@@ -1,0 +1,2 @@
+org.ugts.games.chrono_video_observation_inspector.pocox7pro:style/AppTheme = 0x7f020000
+org.ugts.games.chrono_video_observation_inspector.pocox7pro:string/app_name = 0x7f010000

@@ -1,0 +1,28 @@
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTOMS_CHRONO_VIDEO_SAMPLE_0_1_FINAL/android_poco/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/native_app_glue.dir/./
+
+  has 172 characters.  The maximum full path to an object file is 160
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    android_native_app_glue.c.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+CMake Warning in CMakeLists.txt:
+  The object file directory
+
+    C:/Tom Klootwijk super secret substrate club hush hush/UGTOMS_CHRONO_VIDEO_SAMPLE_0_1_FINAL/android_poco/app/.cxx/Debug/665c36c4/arm64-v8a/CMakeFiles/ugts_kc_native.dir/./
+
+  has 171 characters.  The maximum full path to an object file is 160
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    chrono_video_lut.cpp.o
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+

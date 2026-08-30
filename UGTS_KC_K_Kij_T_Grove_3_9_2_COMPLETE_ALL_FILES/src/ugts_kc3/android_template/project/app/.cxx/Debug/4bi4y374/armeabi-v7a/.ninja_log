@@ -1,0 +1,24 @@
+# ninja log v5
+0	291	8097925671870160	CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o	4c74e6c98203dc19
+293	524	8097925673603943	libnative_app_glue.a	28c08eddaa145569
+118	1062	8097925679576631	CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o	ea70d1d000de6dac
+64	1073	8097925679656756	CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o	cc1608eb2bcc1b06
+6	1276	8097925681697328	CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o	953d479b3bc40110
+77	1335	8097925682093132	CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o	52ad0cb4a1b03379
+42	1336	8097925682333493	CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o	f48f15583e0d1ef5
+111	1367	8097925682658213	CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o	5efb5947afc97ef7
+48	1412	8097925683084056	CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o	21bab68461dcf0fc
+83	1426	8097925683239405	CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o	f6d9426a3611c491
+105	1467	8097925683626362	CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o	fa3ef1c228a549f1
+31	1470	8097925683691500	CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o	7186e7fba9970bf9
+125	1497	8097925683961628	CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o	f9f0d3e793e00ec7
+70	1512	8097925684125144	CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o	923ae937b8aa3900
+20	1552	8097925684499115	CMakeFiles/ugts_kc_native.dir/chrono_video_player.cpp.o	aa48ff2ca4498af1
+53	1573	8097925684729360	CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o	783645cff5f76548
+89	1622	8097925685215285	CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o	64e123c86bfa6449
+524	1635	8097925685370442	CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o	38d2d4e81e4bb081
+59	1659	8097925685589482	CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o	7259db18b23bca83
+37	1762	8097925686544665	CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o	3ee7c6067cf6d8bd
+16	1881	8097925687779637	CMakeFiles/ugts_kc_native.dir/main.cpp.o	a919342742545fa7
+95	2013	8097925689078465	CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o	ebe3451fdf5993a1
+11	2188	8097925690798857	CMakeFiles/ugts_kc_native.dir/engine.cpp.o	86ffb0ccfe4e0711

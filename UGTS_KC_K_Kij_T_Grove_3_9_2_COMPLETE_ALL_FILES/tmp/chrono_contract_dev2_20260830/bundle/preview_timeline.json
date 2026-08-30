@@ -1,0 +1,49 @@
+{
+  "authority": "DERIVED_MEDIA_ORDINAL_TO_EXACT_SOURCE_PTS",
+  "constant_preview_rate_den": 1,
+  "constant_preview_rate_num": 5,
+  "end_source_pts_exclusive": 8192,
+  "entries": [
+    {
+      "display_until_source_pts": 2048,
+      "preview_index": 0,
+      "source_frame_index": 0,
+      "source_pts": 0
+    },
+    {
+      "display_until_source_pts": 4096,
+      "preview_index": 1,
+      "source_frame_index": 1,
+      "source_pts": 2048
+    },
+    {
+      "display_until_source_pts": 6144,
+      "preview_index": 2,
+      "source_frame_index": 2,
+      "source_pts": 4096
+    },
+    {
+      "display_until_source_pts": 8192,
+      "preview_index": 3,
+      "source_frame_index": 3,
+      "source_pts": 6144
+    }
+  ],
+  "first_source_pts": 0,
+  "media_height": 16,
+  "media_path": "polar_preview.mp4",
+  "media_role": "DERIVED_POLAR_PREVIEW",
+  "media_sha256": "93a8abb35fba267d676b15312d08b7f2433a92514530728654e3dc0d353101b1",
+  "media_width": 32,
+  "playback_mode": "ONCE_HOLD_LAST",
+  "profile_sha256": "7753c0988acbe392179188756cf376a87c122cf7290b7bf16814951be8926a0b",
+  "raster_mode": "ALREADY_LOG_POLAR_DO_NOT_APPLY_LUT_AGAIN",
+  "runtime_cache": "preview_timeline.ugcvpts1",
+  "runtime_cache_content_sha256": "5b437a777ba0da7e6a14c1d380cec352072e44ef77c36ebf5934042836c5d408",
+  "schema": "ugts-chrono-video-preview-timeline-0.1",
+  "source_duration_ticks": 8192,
+  "source_frame_count": 4,
+  "source_sha256": "3577b52f0da89ca73eb96996b7e44f0676c11390950daa9de8a53bd54ef2cd74",
+  "time_base_den": 10240,
+  "time_base_num": 1
+}

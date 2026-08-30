@@ -12,11 +12,13 @@ from PySide6.QtGui import (
     QBrush,
     QColor,
     QGradient,
+    QImage,
     QLinearGradient,
     QPainter,
     QPainterPath,
     QPainterPathStroker,
     QPen,
+    QPixmap,
     QPolygonF,
     QRadialGradient,
     QTransform,
@@ -27,6 +29,7 @@ from PySide6.QtWidgets import (
     QGraphicsItemGroup,
     QGraphicsObject,
     QGraphicsPathItem,
+    QGraphicsPixmapItem,
     QGraphicsRectItem,
     QGraphicsScene,
     QGraphicsSimpleTextItem,
@@ -478,6 +481,8 @@ class SceneViewport(QGraphicsView):
         self._pan_origin = QPointF()
         self._mesh_items: dict[str, ProjectedMeshItem] = {}
         self._mesh_runtime_transforms: dict[str, tuple[Any, ...]] = {}
+        self._chrono_pixmap_item: QGraphicsPixmapItem | None = None
+        self._chrono_frame_receipt: dict[str, Any] | None = None
         self._polar_population_previews: list[_PolarPopulationPreview] = []
         self._saved_scene_owner_by_node: dict[str, str] = {}
         self._gizmo_handles: dict[str, TranslationGizmoHandle] = {}
@@ -533,6 +538,81 @@ class SceneViewport(QGraphicsView):
         """Whether the optional GL viewport is currently installed."""
 
         return isinstance(self.viewport(), DeviceLookOpenGLViewport)
+
+    @property
+    def chrono_frame_receipt(self) -> Mapping[str, Any] | None:
+        """Receipt for the exact pre-presentation raster currently displayed."""
+
+        return self._chrono_frame_receipt
+
+    def set_chrono_frame(
+        self, frame: Any | None, *, owner_node_id: str | None = None
+    ) -> None:
+        """Publish an exact chrono raster as the desktop scene background.
+
+        The RGB buffer is exact before this method.  Qt scaling and the desktop
+        compositor remain downstream presentation and are intentionally not
+        represented as physically exact timing or pixel output.
+        """
+
+        previous = self._chrono_pixmap_item
+        if previous is not None and previous.scene() is self.scene():
+            self.scene().removeItem(previous)
+        self._chrono_pixmap_item = None
+        self._chrono_frame_receipt = None
+        if frame is None:
+            self.viewport().update()
+            return
+        rgb = frame.rgb
+        shape = getattr(rgb, "shape", None)
+        if (
+            not isinstance(shape, tuple)
+            or len(shape) != 3
+            or shape[2] != 3
+            or str(getattr(rgb, "dtype", "")) != "uint8"
+        ):
+            raise ValueError("chrono desktop frame must be an HxWx3 RGB uint8 raster")
+        if not bool(rgb.flags.c_contiguous):
+            rgb = rgb.copy(order="C")
+        height, width, _channels = shape
+        image = QImage(
+            rgb.data,
+            width,
+            height,
+            int(rgb.strides[0]),
+            QImage.Format.Format_RGB888,
+        ).copy()
+        pixmap = QPixmap.fromImage(image).scaled(
+            1280,
+            720,
+            Qt.AspectRatioMode.IgnoreAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        item = QGraphicsPixmapItem(pixmap)
+        item.setZValue(-999999.0)
+        item.setAcceptedMouseButtons(Qt.MouseButton.NoButton)
+        item.setToolTip(
+            "Chrono source + UGCVLUT1 Q8 desktop raster\n"
+            "Exact PTS/pixels before Qt scaling; compositor timing unverified"
+        )
+        item.setData(2, "chrono_desktop_raster")
+        if owner_node_id is not None:
+            item.setData(0, owner_node_id)
+        self.scene().addItem(item)
+        self._chrono_pixmap_item = item
+        self._chrono_frame_receipt = {
+            "ordinal": int(frame.ordinal),
+            "source_pts": int(frame.source_pts),
+            "rgb_sha256": str(frame.rgb_sha256),
+            "backend": str(frame.backend),
+            "logical_pts_exact": bool(frame.logical_pts_exact),
+            "physical_display_timing_verified": bool(
+                frame.physical_display_timing_verified
+            ),
+            "late_boundary": bool(frame.late_boundary),
+            "owner_node_id": owner_node_id,
+        }
+        self.viewport().update()
 
     def set_document(self, document: EditorDocument | None) -> None:
         self._device_look_toggle.blockSignals(True)
@@ -622,6 +702,8 @@ class SceneViewport(QGraphicsView):
             self.scene().clear()
             self._mesh_items.clear()
             self._mesh_runtime_transforms.clear()
+            self._chrono_pixmap_item = None
+            self._chrono_frame_receipt = None
             self._polar_population_previews.clear()
             self._saved_scene_owner_by_node.clear()
             if self._document is None or self._document.project is None:

@@ -1,0 +1,24 @@
+# ninja log v5
+0	979	8097853850324694	CMakeFiles/native_app_glue.dir/android_native_app_glue.c.o	f2b7df14c8d97454
+981	1137	8097853851477593	libnative_app_glue.a	28c08eddaa145569
+116	3697	8097853877540287	CMakeFiles/ugts_kc_native.dir/grove_juice.cpp.o	a9fce24855151cf8
+61	3720	8097853877760645	CMakeFiles/ugts_kc_native.dir/gpu_timer_query.cpp.o	f3a3c3009fbc9d0e
+67	4028	8097853880846806	CMakeFiles/ugts_kc_native.dir/render_substrate.cpp.o	6cb0cdc3205df855
+124	4060	8097853881132091	CMakeFiles/ugts_kc_native.dir/grove_tuning.cpp.o	4325b6b1ae2daa88
+103	4061	8097853881142094	CMakeFiles/ugts_kc_native.dir/adaptive_quality.cpp.o	cf9b637cf55317fb
+16	4107	8097853881609333	CMakeFiles/ugts_kc_native.dir/chrono_video_lut.cpp.o	e51819e82b53a7a5
+109	4111	8097853881659333	CMakeFiles/ugts_kc_native.dir/device_profile.cpp.o	ef9692a58280c86c
+130	4154	8097853882088094	CMakeFiles/ugts_kc_native.dir/scatter_population.cpp.o	cb1c160f953b2ea5
+21	4174	8097853882298331	CMakeFiles/ugts_kc_native.dir/trigger_area.cpp.o	bbc35dcad1edee08
+89	4201	8097853882548710	CMakeFiles/ugts_kc_native.dir/transform_animation.cpp.o	4454517f6ff5476b
+81	4206	8097853882593790	CMakeFiles/ugts_kc_native.dir/transform_hierarchy.cpp.o	7efa7660c633dea3
+33	4219	8097853882743963	CMakeFiles/ugts_kc_native.dir/touch_router.cpp.o	fab9a5d690ed3a5f
+46	4287	8097853883420089	CMakeFiles/ugts_kc_native.dir/polar_kinematics.cpp.o	9150d92b95e83a0
+95	4315	8097853883683745	CMakeFiles/ugts_kc_native.dir/scene_pack.cpp.o	4471838358c0d635
+26	4388	8097853884444258	CMakeFiles/ugts_kc_native.dir/body_physics.cpp.o	19bbc2e93c6bbf0c
+39	4401	8097853884529338	CMakeFiles/ugts_kc_native.dir/polar_populations.cpp.o	1f96f68ad0d431cb
+54	4549	8097853886015990	CMakeFiles/ugts_kc_native.dir/graph_vm.cpp.o	f57a5b3aba759ff4
+74	4789	8097853888410791	CMakeFiles/ugts_kc_native.dir/renderer_gles3.cpp.o	72b54c4b954e6bc8
+7	5450	8097853894970618	CMakeFiles/ugts_kc_native.dir/main.cpp.o	ed0e79c09b27b4c7
+11	5881	8097853899289423	CMakeFiles/ugts_kc_native.dir/engine.cpp.o	45c01c6b754f9816
+5881	6055	8097853900891736	C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/tmp/chrono_smoke_v2_android_20260830/app/build/intermediates/cxx/Debug/665c36c4/obj/arm64-v8a/libugts_kc_native.so	76aa550dda9aff15

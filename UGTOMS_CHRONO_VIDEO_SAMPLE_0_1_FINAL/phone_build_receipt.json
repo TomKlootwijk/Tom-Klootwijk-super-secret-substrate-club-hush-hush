@@ -1,0 +1,21 @@
+{
+  "schema": "ugts-chrono-video-poco-build-receipt-0.1",
+  "target": "POCO X7 Pro / arm64-v8a / GLES 3.0",
+  "variant": "poco-debug",
+  "apk": "android_poco/app/build/outputs/apk/pocoX7Pro/debug/app-pocoX7Pro-debug.apk",
+  "apk_bytes": 6494312,
+  "apk_sha256": "ac7e699c301d082ff85ea477162f625552643456a362725b192ca23980b32c5e",
+  "android_build_report": "android_poco/build-report.json",
+  "android_build_report_sha256": "496cfb8b9ef5461195bc6e37834c7668110650169b680777a30fe83ee80a4eb8",
+  "android_source_ledger_scope": "exported source inputs before Gradle build",
+  "android_source_ledger_entries": 75,
+  "android_source_ledger_mismatches_after_build": 0,
+  "packaged_chrono_asset_count": 11,
+  "packaged_chrono_asset_bytes": 9943440,
+  "native_cvlut_reader": "COMPILED",
+  "native_cvlut_payload_sha256_gate": true,
+  "gles_rgba16ui_upload_path": "COMPILED",
+  "physical_device_run": "NOT_RUN_NO_ADB_DEVICE",
+  "physical_performance_claim": false,
+  "notes": "The APK build proves ARM64/NDK source compatibility. Physical LUT upload, codec support, thermal behavior, and frame pacing still require the POCO to be attached over ADB."
+}

@@ -1,0 +1,3 @@
+List of devices attached
+XOVSTSHYNREMZ5D6       device product:rodin_eea model:2412DPC0AG device:rodin transport_id:5
+

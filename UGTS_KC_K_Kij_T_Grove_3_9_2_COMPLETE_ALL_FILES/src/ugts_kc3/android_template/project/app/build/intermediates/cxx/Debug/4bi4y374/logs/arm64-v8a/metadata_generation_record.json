@@ -14,7 +14,124 @@
   },
   {
     "level_": 0,
-    "message_": "JSON \u0027C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\.cxx\\Debug\\4bi4y374\\arm64-v8a\\android_gradle_build.json\u0027 was up-to-date",
+    "message_": "rebuilding JSON C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\.cxx\\Debug\\4bi4y374\\arm64-v8a\\android_gradle_build.json due to:",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "- a file changed",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "  - C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt (LAST_MODIFIED_CHANGED)",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "keeping json folder \u0027C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\.cxx\\Debug\\4bi4y374\\arm64-v8a\u0027 but regenerating project",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "executing cmake @echo off\n\"C:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\cmake.exe\" ^\n  \"-HC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\src\\\\main\\\\cpp\" ^\n  \"-DCMAKE_SYSTEM_NAME\u003dAndroid\" ^\n  \"-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\" ^\n  \"-DCMAKE_SYSTEM_VERSION\u003d26\" ^\n  \"-DANDROID_PLATFORM\u003dandroid-26\" ^\n  \"-DANDROID_ABI\u003darm64-v8a\" ^\n  \"-DCMAKE_ANDROID_ARCH_ABI\u003darm64-v8a\" ^\n  \"-DANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_ANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_TOOLCHAIN_FILE\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\\\\build\\\\cmake\\\\android.toolchain.cmake\" ^\n  \"-DCMAKE_MAKE_PROGRAM\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\ninja.exe\" ^\n  \"-DCMAKE_CXX_FLAGS\u003d-std\u003dc++20 -Wall -Wextra -Wpedantic\" ^\n  \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\4bi4y374\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\4bi4y374\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_BUILD_TYPE\u003dDebug\" ^\n  \"-BC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\.cxx\\\\Debug\\\\4bi4y374\\\\arm64-v8a\" ^\n  -GNinja ^\n  \"-DANDROID_STL\u003dc++_static\" ^\n  \"-DUGTS_KC_PROFILE_HINT\u003d__PROFILE_HINT__\"\n",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "@echo off\n\"C:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\cmake.exe\" ^\n  \"-HC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\src\\\\main\\\\cpp\" ^\n  \"-DCMAKE_SYSTEM_NAME\u003dAndroid\" ^\n  \"-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\" ^\n  \"-DCMAKE_SYSTEM_VERSION\u003d26\" ^\n  \"-DANDROID_PLATFORM\u003dandroid-26\" ^\n  \"-DANDROID_ABI\u003darm64-v8a\" ^\n  \"-DCMAKE_ANDROID_ARCH_ABI\u003darm64-v8a\" ^\n  \"-DANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_ANDROID_NDK\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\" ^\n  \"-DCMAKE_TOOLCHAIN_FILE\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\ndk\\\\29.0.14206865\\\\build\\\\cmake\\\\android.toolchain.cmake\" ^\n  \"-DCMAKE_MAKE_PROGRAM\u003dC:\\\\Users\\\\Tom\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\cmake\\\\3.22.1\\\\bin\\\\ninja.exe\" ^\n  \"-DCMAKE_CXX_FLAGS\u003d-std\u003dc++20 -Wall -Wextra -Wpedantic\" ^\n  \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\4bi4y374\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_RUNTIME_OUTPUT_DIRECTORY\u003dC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\build\\\\intermediates\\\\cxx\\\\Debug\\\\4bi4y374\\\\obj\\\\arm64-v8a\" ^\n  \"-DCMAKE_BUILD_TYPE\u003dDebug\" ^\n  \"-BC:\\\\Tom Klootwijk super secret substrate club hush hush\\\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\\\src\\\\ugts_kc3\\\\android_template\\\\project\\\\app\\\\.cxx\\\\Debug\\\\4bi4y374\\\\arm64-v8a\" ^\n  -GNinja ^\n  \"-DANDROID_STL\u003dc++_static\" ^\n  \"-DUGTS_KC_PROFILE_HINT\u003d__PROFILE_HINT__\"\n",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "Received process result: 0",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "Exiting generation of C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\.cxx\\Debug\\4bi4y374\\arm64-v8a\\compile_commands.json.bin normally",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "done executing cmake",
+    "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
+    "tag_": "universalDebug|arm64-v8a",
+    "diagnosticCode_": 0,
+    "memoizedIsInitialized": 1,
+    "unknownFields": {
+      "fields": {}
+    },
+    "memoizedSize": -1,
+    "memoizedHashCode": 0
+  },
+  {
+    "level_": 0,
+    "message_": "hard linked C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\.cxx\\Debug\\4bi4y374\\arm64-v8a\\compile_commands.json to C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\.cxx\\tools\\universalDebug\\arm64-v8a\\compile_commands.json",
     "file_": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\src\\ugts_kc3\\android_template\\project\\app\\src\\main\\cpp\\CMakeLists.txt",
     "tag_": "universalDebug|arm64-v8a",
     "diagnosticCode_": 0,

@@ -598,6 +598,64 @@ The `validation/` folder retains earlier captured evidence.
 - `dist/` — Python wheel and source distribution.
 - `validation/` — captured test/build/hash evidence.
 
+## Chrono-spatial video observation compiler (proposal profile)
+
+Grove now contains a bounded, non-generative video observation compiler at
+`src/ugts_kc3/chrono_video.py`. It is deliberately not a monocular scanner or a
+hidden-surface generator. It binds the original MP4 by SHA-256, verifies every
+PyAV decode PTS against `ffprobe`, covers every source pixel as canonical
+`UNKNOWN`, and writes proposal-only motion/static diagnostics plus circular
+camera/class/object/gauge/motion/visibility/deformation/timing/depth hypotheses.
+
+The video cache is independently versioned `UGCVLUT1`, not UGLUT2. It stores a
+rho-major GLES-compatible `RGBA16UI` source-address texture and uses explicit Q8
+integer bilinear accumulation. The first selected CUDA result must equal the
+NumPy oracle byte-for-byte. The source MP4 remains authoritative because polar
+resampling is not invertible by itself.
+
+```powershell
+python -m ugts_kc3 compile-chrono-video input.mp4 chrono-output `
+  --backend cuda --theta-bins 1024 --rho-bins 512 `
+  --sample-stride 4 --max-vram-mib 1536 --target-kind human `
+  --embed-source-for-phone
+python -m ugts_kc3 verify-chrono-video chrono-output
+python -m ugts_kc3 build-android chrono-output/project.json `
+  chrono-output/android_poco --profile poco_x7_pro_12gb --debug-assets --apk
+```
+
+The supplied 1280x720/229-frame fixture completed in 12.54 seconds on the local
+RTX 5070 Ti Laptop GPU, with a measured 396.88 MiB peak PyTorch CUDA allocation,
+zero CPU/CUDA byte difference, 229 exact-PTS observations, 58 analyzed/preview
+slices, 57 proposal slices, and a 4,194,304-byte LUT payload. Its geometry status is correctly
+`UNBOUNDED_UNKNOWN`: the MP4 exposes no verified intrinsics, distortion,
+exposure/rolling-shutter bounds, camera poses, or metric scale.
+
+The generated editable project contains one ordinary, non-dynamic
+`chrono_observation_root`. Android export hash-verifies and packages the chrono
+assets, including a byte-identical source MP4. Strict `UGCVPTS1` caches bind all
+229 source frames to exact half-open PTS intervals and bind the 58-frame derived
+preview separately. Native source mode verifies source/timeline/LUT hashes,
+MediaExtractor input PTS and MediaCodec output PTS, then applies the Q8
+`UGCVLUT1` operator in the GLES source shader. Preview mode uses a separate copy
+shader and cannot bind the LUT a second time.
+
+The native player owns two RGBA8 staging rasters: ordinal zero is published
+before its steady clock starts, exactly one verified next ordinal is prefetched,
+and publication swaps on the integer selector boundary. A missed prefetch holds
+the prior raster and logs `physical_exact_timing=false`; it is never reported as
+an exact display. Chrono failure closes decoder resources, never promotes the
+preview, and leaves the ordinary editable scene running. Explicit LOOP wrap is
+still best-effort; the delivered source and preview profiles are
+`ONCE_HOLD_LAST`.
+
+The audited 19,036,992-byte POCO-debug ARM64 APK has SHA-256
+`C9CF4D757A8961A45675A95C4C6F62CC1811F1DB188E4DD7F01F13F7E9A89DD4`.
+All 16 chrono assets match, both MP4s are ZIP-stored, the 90-file source ledger
+has zero drift, and the AArch64 library links `libmediandk.so`. No POCO is
+currently attached over ADB, so shader/decoder behavior, SurfaceTexture
+orientation, app-to-display timing, device YUV-to-RGB conversion, performance,
+power, and thermals are not physically claimed.
+
 ## Evidence boundary
 
 The 1,484,357-byte PBR-lite/opcode-25/animation-runtime ARM64 APK is locally inspected and
@@ -623,7 +681,9 @@ bodies and current compact features are working slices. A general gameplay/physi
 editable Saved Scene definitions/overrides, GLB/skeletal animation, retargeting, crossfades/layered
 blending, animation-state-machine authoring, Player-controller unification, native contact
 events/grounded state, richer physics/content pipelines, production signing/distribution, Vulkan and
-the broader production roadmap remain incomplete. 4D is a design-contract TODO only.
+the broader production roadmap remain incomplete. Chrono-spatial observation/
+proposal compilation is implemented, but calibrated metric 3D/4D reconstruction,
+hidden-surface recovery and a general streamed 4D runtime remain incomplete.
 
 ## Attribution
 

@@ -1,0 +1,153 @@
+{
+  "assets": [
+    {
+      "bytes": 1901,
+      "path": "source_receipt.json",
+      "sha256": "6ed39fa4ce4602e5c6db809a1dc811a6be7aa51627be11cc52369593e10e913a"
+    },
+    {
+      "bytes": 1688,
+      "path": "observations.jsonl",
+      "sha256": "902b26170a1edee90c87ec6e758321d3f3007aebe3d6de6073ed7dfcea585342"
+    },
+    {
+      "bytes": 18867,
+      "path": "proposals.jsonl",
+      "sha256": "d9bb177f3c6719e6e7adb9ff657f81f48b8e7490f7071393f49d0f5794459d4b"
+    },
+    {
+      "bytes": 2217,
+      "path": "joint_hypotheses.jsonl",
+      "sha256": "ed2038017fb167e7ddc0db51bac01f0f3c33bed09553648783bc74485404bda7"
+    },
+    {
+      "bytes": 4016,
+      "path": "novelty.jsonl",
+      "sha256": "7c52f7e0b35dd0fd210f54c8952a69315dd839ba2b24344aa2f9932f08ace65a"
+    },
+    {
+      "bytes": 4204,
+      "path": "polar_lut.ugcv1",
+      "sha256": "db693cdf5582cb88fe7573836f092a680a05f3a542751a63559ab70762f79a12"
+    },
+    {
+      "bytes": 675,
+      "path": "polar_lut_inspection.json",
+      "sha256": "174baccc286a59feb51f903e095839b146a8361d4ee0a794e3fbc1a3505421a3"
+    },
+    {
+      "bytes": 1780,
+      "path": "polar_preview.mp4",
+      "sha256": "e9fe4e19eb0ded75c16e0db0e553031c4f1e2729c3546be5e4adc7bd9924eba6"
+    },
+    {
+      "bytes": 1449,
+      "path": "preview_timeline.json",
+      "sha256": "378608c41f2113eb5960a5c4dc83d2319e0cc4583a570aca9b744c997b0b53b4"
+    },
+    {
+      "bytes": 304,
+      "path": "preview_timeline.ugcvpts1",
+      "sha256": "a70afac2ccaef140762e84519d159f8b76f63eeb9a542fba53b1e15fdb236efb"
+    },
+    {
+      "bytes": 850,
+      "path": "preview_timeline_inspection.json",
+      "sha256": "45dd09ba9a2ab528b1a2c7bc9119c9c44c50974e49fd73ca4997d4157406101b"
+    },
+    {
+      "bytes": 2400,
+      "path": "reconstruction_receipt.json",
+      "sha256": "131efc01318fdabfdbf1349d29373643548933c4645bf1b2b09da48438ddc923"
+    }
+  ],
+  "authority": {
+    "embedded_source_media": "ABSENT",
+    "joint_hypotheses": "PROPOSAL_ONLY_OR_UNBOUNDED_UNKNOWN",
+    "motion_static_tiles": "PROPOSAL_ONLY",
+    "negative_memory": "NOVELTY_ONLY_NO_IMPLICIT_RETRACTION",
+    "observations": "AUTHORITATIVE_DECODE_AND_PTS_RECEIPTS",
+    "polar_lut": "DETERMINISTIC_DERIVED_GPU_CACHE",
+    "polar_preview": "DERIVED_RASTER_PREVIEW",
+    "preview_timeline": "DERIVED_MEDIA_ORDINAL_TO_EXACT_SOURCE_PTS",
+    "scene_3d": "UNBOUNDED_UNKNOWN",
+    "source_media": "AUTHORITATIVE_BYTES"
+  },
+  "chronology": {
+    "duration_seconds_den": 5,
+    "duration_seconds_num": 4,
+    "duration_ticks": 8192,
+    "end_pts_exclusive": 8192,
+    "first_pts": 0,
+    "frame_count": 4,
+    "knowledge_axis": "commit_seq",
+    "last_pts": 6144,
+    "ordering": "effective_pts_then_decode_index",
+    "time_base_den": 10240,
+    "time_base_num": 1
+  },
+  "desktop_profile": {
+    "compute_backend": "numpy-cpu-q8",
+    "cuda_peak_allocated_mib": null,
+    "decode_backend": "pyav-cpu-exact-pts",
+    "role": "authoritative compiler and proposal tier",
+    "workspace_limit_mib": 128
+  },
+  "phone_profile": {
+    "compile_on_phone": false,
+    "physical_device_verification": "NOT_RUN_NO_ADB_DEVICE",
+    "playback_mode": "ONCE_HOLD_LAST",
+    "preview_media": "polar_preview.mp4",
+    "preview_raster_mode": "ALREADY_LOG_POLAR_DO_NOT_APPLY_LUT_AGAIN",
+    "preview_timeline": "preview_timeline.ugcvpts1",
+    "role": "compact evidence viewer and downstream rasterizer",
+    "source_media": null,
+    "source_media_mode": "EXTERNAL_BY_PATH_AND_SHA256",
+    "source_raster_mode": "UNAVAILABLE",
+    "source_time_authority": "exact PTS, never display frame count",
+    "source_timeline": null,
+    "target": "POCO X7 Pro / Mali-G720 / ARM64 / GLES 3.0",
+    "target_fps": 60
+  },
+  "profile": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL",
+  "profile_sha256": "f45fe1d472a9f99a1ddb80dd8adbdc5d0ff67dc996d4875eff54d2b963f04f44",
+  "schema": "ugts-chrono-video-observation-manifest-0.1",
+  "source": {
+    "authority": "ORIGINAL_MEDIA",
+    "bytes": 2694,
+    "embedded_byte_identical": false,
+    "embedded_media": false,
+    "embedded_path": null,
+    "path": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\\tmp\\chrono_contract_dev2_20260830\\source.mp4",
+    "sha256": "3577b52f0da89ca73eb96996b7e44f0676c11390950daa9de8a53bd54ef2cd74"
+  },
+  "spatial_observation": {
+    "coverage": {
+      "canonical_state": "UNKNOWN",
+      "coverage_multiplicity": 1,
+      "covered_pixels": 3072,
+      "partition": "half-open-raster-tiles-row-major",
+      "source_pixels": 3072,
+      "tile_count": 48
+    },
+    "geometry_status": "UNBOUNDED_UNKNOWN",
+    "pixel_to_chart": {
+      "center": [
+        31.5,
+        23.5
+      ],
+      "core": "radius < 0.5",
+      "radius": "sqrt((u-cx)^2+(v-cy)^2)",
+      "rho": "log(radius/r0)",
+      "theta": "atan2(v-cy,u-cx) mod 2pi"
+    },
+    "raster_domain": [
+      0,
+      0,
+      64,
+      48
+    ],
+    "reason": "The source provides no verified intrinsics, distortion, exposure/rolling shutter bounds, camera poses, or metric scale."
+  },
+  "target_kind": "scene"
+}

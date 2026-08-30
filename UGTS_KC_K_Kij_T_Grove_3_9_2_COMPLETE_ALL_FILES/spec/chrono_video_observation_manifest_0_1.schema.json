@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ugts.local/schema/chrono-video-observation-manifest-0.1.json",
+  "title": "UGTOMS Chrono Video Observation Manifest 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "profile",
+    "profile_asset",
+    "profile_sha256",
+    "target_kind",
+    "source",
+    "chronology",
+    "spatial_observation",
+    "authority",
+    "desktop_profile",
+    "phone_profile",
+    "assets"
+  ],
+  "properties": {
+    "schema": {"const": "ugts-chrono-video-observation-manifest-0.1"},
+    "profile": {"const": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL"},
+    "profile_asset": {"const": "profile.json"},
+    "profile_sha256": {"$ref": "#/$defs/sha256"},
+    "target_kind": {"enum": ["scene", "human"]},
+    "source": {"$ref": "#/$defs/source"},
+    "chronology": {"$ref": "#/$defs/chronology"},
+    "spatial_observation": {"$ref": "#/$defs/spatial_observation"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "desktop_profile": {"$ref": "#/$defs/desktop_profile"},
+    "phone_profile": {"$ref": "#/$defs/phone_profile"},
+    "assets": {
+      "type": "array",
+      "minItems": 13,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/asset"}
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "bytes",
+        "authority",
+        "embedded_media",
+        "embedded_path",
+        "embedded_byte_identical"
+      ],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "authority": {"const": "ORIGINAL_MEDIA"},
+        "embedded_media": {"type": "boolean"},
+        "embedded_path": {
+          "oneOf": [{"const": "source_media.mp4"}, {"type": "null"}]
+        },
+        "embedded_byte_identical": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"embedded_media": {"const": true}}},
+          "then": {
+            "properties": {
+              "embedded_path": {"const": "source_media.mp4"},
+              "embedded_byte_identical": {"const": true}
+            }
+          },
+          "else": {
+            "properties": {
+              "embedded_path": {"type": "null"},
+              "embedded_byte_identical": {"const": false}
+            }
+          }
+        }
+      ]
+    },
+    "chronology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame_count",
+        "time_base_num",
+        "time_base_den",
+        "first_pts",
+        "last_pts",
+        "duration_ticks",
+        "end_pts_exclusive",
+        "duration_seconds_num",
+        "duration_seconds_den",
+        "ordering",
+        "knowledge_axis"
+      ],
+      "properties": {
+        "frame_count": {"type": "integer", "minimum": 1},
+        "time_base_num": {"type": "integer", "minimum": 1, "maximum": 9223372036854775807},
+        "time_base_den": {"type": "integer", "minimum": 1, "maximum": 9223372036854775807},
+        "first_pts": {"type": "integer"},
+        "last_pts": {"type": "integer"},
+        "duration_ticks": {"type": "integer", "minimum": 1},
+        "end_pts_exclusive": {"type": "integer"},
+        "duration_seconds_num": {"type": "integer", "minimum": 1},
+        "duration_seconds_den": {"type": "integer", "minimum": 1},
+        "ordering": {"const": "effective_pts_then_decode_index"},
+        "knowledge_axis": {"const": "commit_seq"}
+      }
+    },
+    "spatial_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raster_domain", "coverage", "pixel_to_chart", "geometry_status", "reason"],
+      "properties": {
+        "raster_domain": {
+          "type": "array",
+          "prefixItems": [
+            {"const": 0},
+            {"const": 0},
+            {"type": "integer", "minimum": 1, "maximum": 65535},
+            {"type": "integer", "minimum": 1, "maximum": 65535}
+          ],
+          "items": false
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["partition", "tile_count", "covered_pixels", "source_pixels", "coverage_multiplicity", "canonical_state"],
+          "properties": {
+            "partition": {"const": "half-open-raster-tiles-row-major"},
+            "tile_count": {"type": "integer", "minimum": 1},
+            "covered_pixels": {"type": "integer", "minimum": 1},
+            "source_pixels": {"type": "integer", "minimum": 1},
+            "coverage_multiplicity": {"const": 1},
+            "canonical_state": {"const": "UNKNOWN"}
+          }
+        },
+        "pixel_to_chart": {"type": "object"},
+        "geometry_status": {"const": "UNBOUNDED_UNKNOWN"},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_media", "observations", "polar_lut", "polar_preview", "preview_timeline", "embedded_source_media", "motion_static_tiles", "joint_hypotheses", "scene_3d", "negative_memory"],
+      "properties": {
+        "source_media": {"const": "AUTHORITATIVE_BYTES"},
+        "observations": {"const": "AUTHORITATIVE_DECODE_AND_PTS_RECEIPTS"},
+        "polar_lut": {"const": "DETERMINISTIC_DERIVED_GPU_CACHE"},
+        "polar_preview": {"const": "DERIVED_RASTER_PREVIEW"},
+        "preview_timeline": {"const": "DERIVED_MEDIA_ORDINAL_TO_EXACT_SOURCE_PTS"},
+        "embedded_source_media": {"enum": ["AUTHORITATIVE_BYTE_IDENTICAL_COPY", "ABSENT"]},
+        "motion_static_tiles": {"const": "PROPOSAL_ONLY"},
+        "joint_hypotheses": {"const": "PROPOSAL_ONLY_OR_UNBOUNDED_UNKNOWN"},
+        "scene_3d": {"const": "UNBOUNDED_UNKNOWN"},
+        "negative_memory": {"const": "NOVELTY_ONLY_NO_IMPLICIT_RETRACTION"}
+      }
+    },
+    "desktop_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "compute_backend", "decode_backend", "workspace_limit_mib", "cuda_peak_allocated_mib"],
+      "properties": {
+        "role": {"const": "authoritative compiler and proposal tier"},
+        "compute_backend": {"enum": ["numpy-cpu-q8", "torch-cuda-q8"]},
+        "decode_backend": {"const": "pyav-cpu-exact-pts"},
+        "workspace_limit_mib": {"type": "integer", "minimum": 128, "maximum": 10240},
+        "cuda_peak_allocated_mib": {"type": ["number", "null"], "minimum": 0}
+      }
+    },
+    "phone_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "role", "target_fps", "source_time_authority", "playback_mode", "preview_media", "preview_timeline", "preview_raster_mode", "source_media_mode", "source_media", "source_timeline", "source_raster_mode", "compile_on_phone", "physical_device_verification"],
+      "properties": {
+        "target": {"const": "POCO X7 Pro / Mali-G720 / ARM64 / GLES 3.0"},
+        "role": {"const": "compact evidence viewer and downstream rasterizer"},
+        "target_fps": {"const": 60},
+        "source_time_authority": {"const": "exact PTS, never display frame count"},
+        "playback_mode": {"const": "ONCE_HOLD_LAST"},
+        "preview_media": {"const": "polar_preview.mp4"},
+        "preview_timeline": {"const": "preview_timeline.ugcvpts1"},
+        "preview_raster_mode": {"const": "ALREADY_LOG_POLAR_DO_NOT_APPLY_LUT_AGAIN"},
+        "source_media_mode": {"enum": ["EMBEDDED_BYTE_IDENTICAL", "EXTERNAL_BY_PATH_AND_SHA256"]},
+        "source_media": {"oneOf": [{"const": "source_media.mp4"}, {"type": "null"}]},
+        "source_timeline": {"oneOf": [{"const": "source_timeline.ugcvpts1"}, {"type": "null"}]},
+        "source_raster_mode": {"enum": ["APPLY_UGCVLUT1_Q8", "UNAVAILABLE"]},
+        "compile_on_phone": {"const": false},
+        "physical_device_verification": {"type": "string", "minLength": 1}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "bytes", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+$"
+        },
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

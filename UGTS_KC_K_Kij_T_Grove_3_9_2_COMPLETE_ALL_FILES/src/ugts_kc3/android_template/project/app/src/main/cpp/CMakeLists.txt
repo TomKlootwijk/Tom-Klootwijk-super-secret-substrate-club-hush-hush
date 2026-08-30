@@ -51,6 +51,10 @@ target_compile_options(native_app_glue PRIVATE
 add_library(ugts_kc_native SHARED
     main.cpp
     engine.cpp
+    chrono_video_lut.cpp
+    chrono_mp4_transport.cpp
+    chrono_video_timeline.cpp
+    chrono_video_player.cpp
     body_physics.cpp
     touch_router.cpp
     trigger_area.cpp
@@ -93,5 +97,6 @@ target_link_libraries(ugts_kc_native
     log
     EGL
     GLESv3
+    mediandk
     dl
 )

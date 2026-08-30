@@ -1,0 +1,25 @@
+{
+  "center_x": 31.5,
+  "center_y": 23.5,
+  "core_radius_pixels": 0.5,
+  "interpolation": "explicit Q8 bilinear integer accumulation with +32768 then >>16",
+  "lane_contract": [
+    "x0",
+    "y0",
+    "fx_q8|(fy_q8<<8)",
+    "valid"
+  ],
+  "magic": "UGCVLUT1",
+  "payload_bytes": 4096,
+  "payload_sha256": "c649e34cab8380e00fe7a82637bbe4f68dd65a2fc7d459c8973454fd872e43e2",
+  "r0_pixels": 1.0,
+  "rho_bins": 16,
+  "rho_max": 3.6712277561793183,
+  "rho_min": -0.6931471805599453,
+  "schema": "ugts-chrono-video-lut-inspection-0.1",
+  "source_height": 48,
+  "source_width": 64,
+  "texture_format": "RGBA16UI",
+  "theta_bins": 32,
+  "version": "1.0"
+}

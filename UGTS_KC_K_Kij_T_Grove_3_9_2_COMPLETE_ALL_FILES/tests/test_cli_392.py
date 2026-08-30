@@ -26,6 +26,21 @@ class Cli392Tests(unittest.TestCase):
         self.assertEqual(parsed.template, "first-steps")
         self.assertEqual(parsed.author, "")
 
+    def test_chrono_video_defaults_to_bounded_cuda_auto_profile(self):
+        parsed = _parser().parse_args(
+            ["compile-chrono-video", "source.mp4", "chrono-output"]
+        )
+        self.assertEqual(parsed.backend, "auto")
+        self.assertEqual(parsed.theta_bins, 1024)
+        self.assertEqual(parsed.rho_bins, 512)
+        self.assertEqual(parsed.sample_stride, 4)
+        self.assertEqual(parsed.max_vram_mib, 1536)
+        self.assertEqual(parsed.target_kind, "scene")
+
+    def test_chrono_bundle_verification_checks_source_by_default(self):
+        parsed = _parser().parse_args(["verify-chrono-video", "bundle"])
+        self.assertFalse(parsed.no_source_bytes)
+
 
 if __name__ == "__main__":
     unittest.main()

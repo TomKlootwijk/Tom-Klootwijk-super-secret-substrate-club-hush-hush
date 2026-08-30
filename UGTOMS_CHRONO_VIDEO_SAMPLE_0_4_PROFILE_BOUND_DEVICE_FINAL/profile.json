@@ -1,0 +1,47 @@
+{
+  "canonical_profile": {
+    "batch_size": 8,
+    "core_radius_pixels": 0.5,
+    "embed_source_for_phone": true,
+    "max_vram_mib": 1536,
+    "profile": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL",
+    "proposal_dynamic_fraction": 0.2,
+    "proposal_mad_multiplier": 3.0,
+    "r0_pixels": 1.0,
+    "rho_bins": 512,
+    "sample_stride": 4,
+    "schema": "ugts-chrono-video-profile-0.1",
+    "target_kind": "human",
+    "theta_bins": 1024,
+    "tile_size": 64
+  },
+  "implementation": {
+    "dependencies": {
+      "numpy": "2.1.2",
+      "opencv": "4.13.0",
+      "pyav": "16.1.0",
+      "torch": "2.7.1+cu128",
+      "torch_cuda_runtime": "12.8"
+    },
+    "executables": {
+      "ffmpeg": "ffmpeg version 8.0.1-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+      "ffprobe": "ffprobe version 8.0.1-full_build-www.gyan.dev Copyright (c) 2007-2025 the FFmpeg developers"
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.13.11"
+    },
+    "schema": "ugts-chrono-video-implementation-receipt-0.1",
+    "selected": {
+      "compute_backend": "torch-cuda-q8",
+      "decode_backend": "pyav-cpu-exact-pts",
+      "preview_encoder": "ffmpeg-libx264"
+    },
+    "ugts_kc3": {
+      "chrono_video_module_sha256": "901849b5d934dc530f469d73fe5577c2f4ecb6da7bd4434225cb9cd3ef805ff9",
+      "version": "3.9.2"
+    }
+  },
+  "profile_sha256": "03aa49806447188f8115da3124772690f8e45eb9383b84a4820d06af2c173e47",
+  "schema": "ugts-chrono-video-profile-receipt-0.1"
+}

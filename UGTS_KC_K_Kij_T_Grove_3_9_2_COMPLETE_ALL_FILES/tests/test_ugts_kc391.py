@@ -70,7 +70,12 @@ class Version391Tests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("UGTS-KC 3.9.2", result.stdout)
-        self.assertIn("4D: design-contract TODO only", result.stdout)
+        self.assertIn("Chrono video: exact-PTS observation/proposal compiler", result.stdout)
+        self.assertIn(
+            "4D geometry: no metric or hidden-surface reconstruction is claimed "
+            "without bounded physical evidence",
+            result.stdout,
+        )
 
 
 class Primitive391Tests(unittest.TestCase):

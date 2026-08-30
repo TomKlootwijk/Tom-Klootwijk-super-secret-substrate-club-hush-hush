@@ -1,0 +1,168 @@
+{
+  "assets": [
+    {
+      "bytes": 2223,
+      "path": "source_receipt.json",
+      "sha256": "1c9a66aff31bc91bef1764c1b238356318972e1286beaa31ec519d25ae09dae4"
+    },
+    {
+      "bytes": 102061,
+      "path": "observations.jsonl",
+      "sha256": "8eda37a84a1e8cc651589155d8f35d4a67a4adb7a727cd9ba64dcc550336319b"
+    },
+    {
+      "bytes": 2927828,
+      "path": "proposals.jsonl",
+      "sha256": "aa1ee1bf61c44d98854bd5b79f9e4339caa176e3eb90ca82bb67c1bd01ce1067"
+    },
+    {
+      "bytes": 258950,
+      "path": "joint_hypotheses.jsonl",
+      "sha256": "7b00fc2d8bbba1f716e2c3bc7a1097e99eda39211a4391f08ebc4425e773fc58"
+    },
+    {
+      "bytes": 328110,
+      "path": "novelty.jsonl",
+      "sha256": "f84cd8bb734e09f813a22b3b4dcaaa0e1fe2ce4190ca93a3c411170893d62b3e"
+    },
+    {
+      "bytes": 4194412,
+      "path": "polar_lut.ugcv1",
+      "sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf"
+    },
+    {
+      "bytes": 684,
+      "path": "polar_lut_inspection.json",
+      "sha256": "9d5e8d2009e443ea3f05b3917ce7cb189dcab86b4fa0601f8b20a19892bd7675"
+    },
+    {
+      "bytes": 2422476,
+      "path": "polar_preview.mp4",
+      "sha256": "1c36530c65ab21d2827d8e9cc3a51db9ce2e239515eb61ab1af19064ae3f2e7a"
+    },
+    {
+      "bytes": 9696,
+      "path": "preview_timeline.json",
+      "sha256": "4596687584f93fcb28b5b4981494cb96ef6c670c5bb776bd7a6f448cd011cca1"
+    },
+    {
+      "bytes": 2064,
+      "path": "preview_timeline.ugcvpts1",
+      "sha256": "a63b07d41994108b8de075f2b4fadb3cf61805af823e38cd294e8efcdd25fcbd"
+    },
+    {
+      "bytes": 861,
+      "path": "preview_timeline_inspection.json",
+      "sha256": "05927d0f8dd93fec0b339c19deaab74d87402ba13f160dd8854214cb39e59adb"
+    },
+    {
+      "bytes": 3488,
+      "path": "reconstruction_receipt.json",
+      "sha256": "d121ae4848091188cc6125cadc40dafc3717564b0dfa75fb46355eba21a4c53e"
+    },
+    {
+      "bytes": 12132305,
+      "path": "source_media.mp4",
+      "sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd"
+    },
+    {
+      "bytes": 7536,
+      "path": "source_timeline.ugcvpts1",
+      "sha256": "3e97d07ce847162226d3892397f070c6dcaf0f700653334d73d119fa3b25098f"
+    },
+    {
+      "bytes": 855,
+      "path": "source_timeline_inspection.json",
+      "sha256": "6d7b3d21bc986540d75b5d87eb50a12cea1c1550a1fba4f667c5a36264a5a63a"
+    }
+  ],
+  "authority": {
+    "embedded_source_media": "AUTHORITATIVE_BYTE_IDENTICAL_COPY",
+    "joint_hypotheses": "PROPOSAL_ONLY_OR_UNBOUNDED_UNKNOWN",
+    "motion_static_tiles": "PROPOSAL_ONLY",
+    "negative_memory": "NOVELTY_ONLY_NO_IMPLICIT_RETRACTION",
+    "observations": "AUTHORITATIVE_DECODE_AND_PTS_RECEIPTS",
+    "polar_lut": "DETERMINISTIC_DERIVED_GPU_CACHE",
+    "polar_preview": "DERIVED_RASTER_PREVIEW",
+    "preview_timeline": "DERIVED_MEDIA_ORDINAL_TO_EXACT_SOURCE_PTS",
+    "scene_3d": "UNBOUNDED_UNKNOWN",
+    "source_media": "AUTHORITATIVE_BYTES"
+  },
+  "chronology": {
+    "duration_seconds_den": 62500,
+    "duration_seconds_num": 569981,
+    "duration_ticks": 9119696,
+    "end_pts_exclusive": 9119696,
+    "first_pts": 0,
+    "frame_count": 229,
+    "knowledge_axis": "commit_seq",
+    "last_pts": 9079872,
+    "ordering": "effective_pts_then_decode_index",
+    "time_base_den": 1000000,
+    "time_base_num": 1
+  },
+  "desktop_profile": {
+    "compute_backend": "torch-cuda-q8",
+    "cuda_peak_allocated_mib": 396.87548828125,
+    "decode_backend": "pyav-cpu-exact-pts",
+    "role": "authoritative compiler and proposal tier",
+    "workspace_limit_mib": 1536
+  },
+  "phone_profile": {
+    "compile_on_phone": false,
+    "physical_device_verification": "NOT_RUN_NO_ADB_DEVICE",
+    "playback_mode": "ONCE_HOLD_LAST",
+    "preview_media": "polar_preview.mp4",
+    "preview_raster_mode": "ALREADY_LOG_POLAR_DO_NOT_APPLY_LUT_AGAIN",
+    "preview_timeline": "preview_timeline.ugcvpts1",
+    "role": "compact evidence viewer and downstream rasterizer",
+    "source_media": "source_media.mp4",
+    "source_media_mode": "EMBEDDED_BYTE_IDENTICAL",
+    "source_raster_mode": "APPLY_UGCVLUT1_Q8",
+    "source_time_authority": "exact PTS, never display frame count",
+    "source_timeline": "source_timeline.ugcvpts1",
+    "target": "POCO X7 Pro / Mali-G720 / ARM64 / GLES 3.0",
+    "target_fps": 60
+  },
+  "profile": "UGTOMS-CSO-CHRONO-VIDEO-0.1-PROPOSAL",
+  "profile_sha256": "03aa49806447188f8115da3124772690f8e45eb9383b84a4820d06af2c173e47",
+  "schema": "ugts-chrono-video-observation-manifest-0.1",
+  "source": {
+    "authority": "ORIGINAL_MEDIA",
+    "bytes": 12132305,
+    "embedded_byte_identical": true,
+    "embedded_media": true,
+    "embedded_path": "source_media.mp4",
+    "path": "C:\\Users\\Tom\\Videos\\KasiaDansGedicht\\sam_2353410928515192.mp4",
+    "sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd"
+  },
+  "spatial_observation": {
+    "coverage": {
+      "canonical_state": "UNKNOWN",
+      "coverage_multiplicity": 1,
+      "covered_pixels": 921600,
+      "partition": "half-open-raster-tiles-row-major",
+      "source_pixels": 921600,
+      "tile_count": 240
+    },
+    "geometry_status": "UNBOUNDED_UNKNOWN",
+    "pixel_to_chart": {
+      "center": [
+        639.5,
+        359.5
+      ],
+      "core": "radius < 0.5",
+      "radius": "sqrt((u-cx)^2+(v-cy)^2)",
+      "rho": "log(radius/r0)",
+      "theta": "atan2(v-cy,u-cx) mod 2pi"
+    },
+    "raster_domain": [
+      0,
+      0,
+      1280,
+      720
+    ],
+    "reason": "The source provides no verified intrinsics, distortion, exposure/rolling shutter bounds, camera poses, or metric scale."
+  },
+  "target_kind": "human"
+}

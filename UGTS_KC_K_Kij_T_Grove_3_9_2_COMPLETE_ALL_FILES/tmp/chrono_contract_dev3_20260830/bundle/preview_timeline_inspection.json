@@ -1,0 +1,23 @@
+{
+  "content_sha256": "31dd7f885e6c26acd109200cea61e656a20d352d0da902f079e4f3e2eeb162fa",
+  "end_source_pts_exclusive": 8192,
+  "entry_bytes": 32,
+  "entry_count": 3,
+  "first_source_pts": 0,
+  "flags": 10,
+  "header_bytes": 208,
+  "magic": "UGCVPTS1",
+  "media_height": 16,
+  "media_role": "DERIVED_POLAR_PREVIEW",
+  "media_sha256": "e9fe4e19eb0ded75c16e0db0e553031c4f1e2729c3546be5e4adc7bd9924eba6",
+  "media_width": 32,
+  "playback_mode": "ONCE_HOLD_LAST",
+  "profile_sha256": "f45fe1d472a9f99a1ddb80dd8adbdc5d0ff67dc996d4875eff54d2b963f04f44",
+  "raster_mode": "ALREADY_LOG_POLAR",
+  "schema": "ugts-chrono-video-pts-cache-inspection-0.1",
+  "source_frame_count": 4,
+  "source_sha256": "3577b52f0da89ca73eb96996b7e44f0676c11390950daa9de8a53bd54ef2cd74",
+  "time_base_den": 10240,
+  "time_base_num": 1,
+  "version": "1.0"
+}

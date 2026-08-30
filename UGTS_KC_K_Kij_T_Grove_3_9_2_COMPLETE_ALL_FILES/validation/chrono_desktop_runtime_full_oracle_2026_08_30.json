@@ -1,0 +1,166 @@
+{
+  "schema": "ugts-chrono-desktop-runtime-full-oracle-receipt-0.1",
+  "recorded_at_utc": "2026-08-30T11:18:30.8577705Z",
+  "passed": true,
+  "scope": "Authoritative embedded-source desktop Grove runtime consumption of every fixture frame through exact UGCVPTS1 selection and torch-CUDA UGCVLUT1 Q8 remapping, with every GPU raster compared byte-for-byte to the NumPy oracle. This is not a POCO, Android color, native-shader, wall-clock display, photon-time, metric-3D, or fully GPU-resident pipeline receipt.",
+  "bundle": {
+    "relative_path": "../UGTOMS_CHRONO_VIDEO_SAMPLE_0_2_SOURCE_LUT_FINAL",
+    "manifest": {
+      "bytes": 5781,
+      "sha256": "191d5f5a7b26e46669267584bc8af02ae6d2ca48a8b5869aef18454aacad0f9c"
+    },
+    "project": {
+      "bytes": 11744,
+      "sha256": "816e25b8c03d51199b624adf56d1bcbc7c01071b306695d234b97add19edec04",
+      "chrono_owner_node_id": "chrono_observation_root",
+      "owner_count": 1,
+      "owner_materialization": "PROXY_ONLY"
+    },
+    "source_media": {
+      "bytes": 12132305,
+      "sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+      "embedded_byte_identical": true,
+      "width": 1280,
+      "height": 720,
+      "frame_count": 229
+    },
+    "source_timeline": {
+      "bytes": 7536,
+      "file_sha256": "3e97d07ce847162226d3892397f070c6dcaf0f700653334d73d119fa3b25098f",
+      "content_sha256": "21cabb1211457ee162d04946e2b2501a83d531908905106298af60a7d0e226aa",
+      "flags": 5,
+      "media_role": "ORIGINAL_SOURCE",
+      "raster_mode": "APPLY_UGCVLUT1_Q8",
+      "playback_mode": "ONCE_HOLD_LAST",
+      "entry_count": 229,
+      "first_source_pts": 0,
+      "end_source_pts_exclusive": 9119696,
+      "time_base_num": 1,
+      "time_base_den": 1000000
+    },
+    "polar_lut": {
+      "bytes": 4194412,
+      "file_sha256": "c2492a208b1e80f8794e5f12dcfa659b44e1d17edb022445088ea206616217bf",
+      "payload_bytes": 4194304,
+      "payload_sha256": "09806b1be11e7f8721b89a9aca89efcb25d49c01dcea3e946c013763e8b60b68",
+      "texture_format": "RGBA16UI",
+      "theta_bins": 1024,
+      "rho_bins": 512,
+      "interpolation": "explicit Q8 bilinear integer accumulation with +32768 then >>16"
+    },
+    "profile_sha256": "03aa49806447188f8115da3124772690f8e45eb9383b84a4820d06af2c173e47"
+  },
+  "runtime_implementation": {
+    "module": {
+      "path": "src/ugts_kc3/chrono_desktop.py",
+      "bytes": 23984,
+      "sha256": "16b3384e16dad5fdd47cd960637a1fc4cb2051dbb5cc6c7a8b88bb9acca20928"
+    },
+    "compiler_contract_module": {
+      "path": "src/ugts_kc3/chrono_video.py",
+      "bytes": 109386,
+      "sha256": "7d4fe5ef4b5579ce9be22ff576520f1b53388b4f73d2d514a6559c92c9088ff1"
+    },
+    "mode": "AUTHORITATIVE_SOURCE_LUT_Q8",
+    "decode_backend": "pyav-cpu-exact-pts",
+    "compute_backend": "torch-cuda-q8",
+    "presentation": "PYSIDE6_QGRAPHICSVIEW_DOWNSTREAM_RASTER",
+    "logical_selector": "EXACT_INTEGER_HALF_OPEN",
+    "staging_slots": 2,
+    "prefetch_policy": "EXACTLY_ONE_VERIFIED_SUCCESSOR",
+    "geometry_status": "UNBOUNDED_UNKNOWN"
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.11",
+    "numpy": "2.1.2",
+    "pyav": "16.1.0",
+    "pyav_ffmpeg_libraries": {
+      "libavcodec": [62, 11, 100],
+      "libavdevice": [62, 1, 100],
+      "libavfilter": [11, 4, 100],
+      "libavformat": [62, 3, 100],
+      "libavutil": [60, 8, 100],
+      "libswresample": [6, 1, 100],
+      "libswscale": [9, 1, 100]
+    },
+    "torch": "2.7.1+cu128",
+    "torch_cuda_runtime": "12.8",
+    "cudnn": 90701,
+    "ffmpeg_executable": "8.0.1-full_build-www.gyan.dev",
+    "ffprobe_executable": "8.0.1-full_build-www.gyan.dev",
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+      "driver": "591.59",
+      "compute_capability": [12, 0],
+      "pci_bus_id": "00000000:01:00.0",
+      "nvidia_smi_reported_vram_mib": 12227,
+      "torch_physical_vram_bytes": 12820480000
+    }
+  },
+  "audit": {
+    "mode": "EVERY_FRAME_CPU_ORACLE",
+    "timestamp_driver": "Synthetic monotonic timestamps at every exact source interval start; no sleeping and no wall-clock/display timing claim.",
+    "elapsed_seconds_including_bundle_verification_cuda_initialization_decode_gpu_remap_cpu_oracle_and_readback": 49.586405099998956,
+    "decoded_frame_count": 229,
+    "gpu_remapped_frame_count": 229,
+    "oracle_checked_frame_count": 229,
+    "oracle_max_byte_difference": 0,
+    "ordinal_errors": [],
+    "late_logical_boundaries": [],
+    "late_boundary_count": 0,
+    "prefetched_frame_count": 228,
+    "hold_last_ordinal": 228,
+    "first_polar_rgb_sha256": "dbb519b75efa9f299da9b067eb51b8c6a8ee0936502ad1863464288754c69acd",
+    "last_polar_rgb_sha256": "ca4fc8260e896a4d31b7e8018ef4fb3980e3fea19bac494f8a7fa1c4c8a37202",
+    "frame_hash_ledger_sha256": "49b2e1445bd259fd45fc2e60dbc04cdad5e7ac4d8f382ad92b122ab054419ae1",
+    "workspace_limit_mib": 1536,
+    "workspace_limit_enforced_after_each_remap": true,
+    "cuda_peak_allocated_mib": 71.04736328125,
+    "within_workspace_limit": true
+  },
+  "studio_integration": {
+    "real_project_opened": true,
+    "studio_play_started": true,
+    "chrono_player_started": true,
+    "observed_backend": "torch-cuda-q8",
+    "first_viewport_ordinal": 0,
+    "first_viewport_source_pts": 0,
+    "first_viewport_rgb_sha256": "dbb519b75efa9f299da9b067eb51b8c6a8ee0936502ad1863464288754c69acd",
+    "engine_tick_completed": true,
+    "stop_released_player": true,
+    "qt_platform_for_integration_check": "offscreen",
+    "physical_display_observed": false
+  },
+  "tests": {
+    "command": "PYTHONPATH=src python -m pytest -q tests/test_chrono_desktop_runtime.py tests/test_android_chrono_runtime_contract.py",
+    "passed": 23,
+    "subtests_passed": 3,
+    "elapsed_seconds": 8.68,
+    "broader_regression_command": "PYTHONPATH=src python -m pytest -q tests -k 'chrono or editor'",
+    "broader_regression_passed": 197,
+    "broader_regression_subtests_passed": 41,
+    "broader_regression_deselected": 642,
+    "broader_regression_elapsed_seconds": 27.11,
+    "desktop_test_sha256": "15db2919a788e631e1f80d1886f06aceaba8346cc9cd0c57e3fce8dabc717bfe",
+    "native_contract_test_sha256": "6e23ea6af917c06c73524d45fc50daca07428f29d78a77061dcdc0927db2d201"
+  },
+  "verified_claims": {
+    "same_source_and_profile_hashes_as_android_bundle": true,
+    "python_and_native_selector_vectors_match": true,
+    "all_source_decode_pts_match_ugcvpts1": true,
+    "all_229_cuda_q8_rasters_equal_numpy_oracle": true,
+    "workspace_cap_checked_after_every_remap": true,
+    "desktop_grove_studio_consumes_bound_owner_node": true,
+    "negative_memory_or_geometry_promotion_performed": false
+  },
+  "explicit_nonclaims": [
+    "PyAV source decoding is CPU work; this receipt does not claim NVDEC or fully GPU-resident decode.",
+    "CUDA Q8 output is read back to host memory before Qt presentation; this receipt does not claim a zero-copy desktop texture path.",
+    "Qt scaling and the Windows compositor are downstream raster presentation and were not physically timed or pixel-captured.",
+    "Android MediaCodec/OES YUV-to-RGB conversion can differ from PyAV/libswscale; cross-platform color bytes are not claimed equal.",
+    "The POCO X7 Pro did not execute this desktop receipt, and this receipt does not verify the Android GLES shader, orientation, decoder, thermals, power, or frame cadence.",
+    "The audit drove exact interval boundaries synthetically and therefore proves selector decisions and staged rasters, not real-time deadline performance.",
+    "Monocular metric depth, hidden surfaces, closed bodies, a connected cross-time sheet, and literal metric 3D/4D geometry remain UNBOUNDED_UNKNOWN."
+  ]
+}

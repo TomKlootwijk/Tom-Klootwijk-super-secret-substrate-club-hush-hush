@@ -1,0 +1,8 @@
+{
+  "fail_closed": true,
+  "log_line": "1788089474.570 22700  3679 E UGTS-KC392: chrono initialization failed closed mode=AUTHORITATIVE_SOURCE_LUT reason=chrono AMediaExtractor rejected the MP4 asset range and verified private transport (apk_status=-10000, private_status=-10000); preview_promotion=false",
+  "mode": "AUTHORITATIVE_SOURCE_LUT",
+  "phase": "initialization",
+  "preview_promotion": false,
+  "reason": "chrono AMediaExtractor rejected the MP4 asset range and verified private transport (apk_status=-10000, private_status=-10000)"
+}
