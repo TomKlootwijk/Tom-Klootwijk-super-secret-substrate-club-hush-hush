@@ -34,6 +34,7 @@ from .hierarchypack import *
 from .objimport import *
 from .templates3d import *
 from .androidexport import *
+from .chrono_binding_pack import *
 from .androidbuild import *
 from .packed_kinematics import *
 from .polarpack import *

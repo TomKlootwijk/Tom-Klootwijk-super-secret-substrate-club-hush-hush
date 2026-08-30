@@ -1,6 +1,8 @@
 package org.ugts.runtime;
 
+import android.Manifest;
 import android.app.NativeActivity;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +24,18 @@ public final class UgtsNativeActivity extends NativeActivity
     private final AtomicBoolean videoFrameAvailable = new AtomicBoolean(false);
     private SurfaceTexture videoSurfaceTexture;
     private Surface videoSurface;
+
+    /** Camera access is requested only after an editable scene recorder asks for it. */
+    public boolean hasCameraPermission() {
+        return checkSelfPermission(Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestCameraPermission() {
+        if (hasCameraPermission()) return;
+        runOnUiThread(() -> requestPermissions(
+                new String[] { Manifest.permission.CAMERA }, 3921));
+    }
 
     public synchronized Surface createVideoSurface(int externalTextureName) {
         releaseVideoSurface();

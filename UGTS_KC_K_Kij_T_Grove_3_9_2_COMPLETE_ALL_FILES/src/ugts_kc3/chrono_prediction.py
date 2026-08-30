@@ -25,6 +25,7 @@ PREDICTOR_SUBSTRATE_MEDIAN_GREEN = 10
 PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN = 11
 PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER = 12
 PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER = 13
+PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER = 14
 PREDICTOR_NAMES = {
     PREDICTOR_SUBSTRATE_MEDIAN_GREEN: "SUBSTRATE_MEDIAN_GREEN_PLANAR_MOD256",
     PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN: (
@@ -35,6 +36,9 @@ PREDICTOR_NAMES = {
     ),
     PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER: (
         "CARTESIAN_MEDIAN_GREEN_LUMA_LIFT_SUBSTRATE_ADDRESSED_PLANAR_MOD256"
+    ),
+    PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER: (
+        "CARTESIAN_MEDIAN_Q709_CODEWORD_Y_CB_CR_SUBSTRATE_ADDRESSED_PLANAR_MOD256"
     ),
 }
 
@@ -244,6 +248,56 @@ def _inverse_green_luma_lift_numpy(transformed: Any) -> Any:
     return result
 
 
+def encode_rgb_to_q709_codewords_numpy(rgb: Any) -> Any:
+    """Map RGB8 bijectively to 24-bit ``(Y,Cb,Cr)`` q709 codewords.
+
+    ``q709`` is this codec profile's identifier; it does not claim the
+    standardized ITU-R BT.709 coefficient matrix.
+
+    ``Cr`` and ``Cb`` are interpreted as signed modulo-256 differences while
+    the stored lanes remain ordinary bytes.  Floor means mathematical floor,
+    including for negative numerators.  The transform has no learned state or
+    side data and is invertible for every one of the 2**24 RGB8 codewords.
+    """
+
+    import numpy as np
+
+    source = np.asarray(rgb)
+    if source.dtype != np.uint8 or source.ndim < 1 or source.shape[-1] != 3:
+        raise ChronoPredictionError("q709 input must be uint8 with a final RGB lane of 3")
+    signed = source.astype(np.int16)
+    cr = ((signed[..., 0] - signed[..., 1] + 128) & 255) - 128
+    cb = ((signed[..., 2] - signed[..., 1] + 128) & 255) - 128
+    adjustment = np.floor_divide(5 * cr + 2 * cb, 16)
+    result = np.empty_like(source)
+    result[..., 0] = (signed[..., 1] + adjustment) & 255
+    result[..., 1] = cb & 255
+    result[..., 2] = cr & 255
+    return result
+
+
+def decode_q709_codewords_to_rgb_numpy(codewords: Any) -> Any:
+    """Invert exact 24-bit ``(Y,Cb,Cr)`` q709 codewords to RGB8."""
+
+    import numpy as np
+
+    source = np.asarray(codewords)
+    if source.dtype != np.uint8 or source.ndim < 1 or source.shape[-1] != 3:
+        raise ChronoPredictionError(
+            "q709 codewords must be uint8 with a final Y,Cb,Cr lane of 3"
+        )
+    lanes = source.astype(np.int16)
+    cb = ((lanes[..., 1] + 128) & 255) - 128
+    cr = ((lanes[..., 2] + 128) & 255) - 128
+    adjustment = np.floor_divide(5 * cr + 2 * cb, 16)
+    green = (lanes[..., 0] - adjustment) & 255
+    result = np.empty_like(source)
+    result[..., 1] = green
+    result[..., 0] = (green + cr) & 255
+    result[..., 2] = (green + cb) & 255
+    return result
+
+
 def _median_prediction_numpy(values: Any, plan: SubstratePredictionPlan) -> Any:
     import numpy as np
 
@@ -266,17 +320,21 @@ def _cartesian_median_residual_numpy(
     polar_rgb: Any,
     plan: SubstratePredictionPlan,
     *,
-    lifted: bool,
+    predictor: int,
 ) -> Any:
     import numpy as np
 
     cartesian_rgb = np.empty((plan.pixel_count, 3), dtype=np.uint8)
     cartesian_rgb[plan.traversal.astype(np.int64)] = polar_rgb
-    values = (
-        _green_luma_lift_numpy(cartesian_rgb)
-        if lifted
-        else _green_delta_numpy(cartesian_rgb)
-    ).reshape(plan.height, plan.width, 3)
+    if predictor == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER:
+        transformed = _green_luma_lift_numpy(cartesian_rgb)
+    elif predictor == PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER:
+        transformed = encode_rgb_to_q709_codewords_numpy(cartesian_rgb)
+    elif predictor == PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER:
+        transformed = _green_delta_numpy(cartesian_rgb)
+    else:
+        raise ChronoPredictionError(f"unsupported Cartesian predictor {predictor}")
+    values = transformed.reshape(plan.height, plan.width, 3)
     a = np.zeros_like(values, dtype=np.int16)
     b = np.zeros_like(values, dtype=np.int16)
     c = np.zeros_like(values, dtype=np.int16)
@@ -310,14 +368,12 @@ def encode_substrate_prediction_numpy(
     if predictor in (
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     ):
         residual = _cartesian_median_residual_numpy(
             _require_polar_rgb(polar_rgb, plan),
             plan,
-            lifted=(
-                predictor
-                == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER
-            ),
+            predictor=predictor,
         )
         return np.ascontiguousarray(residual.T).tobytes()
     if predictor == PREDICTOR_SUBSTRATE_MEDIAN_GREEN:
@@ -415,6 +471,7 @@ def decode_substrate_prediction_numpy(
     if predictor in (
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     ):
         cartesian_residual = np.empty((plan.pixel_count, 3), dtype=np.uint8)
         cartesian_residual[plan.traversal.astype(np.int64)] = residual
@@ -443,12 +500,12 @@ def decode_substrate_prediction_numpy(
                         cartesian_residual[y, x].astype(np.int16) + prediction
                     ) & 255
         transformed = values.reshape(plan.pixel_count, 3)
-        rgb_cartesian = (
-            _inverse_green_luma_lift_numpy(transformed)
-            if predictor
-            == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER
-            else _inverse_green_delta_numpy(transformed)
-        )
+        if predictor == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER:
+            rgb_cartesian = _inverse_green_luma_lift_numpy(transformed)
+        elif predictor == PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER:
+            rgb_cartesian = decode_q709_codewords_to_rgb_numpy(transformed)
+        else:
+            rgb_cartesian = _inverse_green_delta_numpy(transformed)
         return rgb_cartesian[plan.traversal.astype(np.int64)].copy()
     if _njit is not None:
         values = _decode_prediction_numba(
@@ -514,6 +571,7 @@ def encode_substrate_prediction_cuda(
         PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     ):
         previous_source = None
     else:
@@ -528,7 +586,10 @@ def encode_substrate_prediction_cuda(
 
     def transform(array: Any) -> Any:
         tensor = torch.as_tensor(array, device=device)
-        if predictor == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER:
+        if predictor in (
+            PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+            PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
+        ):
             signed = tensor.to(torch.int16)
             cr = torch.bitwise_and(
                 signed[:, :, 0] - signed[:, :, 1] + 128, 255
@@ -536,13 +597,22 @@ def encode_substrate_prediction_cuda(
             cb = torch.bitwise_and(
                 signed[:, :, 2] - signed[:, :, 1] + 128, 255
             ) - 128
-            quarter = torch.div(cr + cb, 4, rounding_mode="floor")
+            adjustment = (
+                torch.div(5 * cr + 2 * cb, 16, rounding_mode="floor")
+                if predictor
+                == PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER
+                else torch.div(cr + cb, 4, rounding_mode="floor")
+            )
             result = torch.empty_like(tensor)
             result[:, :, 0] = torch.bitwise_and(
-                signed[:, :, 1] + quarter, 255
+                signed[:, :, 1] + adjustment, 255
             ).to(torch.uint8)
-            result[:, :, 1] = torch.bitwise_and(cr, 255).to(torch.uint8)
-            result[:, :, 2] = torch.bitwise_and(cb, 255).to(torch.uint8)
+            if predictor == PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER:
+                result[:, :, 1] = torch.bitwise_and(cb, 255).to(torch.uint8)
+                result[:, :, 2] = torch.bitwise_and(cr, 255).to(torch.uint8)
+            else:
+                result[:, :, 1] = torch.bitwise_and(cr, 255).to(torch.uint8)
+                result[:, :, 2] = torch.bitwise_and(cb, 255).to(torch.uint8)
             return result
         result = torch.empty_like(tensor)
         result[:, :, 0] = tensor[:, :, 1]
@@ -554,6 +624,7 @@ def encode_substrate_prediction_cuda(
     if predictor in (
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     ):
         traversal = torch.as_tensor(
             plan.traversal.astype(np.int64), device=device
@@ -635,12 +706,15 @@ __all__ = [
     "ChronoPredictionError",
     "PREDICTOR_NAMES",
     "PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER",
+    "PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER",
     "PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER",
     "PREDICTOR_SUBSTRATE_MEDIAN_GREEN",
     "PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN",
     "SubstratePredictionPlan",
     "build_substrate_prediction_plan",
     "decode_substrate_prediction_numpy",
+    "decode_q709_codewords_to_rgb_numpy",
+    "encode_rgb_to_q709_codewords_numpy",
     "encode_substrate_prediction_cuda",
     "encode_substrate_prediction_numpy",
 ]

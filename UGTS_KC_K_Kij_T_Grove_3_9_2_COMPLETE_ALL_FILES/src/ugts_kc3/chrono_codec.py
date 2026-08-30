@@ -20,6 +20,7 @@ from .chrono_entropy import (
 )
 from .chrono_prediction import (
     PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
     PREDICTOR_NAMES,
     PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
@@ -192,6 +193,7 @@ class EncodedSubstrateFrame:
             PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
             PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
             PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+            PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
         )
         if intra:
             if not self.checkpoint or self.previous_ordinal != NO_PREVIOUS_ORDINAL:
@@ -267,7 +269,7 @@ def encode_substrate_frame(
     ordinal: int,
     source_pts: int,
     source_end_pts_exclusive: int,
-    predictor: int = PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    predictor: int = PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     previous_polar_rgb: Any | None = None,
     previous_ordinal: int | None = None,
     residual_bytes: bytes | bytearray | memoryview | None = None,

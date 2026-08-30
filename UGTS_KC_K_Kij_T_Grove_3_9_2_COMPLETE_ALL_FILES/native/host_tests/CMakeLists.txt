@@ -157,6 +157,21 @@ add_executable(
     polar_substrate_conformance_tests.cpp
     "${UGTS_ANDROID_CPP_DIR}/polar_kinematics.cpp"
 )
+
+add_executable(
+    ugtc4d_decoder_tests
+    ugtc4d_decoder_tests.cpp
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
+)
+target_include_directories(
+    ugtc4d_decoder_tests PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d"
+)
+target_compile_definitions(
+    ugtc4d_decoder_tests PRIVATE
+    UGTC4D_FIXTURE_PATH="${CMAKE_CURRENT_LIST_DIR}/fixtures/ugtc4d_native_fixture.ugtc4d"
+)
+set_property(TARGET ugtc4d_decoder_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET ugtc4d_decoder_tests PROPERTY CXX_STANDARD_REQUIRED ON)
 target_include_directories(
     polar_substrate_conformance_tests PRIVATE "${UGTS_ANDROID_CPP_DIR}"
 )
@@ -197,4 +212,10 @@ else()
     target_compile_options(
         polar_substrate_conformance_tests PRIVATE -Wall -Wextra -Wpedantic
     )
+endif()
+
+if(MSVC)
+    target_compile_options(ugtc4d_decoder_tests PRIVATE /W4 /permissive-)
+else()
+    target_compile_options(ugtc4d_decoder_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()

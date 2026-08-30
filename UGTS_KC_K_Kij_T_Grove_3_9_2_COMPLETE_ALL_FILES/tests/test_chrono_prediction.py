@@ -7,11 +7,14 @@ import pytest
 
 from ugts_kc3.chrono_prediction import (
     PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
     PREDICTOR_SUBSTRATE_MEDIAN_GREEN,
     PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN,
     build_substrate_prediction_plan,
+    decode_q709_codewords_to_rgb_numpy,
     decode_substrate_prediction_numpy,
+    encode_rgb_to_q709_codewords_numpy,
     encode_substrate_prediction_cuda,
     encode_substrate_prediction_numpy,
 )
@@ -51,6 +54,7 @@ def _frames() -> tuple[np.ndarray, np.ndarray]:
         PREDICTOR_TEMPORAL_SUBSTRATE_MEDIAN_GREEN,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     ],
 )
 def test_substrate_prediction_round_trip(predictor: int) -> None:
@@ -79,6 +83,24 @@ def test_plan_is_regenerated_and_every_dependency_precedes_its_pixel() -> None:
     for dependency in (plan.a, plan.b, plan.c):
         assert np.all(~plan.use_median | ((dependency >= 0) & (dependency < ordinal)))
     assert plan.ram_bytes > plan.traversal.nbytes
+
+
+def test_q709_codeword_is_bijective_over_the_complete_rgb24_domain() -> None:
+    green, blue = np.meshgrid(
+        np.arange(256, dtype=np.uint8),
+        np.arange(256, dtype=np.uint8),
+        indexing="ij",
+    )
+    tested = 0
+    for red in range(256):
+        rgb = np.empty((256, 256, 3), dtype=np.uint8)
+        rgb[..., 0] = red
+        rgb[..., 1] = green
+        rgb[..., 2] = blue
+        codewords = encode_rgb_to_q709_codewords_numpy(rgb)
+        assert np.array_equal(decode_q709_codewords_to_rgb_numpy(codewords), rgb)
+        tested += rgb.shape[0] * rgb.shape[1]
+    assert tested == 1 << 24
 
 
 def test_cuda_encoder_matches_cpu_oracle_when_available() -> None:
@@ -148,6 +170,7 @@ def test_temporal_cuda_encoder_matches_cpu_oracle_when_available() -> None:
     [
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_SUBSTRATE_ORDER,
         PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+        PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     ],
 )
 def test_cartesian_median_substrate_order_cuda_matches_cpu(predictor: int) -> None:

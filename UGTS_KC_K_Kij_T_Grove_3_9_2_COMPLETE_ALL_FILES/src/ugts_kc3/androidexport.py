@@ -16,6 +16,13 @@ from .animationpack import (
     compile_animation_pack_bytes,
     inspect_animation_pack,
 )
+from .chrono_binding_pack import (
+    CHRONO_BINDING_PACK_ASSET,
+    collect_chrono_bindings,
+    compile_chrono_binding_pack_bytes,
+    inspect_chrono_binding_pack,
+    resolve_chrono_player_assets,
+)
 from .export import write_gltf
 from .graphpack import (
     GRAPH_PACK_ASSET,
@@ -412,6 +419,7 @@ class AndroidProjectBuild:
     animation_pack: Path | None = None
     hierarchy_pack: Path | None = None
     render_substrate_pack: Path | None = None
+    chrono_binding_pack: Path | None = None
 
     @property
     def render_pack(self) -> Path | None:
@@ -799,6 +807,18 @@ def build_android_project(
         inspect_render_substrate_pack(render_substrate_pack_data)
         if render_substrate_pack_data else None
     )
+    chrono_node_bindings = collect_chrono_bindings(project, materialize=False)
+    chrono_binding_pack_data = compile_chrono_binding_pack_bytes(project)
+    chrono_binding_pack_inspection = (
+        inspect_chrono_binding_pack(
+            chrono_binding_pack_data, node_count=len(project.nodes)
+        )
+        if chrono_binding_pack_data
+        else None
+    )
+    chrono_player_assets = resolve_chrono_player_assets(
+        chrono_node_bindings, asset_source_root
+    )
     output_dir = Path(output_dir)
     template = Path(__file__).with_name("android_template") / "project"
     if not template.exists():
@@ -831,6 +851,7 @@ def build_android_project(
     assets = output_dir / "app/src/main/assets"
     assets.mkdir(parents=True, exist_ok=True)
     chrono_asset_receipts: list[dict[str, object]] = []
+    chrono_substrate_asset_receipts: list[dict[str, object]] = []
     chrono_assets = assets / "chrono"
     for asset in chrono_binding.assets:
         target_asset = chrono_assets.joinpath(*asset.relative_parts)
@@ -848,6 +869,29 @@ def build_android_project(
                 f"{asset.packaged_path}"
             )
         chrono_asset_receipts.append(
+            {
+                "path": asset.packaged_path,
+                "bytes": copied_bytes,
+                "sha256": copied_hash,
+            }
+        )
+    for asset in chrono_player_assets:
+        relative = PurePosixPath(asset.packaged_path)
+        target_asset = assets.joinpath(*relative.parts)
+        if target_asset.exists():
+            raise FileExistsError(
+                f"chrono substrate asset target already exists: {asset.packaged_path}"
+            )
+        target_asset.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(asset.source, target_asset)
+        copied_bytes = target_asset.stat().st_size
+        copied_hash = _file_digest(target_asset)
+        if copied_bytes != asset.byte_count or copied_hash != asset.sha256:
+            raise ValueError(
+                "copied chrono substrate asset failed byte/SHA verification: "
+                f"{asset.packaged_path}"
+            )
+        chrono_substrate_asset_receipts.append(
             {
                 "path": asset.packaged_path,
                 "bytes": copied_bytes,
@@ -898,6 +942,10 @@ def build_android_project(
     if render_substrate_pack_data:
         render_substrate_pack = assets / RENDER_SUBSTRATE_PACK_ASSET
         render_substrate_pack.write_bytes(render_substrate_pack_data)
+    chrono_binding_pack = None
+    if chrono_binding_pack_data:
+        chrono_binding_pack = assets / CHRONO_BINDING_PACK_ASSET
+        chrono_binding_pack.write_bytes(chrono_binding_pack_data)
     inspection = inspect_scene_pack(scene_pack)
     (evidence_dir / "scene-pack-inspection.json").write_text(
         json.dumps(inspection, indent=2, sort_keys=True) + "\n",
@@ -926,6 +974,24 @@ def build_android_project(
             "asset_count": len(chrono_asset_receipts),
             "asset_bytes": sum(
                 int(receipt["bytes"]) for receipt in chrono_asset_receipts
+            ),
+        },
+        "chrono_substrate_runtime": {
+            "present": chrono_binding_pack_inspection is not None,
+            "asset": (
+                CHRONO_BINDING_PACK_ASSET
+                if chrono_binding_pack_inspection is not None
+                else None
+            ),
+            "pack": chrono_binding_pack_inspection,
+            "source_assets": chrono_substrate_asset_receipts,
+            "source_asset_bytes": sum(
+                int(receipt["bytes"])
+                for receipt in chrono_substrate_asset_receipts
+            ),
+            "seed_boundary": (
+                "root seed regenerates traversal; arbitrary observed pixels remain "
+                "exact novelty evidence"
             ),
         },
         "transform_hierarchy_runtime": hierarchy_inspection,
@@ -974,6 +1040,7 @@ def build_android_project(
         animation_pack=animation_pack,
         hierarchy_pack=hierarchy_pack,
         render_substrate_pack=render_substrate_pack,
+        chrono_binding_pack=chrono_binding_pack,
     )
 
 

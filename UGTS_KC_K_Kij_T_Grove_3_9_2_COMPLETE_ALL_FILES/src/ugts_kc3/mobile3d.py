@@ -1382,6 +1382,23 @@ class Mobile3DProject:
                 "nodes",
                 f"projects support at most {MAX_TRIGGER_SENSORS} active trigger areas",
             )
+        # KCCH392 remains a sparse sidecar, so the established Node3D/KC3D392
+        # ABI does not change.  Validate the ordinary editable node metadata
+        # here so a malformed recorder/player never survives until export.
+        try:
+            from .chrono_binding_pack import (
+                CHRONO_BINDING_METADATA_KEY,
+                ChronoBindingPackError,
+                collect_chrono_bindings,
+            )
+
+            collect_chrono_bindings(self, materialize=False)
+        except ChronoBindingPackError as exc:
+            error(
+                "chrono_binding.invalid",
+                f"nodes[].metadata.{CHRONO_BINDING_METADATA_KEY}",
+                str(exc),
+            )
         hierarchy_parent_ids = {
             str(node.parent_id) for node in self.nodes if node.parent_id is not None
         }

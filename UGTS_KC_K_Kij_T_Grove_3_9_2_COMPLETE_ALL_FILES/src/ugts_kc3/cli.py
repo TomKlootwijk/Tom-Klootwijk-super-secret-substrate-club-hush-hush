@@ -52,6 +52,16 @@ def _positive_step_count(value: str) -> int:
     return count
 
 
+def _positive_integer(value: str) -> int:
+    try:
+        count = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("value must be a whole number") from exc
+    if count < 1:
+        raise argparse.ArgumentTypeError("value must be at least 1")
+    return count
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ugts-kc",
@@ -243,6 +253,41 @@ def _parser() -> argparse.ArgumentParser:
     )
     verify_chrono.add_argument("--output", type=Path)
     verify_chrono.add_argument("--json", action="store_true", dest="as_json")
+
+    compile_ugtc4d = sub.add_parser(
+        "compile-ugtc4d",
+        help="GPU-author a custom lossless UGTC4D file from a source video",
+    )
+    compile_ugtc4d.add_argument("input", type=Path)
+    compile_ugtc4d.add_argument("output", type=Path)
+    compile_ugtc4d.add_argument(
+        "--receipt",
+        type=Path,
+        help="write the canonical authoring and replay-verification receipt",
+    )
+    compile_ugtc4d.add_argument(
+        "--batch-frames",
+        type=_positive_integer,
+        default=16,
+        help="number of decoded frames per bounded GPU authoring batch (default: 16)",
+    )
+    compile_ugtc4d.add_argument(
+        "--max-vram-mib",
+        type=_positive_integer,
+        default=4096,
+        help="hard GPU working-set budget in MiB (default: 4096)",
+    )
+
+    verify_ugtc4d = sub.add_parser(
+        "verify-ugtc4d",
+        help="strictly replay and verify a custom lossless UGTC4D file",
+    )
+    verify_ugtc4d.add_argument("file", type=Path)
+    verify_ugtc4d.add_argument(
+        "--source-video",
+        type=Path,
+        help="also independently decode and compare the authoritative source RGB24+PTS",
+    )
 
     return parser
 
@@ -452,6 +497,37 @@ def main(argv: list[str] | None = None) -> int:
                     f"{report['asset_count']} hash-verified assets"
                 )
                 print(f"  geometry: {report['geometry_status']}")
+            return 0
+
+        if args.command == "compile-ugtc4d":
+            # Kept lazy so the ordinary engine CLI does not require PyAV,
+            # NumPy, Numba, or CUDA packages at import time.
+            from .chrono_compile import compile_video_to_ugtc4d
+
+            receipt = compile_video_to_ugtc4d(
+                args.input,
+                args.output,
+                receipt_path=args.receipt,
+                batch_frames=args.batch_frames,
+                max_vram_mib=args.max_vram_mib,
+            )
+            print(json.dumps(receipt, indent=2, sort_keys=True))
+            return 0
+
+        if args.command == "verify-ugtc4d":
+            from .chrono_compile import (
+                verify_ugtc4d_against_source,
+                verify_ugtc4d_file,
+            )
+
+            if args.source_video is None:
+                report = verify_ugtc4d_file(args.file)
+            else:
+                report = verify_ugtc4d_against_source(
+                    args.file,
+                    args.source_video,
+                )
+            print(json.dumps(report, indent=2, sort_keys=True))
             return 0
 
         if args.command == "new":

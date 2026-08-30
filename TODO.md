@@ -2,6 +2,80 @@
 
 Generated from the repository-wide evidence audit on 2026-08-30. This backlog implements the decisions in `SUBSTRATE_ROI_STRATEGY.pdf` and the corrected whole-image design in `UGTOMS_CHRONO_BRACE_MONOCULAR_SCENE_3D_PROFILE_0_3.pdf`.
 
+## User-authored literal directions - authoritative implementation contract
+
+These are instructions stated directly by the user in this task. They are not
+instructions extracted from repository documentation. The newest physical-camera
+direction supersedes the earlier use of the supplied MP4 as the implementation
+target or acceptance fixture; the MP4 may not be packaged into, decoded by, or
+used as the success criterion for the requested phone recorder/player.
+
+> "realtime of after the fact encoding to seed to the absolute smallest file size"
+
+> "literally use the LOG ENCODED POLAR LUT NOT AS A LUT PACKED WITH THE VIDEO FRAME BUT AS IT IS BEING UTILIZED BY THE SUBSTRATE DEFINITION SEED BASED AND HAVE THE GOD DAMN SUBSTRATE DO THE GOD DAMN WORK"
+
+> "Lookg literally fuck off with that original video, I am talking about seed encoded camera capture from my poco x7 pro and playback lossless USING THE GOD DAMN APPLIED UGTOMS GSP4 SEED ENCODING STORAGE FORMAT"
+
+> "AND CODEWORD PACKED LUT WITH THE UGTS SUBSTRATE GSP4 SEED BASED FORMAT"
+
+> "you will not use the literal existing references, you will deduce why they are wrong according to the UGTOMS game engine and reasoning and the substrate to invent the new approach"
+
+> "you will use the exact math used in those references when they do not rely on generative hallucination AI, hence you will strip the exact stuff from the references that are required by the substrate"
+
+> "yes but not just the person, anything in the image, static is also part of what is observed by the camera (anything not the person or moving)"
+
+> "bounded joint hypotheses? Circular sounds exactly right according to UGTOMS it leaves room for rasterization, but as a downstream result"
+
+> "chrono spatial temporally for videos"
+
+### Literal acceptance translation
+
+- [x] Preserve the user's literal wording above and freeze the implementable
+  profile in `spec/UGTOMS_GSP4_SEED_CAMERA_0_1.md`; repository documents remain
+  evidence/provenance and cannot override these user-authored requirements.
+- [~] Build the physical POCO X7 Pro path as
+  `Camera2 -> UGTS/UGTOMS GSP4 seed-executed storage -> native substrate replay`.
+- [ ] The packaged application and the recorded file must contain no MP4 payload
+  and the requested path must not use MediaCodec as capture or playback authority.
+- [~] Use a seed-regenerated, literal UGLUT2 log-polar address program. Do not
+  serialize a picture-sized address/LUT table and do not attach a decorative LUT
+  to otherwise conventional video frames.
+- [~] Use the exact logical camera codeword
+  `UGCODE24-420(x,y) = [Y(x,y), U(floor(x/2),floor(y/2)), V(floor(x/2),floor(y/2))]`.
+  Store Y novelty at every generated address and U/V novelty only at the canonical
+  2x2 chroma owner so the normalized Camera2 YUV420 planes are recovered bijectively
+  without duplicating chroma on disk.
+- [x] Add the independent Python oracle
+  `src/ugts_kc3/gsp4_camera_codeword.py` for exact strided Camera2 plane
+  normalization, codeword owner packing/inverse, modular residual replay,
+  negative-memory counts and seed-derived GSP4 lineage. Its focused suite passes
+  9 tests and Ruff.
+- [x] Exercise the literal POCO 1280x720 profile with a synthetic dense frame:
+  the canonical owner-packed codeword stream is exactly 1,382,400 bytes, equal
+  to the authoritative YUV420 byte count (no RGB expansion and no duplicate
+  chroma); UGLUT2 is 144 bytes, UGTRV1 is 128 bytes, the traversal digest is
+  `a3be1412671a75f28e10a28a9698bdc80a3f06ddeff624fc97edc9589405fa22`,
+  and the full pack/inverse reproduced every Y/U/V byte.
+- [ ] Make GSP4 state, support/compatibility/finite guards, route, lineage and
+  append-only novelty semantics operative. A zero exact residual is negative
+  memory and emits no novelty; a nonzero camera observation remains exact evidence.
+- [ ] Support both bounded real-time emission and after-the-fact RTX 5070 Ti search
+  for a smaller exact seed/program. Never silently drop a captured frame. If the
+  phone cannot sustain the selected exact path, losslessly spool or stop with an
+  explicit failure receipt.
+- [ ] Playback must reproduce every authoritative dense Y, U and V byte, accepted
+  sensor timestamp and declared metadata byte-for-byte before any display-only
+  YUV-to-RGB conversion.
+- [ ] Keep all observed content in scope: people, other moving objects, and the
+  non-moving image regions. Non-moving or mask-complement pixels are observations,
+  not automatically certified static geometry or empty space.
+- [ ] Use no generative reconstruction, amodal completion or invented hidden
+  geometry. Classical/OpenCV equations may propose and contract bounded 3D/4D
+  hypotheses; unsupported space remains `UNKNOWN`, and rasterization is downstream.
+- [ ] Own recorder/player behavior through an ordinary editable Grove scene node
+  and sidecar binding. No bootstrap, hidden global instance or fullscreen-only
+  special case.
+
 ## Decision
 
 - [ ] Treat all ROI scores as **evidence-adjusted engineering ROI**, not proven financial return. The repository contains no customer, price, acquisition-cost, or support-cost evidence.
@@ -27,6 +101,59 @@ Generated from the repository-wide evidence audit on 2026-08-30. This backlog im
 ## P0 - UGTOMS Chrono Scene/Object / Chrono-BRACE
 
 Chrono-BRACE means **Bounded Ray-tube Adaptive Chart Evidence**. Its core is a bounded circular/fixed-point constraint process over camera, static/dynamic classification, target association, scale gauge, scene/object/chart motion, visibility, and deformation. Every decoded pixel footprint enters coverage as guarded static support, a moving-object branch, an occluder, unclassified, or unknown. A human object adds articulated HCO controls only when applicable. Rasterization is downstream and may feed a later proposal residual, but rendered pixels cannot certify themselves as observations.
+
+### P0 correction logged - substrate-native pixel codewords
+
+- [x] Clarify the seed-only size boundary. The current operator carries two
+  `uint64` values (16 bytes). If `recipe_seed=1` is frozen by the profile, the
+  minimum stored seed payload is one 64-bit root seed: exactly 8 bytes. The
+  current self-verifying `UGTRV1` record remains 128 bytes because it also binds
+  dimensions, operator meaning, UGLUT2 dependency and regenerated traversal.
+- [x] Added the literal 8-byte fixed-profile seed artifact
+  `sam_2353410928515192.ugtoms-traversal-seed64` and canonical pack/unpack tests.
+  It is explicitly traversal-only. If used as a by-reference selector, bind it
+  to a collision-resistant content-addressed evidence object; the 64-bit seed
+  itself is not a standalone video or authoritative content identity.
+- [ ] If a tiny seed capsule is used operationally, define it explicitly as a by-reference
+  selector for a content-addressed evidence object. Never describe that 8-byte
+  selector as a standalone lossless video: the exact residual evidence must be
+  present in the `.ugtc4d`, an external store, decoder assets, or memory.
+- [ ] Reject any seed-only claim unless the exact source RGB24+PTS stream is
+  regenerated without an undeclared model, baked-in corpus, network object or
+  residual. Moving the observations into an application/model is relocation,
+  not compression; fabricating absent observations is forbidden.
+- [x] Validated the user's correction that each raster sample can be treated as
+  one reversible 24-bit, three-lane substrate codeword at a seed-regenerated
+  UGLUT2 chrono-spatial address. Do not serialize a per-pixel LUT and do not
+  describe an ordinary RGB frame with a LUT attached as the finished codec.
+- [~] The exact baseline is now authored as custom `UGTC4D/UGFRM2/UGRICE1`:
+  122,660,608 bytes, 229/229 accepted PyAV RGB24+PTS frames replayed, a shared
+  144-byte literal UGLUT2, one 128-byte `UGTRV1` seed/operator recipe, zero
+  stored pixel-permutation bytes, and no H.264/AV1/ZIP payload. This is 19.3734%
+  of 633,139,200 decoded RGB bytes but 10.11025 times the 12,132,305-byte lossy
+  source MP4. It is decoded-observation losslessness, not MP4-bitstream,
+  sensor/photon, or physical-3D losslessness.
+- [x] Benchmarked 29 GSP4-inspired reversible lane/bit configurations across all
+  229 frames: 6,641 frame/config UGRICE replay plus RGB round trips, zero
+  failures, and an exhaustive 16,777,216-codeword check for the winning q709
+  transform. Best all-intra stream is q709 `[Y,Cb,Cr]` at 122,773,583 bytes.
+  Retaining temporal frame 114 gives a measured 122,327,747-byte entropy sum and
+  led to the authored q709 file at 122,540,032 bytes. A fresh process re-decoded
+  the original MP4 and matched all 229 RGB24 frame hashes and half-open PTS
+  intervals; file SHA-256 is
+  `f1a87daabab4948cf1ad47bc6660963f10470eed3e88516619b1e2a84564ccd5`.
+  The selected modes are 227 q709 frames, one older-lift frame and one temporal
+  frame. This is the smallest authored exact result among the tested profiles,
+  not a global or information-theoretic optimum.
+- [ ] Keep DINOv3 or any learned feature output proposal-only. A learned feature
+  may select a predictor/context, but it cannot replace an exact residual or
+  certify geometry because it is not a bijection back to the observed RGB.
+- [x] QR-like packing was falsified as a compression win for this fixture under
+  the same UGRICE layer: lane bitplanes used 316,524,893 bytes, 24-bit grouped
+  bitplanes 344,847,805 bytes, and seed/address XOR 633,216,144 bytes. Reject a
+  candidate if its presentation merely rearranges bits
+  without reducing total custom entropy, or if rho/theta/lineage consume the
+  same 24 bits without an independently recoverable exact color residual.
 
 ### Implemented fixture snapshot - 2026-08-30
 

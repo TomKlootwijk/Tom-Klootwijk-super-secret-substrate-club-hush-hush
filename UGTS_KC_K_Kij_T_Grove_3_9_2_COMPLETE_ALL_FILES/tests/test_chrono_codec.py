@@ -17,7 +17,7 @@ from ugts_kc3.chrono_codec import (
     encode_substrate_frame,
 )
 from ugts_kc3.chrono_prediction import (
-    PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER,
+    PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER,
     build_substrate_prediction_plan,
 )
 from ugts_kc3.chrono_substrate import (
@@ -77,7 +77,7 @@ def test_integrated_frame_round_trip_verifies_cartesian_rgb() -> None:
         entropy_block_sizes=(256, 1024),
     )
     assert record.flags == FRAME_CHECKPOINT
-    assert record.predictor == PREDICTOR_CARTESIAN_MEDIAN_GREEN_LIFT_SUBSTRATE_ORDER
+    assert record.predictor == PREDICTOR_CARTESIAN_MEDIAN_Q709_CODEWORD_SUBSTRATE_ORDER
     parsed, decoded_polar, decoded_cartesian = decode_substrate_frame(
         record.to_bytes(),
         plan,
