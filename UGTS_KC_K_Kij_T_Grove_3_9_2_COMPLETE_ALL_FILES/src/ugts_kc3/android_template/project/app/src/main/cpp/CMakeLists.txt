@@ -78,6 +78,7 @@ if(UGTS_KC_GSP4_SEED_CAMERA)
     foreach(UGTS_KC_UGYUVS1_FILE
             ugtc4d_decoder.hpp ugtc4d_decoder.cpp
             seeded_uglut2_traversal.hpp seeded_uglut2_traversal.cpp
+            full_substrate_camera.hpp full_substrate_camera.cpp
             yuv_seed_capture.hpp yuv_seed_capture.cpp)
         if(NOT EXISTS "${UGTS_KC_UGYUVS1_DIR}/${UGTS_KC_UGYUVS1_FILE}")
             message(FATAL_ERROR
@@ -99,6 +100,7 @@ if(UGTS_KC_GSP4_SEED_CAMERA)
         chrono_seed_capture_session.cpp
         "${CMAKE_CURRENT_BINARY_DIR}/ugyuvs1/ugtc4d_decoder.cpp"
         "${CMAKE_CURRENT_BINARY_DIR}/ugyuvs1/seeded_uglut2_traversal.cpp"
+        "${CMAKE_CURRENT_BINARY_DIR}/ugyuvs1/full_substrate_camera.cpp"
         "${CMAKE_CURRENT_BINARY_DIR}/ugyuvs1/yuv_seed_capture.cpp"
     )
 else()
@@ -149,7 +151,7 @@ target_link_libraries(ugts_kc_native
 if(UGTS_KC_GSP4_SEED_CAMERA)
     # libmediandk is AImageReader capture plumbing only. The seed flavor has
     # no AMediaCodec/AMediaExtractor source or symbol; Vulkan performs the
-    # integer UGCODE24-420 residual transform on the physical GPU.
+    # integer UGCAMNODE-FX1 profile-2 operator/residual on the physical GPU.
     target_link_libraries(ugts_kc_native camera2ndk mediandk vulkan)
 else()
     target_link_libraries(ugts_kc_native mediandk)

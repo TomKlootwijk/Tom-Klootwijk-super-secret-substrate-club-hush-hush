@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 import random
+import struct
 
 from ugts_kc3.chrono_substrate import (
     create_substrate_traversal_recipe,
@@ -11,12 +13,15 @@ from ugts_kc3.chrono_substrate import (
 )
 from ugts_kc3.full_substrate_camera import (
     FullSubstrateCameraProgram,
+    OPERATOR_BLOCK_DOMAIN,
+    OPERATOR_FRAME_DOMAIN,
     corrected_morton_key,
     frame_kinematics,
     klein_address,
     klb37_even_parity,
     make_klb37,
     median_predictor,
+    operator_meaning_digest,
     q15_pixel_center,
     sclp64_contiguous,
     seed_word,
@@ -27,6 +32,7 @@ from ugts_kc3.gsp4_camera_codeword import DenseYuv420Frame
 
 ROOT = Path(__file__).parents[1]
 LUT_PATH = ROOT / "native/host_tests/fixtures/uglut2_native_fixture.bin"
+VECTOR_PATH = ROOT / "tests/fixtures/full_substrate_camera_v0_1_vectors.json"
 ROOT_SEED = 0x0123456789ABCDEF
 
 
@@ -126,16 +132,16 @@ def test_known_packed_operator_receipt_and_guard_bits() -> None:
         0x4306FDC7,
         0xAA4B2E48,
         0x5A6AF331,
-        0xF0EBF0EA,
-        0x020DEBFF,
+        0x0F1D0F1C,
+        0x1A0DABFF,
         0x00000007,
         0x0000002F,
         0x00000028,
-        0x4A5400AA,
+        0x6FD4A6DE,
     )
     assert (
         program.operator_block_digest(3, 0, 48).hex()
-        == "09319ae4b21bf4e2df51b83e2e280971034954b91e82524437e4062ffaef86ef"
+        == "405aad2dee9d2979d22345c17b4e495f6d1fe175ea0213c6170f16d59b148c3c"
     )
 
 
@@ -177,8 +183,91 @@ def test_random_camera_frames_round_trip_exactly() -> None:
         "2c76f6c7e28d3a7324cfcd56b450caad662436961c14c04db8901b8383816f63"
     )
     assert hashlib.sha256(residual1).hexdigest() == (
-        "a0940be900c9c2d4d774549ffa10989233c7ab062303840e0aba9967cd3c61dc"
+        "295fcd99a2b51cd500508ce71d4ba7c2fd7114cdd70347efa12a38271a4d3dc1"
     )
+
+
+def test_byte_exact_native_and_vulkan_receipt_vectors() -> None:
+    fixture = json.loads(VECTOR_PATH.read_text(encoding="utf-8"))
+    lut = LUT_PATH.read_bytes()
+    assert fixture["profile"] == 2
+    assert fixture["receipt_word_count"] == 20
+    assert fixture["receipt_endianness"] == "little"
+    assert bytes.fromhex(fixture["operator_block_domain_hex"]) == OPERATOR_BLOCK_DOMAIN
+    assert bytes.fromhex(fixture["operator_frame_domain_hex"]) == OPERATOR_FRAME_DOMAIN
+    assert fixture["operator_meaning_sha256"] == operator_meaning_digest().hex()
+    assert fixture["uglut2_sha256"] == hashlib.sha256(lut).hexdigest()
+
+    selectors = set()
+    features = set()
+    native_vector_checked = False
+    programs: dict[tuple[int, int, int], FullSubstrateCameraProgram] = {}
+    for vector in fixture["vectors"]:
+        key = (
+            int(vector["width"]),
+            int(vector["height"]),
+            int(vector["root_seed_hex"], 16),
+        )
+        program = programs.get(key)
+        if program is None:
+            recipe = create_substrate_traversal_recipe(
+                key[0],
+                key[1],
+                lut,
+                root_seed=key[2],
+                recipe_seed=int(vector["recipe_seed"]),
+            )
+            assert recipe.traversal_sha256 == vector["traversal_sha256"]
+            program = FullSubstrateCameraProgram(recipe, lut)
+            programs[key] = program
+        state = program.operator_state(
+            int(vector["cartesian_address"]),
+            int(vector["frame_ordinal"]),
+        )
+        expected_words = tuple(
+            int(word, 16) for word in vector["receipt_words_hex"]
+        )
+        receipt = struct.pack("<20I", *state.receipt_words())
+        assert state.receipt_words() == expected_words
+        assert receipt.hex() == vector["receipt_le_hex"]
+        assert hashlib.sha256(receipt).hexdigest() == vector["receipt_sha256"]
+        assert state.selector == int(vector["selector"])
+        assert state.packed_state == int(vector["packed_state_hex"], 16)
+        assert klb37_even_parity(state.klb37)
+        radius, height, slant = vector["cone_R_h_T"]
+        assert radius * radius + height * height == slant * slant
+        assert state.guards.cone_triple_index == vector["cone_triple_index"]
+        selectors.add(state.selector)
+        features.update(vector["features"])
+
+        if key[0:2] == (8, 6):
+            assert program.operator_block_digest(
+                int(vector["frame_ordinal"]), 0, key[0] * key[1]
+            ).hex() == vector["full_frame_block_sha256"]
+            assert program.operator_frame_digest(
+                int(vector["frame_ordinal"]),
+                int(vector["block_luma_addresses"]),
+            ).hex() == vector["frame_operator_state_sha256"]
+        if vector["name"] == "native-portable-parity":
+            native_vector_checked = True
+            assert vector["receipt_sha256"] == (
+                "97999caaac5a52e373171f611c5c67e856349f61a5d8483939d8acb3e8c4ad7f"
+            )
+
+    assert native_vector_checked
+    assert selectors == {0, 1, 2, 3}
+    assert {
+        "klein-up-reflection",
+        "klein-up-left-reflection",
+        "odd-radial-wrap",
+        "node-high",
+        "inside-cone",
+        "near-cone-segment",
+        "inside-sphere",
+        "near-sphere",
+        "euclidean-apex",
+        "klb-even-parity",
+    } <= features
 
 
 def test_profile1_traversal_and_coordinate_derivation_remain_unchanged() -> None:

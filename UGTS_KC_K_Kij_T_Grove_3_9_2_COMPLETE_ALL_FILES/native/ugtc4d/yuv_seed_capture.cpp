@@ -251,6 +251,18 @@ Sha256Digest recipeDigest(
     const YuvSeedCaptureProfile& profile,
     const SeededUglut2Traversal& traversal
 ) {
+    if (profile.logicalProfile == FullSubstrateCameraProfile) {
+        auto preimage = digestPreimage("UGYUVS1-UGCAMNODE-FX1-seed-recipe-v0.1.0");
+        appendU32(preimage, profile.width);
+        appendU32(preimage, profile.height);
+        appendU32(preimage, FullSubstrateCameraProfile);
+        appendU64(preimage, profile.rootSeed);
+        appendU64(preimage, profile.traversalRecipeSeed);
+        appendDigest(preimage, traversal.uglut2Sha256);
+        appendDigest(preimage, traversal.traversalSha256);
+        appendDigest(preimage, fullSubstrateCameraOperatorDigest());
+        return sha256(preimage.data(), preimage.size());
+    }
     auto preimage = digestPreimage("UGYUVS1-UGCODE24-420-seed-recipe-v1");
     appendU32(preimage, profile.width);
     appendU32(preimage, profile.height);
@@ -262,7 +274,10 @@ Sha256Digest recipeDigest(
     return sha256(preimage.data(), preimage.size());
 }
 
-Sha256Digest operatorDigest() {
+Sha256Digest operatorDigest(std::uint32_t profile) {
+    if (profile == FullSubstrateCameraProfile) {
+        return fullSubstrateCameraOperatorDigest();
+    }
     auto preimage = digestPreimage(
         "UGCODE24-420-v1:luma-address-codeword=[Y(x,y),U(floor(x/2),floor(y/2)),"
         "V(floor(x/2),floor(y/2))];storage=UGTRV1-luma-order;"
@@ -460,7 +475,8 @@ std::vector<std::uint8_t> buildNoveltyBlock(
     std::uint32_t firstLumaOrdinal,
     std::uint32_t lumaCount,
     YuvPredictorProgram predictor,
-    const Sha256Digest& lineageDigest,
+    const Sha256Digest& lineageOrOperatorDigest,
+    const std::array<std::uint32_t, 4u>* selectorCounts,
     std::uint32_t& selectedRepresentation,
     const std::vector<std::uint8_t>& logical
 ) {
@@ -520,7 +536,12 @@ std::vector<std::uint8_t> buildNoveltyBlock(
     setDigest(header, 72u, sha256(storedValues->data(), storedValues->size()));
     setU32(header, BlockPredictorOffset, static_cast<std::uint32_t>(predictor));
     setU32(header, BlockNoveltyMethodOffset, representation);
-    setDigest(header, BlockLineageDigestOffset, lineageDigest);
+    setDigest(header, BlockLineageDigestOffset, lineageOrOperatorDigest);
+    if (selectorCounts != nullptr) {
+        for (std::size_t index = 0u; index < selectorCounts->size(); ++index) {
+            setU32(header, 176u + index * 4u, (*selectorCounts)[index]);
+        }
+    }
     std::vector<std::uint8_t> payload;
     payload.reserve(auxiliary->size() + storedValues->size());
     payload.insert(payload.end(), auxiliary->begin(), auxiliary->end());
@@ -770,6 +791,9 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
     const YuvSeedCaptureProfile& profile
 ) {
     require(!partialPath.empty(), "partial path is empty");
+    require(profile.logicalProfile == Ugcode24_420Profile ||
+                profile.logicalProfile == FullSubstrateCameraProfile,
+            "logical profile is unsupported");
     require(profile.width >= 2u && profile.height >= 2u &&
                 profile.width <= 65534u && profile.height <= 65534u &&
                 (profile.width & 1u) == 0u && (profile.height & 1u) == 0u,
@@ -819,7 +843,7 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
     setU32(header, 24u, profile.height);
     setU32(header, 28u, profile.width / 2u);
     setU32(header, 32u, profile.height / 2u);
-    setU32(header, 36u, Ugcode24_420Profile);
+    setU32(header, 36u, profile.logicalProfile);
     setU32(header, 40u, 8u);
     setU32(header, 44u, profile.checkpointInterval);
     setU32(header, 48u, profile.noveltyBlockLumaAddresses);
@@ -832,7 +856,7 @@ std::unique_ptr<YuvSeedCaptureWriter> YuvSeedCaptureWriter::createPartial(
     setDigest(header, 80u, impl->traversal.uglut2Sha256);
     setDigest(header, 112u, impl->traversal.traversalSha256);
     setDigest(header, 144u, impl->recipeSha);
-    setDigest(header, 176u, operatorDigest());
+    setDigest(header, 176u, operatorDigest(profile.logicalProfile));
     impl->staticSha = hashWithZeroRange(
         std::vector<std::uint8_t>(header.begin(), header.begin() + StaticHeaderBytes),
         StaticDigestOffset,
@@ -869,6 +893,19 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendPreparedResidual(
     const Yuv420p8FrameView& view,
     ByteView canonicalOwnerResidual
 ) {
+    require(impl_ != nullptr &&
+                impl_->profile.logicalProfile == Ugcode24_420Profile,
+            "profile-1 prepared ingress cannot encode another logical profile");
+    return appendImpl(view, &canonicalOwnerResidual);
+}
+
+YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendPreparedFullSubstrateResidual(
+    const Yuv420p8FrameView& view,
+    ByteView canonicalOwnerResidual
+) {
+    require(impl_ != nullptr &&
+                impl_->profile.logicalProfile == FullSubstrateCameraProfile,
+            "full-substrate prepared ingress requires logical profile 2");
     return appendImpl(view, &canonicalOwnerResidual);
 }
 
@@ -916,6 +953,25 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
                 previousV.size() == current.v.size(),
             "previous executable state has the wrong plane sizes");
 
+    FullSubstratePrediction fullPrediction{};
+    const auto fullSubstrate =
+        impl_->profile.logicalProfile == FullSubstrateCameraProfile;
+    if (fullSubstrate) {
+        fullPrediction = buildFullSubstrateCameraPrediction(
+            width,
+            height,
+            impl_->profile.rootSeed,
+            impl_->profile.traversalRecipeSeed,
+            ordinal,
+            impl_->traversal,
+            FullSubstratePreviousFrame{
+                {previousY.data(), previousY.size()},
+                {previousU.data(), previousU.size()},
+                {previousV.data(), previousV.size()},
+            },
+            impl_->profile.noveltyBlockLumaAddresses);
+    }
+
     const auto expectedLogicalLanes =
         current.y.size() + current.u.size() + current.v.size();
     if (preparedResidual != nullptr) {
@@ -926,7 +982,7 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
     }
     std::vector<std::uint8_t> fullResidual;
     fullResidual.reserve(expectedLogicalLanes);
-    if (preparedResidual != nullptr) {
+    if (preparedResidual != nullptr && !fullSubstrate) {
         fullResidual.assign(
             preparedResidual->data,
             preparedResidual->data + preparedResidual->size);
@@ -946,19 +1002,25 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
             const auto address = impl_->traversal.polarOrdinalToCartesian[first + local];
             const auto x = address % width;
             const auto y = address / width;
-            if (preparedResidual == nullptr) {
-                fullResidual.push_back(
-                    residualByte(current.y[address], previousY[address]));
+            if (preparedResidual == nullptr || fullSubstrate) {
+                const auto prediction = fullSubstrate
+                    ? fullPrediction.canonicalOwnerPrediction[logicalLaneOffset]
+                    : previousY[address];
+                fullResidual.push_back(residualByte(current.y[address], prediction));
             }
             ++logicalLaneOffset;
             if ((x & 1u) == 0u && (y & 1u) == 0u) {
                 const auto chroma =
                     static_cast<std::size_t>(y / 2u) * chromaWidth + x / 2u;
-                if (preparedResidual == nullptr) {
-                    fullResidual.push_back(
-                        residualByte(current.u[chroma], previousU[chroma]));
-                    fullResidual.push_back(
-                        residualByte(current.v[chroma], previousV[chroma]));
+                if (preparedResidual == nullptr || fullSubstrate) {
+                    const auto predictionU = fullSubstrate
+                        ? fullPrediction.canonicalOwnerPrediction[logicalLaneOffset]
+                        : previousU[chroma];
+                    const auto predictionV = fullSubstrate
+                        ? fullPrediction.canonicalOwnerPrediction[logicalLaneOffset + 1u]
+                        : previousV[chroma];
+                    fullResidual.push_back(residualByte(current.u[chroma], predictionU));
+                    fullResidual.push_back(residualByte(current.v[chroma], predictionV));
                 }
                 logicalLaneOffset += 2u;
                 ++ownerCount;
@@ -970,18 +1032,33 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
     require(logicalLaneOffset == expectedLogicalLanes &&
                 fullResidual.size() == expectedLogicalLanes,
             "UGCODE24-420 logical residual length mismatch");
+    if (fullSubstrate && preparedResidual != nullptr) {
+        require(std::equal(
+                    fullResidual.begin(), fullResidual.end(), preparedResidual->data),
+                "prepared full-substrate residual disagrees with regenerated prediction");
+        // The equality above proves byte-for-byte that prediction + supplied
+        // modulo residual reconstructs the authoritative dense input. Consume
+        // the accelerator bytes themselves after the proof, not a CPU surrogate.
+        fullResidual.assign(
+            preparedResidual->data,
+            preparedResidual->data + preparedResidual->size);
+    }
     require(blockResidualOffsets.size() - 1u <=
                 std::numeric_limits<std::uint32_t>::max(),
             "novelty block count exceeds uint32");
     const auto blockCount = static_cast<std::uint32_t>(
         blockResidualOffsets.size() - 1u);
+    require(!fullSubstrate || fullPrediction.blocks.size() == blockCount,
+            "full-substrate operator block partition mismatch");
 
     std::vector<std::uint8_t> noveltyPayload;
     std::uint64_t noveltyEventCount = 0u;
     std::array<std::uint32_t, 4u> representationCounts{};
-    const auto predictor = checkpoint
-        ? YuvPredictorProgram::RawExactLane
-        : YuvPredictorProgram::PreviousSameAddress;
+    const auto predictor = fullSubstrate
+        ? YuvPredictorProgram::FullSubstrateCamera
+        : (checkpoint
+              ? YuvPredictorProgram::RawExactLane
+              : YuvPredictorProgram::PreviousSameAddress);
     impl_->noveltyPool->buildOrdered(
         blockCount,
         [&](std::size_t blockOrdinal) {
@@ -997,16 +1074,22 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
             result.noveltyEventCount = static_cast<std::uint64_t>(std::count_if(
                 result.logicalResidual.begin(), result.logicalResidual.end(),
                 [](std::uint8_t value) { return value != 0u; }));
+            const auto& receipt = fullSubstrate
+                ? fullPrediction.blocks[blockOrdinal]
+                : FullSubstrateBlockReceipt{};
             result.serialized = buildNoveltyBlock(
                 static_cast<std::uint32_t>(blockOrdinal),
                 static_cast<std::uint32_t>(first),
                 static_cast<std::uint32_t>(count),
                 predictor,
-                blockLineageDigest(
-                    ordinal,
-                    impl_->lineageSeeds,
-                    first,
-                    count),
+                fullSubstrate
+                    ? receipt.operatorStateSha256
+                    : blockLineageDigest(
+                          ordinal,
+                          impl_->lineageSeeds,
+                          first,
+                          count),
+                fullSubstrate ? &receipt.selectorCounts : nullptr,
                 result.representation,
                 result.logicalResidual);
             return result;
@@ -1022,7 +1105,9 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
                 result.serialized.end());
         });
 
-    auto statePreimage = digestPreimage("UGYUVS1-executable-seed-state-v1");
+    auto statePreimage = digestPreimage(fullSubstrate
+        ? "UGYUVS1-UGCAMNODE-FX1-executable-seed-state-v0.1.0"
+        : "UGYUVS1-executable-seed-state-v1");
     appendDigest(statePreimage, impl_->staticSha);
     appendDigest(statePreimage, impl_->recipeSha);
     appendU32(statePreimage, ordinal);
@@ -1032,6 +1117,9 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
     appendDigest(statePreimage, checkpoint ? sha256(zeroY.data(), zeroY.size()) : impl_->previousYSha);
     appendDigest(statePreimage, checkpoint ? sha256(zeroU.data(), zeroU.size()) : impl_->previousUSha);
     appendDigest(statePreimage, checkpoint ? sha256(zeroV.data(), zeroV.size()) : impl_->previousVSha);
+    if (fullSubstrate) {
+        appendDigest(statePreimage, fullPrediction.frameOperatorStateSha256);
+    }
     const auto stateSha = sha256(statePreimage.data(), statePreimage.size());
 
     std::vector<std::uint8_t> framePayload = noveltyPayload;
@@ -1094,6 +1182,9 @@ YuvSeedCaptureAppendStats YuvSeedCaptureWriter::appendImpl(
     stats.noveltyMaxInFlightBlocks =
         impl_->profile.noveltyMaxInFlightBlocks;
     stats.preSubstrateSha256 = preSubstrateSha;
+    if (fullSubstrate) {
+        stats.operatorStateSha256 = fullPrediction.frameOperatorStateSha256;
+    }
     return stats;
 }
 
@@ -1159,6 +1250,7 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
             "file flags do not require zero-novelty omission");
     impl_->profile.width = getU32(header.data(), header.size(), 20u);
     impl_->profile.height = getU32(header.data(), header.size(), 24u);
+    impl_->profile.logicalProfile = getU32(header.data(), header.size(), 36u);
     require(impl_->profile.width >= 2u && impl_->profile.height >= 2u &&
                 impl_->profile.width <= 65534u && impl_->profile.height <= 65534u &&
                 (impl_->profile.width & 1u) == 0u &&
@@ -1166,9 +1258,10 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
             "capture dimensions are not valid YUV420");
     require(getU32(header.data(), header.size(), 28u) == impl_->profile.width / 2u &&
                 getU32(header.data(), header.size(), 32u) == impl_->profile.height / 2u &&
-                getU32(header.data(), header.size(), 36u) == Ugcode24_420Profile &&
+                (impl_->profile.logicalProfile == Ugcode24_420Profile ||
+                 impl_->profile.logicalProfile == FullSubstrateCameraProfile) &&
                 getU32(header.data(), header.size(), 40u) == 8u,
-            "logical UGCODE24-420 profile mismatch");
+            "logical camera profile mismatch");
     impl_->profile.checkpointInterval = getU32(header.data(), header.size(), 44u);
     impl_->profile.noveltyBlockLumaAddresses = getU32(header.data(), header.size(), 48u);
     const auto lutBytes = getU32(header.data(), header.size(), 52u);
@@ -1210,7 +1303,8 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
             "literal UGLUT2/traversal SHA-256 mismatch");
     impl_->recipeSha = recipeDigest(impl_->profile, impl_->traversal);
     require(impl_->recipeSha == getDigest(header.data(), header.size(), 144u) &&
-                operatorDigest() == getDigest(header.data(), header.size(), 176u),
+                operatorDigest(impl_->profile.logicalProfile) ==
+                    getDigest(header.data(), header.size(), 176u),
             "seed recipe/operator digest mismatch");
     const auto first = parseCommit(
         header.data() + CommitSlot0Offset, impl_->recordOffset, actualBytes);
@@ -1223,7 +1317,7 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
             "completed .ugsp4c lacks a valid FINAL commit");
     require(!impl_->commit.finalized || impl_->commit.committedEnd == actualBytes,
             "FINAL commit does not cover the complete file");
-    inspection_.profile = Ugcode24_420Profile;
+    inspection_.profile = impl_->profile.logicalProfile;
     inspection_.width = impl_->profile.width;
     inspection_.height = impl_->profile.height;
     inspection_.committedFrames = impl_->commit.frameCount;
@@ -1235,6 +1329,10 @@ YuvSeedCaptureReader::YuvSeedCaptureReader(const std::string& path)
     inspection_.uglut2Sha256 = impl_->traversal.uglut2Sha256;
     inspection_.traversalSha256 = impl_->traversal.traversalSha256;
     inspection_.terminalRecordSha256 = impl_->commit.terminal;
+}
+
+const YuvSeedCaptureProfile& YuvSeedCaptureReader::sourceProfile() const noexcept {
+    return impl_->profile;
 }
 
 void YuvSeedCaptureReader::replay(
@@ -1250,6 +1348,8 @@ void YuvSeedCaptureReader::replay(
     const auto chromaHeight = height / 2u;
     const auto yBytes = static_cast<std::size_t>(width) * height;
     const auto cBytes = static_cast<std::size_t>(chromaWidth) * chromaHeight;
+    const auto fullSubstrate =
+        impl_->profile.logicalProfile == FullSubstrateCameraProfile;
     DenseYuv420p8Frame previous{};
     previous.width = width;
     previous.height = height;
@@ -1314,7 +1414,25 @@ void YuvSeedCaptureReader::replay(
         const auto& baseY = checkpoint ? zeroY : previous.y;
         const auto& baseU = checkpoint ? zeroU : previous.u;
         const auto& baseV = checkpoint ? zeroV : previous.v;
-        auto statePreimage = digestPreimage("UGYUVS1-executable-seed-state-v1");
+        FullSubstratePrediction fullPrediction{};
+        if (fullSubstrate) {
+            fullPrediction = buildFullSubstrateCameraPrediction(
+                width,
+                height,
+                impl_->profile.rootSeed,
+                impl_->profile.traversalRecipeSeed,
+                ordinal,
+                impl_->traversal,
+                FullSubstratePreviousFrame{
+                    {baseY.data(), baseY.size()},
+                    {baseU.data(), baseU.size()},
+                    {baseV.data(), baseV.size()},
+                },
+                impl_->profile.noveltyBlockLumaAddresses);
+        }
+        auto statePreimage = digestPreimage(fullSubstrate
+            ? "UGYUVS1-UGCAMNODE-FX1-executable-seed-state-v0.1.0"
+            : "UGYUVS1-executable-seed-state-v1");
         appendDigest(statePreimage, impl_->staticSha);
         appendDigest(statePreimage, impl_->recipeSha);
         appendU32(statePreimage, ordinal);
@@ -1324,6 +1442,9 @@ void YuvSeedCaptureReader::replay(
         appendDigest(statePreimage, checkpoint ? zeroYSha : previousYSha);
         appendDigest(statePreimage, checkpoint ? zeroUSha : previousUSha);
         appendDigest(statePreimage, checkpoint ? zeroVSha : previousVSha);
+        if (fullSubstrate) {
+            appendDigest(statePreimage, fullPrediction.frameOperatorStateSha256);
+        }
         require(getDigest(header.data(), header.size(), 272u) ==
                     sha256(statePreimage.data(), statePreimage.size()),
                 "executable seed state SHA-256 mismatch");
@@ -1336,7 +1457,9 @@ void YuvSeedCaptureReader::replay(
         const auto expectedBlocks = static_cast<std::uint32_t>(
             (yBytes + impl_->profile.noveltyBlockLumaAddresses - 1u) /
             impl_->profile.noveltyBlockLumaAddresses);
-        require(blockCount == expectedBlocks, "novelty block count mismatch");
+        require(blockCount == expectedBlocks &&
+                    (!fullSubstrate || fullPrediction.blocks.size() == expectedBlocks),
+                "novelty/operator block count mismatch");
         for (std::uint32_t blockOrdinal = 0u; blockOrdinal < blockCount; ++blockOrdinal) {
             require(noveltyPosition + BlockHeaderBytes <= noveltyBytes,
                     "novelty block header is truncated");
@@ -1371,22 +1494,36 @@ void YuvSeedCaptureReader::replay(
                     ++ownerCount;
                 }
             }
-            const auto expectedPredictor = checkpoint
-                ? YuvPredictorProgram::RawExactLane
-                : YuvPredictorProgram::PreviousSameAddress;
+            const auto expectedPredictor = fullSubstrate
+                ? YuvPredictorProgram::FullSubstrateCamera
+                : (checkpoint
+                      ? YuvPredictorProgram::RawExactLane
+                      : YuvPredictorProgram::PreviousSameAddress);
+            const auto expectedReceiptDigest = fullSubstrate
+                ? fullPrediction.blocks[blockOrdinal].operatorStateSha256
+                : blockLineageDigest(
+                      ordinal,
+                      impl_->lineageSeeds,
+                      first,
+                      lumaCount);
+            auto receiptsMatch = true;
+            for (std::size_t selector = 0u; selector < 4u; ++selector) {
+                const auto serializedCount = getU32(
+                    block, BlockHeaderBytes, 176u + selector * 4u);
+                const auto expectedCount = fullSubstrate
+                    ? fullPrediction.blocks[blockOrdinal].selectorCounts[selector]
+                    : 0u;
+                receiptsMatch = receiptsMatch && serializedCount == expectedCount;
+            }
             require(blockSymbols == expectedSymbols &&
                         noveltyPosition + BlockHeaderBytes + auxiliaryBytes + valueBytes <=
                             noveltyBytes &&
                         predictor == expectedPredictor &&
                         representation <= NoveltySparseGaps &&
                         getDigest(block, BlockHeaderBytes, BlockLineageDigestOffset) ==
-                            blockLineageDigest(
-                                ordinal,
-                                impl_->lineageSeeds,
-                                first,
-                                lumaCount) &&
-                        allZero(block + 176u, 16u),
-                    "novelty block sizes/reserved bytes mismatch");
+                            expectedReceiptDigest &&
+                        receiptsMatch,
+                    "novelty block sizes/operator receipts mismatch");
             const auto* auxiliary = block + BlockHeaderBytes;
             const auto* values = auxiliary + auxiliaryBytes;
             std::vector<std::uint8_t> logical(expectedSymbols, 0u);
@@ -1500,9 +1637,9 @@ void YuvSeedCaptureReader::replay(
         current.height = height;
         current.sensorTimestampNs = sensorPts;
         current.frameNumber = frameNumber;
-        current.y = baseY;
-        current.u = baseU;
-        current.v = baseV;
+        current.y = fullSubstrate ? std::vector<std::uint8_t>(yBytes, 0u) : baseY;
+        current.u = fullSubstrate ? std::vector<std::uint8_t>(cBytes, 0u) : baseU;
+        current.v = fullSubstrate ? std::vector<std::uint8_t>(cBytes, 0u) : baseV;
         current.canonicalMetadata.assign(
             payload.begin() + static_cast<std::ptrdiff_t>(noveltyBytes), payload.end());
         require(current.canonicalMetadata.size() == metadataCount &&
@@ -1512,16 +1649,25 @@ void YuvSeedCaptureReader::replay(
         std::size_t residualPosition = 0u;
         std::size_t reconstructedOwners = 0u;
         for (const auto address : impl_->traversal.polarOrdinalToCartesian) {
+            const auto predictedY = fullSubstrate
+                ? fullPrediction.canonicalOwnerPrediction[residualPosition]
+                : current.y[address];
             current.y[address] = static_cast<std::uint8_t>(
-                static_cast<unsigned>(current.y[address]) + residual[residualPosition++]);
+                static_cast<unsigned>(predictedY) + residual[residualPosition++]);
             const auto x = address % width;
             const auto y = address / width;
             if ((x & 1u) == 0u && (y & 1u) == 0u) {
                 const auto chroma = static_cast<std::size_t>(y / 2u) * chromaWidth + x / 2u;
+                const auto predictedU = fullSubstrate
+                    ? fullPrediction.canonicalOwnerPrediction[residualPosition]
+                    : current.u[chroma];
                 current.u[chroma] = static_cast<std::uint8_t>(
-                    static_cast<unsigned>(current.u[chroma]) + residual[residualPosition++]);
+                    static_cast<unsigned>(predictedU) + residual[residualPosition++]);
+                const auto predictedV = fullSubstrate
+                    ? fullPrediction.canonicalOwnerPrediction[residualPosition]
+                    : current.v[chroma];
                 current.v[chroma] = static_cast<std::uint8_t>(
-                    static_cast<unsigned>(current.v[chroma]) + residual[residualPosition++]);
+                    static_cast<unsigned>(predictedV) + residual[residualPosition++]);
                 ++reconstructedOwners;
             }
         }

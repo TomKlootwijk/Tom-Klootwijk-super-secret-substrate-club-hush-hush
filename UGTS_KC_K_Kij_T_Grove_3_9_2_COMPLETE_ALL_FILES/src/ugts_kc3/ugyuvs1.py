@@ -28,6 +28,13 @@ from .gsp4_camera_codeword import (
     DenseYuv420Frame,
     GSP4_CAMERA_LINEAGE_NAMESPACE,
 )
+from .full_substrate_camera import (
+    FullSubstrateCameraError,
+    FullSubstrateCameraProgram,
+    OperatorBlockReceipt,
+    PROFILE_ID as FULL_SUBSTRATE_CAMERA_PROFILE,
+    operator_meaning_digest as full_substrate_operator_digest,
+)
 from .scatter import combine_seed
 
 
@@ -76,12 +83,19 @@ REPRESENTATION_NAMES = (
 
 PREDICTOR_PREVIOUS_SAME_ADDRESS = 2
 PREDICTOR_RAW_EXACT_LANE = 4
+PREDICTOR_FULL_SUBSTRATE_CAMERA = 5
 INT64_MIN = -(1 << 63)
 ZERO_SHA256 = bytes(32)
 
 _LINEAGE_DOMAIN = b"UGYUVS1-GSP4-codeword-lineage-v1\0"
 _RECIPE_DOMAIN = b"UGYUVS1-UGCODE24-420-seed-recipe-v1\0"
 _STATE_DOMAIN = b"UGYUVS1-executable-seed-state-v1\0"
+_FULL_SUBSTRATE_RECIPE_DOMAIN = (
+    b"UGYUVS1-UGCAMNODE-FX1-seed-recipe-v0.1.0\0"
+)
+_FULL_SUBSTRATE_STATE_DOMAIN = (
+    b"UGYUVS1-UGCAMNODE-FX1-executable-seed-state-v0.1.0\0"
+)
 _LEDGER_DOMAIN = b"UGYUVS1-Python-verification-ledger-v1\0"
 _OPERATOR_MEANING = (
     "UGCODE24-420-v1:luma-address-codeword=[Y(x,y),U(floor(x/2),floor(y/2)),"
@@ -255,6 +269,7 @@ class Ugyuvs1Inspection:
 
     path: Path
     actual_bytes: int
+    logical_profile: int
     width: int
     height: int
     checkpoint_interval: int
@@ -295,6 +310,7 @@ class Ugyuvs1Frame:
     representation_counts: tuple[int, int, int, int]
     content_sha256: str
     pre_substrate_sha256: str
+    operator_state_sha256: str | None = None
 
     @property
     def dense(self) -> DenseYuv420Frame:
@@ -312,7 +328,7 @@ class Ugyuvs1Frame:
         return len(self.y) + len(self.u) + len(self.v)
 
     def receipt(self) -> dict[str, Any]:
-        return {
+        receipt = {
             "ordinal": self.ordinal,
             "sensor_timestamp_ns": self.sensor_timestamp_ns,
             "frame_number": self.frame_number,
@@ -330,6 +346,9 @@ class Ugyuvs1Frame:
             "pre_substrate_sha256": self.pre_substrate_sha256,
             "frame_record_sha256": self.content_sha256,
         }
+        if self.operator_state_sha256 is not None:
+            receipt["operator_state_sha256"] = self.operator_state_sha256
+        return receipt
 
 
 @dataclass(frozen=True)
@@ -363,7 +382,11 @@ class Ugyuvs1Verification:
             "selected_commit_slot": inspection.selected_commit_slot,
             "width": inspection.width,
             "height": inspection.height,
-            "profile": "UGCODE24_420_CAMERA_EXACT",
+            "profile": (
+                "UGCAMNODE_FX1_CAMERA_EXACT"
+                if inspection.logical_profile == FULL_SUBSTRATE_CAMERA_PROFILE
+                else "UGCODE24_420_CAMERA_EXACT"
+            ),
             "committed_frames": inspection.committed_frames,
             "authoritative_bytes_per_frame": (
                 inspection.width * inspection.height * 3 // 2
@@ -477,6 +500,7 @@ class Ugyuvs1Capture:
         self.inspection = Ugyuvs1Inspection(
             path=self.path.resolve(),
             actual_bytes=actual_bytes,
+            logical_profile=self.logical_profile,
             width=self.width,
             height=self.height,
             checkpoint_interval=self.checkpoint_interval,
@@ -523,12 +547,14 @@ class Ugyuvs1Capture:
             and not self.height & 1,
             "capture dimensions are not valid YUV420",
         )
+        self.logical_profile = _u32(header, 36)
         _require(
             _u32(header, 28) == self.width // 2
             and _u32(header, 32) == self.height // 2
-            and _u32(header, 36) == UGCODE24_420_PROFILE
+            and self.logical_profile
+            in (UGCODE24_420_PROFILE, FULL_SUBSTRATE_CAMERA_PROFILE)
             and _u32(header, 40) == SAMPLE_BITS,
-            "logical UGCODE24-420 profile mismatch",
+            "logical camera profile mismatch",
         )
         self.checkpoint_interval = _u32(header, 44)
         self.block_luma_addresses = _u32(header, 48)
@@ -581,25 +607,46 @@ class Ugyuvs1Capture:
             )
         except ChronoSubstrateError as error:
             raise Ugyuvs1Error(f"seed traversal regeneration failed: {error}") from error
-        recipe_preimage = bytearray(_RECIPE_DOMAIN)
+        full_substrate = self.logical_profile == FULL_SUBSTRATE_CAMERA_PROFILE
+        operator_sha = (
+            full_substrate_operator_digest()
+            if full_substrate
+            else _sha256(_OPERATOR_MEANING)
+        )
+        recipe_preimage = bytearray(
+            _FULL_SUBSTRATE_RECIPE_DOMAIN if full_substrate else _RECIPE_DOMAIN
+        )
         recipe_preimage.extend(
             struct.pack(
                 "<IIIQQ",
                 self.width,
                 self.height,
-                UGCODE24_420_PROFILE,
+                self.logical_profile,
                 self.root_seed,
                 self.recipe_seed,
             )
         )
         recipe_preimage.extend(self.uglut2_sha)
         recipe_preimage.extend(self.traversal_sha)
+        if full_substrate:
+            recipe_preimage.extend(operator_sha)
         self.recipe_sha = _sha256(recipe_preimage)
         _require(
             self.recipe_sha == _digest(header, 144)
-            and _sha256(_OPERATOR_MEANING) == _digest(header, 176),
+            and operator_sha == _digest(header, 176),
             "seed recipe/operator digest mismatch",
         )
+        self.full_substrate_program: FullSubstrateCameraProgram | None = None
+        if full_substrate:
+            try:
+                self.full_substrate_program = FullSubstrateCameraProgram(
+                    recipe,
+                    self.literal_uglut2,
+                )
+            except FullSubstrateCameraError as error:
+                raise Ugyuvs1Error(
+                    f"full-substrate program regeneration failed: {error}"
+                ) from error
         self._prepare_address_program()
 
     def _prepare_address_program(self) -> None:
@@ -659,6 +706,7 @@ class Ugyuvs1Capture:
         frame_ordinal: int,
         block_ordinal: int,
         checkpoint: bool,
+        operator_receipt: OperatorBlockReceipt | None = None,
     ) -> tuple[bytes, int, int, int]:
         _require(
             novelty_position + BLOCK_HEADER_BYTES <= novelty_bytes,
@@ -692,10 +740,37 @@ class Ugyuvs1Capture:
         )
         expected_symbols = luma_count + owner_count * 2
         end = novelty_position + BLOCK_HEADER_BYTES + auxiliary_count + value_count
-        expected_predictor = (
-            PREDICTOR_RAW_EXACT_LANE
-            if checkpoint
-            else PREDICTOR_PREVIOUS_SAME_ADDRESS
+        full_substrate = (
+            self.logical_profile == FULL_SUBSTRATE_CAMERA_PROFILE
+        )
+        if full_substrate:
+            _require(
+                operator_receipt is not None
+                and operator_receipt.first_luma_ordinal == first
+                and operator_receipt.luma_count == luma_count,
+                "profile-2 operator receipt range mismatch",
+            )
+            expected_predictor = PREDICTOR_FULL_SUBSTRATE_CAMERA
+            expected_receipt_digest = operator_receipt.operator_state_sha256
+            expected_selector_counts = operator_receipt.selector_counts
+        else:
+            _require(
+                operator_receipt is None,
+                "profile-1 block received a profile-2 operator receipt",
+            )
+            expected_predictor = (
+                PREDICTOR_RAW_EXACT_LANE
+                if checkpoint
+                else PREDICTOR_PREVIOUS_SAME_ADDRESS
+            )
+            expected_receipt_digest = self._lineage_digest(
+                frame_ordinal,
+                first,
+                luma_count,
+            )
+            expected_selector_counts = (0, 0, 0, 0)
+        serialized_selector_counts = tuple(
+            _u32(header, 176 + index * 4) for index in range(4)
         )
         _require(
             logical_count == expected_symbols
@@ -703,9 +778,9 @@ class Ugyuvs1Capture:
             and predictor == expected_predictor
             and 0 <= representation <= REPRESENTATION_SPARSE_GAPS
             and _digest(header, BLOCK_LINEAGE_DIGEST_OFFSET)
-            == self._lineage_digest(frame_ordinal, first, luma_count)
-            and not any(header[176:192]),
-            "novelty block sizes, lineage, predictor, or reserved bytes mismatch",
+            == expected_receipt_digest
+            and serialized_selector_counts == expected_selector_counts,
+            "novelty block sizes/operator receipts mismatch",
         )
         payload_start = novelty_position + BLOCK_HEADER_BYTES
         auxiliary = payload[payload_start : payload_start + auxiliary_count]
@@ -822,22 +897,38 @@ class Ugyuvs1Capture:
         base_u: bytes,
         base_v: bytes,
         residual: bytes,
+        *,
+        predicted: bytes | None = None,
     ) -> tuple[bytes, bytes, bytes]:
         np = self._np
         lanes = np.frombuffer(residual, dtype=np.uint8)
         _require(len(lanes) == self.width * self.height * 3 // 2,
                  "logical residual byte count mismatch")
-        y = np.frombuffer(base_y, dtype=np.uint8).copy()
-        u = np.frombuffer(base_u, dtype=np.uint8).copy()
-        v = np.frombuffer(base_v, dtype=np.uint8).copy()
-        y[self._traversal] = y[self._traversal] + lanes[self._lane_start]
         owner_starts = self._lane_start[self._owner_ordinals]
-        u[self._chroma_addresses] = (
-            u[self._chroma_addresses] + lanes[owner_starts + 1]
-        )
-        v[self._chroma_addresses] = (
-            v[self._chroma_addresses] + lanes[owner_starts + 2]
-        )
+        if predicted is None:
+            y = np.frombuffer(base_y, dtype=np.uint8).copy()
+            u = np.frombuffer(base_u, dtype=np.uint8).copy()
+            v = np.frombuffer(base_v, dtype=np.uint8).copy()
+            y[self._traversal] = y[self._traversal] + lanes[self._lane_start]
+            u[self._chroma_addresses] = (
+                u[self._chroma_addresses] + lanes[owner_starts + 1]
+            )
+            v[self._chroma_addresses] = (
+                v[self._chroma_addresses] + lanes[owner_starts + 2]
+            )
+        else:
+            guesses = np.frombuffer(predicted, dtype=np.uint8)
+            _require(
+                len(guesses) == len(lanes),
+                "profile-2 canonical prediction length mismatch",
+            )
+            packed = guesses + lanes
+            y = np.zeros(self.width * self.height, dtype=np.uint8)
+            u = np.zeros(self.width * self.height // 4, dtype=np.uint8)
+            v = np.zeros(self.width * self.height // 4, dtype=np.uint8)
+            y[self._traversal] = packed[self._lane_start]
+            u[self._chroma_addresses] = packed[owner_starts + 1]
+            v[self._chroma_addresses] = packed[owner_starts + 2]
         return y.tobytes(), u.tobytes(), v.tobytes()
 
     def iter_frames(self) -> Iterator[Ugyuvs1Frame]:
@@ -936,7 +1027,44 @@ class Ugyuvs1Capture:
                 base_y = zero_y if checkpoint else previous_y
                 base_u = zero_u if checkpoint else previous_u
                 base_v = zero_v if checkpoint else previous_v
-                state_preimage = bytearray(_STATE_DOMAIN)
+                full_substrate = (
+                    self.logical_profile == FULL_SUBSTRATE_CAMERA_PROFILE
+                )
+                packed_prediction: bytes | None = None
+                operator_blocks: tuple[OperatorBlockReceipt, ...] = ()
+                frame_operator_sha: bytes | None = None
+                if full_substrate:
+                    program = self.full_substrate_program
+                    _require(
+                        program is not None,
+                        "profile-2 executable program is unavailable",
+                    )
+                    previous_dense = DenseYuv420Frame(
+                        self.width,
+                        self.height,
+                        0 if checkpoint else previous_pts,
+                        base_y,
+                        base_u,
+                        base_v,
+                    )
+                    prediction_receipt = program.predictor_receipt(
+                        None if checkpoint else previous_dense,
+                        ordinal,
+                        checkpoint=checkpoint,
+                        block_luma_addresses=self.block_luma_addresses,
+                    )
+                    packed_prediction = (
+                        prediction_receipt.canonical_owner_prediction
+                    )
+                    operator_blocks = prediction_receipt.blocks
+                    frame_operator_sha = (
+                        prediction_receipt.frame_operator_state_sha256
+                    )
+                state_preimage = bytearray(
+                    _FULL_SUBSTRATE_STATE_DOMAIN
+                    if full_substrate
+                    else _STATE_DOMAIN
+                )
                 state_preimage.extend(self.static_sha)
                 state_preimage.extend(self.recipe_sha)
                 state_preimage.extend(
@@ -951,6 +1079,8 @@ class Ugyuvs1Capture:
                 state_preimage.extend(zero_y_sha if checkpoint else previous_y_sha)
                 state_preimage.extend(zero_u_sha if checkpoint else previous_u_sha)
                 state_preimage.extend(zero_v_sha if checkpoint else previous_v_sha)
+                if frame_operator_sha is not None:
+                    state_preimage.extend(frame_operator_sha)
                 _require(
                     _digest(header, 272) == _sha256(state_preimage),
                     "executable seed state SHA-256 mismatch",
@@ -973,6 +1103,11 @@ class Ugyuvs1Capture:
                         frame_ordinal=ordinal,
                         block_ordinal=block_ordinal,
                         checkpoint=checkpoint,
+                        operator_receipt=(
+                            operator_blocks[block_ordinal]
+                            if full_substrate
+                            else None
+                        ),
                     )
                     residual.extend(logical)
                     novelty_events += events
@@ -998,6 +1133,7 @@ class Ugyuvs1Capture:
                     base_u,
                     base_v,
                     residual_bytes,
+                    predicted=packed_prediction,
                 )
                 y_sha = _sha256(y)
                 u_sha = _sha256(u)
@@ -1027,6 +1163,11 @@ class Ugyuvs1Capture:
                     representation_counts=tuple(representation_counts),
                     content_sha256=content_sha.hex(),
                     pre_substrate_sha256=pre_substrate_sha.hex(),
+                    operator_state_sha256=(
+                        frame_operator_sha.hex()
+                        if frame_operator_sha is not None
+                        else None
+                    ),
                 )
                 previous_y = y
                 previous_u = u

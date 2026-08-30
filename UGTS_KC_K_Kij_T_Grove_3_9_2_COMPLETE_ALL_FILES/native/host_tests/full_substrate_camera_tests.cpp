@@ -67,6 +67,14 @@ int main() {
             traversal.rho20ByCartesian[vectorAddress],
             traversal.theta18ByCartesian[vectorAddress],
         });
+        const std::array<std::uint32_t, FullSubstrateReceiptWords> expectedVector{{
+            0x00003039u, 0x00077777u, 0x00018000u, 0x000a8b89u,
+            0x00008000u, 0x0002566eu, 0xa8b89200u, 0xb19a8421u,
+            0x81d08110u, 0x93100545u, 0x0000001du, 0x1a215ba9u,
+            0xbbc0545du, 0x5a6af331u, 0x5d1d5d1cu, 0x1a01fb26u,
+            0x00003038u, 0x00002ef9u, 0x00002ef8u, 0x64feec4eu,
+        }};
+        check(vector.words == expectedVector, "golden 20-word lane receipt changed");
         check(vector.words[ReceiptCartesianAddress] == vectorAddress,
               "receipt address changed");
         const auto cone = fullSubstrateConeProfile(RootSeed);
@@ -164,6 +172,13 @@ int main() {
               "block selector receipt count changed");
 
         const auto packedVector = packFullSubstrateLaneReceipt(vector);
+        check(sha256Hex(sha256(packedVector.data(), packedVector.size())) ==
+                  "97999caaac5a52e373171f611c5c67e856349f61a5d8483939d8acb3e8c4ad7f" &&
+                  sha256Hex(prediction.frameOperatorStateSha256) ==
+                  "78541a45af8cc6994a498cbef8dabd9e7abc21353454e2a9730fa65045011d3e" &&
+                  sha256Hex(fullSubstrateCameraOperatorDigest()) ==
+                  "9bd0ecb094700b321ac0925d0a89f15071bde5dc21ef17af6e2189fb3c6302f7",
+              "profile-2 golden digest vector changed");
         std::cout << "UGCAMNODE_FX1_PASS"
                   << " vector_receipt_sha256="
                   << sha256Hex(sha256(packedVector.data(), packedVector.size()))

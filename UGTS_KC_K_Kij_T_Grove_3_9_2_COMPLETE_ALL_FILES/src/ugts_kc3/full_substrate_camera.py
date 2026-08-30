@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 import struct
-from typing import Any, Iterable
+from typing import Iterable
 
 from .chrono_substrate import (
     SubstrateTraversalRecipe,
@@ -384,6 +384,13 @@ class OperatorBlockReceipt:
     operator_state_sha256: bytes
 
 
+@dataclass(frozen=True)
+class FullSubstratePredictionReceipt:
+    canonical_owner_prediction: bytes
+    blocks: tuple[OperatorBlockReceipt, ...]
+    frame_operator_state_sha256: bytes
+
+
 class FullSubstrateCameraProgram:
     """Seed-regenerated profile-2 predictor and receipt oracle."""
 
@@ -648,6 +655,26 @@ class FullSubstrateCameraProgram:
         *,
         checkpoint: bool,
     ) -> bytes:
+        return self.predictor_receipt(
+            previous,
+            frame_ordinal,
+            checkpoint=checkpoint,
+            block_luma_addresses=len(self.traversal),
+        ).canonical_owner_prediction
+
+    def predictor_receipt(
+        self,
+        previous: DenseYuv420Frame | None,
+        frame_ordinal: int,
+        *,
+        checkpoint: bool,
+        block_luma_addresses: int,
+    ) -> FullSubstratePredictionReceipt:
+        block_size = int(block_luma_addresses)
+        if not 1 <= block_size <= 65_536:
+            raise FullSubstrateCameraError(
+                "operator block luma-address count is invalid"
+            )
         if checkpoint:
             previous_y = bytes(self.width * self.height)
             previous_u = bytes(self.width * self.height // 4)
@@ -662,8 +689,24 @@ class FullSubstrateCameraProgram:
         write = 0
         chroma_width = self.width // 2
         chroma_height = self.height // 2
-        for address in self.traversal:
+        blocks: list[OperatorBlockReceipt] = []
+        block_first = 0
+        block_count = min(block_size, len(self.traversal))
+        block_digest = hashlib.sha256()
+        block_digest.update(OPERATOR_BLOCK_DOMAIN)
+        block_digest.update(
+            struct.pack(
+                "<III",
+                _u32(frame_ordinal),
+                block_first,
+                block_count,
+            )
+        )
+        selector_counts = [0, 0, 0, 0]
+        for ordinal, address in enumerate(self.traversal):
             state = self.operator_state(address, frame_ordinal)
+            selector_counts[state.selector] += 1
+            block_digest.update(struct.pack("<20I", *state.receipt_words()))
             output[write] = self._select(
                 previous_y,
                 address,
@@ -674,47 +717,81 @@ class FullSubstrateCameraProgram:
             )
             write += 1
             row, column = divmod(address, self.width)
-            if row & 1 or column & 1:
-                continue
-            chroma = (row // 2) * chroma_width + column // 2
-            left, _ = klein_address(
-                column // 2 - 1,
-                row // 2,
-                chroma_width,
-                chroma_height,
-            )
-            up, _ = klein_address(
-                column // 2,
-                row // 2 - 1,
-                chroma_width,
-                chroma_height,
-            )
-            up_left, _ = klein_address(
-                column // 2 - 1,
-                row // 2 - 1,
-                chroma_width,
-                chroma_height,
-            )
-            output[write] = self._select(
-                previous_u,
-                chroma,
-                left,
-                up,
-                up_left,
-                state.selector,
-            )
-            output[write + 1] = self._select(
-                previous_v,
-                chroma,
-                left,
-                up,
-                up_left,
-                state.selector,
-            )
-            write += 2
+            if not (row & 1 or column & 1):
+                chroma = (row // 2) * chroma_width + column // 2
+                left, _ = klein_address(
+                    column // 2 - 1,
+                    row // 2,
+                    chroma_width,
+                    chroma_height,
+                )
+                up, _ = klein_address(
+                    column // 2,
+                    row // 2 - 1,
+                    chroma_width,
+                    chroma_height,
+                )
+                up_left, _ = klein_address(
+                    column // 2 - 1,
+                    row // 2 - 1,
+                    chroma_width,
+                    chroma_height,
+                )
+                output[write] = self._select(
+                    previous_u,
+                    chroma,
+                    left,
+                    up,
+                    up_left,
+                    state.selector,
+                )
+                output[write + 1] = self._select(
+                    previous_v,
+                    chroma,
+                    left,
+                    up,
+                    up_left,
+                    state.selector,
+                )
+                write += 2
+            if ordinal + 1 == block_first + block_count:
+                blocks.append(
+                    OperatorBlockReceipt(
+                        first_luma_ordinal=block_first,
+                        luma_count=block_count,
+                        selector_counts=tuple(selector_counts),
+                        operator_state_sha256=block_digest.digest(),
+                    )
+                )
+                block_first = ordinal + 1
+                if block_first < len(self.traversal):
+                    block_count = min(
+                        block_size,
+                        len(self.traversal) - block_first,
+                    )
+                    block_digest = hashlib.sha256()
+                    block_digest.update(OPERATOR_BLOCK_DOMAIN)
+                    block_digest.update(
+                        struct.pack(
+                            "<III",
+                            _u32(frame_ordinal),
+                            block_first,
+                            block_count,
+                        )
+                    )
+                    selector_counts = [0, 0, 0, 0]
         if write != len(output):
             raise AssertionError("profile-2 owner packing changed")
-        return bytes(output)
+        block_records = tuple(blocks)
+        return FullSubstratePredictionReceipt(
+            canonical_owner_prediction=bytes(output),
+            blocks=block_records,
+            frame_operator_state_sha256=self.operator_frame_digest_from_blocks(
+                frame_ordinal,
+                block_size,
+                block_records,
+            ),
+        )
 
     def residual_for(
         self,
@@ -765,6 +842,18 @@ class FullSubstrateCameraProgram:
         first_traversal_ordinal: int,
         luma_count: int,
     ) -> bytes:
+        return self.operator_block_receipt(
+            frame_ordinal,
+            first_traversal_ordinal,
+            luma_count,
+        ).operator_state_sha256
+
+    def operator_block_receipt(
+        self,
+        frame_ordinal: int,
+        first_traversal_ordinal: int,
+        luma_count: int,
+    ) -> OperatorBlockReceipt:
         first = int(first_traversal_ordinal)
         count = int(luma_count)
         if first < 0 or count < 1 or first + count > len(self.traversal):
@@ -772,10 +861,18 @@ class FullSubstrateCameraProgram:
         digest = hashlib.sha256()
         digest.update(OPERATOR_BLOCK_DOMAIN)
         digest.update(struct.pack("<III", _u32(frame_ordinal), first, count))
+        selector_counts = [0, 0, 0, 0]
         for address in self.traversal[first : first + count]:
-            words = self.operator_state(address, frame_ordinal).receipt_words()
+            state = self.operator_state(address, frame_ordinal)
+            selector_counts[state.selector] += 1
+            words = state.receipt_words()
             digest.update(struct.pack("<20I", *words))
-        return digest.digest()
+        return OperatorBlockReceipt(
+            first_luma_ordinal=first,
+            luma_count=count,
+            selector_counts=tuple(selector_counts),
+            operator_state_sha256=digest.digest(),
+        )
 
     def operator_blocks(
         self,
@@ -790,21 +887,11 @@ class FullSubstrateCameraProgram:
         blocks = []
         for first in range(0, len(self.traversal), block_size):
             count = min(block_size, len(self.traversal) - first)
-            selector_counts = [0, 0, 0, 0]
-            for address in self.traversal[first : first + count]:
-                selector_counts[
-                    self.operator_state(address, frame_ordinal).selector
-                ] += 1
             blocks.append(
-                OperatorBlockReceipt(
-                    first_luma_ordinal=first,
-                    luma_count=count,
-                    selector_counts=tuple(selector_counts),
-                    operator_state_sha256=self.operator_block_digest(
-                        frame_ordinal,
-                        first,
-                        count,
-                    ),
+                self.operator_block_receipt(
+                    frame_ordinal,
+                    first,
+                    count,
                 )
             )
         return tuple(blocks)
@@ -815,6 +902,19 @@ class FullSubstrateCameraProgram:
         block_luma_addresses: int,
     ) -> bytes:
         blocks = self.operator_blocks(frame_ordinal, block_luma_addresses)
+        return self.operator_frame_digest_from_blocks(
+            frame_ordinal,
+            block_luma_addresses,
+            blocks,
+        )
+
+    def operator_frame_digest_from_blocks(
+        self,
+        frame_ordinal: int,
+        block_luma_addresses: int,
+        blocks: Iterable[OperatorBlockReceipt],
+    ) -> bytes:
+        block_records = tuple(blocks)
         digest = hashlib.sha256()
         digest.update(OPERATOR_FRAME_DOMAIN)
         digest.update(
@@ -824,10 +924,10 @@ class FullSubstrateCameraProgram:
                 self.height,
                 _u32(frame_ordinal),
                 int(block_luma_addresses),
-                len(blocks),
+                len(block_records),
             )
         )
-        for block in blocks:
+        for block in block_records:
             digest.update(
                 struct.pack(
                     "<IIIIII",
@@ -853,6 +953,7 @@ class FullSubstrateCameraProgram:
 __all__ = [
     "FullSubstrateCameraError",
     "FullSubstrateCameraProgram",
+    "FullSubstratePredictionReceipt",
     "GuardState",
     "KLB37_BITS",
     "KinematicState",

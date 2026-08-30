@@ -250,6 +250,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{D292DB9C-168C-3715-A1A5-9FE937580113}</Project>
       <Name>yuv_seed_capture_720p_benchmark</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-profile2-msvc\yuv_seed_capture_profile2_tests.vcxproj">
+      <Project>{B3245999-DE13-3B97-BDE7-BA4369F1D694}</Project>
+      <Name>yuv_seed_capture_profile2_tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-profile2-msvc\yuv_seed_capture_reencode_profile2.vcxproj">
+      <Project>{443184AE-2DD6-3049-AC63-32442E573894}</Project>
+      <Name>yuv_seed_capture_reencode_profile2</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-profile2-msvc\yuv_seed_capture_tests.vcxproj">
       <Project>{126657B5-36D4-36D7-88E4-052C8D209C47}</Project>
       <Name>yuv_seed_capture_tests</Name>

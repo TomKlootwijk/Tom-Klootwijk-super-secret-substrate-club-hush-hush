@@ -15,7 +15,9 @@ C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/polar_population_tests.dir
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/polar_substrate_conformance_tests.dir
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/ugtc4d_decoder_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/full_substrate_camera_tests.dir
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/yuv_seed_capture_tests.dir
+C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/yuv_seed_capture_profile2_tests.dir
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/yuv_seed_capture_720p_benchmark.dir
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/ALL_BUILD.dir
 C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-ugtc4d-decoder/CMakeFiles/ZERO_CHECK.dir

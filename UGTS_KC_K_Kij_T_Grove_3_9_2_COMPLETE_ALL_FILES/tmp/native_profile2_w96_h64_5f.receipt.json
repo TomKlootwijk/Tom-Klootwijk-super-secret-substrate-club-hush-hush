@@ -1,0 +1,65 @@
+{
+  "schema": "UGYUVS1-native-profile2-fixture-receipt-v1",
+  "file": "native_profile2_w96_h64_5f.ugsp4c",
+  "file_bytes": 71966,
+  "file_sha256": "88221abab56a1820e2ef164273a212b2c0979dfbfca05dc1edfb825338f28130",
+  "magic": "UGYUVS1\\u0000",
+  "logical_profile": 2,
+  "logical_profile_name": "UGCAMNODE-FX1-v0.1.0",
+  "width": 96,
+  "height": 64,
+  "frames": 5,
+  "checkpoint_interval": 3,
+  "novelty_block_luma_addresses": 257,
+  "root_seed_hex": "0123456789abcdef",
+  "recipe_seed_hex": "fedcba9876543210",
+  "uglut2_sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49",
+  "traversal_sha256": "95fcb4257c516ebcc9c650d823d9a9e1a60cc6605855ce77ffc6e040e20ab157",
+  "recipe_sha256": "577057dd5bf2a40a8212188f4fd0403a797f89a97ffd84459b26418b8afed316",
+  "operator_sha256": "9bd0ecb094700b321ac0925d0a89f15071bde5dc21ef17af6e2189fb3c6302f7",
+  "static_header_sha256": "50f3e1c7a95fcd0682bf4cc05bb9f7db473b78d893dd972b25c26978180a9134",
+  "native_checks": {
+    "exact_dense_yuv_pts_metadata_replay": true,
+    "cpu_vs_prepared_bytes_identical": true,
+    "worker_1_vs_4_bytes_identical": true,
+    "prepared_mismatch_fails_closed": true,
+    "operator_receipt_tamper_fails_closed": true
+  },
+  "frame_receipts": [
+    {
+      "ordinal": 0,
+      "sensor_pts_ns": 7000000000,
+      "frame_number": 9000,
+      "pre_substrate_sha256": "6a156ca013fbdc94d2124ef4287d37d53f52eb8fbba99aefb572dedb92966c82",
+      "operator_state_sha256": "ed16a9f61faa41d739eaac03bef3c89826ee57c1d765ee0676df8c1ba0c05e83"
+    },
+    {
+      "ordinal": 1,
+      "sensor_pts_ns": 7041666667,
+      "frame_number": 9001,
+      "pre_substrate_sha256": "6b5cd73509a348677dfd26270554d295e79594d9fcba08d434213c681092a9f9",
+      "operator_state_sha256": "ebaf020e0ef95821133ccea3368e8aa76f5c28932295def279ea8ea9d31fecc2"
+    },
+    {
+      "ordinal": 2,
+      "sensor_pts_ns": 7083333334,
+      "frame_number": 9002,
+      "pre_substrate_sha256": "063b1c94f0396d17aa4318670d84f5156fff25d1c5fb9e6f93f99d9afde5c40f",
+      "operator_state_sha256": "c31b042813dd07f0d12db19efc8a470d77bd10883516f6e506372957f66c6a9e"
+    },
+    {
+      "ordinal": 3,
+      "sensor_pts_ns": 7125000001,
+      "frame_number": 9003,
+      "pre_substrate_sha256": "f1ff98db16f71e019d45f93389d60234d571ca521a71cb61d6f3b751471afd67",
+      "operator_state_sha256": "6806ec25b37d206331a52802a733475fe8eb6f776fa27f1bb36721f70c0da6fc"
+    },
+    {
+      "ordinal": 4,
+      "sensor_pts_ns": 7166666668,
+      "frame_number": 9004,
+      "pre_substrate_sha256": "512c680112847260a6caa5ecb8c1bb2be36cc52800be9893e4f423b17fb9389e",
+      "operator_state_sha256": "180a1a26e3e44d1943e24725d112e447dd40b5581b02a57dd1104fc751ff119f"
+    }
+  ]
+}

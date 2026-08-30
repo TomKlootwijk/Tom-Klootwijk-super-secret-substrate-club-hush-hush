@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "COMPATIBLE_SCREEN_MANIFEST",
+    "kind": "Directory"
+  },
+  "applicationId": "org.ugts.games.my_mobile_3d_game.gsp4seed.pocox7pro",
+  "variantName": "gsp4SeedPocoX7ProDebug",
+  "elements": []
+}

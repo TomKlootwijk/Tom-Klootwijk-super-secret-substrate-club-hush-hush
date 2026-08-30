@@ -1,0 +1,10 @@
+^C:\TOM KLOOTWIJK SUPER SECRET SUBSTRATE CLUB HUSH HUSH\UGTS_KC_K_KIJ_T_GROVE_3_9_2_COMPLETE_ALL_FILES\NATIVE\HOST_TESTS\CMAKELISTS.TXT
+setlocal
+C:\Users\Tom\miniconda3\Lib\site-packages\cmake\data\bin\cmake.exe "-SC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/native/host_tests" "-BC:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-profile2-msvc" --check-stamp-file "C:/Tom Klootwijk super secret substrate club hush hush/UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES/build/native-profile2-msvc/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

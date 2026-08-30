@@ -213,6 +213,40 @@ set_property(TARGET yuv_seed_capture_tests PROPERTY CXX_STANDARD_REQUIRED ON)
 target_link_libraries(yuv_seed_capture_tests PRIVATE Threads::Threads)
 
 add_executable(
+    yuv_seed_capture_profile2_tests
+    yuv_seed_capture_profile2_tests.cpp
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/full_substrate_camera.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/yuv_seed_capture.cpp"
+)
+target_include_directories(
+    yuv_seed_capture_profile2_tests PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d"
+)
+target_compile_definitions(
+    yuv_seed_capture_profile2_tests PRIVATE
+    UGLUT2_FIXTURE_PATH="${CMAKE_CURRENT_LIST_DIR}/fixtures/uglut2_native_fixture.bin"
+)
+set_property(TARGET yuv_seed_capture_profile2_tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET yuv_seed_capture_profile2_tests PROPERTY CXX_STANDARD_REQUIRED ON)
+target_link_libraries(yuv_seed_capture_profile2_tests PRIVATE Threads::Threads)
+
+add_executable(
+    yuv_seed_capture_reencode_profile2
+    yuv_seed_capture_reencode_profile2.cpp
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/seeded_uglut2_traversal.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/full_substrate_camera.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/yuv_seed_capture.cpp"
+)
+target_include_directories(
+    yuv_seed_capture_reencode_profile2 PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d"
+)
+set_property(TARGET yuv_seed_capture_reencode_profile2 PROPERTY CXX_STANDARD 17)
+set_property(TARGET yuv_seed_capture_reencode_profile2 PROPERTY CXX_STANDARD_REQUIRED ON)
+target_link_libraries(yuv_seed_capture_reencode_profile2 PRIVATE Threads::Threads)
+
+add_executable(
     yuv_seed_capture_720p_benchmark
     yuv_seed_capture_720p_benchmark.cpp
     "${CMAKE_CURRENT_LIST_DIR}/../ugtc4d/ugtc4d_decoder.cpp"
@@ -275,11 +309,15 @@ endif()
 if(MSVC)
     target_compile_options(ugtc4d_decoder_tests PRIVATE /W4 /permissive-)
     target_compile_options(yuv_seed_capture_tests PRIVATE /W4 /permissive-)
+    target_compile_options(yuv_seed_capture_profile2_tests PRIVATE /W4 /permissive-)
+    target_compile_options(yuv_seed_capture_reencode_profile2 PRIVATE /W4 /permissive-)
     target_compile_options(yuv_seed_capture_720p_benchmark PRIVATE /W4 /permissive-)
     target_compile_options(full_substrate_camera_tests PRIVATE /W4 /permissive-)
 else()
     target_compile_options(ugtc4d_decoder_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(yuv_seed_capture_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(yuv_seed_capture_profile2_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(yuv_seed_capture_reencode_profile2 PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(
         yuv_seed_capture_720p_benchmark PRIVATE -Wall -Wextra -Wpedantic
     )

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "seeded_uglut2_traversal.hpp"
+#include "full_substrate_camera.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -19,6 +19,7 @@ enum class YuvPredictorProgram : std::uint32_t {
     PreviousSameAddress = 2u,
     TemporalPlusSpatialMedDifference = 3u,
     RawExactLane = 4u,
+    FullSubstrateCamera = 5u,
 };
 
 struct Gsp4CodewordLineage {
@@ -75,9 +76,11 @@ struct YuvSeedCaptureAppendStats {
     std::uint32_t noveltyWorkerCount = 1;
     std::uint32_t noveltyMaxInFlightBlocks = 1;
     Sha256Digest preSubstrateSha256{};
+    Sha256Digest operatorStateSha256{};
 };
 
 struct YuvSeedCaptureProfile {
+    std::uint32_t logicalProfile = Ugcode24_420Profile;
     std::uint32_t width = 0;
     std::uint32_t height = 0;
     std::uint32_t checkpointInterval = 30;
@@ -126,6 +129,13 @@ public:
         const Yuv420p8FrameView& frame,
         ByteView canonicalOwnerResidual
     );
+    // Explicit profile-2 GPU/accelerator ingress. The portable writer
+    // regenerates every packed operator receipt and requires full CPU byte
+    // parity before consuming the prepared owner residual.
+    YuvSeedCaptureAppendStats appendPreparedFullSubstrateResidual(
+        const Yuv420p8FrameView& frame,
+        ByteView canonicalOwnerResidual
+    );
     std::uint64_t frameCount() const noexcept;
 
     // Durably commits FINAL before an atomic same-filesystem rename.
@@ -146,6 +156,10 @@ public:
     explicit YuvSeedCaptureReader(const std::string& path);
 
     const YuvSeedCaptureInspection& inspection() const noexcept { return inspection_; }
+    // Exact serialized authoring profile, including the literal UGLUT2 bytes.
+    // Worker/window fields are execution defaults because they are deliberately
+    // absent from the canonical file ABI.
+    const YuvSeedCaptureProfile& sourceProfile() const noexcept;
     void replay(const std::function<void(const DenseYuv420p8Frame&)>& consume) const;
     std::vector<DenseYuv420p8Frame> decodeAll() const;
 

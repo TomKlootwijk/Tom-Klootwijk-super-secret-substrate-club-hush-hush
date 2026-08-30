@@ -1,0 +1,688 @@
+{
+  "agp": "8.13.2",
+  "application_id": "org.ugts.games.my_mobile_3d_game",
+  "authoring_assets_packaged": false,
+  "authoring_project_hash": "a7c7b3672965d3a19784b7aec00fabdd30c397e56dafac4fab1d2a181eb3ccc2",
+  "chrono_runtime_binding": {
+    "asset_bytes": 0,
+    "asset_count": 0,
+    "header": "app/src/main/cpp/chrono_runtime_binding.hpp",
+    "manifest_asset_path": null,
+    "manifest_sha256": null,
+    "present": false,
+    "profile_asset_path": null,
+    "profile_sha256": null
+  },
+  "chrono_substrate_runtime": {
+    "asset": "chrono_bindings.kcch",
+    "pack": {
+      "binding_count": 2,
+      "bindings": [
+        {
+          "authority": "CAMERA2_DENSE_YUV420",
+          "autostart": false,
+          "camera_id": null,
+          "fps": 30,
+          "geometry_status": "UNKNOWN",
+          "height": 720,
+          "input_name": "poco_capture.ugsp4c",
+          "mode": "PLAYER",
+          "node_index": 0,
+          "novelty_policy": "EXACT_RESIDUAL_REQUIRED",
+          "output_name": null,
+          "pixel_profile": "UGCODE24_420_CAMERA_EXACT",
+          "queue_slots": 16,
+          "recipe_seed_u64": 1,
+          "root_seed_u64": 5786918054255874130,
+          "source_asset_bytes": null,
+          "source_asset_path": null,
+          "source_asset_sha256": null,
+          "storage_policy": "APP_PRIVATE_GSP4_SEED",
+          "uglut2_asset_path": "chrono/uglut2/dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49.uglut2",
+          "uglut2_resolution": 16,
+          "uglut2_sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49",
+          "width": 1280
+        },
+        {
+          "authority": "CAMERA2_DENSE_YUV420",
+          "autostart": true,
+          "camera_id": "0",
+          "fps": 30,
+          "geometry_status": "UNKNOWN",
+          "height": 720,
+          "input_name": null,
+          "mode": "RECORDER",
+          "node_index": 2,
+          "novelty_policy": "EXACT_RESIDUAL_REQUIRED",
+          "output_name": "poco_capture.ugsp4c",
+          "pixel_profile": "UGCODE24_420_CAMERA_EXACT",
+          "queue_slots": 16,
+          "recipe_seed_u64": 1,
+          "root_seed_u64": 5786918054255874130,
+          "source_asset_bytes": null,
+          "source_asset_path": null,
+          "source_asset_sha256": null,
+          "storage_policy": "APP_PRIVATE_GSP4_SEED",
+          "uglut2_asset_path": "chrono/uglut2/dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49.uglut2",
+          "uglut2_resolution": 16,
+          "uglut2_sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49",
+          "width": 1280
+        }
+      ],
+      "byte_length": 436,
+      "content_sha256": "9b1c058a27ae92c799fab3c426671a06aa9668f1f581a0e2a7e43414ece12ed3",
+      "format_version": 1,
+      "player_count": 1,
+      "record_bytes": 176,
+      "recorder_count": 1,
+      "schema": "ugts-kc-native-chrono-binding-inspection-3.9.2",
+      "seed_boundary": "GSP4 root seed regenerates UGLUT2 traversal; arbitrary observed pixels remain exact novelty evidence",
+      "sha256": "04f411f9d0019756a12e943807ed2a0f9d8b0b34144efb835ef83a289b0d0d8b"
+    },
+    "portable_native_sources": {
+      "files": [
+        {
+          "bytes": 3532,
+          "path": "app/src/main/cpp/ugtc4d/ugtc4d_decoder.hpp",
+          "sha256": "9ab0e161e3d24b640caa4b8368bc5c4d44ad0bbe528c700ff0224d6798494d38"
+        },
+        {
+          "bytes": 69462,
+          "path": "app/src/main/cpp/ugtc4d/ugtc4d_decoder.cpp",
+          "sha256": "7bfc8d63ea31fd7d12781915a8b96b2a35eed6ba2661e153e608edbe9219ed2c"
+        },
+        {
+          "bytes": 1078,
+          "path": "app/src/main/cpp/ugtc4d/seeded_uglut2_traversal.hpp",
+          "sha256": "e283c0ba9bf7e54eeb04a99ff340f4eb8b5ab7b199dffd71f781798b06a2878c"
+        },
+        {
+          "bytes": 12973,
+          "path": "app/src/main/cpp/ugtc4d/seeded_uglut2_traversal.cpp",
+          "sha256": "d2ab55c6a8e5ee6484ef0e08d3b77c87ff1a063438d75d0bd6a8404947357afb"
+        },
+        {
+          "bytes": 5620,
+          "path": "app/src/main/cpp/ugtc4d/full_substrate_camera.hpp",
+          "sha256": "cbdf31ae82c3e756f1806c8720d6ad99aae31a264aff4d23adcf5257285846a4"
+        },
+        {
+          "bytes": 25394,
+          "path": "app/src/main/cpp/ugtc4d/full_substrate_camera.cpp",
+          "sha256": "438718d87f8a4adec2a18c11a6d63b766a103c4f62e00402ad0adf306cb2c6de"
+        },
+        {
+          "bytes": 6429,
+          "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.hpp",
+          "sha256": "f2ebe0df8d460188375e3786c10678823a756ebfb08a59eee508c355f2397dd9"
+        },
+        {
+          "bytes": 83398,
+          "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.cpp",
+          "sha256": "64626e108715d1fc2c628fc25f2e9bb5b9d83df6392c00c208ead25f48054fbf"
+        }
+      ],
+      "present": true,
+      "source_authority": "repository native/ugtc4d"
+    },
+    "present": true,
+    "seed_boundary": "GSP4 root seed regenerates UGLUT2 traversal; arbitrary observed pixels remain exact novelty evidence",
+    "source_asset_bytes": 0,
+    "source_assets": [],
+    "uglut2_dependencies": [
+      {
+        "bytes": 144,
+        "path": "chrono/uglut2/dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49.uglut2",
+        "sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49"
+      }
+    ],
+    "uglut2_dependency_bytes": 144
+  },
+  "chrono_video_assets": [],
+  "compile_sdk": 36,
+  "edition": "3.9.2 - K-Kij-T / Grove \u2014 Tom Klootwijk Signature Edition",
+  "files": [
+    {
+      "bytes": 2469,
+      "path": "app/build.gradle",
+      "sha256": "df5bdba52ea25b99a77df2a73f4985036acf36b8ba161171b02c5f627bd1c4a0"
+    },
+    {
+      "bytes": 57,
+      "path": "app/proguard-rules.pro",
+      "sha256": "f31cd42bf010cbd85ed589d6721ea07bbc40da0b1a30215957be1447105794f0"
+    },
+    {
+      "bytes": 462,
+      "path": "app/src/gsp4SeedPocoX7Pro/AndroidManifest.xml",
+      "sha256": "cd4d6005ede8309560b90b2a1ed83368740ea3613f1b0cc6ac102051dcb94065"
+    },
+    {
+      "bytes": 1519,
+      "path": "app/src/main/AndroidManifest.xml",
+      "sha256": "420a46a56c05ea1a1136709015327443ecd5dec740492d92ffe0fc9e5c46eb7e"
+    },
+    {
+      "bytes": 144,
+      "path": "app/src/main/assets/chrono/uglut2/dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49.uglut2",
+      "sha256": "dde65daf13a5f7dbd315175ac20587a72ecbdd3307a967ba7f75070864243b49"
+    },
+    {
+      "bytes": 436,
+      "path": "app/src/main/assets/chrono_bindings.kcch",
+      "sha256": "04f411f9d0019756a12e943807ed2a0f9d8b0b34144efb835ef83a289b0d0d8b"
+    },
+    {
+      "bytes": 283,
+      "path": "app/src/main/assets/shaders/chrono_video.vert",
+      "sha256": "3fe420c5ecee75c07552cbb6190221d2acb8e4386c7b75fdffe699e208199bf5"
+    },
+    {
+      "bytes": 151,
+      "path": "app/src/main/assets/shaders/chrono_video_background.frag",
+      "sha256": "72d4c7f27471ff788ad3082d451b18a626c8ce7d8e270fb3893fabfceb89405c"
+    },
+    {
+      "bytes": 753,
+      "path": "app/src/main/assets/shaders/chrono_video_preview.frag",
+      "sha256": "aeb92f079fcecfc68e1efdd13388fc719ce99ce91173201cb38b6da062576712"
+    },
+    {
+      "bytes": 1713,
+      "path": "app/src/main/assets/shaders/chrono_video_source.frag",
+      "sha256": "66283618fc516166ea5db37b9fd92d7b02b3223b9fc02914cc5cf94287e87029"
+    },
+    {
+      "bytes": 2265,
+      "path": "app/src/main/assets/shaders/grove_post.frag",
+      "sha256": "f86d0f8256f4ea6fe715c44d32ecb22ebae5f6c4139a5f11d9295e878fbfc6f5"
+    },
+    {
+      "bytes": 190,
+      "path": "app/src/main/assets/shaders/grove_post.vert",
+      "sha256": "604211df60a7feace95db71c172794b9c7ed7b848affaf2df43cd369fde563e4"
+    },
+    {
+      "bytes": 9412,
+      "path": "app/src/main/assets/shaders/polar_scene.vert",
+      "sha256": "f408bd7a9b510cbdaddcb0e551913aeee40707809b9304bb5c8edf1f357c497f"
+    },
+    {
+      "bytes": 2610,
+      "path": "app/src/main/assets/shaders/scene.frag",
+      "sha256": "86f4b4412db3f001ebec7930e79a0145a62d1ff06b632c0e36a9e5b402c6404b"
+    },
+    {
+      "bytes": 1005,
+      "path": "app/src/main/assets/shaders/scene.vert",
+      "sha256": "6751493fb3360e1ce75c8b87af79d7b6190d55e02661866cd19c112323fabba0"
+    },
+    {
+      "bytes": 10116,
+      "path": "app/src/main/assets/signature_scene.kc3d",
+      "sha256": "c66be9f67083fe24b301b5172418a0e40118fbe35d57d78ecee04b9e1840a154"
+    },
+    {
+      "bytes": 860,
+      "path": "app/src/main/cpp/adaptive_quality.cpp",
+      "sha256": "2c4245f08a9aabe95e6f0a1177cf36f62782b60a0f2218b5efeaf45330edd2d8"
+    },
+    {
+      "bytes": 464,
+      "path": "app/src/main/cpp/adaptive_quality.hpp",
+      "sha256": "41acb9ff3834978a7c05623f05be5efcaa332d1222c376532fdee661bb1b851f"
+    },
+    {
+      "bytes": 6536,
+      "path": "app/src/main/cpp/body_physics.cpp",
+      "sha256": "7d4efd4840faf17fde5a27e2f417cb07811e0fbb3d019c72c04ce7406e0a8bd2"
+    },
+    {
+      "bytes": 1094,
+      "path": "app/src/main/cpp/body_physics.hpp",
+      "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
+    },
+    {
+      "bytes": 36030,
+      "path": "app/src/main/cpp/chrono_camera_recorder.cpp",
+      "sha256": "68bbe6c932f8fb0d8bad1f39beac1e8482e44e2671e62005d5bce7b48fbac941"
+    },
+    {
+      "bytes": 5764,
+      "path": "app/src/main/cpp/chrono_camera_recorder.hpp",
+      "sha256": "8cfdd2b26d5fa07b1662ea8b9cf330408f92df46653216a0c002ac0e92892f36"
+    },
+    {
+      "bytes": 12835,
+      "path": "app/src/main/cpp/chrono_capture_queue.cpp",
+      "sha256": "d05b8c9ac067e0f4fe6de1c86d1feb04a3fa5df642dd6e364938ca88366a0108"
+    },
+    {
+      "bytes": 5505,
+      "path": "app/src/main/cpp/chrono_capture_queue.hpp",
+      "sha256": "6d3103143b9a059ff49593e041f33e6ca2e67873849a6f3f3d32f34d3df711e7"
+    },
+    {
+      "bytes": 4738,
+      "path": "app/src/main/cpp/chrono_capture_sha256.cpp",
+      "sha256": "3fe5dacff75fd60e1abc818e5d3d4c4cb137e7a6d93ef71f9081ba1a298d4e57"
+    },
+    {
+      "bytes": 638,
+      "path": "app/src/main/cpp/chrono_capture_sha256.hpp",
+      "sha256": "eb2fc96a4fe8134ebd3dbfeaa42b8017338707faf8487ef07d61298372f176f8"
+    },
+    {
+      "bytes": 16943,
+      "path": "app/src/main/cpp/chrono_gsp4_full_substrate.comp",
+      "sha256": "75b105f59616ead1ae7e9a1a83bbd8b0c9973cb0033aac2c0555940ee385c9eb"
+    },
+    {
+      "bytes": 93303,
+      "path": "app/src/main/cpp/chrono_gsp4_full_substrate_spv.hpp",
+      "sha256": "f2abc49a4628a966984fb489813a94747d69fa6d3770bf9e3e683151bc83877e"
+    },
+    {
+      "bytes": 904,
+      "path": "app/src/main/cpp/chrono_gsp4_residual.comp",
+      "sha256": "cb076333ed90ec7d294d149e67963005853b154f88cada95d077e2e511ea24f3"
+    },
+    {
+      "bytes": 5610,
+      "path": "app/src/main/cpp/chrono_gsp4_residual_spv.hpp",
+      "sha256": "f3dae5dad3deb2eb63c715a4b6646ee075e2a74984bc3e4588419d14e7e5d26f"
+    },
+    {
+      "bytes": 3066,
+      "path": "app/src/main/cpp/chrono_mp4_transport.cpp",
+      "sha256": "204fe948e0ecfe74b12f7f63a0331b925b73b4a12a49c5daff04ea4909d384c1"
+    },
+    {
+      "bytes": 851,
+      "path": "app/src/main/cpp/chrono_mp4_transport.hpp",
+      "sha256": "3f8bbe026e814cc7549b3f86041eba0c71f67bec76d16082d67add3ce184aa07"
+    },
+    {
+      "bytes": 1250,
+      "path": "app/src/main/cpp/chrono_runtime_binding.hpp",
+      "sha256": "9c5739d814cb8df38e3964598904d81f2fde814a0f4ada003648b28a855cf103"
+    },
+    {
+      "bytes": 12703,
+      "path": "app/src/main/cpp/chrono_scene_binding.cpp",
+      "sha256": "c548826abc74effe41a38cac64477d21c1e4187a8eac0900a33358fda7be0b9b"
+    },
+    {
+      "bytes": 1447,
+      "path": "app/src/main/cpp/chrono_scene_binding.hpp",
+      "sha256": "0a7c40cfb2a888d79e154aa9e59fac7a79d131fdfb67767c0e4266d790bf11f1"
+    },
+    {
+      "bytes": 22515,
+      "path": "app/src/main/cpp/chrono_seed_capture_session.cpp",
+      "sha256": "3bd611b692a5dc524527c11001a657649c6b427c905572546be476a5bbef1bed"
+    },
+    {
+      "bytes": 2174,
+      "path": "app/src/main/cpp/chrono_seed_capture_session.hpp",
+      "sha256": "fbc15f65471184f4c1484b1081a30a2db72f5fc6a917d985a6d10e95614c422f"
+    },
+    {
+      "bytes": 7726,
+      "path": "app/src/main/cpp/chrono_video_lut.cpp",
+      "sha256": "e00000a7e07359057713772ae6aabaafa878ba598d218930453fe026e920e8e4"
+    },
+    {
+      "bytes": 670,
+      "path": "app/src/main/cpp/chrono_video_lut.hpp",
+      "sha256": "cb2ee488e918564f7d55fbbf70068c607f7ef5af7cb7d9a03e7dd73832afe6a9"
+    },
+    {
+      "bytes": 51936,
+      "path": "app/src/main/cpp/chrono_video_player.cpp",
+      "sha256": "57509af5677fe827fee11d27243ce90728952520d6d7ad8945d70225b5dde870"
+    },
+    {
+      "bytes": 5016,
+      "path": "app/src/main/cpp/chrono_video_player.hpp",
+      "sha256": "d267eec5f6ebc781fcf59f5cc35292af9dc521b4b3abf6e541a69142474c5ccc"
+    },
+    {
+      "bytes": 12981,
+      "path": "app/src/main/cpp/chrono_video_timeline.cpp",
+      "sha256": "be25a83c858087a50f684446f3ae983fb3875321fe8ad48e2f4c99b66800f358"
+    },
+    {
+      "bytes": 2072,
+      "path": "app/src/main/cpp/chrono_video_timeline.hpp",
+      "sha256": "0dc8d5513e80e69af51e273c19366f3ae6ecfaf9e9eea80a412b8939dbf3168e"
+    },
+    {
+      "bytes": 37188,
+      "path": "app/src/main/cpp/chrono_vulkan_residual.cpp",
+      "sha256": "5ee6344057dc094a0e5e4d11d80b01861e17a801b17b7ba621ed3e21c858f8d5"
+    },
+    {
+      "bytes": 2231,
+      "path": "app/src/main/cpp/chrono_vulkan_residual.hpp",
+      "sha256": "76ea5b1919897e39f905bfb64a62e465fdad5c8631828b989bed002cccdae44a"
+    },
+    {
+      "bytes": 5513,
+      "path": "app/src/main/cpp/CMakeLists.txt",
+      "sha256": "f65e2e8360b1d0c096171752bacc26e6ff703bcac80529b7eddbd01a26fa9d38"
+    },
+    {
+      "bytes": 3497,
+      "path": "app/src/main/cpp/device_profile.cpp",
+      "sha256": "cf9076926932f88136fce6074395ac51e9dcc9b912f4c06b2123b54bb9c18e94"
+    },
+    {
+      "bytes": 676,
+      "path": "app/src/main/cpp/device_profile.hpp",
+      "sha256": "2bb63ac6afbda53ae00e199d2137c03584f28e901e153d0b8a5ad795a0f08d8f"
+    },
+    {
+      "bytes": 30311,
+      "path": "app/src/main/cpp/engine.cpp",
+      "sha256": "178632327debf487f9c1bb99d5652ac30bd979591585f0be36562d7cb039d5a4"
+    },
+    {
+      "bytes": 3490,
+      "path": "app/src/main/cpp/engine.hpp",
+      "sha256": "22d413b5cdd5a489f00c52a496b9dd2161fff9b757b6c12e302d0f52f80b52ff"
+    },
+    {
+      "bytes": 7432,
+      "path": "app/src/main/cpp/gpu_timer_query.cpp",
+      "sha256": "51e359ae1802bf31bd6901215d1fa67a1d0f59098e3256457f2d18bbe2ec56ba"
+    },
+    {
+      "bytes": 1979,
+      "path": "app/src/main/cpp/gpu_timer_query.hpp",
+      "sha256": "a73c3885315d67329c78fbbbb189fe66b8474f0288ac601b55578c2733dfe525"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/graph_component_access.hpp",
+      "sha256": "1af799a35631aeaa0a84d97bc059877954ca842c7dbdc9fb3f7f2ab42a6db23a"
+    },
+    {
+      "bytes": 1533,
+      "path": "app/src/main/cpp/graph_render_recipe_access.hpp",
+      "sha256": "d796b420fa0c021f00fcebe497dd81c0f3d0bfa2dececbcbcbe970534b6eff2a"
+    },
+    {
+      "bytes": 62806,
+      "path": "app/src/main/cpp/graph_vm.cpp",
+      "sha256": "13710f4fe8426e0d7c2111ee5e692106be829e02f3bd389530aab1c7d39144d4"
+    },
+    {
+      "bytes": 7640,
+      "path": "app/src/main/cpp/graph_vm.hpp",
+      "sha256": "64e64a2c8d5226939d09e9a1d4191c5c8c5bdbde248f29d754d2a3cf06167ae8"
+    },
+    {
+      "bytes": 2370,
+      "path": "app/src/main/cpp/grove_juice.cpp",
+      "sha256": "247fed02dd45217041950146fae868e28477d0029161ddb32fdf8bca483f7dec"
+    },
+    {
+      "bytes": 1098,
+      "path": "app/src/main/cpp/grove_juice.hpp",
+      "sha256": "fc8c20fefb35cbc8833ad786f7d672ba2c1142d4338cf4f4fdfb9e0a985affbb"
+    },
+    {
+      "bytes": 1642,
+      "path": "app/src/main/cpp/grove_tuning.cpp",
+      "sha256": "16ebd1f20c9bb846af5b46444cf4e04df513bd66177ba8a996cc3db126ddf4ab"
+    },
+    {
+      "bytes": 404,
+      "path": "app/src/main/cpp/grove_tuning.hpp",
+      "sha256": "8cab2c99999ca7493ef0c660f331cc3259485e1ad1e4fbe1312cdff2b4fe9133"
+    },
+    {
+      "bytes": 3792,
+      "path": "app/src/main/cpp/kc_math.hpp",
+      "sha256": "b7ac5e830ac6bdf7d0d9539fb7c27c5e65172edb77670bca878582a54c3b97b0"
+    },
+    {
+      "bytes": 2280,
+      "path": "app/src/main/cpp/main.cpp",
+      "sha256": "8a492c600ebdd768ff223b029dce1a41c040585a508448773cb1c0acbdbda7f3"
+    },
+    {
+      "bytes": 28862,
+      "path": "app/src/main/cpp/polar_kinematics.cpp",
+      "sha256": "6652247e661031f2630183f6bf8a7de88a3295566c0d2f058ab83c2cf122ce4d"
+    },
+    {
+      "bytes": 3718,
+      "path": "app/src/main/cpp/polar_kinematics.hpp",
+      "sha256": "99ae7b7ca2fdab68ff65d37ff9b9ed64fa3ae2e945d051d4b4d8af98fea62ea5"
+    },
+    {
+      "bytes": 57218,
+      "path": "app/src/main/cpp/polar_populations.cpp",
+      "sha256": "3449eec40de4828c15b37cf803a4c50a939e981f870b6097369484e01a12797d"
+    },
+    {
+      "bytes": 5434,
+      "path": "app/src/main/cpp/polar_populations.hpp",
+      "sha256": "2dcf142c204992a303541cba8b34269ada3b086d5171abdf180bdcd851f1de3c"
+    },
+    {
+      "bytes": 5432,
+      "path": "app/src/main/cpp/render_substrate.cpp",
+      "sha256": "72020c031d94139e63eed78b24d0bc69b39786100fffd4fb5fe31067104982b5"
+    },
+    {
+      "bytes": 1335,
+      "path": "app/src/main/cpp/render_substrate.hpp",
+      "sha256": "f88b4d03b4509220dfec623c75ce9c8c26616153266d3c2525748ebd07bc45e5"
+    },
+    {
+      "bytes": 72085,
+      "path": "app/src/main/cpp/renderer_gles3.cpp",
+      "sha256": "2a9cf7619ea1dcf45d5b9d33d7abff7b24cc927603dc1106158a6d589d66220d"
+    },
+    {
+      "bytes": 7552,
+      "path": "app/src/main/cpp/renderer_gles3.hpp",
+      "sha256": "637b06de04977549884b99e2125b9b00487c196879a939f1051768289f901da6"
+    },
+    {
+      "bytes": 16221,
+      "path": "app/src/main/cpp/scatter_population.cpp",
+      "sha256": "d46febf3421cda5c83833d2bb11534d9a539490cab57e90f21ea1562b79dde18"
+    },
+    {
+      "bytes": 2574,
+      "path": "app/src/main/cpp/scatter_population.hpp",
+      "sha256": "e9b27c2836841f9c509421a749b99dc14746d9a8698557153520d89b16e3422f"
+    },
+    {
+      "bytes": 6306,
+      "path": "app/src/main/cpp/scene_pack.cpp",
+      "sha256": "84d1bd5193c0eec7613d615de419a952ad86faa57c5b93ca726dd90c866d483b"
+    },
+    {
+      "bytes": 2860,
+      "path": "app/src/main/cpp/scene_pack.hpp",
+      "sha256": "da19a53b7370cc1e0ba7852744ee2d84ec63b3b6fb77266db402e32dddc56388"
+    },
+    {
+      "bytes": 5743,
+      "path": "app/src/main/cpp/touch_router.cpp",
+      "sha256": "83e05dd6e2e4e8c8b0befef08e20e447fa21f812a3848a9f24916d20ebd69721"
+    },
+    {
+      "bytes": 2150,
+      "path": "app/src/main/cpp/touch_router.hpp",
+      "sha256": "037972a00ca70bc766309b83099028203a4e3758c52532ba271212df6984568a"
+    },
+    {
+      "bytes": 20172,
+      "path": "app/src/main/cpp/transform_animation.cpp",
+      "sha256": "14bd6ec6c6bf458aff96ac212b7f2a65be595a1f8e0ded326a3899f24ca2ae0b"
+    },
+    {
+      "bytes": 2647,
+      "path": "app/src/main/cpp/transform_animation.hpp",
+      "sha256": "92f88b412a4bce7f35dbf44c8a36e715af95a5b1cc67693504261939a72f4cfa"
+    },
+    {
+      "bytes": 6019,
+      "path": "app/src/main/cpp/transform_hierarchy.cpp",
+      "sha256": "e7bbadc55d72f73bbcf9cdea6b5f346b591aac82801d9545d880d340e0de1376"
+    },
+    {
+      "bytes": 1262,
+      "path": "app/src/main/cpp/transform_hierarchy.hpp",
+      "sha256": "cda00bf3218f151ff7d3f44a7b553d66613f7088fad0a81c5f5c938d78c9eebf"
+    },
+    {
+      "bytes": 4752,
+      "path": "app/src/main/cpp/trigger_area.cpp",
+      "sha256": "84fdc47aa5f8e5e12044031f9cdfc4b9041e4d53a75b81ba3751f038b9676d31"
+    },
+    {
+      "bytes": 1296,
+      "path": "app/src/main/cpp/trigger_area.hpp",
+      "sha256": "ed490f5bec08bcff5c7dd0beadc8a02d52c77ed0c981254bd3261851409a5c9c"
+    },
+    {
+      "bytes": 25394,
+      "path": "app/src/main/cpp/ugtc4d/full_substrate_camera.cpp",
+      "sha256": "438718d87f8a4adec2a18c11a6d63b766a103c4f62e00402ad0adf306cb2c6de"
+    },
+    {
+      "bytes": 5620,
+      "path": "app/src/main/cpp/ugtc4d/full_substrate_camera.hpp",
+      "sha256": "cbdf31ae82c3e756f1806c8720d6ad99aae31a264aff4d23adcf5257285846a4"
+    },
+    {
+      "bytes": 12973,
+      "path": "app/src/main/cpp/ugtc4d/seeded_uglut2_traversal.cpp",
+      "sha256": "d2ab55c6a8e5ee6484ef0e08d3b77c87ff1a063438d75d0bd6a8404947357afb"
+    },
+    {
+      "bytes": 1078,
+      "path": "app/src/main/cpp/ugtc4d/seeded_uglut2_traversal.hpp",
+      "sha256": "e283c0ba9bf7e54eeb04a99ff340f4eb8b5ab7b199dffd71f781798b06a2878c"
+    },
+    {
+      "bytes": 69462,
+      "path": "app/src/main/cpp/ugtc4d/ugtc4d_decoder.cpp",
+      "sha256": "7bfc8d63ea31fd7d12781915a8b96b2a35eed6ba2661e153e608edbe9219ed2c"
+    },
+    {
+      "bytes": 3532,
+      "path": "app/src/main/cpp/ugtc4d/ugtc4d_decoder.hpp",
+      "sha256": "9ab0e161e3d24b640caa4b8368bc5c4d44ad0bbe528c700ff0224d6798494d38"
+    },
+    {
+      "bytes": 83398,
+      "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.cpp",
+      "sha256": "64626e108715d1fc2c628fc25f2e9bb5b9d83df6392c00c208ead25f48054fbf"
+    },
+    {
+      "bytes": 6429,
+      "path": "app/src/main/cpp/ugtc4d/yuv_seed_capture.hpp",
+      "sha256": "f2ebe0df8d460188375e3786c10678823a756ebfb08a59eee508c355f2397dd9"
+    },
+    {
+      "bytes": 3442,
+      "path": "app/src/main/java/org/ugts/runtime/UgtsNativeActivity.java",
+      "sha256": "c137d1f03de0af12e403f027047d53c05928617d9eba752382579f40770a35b3"
+    },
+    {
+      "bytes": 129,
+      "path": "app/src/main/res/values/strings.xml",
+      "sha256": "69fe370bf88c801b78eb709439b0db8184525c5633fe4cd4acbd53df43fd2392"
+    },
+    {
+      "bytes": 766,
+      "path": "app/src/main/res/values/styles.xml",
+      "sha256": "8b10eba2789257c6b43e60985e80d49639024064db4ac0e0f5834f5f903acc5f"
+    },
+    {
+      "bytes": 74,
+      "path": "build.gradle",
+      "sha256": "14b0dfcb2b31e10d71680708529b75783fd8e09caba1854c464845e2e343c865"
+    },
+    {
+      "bytes": 8042,
+      "path": "gradle/wrapper/gradle-wrapper.jar",
+      "sha256": "3f80cfb3c09df4fdda414f2cc3347b5481c41ba2acc2008f4c5f65823c6a042b"
+    },
+    {
+      "bytes": 338,
+      "path": "gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "3fb35582e5424775b45f566273d3909032a49f26c0d7d063f92a92e7b5e467d5"
+    },
+    {
+      "bytes": 159,
+      "path": "gradle.properties",
+      "sha256": "07e8c00ebc5f913faa7d21468b8c6a3f31bce0a5f938547f43f199aa98c01c59"
+    },
+    {
+      "bytes": 362,
+      "path": "gradlew",
+      "sha256": "d7014b2f5807fd975867dbb2e3651dbc19dd88d9a13d0df4c9061260d662fd95"
+    },
+    {
+      "bytes": 267,
+      "path": "gradlew.bat",
+      "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
+    },
+    {
+      "bytes": 76894,
+      "path": "project.json",
+      "sha256": "4cf007be9c6df8079c374179112e1f7a1e6667dd4ab762d09c0744c045c1ae09"
+    },
+    {
+      "bytes": 12086,
+      "path": "README.md",
+      "sha256": "81d943cbdacdc82a8878a444a59e2490942f86238252280dc6bca8548fe3141e"
+    },
+    {
+      "bytes": 4090,
+      "path": "scene-pack-inspection.json",
+      "sha256": "4edd5f9e432a94969c6d868c79315877e5eff3b0f50ffc8a028613f88595e6b4"
+    },
+    {
+      "bytes": 333,
+      "path": "settings.gradle",
+      "sha256": "e15aa169810e33620d11fbf6723bf7ddf619f3dfd07801748c3cbd07245fe9b8"
+    }
+  ],
+  "files_exclude": [
+    ".cxx",
+    ".gradle",
+    ".idea",
+    "*.iml",
+    "build",
+    "local.properties",
+    "build-report.json"
+  ],
+  "files_scope": "exported source inputs before Gradle build",
+  "gradle": "8.13",
+  "min_sdk": 26,
+  "native_backend": "OpenGL ES 3.0 via Android NDK NativeActivity",
+  "ndk": "r29 / 29.0.14206865",
+  "packed_kinematic_runtime": null,
+  "polar_population_recipe_asset": null,
+  "population_runtime": null,
+  "profile_hint": "poco_x7_pro_12gb",
+  "project_hash": "a7c7b3672965d3a19784b7aec00fabdd30c397e56dafac4fab1d2a181eb3ccc2",
+  "project_id": "my_mobile_3d_game",
+  "render_substrate_runtime": null,
+  "schema": "ugts-kc-android-source-build-3.9.2",
+  "target_sdk": 36,
+  "transform_animation_runtime": null,
+  "transform_hierarchy_runtime": null,
+  "visual_graph_runtime": null,
+  "vulkan_status": "optional interface reserved; no Vulkan renderer is claimed"
+}

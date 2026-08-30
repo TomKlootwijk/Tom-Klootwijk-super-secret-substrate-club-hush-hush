@@ -182,6 +182,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{E46936C2-A614-3690-8BD1-57637BA7521D}</Project>
       <Name>body_physics_tests</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-ugtc4d-decoder\full_substrate_camera_tests.vcxproj">
+      <Project>{7BA45869-59F9-3315-9567-E50491B330FC}</Project>
+      <Name>full_substrate_camera_tests</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-ugtc4d-decoder\graph_vm_tests.vcxproj">
       <Project>{DDDFCEB0-F88A-3E8F-9718-DC2AB387D946}</Project>
       <Name>graph_vm_tests</Name>
@@ -245,6 +249,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-ugtc4d-decoder\yuv_seed_capture_720p_benchmark.vcxproj">
       <Project>{8A351AA8-90A1-358C-A96A-9C0BC089DDF1}</Project>
       <Name>yuv_seed_capture_720p_benchmark</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-ugtc4d-decoder\yuv_seed_capture_profile2_tests.vcxproj">
+      <Project>{811F12F0-34E2-3BD7-9179-1CF6DD3EC535}</Project>
+      <Name>yuv_seed_capture_profile2_tests</Name>
     </ProjectReference>
     <ProjectReference Include="C:\Tom Klootwijk super secret substrate club hush hush\UGTS_KC_K_Kij_T_Grove_3_9_2_COMPLETE_ALL_FILES\build\native-ugtc4d-decoder\yuv_seed_capture_tests.vcxproj">
       <Project>{51A9D7ED-04E9-3D10-A630-8EA2A599FFED}</Project>

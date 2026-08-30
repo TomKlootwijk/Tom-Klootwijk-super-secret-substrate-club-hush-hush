@@ -193,6 +193,8 @@ def test_recorder_export_packages_binding_but_no_legacy_media() -> None:
             "ugtc4d_decoder.cpp",
             "seeded_uglut2_traversal.hpp",
             "seeded_uglut2_traversal.cpp",
+            "full_substrate_camera.hpp",
+            "full_substrate_camera.cpp",
             "yuv_seed_capture.hpp",
             "yuv_seed_capture.cpp",
         ]

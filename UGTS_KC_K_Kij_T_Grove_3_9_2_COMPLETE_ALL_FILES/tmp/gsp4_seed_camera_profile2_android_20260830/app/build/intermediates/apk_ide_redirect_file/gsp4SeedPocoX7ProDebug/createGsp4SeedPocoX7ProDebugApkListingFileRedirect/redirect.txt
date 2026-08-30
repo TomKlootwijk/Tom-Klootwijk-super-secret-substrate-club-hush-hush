@@ -1,0 +1,2 @@
+#- File Locator -
+listingFile=../../../../outputs/apk/gsp4SeedPocoX7Pro/debug/output-metadata.json

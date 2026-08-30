@@ -79,6 +79,8 @@ _UGYUVS1_NATIVE_FILES = (
     "ugtc4d_decoder.cpp",
     "seeded_uglut2_traversal.hpp",
     "seeded_uglut2_traversal.cpp",
+    "full_substrate_camera.hpp",
+    "full_substrate_camera.cpp",
     "yuv_seed_capture.hpp",
     "yuv_seed_capture.cpp",
 )
@@ -849,7 +851,7 @@ def build_android_project(
     if chrono_binding_pack_data:
         # The Camera2 seed flavor consumes the same portable core exercised by
         # the host verifier. Keep one source of truth in native/ugtc4d and copy
-        # the frozen six-file surface into each generated project. CMake then
+        # the frozen profile-1/profile-2 source surface into each generated project. CMake then
         # copies it once more into its short build path on Windows.
         native_source = Path(__file__).resolve().parents[2] / "native" / "ugtc4d"
         native_target = output_dir / "app/src/main/cpp/ugtc4d"

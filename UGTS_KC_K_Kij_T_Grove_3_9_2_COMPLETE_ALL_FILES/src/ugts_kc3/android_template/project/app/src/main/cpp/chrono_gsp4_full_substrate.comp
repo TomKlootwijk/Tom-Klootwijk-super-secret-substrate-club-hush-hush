@@ -51,7 +51,9 @@ const uint RECEIPT_WORDS = 20u;
 
 uint rotateLeft32(uint value, uint shift) {
     shift &= 31u;
-    return shift == 0u ? value : ((value << shift) | (value >> (32u - shift)));
+    // Mask both counts so index 32/64 never emits a SPIR-V shift by 32.
+    const uint inverse = (32u - shift) & 31u;
+    return (value << shift) | (value >> inverse);
 }
 
 uint mix32(uint value) {

@@ -14,7 +14,15 @@ from ugts_kc3.chrono_substrate import (
     derive_substrate_traversal,
 )
 from ugts_kc3.cli import main as cli_main
-from ugts_kc3.gsp4_camera_codeword import codeword_lineage, gsp4_mix32
+from ugts_kc3.full_substrate_camera import (
+    FullSubstrateCameraProgram,
+    operator_meaning_digest,
+)
+from ugts_kc3.gsp4_camera_codeword import (
+    DenseYuv420Frame,
+    codeword_lineage,
+    gsp4_mix32,
+)
 from ugts_kc3.ugyuvs1 import Ugyuvs1Capture, Ugyuvs1Error, verify_ugsp4c
 
 
@@ -34,6 +42,10 @@ INT64_MIN = -(1 << 63)
 LINEAGE_DOMAIN = b"UGYUVS1-GSP4-codeword-lineage-v1\0"
 RECIPE_DOMAIN = b"UGYUVS1-UGCODE24-420-seed-recipe-v1\0"
 STATE_DOMAIN = b"UGYUVS1-executable-seed-state-v1\0"
+FULL_RECIPE_DOMAIN = b"UGYUVS1-UGCAMNODE-FX1-seed-recipe-v0.1.0\0"
+FULL_STATE_DOMAIN = (
+    b"UGYUVS1-UGCAMNODE-FX1-executable-seed-state-v0.1.0\0"
+)
 OPERATOR_MEANING = (
     b"UGCODE24-420-v1:luma-address-codeword=[Y(x,y),U(floor(x/2),floor(y/2)),"
     b"V(floor(x/2),floor(y/2))];storage=UGTRV1-luma-order;"
@@ -195,7 +207,15 @@ def _fixture_frames(width: int, height: int) -> tuple[FixtureFrame, ...]:
     return frame0, frame1, frame2, frame3
 
 
-def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFixture:
+def _build_fixture(
+    *,
+    force_frame2_representation: int | None = None,
+    logical_profile: int = 1,
+    corrupt_profile2_selector_count: bool = False,
+    corrupt_profile2_receipt: bool = False,
+    corrupt_profile2_state: bool = False,
+) -> BuiltFixture:
+    assert logical_profile in (1, 2)
     width = 8
     height = 6
     checkpoint_interval = 10
@@ -222,13 +242,31 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
     traversal = tuple(
         int(value) for value in derive_substrate_traversal(recipe, lut)
     )
+    full_program = (
+        FullSubstrateCameraProgram(recipe, lut)
+        if logical_profile == 2
+        else None
+    )
     uglut_sha = _sha(lut)
     traversal_sha = bytes.fromhex(recipe.traversal_sha256)
+    operator_sha = (
+        operator_meaning_digest()
+        if logical_profile == 2
+        else _sha(OPERATOR_MEANING)
+    )
     recipe_sha = _sha(
-        RECIPE_DOMAIN
-        + struct.pack("<IIIQQ", width, height, 1, root_seed, recipe_seed)
+        (FULL_RECIPE_DOMAIN if logical_profile == 2 else RECIPE_DOMAIN)
+        + struct.pack(
+            "<IIIQQ",
+            width,
+            height,
+            logical_profile,
+            root_seed,
+            recipe_seed,
+        )
         + uglut_sha
         + traversal_sha
+        + (operator_sha if logical_profile == 2 else b"")
     )
     record_offset = (FILE_HEADER_BYTES + len(lut) + 63) // 64 * 64
     header = bytearray(FILE_HEADER_BYTES)
@@ -240,7 +278,7 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
     _put_u32(header, 24, height)
     _put_u32(header, 28, width // 2)
     _put_u32(header, 32, height // 2)
-    _put_u32(header, 36, 1)
+    _put_u32(header, 36, logical_profile)
     _put_u32(header, 40, 8)
     _put_u32(header, 44, checkpoint_interval)
     _put_u32(header, 48, block_luma)
@@ -251,7 +289,7 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
     _put_digest(header, 80, uglut_sha)
     _put_digest(header, 112, traversal_sha)
     _put_digest(header, 144, recipe_sha)
-    _put_digest(header, 176, _sha(OPERATOR_MEANING))
+    _put_digest(header, 176, operator_sha)
     static = header[:STATIC_HEADER_BYTES]
     _put_digest(header, STATIC_DIGEST_OFFSET, _hash_zero(static, STATIC_DIGEST_OFFSET))
     static_sha = bytes(header[STATIC_DIGEST_OFFSET : STATIC_DIGEST_OFFSET + 32])
@@ -269,12 +307,46 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
         base_y = bytes(width * height) if checkpoint else previous.y
         base_u = bytes(width * height // 4) if checkpoint else previous.u
         base_v = bytes(width * height // 4) if checkpoint else previous.v
+        operator_receipt = None
+        frame_operator_sha = None
+        packed_prediction = None
+        if full_program is not None:
+            previous_dense = DenseYuv420Frame(
+                width,
+                height,
+                0 if checkpoint else previous.sensor_pts,
+                base_y,
+                base_u,
+                base_v,
+            )
+            packed_prediction = full_program.predictor_packed(
+                None if checkpoint else previous_dense,
+                ordinal,
+                checkpoint=checkpoint,
+            )
+            operator_receipt = full_program.operator_block_receipt(
+                ordinal,
+                0,
+                block_luma,
+            )
+            frame_operator_sha = full_program.operator_frame_digest_from_blocks(
+                ordinal,
+                block_luma,
+                (operator_receipt,),
+            )
         residual = bytearray()
         lineage = bytearray(LINEAGE_DOMAIN)
         lineage.extend(struct.pack("<III", ordinal, 0, block_luma))
+        lane_ordinal = 0
         for address in traversal:
             row, column = divmod(address, width)
-            residual.append((frame.y[address] - base_y[address]) & 255)
+            predicted_y = (
+                packed_prediction[lane_ordinal]
+                if packed_prediction is not None
+                else base_y[address]
+            )
+            residual.append((frame.y[address] - predicted_y) & 255)
+            lane_ordinal += 1
             lineage_seed, routed = codeword_lineage(
                 root_seed=root_seed,
                 recipe_seed=recipe_seed,
@@ -285,8 +357,20 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
             lineage.extend(struct.pack("<II", lineage_seed, routed))
             if not (row & 1 or column & 1):
                 chroma = (row // 2) * (width // 2) + column // 2
-                residual.append((frame.u[chroma] - base_u[chroma]) & 255)
-                residual.append((frame.v[chroma] - base_v[chroma]) & 255)
+                predicted_u = (
+                    packed_prediction[lane_ordinal]
+                    if packed_prediction is not None
+                    else base_u[chroma]
+                )
+                predicted_v = (
+                    packed_prediction[lane_ordinal + 1]
+                    if packed_prediction is not None
+                    else base_v[chroma]
+                )
+                residual.append((frame.u[chroma] - predicted_u) & 255)
+                residual.append((frame.v[chroma] - predicted_v) & 255)
+                lane_ordinal += 2
+        assert lane_ordinal == width * height * 3 // 2
         logical = bytes(residual)
         forced = force_frame2_representation if ordinal == 2 else None
         representation, auxiliary, values = _select_representation(
@@ -303,9 +387,27 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
         _put_u32(block, 36, len(values))
         _put_digest(block, 40, _sha(logical))
         _put_digest(block, 72, _sha(values))
-        _put_u32(block, 136, 4 if checkpoint else 2)
+        _put_u32(
+            block,
+            136,
+            5 if full_program is not None else (4 if checkpoint else 2),
+        )
         _put_u32(block, 140, representation)
-        _put_digest(block, 144, _sha(lineage))
+        receipt_digest = (
+            operator_receipt.operator_state_sha256
+            if operator_receipt is not None
+            else _sha(lineage)
+        )
+        if corrupt_profile2_receipt and ordinal == 0:
+            damaged_receipt = bytearray(receipt_digest)
+            damaged_receipt[0] ^= 1
+            receipt_digest = bytes(damaged_receipt)
+        _put_digest(block, 144, receipt_digest)
+        if operator_receipt is not None:
+            for selector, count in enumerate(operator_receipt.selector_counts):
+                if corrupt_profile2_selector_count and ordinal == 0 and selector == 0:
+                    count += 1
+                _put_u32(block, 176 + selector * 4, count)
         block_payload = auxiliary + values
         _put_digest(
             block,
@@ -316,7 +418,9 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
         payload = novelty + frame.metadata
 
         previous_ordinal = 0xFFFFFFFF if checkpoint else ordinal - 1
-        state = bytearray(STATE_DOMAIN)
+        state = bytearray(
+            FULL_STATE_DOMAIN if full_program is not None else STATE_DOMAIN
+        )
         state.extend(static_sha)
         state.extend(recipe_sha)
         state.extend(
@@ -331,6 +435,8 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
         state.extend(_sha(base_y))
         state.extend(_sha(base_u))
         state.extend(_sha(base_v))
+        if frame_operator_sha is not None:
+            state.extend(frame_operator_sha)
         frame_header = bytearray(FRAME_HEADER_BYTES)
         frame_header[:8] = b"UGYFRM1\0"
         _put_u16(frame_header, 8, 1)
@@ -351,7 +457,10 @@ def _build_fixture(*, force_frame2_representation: int | None = None) -> BuiltFi
         _put_digest(frame_header, 176, _sha(logical))
         _put_digest(frame_header, 208, _sha(frame.metadata))
         _put_digest(frame_header, 240, chain_sha)
-        _put_digest(frame_header, 272, _sha(state))
+        state_sha = _sha(state)
+        if corrupt_profile2_state and ordinal == 0:
+            state_sha = bytes([state_sha[0] ^ 1]) + state_sha[1:]
+        _put_digest(frame_header, 272, state_sha)
         pre_substrate = _sha(
             struct.pack("<QII", frame.sensor_pts, width, height)
             + frame.y
@@ -454,6 +563,49 @@ def test_python_verifier_replays_all_canonical_modes_exactly(tmp_path: Path) -> 
         assert actual.dense.pre_substrate_sha256 == actual.pre_substrate_sha256
 
 
+def test_profile2_verifier_replays_generated_predictors_and_receipts(
+    tmp_path: Path,
+) -> None:
+    fixture = _build_fixture(logical_profile=2)
+    path = _write(tmp_path / "full_substrate.ugsp4c", fixture.data)
+
+    result = verify_ugsp4c(path)
+
+    assert result.inspection.logical_profile == 2
+    assert result.to_dict()["profile"] == "UGCAMNODE_FX1_CAMERA_EXACT"
+    assert result.inspection.committed_frames == len(fixture.frames)
+    assert all("operator_state_sha256" in frame for frame in result.frames)
+    decoded = list(Ugyuvs1Capture(path, require_final=True).iter_frames())
+    for actual, expected in zip(decoded, fixture.frames):
+        assert actual.y == expected.y
+        assert actual.u == expected.u
+        assert actual.v == expected.v
+        assert actual.operator_state_sha256 is not None
+
+
+@pytest.mark.parametrize(
+    ("fixture_argument", "failure"),
+    (
+        ("corrupt_profile2_selector_count", "operator receipts"),
+        ("corrupt_profile2_receipt", "operator receipts"),
+        ("corrupt_profile2_state", "executable seed state"),
+    ),
+)
+def test_profile2_operator_receipt_mutations_fail_closed(
+    tmp_path: Path,
+    fixture_argument: str,
+    failure: str,
+) -> None:
+    fixture = _build_fixture(
+        logical_profile=2,
+        **{fixture_argument: True},
+    )
+    path = _write(tmp_path / f"{fixture_argument}.ugsp4c", fixture.data)
+
+    with pytest.raises(Ugyuvs1Error, match=failure):
+        verify_ugsp4c(path)
+
+
 def test_newest_valid_commit_falls_back_to_durable_partial_prefix(
     tmp_path: Path,
 ) -> None:
@@ -551,3 +703,39 @@ def test_persistent_native_cpp_fixture_cross_language() -> None:
         result.frames[0]["pre_substrate_sha256"]
         == "eccb2f605f75783d5d128b673796f87e58c185ad364f256c464c2c0f291633f0"
     )
+
+
+@pytest.mark.skipif(
+    "UGYUVS1_PROFILE2_CPP_FIXTURE" not in os.environ,
+    reason="set UGYUVS1_PROFILE2_CPP_FIXTURE to cross-check native profile 2",
+)
+def test_persistent_native_profile2_fixture_cross_language() -> None:
+    path = Path(os.environ["UGYUVS1_PROFILE2_CPP_FIXTURE"])
+    native_receipt = json.loads(
+        path.with_suffix(".receipt.json").read_text(encoding="utf-8")
+    )
+
+    result = verify_ugsp4c(path)
+
+    assert result.inspection.logical_profile == 2
+    assert result.inspection.width == native_receipt["width"] == 96
+    assert result.inspection.height == native_receipt["height"] == 64
+    assert result.inspection.committed_frames == native_receipt["frames"] == 5
+    assert result.file_sha256 == native_receipt["file_sha256"]
+    assert result.inspection.actual_bytes == native_receipt["file_bytes"]
+    assert result.inspection.recipe_sha256 == native_receipt["recipe_sha256"]
+    assert result.inspection.traversal_sha256 == native_receipt["traversal_sha256"]
+    assert all("operator_state_sha256" in frame for frame in result.frames)
+    for python_frame, native_frame in zip(
+        result.frames,
+        native_receipt["frame_receipts"],
+    ):
+        assert python_frame["ordinal"] == native_frame["ordinal"]
+        assert python_frame["sensor_timestamp_ns"] == native_frame["sensor_pts_ns"]
+        assert python_frame["frame_number"] == native_frame["frame_number"]
+        assert python_frame["pre_substrate_sha256"] == native_frame[
+            "pre_substrate_sha256"
+        ]
+        assert python_frame["operator_state_sha256"] == native_frame[
+            "operator_state_sha256"
+        ]

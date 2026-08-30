@@ -29,8 +29,11 @@ struct ChronoVulkanResidualReceipt {
 };
 
 // Integer-only Vulkan compute implementation of the canonical owner-only
-// UGCODE24-420 residual stream. The lane-source map is regenerated from the
-// literal UGLUT2 and seed; it is never serialized per frame.
+// profile-1 or UGCAMNODE-FX1 profile-2 stream. UGLUT2 addresses, rho/theta
+// state and GSP4 lineage are regenerated from the literal LUT and seeds; no
+// per-frame map is serialized. Profile 2 also emits the canonical 20-word
+// receipt per luma lane and verifies its block/frame hashes against the CPU
+// oracle before returning residual bytes to the writer.
 class ChronoVulkanResidual final {
 public:
     ChronoVulkanResidual();
@@ -42,7 +45,8 @@ public:
         std::uint32_t width,std::uint32_t height,
         std::uint64_t rootSeed,std::uint64_t recipeSeed,
         const std::vector<std::uint8_t>& literalUglut2,
-        std::uint32_t logicalProfile=1u
+        std::uint32_t logicalProfile=1u,
+        std::uint32_t blockLumaAddresses=65536u
     );
     bool compute(
         std::span<const std::uint8_t> y,

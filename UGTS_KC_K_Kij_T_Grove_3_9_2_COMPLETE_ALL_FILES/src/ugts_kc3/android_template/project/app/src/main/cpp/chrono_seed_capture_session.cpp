@@ -8,6 +8,7 @@
 #include <chrono>
 #include <cstring>
 #include <exception>
+#include <limits>
 #include <span>
 #include <stdexcept>
 #include <unistd.h>
@@ -85,7 +86,7 @@ bool ChronoSeedCaptureSession::configure(
     state_.store(ChronoSeedCaptureState::Configured,std::memory_order_release);
     KC_SEED_LOGI(
         "scene-owned seed capture configured node=%u final=%s autostart=%s "
-        "profile=UGCODE24_420_CAMERA_EXACT authority=CAMERA2_DENSE_YUV420",
+        "profile=UGCAMNODE_FX1_FULL_SUBSTRATE authority=CAMERA2_DENSE_YUV420",
         binding.nodeIndex,finalPath_.c_str(),binding.autostart?"true":"false"
     );
     return true;
@@ -247,6 +248,7 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
             throw std::runtime_error("exact Camera2 raw spool header/profile mismatch");
         }
         ugts::chrono::YuvSeedCaptureProfile profile;
+        profile.logicalProfile=ugts::chrono::FullSubstrateCameraProfile;
         profile.width=binding_.width;
         profile.height=binding_.height;
         profile.rootSeed=binding_.rootSeed;
@@ -261,7 +263,8 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
         ChronoVulkanResidual vulkanResidual;
         const auto vulkanActive=vulkanResidual.configure(
             binding_.width,binding_.height,binding_.rootSeed,binding_.recipeSeed,
-            literalUglut2_);
+            literalUglut2_,ugts::chrono::FullSubstrateCameraProfile,
+            profile.noveltyBlockLumaAddresses);
         if (!vulkanActive) throw std::runtime_error(
             "dedicated POCO seed flavor requires Vulkan 1.2 8-bit residual compute");
         std::vector<std::uint8_t> preparedResidual;
@@ -270,6 +273,8 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
         std::vector<std::uint8_t> u(y.size()/4u),v(y.size()/4u);
         std::vector<std::uint8_t> metadata(ChronoCameraMetadataBytes);
         for (std::uint64_t ordinal=0;ordinal<spooledFrames_;++ordinal) {
+            if (ordinal>std::numeric_limits<std::uint32_t>::max())
+                throw std::runtime_error("profile-2 frame ordinal exceeds uint32 ABI");
             std::array<std::uint8_t,RawSpoolFrameHeaderBytes> header{};
             if (!readExact(spool,header) || std::memcmp(header.data(),"UGRFRM1\0",8u)!=0 ||
                 getU64(header,8u)!=ordinal || getU32(header,192u)!=metadata.size() ||
@@ -302,14 +307,19 @@ bool ChronoSeedCaptureSession::transcodeAndReplay() {
             ugts::chrono::YuvSeedCaptureAppendStats append;
             if (!vulkanResidual.compute(
                     y,u,v,(ordinal%profile.checkpointInterval)==0u,
+                    static_cast<std::uint32_t>(ordinal),
                     preparedResidual,gpuReceipt))
                 throw std::runtime_error(
                     "mandatory POCO Vulkan residual dispatch/parity failed");
-            append=writer_->appendPreparedResidual(
+            append=writer_->appendPreparedFullSubstrateResidual(
                 source,{preparedResidual.data(),preparedResidual.size()});
-            if (append.ordinal!=ordinal || append.preSubstrateSha256!=expectedPre) {
+            if (append.ordinal!=ordinal || append.preSubstrateSha256!=expectedPre ||
+                append.operatorStateSha256!=gpuReceipt.operatorStateSha256 ||
+                gpuReceipt.logicalProfile!=ugts::chrono::FullSubstrateCameraProfile ||
+                !gpuReceipt.fullOperatorStateParity) {
                 closeSpool();
-                throw std::runtime_error("UGYUVS1 transcode disagrees with raw spool digest");
+                throw std::runtime_error(
+                    "profile-2 UGYUVS1 ingress disagrees with GPU/raw-spool receipt");
             }
             if (ordinal==0u || ((ordinal+1u)%30u)==0u)
                 KC_SEED_LOGI(
