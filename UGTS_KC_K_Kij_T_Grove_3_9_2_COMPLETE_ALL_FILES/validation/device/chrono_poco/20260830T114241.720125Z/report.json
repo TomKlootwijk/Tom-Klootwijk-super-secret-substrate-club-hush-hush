@@ -1,0 +1,437 @@
+{
+  "artifacts": [
+    {
+      "bytes": 174,
+      "path": "activity_resolve.txt",
+      "sha256": "70bfea8de16c614a1dd389a06703a1aa4ff764725d673edfa572303ee5edfe24"
+    },
+    {
+      "bytes": 122,
+      "path": "adb_devices.txt",
+      "sha256": "67eb529529a241f4a31db5dbadc6e32a378b1a204df5566d38083b29f930151a"
+    },
+    {
+      "bytes": 1069,
+      "path": "chrono_log_evaluation.json",
+      "sha256": "0abf27969a8e34d5a94b2408f92bbaa441789478c4aec22c89fc22543eee9fa9"
+    },
+    {
+      "bytes": 117358,
+      "path": "device_getprop.txt",
+      "sha256": "e059c6e1048efb8499a7f93f630dd104d45a9e8570cff306f7a42d120ba3f2fe"
+    },
+    {
+      "bytes": 30223,
+      "path": "engine_log.txt",
+      "sha256": "fcdeff59b5191ba590412073ce579a06f7f7c96b2dc6749357c856c27ada4332"
+    },
+    {
+      "bytes": 114153,
+      "path": "foreground_activity.txt",
+      "sha256": "345518556ed1ef45f1d87fd859dc42ea3399673e39060d60d7dd4c135d54ce4e"
+    },
+    {
+      "bytes": 38,
+      "path": "install.txt",
+      "sha256": "c4aa470acafcf8576c15b0f0b5ae7e852d1ec5413372d0e6a9272e788e1306d3"
+    },
+    {
+      "bytes": 19057188,
+      "path": "installed_base.apk",
+      "sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5"
+    },
+    {
+      "bytes": 196,
+      "path": "installed_pull.txt",
+      "sha256": "85c838cf3f43df8fdd1fd11a5ce767d8f14e713673611d12e824483ec233cb20"
+    },
+    {
+      "bytes": 198,
+      "path": "installed_sha256_commands.txt",
+      "sha256": "bb922dac2ac2633b673636494bcc05bfe68f5cabda3c7f1826319426ff434bb7"
+    },
+    {
+      "bytes": 301,
+      "path": "launch.txt",
+      "sha256": "844f3747c4491f12177c71b4703ede22bd5dc438f63145af06ad2b8b583c13a7"
+    },
+    {
+      "bytes": 9083,
+      "path": "package_dump.txt",
+      "sha256": "3ad4540fa4d1c6e22f8051f35449ee2baa112404d5b00949ef12f7be2d63a610"
+    },
+    {
+      "bytes": 140,
+      "path": "pm_paths.txt",
+      "sha256": "937e517a8dab5255de85750f0c529f597facb612efc85e53220ecb50fe3d6795"
+    },
+    {
+      "bytes": 622924,
+      "path": "prelaunch_power.txt",
+      "sha256": "19e6078658ed9113cc6b20c37717349f52fffaf78b3779f51d8a9fae97822354"
+    },
+    {
+      "bytes": 12452,
+      "path": "prelaunch_window_policy.txt",
+      "sha256": "8842b00f9692120535ead093b8c29d9a0cc949f997c2d0102594cc5f9fa69476"
+    },
+    {
+      "bytes": 835,
+      "path": "samples/000_battery.txt",
+      "sha256": "fea0332a00d6b11ec715f6d8d4d0a062fc13359bbe610e04859d61f09a8d486d"
+    },
+    {
+      "bytes": 3436,
+      "path": "samples/000_meminfo.txt",
+      "sha256": "464d8a74394685aced6b5aba83df700b68b1b066bc2da2b884c77573e175b03b"
+    },
+    {
+      "bytes": 206,
+      "path": "samples/000_proc_pid_stat.txt",
+      "sha256": "4b6874ae43e3c358ed5108d79b66003683e80bccfc38e8d0a5b80cf806d4b81a"
+    },
+    {
+      "bytes": 2571,
+      "path": "samples/000_proc_stat.txt",
+      "sha256": "4aea97152404e7f8b87427cfb9df799abf1a846cd490a0735eadde337cde570d"
+    },
+    {
+      "bytes": 3188,
+      "path": "samples/000_thermal.txt",
+      "sha256": "1dd1ee966d27b7924c9ab2ee5e675450058dd7a0be67ebb318884644323347dd"
+    },
+    {
+      "bytes": 835,
+      "path": "samples/001_battery.txt",
+      "sha256": "fea0332a00d6b11ec715f6d8d4d0a062fc13359bbe610e04859d61f09a8d486d"
+    },
+    {
+      "bytes": 3436,
+      "path": "samples/001_meminfo.txt",
+      "sha256": "06bd15b8a90150d48afef24a7b2bdc9c5d13f95925fa10f4468da3edb189ad40"
+    },
+    {
+      "bytes": 207,
+      "path": "samples/001_proc_pid_stat.txt",
+      "sha256": "efb74c402a3213990c8803c500e76d99dd27473b29b3165a0e1437595223123b"
+    },
+    {
+      "bytes": 2571,
+      "path": "samples/001_proc_stat.txt",
+      "sha256": "bd22a39132c8e43182e359e67142b8c36e9bae48631a65b1bcb41be1edccabe0"
+    },
+    {
+      "bytes": 6621,
+      "path": "samples/001_surface_latency.txt",
+      "sha256": "db780bc44dbdc7f3d5c56790715ec3cddabe5f7a3d9b0497c49e0dd53545ef20"
+    },
+    {
+      "bytes": 3188,
+      "path": "samples/001_thermal.txt",
+      "sha256": "f571145a6a7c63a9b10e50b496bddb49dcb4fc2490961c6b9f380a688c900128"
+    },
+    {
+      "bytes": 835,
+      "path": "samples/002_battery.txt",
+      "sha256": "fea0332a00d6b11ec715f6d8d4d0a062fc13359bbe610e04859d61f09a8d486d"
+    },
+    {
+      "bytes": 3436,
+      "path": "samples/002_meminfo.txt",
+      "sha256": "8e8cbf637099c818aa832e7b452c620b5299ef1a438259a1ab1051734e5fb000"
+    },
+    {
+      "bytes": 207,
+      "path": "samples/002_proc_pid_stat.txt",
+      "sha256": "cca8370cb6f015cc93e33bcd4da3c0d99b6e79227126685d5a2141f450abc6c5"
+    },
+    {
+      "bytes": 2571,
+      "path": "samples/002_proc_stat.txt",
+      "sha256": "f8ffadd87442fb51d4e373c0054112dd6dd23a299baf61de5046d22fd908e0e0"
+    },
+    {
+      "bytes": 6621,
+      "path": "samples/002_surface_latency.txt",
+      "sha256": "9c17798050dbd450ee2917e0ee8b6e5a0af5e9b4a7d4bdecbe3e7f15fca955de"
+    },
+    {
+      "bytes": 3182,
+      "path": "samples/002_thermal.txt",
+      "sha256": "eaf22c3a52858760a08ae3600a0087951519ff8ba173b2fbb7a6b970ec1a42f1"
+    },
+    {
+      "bytes": 835,
+      "path": "samples/003_battery.txt",
+      "sha256": "fea0332a00d6b11ec715f6d8d4d0a062fc13359bbe610e04859d61f09a8d486d"
+    },
+    {
+      "bytes": 3436,
+      "path": "samples/003_meminfo.txt",
+      "sha256": "7277f6de8e094481ca57c486e40bdd7c585e6fd9644c2222a1296464f7439764"
+    },
+    {
+      "bytes": 207,
+      "path": "samples/003_proc_pid_stat.txt",
+      "sha256": "5caf704f33dc18d1592d6c77e9f5a5989dfea46bb40d67b4a6bf73c254df53ad"
+    },
+    {
+      "bytes": 2571,
+      "path": "samples/003_proc_stat.txt",
+      "sha256": "fe9e164d3a39f0238ed98c84b9c29bfcb7021c8c8a182c5f5432d560235e50da"
+    },
+    {
+      "bytes": 6621,
+      "path": "samples/003_surface_latency.txt",
+      "sha256": "154b784103e34ab9d9b86f9c06381eceb5b04fe0bb77c9fb228783d3531c1ca7"
+    },
+    {
+      "bytes": 3188,
+      "path": "samples/003_thermal.txt",
+      "sha256": "413aa298d7adab57d99ab166fa35391453582fe205f7ca7f615324adc6c85f2e"
+    },
+    {
+      "bytes": 835,
+      "path": "samples/004_battery.txt",
+      "sha256": "fea0332a00d6b11ec715f6d8d4d0a062fc13359bbe610e04859d61f09a8d486d"
+    },
+    {
+      "bytes": 3436,
+      "path": "samples/004_meminfo.txt",
+      "sha256": "227881a4830e56e8b617749258eece1b78ad07c51e96dc5d98a5ae5d4109ed76"
+    },
+    {
+      "bytes": 207,
+      "path": "samples/004_proc_pid_stat.txt",
+      "sha256": "08d71a0b610c6f471836a74719da647555a6decea2b829365a49696dd685676e"
+    },
+    {
+      "bytes": 2571,
+      "path": "samples/004_proc_stat.txt",
+      "sha256": "d4085bd8f1125a89049e4d1605e13c54e61ddeb161906bf59a24f0ea0de42c46"
+    },
+    {
+      "bytes": 6621,
+      "path": "samples/004_surface_latency.txt",
+      "sha256": "97f91017430eba6e7dc13ef5119c918cd1a5494020ada02361d5df37e3842de3"
+    },
+    {
+      "bytes": 3188,
+      "path": "samples/004_thermal.txt",
+      "sha256": "2aed28e80937b3d09bd9de4ee8dbf2c2256aaf89eef85f8e85c73ff64f89dd53"
+    },
+    {
+      "bytes": 835,
+      "path": "samples/005_battery.txt",
+      "sha256": "fea0332a00d6b11ec715f6d8d4d0a062fc13359bbe610e04859d61f09a8d486d"
+    },
+    {
+      "bytes": 3436,
+      "path": "samples/005_meminfo.txt",
+      "sha256": "6c293ab68f86f62dddeaff9e8cee1915e07bd531a19b2f00165750e67176b330"
+    },
+    {
+      "bytes": 207,
+      "path": "samples/005_proc_pid_stat.txt",
+      "sha256": "ec8f67e3bc2ec74e3b1c01b39ea2d05278bc6863719d13bf662ec54bfb5c226b"
+    },
+    {
+      "bytes": 2571,
+      "path": "samples/005_proc_stat.txt",
+      "sha256": "4b962e67f6a26bcca2fa60ebe5d0ad4986d6d9d0ef10abb11e32bc334679504f"
+    },
+    {
+      "bytes": 6621,
+      "path": "samples/005_surface_latency.txt",
+      "sha256": "13738ddbdc6531003dfad0e37cca6bd2953406ccc9d24cbfe6beafc30c1dc625"
+    },
+    {
+      "bytes": 3183,
+      "path": "samples/005_thermal.txt",
+      "sha256": "3d9bfa05fcc7845cdca02a9b2c7d2dab9259305a61259e5622fac4e0eab57aff"
+    },
+    {
+      "bytes": 1590476,
+      "path": "screenshot.png",
+      "sha256": "d3a41bffb52bf1500ba9b8b9dbc6425d39ea27f5760f46073f041d96751c9722"
+    },
+    {
+      "bytes": 2063,
+      "path": "static_apk_audit.json",
+      "sha256": "b028cb1221b44e00785742a9128b38086c29060b411ba0a0261ee40a6549aee2"
+    },
+    {
+      "bytes": 16550,
+      "path": "surfaceflinger_layers.txt",
+      "sha256": "4ff6f8bb9b07172e2441f5d3592e008a02d111a8cd5c0ea6872d436d250d1397"
+    }
+  ],
+  "completed_utc": "2026-08-30T11:43:08.012621Z",
+  "device": {
+    "android_release": "16",
+    "android_sdk": 36,
+    "brand": "POCO",
+    "build_fingerprint": "POCO/rodin_eea/rodin:16/BP2A.250605.031.A3/OS3.0.301.0.WOJEUXM:user/release-keys",
+    "comparison_device_override": false,
+    "device": "rodin",
+    "manufacturer": "Xiaomi",
+    "market_names": [
+      "0.006186207290738821",
+      "1",
+      "2412DPC0AG",
+      "MT6899",
+      "MT6899Z_A/ZA",
+      "POCO X7 Pro",
+      "mainline",
+      "miproduct",
+      "missi",
+      "true"
+    ],
+    "model": "2412DPC0AG",
+    "passed": true,
+    "primary_abi": "arm64-v8a",
+    "serial": "XOVSTSHYNREMZ5D6",
+    "target_poco_x7_pro": true
+  },
+  "failure": {
+    "code": "CHRONO_RECEIPT_FAILED",
+    "details": {
+      "completion_receipt": {
+        "catchup_drops": 0,
+        "color_byte_authoritative": false,
+        "entries": 229,
+        "late_boundaries": 0,
+        "mode": "AUTHORITATIVE_SOURCE_LUT",
+        "photon_time_claim": false,
+        "published_ordinal": 228,
+        "selector_boundaries_met": true,
+        "staged": 229
+      },
+      "completion_receipt_exact": true,
+      "explicit_failure_lines": [],
+      "nonclaims": {
+        "color_byte_authoritative": false,
+        "photon_time": false
+      },
+      "passed": false,
+      "required_log_checks": {
+        "all_inputs_queued": true,
+        "all_outputs_validated": true,
+        "clock_anchored_after_ordinal_zero": true,
+        "half_open_publish": true,
+        "lut_parsed": true,
+        "lut_uploaded": true,
+        "poco_mali_runtime": true,
+        "source_runtime_mode": true,
+        "staged_source_pts": true,
+        "timeline_decoder": true,
+        "two_owned_staging_slots": true
+      },
+      "tag_error_lines": [
+        "         1788090168.688 28500  5201 E UGTS-KC392: chrono decoder APK asset range rejected status=-10000 offset=6899760 length=12132305; retry=derived_ftyp_private_unlinked_fd"
+      ]
+    },
+    "message": "Native chrono log did not prove all exact source/timeline/staging gates."
+  },
+  "gates": {
+    "device_identity": {
+      "android_release": "16",
+      "android_sdk": 36,
+      "brand": "POCO",
+      "build_fingerprint": "POCO/rodin_eea/rodin:16/BP2A.250605.031.A3/OS3.0.301.0.WOJEUXM:user/release-keys",
+      "comparison_device_override": false,
+      "device": "rodin",
+      "manufacturer": "Xiaomi",
+      "market_names": [
+        "0.006186207290738821",
+        "1",
+        "2412DPC0AG",
+        "MT6899",
+        "MT6899Z_A/ZA",
+        "POCO X7 Pro",
+        "mainline",
+        "miproduct",
+        "missi",
+        "true"
+      ],
+      "model": "2412DPC0AG",
+      "passed": true,
+      "primary_abi": "arm64-v8a",
+      "serial": "XOVSTSHYNREMZ5D6",
+      "target_poco_x7_pro": true
+    },
+    "installed_apk": {
+      "device_sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "install_reported_success": true,
+      "local_sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "passed": true,
+      "pulled": true,
+      "pulled_sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "remote_base_apk": "/data/app/~~_zo97eQp98GBeoOG33vukg==/org.ugts.games.chrono_video_observation_inspector.pocox7pro-hUzTxo9LwpurrnbMj-KKMQ==/base.apk",
+      "verification_method": "device_sha256sum+adb_pull"
+    },
+    "static_apk": {
+      "activity": "org.ugts.runtime.UgtsNativeActivity",
+      "apk": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk",
+      "application_id": "org.ugts.games.chrono_video_observation_inspector.pocox7pro",
+      "build_report": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\build-report.json",
+      "build_report_sha256": "766b8ea97edf9d9c01918a601b63fad1d199486860af39a4363c0a6d44fbcc42",
+      "bytes": 19057188,
+      "chrono_asset_bytes": 22410086,
+      "chrono_asset_count": 17,
+      "expected_entries": 229,
+      "expected_sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "manifest_sha256": "920ea8f09069e3fff9e8a514b1587ca0b3f8de0d104b80777e6f984f6f592d72",
+      "native_completion_receipt_present": true,
+      "native_libraries": [
+        "lib/arm64-v8a/libugts_kc_native.so"
+      ],
+      "output_metadata_present": true,
+      "passed": true,
+      "sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "source_timeline": {
+        "content_sha256": "21cabb1211457ee162d04946e2b2501a83d531908905106298af60a7d0e226aa",
+        "end_source_pts_exclusive": 9119696,
+        "entry_bytes": 32,
+        "entry_count": 229,
+        "first_source_pts": 0,
+        "flags": 5,
+        "header_bytes": 208,
+        "magic": "UGCVPTS1",
+        "media_height": 720,
+        "media_role": "ORIGINAL_SOURCE",
+        "media_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+        "media_width": 1280,
+        "playback_mode": "ONCE_HOLD_LAST",
+        "profile_sha256": "03aa49806447188f8115da3124772690f8e45eb9383b84a4820d06af2c173e47",
+        "raster_mode": "APPLY_UGCVLUT1_Q8",
+        "schema": "ugts-chrono-video-pts-cache-inspection-0.1",
+        "source_frame_count": 229,
+        "source_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+        "time_base_den": 1000000,
+        "time_base_num": 1,
+        "version": "1.0"
+      }
+    }
+  },
+  "inputs": {
+    "apk": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk"
+  },
+  "nonclaims": [
+    "A PASS does not claim photon-time display equality.",
+    "MediaCodec device YUV-to-RGB conversion is not byte-authoritative.",
+    "The log-polar raster is deterministic observed-video evidence, not metric 3D or a hidden-surface reconstruction."
+  ],
+  "schema": "ugtoms-chrono-poco-physical-validation-1",
+  "started_utc": "2026-08-30T11:42:41.720695Z",
+  "status": "FAIL",
+  "target": {
+    "abi": "arm64-v8a",
+    "activity": "org.ugts.runtime.UgtsNativeActivity",
+    "application_id": "org.ugts.games.chrono_video_observation_inspector.pocox7pro",
+    "market_name": "POCO X7 Pro",
+    "runtime_mode": "AUTHORITATIVE_SOURCE_LUT"
+  },
+  "verified_physical_device": false,
+  "warnings": []
+}

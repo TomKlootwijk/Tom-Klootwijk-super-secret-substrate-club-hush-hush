@@ -1,0 +1,36 @@
+{
+  "completion_receipt": {
+    "catchup_drops": 0,
+    "color_byte_authoritative": false,
+    "entries": 229,
+    "late_boundaries": 0,
+    "mode": "AUTHORITATIVE_SOURCE_LUT",
+    "photon_time_claim": false,
+    "published_ordinal": 228,
+    "selector_boundaries_met": true,
+    "staged": 229
+  },
+  "completion_receipt_exact": true,
+  "explicit_failure_lines": [],
+  "nonclaims": {
+    "color_byte_authoritative": false,
+    "photon_time": false
+  },
+  "passed": false,
+  "required_log_checks": {
+    "all_inputs_queued": true,
+    "all_outputs_validated": true,
+    "clock_anchored_after_ordinal_zero": true,
+    "half_open_publish": true,
+    "lut_parsed": true,
+    "lut_uploaded": true,
+    "poco_mali_runtime": true,
+    "source_runtime_mode": true,
+    "staged_source_pts": true,
+    "timeline_decoder": true,
+    "two_owned_staging_slots": true
+  },
+  "tag_error_lines": [
+    "         1788090168.688 28500  5201 E UGTS-KC392: chrono decoder APK asset range rejected status=-10000 offset=6899760 length=12132305; retry=derived_ftyp_private_unlinked_fd"
+  ]
+}

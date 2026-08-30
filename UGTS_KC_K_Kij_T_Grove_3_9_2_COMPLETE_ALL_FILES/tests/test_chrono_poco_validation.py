@@ -18,13 +18,16 @@ if str(VALIDATION) not in sys.path:
 
 from chrono_poco_validation import (  # noqa: E402
     EXPECTED_ACTIVITY,
+    EXPECTED_ANDROID_TRANSPORT_SHA256,
     EXPECTED_APPLICATION_ID,
+    EXPECTED_SOURCE_MEDIA_SHA256,
     CommandResult,
     EvidenceDirectory,
     ValidationBlocked,
     ValidationFailure,
     audit_apk,
     choose_device,
+    classify_android_ftyp_transport_retry,
     evaluate_chrono_log,
     filter_logcat_since,
     install_and_verify,
@@ -93,6 +96,37 @@ def _epoch_passing_log(entries: int = 229) -> str:
         f"1693398601.000 123 124 I UGTS-KC392: {line.split(': ', 1)[-1]}"
         for line in _passing_log(entries).splitlines()
     )
+
+
+def _paired_ftyp_retry_log(entries: int = 229) -> str:
+    direct_rejection = (
+        "E/UGTS-KC392: chrono decoder APK asset range rejected status=-10000 "
+        "offset=6899760 length=12132305; "
+        "retry=derived_ftyp_private_unlinked_fd"
+    )
+    adapter_receipt = (
+        "I/UGTS-KC392: chrono decoder derived transport "
+        "adapter=ftyp_compatible_brand_iso4_to_isom ftyp_offset=0 ftyp_bytes=20 "
+        "compatible_brand_offset=16 changed_byte_offset=19 "
+        "original_compatible_brand=iso4 replacement_compatible_brand=isom "
+        "actual_changed_byte_count=1 encoded_payload_unchanged=true "
+        "pts_atoms_unchanged=true authoritative_source_sha_verified=true "
+        f"source_sha256={EXPECTED_SOURCE_MEDIA_SHA256} "
+        f"transport_sha256={EXPECTED_ANDROID_TRANSPORT_SHA256} "
+        "transport_bytes_source_identical=false preview_promotion=false"
+    )
+    media_receipt = (
+        "I/UGTS-KC392: chrono decoder media "
+        "transport=derived_ftyp_private_unlinked_fd apk_status=-10000 "
+        "retry_status=0 offset=0 length=12132305 "
+        "authoritative_source_sha_verified=true "
+        f"source_sha256={EXPECTED_SOURCE_MEDIA_SHA256} "
+        f"transport_sha256={EXPECTED_ANDROID_TRANSPORT_SHA256} "
+        "transport_bytes_source_identical=false preview_promotion=false"
+    )
+    lines = _passing_log(entries).splitlines()
+    lines[3:3] = (direct_rejection, adapter_receipt, media_receipt)
+    return "\n".join(lines)
 
 
 def _png(width: int = 2712, height: int = 1220) -> bytes:
@@ -217,6 +251,98 @@ class ChronoPocoValidationTests(unittest.TestCase):
             result["reason"], "chrono AMediaExtractor rejected the MP4 asset range"
         )
         self.assertFalse(result["preview_promotion"])
+
+    def test_exact_paired_ftyp_transport_retry_allows_only_the_direct_probe(self) -> None:
+        log = _paired_ftyp_retry_log()
+        classification = classify_android_ftyp_transport_retry(log, 229)
+        self.assertTrue(classification["detected"])
+        self.assertTrue(classification["paired_success_exact"])
+        self.assertTrue(all(classification["checks"].values()))
+        self.assertEqual(classification["direct_status"], -10000)
+        self.assertEqual(classification["retry_status"], 0)
+        self.assertEqual(
+            classification["source_sha256"], EXPECTED_SOURCE_MEDIA_SHA256
+        )
+        self.assertEqual(
+            classification["transport_sha256"], EXPECTED_ANDROID_TRANSPORT_SHA256
+        )
+
+        result = evaluate_chrono_log(log, 229)
+        self.assertTrue(result["passed"])
+        self.assertEqual(len(result["tag_error_lines"]), 1)
+        self.assertEqual(result["tag_error_lines"], result["allowed_tag_error_lines"])
+        self.assertEqual(result["fatal_tag_error_lines"], [])
+
+    def test_ftyp_transport_retry_remains_fail_closed_on_any_broken_predicate(
+        self,
+    ) -> None:
+        valid = _paired_ftyp_retry_log()
+        mutations = {
+            "missing_adapter_receipt": "\n".join(
+                line
+                for line in valid.splitlines()
+                if "chrono decoder derived transport" not in line
+            ),
+            "wrong_source_sha": valid.replace(
+                EXPECTED_SOURCE_MEDIA_SHA256, "0" * 64, 1
+            ),
+            "wrong_transport_sha": valid.replace(
+                EXPECTED_ANDROID_TRANSPORT_SHA256, "f" * 64, 1
+            ),
+            "wrong_direct_status": valid.replace(
+                "rejected status=-10000", "rejected status=-9999", 1
+            ),
+            "wrong_retry_status": valid.replace("retry_status=0", "retry_status=-1"),
+            "wrong_changed_offset": valid.replace(
+                "changed_byte_offset=19", "changed_byte_offset=18"
+            ),
+            "wrong_original_brand": valid.replace(
+                "original_compatible_brand=iso4",
+                "original_compatible_brand=iso3",
+            ),
+            "wrong_replacement_brand": valid.replace(
+                "replacement_compatible_brand=isom",
+                "replacement_compatible_brand=iso2",
+            ),
+            "multiple_changed_bytes": valid.replace(
+                "actual_changed_byte_count=1", "actual_changed_byte_count=2"
+            ),
+            "encoded_payload_changed": valid.replace(
+                "encoded_payload_unchanged=true", "encoded_payload_unchanged=false"
+            ),
+            "pts_atoms_changed": valid.replace(
+                "pts_atoms_unchanged=true", "pts_atoms_unchanged=false"
+            ),
+            "source_not_authoritative": valid.replace(
+                "authoritative_source_sha_verified=true",
+                "authoritative_source_sha_verified=false",
+                1,
+            ),
+            "transport_claimed_identical": valid.replace(
+                "transport_bytes_source_identical=false",
+                "transport_bytes_source_identical=true",
+                1,
+            ),
+            "missing_terminal_receipt": valid.replace(_completion(), ""),
+            "later_explicit_failure": (
+                valid
+                + "\nE/UGTS-KC392: chrono runtime failed closed "
+                "mode=AUTHORITATIVE_SOURCE_LUT reason=post-retry fault "
+                "preview_promotion=false"
+            ),
+        }
+        for name, mutated in mutations.items():
+            with self.subTest(name=name):
+                classification = classify_android_ftyp_transport_retry(mutated, 229)
+                self.assertTrue(classification["detected"])
+                self.assertFalse(classification["paired_success_exact"])
+                result = evaluate_chrono_log(mutated, 229)
+                self.assertFalse(result["passed"])
+                self.assertTrue(
+                    result["fatal_tag_error_lines"]
+                    or result["explicit_failure_lines"]
+                    or not result["completion_receipt_exact"]
+                )
 
     def test_apk_audit_binds_ledger_manifest_abi_and_timeline(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

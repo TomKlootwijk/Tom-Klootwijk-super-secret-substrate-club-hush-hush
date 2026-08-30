@@ -597,11 +597,16 @@ class AndroidChronoSourceContractTests(unittest.TestCase):
             "actual_changed_byte_count=%zu",
             "encoded_payload_unchanged=true",
             "pts_atoms_unchanged=true",
-            "source_bytes_sha_bound=true",
+            "authoritative_source_sha_verified=true",
+            "source_sha256=%s",
+            "transport_sha256=%s",
             "transport_bytes_source_identical=false",
             "preview_promotion=false",
         ):
             self.assertIn(receipt, player)
+        self.assertEqual(player.count("source_bytes_sha_bound=true"), 1)
+        self.assertIn("sourceSha==timeline_.mediaSha256", player)
+        self.assertIn("sourceSha==timeline_.sourceSha256", player)
 
         # The pure derivation accepts only the evidenced 20-byte layout with
         # major iso4 and sole compatible iso4, and verifies its full-vector diff.

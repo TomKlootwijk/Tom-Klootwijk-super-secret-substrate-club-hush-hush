@@ -53,6 +53,13 @@ the previous slot, increments an explicit late-boundary counter and logs that ph
 was not achieved. The default is `ONCE_HOLD_LAST`, while looping occurs only when the cache carries
 its explicit loop flag; loop epoch detection remains valid even after a stall spanning whole cycles.
 MP4 assets are packaged uncompressed because NDK MediaExtractor requires a real descriptor range.
+The packaged MP4 and its timeline SHA remain the immutable authority. If Android rejects that exact
+source solely because its leading 20-byte `ftyp` advertises unsupported `iso4` as both major and sole
+compatible brand, the source-mode runtime may derive an unlinked decoder transport by changing only
+the compatible brand from `iso4` to the truthful supported brand `isom` (byte offset 19). It validates
+the exact layout and full-file one-byte diff, changes no encoded payload or PTS atom, performs no
+remux/decode, and logs distinct authoritative-source and transport SHA-256 values. Any other layout
+fails closed; the adapted transport is never described as source-byte-identical or promoted preview.
 
 The LUT coordinate/interpolation math is exact. Device MediaCodec YUV-to-RGB conversion is not
 claimed byte-identical across phones; logs state that color boundary separately. The shader treats

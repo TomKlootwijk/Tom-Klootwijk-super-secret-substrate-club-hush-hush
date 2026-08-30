@@ -59,6 +59,16 @@ std::runtime_error descriptorError(const char* operation,int error) {
         " failed errno="+std::to_string(error));
 }
 
+std::string sha256Hex(const std::array<std::uint8_t,32>& digest) {
+    constexpr char Digits[]="0123456789abcdef";
+    std::string result(digest.size()*2u,'0');
+    for (std::size_t index=0u;index<digest.size();++index) {
+        result[index*2u]=Digits[digest[index]>>4u];
+        result[index*2u+1u]=Digits[digest[index]&0x0fu];
+    }
+    return result;
+}
+
 int createPrivateMediaDescriptor(
     const ANativeActivity* activity,const std::vector<std::uint8_t>& transportBytes
 ) {
@@ -392,21 +402,32 @@ bool ChronoVideoPlayer::openDecoder() {
         static_cast<void>(close(mediaFileDescriptor_));
         mediaFileDescriptor_=-1;
 
+        const auto sourceSha=chronoSha256(mediaBytes_);
+        require(mode_==ChronoVideoRuntimeMode::AuthoritativeSourceLut &&
+            sourceSha==timeline_.mediaSha256 && sourceSha==timeline_.sourceSha256,
+            "chrono ftyp adapter requires the verified authoritative source bytes");
         const auto derived=deriveIso4IsomTransport(mediaBytes_);
+        const auto transportSha=chronoSha256(derived.bytes);
+        require(transportSha!=sourceSha,
+            "chrono ftyp adapter did not derive a distinct transport hash");
+        const auto sourceShaText=sha256Hex(sourceSha);
+        const auto transportShaText=sha256Hex(transportSha);
         KC_LOGI(
-            "chrono decoder derived transport ftyp_offset=%zu ftyp_bytes=%zu "
+            "chrono decoder derived transport adapter=ftyp_compatible_brand_iso4_to_isom "
+            "ftyp_offset=%zu ftyp_bytes=%zu "
             "compatible_brand_offset=%zu changed_byte_offset=%zu "
             "original_compatible_brand=%c%c%c%c replacement_compatible_brand=%c%c%c%c "
             "actual_changed_byte_count=%zu encoded_payload_unchanged=true "
-            "pts_atoms_unchanged=true source_bytes_sha_bound=true "
-            "transport_bytes_source_identical=false preview_promotion=false",
+            "pts_atoms_unchanged=true authoritative_source_sha_verified=true "
+            "source_sha256=%s transport_sha256=%s transport_bytes_source_identical=false "
+            "preview_promotion=false",
             derived.ftypOffset,derived.ftypBytes,derived.compatibleBrandOffset,
             derived.changedByteOffset,
             derived.originalCompatibleBrand[0],derived.originalCompatibleBrand[1],
             derived.originalCompatibleBrand[2],derived.originalCompatibleBrand[3],
             derived.replacementCompatibleBrand[0],derived.replacementCompatibleBrand[1],
             derived.replacementCompatibleBrand[2],derived.replacementCompatibleBrand[3],
-            derived.changedByteCount);
+            derived.changedByteCount,sourceShaText.c_str(),transportShaText.c_str());
         mediaFileDescriptor_=createPrivateMediaDescriptor(activity_,derived.bytes);
         extractor_=AMediaExtractor_new();
         require(extractor_!=nullptr,
@@ -422,10 +443,12 @@ bool ChronoVideoPlayer::openDecoder() {
         }
         KC_LOGI(
             "chrono decoder media transport=derived_ftyp_private_unlinked_fd apk_status=%d "
-            "retry_status=%d offset=0 length=%lld source_bytes_sha_bound=true "
-            "transport_bytes_source_identical=false preview_promotion=false",
+            "retry_status=%d offset=0 length=%lld authoritative_source_sha_verified=true "
+            "source_sha256=%s transport_sha256=%s transport_bytes_source_identical=false "
+            "preview_promotion=false",
             static_cast<int>(apkStatus),static_cast<int>(privateStatus),
-            static_cast<long long>(privateLength));
+            static_cast<long long>(privateLength),sourceShaText.c_str(),
+            transportShaText.c_str());
     }
 
     AMediaFormat* videoFormat=nullptr;

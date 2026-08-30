@@ -1,0 +1,256 @@
+         1788090167.365 28500  5201 I UGTS-KC392: UGCVLUT1 verified: source=1280x720 polar=1024x512 authority=derived_cache
+         1788090167.386 28500  5201 I UGTS-KC392: gpu timer supported=false bits=0 extension=GL_EXT_disjoint_timer_query nonblocking=true reason=extension_or_counter_bits_unavailable
+         1788090167.391 28500  5201 I UGTS-KC392: render shaders scene=linked polar_direct=linked polar_lut=linked post=linked
+         1788090167.392 28500  5201 I UGTS-KC392: render substrate polar_requested=cpu polar_effective=cpu gpu_instances=0 gpu_profiles=0 gpu_batches=0 cpu_fallbacks=0 animation_fallbacks=0 polar_recipes=0 generated=0 generated_gpu=0 generated_cpu=0 reason=no_polar_components polar_material=off material_bands=1 material_strength=0.000 bayer=off levels=2 strength=0.000
+         1788090167.397 28500  5201 I UGTS-KC392: UGCVLUT1 uploaded to GLES3: source=1280x720 polar=1024x512 bytes=4194304 authority=derived_cache
+         1788090168.674 28500  5201 I UGTS-KC392: chrono owned staging rasters=2 size=1024x512 format=RGBA8 prefetch=exactly_one_verified_ordinal external_filter=NEAREST
+         1788090168.674 28500  5201 I UGTS-KC392: chrono SurfaceTexture created; GL consumption stays on render thread
+         1788090168.674 28500  5201 I UGTS-KC392: chrono decoder JNI scope active entry_point_contract=NDK_WITH_JVM jni_env_visible=true attachment=scoped
+         1788090168.688 28500  5201 E UGTS-KC392: chrono decoder APK asset range rejected status=-10000 offset=6899760 length=12132305; retry=derived_ftyp_private_unlinked_fd
+         1788090169.768 28500  5201 I UGTS-KC392: chrono decoder derived transport adapter=ftyp_compatible_brand_iso4_to_isom ftyp_offset=0 ftyp_bytes=20 compatible_brand_offset=16 changed_byte_offset=19 original_compatible_brand=iso4 replacement_compatible_brand=isom actual_changed_byte_count=1 encoded_payload_unchanged=true pts_atoms_unchanged=true authoritative_source_sha_verified=true source_sha256=1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd transport_sha256=2dc6a56e2806039419f6eaae923c25d6adb0e72d0e0c15f3cb41f091ea6fece5 transport_bytes_source_identical=false preview_promotion=false
+         1788090169.788 28500  5201 I UGTS-KC392: chrono decoder media transport=derived_ftyp_private_unlinked_fd apk_status=-10000 retry_status=0 offset=0 length=12132305 authoritative_source_sha_verified=true source_sha256=1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd transport_sha256=2dc6a56e2806039419f6eaae923c25d6adb0e72d0e0c15f3cb41f091ea6fece5 transport_bytes_source_identical=false preview_promotion=false
+         1788090170.007 28500  5201 I UGTS-KC392: chrono decoder initialized mode=AUTHORITATIVE_SOURCE_LUT mime=video/avc media=1280x720 entries=229 clock=UGCVPTS1_half_open output_gate=one_SurfaceTexture_frame
+         1788090170.007 28500  5201 I UGTS-KC392: chrono runtime mode=AUTHORITATIVE_SOURCE_LUT playback=ONCE_HOLD_LAST authority=source_observation LUT_reapplication=Q8_EXACT_ADDRESS_MATH orientation=canonical_top_left_to_GL_then_SurfaceTexture_matrix color=device_MediaCodec_YUV_to_RGB_not_byte_authoritative
+         1788090170.009 28500  5201 I UGTS-KC392: UGTS-KC 3.9.2 profile=poco_x7_pro_12gb grove=grove_g720_mc7_120 quality=chrono_view_60 fps=60 scale=0.82 model=2412DPC0AG gpu=Mali-G720 MC7 ram=11312MB juice=1.00
+         1788090170.009 28500  5201 I UGTS-KC392: polar ECS profiles=0 components=0 graph_access=active
+         1788090170.009 28500  5201 I UGTS-KC392: polar population format_version=0 recipes=0 generated=0 glow_recipes=0 glow_instances=0 gpu_instance_stride_bytes=36 ecs_generated=false
+         1788090170.009 28500  5201 I UGTS-KC392: chrono focus=gained playback_clock=running
+         1788090170.038 28500  5201 I UGTS-KC392: chrono decoder output format width=1280 height=720 expected=1280x720 valid=true
+         1788090170.042 28500  5201 I UGTS-KC392: polar population generated_total=0 generated_visible=0 visible_gpu=0 visible_cpu=0 materialized=0 cartesian_composed=0
+         1788090170.062 28500  5201 I UGTS-KC392: chrono staged frame count=1 media_ordinal=0 source_frame=0 source_pts=0 surface_timestamp_ns=0 mode=AUTHORITATIVE_SOURCE_LUT
+         1788090170.062 28500  5201 I UGTS-KC392: chrono half-open publish target=0 slot=0 previous_slot=-1
+         1788090170.062 28500  5201 I UGTS-KC392: chrono exact playback clock anchored after staged ordinal zero
+         1788090170.106 28500  5201 I UGTS-KC392: chrono half-open publish target=1 slot=1 previous_slot=0
+         1788090170.146 28500  5201 I UGTS-KC392: chrono half-open publish target=2 slot=0 previous_slot=1
+         1788090170.182 28500  5201 I UGTS-KC392: chrono half-open publish target=3 slot=1 previous_slot=0
+         1788090170.222 28500  5201 I UGTS-KC392: chrono half-open publish target=4 slot=0 previous_slot=1
+         1788090170.264 28500  5201 I UGTS-KC392: chrono half-open publish target=5 slot=1 previous_slot=0
+         1788090170.304 28500  5201 I UGTS-KC392: chrono half-open publish target=6 slot=0 previous_slot=1
+         1788090170.346 28500  5201 I UGTS-KC392: chrono half-open publish target=7 slot=1 previous_slot=0
+         1788090170.379 28500  5201 I UGTS-KC392: chrono half-open publish target=8 slot=0 previous_slot=1
+         1788090170.420 28500  5201 I UGTS-KC392: chrono half-open publish target=9 slot=1 previous_slot=0
+         1788090170.464 28500  5201 I UGTS-KC392: chrono half-open publish target=10 slot=0 previous_slot=1
+         1788090170.498 28500  5201 I UGTS-KC392: chrono half-open publish target=11 slot=1 previous_slot=0
+         1788090170.540 28500  5201 I UGTS-KC392: chrono half-open publish target=12 slot=0 previous_slot=1
+         1788090170.577 28500  5201 I UGTS-KC392: chrono half-open publish target=13 slot=1 previous_slot=0
+         1788090170.624 28500  5201 I UGTS-KC392: chrono half-open publish target=14 slot=0 previous_slot=1
+         1788090170.662 28500  5201 I UGTS-KC392: chrono half-open publish target=15 slot=1 previous_slot=0
+         1788090170.696 28500  5201 I UGTS-KC392: chrono half-open publish target=16 slot=0 previous_slot=1
+         1788090170.740 28500  5201 I UGTS-KC392: chrono half-open publish target=17 slot=1 previous_slot=0
+         1788090170.782 28500  5201 I UGTS-KC392: chrono half-open publish target=18 slot=0 previous_slot=1
+         1788090170.823 28500  5201 I UGTS-KC392: chrono half-open publish target=19 slot=1 previous_slot=0
+         1788090170.856 28500  5201 I UGTS-KC392: chrono half-open publish target=20 slot=0 previous_slot=1
+         1788090170.899 28500  5201 I UGTS-KC392: chrono half-open publish target=21 slot=1 previous_slot=0
+         1788090170.938 28500  5201 I UGTS-KC392: chrono half-open publish target=22 slot=0 previous_slot=1
+         1788090170.981 28500  5201 I UGTS-KC392: chrono half-open publish target=23 slot=1 previous_slot=0
+         1788090171.024 28500  5201 I UGTS-KC392: chrono half-open publish target=24 slot=0 previous_slot=1
+         1788090171.062 28500  5201 I UGTS-KC392: chrono half-open publish target=25 slot=1 previous_slot=0
+         1788090171.097 28500  5201 I UGTS-KC392: chrono half-open publish target=26 slot=0 previous_slot=1
+         1788090171.139 28500  5201 I UGTS-KC392: chrono half-open publish target=27 slot=1 previous_slot=0
+         1788090171.177 28500  5201 I UGTS-KC392: chrono half-open publish target=28 slot=0 previous_slot=1
+         1788090171.223 28500  5201 I UGTS-KC392: chrono half-open publish target=29 slot=1 previous_slot=0
+         1788090171.262 28500  5201 I UGTS-KC392: chrono half-open publish target=30 slot=0 previous_slot=1
+         1788090171.299 28500  5201 I UGTS-KC392: chrono half-open publish target=31 slot=1 previous_slot=0
+         1788090171.336 28500  5201 I UGTS-KC392: chrono half-open publish target=32 slot=0 previous_slot=1
+         1788090171.378 28500  5201 I UGTS-KC392: chrono half-open publish target=33 slot=1 previous_slot=0
+         1788090171.420 28500  5201 I UGTS-KC392: chrono half-open publish target=34 slot=0 previous_slot=1
+         1788090171.455 28500  5201 I UGTS-KC392: chrono half-open publish target=35 slot=1 previous_slot=0
+         1788090171.499 28500  5201 I UGTS-KC392: chrono half-open publish target=36 slot=0 previous_slot=1
+         1788090171.538 28500  5201 I UGTS-KC392: chrono half-open publish target=37 slot=1 previous_slot=0
+         1788090171.581 28500  5201 I UGTS-KC392: chrono half-open publish target=38 slot=0 previous_slot=1
+         1788090171.613 28500  5201 I UGTS-KC392: chrono half-open publish target=39 slot=1 previous_slot=0
+         1788090171.657 28500  5201 I UGTS-KC392: chrono half-open publish target=40 slot=0 previous_slot=1
+         1788090171.698 28500  5201 I UGTS-KC392: chrono half-open publish target=41 slot=1 previous_slot=0
+         1788090171.738 28500  5201 I UGTS-KC392: chrono half-open publish target=42 slot=0 previous_slot=1
+         1788090171.772 28500  5201 I UGTS-KC392: chrono half-open publish target=43 slot=1 previous_slot=0
+         1788090171.813 28500  5201 I UGTS-KC392: chrono half-open publish target=44 slot=0 previous_slot=1
+         1788090171.857 28500  5201 I UGTS-KC392: chrono half-open publish target=45 slot=1 previous_slot=0
+         1788090171.899 28500  5201 I UGTS-KC392: chrono half-open publish target=46 slot=0 previous_slot=1
+         1788090171.939 28500  5201 I UGTS-KC392: chrono half-open publish target=47 slot=1 previous_slot=0
+         1788090171.972 28500  5201 I UGTS-KC392: chrono half-open publish target=48 slot=0 previous_slot=1
+         1788090172.016 28500  5201 I UGTS-KC392: chrono half-open publish target=49 slot=1 previous_slot=0
+         1788090172.058 28500  5201 I UGTS-KC392: chrono half-open publish target=50 slot=0 previous_slot=1
+         1788090172.090 28500  5201 I UGTS-KC392: chrono half-open publish target=51 slot=1 previous_slot=0
+         1788090172.131 28500  5201 I UGTS-KC392: chrono half-open publish target=52 slot=0 previous_slot=1
+         1788090172.172 28500  5201 I UGTS-KC392: chrono half-open publish target=53 slot=1 previous_slot=0
+         1788090172.214 28500  5201 I UGTS-KC392: chrono half-open publish target=54 slot=0 previous_slot=1
+         1788090172.254 28500  5201 I UGTS-KC392: chrono half-open publish target=55 slot=1 previous_slot=0
+         1788090172.289 28500  5201 I UGTS-KC392: chrono half-open publish target=56 slot=0 previous_slot=1
+         1788090172.330 28500  5201 I UGTS-KC392: chrono half-open publish target=57 slot=1 previous_slot=0
+         1788090172.372 28500  5201 I UGTS-KC392: chrono half-open publish target=58 slot=0 previous_slot=1
+         1788090172.384 28500  5201 I UGTS-KC392: chrono staged frame count=60 media_ordinal=59 source_frame=59 source_pts=2349616 surface_timestamp_ns=2349616000 mode=AUTHORITATIVE_SOURCE_LUT
+         1788090172.416 28500  5201 I UGTS-KC392: chrono half-open publish target=59 slot=1 previous_slot=0
+         1788090172.456 28500  5201 I UGTS-KC392: chrono half-open publish target=60 slot=0 previous_slot=1
+         1788090172.491 28500  5201 I UGTS-KC392: chrono half-open publish target=61 slot=1 previous_slot=0
+         1788090172.531 28500  5201 I UGTS-KC392: chrono half-open publish target=62 slot=0 previous_slot=1
+         1788090172.571 28500  5201 I UGTS-KC392: chrono half-open publish target=63 slot=1 previous_slot=0
+         1788090172.617 28500  5201 I UGTS-KC392: chrono half-open publish target=64 slot=0 previous_slot=1
+         1788090172.657 28500  5201 I UGTS-KC392: chrono half-open publish target=65 slot=1 previous_slot=0
+         1788090172.694 28500  5201 I UGTS-KC392: chrono half-open publish target=66 slot=0 previous_slot=1
+         1788090172.728 28500  5201 I UGTS-KC392: chrono half-open publish target=67 slot=1 previous_slot=0
+         1788090172.770 28500  5201 I UGTS-KC392: chrono half-open publish target=68 slot=0 previous_slot=1
+         1788090172.814 28500  5201 I UGTS-KC392: chrono half-open publish target=69 slot=1 previous_slot=0
+         1788090172.847 28500  5201 I UGTS-KC392: chrono half-open publish target=70 slot=0 previous_slot=1
+         1788090172.890 28500  5201 I UGTS-KC392: chrono half-open publish target=71 slot=1 previous_slot=0
+         1788090172.931 28500  5201 I UGTS-KC392: chrono half-open publish target=72 slot=0 previous_slot=1
+         1788090172.972 28500  5201 I UGTS-KC392: chrono half-open publish target=73 slot=1 previous_slot=0
+         1788090173.016 28500  5201 I UGTS-KC392: chrono half-open publish target=74 slot=0 previous_slot=1
+         1788090173.046 28500  5201 I UGTS-KC392: chrono half-open publish target=75 slot=1 previous_slot=0
+         1788090173.087 28500  5201 I UGTS-KC392: chrono half-open publish target=76 slot=0 previous_slot=1
+         1788090173.131 28500  5201 I UGTS-KC392: chrono half-open publish target=77 slot=1 previous_slot=0
+         1788090173.169 28500  5201 I UGTS-KC392: chrono half-open publish target=78 slot=0 previous_slot=1
+         1788090173.206 28500  5201 I UGTS-KC392: chrono half-open publish target=79 slot=1 previous_slot=0
+         1788090173.248 28500  5201 I UGTS-KC392: chrono half-open publish target=80 slot=0 previous_slot=1
+         1788090173.288 28500  5201 I UGTS-KC392: chrono half-open publish target=81 slot=1 previous_slot=0
+         1788090173.330 28500  5201 I UGTS-KC392: chrono half-open publish target=82 slot=0 previous_slot=1
+         1788090173.372 28500  5201 I UGTS-KC392: chrono half-open publish target=83 slot=1 previous_slot=0
+         1788090173.412 28500  5201 I UGTS-KC392: chrono half-open publish target=84 slot=0 previous_slot=1
+         1788090173.447 28500  5201 I UGTS-KC392: chrono half-open publish target=85 slot=1 previous_slot=0
+         1788090173.487 28500  5201 I UGTS-KC392: chrono half-open publish target=86 slot=0 previous_slot=1
+         1788090173.529 28500  5201 I UGTS-KC392: chrono half-open publish target=87 slot=1 previous_slot=0
+         1788090173.564 28500  5201 I UGTS-KC392: chrono half-open publish target=88 slot=0 previous_slot=1
+         1788090173.605 28500  5201 I UGTS-KC392: chrono half-open publish target=89 slot=1 previous_slot=0
+         1788090173.645 28500  5201 I UGTS-KC392: chrono half-open publish target=90 slot=0 previous_slot=1
+         1788090173.689 28500  5201 I UGTS-KC392: chrono half-open publish target=91 slot=1 previous_slot=0
+         1788090173.731 28500  5201 I UGTS-KC392: chrono half-open publish target=92 slot=0 previous_slot=1
+         1788090173.764 28500  5201 I UGTS-KC392: chrono half-open publish target=93 slot=1 previous_slot=0
+         1788090173.805 28500  5201 I UGTS-KC392: chrono half-open publish target=94 slot=0 previous_slot=1
+         1788090173.847 28500  5201 I UGTS-KC392: chrono half-open publish target=95 slot=1 previous_slot=0
+         1788090173.888 28500  5201 I UGTS-KC392: chrono half-open publish target=96 slot=0 previous_slot=1
+         1788090173.933 28500  5201 I UGTS-KC392: chrono half-open publish target=97 slot=1 previous_slot=0
+         1788090173.963 28500  5201 I UGTS-KC392: chrono half-open publish target=98 slot=0 previous_slot=1
+         1788090174.003 28500  5201 I UGTS-KC392: chrono half-open publish target=99 slot=1 previous_slot=0
+         1788090174.044 28500  5201 I UGTS-KC392: chrono half-open publish target=100 slot=0 previous_slot=1
+         1788090174.089 28500  5201 I UGTS-KC392: chrono half-open publish target=101 slot=1 previous_slot=0
+         1788090174.122 28500  5201 I UGTS-KC392: chrono half-open publish target=102 slot=0 previous_slot=1
+         1788090174.164 28500  5201 I UGTS-KC392: chrono half-open publish target=103 slot=1 previous_slot=0
+         1788090174.204 28500  5201 I UGTS-KC392: chrono half-open publish target=104 slot=0 previous_slot=1
+         1788090174.247 28500  5201 I UGTS-KC392: chrono half-open publish target=105 slot=1 previous_slot=0
+         1788090174.288 28500  5201 I UGTS-KC392: chrono half-open publish target=106 slot=0 previous_slot=1
+         1788090174.323 28500  5201 I UGTS-KC392: chrono half-open publish target=107 slot=1 previous_slot=0
+         1788090174.364 28500  5201 I UGTS-KC392: chrono half-open publish target=108 slot=0 previous_slot=1
+         1788090174.404 28500  5201 I UGTS-KC392: chrono half-open publish target=109 slot=1 previous_slot=0
+         1788090174.446 28500  5201 I UGTS-KC392: chrono half-open publish target=110 slot=0 previous_slot=1
+         1788090174.481 28500  5201 I UGTS-KC392: chrono half-open publish target=111 slot=1 previous_slot=0
+         1788090174.529 28500  5201 I UGTS-KC392: chrono half-open publish target=112 slot=0 previous_slot=1
+         1788090174.561 28500  5201 I UGTS-KC392: chrono half-open publish target=113 slot=1 previous_slot=0
+         1788090174.604 28500  5201 I UGTS-KC392: chrono half-open publish target=114 slot=0 previous_slot=1
+         1788090174.644 28500  5201 I UGTS-KC392: chrono half-open publish target=115 slot=1 previous_slot=0
+         1788090174.686 28500  5201 I UGTS-KC392: chrono half-open publish target=116 slot=0 previous_slot=1
+         1788090174.726 28500  5201 I UGTS-KC392: chrono half-open publish target=117 slot=1 previous_slot=0
+         1788090174.759 28500  5201 I UGTS-KC392: chrono half-open publish target=118 slot=0 previous_slot=1
+         1788090174.768 28500  5201 I UGTS-KC392: chrono staged frame count=120 media_ordinal=119 source_frame=119 source_pts=4739056 surface_timestamp_ns=4739056000 mode=AUTHORITATIVE_SOURCE_LUT
+         1788090174.801 28500  5201 I UGTS-KC392: chrono half-open publish target=119 slot=1 previous_slot=0
+         1788090174.841 28500  5201 I UGTS-KC392: chrono half-open publish target=120 slot=0 previous_slot=1
+         1788090174.884 28500  5201 I UGTS-KC392: chrono half-open publish target=121 slot=1 previous_slot=0
+         1788090174.921 28500  5201 I UGTS-KC392: chrono half-open publish target=122 slot=0 previous_slot=1
+         1788090174.959 28500  5201 I UGTS-KC392: chrono half-open publish target=123 slot=1 previous_slot=0
+         1788090175.003 28500  5201 I UGTS-KC392: chrono half-open publish target=124 slot=0 previous_slot=1
+         1788090175.042 28500  5201 I UGTS-KC392: chrono half-open publish target=125 slot=1 previous_slot=0
+         1788090175.079 28500  5201 I UGTS-KC392: chrono half-open publish target=126 slot=0 previous_slot=1
+         1788090175.119 28500  5201 I UGTS-KC392: chrono half-open publish target=127 slot=1 previous_slot=0
+         1788090175.161 28500  5201 I UGTS-KC392: chrono half-open publish target=128 slot=0 previous_slot=1
+         1788090175.203 28500  5201 I UGTS-KC392: chrono half-open publish target=129 slot=1 previous_slot=0
+         1788090175.246 28500  5201 I UGTS-KC392: chrono half-open publish target=130 slot=0 previous_slot=1
+         1788090175.278 28500  5201 I UGTS-KC392: chrono half-open publish target=131 slot=1 previous_slot=0
+         1788090175.320 28500  5201 I UGTS-KC392: chrono half-open publish target=132 slot=0 previous_slot=1
+         1788090175.361 28500  5201 I UGTS-KC392: chrono half-open publish target=133 slot=1 previous_slot=0
+         1788090175.402 28500  5201 I UGTS-KC392: chrono half-open publish target=134 slot=0 previous_slot=1
+         1788090175.436 28500  5201 I UGTS-KC392: chrono half-open publish target=135 slot=1 previous_slot=0
+         1788090175.479 28500  5201 I UGTS-KC392: chrono half-open publish target=136 slot=0 previous_slot=1
+         1788090175.520 28500  5201 I UGTS-KC392: chrono half-open publish target=137 slot=1 previous_slot=0
+         1788090175.562 28500  5201 I UGTS-KC392: chrono half-open publish target=138 slot=0 previous_slot=1
+         1788090175.603 28500  5201 I UGTS-KC392: chrono half-open publish target=139 slot=1 previous_slot=0
+         1788090175.643 28500  5201 I UGTS-KC392: chrono half-open publish target=140 slot=0 previous_slot=1
+         1788090175.676 28500  5201 I UGTS-KC392: chrono half-open publish target=141 slot=1 previous_slot=0
+         1788090175.719 28500  5201 I UGTS-KC392: chrono half-open publish target=142 slot=0 previous_slot=1
+         1788090175.762 28500  5201 I UGTS-KC392: chrono half-open publish target=143 slot=1 previous_slot=0
+         1788090175.802 28500  5201 I UGTS-KC392: chrono half-open publish target=144 slot=0 previous_slot=1
+         1788090175.836 28500  5201 I UGTS-KC392: chrono half-open publish target=145 slot=1 previous_slot=0
+         1788090175.876 28500  5201 I UGTS-KC392: chrono half-open publish target=146 slot=0 previous_slot=1
+         1788090175.919 28500  5201 I UGTS-KC392: chrono half-open publish target=147 slot=1 previous_slot=0
+         1788090175.959 28500  5201 I UGTS-KC392: chrono half-open publish target=148 slot=0 previous_slot=1
+         1788090176.006 28500  5201 I UGTS-KC392: chrono half-open publish target=149 slot=1 previous_slot=0
+         1788090176.041 28500  5201 I UGTS-KC392: chrono half-open publish target=150 slot=0 previous_slot=1
+         1788090176.075 28500  5201 I UGTS-KC392: chrono half-open publish target=151 slot=1 previous_slot=0
+         1788090176.116 28500  5201 I UGTS-KC392: chrono half-open publish target=152 slot=0 previous_slot=1
+         1788090176.159 28500  5201 I UGTS-KC392: chrono half-open publish target=153 slot=1 previous_slot=0
+         1788090176.201 28500  5201 I UGTS-KC392: chrono half-open publish target=154 slot=0 previous_slot=1
+         1788090176.233 28500  5201 I UGTS-KC392: chrono half-open publish target=155 slot=1 previous_slot=0
+         1788090176.277 28500  5201 I UGTS-KC392: chrono half-open publish target=156 slot=0 previous_slot=1
+         1788090176.319 28500  5201 I UGTS-KC392: chrono half-open publish target=157 slot=1 previous_slot=0
+         1788090176.359 28500  5201 I UGTS-KC392: chrono half-open publish target=158 slot=0 previous_slot=1
+         1788090176.392 28500  5201 I UGTS-KC392: chrono half-open publish target=159 slot=1 previous_slot=0
+         1788090176.434 28500  5201 I UGTS-KC392: chrono half-open publish target=160 slot=0 previous_slot=1
+         1788090176.476 28500  5201 I UGTS-KC392: chrono half-open publish target=161 slot=1 previous_slot=0
+         1788090176.518 28500  5201 I UGTS-KC392: chrono half-open publish target=162 slot=0 previous_slot=1
+         1788090176.551 28500  5201 I UGTS-KC392: chrono half-open publish target=163 slot=1 previous_slot=0
+         1788090176.592 28500  5201 I UGTS-KC392: chrono half-open publish target=164 slot=0 previous_slot=1
+         1788090176.634 28500  5201 I UGTS-KC392: chrono half-open publish target=165 slot=1 previous_slot=0
+         1788090176.675 28500  5201 I UGTS-KC392: chrono half-open publish target=166 slot=0 previous_slot=1
+         1788090176.718 28500  5201 I UGTS-KC392: chrono half-open publish target=167 slot=1 previous_slot=0
+         1788090176.751 28500  5201 I UGTS-KC392: chrono half-open publish target=168 slot=0 previous_slot=1
+         1788090176.791 28500  5201 I UGTS-KC392: chrono half-open publish target=169 slot=1 previous_slot=0
+         1788090176.834 28500  5201 I UGTS-KC392: chrono half-open publish target=170 slot=0 previous_slot=1
+         1788090176.875 28500  5201 I UGTS-KC392: chrono half-open publish target=171 slot=1 previous_slot=0
+         1788090176.909 28500  5201 I UGTS-KC392: chrono half-open publish target=172 slot=0 previous_slot=1
+         1788090176.952 28500  5201 I UGTS-KC392: chrono half-open publish target=173 slot=1 previous_slot=0
+         1788090176.992 28500  5201 I UGTS-KC392: chrono half-open publish target=174 slot=0 previous_slot=1
+         1788090177.035 28500  5201 I UGTS-KC392: chrono half-open publish target=175 slot=1 previous_slot=0
+         1788090177.076 28500  5201 I UGTS-KC392: chrono half-open publish target=176 slot=0 previous_slot=1
+         1788090177.109 28500  5201 I UGTS-KC392: chrono half-open publish target=177 slot=1 previous_slot=0
+         1788090177.150 28500  5201 I UGTS-KC392: chrono half-open publish target=178 slot=0 previous_slot=1
+         1788090177.159 28500  5201 I UGTS-KC392: chrono staged frame count=180 media_ordinal=179 source_frame=179 source_pts=7128496 surface_timestamp_ns=7128496000 mode=AUTHORITATIVE_SOURCE_LUT
+         1788090177.192 28500  5201 I UGTS-KC392: chrono half-open publish target=179 slot=1 previous_slot=0
+         1788090177.234 28500  5201 I UGTS-KC392: chrono half-open publish target=180 slot=0 previous_slot=1
+         1788090177.276 28500  5201 I UGTS-KC392: chrono half-open publish target=181 slot=1 previous_slot=0
+         1788090177.308 28500  5201 I UGTS-KC392: chrono half-open publish target=182 slot=0 previous_slot=1
+         1788090177.351 28500  5201 I UGTS-KC392: chrono half-open publish target=183 slot=1 previous_slot=0
+         1788090177.392 28500  5201 I UGTS-KC392: chrono half-open publish target=184 slot=0 previous_slot=1
+         1788090177.434 28500  5201 I UGTS-KC392: chrono half-open publish target=185 slot=1 previous_slot=0
+         1788090177.467 28500  5201 I UGTS-KC392: chrono half-open publish target=186 slot=0 previous_slot=1
+         1788090177.508 28500  5201 I UGTS-KC392: chrono half-open publish target=187 slot=1 previous_slot=0
+         1788090177.549 28500  5201 I UGTS-KC392: chrono half-open publish target=188 slot=0 previous_slot=1
+         1788090177.592 28500  5201 I UGTS-KC392: chrono half-open publish target=189 slot=1 previous_slot=0
+         1788090177.626 28500  5201 I UGTS-KC392: chrono half-open publish target=190 slot=0 previous_slot=1
+         1788090177.669 28500  5201 I UGTS-KC392: chrono half-open publish target=191 slot=1 previous_slot=0
+         1788090177.709 28500  5201 I UGTS-KC392: chrono half-open publish target=192 slot=0 previous_slot=1
+         1788090177.747 28500  5201 I UGTS-KC392: chrono half-open publish target=193 slot=1 previous_slot=0
+         1788090177.786 28500  5201 I UGTS-KC392: chrono half-open publish target=194 slot=0 previous_slot=1
+         1788090177.828 28500  5201 I UGTS-KC392: chrono half-open publish target=195 slot=1 previous_slot=0
+         1788090177.870 28500  5201 I UGTS-KC392: chrono half-open publish target=196 slot=0 previous_slot=1
+         1788090177.911 28500  5201 I UGTS-KC392: chrono half-open publish target=197 slot=1 previous_slot=0
+         1788090177.944 28500  5201 I UGTS-KC392: chrono half-open publish target=198 slot=0 previous_slot=1
+         1788090177.986 28500  5201 I UGTS-KC392: chrono half-open publish target=199 slot=1 previous_slot=0
+         1788090178.027 28500  5201 I UGTS-KC392: chrono half-open publish target=200 slot=0 previous_slot=1
+         1788090178.056 28500  5201 I UGTS-KC392: chrono decoder input EOS ordinals=229
+         1788090178.069 28500  5201 I UGTS-KC392: chrono half-open publish target=201 slot=1 previous_slot=0
+         1788090178.110 28500  5201 I UGTS-KC392: chrono half-open publish target=202 slot=0 previous_slot=1
+         1788090178.144 28500  5201 I UGTS-KC392: chrono half-open publish target=203 slot=1 previous_slot=0
+         1788090178.185 28500  5201 I UGTS-KC392: chrono half-open publish target=204 slot=0 previous_slot=1
+         1788090178.227 28500  5201 I UGTS-KC392: chrono half-open publish target=205 slot=1 previous_slot=0
+         1788090178.268 28500  5201 I UGTS-KC392: chrono half-open publish target=206 slot=0 previous_slot=1
+         1788090178.311 28500  5201 I UGTS-KC392: chrono half-open publish target=207 slot=1 previous_slot=0
+         1788090178.343 28500  5201 I UGTS-KC392: chrono half-open publish target=208 slot=0 previous_slot=1
+         1788090178.386 28500  5201 I UGTS-KC392: chrono half-open publish target=209 slot=1 previous_slot=0
+         1788090178.425 28500  5201 I UGTS-KC392: chrono half-open publish target=210 slot=0 previous_slot=1
+         1788090178.469 28500  5201 I UGTS-KC392: chrono half-open publish target=211 slot=1 previous_slot=0
+         1788090178.509 28500  5201 I UGTS-KC392: chrono half-open publish target=212 slot=0 previous_slot=1
+         1788090178.542 28500  5201 I UGTS-KC392: chrono half-open publish target=213 slot=1 previous_slot=0
+         1788090178.582 28500  5201 I UGTS-KC392: chrono half-open publish target=214 slot=0 previous_slot=1
+         1788090178.624 28500  5201 I UGTS-KC392: chrono half-open publish target=215 slot=1 previous_slot=0
+         1788090178.667 28500  5201 I UGTS-KC392: chrono half-open publish target=216 slot=0 previous_slot=1
+         1788090178.708 28500  5201 I UGTS-KC392: chrono half-open publish target=217 slot=1 previous_slot=0
+         1788090178.741 28500  5201 I UGTS-KC392: chrono half-open publish target=218 slot=0 previous_slot=1
+         1788090178.786 28500  5201 I UGTS-KC392: chrono half-open publish target=219 slot=1 previous_slot=0
+         1788090178.824 28500  5201 I UGTS-KC392: chrono half-open publish target=220 slot=0 previous_slot=1
+         1788090178.866 28500  5201 I UGTS-KC392: chrono half-open publish target=221 slot=1 previous_slot=0
+         1788090178.900 28500  5201 I UGTS-KC392: chrono half-open publish target=222 slot=0 previous_slot=1
+         1788090178.941 28500  5201 I UGTS-KC392: chrono half-open publish target=223 slot=1 previous_slot=0
+         1788090178.984 28500  5201 I UGTS-KC392: chrono half-open publish target=224 slot=0 previous_slot=1
+         1788090179.025 28500  5201 I UGTS-KC392: chrono half-open publish target=225 slot=1 previous_slot=0
+         1788090179.066 28500  5201 I UGTS-KC392: chrono half-open publish target=226 slot=0 previous_slot=1
+         1788090179.100 28500  5201 I UGTS-KC392: chrono half-open publish target=227 slot=1 previous_slot=0
+         1788090179.111 28500  5201 I UGTS-KC392: chrono decoder output EOS validated_frames=229
+         1788090179.143 28500  5201 I UGTS-KC392: chrono half-open publish target=228 slot=0 previous_slot=1
+         1788090179.143 28500  5201 I UGTS-KC392: chrono once completion receipt mode=AUTHORITATIVE_SOURCE_LUT entries=229 published_ordinal=228 staged=229 late_boundaries=0 selector_boundaries_met=true catchup_drops=0 photon_time_claim=false color_byte_authoritative=false

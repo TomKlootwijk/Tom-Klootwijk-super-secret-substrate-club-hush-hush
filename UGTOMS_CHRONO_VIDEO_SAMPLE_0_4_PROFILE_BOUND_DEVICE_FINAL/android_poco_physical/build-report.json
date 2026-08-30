@@ -284,6 +284,16 @@
       "sha256": "e76db6fa554fe4c160defb64b92932647655e7d71a4674b5213dddb5e5467da0"
     },
     {
+      "bytes": 3066,
+      "path": "app/src/main/cpp/chrono_mp4_transport.cpp",
+      "sha256": "204fe948e0ecfe74b12f7f63a0331b925b73b4a12a49c5daff04ea4909d384c1"
+    },
+    {
+      "bytes": 851,
+      "path": "app/src/main/cpp/chrono_mp4_transport.hpp",
+      "sha256": "3f8bbe026e814cc7549b3f86041eba0c71f67bec76d16082d67add3ce184aa07"
+    },
+    {
       "bytes": 7247,
       "path": "app/src/main/cpp/chrono_runtime_binding.hpp",
       "sha256": "9db2ca44c1c26a6815639d01f25da43aa809caf0592571ffece63d650b6a9eba"
@@ -299,9 +309,9 @@
       "sha256": "cb2ee488e918564f7d55fbbf70068c607f7ef5af7cb7d9a03e7dd73832afe6a9"
     },
     {
-      "bytes": 48635,
+      "bytes": 51936,
       "path": "app/src/main/cpp/chrono_video_player.cpp",
-      "sha256": "1ef3d7335f61ec9f961fe570ba9a54b07dd629c67dcec378278ac915d779aef5"
+      "sha256": "57509af5677fe827fee11d27243ce90728952520d6d7ad8945d70225b5dde870"
     },
     {
       "bytes": 5016,
@@ -319,9 +329,9 @@
       "sha256": "0dc8d5513e80e69af51e273c19366f3ae6ecfaf9e9eea80a412b8939dbf3168e"
     },
     {
-      "bytes": 2887,
+      "bytes": 2916,
       "path": "app/src/main/cpp/CMakeLists.txt",
-      "sha256": "319b9e595484a777a8b96775c97ef7be5408d6033e21c7b26681c45db2134d99"
+      "sha256": "3118b5a8c6140f547324afeb78610ff01c024352cbb9512ac6bb375c45acb4e6"
     },
     {
       "bytes": 3497,
@@ -549,9 +559,9 @@
       "sha256": "f2e8f8a55d7f855ebdc654a85f159e1c990438507319ec7f0be815c5e8045c11"
     },
     {
-      "bytes": 11382,
+      "bytes": 12086,
       "path": "README.md",
-      "sha256": "ffd4880885b0306631b0bf2f811f395feeb53464c02e662554c220bc22a44e9a"
+      "sha256": "81d943cbdacdc82a8878a444a59e2490942f86238252280dc6bca8548fe3141e"
     },
     {
       "bytes": 333,

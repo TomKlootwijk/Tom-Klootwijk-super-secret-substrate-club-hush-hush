@@ -50,6 +50,14 @@ EXPECTED_APPLICATION_ID = "org.ugts.games.chrono_video_observation_inspector.poc
 EXPECTED_ACTIVITY = "org.ugts.runtime.UgtsNativeActivity"
 EXPECTED_MODE = "AUTHORITATIVE_SOURCE_LUT"
 EXPECTED_MARKET_NAME = "POCO X7 Pro"
+EXPECTED_SOURCE_MEDIA_SHA256 = (
+    "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd"
+)
+EXPECTED_ANDROID_TRANSPORT_SHA256 = (
+    "2dc6a56e2806039419f6eaae923c25d6adb0e72d0e0c15f3cb41f091ea6fece5"
+)
+EXPECTED_SOURCE_MEDIA_BYTES = 12_132_305
+EXPECTED_ANDROID_TRANSPORT = "derived_ftyp_private_unlinked_fd"
 # These two identifiers were read from the attached target itself.  Requiring
 # them as a pair avoids treating an arbitrary "rodin" string or model token as
 # proof of target identity when a market-name property is absent.
@@ -95,6 +103,51 @@ _RUNTIME_FAILURE = re.compile(
     r"chrono runtime failed closed\s+"
     r"mode=(?P<mode>\S+)\s+reason=(?P<reason>.*?)\s+"
     r"preview_promotion=false"
+)
+_DIRECT_APK_RANGE_REJECTION = re.compile(
+    r"chrono decoder APK asset range rejected\s+"
+    r"status=(?P<status>-?\d+)\s+"
+    r"offset=(?P<offset>\d+)\s+"
+    r"length=(?P<length>\d+);\s+"
+    r"retry=(?P<retry>\S+)"
+)
+_FTYP_TRANSPORT_ADAPTER = re.compile(
+    r"chrono decoder derived transport\s+"
+    r"adapter=(?P<adapter>\S+)\s+"
+    r"ftyp_offset=(?P<ftyp_offset>\d+)\s+"
+    r"ftyp_bytes=(?P<ftyp_bytes>\d+)\s+"
+    r"compatible_brand_offset=(?P<brand_offset>\d+)\s+"
+    r"changed_byte_offset=(?P<changed_offset>\d+)\s+"
+    r"original_compatible_brand=(?P<original_brand>\S+)\s+"
+    r"replacement_compatible_brand=(?P<replacement_brand>\S+)\s+"
+    r"actual_changed_byte_count=(?P<changed_count>\d+)\s+"
+    r"encoded_payload_unchanged=(?P<payload>true|false)\s+"
+    r"pts_atoms_unchanged=(?P<pts>true|false)\s+"
+    r"authoritative_source_sha_verified=(?P<authority>true|false)\s+"
+    r"source_sha256=(?P<source_sha>[0-9a-fA-F]{64})\s+"
+    r"transport_sha256=(?P<transport_sha>[0-9a-fA-F]{64})\s+"
+    r"transport_bytes_source_identical=(?P<identical>true|false)\s+"
+    r"preview_promotion=(?P<preview>true|false)"
+)
+_FTYP_MEDIA_TRANSPORT = re.compile(
+    r"chrono decoder media\s+"
+    r"transport=(?P<transport>\S+)\s+"
+    r"apk_status=(?P<apk_status>-?\d+)\s+"
+    r"retry_status=(?P<retry_status>-?\d+)\s+"
+    r"offset=(?P<offset>\d+)\s+"
+    r"length=(?P<length>\d+)\s+"
+    r"authoritative_source_sha_verified=(?P<authority>true|false)\s+"
+    r"source_sha256=(?P<source_sha>[0-9a-fA-F]{64})\s+"
+    r"transport_sha256=(?P<transport_sha>[0-9a-fA-F]{64})\s+"
+    r"transport_bytes_source_identical=(?P<identical>true|false)\s+"
+    r"preview_promotion=(?P<preview>true|false)"
+)
+_EXPLICIT_CHRONO_FAILURE_MARKERS = (
+    "chrono initialization failed closed",
+    "chrono runtime failed closed",
+    "chrono SurfaceTexture callback arrived while a frame was already pending",
+    "chrono late half-open boundary",
+    "chrono_video=FAILED_CLOSED",
 )
 
 
@@ -411,6 +464,171 @@ def parse_chrono_startup_failure(log_output: str) -> dict[str, Any] | None:
     return None
 
 
+def _line_containing_match(text: str, match: re.Match[str]) -> str:
+    start = text.rfind("\n", 0, match.start()) + 1
+    end = text.find("\n", match.end())
+    if end < 0:
+        end = len(text)
+    return text[start:end].rstrip("\r")
+
+
+def _tag_error_lines(text: str) -> tuple[str, ...]:
+    return tuple(
+        line
+        for line in text.splitlines()
+        if re.search(r"(?:^|\s)E[/ ]UGTS-KC392(?:\(|:|\s)", line)
+    )
+
+
+def _explicit_chrono_failure_lines(text: str) -> tuple[str, ...]:
+    return tuple(
+        line
+        for line in text.splitlines()
+        if any(marker in line for marker in _EXPLICIT_CHRONO_FAILURE_MARKERS)
+    )
+
+
+def _completion_receipt_is_exact(
+    receipt: dict[str, Any] | None, expected_entries: int
+) -> bool:
+    return bool(
+        receipt is not None
+        and receipt["mode"] == EXPECTED_MODE
+        and receipt["entries"] == expected_entries
+        and receipt["published_ordinal"] == expected_entries - 1
+        and receipt["staged"] == expected_entries
+        and receipt["late_boundaries"] == 0
+        and receipt["selector_boundaries_met"] is True
+        and receipt["catchup_drops"] == 0
+        and receipt["photon_time_claim"] is False
+        and receipt["color_byte_authoritative"] is False
+    )
+
+
+def classify_android_ftyp_transport_retry(
+    log_output: str, expected_entries: int
+) -> dict[str, Any]:
+    """Recognize only the proven one-byte Android MP4 transport adaptation.
+
+    The authoritative ``iso4`` source remains unchanged.  A single expected
+    error-level rejection may be treated as a recovered transport probe only
+    when the same log binds both exact hashes, the sole offset-19 ``4`` to
+    ``m`` compatible-brand mutation, unchanged encoded payload/PTS atoms, a
+    successful retry, and the later exact ONCE completion receipt.  Any
+    missing, duplicated, reordered, or contradictory receipt fails closed.
+    """
+
+    text = str(log_output)
+    direct_matches = tuple(_DIRECT_APK_RANGE_REJECTION.finditer(text))
+    adapter_matches = tuple(_FTYP_TRANSPORT_ADAPTER.finditer(text))
+    media_matches = tuple(_FTYP_MEDIA_TRANSPORT.finditer(text))
+    completion_matches = tuple(_COMPLETION_RECEIPT.finditer(text))
+    direct = direct_matches[0] if len(direct_matches) == 1 else None
+    adapter = adapter_matches[0] if len(adapter_matches) == 1 else None
+    media = media_matches[0] if len(media_matches) == 1 else None
+    completion = completion_matches[-1] if completion_matches else None
+    receipt = parse_completion_receipt(text)
+    receipt_exact = _completion_receipt_is_exact(receipt, expected_entries)
+    tag_errors = _tag_error_lines(text)
+    explicit_failures = _explicit_chrono_failure_lines(text)
+
+    direct_values = direct.groupdict() if direct is not None else {}
+    adapter_values = adapter.groupdict() if adapter is not None else {}
+    media_values = media.groupdict() if media is not None else {}
+    direct_line = _line_containing_match(text, direct) if direct is not None else None
+
+    detected = any(
+        marker in text
+        for marker in (
+            "chrono decoder APK asset range rejected",
+            "chrono decoder derived transport adapter=ftyp_compatible_brand_iso4_to_isom",
+            f"chrono decoder media transport={EXPECTED_ANDROID_TRANSPORT}",
+        )
+    )
+    checks = {
+        "one_direct_rejection": len(direct_matches) == 1,
+        "one_adapter_receipt": len(adapter_matches) == 1,
+        "one_media_transport_receipt": len(media_matches) == 1,
+        "direct_status_minus_10000": direct_values.get("status") == "-10000",
+        "direct_retry_is_bounded_adapter": direct_values.get("retry")
+        == EXPECTED_ANDROID_TRANSPORT,
+        "direct_source_length_exact": direct_values.get("length")
+        == str(EXPECTED_SOURCE_MEDIA_BYTES),
+        "adapter_exact": bool(
+            adapter_values.get("adapter")
+            == "ftyp_compatible_brand_iso4_to_isom"
+            and adapter_values.get("ftyp_offset") == "0"
+            and adapter_values.get("ftyp_bytes") == "20"
+            and adapter_values.get("brand_offset") == "16"
+            and adapter_values.get("changed_offset") == "19"
+            and adapter_values.get("original_brand") == "iso4"
+            and adapter_values.get("replacement_brand") == "isom"
+            and adapter_values.get("changed_count") == "1"
+        ),
+        "encoded_payload_unchanged": adapter_values.get("payload") == "true",
+        "pts_atoms_unchanged": adapter_values.get("pts") == "true",
+        "adapter_authoritative_source_verified": adapter_values.get("authority")
+        == "true",
+        "adapter_source_sha_exact": adapter_values.get("source_sha", "").lower()
+        == EXPECTED_SOURCE_MEDIA_SHA256,
+        "adapter_transport_sha_exact": adapter_values.get(
+            "transport_sha", ""
+        ).lower()
+        == EXPECTED_ANDROID_TRANSPORT_SHA256,
+        "adapter_transport_nonidentical": adapter_values.get("identical") == "false",
+        "adapter_preview_not_promoted": adapter_values.get("preview") == "false",
+        "media_transport_exact": bool(
+            media_values.get("transport") == EXPECTED_ANDROID_TRANSPORT
+            and media_values.get("apk_status") == "-10000"
+            and media_values.get("retry_status") == "0"
+            and media_values.get("offset") == "0"
+            and media_values.get("length") == str(EXPECTED_SOURCE_MEDIA_BYTES)
+        ),
+        "media_authoritative_source_verified": media_values.get("authority") == "true",
+        "media_source_sha_exact": media_values.get("source_sha", "").lower()
+        == EXPECTED_SOURCE_MEDIA_SHA256,
+        "media_transport_sha_exact": media_values.get("transport_sha", "").lower()
+        == EXPECTED_ANDROID_TRANSPORT_SHA256,
+        "media_transport_nonidentical": media_values.get("identical") == "false",
+        "media_preview_not_promoted": media_values.get("preview") == "false",
+        "receipts_ordered": bool(
+            direct is not None
+            and adapter is not None
+            and media is not None
+            and completion is not None
+            and direct.start() < adapter.start() < media.start() < completion.start()
+        ),
+        "exact_terminal_completion_receipt": receipt_exact
+        and completion is not None
+        and media is not None
+        and completion.start() > media.start(),
+        "direct_rejection_is_only_tag_error": bool(
+            direct_line is not None
+            and len(tag_errors) == 1
+            and tag_errors[0] == direct_line
+        ),
+        "no_explicit_chrono_failure": not explicit_failures,
+    }
+    paired_success_exact = detected and all(checks.values())
+    allowed_error_lines = [direct_line] if paired_success_exact and direct_line else []
+    return {
+        "detected": detected,
+        "paired_success_exact": paired_success_exact,
+        "checks": checks,
+        "source_sha256": adapter_values.get("source_sha", "").lower() or None,
+        "transport_sha256": adapter_values.get("transport_sha", "").lower() or None,
+        "direct_status": (
+            int(direct_values["status"]) if direct_values.get("status") else None
+        ),
+        "retry_status": (
+            int(media_values["retry_status"])
+            if media_values.get("retry_status")
+            else None
+        ),
+        "allowed_error_lines": allowed_error_lines,
+    }
+
+
 def evaluate_chrono_log(log_output: str, expected_entries: int) -> dict[str, Any]:
     text = str(log_output)
     receipt = parse_completion_receipt(text)
@@ -450,43 +668,34 @@ def evaluate_chrono_log(log_output: str, expected_entries: int) -> dict[str, Any
         name: bool(re.search(pattern, text))
         for name, pattern in required_patterns.items()
     }
-    tag_error_lines = tuple(
-        line
-        for line in text.splitlines()
-        if re.search(r"(?:^|\s)E[/ ]UGTS-KC392(?:\(|:|\s)", line)
+    tag_error_lines = _tag_error_lines(text)
+    explicit_failures = _explicit_chrono_failure_lines(text)
+    receipt_ok = _completion_receipt_is_exact(receipt, expected_entries)
+    android_transport_retry = classify_android_ftyp_transport_retry(
+        text, expected_entries
     )
-    explicit_failures = tuple(
-        line
-        for line in text.splitlines()
-        if "chrono initialization failed closed" in line
-        or "chrono runtime failed closed" in line
-        or "chrono SurfaceTexture callback arrived while a frame was already pending"
-        in line
-        or "chrono late half-open boundary" in line
+    allowed_tag_errors = set(android_transport_retry["allowed_error_lines"])
+    fatal_tag_errors = tuple(
+        line for line in tag_error_lines if line not in allowed_tag_errors
     )
-
-    receipt_ok = bool(
-        receipt is not None
-        and receipt["mode"] == EXPECTED_MODE
-        and receipt["entries"] == expected_entries
-        and receipt["published_ordinal"] == expected_entries - 1
-        and receipt["staged"] == expected_entries
-        and receipt["late_boundaries"] == 0
-        and receipt["selector_boundaries_met"] is True
-        and receipt["catchup_drops"] == 0
-        and receipt["photon_time_claim"] is False
-        and receipt["color_byte_authoritative"] is False
+    transport_retry_ok = (
+        not android_transport_retry["detected"]
+        or android_transport_retry["paired_success_exact"]
     )
     return {
         "passed": all(checks.values())
         and receipt_ok
+        and transport_retry_ok
         and not explicit_failures
-        and not tag_error_lines,
+        and not fatal_tag_errors,
         "required_log_checks": checks,
         "completion_receipt": receipt,
         "completion_receipt_exact": receipt_ok,
+        "android_ftyp_transport_retry": android_transport_retry,
         "explicit_failure_lines": list(explicit_failures),
         "tag_error_lines": list(tag_error_lines),
+        "allowed_tag_error_lines": sorted(allowed_tag_errors),
+        "fatal_tag_error_lines": list(fatal_tag_errors),
         "nonclaims": {
             "photon_time": False,
             "color_byte_authoritative": False,

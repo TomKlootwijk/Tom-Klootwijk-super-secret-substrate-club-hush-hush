@@ -1,5 +1,6 @@
 #include "chrono_video_player.hpp"
 
+#include "chrono_mp4_transport.hpp"
 #include "chrono_runtime_binding.hpp"
 
 #include <EGL/egl.h>
@@ -58,17 +59,27 @@ std::runtime_error descriptorError(const char* operation,int error) {
         " failed errno="+std::to_string(error));
 }
 
+std::string sha256Hex(const std::array<std::uint8_t,32>& digest) {
+    constexpr char Digits[]="0123456789abcdef";
+    std::string result(digest.size()*2u,'0');
+    for (std::size_t index=0u;index<digest.size();++index) {
+        result[index*2u]=Digits[digest[index]>>4u];
+        result[index*2u+1u]=Digits[digest[index]&0x0fu];
+    }
+    return result;
+}
+
 int createPrivateMediaDescriptor(
-    const ANativeActivity* activity,const std::vector<std::uint8_t>& verifiedBytes
+    const ANativeActivity* activity,const std::vector<std::uint8_t>& transportBytes
 ) {
     require(activity && activity->internalDataPath && activity->internalDataPath[0]=='/',
         "chrono internal data path is unavailable for private media transport");
-    require(!verifiedBytes.empty(),
-        "chrono verified media buffer is empty before private transport creation");
+    require(!transportBytes.empty(),
+        "chrono media transport buffer is empty before private descriptor creation");
     require(
-        static_cast<std::uintmax_t>(verifiedBytes.size())<=
+        static_cast<std::uintmax_t>(transportBytes.size())<=
             static_cast<std::uintmax_t>(std::numeric_limits<off64_t>::max()),
-        "chrono verified media buffer exceeds the extractor length range");
+        "chrono media transport buffer exceeds the extractor length range");
 
     // internalDataPath is supplied by ANativeActivity. Appending a fixed leaf
     // template keeps creation inside that private directory; unlinking before
@@ -98,12 +109,12 @@ int createPrivateMediaDescriptor(
         throw descriptorError("fcntl",errno);
 
     std::size_t written=0u;
-    while (written<verifiedBytes.size()) {
+    while (written<transportBytes.size()) {
         const auto count=std::min(
-            verifiedBytes.size()-written,
+            transportBytes.size()-written,
             static_cast<std::size_t>(std::numeric_limits<ssize_t>::max()));
         const auto result=write(
-            descriptor.get(),verifiedBytes.data()+written,count);
+            descriptor.get(),transportBytes.data()+written,count);
         if (result<0 && errno==EINTR) continue;
         if (result<=0) throw descriptorError("write",result<0?errno:EIO);
         written+=static_cast<std::size_t>(result);
@@ -111,8 +122,8 @@ int createPrivateMediaDescriptor(
     struct stat64 descriptorStat{};
     if (fstat64(descriptor.get(),&descriptorStat)!=0)
         throw descriptorError("fstat64",errno);
-    require(descriptorStat.st_size==static_cast<off64_t>(verifiedBytes.size()),
-        "chrono private media transport length disagrees with verified bytes");
+    require(descriptorStat.st_size==static_cast<off64_t>(transportBytes.size()),
+        "chrono private media descriptor length disagrees with transport bytes");
     if (lseek64(descriptor.get(),0,SEEK_SET)!=0)
         throw descriptorError("lseek64",errno);
     return descriptor.release();
@@ -130,6 +141,7 @@ public:
     }
     ~JniEnvironment() { if (detach_) vm_->DetachCurrentThread(); }
     JNIEnv* get() const { return env_; }
+    bool attachedCurrentThread() const { return detach_; }
     void throwIfException(const char* message) const {
         if (!env_->ExceptionCheck()) return;
         env_->ExceptionDescribe();
@@ -336,6 +348,21 @@ bool ChronoVideoPlayer::createDecoderSurface() {
 }
 
 bool ChronoVideoPlayer::openDecoder() {
+    // AMediaExtractor_new asks NdkJavaVMHelper for the current thread's JNIEnv
+    // and otherwise selects the NDK_NO_JVM entry point. Keep this scope alive
+    // through both possible extractor creations, track discovery, and codec
+    // configuration; createDecoderSurface's earlier scope has already ended.
+    JniEnvironment mediaJni(activity_);
+    JNIEnv* visibleEnvironment=nullptr;
+    require(activity_->vm->GetEnv(
+        reinterpret_cast<void**>(&visibleEnvironment),JNI_VERSION_1_6)==JNI_OK &&
+        visibleEnvironment==mediaJni.get(),
+        "chrono decoder JNI scope is not visible on the render thread");
+    KC_LOGI(
+        "chrono decoder JNI scope active entry_point_contract=NDK_WITH_JVM "
+        "jni_env_visible=true attachment=%s",
+        mediaJni.attachedCurrentThread()?"scoped":"preexisting");
+
     using AssetHandle=std::unique_ptr<AAsset,decltype(&AAsset_close)>;
     AssetHandle mediaAsset(
         AAssetManager_open(assets_,mediaAssetPath_.c_str(),AASSET_MODE_RANDOM),
@@ -367,7 +394,7 @@ bool ChronoVideoPlayer::openDecoder() {
     } else {
         KC_LOGE(
             "chrono decoder APK asset range rejected status=%d offset=%lld length=%lld; "
-            "retry=verified_private_unlinked_fd",
+            "retry=derived_ftyp_private_unlinked_fd",
             static_cast<int>(apkStatus),static_cast<long long>(start),
             static_cast<long long>(length));
         AMediaExtractor_delete(extractor_);
@@ -375,24 +402,53 @@ bool ChronoVideoPlayer::openDecoder() {
         static_cast<void>(close(mediaFileDescriptor_));
         mediaFileDescriptor_=-1;
 
-        mediaFileDescriptor_=createPrivateMediaDescriptor(activity_,mediaBytes_);
+        const auto sourceSha=chronoSha256(mediaBytes_);
+        require(mode_==ChronoVideoRuntimeMode::AuthoritativeSourceLut &&
+            sourceSha==timeline_.mediaSha256 && sourceSha==timeline_.sourceSha256,
+            "chrono ftyp adapter requires the verified authoritative source bytes");
+        const auto derived=deriveIso4IsomTransport(mediaBytes_);
+        const auto transportSha=chronoSha256(derived.bytes);
+        require(transportSha!=sourceSha,
+            "chrono ftyp adapter did not derive a distinct transport hash");
+        const auto sourceShaText=sha256Hex(sourceSha);
+        const auto transportShaText=sha256Hex(transportSha);
+        KC_LOGI(
+            "chrono decoder derived transport adapter=ftyp_compatible_brand_iso4_to_isom "
+            "ftyp_offset=%zu ftyp_bytes=%zu "
+            "compatible_brand_offset=%zu changed_byte_offset=%zu "
+            "original_compatible_brand=%c%c%c%c replacement_compatible_brand=%c%c%c%c "
+            "actual_changed_byte_count=%zu encoded_payload_unchanged=true "
+            "pts_atoms_unchanged=true authoritative_source_sha_verified=true "
+            "source_sha256=%s transport_sha256=%s transport_bytes_source_identical=false "
+            "preview_promotion=false",
+            derived.ftypOffset,derived.ftypBytes,derived.compatibleBrandOffset,
+            derived.changedByteOffset,
+            derived.originalCompatibleBrand[0],derived.originalCompatibleBrand[1],
+            derived.originalCompatibleBrand[2],derived.originalCompatibleBrand[3],
+            derived.replacementCompatibleBrand[0],derived.replacementCompatibleBrand[1],
+            derived.replacementCompatibleBrand[2],derived.replacementCompatibleBrand[3],
+            derived.changedByteCount,sourceShaText.c_str(),transportShaText.c_str());
+        mediaFileDescriptor_=createPrivateMediaDescriptor(activity_,derived.bytes);
         extractor_=AMediaExtractor_new();
         require(extractor_!=nullptr,
             "chrono could not reallocate AMediaExtractor for private media transport");
-        const auto privateLength=static_cast<off64_t>(mediaBytes_.size());
+        const auto privateLength=static_cast<off64_t>(derived.bytes.size());
         const auto privateStatus=AMediaExtractor_setDataSourceFd(
             extractor_,mediaFileDescriptor_,0,privateLength);
         if (privateStatus!=AMEDIA_OK) {
             throw std::runtime_error(
-                "chrono AMediaExtractor rejected the MP4 asset range and verified private "
-                "transport (apk_status="+std::to_string(static_cast<int>(apkStatus))+
+                "chrono AMediaExtractor rejected the source MP4 and bounded ftyp transport "
+                "(apk_status="+std::to_string(static_cast<int>(apkStatus))+
                 ", private_status="+std::to_string(static_cast<int>(privateStatus))+')');
         }
         KC_LOGI(
-            "chrono decoder media transport=verified_private_unlinked_fd apk_status=%d "
-            "retry_status=%d offset=0 length=%lld source_bytes_sha_bound=true",
+            "chrono decoder media transport=derived_ftyp_private_unlinked_fd apk_status=%d "
+            "retry_status=%d offset=0 length=%lld authoritative_source_sha_verified=true "
+            "source_sha256=%s transport_sha256=%s transport_bytes_source_identical=false "
+            "preview_promotion=false",
             static_cast<int>(apkStatus),static_cast<int>(privateStatus),
-            static_cast<long long>(privateLength));
+            static_cast<long long>(privateLength),sourceShaText.c_str(),
+            transportShaText.c_str());
     }
 
     AMediaFormat* videoFormat=nullptr;

@@ -1,0 +1,75 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2063,
+      "path": "static_apk_audit.json",
+      "sha256": "b028cb1221b44e00785742a9128b38086c29060b411ba0a0261ee40a6549aee2"
+    }
+  ],
+  "completed_utc": "2026-08-30T11:42:27.381291Z",
+  "gates": {
+    "static_apk": {
+      "activity": "org.ugts.runtime.UgtsNativeActivity",
+      "apk": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk",
+      "application_id": "org.ugts.games.chrono_video_observation_inspector.pocox7pro",
+      "build_report": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\build-report.json",
+      "build_report_sha256": "766b8ea97edf9d9c01918a601b63fad1d199486860af39a4363c0a6d44fbcc42",
+      "bytes": 19057188,
+      "chrono_asset_bytes": 22410086,
+      "chrono_asset_count": 17,
+      "expected_entries": 229,
+      "expected_sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "manifest_sha256": "920ea8f09069e3fff9e8a514b1587ca0b3f8de0d104b80777e6f984f6f592d72",
+      "native_completion_receipt_present": true,
+      "native_libraries": [
+        "lib/arm64-v8a/libugts_kc_native.so"
+      ],
+      "output_metadata_present": true,
+      "passed": true,
+      "sha256": "c9647614d88550d04b2b514573b4ee11ebd56ae73c04148956eaf4636c8cf1c5",
+      "source_timeline": {
+        "content_sha256": "21cabb1211457ee162d04946e2b2501a83d531908905106298af60a7d0e226aa",
+        "end_source_pts_exclusive": 9119696,
+        "entry_bytes": 32,
+        "entry_count": 229,
+        "first_source_pts": 0,
+        "flags": 5,
+        "header_bytes": 208,
+        "magic": "UGCVPTS1",
+        "media_height": 720,
+        "media_role": "ORIGINAL_SOURCE",
+        "media_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+        "media_width": 1280,
+        "playback_mode": "ONCE_HOLD_LAST",
+        "profile_sha256": "03aa49806447188f8115da3124772690f8e45eb9383b84a4820d06af2c173e47",
+        "raster_mode": "APPLY_UGCVLUT1_Q8",
+        "schema": "ugts-chrono-video-pts-cache-inspection-0.1",
+        "source_frame_count": 229,
+        "source_sha256": "1867bafa7c80c31f18856525cbf580edaa36d524270b1fa59cc643b51964cbfd",
+        "time_base_den": 1000000,
+        "time_base_num": 1,
+        "version": "1.0"
+      }
+    }
+  },
+  "inputs": {
+    "apk": "C:\\Tom Klootwijk super secret substrate club hush hush\\UGTOMS_CHRONO_VIDEO_SAMPLE_0_4_PROFILE_BOUND_DEVICE_FINAL\\android_poco_physical\\app\\build\\outputs\\apk\\pocoX7Pro\\debug\\app-pocoX7Pro-debug.apk"
+  },
+  "nonclaims": [
+    "A PASS does not claim photon-time display equality.",
+    "MediaCodec device YUV-to-RGB conversion is not byte-authoritative.",
+    "The log-polar raster is deterministic observed-video evidence, not metric 3D or a hidden-surface reconstruction."
+  ],
+  "schema": "ugtoms-chrono-poco-physical-validation-1",
+  "started_utc": "2026-08-30T11:42:27.334406Z",
+  "status": "PASS_STATIC_ONLY",
+  "target": {
+    "abi": "arm64-v8a",
+    "activity": "org.ugts.runtime.UgtsNativeActivity",
+    "application_id": "org.ugts.games.chrono_video_observation_inspector.pocox7pro",
+    "market_name": "POCO X7 Pro",
+    "runtime_mode": "AUTHORITATIVE_SOURCE_LUT"
+  },
+  "verified_physical_device": false,
+  "warnings": []
+}
